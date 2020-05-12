@@ -31,9 +31,10 @@ final Logger _log = new Logger('main');
 //https://pub.dev/packages/flutter_redux
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-  SystemChrome.setEnabledSystemUIOverlays([]);
   initLog('flutter');
   _log.info("Run");
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIOverlays([]);
   try {
     RemoteService _backendService;
     var localPath = await environment.getApplicationDocumentsDirectory();

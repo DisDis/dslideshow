@@ -28,7 +28,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
           controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
           controller.stop();
-          future.then((_)=>Navigator.pushReplacementNamed(context, '/slideshow'));
+          future.then((dynamic _)=>Navigator.pushReplacementNamed(context, '/slideshow'));
         }
       });
     controller.forward();
