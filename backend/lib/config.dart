@@ -30,6 +30,9 @@ class AppConfig{
 
   HardwareConfig _hardware;
   HardwareConfig get hardware => _hardware??=new HardwareConfig(_config["hardware"] as Map<String, dynamic>);
+
+  Map<String, dynamic> _storageSection;
+  Map<String, dynamic> get storageSection => _storageSection??=(_config["storage"]==null?<String, dynamic>{}: _config["storage"] as Map<String, dynamic>);
 }
 
 abstract class BaseConfig{

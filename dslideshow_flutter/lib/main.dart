@@ -26,6 +26,8 @@ import 'package:redux/redux.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'dart:isolate' as isol;
 
+import 'src/injector.dart';
+
 
 final Logger _log = new Logger('main');
 //https://pub.dev/packages/flutter_redux
@@ -39,7 +41,7 @@ void main() async {
     RemoteService _backendService;
     var localPath = await environment.getApplicationDocumentsDirectory();
     _log.info("Config path: '${localPath}'");
-    var injector = new di.ModuleInjector([getInjectorModule(),
+    injector = new di.ModuleInjector([getInjectorModule(),
     new di.Module()
       ..bind(AppConfig, toFactory: () => new AppConfig(localPath.path))
       ..bind(FrontendService, toFactory: (AppConfig _config) => new FrontendService(_config, _backendService), inject: <dynamic>[AppConfig])

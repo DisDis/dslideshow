@@ -17,7 +17,7 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
   final String wireName = 'EchoCommand';
 
   @override
-  Iterable serialize(Serializers serializers, EchoCommand object,
+  Iterable<Object> serialize(Serializers serializers, EchoCommand object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'text',
@@ -29,12 +29,11 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
         ..add(serializers.serialize(object.id,
             specifiedType: const FullType(int)));
     }
-
     return result;
   }
 
   @override
-  EchoCommand deserialize(Serializers serializers, Iterable serialized,
+  EchoCommand deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new EchoCommandBuilder();
 
@@ -67,7 +66,7 @@ class _$EchoCommandResultSerializer
   final String wireName = 'EchoCommandResult';
 
   @override
-  Iterable serialize(Serializers serializers, EchoCommandResult object,
+  Iterable<Object> serialize(Serializers serializers, EchoCommandResult object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'resultText',
@@ -80,12 +79,12 @@ class _$EchoCommandResultSerializer
         ..add(serializers.serialize(object.id,
             specifiedType: const FullType(int)));
     }
-
     return result;
   }
 
   @override
-  EchoCommandResult deserialize(Serializers serializers, Iterable serialized,
+  EchoCommandResult deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new EchoCommandResultBuilder();
 

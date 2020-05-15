@@ -4,6 +4,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
+export 'package:dslideshow_backend/environment.dart';
 
 Future<Directory> getApplicationDocumentsDirectory() async {
   return new Directory(path.current);
@@ -12,5 +13,3 @@ Future<Directory> getApplicationDocumentsDirectory() async {
 Future<dynamic> checkPermissionReadExternalStorage() async {
   return true;
 }
-
-final Directory externalStorage = new Directory(path.current);

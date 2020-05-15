@@ -1,6 +1,7 @@
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
@@ -13,6 +14,28 @@ class FrontendService implements RpcService {
     b
       ..id = RpcCommand.generateId()
       ..text = text));
+    _log.info("Message: $result");
+  }
+
+  Future<MediaItem> getStorageCurrentItem() async{
+    final result = await _backendService.send(new GetMediaItemCommand((b) =>
+    b..id = RpcCommand.generateId()..isCurrent=true));
+    _log.info("Message: $result");
+    var resultMediaItem = result as GetMediaItemCommandResult;
+    return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
+  }
+
+  Future<MediaItem> getStorageNextItem() async{
+    final result = await _backendService.send(new GetMediaItemCommand((b) =>
+    b..id = RpcCommand.generateId()..isCurrent=false));
+    _log.info("Message: $result");
+    var resultMediaItem = result as GetMediaItemCommandResult;
+    return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
+  }
+
+  Future<Null> storageNext() async{
+    final result = await _backendService.send(new StorageNextCommand((b) =>
+    b..id = RpcCommand.generateId()));
     _log.info("Message: $result");
   }
 

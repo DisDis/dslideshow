@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:simple_permissions/simple_permissions.dart';
 import 'package:path_provider/path_provider.dart' as path_prov;
+export 'package:dslideshow_backend/environment.dart';
 
 Future<Directory> getApplicationDocumentsDirectory() {
   return path_prov.getApplicationDocumentsDirectory();
@@ -15,6 +16,3 @@ Future<dynamic> checkPermissionReadExternalStorage() async {
   }
   return new Future<dynamic>.value(PermissionStatus.authorized);
 }
-
-//'/data/user/0/com.home.dslideshow_flutter/app_flutter'
-final Directory externalStorage = new Directory('/storage/emulated/0/');

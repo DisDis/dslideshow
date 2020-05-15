@@ -9,7 +9,7 @@ class MediaCache{
   final int maxSize;
   int get size=> _size;
   int _size = 0;
-  final MediaStorage storage;
+  final Storage storage;
 
   MediaCache(this.path, this.maxSize, this.storage);
 }
