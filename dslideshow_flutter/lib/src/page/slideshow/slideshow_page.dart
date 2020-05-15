@@ -69,7 +69,7 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
     }
     item = await (length == position ? _getCurrentImage() : _getNextImage());
     if (_imageCache.length>10){
-      _imageCache.clear();
+      _imageCache.remove(_imageCache.keys.first);
     }
     _imageCache[position] = item;
     return item;
