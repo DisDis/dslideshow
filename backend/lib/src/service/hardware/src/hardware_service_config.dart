@@ -17,10 +17,13 @@ class HardwareConfig  extends BaseConfig {
   int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);
 
   String _screenPowerOffScript;
-  String get screenPowerOffScript => _screenPowerOffScript ??= readValue("screenPowerOffScript", 'screenOff.sh');
+  String get screenPowerOffScript => _screenPowerOffScript ??= readValue("screenPowerOffScript", './screenOff.sh');
 
   String _screenPowerOnScript;
-  String get screenPowerOnScript => _screenPowerOnScript ??= readValue("screenPowerOnScript", 'screenOn.sh');
+  String get screenPowerOnScript => _screenPowerOnScript ??= readValue("screenPowerOnScript", './screenOn.sh');
+
+  int _screenPowerOnTimerSec;
+  int get screenPowerOnTimerSec => _screenPowerOnTimerSec ??= readInt("screenPowerOnTimerSec", 120);
 
   HardwareConfig(Map<String, dynamic> config) :super(config);
 }

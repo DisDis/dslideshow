@@ -15,16 +15,28 @@ class HardwareService implements RpcService{
 
   final RemoteService _frontendService;
   final Storage _storage;
-  final GPIOService _gpioService;
-  final ScreenService _screenService;
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService){
+  // TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
+//  final GPIOService _gpioService;
+//  final ScreenService _screenService;
+  HardwareService(AppConfig config, this._frontendService, this._storage/*, this._gpioService, this._screenService*/){
     _init();
   }
 
   void _init() {
     _storage.init();
-    _gpioService.init();
-    //_gpioService.powerLED
+    /*_gpioService.init();
+    _gpioService.onPause.listen((event) {
+      _log.info('onPause = $event');
+      _gpioService.powerLED = event;
+    });
+    _gpioService.onMotion.listen((event) {
+      _log.info('Motion = $event');
+      if (event){
+        _screenService.screenOn();
+      } else {
+        _screenService.screenOff();
+      }
+    });*/
   }
 
   void testEcho(String text) async {

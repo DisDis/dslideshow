@@ -2,12 +2,38 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:logging/logging.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = new Logger('FlutterService');
   final RemoteService _backendService;
-  FrontendService(AppConfig config, this._backendService);
+  // TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
+  final GPIOService _gpioService;
+  final ScreenService _screenService;
+  FrontendService(AppConfig config, this._backendService, this._gpioService, this._screenService){
+    _init();
+  }
+
+  /// TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
+  @deprecated
+  void _init() {
+    _log.warning('TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937');
+    _gpioService.init();
+    _gpioService.onPause.listen((event) {
+      _log.info('onPause = $event');
+      _gpioService.powerLED = event;
+    });
+    _gpioService.onMotion.listen((event) {
+      _log.info('Motion = $event');
+      if (event){
+        _screenService.screenOn();
+      } else {
+        _screenService.scheduleScreenOff();
+      }
+    });
+  }
 
   void testEcho(String text) async {
     final result = await _backendService.send(new EchoCommand((b) =>

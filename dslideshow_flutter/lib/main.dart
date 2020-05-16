@@ -24,6 +24,9 @@ import 'package:isolate/isolate.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
+
 import 'dart:isolate' as isol;
 
 import 'src/injector.dart';
@@ -44,7 +47,9 @@ void main() async {
     injector = new di.ModuleInjector([getInjectorModule(),
     new di.Module()
       ..bind(AppConfig, toFactory: () => new AppConfig(localPath.path))
-      ..bind(FrontendService, toFactory: (AppConfig _config) => new FrontendService(_config, _backendService), inject: <dynamic>[AppConfig])
+      ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOService(_config.hardware), inject: <dynamic>[AppConfig])
+      ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
+      ..bind(FrontendService, toFactory: (AppConfig _config, GPIOService _gpioService, ScreenService _screenService) => new FrontendService(_config, _backendService, _gpioService, _screenService), inject: <dynamic>[AppConfig, GPIOService, ScreenService])
     ]);
     _log.info("externalStorage: '${environment.externalStorage.path}'");
     var config = injector.get(AppConfig) as AppConfig;
@@ -56,10 +61,6 @@ void main() async {
     final _frontendService = injector.get(FrontendService) as FrontendService;
     initRpc(_frontendService, serializers);
     _runFlutter(_frontendService);
-    new Timer(new Duration(seconds: 5),(){
-      _frontendService.testEcho('Front -> Back');
-    });
-    // await Future.wait<dynamic>([_hw_FrameService.onExit]);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);

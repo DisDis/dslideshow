@@ -35,7 +35,7 @@ void main(List<dynamic> args){
        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection['DiskStorage'] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
        ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOService(_config.hardware), inject: <dynamic>[AppConfig])
        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
+      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage/*, GPIOService _gPIOService, ScreenService _screenService*/) => new HardwareService(_config, _remoteFrontendService, _storage/*, _gPIOService, _screenService*/), inject: <dynamic>[AppConfig, Storage/*, GPIOService, ScreenService*/])
     ]);
     var config = injector.get(AppConfig) as AppConfig;
     Logger.root.level = config.log.levelHwFrame;
@@ -46,9 +46,6 @@ void main(List<dynamic> args){
 //    _server = injector.get(WebServer) as WebServer;
 //    initRpc(_server);
 
-    new Timer(new Duration(seconds: 5),(){
-      _service.testEcho('Back -> Front');
-    });
   } catch(e, s){
     _log.fine('Fatal error: $e, $s');
     exit(1);
