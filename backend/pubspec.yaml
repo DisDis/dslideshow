@@ -2,7 +2,7 @@ name: 'dslideshow_backend'
 version: 0.0.1
 description: A sample command-line application
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: '>=2.7.0 <3.0.0'
 dependencies:
     isolate: ^2.0.2
     logging: ^0.11.0
@@ -12,6 +12,10 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
+    flutter_gpiod:
+      path: ../third_party/flutter_gpiod
+    flutter:
+      sdk: flutter
     database: ^0.3.3
 dev_dependencies:
   built_value_generator: ^6.5.0

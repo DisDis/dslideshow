@@ -1,21 +1,26 @@
 import 'package:dslideshow_backend/config.dart';
 
 class HardwareConfig  extends BaseConfig {
-  int _simulationTime;
-  int get simulationTime => _simulationTime ??= readInt("simulationTime", 4500);
+  int _pinPauseButton;
+  int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 15);
 
-  int _tickMs;
-  int get tickMs => _tickMs ??= readInt("tickMs", 50);
+  int _pinMenuButton;
+  int get pinMenuButton => _pinMenuButton ??= readInt("pinMenuButton", 27);
 
-  int _worldCount;
-  int get worldCount =>  _worldCount ??= readInt("worldCount", 1);
+  int _pinScreenToggleButton;
+  int get pinScreenToggleButton => _pinScreenToggleButton ??= readInt("pinScreenToggleButton", 22);
 
-  int _botsInGame;
-  int get botsInGame =>  _botsInGame ??= readInt("botsInGame", 5);
+  int _pinPIRSensor;
+  int get pinPIRSensor => _pinPIRSensor ??= readInt("pinPIRSensor", 17);
 
-  int _avatarCount;
-  int get avatarCount =>  _avatarCount ??= readInt("avatarCount", 2);
+  int _pinPowerLED;
+  int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);
 
+  String _screenPowerOffScript;
+  String get screenPowerOffScript => _screenPowerOffScript ??= readValue("screenPowerOffScript", 'screenOff.sh');
+
+  String _screenPowerOnScript;
+  String get screenPowerOnScript => _screenPowerOnScript ??= readValue("screenPowerOnScript", 'screenOn.sh');
 
   HardwareConfig(Map<String, dynamic> config) :super(config);
 }

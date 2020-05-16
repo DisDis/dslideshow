@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_common/injector/di.dart';
@@ -31,7 +33,9 @@ void main(List<dynamic> args){
     var injector = new ModuleInjector([getInjectorModule(),
      new Module()..bind(GooglePhotoService, toFactory: (AppConfig _config) => new GooglePhotoService(_config), inject: <dynamic>[AppConfig])
        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection['DiskStorage'] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
-      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage) => new HardwareService(_config, _remoteFrontendService, _storage), inject: <dynamic>[AppConfig, Storage])
+       ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOService(_config.hardware), inject: <dynamic>[AppConfig])
+       ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
+      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
     ]);
     var config = injector.get(AppConfig) as AppConfig;
     Logger.root.level = config.log.levelHwFrame;

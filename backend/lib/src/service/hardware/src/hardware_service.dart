@@ -3,17 +3,28 @@ import 'dart:async';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/echo.dart';
 import 'package:dslideshow_backend/src/command/storage_commands.dart';
+import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
+
+import 'gpio_service.dart';
 
 class HardwareService implements RpcService{
   static final Logger _log = new Logger('HardwareService');
 
   final RemoteService _frontendService;
   final Storage _storage;
-  HardwareService(AppConfig config, this._frontendService, this._storage){
+  final GPIOService _gpioService;
+  final ScreenService _screenService;
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService){
+    _init();
+  }
+
+  void _init() {
     _storage.init();
+    _gpioService.init();
+    //_gpioService.powerLED
   }
 
   void testEcho(String text) async {
