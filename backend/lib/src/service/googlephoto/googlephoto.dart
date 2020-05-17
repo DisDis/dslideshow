@@ -158,17 +158,17 @@ class GooglePhotoService{
         _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
         String nextPageToken;
         while (true) {
-         final smiRequest = new SearchMediaItemsRequest()..albumId=slideShowAlbum.id..pageSize=100;
+         final smiRequest = new SearchMediaItemsRequest()..albumId=slideShowAlbum.id..pageSize=25;
          if (nextPageToken != null){
            smiRequest.pageToken = nextPageToken;
          }
          var mediaItems = await gphoto.mediaItems.search(smiRequest);
-         if (mediaItems.mediaItems.isEmpty){
-           break;
-         }
          mediaItems.mediaItems.forEach((item) { result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));});
          nextPageToken = mediaItems.nextPageToken;
-         _log.info('loaded ${result.length} media item(s)');
+         _log.info('received ${result.length} media item(s) information');
+         if (nextPageToken == null || nextPageToken.isEmpty){
+           break;
+         }
         }
       } else {
         _log.severe("Not found '$albumName' album");
