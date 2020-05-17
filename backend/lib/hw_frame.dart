@@ -31,7 +31,8 @@ void main(List<dynamic> args){
     IsolateRunner remoteIsolateService = args[0] as IsolateRunner;
     final  RemoteService _remoteFrontendService = new RemoteService(remoteIsolateService, serializers);
     var injector = new ModuleInjector([getInjectorModule(),
-     new Module()..bind(GooglePhotoService, toFactory: (AppConfig _config) => new GooglePhotoService(_config), inject: <dynamic>[AppConfig])
+     new Module()
+       //..bind(GooglePhotoService, toFactory: (AppConfig _config) => new GooglePhotoService(_config), inject: <dynamic>[AppConfig])
        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection['DiskStorage'] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
        ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOService(_config.hardware), inject: <dynamic>[AppConfig])
        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])

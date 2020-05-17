@@ -2,5 +2,14 @@
   "server":{
     "port":8080,
     "addr":"0.0.0.0"
+  },
+  "storage": {
+    "gphoto": {
+      "refreshToken": "",
+      "clientId":{
+        "identifier":"",
+        "secret": ""
+      }
+    }
   }
 }
