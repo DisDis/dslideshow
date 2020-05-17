@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:dslideshow_backend/config.dart';
-
-
 import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart";
 import "package:googleapis/photoslibrary/v1.dart";
@@ -11,16 +8,30 @@ import 'package:logging/logging.dart';
 import 'package:googleapis_auth/src/auth_http_utils.dart';
 
 
+class GooglePhotoItem{
+  final String id;
+  final String url;
+  final String mimeType;
+
+  GooglePhotoItem(String this.id, String this.url, String this.mimeType);
+}
+
 class GooglePhotoService{
   static final Logger _log = new Logger('GooglePhotoService');
   final ClientId _clientId;
   String _refreshToken;
-  String _tokenAccess;
+  String _tokenAccess ;
   DateTime _tokenAExpire;
-  GooglePhotoService(final String identifier, final String secret, this._refreshToken): this._clientId = new ClientId(identifier, secret);
+  GooglePhotoService(final String identifier, final String secret, this._refreshToken,[this._tokenAccess = "", this._tokenAExpire]): this._clientId = new ClientId(identifier, secret){
+    if (_tokenAExpire == null){
+      _tokenAExpire = new DateTime.now().toUtc();
+    }
+  }
   final scopes = ["https://www.googleapis.com/auth/photoslibrary.readonly"];
   final redirectUri = 'http://localhost:8989/googleapi';
   final tokenAType = 'Bearer';
+  final StreamController<AccessCredentials> _scUpdateCredentials = new StreamController.broadcast();
+  Stream<AccessCredentials> get onUpdateCredentials => _scUpdateCredentials.stream;
 
   void prompt(String url) {
     print("Please go to the following URL and grant access:");
@@ -119,7 +130,8 @@ class GooglePhotoService{
     }
   }
 
-  void downloadAlbumToFolder(String albumName, int imageW, int imageH) async{
+  Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(String albumName, int imageW, int imageH) async{
+    Iterable<GooglePhotoItem> result = <GooglePhotoItem>[];
     var client = new http.Client();
     try {
       AccessCredentials credentials;
@@ -135,11 +147,8 @@ class GooglePhotoService{
         var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire);
         credentials = new AccessCredentials(at, _refreshToken, scopes);
       }
-//      var credentials = await obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt);
-//      var credentials = await obtainAccessCredentialsUsingCode(clientId, code, redirectUri, client, scopes);
-//      var client = await clientViaUserConsent(clientId, scopes, prompt);
-      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
-//      client = new AuthenticatedClient(client, credentials);
+
+//      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
 
       var gphoto = new PhotoslibraryApi(clientARC);
@@ -147,63 +156,66 @@ class GooglePhotoService{
       var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == albumName,orElse: ()=> null);
       if (slideShowAlbum != null){
         var mediaItems = await gphoto.mediaItems.search(new SearchMediaItemsRequest()..albumId=slideShowAlbum.id);
-        mediaItems.mediaItems.forEach((item){
-          _log.info( "Item: id='${item.id}', baseUrl=' ${item.baseUrl}=w1920-h1080 '");
-        });
+
+        result = mediaItems.mediaItems.map((item)=>new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
 
       } else {
-        _log.severe("Not found 'SlideShow' album");
+        _log.severe("Not found '$albumName' album");
       }
       credentials = clientARC.credentials;
-      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
+      _tokenAccess = credentials.accessToken.data;
+      _tokenAExpire = credentials.accessToken.expiry;
+      _scUpdateCredentials.add(credentials);
+//      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       client.close();
     } catch(err){
       _log.severe("Unable to create Google photo service: $err");
     }
+    return result;
   }
 
-  void test_run() async{
-    //
-    var client = new http.Client();
-    try {
-      AccessCredentials credentials;
-      if (_refreshToken == null || _refreshToken == "") {
-        var uri = _authenticationUri(redirectUri);
-        _log.info("Uri: $uri");
-        var codeCompleter = new Completer<String>();
-        _run(codeCompleter);
-        var code = await codeCompleter.future;
-        credentials = await obtainAccessCredentialsViaCodeExchange(
-            client, _clientId, code, redirectUrl: redirectUri);
-      } else {
-        var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire);
-        credentials = new AccessCredentials(at, _refreshToken, scopes);
-      }
-//      var credentials = await obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt);
-//      var credentials = await obtainAccessCredentialsUsingCode(clientId, code, redirectUri, client, scopes);
-//      var client = await clientViaUserConsent(clientId, scopes, prompt);
-      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
-//      client = new AuthenticatedClient(client, credentials);
-      var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
-
-      var gphoto = new PhotoslibraryApi(clientARC);
-      var albumsRes = await gphoto.albums.list();
-      var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == "SlideShow",orElse: ()=> null);
-      if (slideShowAlbum != null){
-        var mediaItems = await gphoto.mediaItems.search(new SearchMediaItemsRequest()..albumId=slideShowAlbum.id);
-        mediaItems.mediaItems.forEach((item){
-          _log.info( "Item: id='${item.id}', baseUrl=' ${item.baseUrl}=w1920-h1080 '");
-        });
-
-      } else {
-        _log.severe("Not found 'SlideShow' album");
-      }
-      credentials = clientARC.credentials;
-      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
-      client.close();
-    } catch(err){
-    _log.severe("Unable to create Google photo service: $err");
-    }
-  }
+//  void test_run() async{
+//    //
+//    var client = new http.Client();
+//    try {
+//      AccessCredentials credentials;
+//      if (_refreshToken == null || _refreshToken == "") {
+//        var uri = _authenticationUri(redirectUri);
+//        _log.info("Uri: $uri");
+//        var codeCompleter = new Completer<String>();
+//        _run(codeCompleter);
+//        var code = await codeCompleter.future;
+//        credentials = await obtainAccessCredentialsViaCodeExchange(
+//            client, _clientId, code, redirectUrl: redirectUri);
+//      } else {
+//        var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire);
+//        credentials = new AccessCredentials(at, _refreshToken, scopes);
+//      }
+////      var credentials = await obtainAccessCredentialsViaUserConsent(clientId, scopes, client, prompt);
+////      var credentials = await obtainAccessCredentialsUsingCode(clientId, code, redirectUri, client, scopes);
+////      var client = await clientViaUserConsent(clientId, scopes, prompt);
+//      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
+////      client = new AuthenticatedClient(client, credentials);
+//      var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
+//
+//      var gphoto = new PhotoslibraryApi(clientARC);
+//      var albumsRes = await gphoto.albums.list();
+//      var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == "SlideShow",orElse: ()=> null);
+//      if (slideShowAlbum != null){
+//        var mediaItems = await gphoto.mediaItems.search(new SearchMediaItemsRequest()..albumId=slideShowAlbum.id);
+//        mediaItems.mediaItems.forEach((item){
+//          _log.info( "Item: id='${item.id}', baseUrl=' ${item.baseUrl}=w1920-h1080 '");
+//        });
+//
+//      } else {
+//        _log.severe("Not found 'SlideShow' album");
+//      }
+//      credentials = clientARC.credentials;
+//      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
+//      client.close();
+//    } catch(err){
+//    _log.severe("Unable to create Google photo service: $err");
+//    }
+//  }
 
 }

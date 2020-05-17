@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
+import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
+import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_common/injector/di.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/injector_module.dart';
@@ -20,14 +22,18 @@ void main(List<String> args) async {
   try {
 //    var injector = new ModuleInjector([getInjectorModule()]);
     var injector = new ModuleInjector([getInjectorModule(),
-      new Module()..bind(GooglePhotoService, toFactory: (AppConfig _config) => new GooglePhotoService(_config), inject: <dynamic>[AppConfig])
+      new Module()
+//        ..bind(GooglePhotoService, toFactory: (AppConfig _config) => new GooglePhotoService(_config), inject: <dynamic>[AppConfig])
+        ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
 //        ..bind(HardwareService, toFactory: (AppConfig _config) => new HardwareService(_config, _remoteFrontendService), inject: <dynamic>[AppConfig])
     ]);
     var config = injector.get(AppConfig) as AppConfig;
     Logger.root.level = config.log.levelMain;
 
-    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
-     _gphoto.run();
+    final _gphotoStorage = injector.get(Storage) as GPhotoStorage;
+    await _gphotoStorage.init();
+//    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
+//     _gphoto.run();
 
 //    IsolateRunner _hw_FrameService = await IsolateRunner.spawn();
 //    await _hw_FrameService.run(hw_frame.main,<dynamic>[]);

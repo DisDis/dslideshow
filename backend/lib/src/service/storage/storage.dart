@@ -1,6 +1,9 @@
 // Хранить список всех файлов которые есть в облаке
 abstract class Storage{
-  Future<Null> init();
+  Future init();
+  Future release();
+  Stream<DateTime> get onStartSync;
+  Stream<DateTime> get onEndSync;
 
   StorageType get type;
   // когда последний раз происходила синхронизация

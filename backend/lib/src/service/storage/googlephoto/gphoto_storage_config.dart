@@ -2,9 +2,12 @@ import 'package:dslideshow_backend/config.dart';
 
 class GPhotoStorageConfig  extends BaseConfig {
   int _imageWidth;
-  int get imageWidth => _imageWidth ??= readInt("imageWidth", 1980);
+  int get imageWidth => _imageWidth ??= readInt("imageWidth", 2560);
   int _imageHeight;
-  int get imageHeight => _imageHeight ??= readInt("imageHeight", 1080);
+  int get imageHeight => _imageHeight ??= readInt("imageHeight", 1600);
+
+  Duration _syncPeriod;
+  Duration get syncPeriod => _syncPeriod ??= new Duration(seconds: readInt("syncPeriodSec", 60*60));//1 hour
 
   String _albumName;
   String get albumName => _albumName ??= readValue<String>("albumName", "SlideShow");

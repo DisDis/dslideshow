@@ -9,6 +9,7 @@ import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
+import 'package:dslideshow_flutter/src/service/gpio_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -47,7 +48,8 @@ void main() async {
     injector = new di.ModuleInjector([getInjectorModule(),
     new di.Module()
       ..bind(AppConfig, toFactory: () => new AppConfig(localPath.path))
-      ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOService(_config.hardware), inject: <dynamic>[AppConfig])
+      ..bind(AppStorage, toFactory: () => new AppStorage(localPath.path))
+      ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOFlutterService(_config.hardware), inject: <dynamic>[AppConfig])
       ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
       ..bind(FrontendService, toFactory: (AppConfig _config, GPIOService _gpioService, ScreenService _screenService) => new FrontendService(_config, _backendService, _gpioService, _screenService), inject: <dynamic>[AppConfig, GPIOService, ScreenService])
     ]);

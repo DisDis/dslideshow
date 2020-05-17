@@ -13,6 +13,7 @@ Module getInjectorModule(){
   return
     new Module()
       ..bind(AppConfig, toFactory: () => new AppConfig())
+      ..bind(AppStorage, toFactory: () => new AppStorage())
       ;
 //      ..bind(HardwareService, toFactory: (AppConfig _config) => new HardwareService(_config), inject: <dynamic>[AppConfig]);
 //      ..bind(WebServer, toFactory: (AppConfig _config, DBService _dbService) => new WebServer(_config, _dbService), inject: <dynamic>[AppConfig, DBService])

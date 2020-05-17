@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -14,8 +15,17 @@ class DiskMediaItem extends MediaItem{
 
 class DiskStorage extends Storage{
   static final Logger _log = new Logger('DiskStorage');
+  static const String name = 'DiskStorage';
   final Directory _folder = new Directory(path.join(externalStorage.path, 'images'));
   final DiskStorageConfig _config;
+  Directory get folder => _folder;
+
+  final StreamController<DateTime> _scStub = new StreamController.broadcast();
+  @override
+  Stream<DateTime> get onStartSync => _scStub.stream;
+  @override
+  Stream<DateTime> get onEndSync => _scStub.stream;
+
   // Choose a database
 //  static final _database = MemoryDatabaseAdapter().database();
   // Our collection
@@ -69,9 +79,13 @@ class DiskStorage extends Storage{
   final StorageType type = StorageType.local;
 
   @override
-  Future<Null> init() async{
+  Future init() async{
     await next();
     await next();
     return;
+  }
+
+  Future release() async{
+
   }
 }

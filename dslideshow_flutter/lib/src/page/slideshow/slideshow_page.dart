@@ -131,7 +131,9 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
                             controller.value * 100),
                       ))
               ),
-              RaisedButton(onPressed: () {
+              RaisedButton(
+                padding: EdgeInsets.only(left: 100.0),
+                onPressed: () {
                 Navigator.pushReplacementNamed(context, '/config');
               },),
 
