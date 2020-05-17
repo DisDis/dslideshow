@@ -131,7 +131,7 @@ class GooglePhotoService{
   }
 
   Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(String albumName, int imageW, int imageH) async{
-    Iterable<GooglePhotoItem> result = <GooglePhotoItem>[];
+    List<GooglePhotoItem> result = <GooglePhotoItem>[];
     var client = new http.Client();
     try {
       AccessCredentials credentials;
@@ -155,10 +155,21 @@ class GooglePhotoService{
       var albumsRes = await gphoto.albums.list();
       var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == albumName,orElse: ()=> null);
       if (slideShowAlbum != null){
-        var mediaItems = await gphoto.mediaItems.search(new SearchMediaItemsRequest()..albumId=slideShowAlbum.id);
-
-        result = mediaItems.mediaItems.map((item)=>new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
-
+        _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
+        String nextPageToken;
+        while (true) {
+         final smiRequest = new SearchMediaItemsRequest()..albumId=slideShowAlbum.id..pageSize=100;
+         if (nextPageToken != null){
+           smiRequest.pageToken = nextPageToken;
+         }
+         var mediaItems = await gphoto.mediaItems.search(smiRequest);
+         if (mediaItems.mediaItems.isEmpty){
+           break;
+         }
+         mediaItems.mediaItems.forEach((item) { result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));});
+         nextPageToken = mediaItems.nextPageToken;
+         _log.info('loaded ${result.length} media item(s)');
+        }
       } else {
         _log.severe("Not found '$albumName' album");
       }
