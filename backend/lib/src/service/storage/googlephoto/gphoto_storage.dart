@@ -80,24 +80,30 @@ class GPhotoStorage extends DiskStorage{
     final localItems = (await folder.listSync()).map((e) => path.basename(e.path));
     localItems.forEach((element)=>itemMap.remove(element));
 
-    _log.info('Detect ${itemMap.keys.length} new media item(s)');
+    var allItems = itemMap.keys.length;
+    _log.info('Detect ${allItems} new media item(s)');
     final syncDate = new DateTime.now();
     if (itemMap.isNotEmpty){
       _scStartSync.add(syncDate);
     }
-    itemMap.forEach((fileName, googleItem) {
-        _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} fileName="$fileName" url=${googleItem.url} ...');
-        HttpClient client = new HttpClient();
-        client.getUrl(Uri.parse(googleItem.url))
-            .then((HttpClientRequest request) {
-          return request.close();
-        })
-          .then((HttpClientResponse response) {
-          response.pipe(new File(path.join(folder.path, fileName)).openWrite());
-        }).whenComplete((){
-          _log.info('  downloaded "$fileName"');
-        });
+
+
+    var count = 0;
+    await Future.forEach(itemMap.keys,(String fileName) async{
+      var googleItem = itemMap[fileName];
+      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} fileName="$fileName" url=${googleItem.url} ...');
+      HttpClient client = new HttpClient();
+      await client.getUrl(Uri.parse(googleItem.url))
+          .then((HttpClientRequest request) {
+        return request.close();
+      })
+        .then((HttpClientResponse response) {
+        response.pipe(new File(path.join(folder.path, fileName)).openWrite());
+      });
+      count++;
+      _log.info('  downloaded $count/$allItems(${(count*100/allItems).truncate()}), "$fileName"');
     });
+
     if (itemMap.isNotEmpty){
       _scEndSync.add(syncDate);
     }
