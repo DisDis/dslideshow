@@ -9,6 +9,7 @@ class ScreenService{
 
   ScreenService(this._config);
   Timer _timerScreenOff;
+  bool _screenOn = false;
 
   void screenOn() async{
     _log.info('screenOn');
@@ -17,7 +18,12 @@ class ScreenService{
       _timerScreenOff = null;
     }
     try {
-      io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
+      if (!_screenOn) {
+        _screenOn = true;
+        io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
+      } else {
+        _log.info('"screenOn" is skipped because the screen was turned on');
+      }
     } catch(e, s){
       _log.severe('screenOn', e, s);
     }
@@ -41,6 +47,7 @@ class ScreenService{
       _timerScreenOff = null;
     }
     try {
+      _screenOn = false;
       io.Process.run(_config.screenPowerOffScript, [], runInShell: true);
     } catch (e, s) {
       _log.severe('screenOff', e, s);
