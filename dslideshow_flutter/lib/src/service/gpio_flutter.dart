@@ -5,6 +5,7 @@ import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:flutter_gpiod/flutter_gpiod.dart';
 import 'package:logging/logging.dart';
 
+// TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
 class GPIOFlutterService extends GPIOService{
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;

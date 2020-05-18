@@ -1,4 +1,20 @@
+Flutter photoframe on Raspberry pi 4 with PIR, GPIO. (Google photo, local storage)
 
+Example:
+
+![Proto1_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto1_1.jpg)
+![Proto1_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto1_2.jpg)
+
+Hardware:
+1 * RaPi4 (2Gb / 4Gb)
+1 * Led
+1 * 100Ohm resistor
+3 * Button
+3 * 220Ohm resistor
+1 * PIR sensor
+1 * Display (TFTMD089030 + Driver)
+
+TODO:
 [+]Выводить сплеш скрин при старте(выводить версию)
 Получать данные из разных источников
     Гугл фото
