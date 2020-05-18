@@ -91,7 +91,7 @@ class GPhotoStorage extends DiskStorage{
     var count = 0;
     await Future.forEach(itemMap.keys,(String fileName) async{
       var googleItem = itemMap[fileName];
-      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} fileName="$fileName" url=${googleItem.url} ...');
+      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType}');
       HttpClient client = new HttpClient();
       await client.getUrl(Uri.parse(googleItem.url))
           .then((HttpClientRequest request) {
@@ -101,7 +101,7 @@ class GPhotoStorage extends DiskStorage{
         response.pipe(new File(path.join(folder.path, fileName)).openWrite());
       });
       count++;
-      _log.info('  downloaded $count/$allItems(${(count*100/allItems).truncate()}), "$fileName"');
+      _log.info('  downloaded $count/$allItems(${(count*100/allItems).truncate()}%), "$fileName"');
     });
 
     if (itemMap.isNotEmpty){
