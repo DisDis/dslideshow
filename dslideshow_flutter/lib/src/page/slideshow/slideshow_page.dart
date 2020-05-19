@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -47,32 +48,36 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
     controller.forward();
   }
   void _changeImage() async{
-    print('Change image');
+    _log.info('Change image');
     await _frontendService.storageNext();
     _pageController.animateToPage(_pageController.page.toInt() + 1, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 
-  Future<String> _getCurrentImage() async{
+  Future<String> _getCurrentMedia() async{
     var item = await _frontendService.getStorageCurrentItem();
     return item.uri.path;
   }
-  Future<String> _getNextImage() async {
+  Future<String> _getNextMedia() async {
     var item = await _frontendService.getStorageNextItem();
     return item.uri.path;
   }
 
-  Map<int, String> _imageCache =  new Map<int, String>();
-  Future<String> _getImage(int position, int length) async{
-    var item = _imageCache[position];
+  Map<int, String> _mediaCache =  new Map<int, String>();
+  Future<String> _getMedia(int position, int length) async{
+    var item = _mediaCache[position];
     if (item!=null){
       return item;
     }
-    item = await (length == position ? _getCurrentImage() : _getNextImage());
-    if (_imageCache.length>10){
-      _imageCache.remove(_imageCache.keys.first);
+    item = await (length == position ? _getCurrentMedia() : _getNextMedia());
+    if (_mediaCache.length>10){
+      _mediaCache.remove(_mediaCache.keys.first);
     }
-    _imageCache[position] = item;
+    _mediaCache[position] = item;
     return item;
+  }
+
+  bool _isVideo(String fileName){
+    return path.extension(fileName).toLowerCase() == '.mp4';
   }
 
 
@@ -95,11 +100,11 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
                     _listItemCount = position + 2;
                     return Center(
                       child: FutureBuilder<String>(
-                          future: _getImage(position, _pageController.page.toInt()),
+                          future: _getMedia(position, _pageController.page.toInt()),
                           builder: (BuildContext context,
                               AsyncSnapshot<String> snapshot) {
                             if (snapshot.hasData) {
-                              return Image.file(new File(snapshot.data));
+                              return _isVideo(snapshot.data)? VideoWidget(snapshot.data): Image.file(new File(snapshot.data));
                             } else {
                               return  SizedBox(
                                 child: CircularProgressIndicator(),
