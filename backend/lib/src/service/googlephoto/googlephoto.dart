@@ -163,7 +163,18 @@ class GooglePhotoService{
            smiRequest.pageToken = nextPageToken;
          }
          var mediaItems = await gphoto.mediaItems.search(smiRequest);
-         mediaItems.mediaItems.forEach((item) { result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));});
+         mediaItems.mediaItems.forEach((item) {
+           if (item.mediaMetadata.video != null){
+             //TODO: https://issuetracker.google.com/issues/80149160
+             /*
+             * https://github.com/gilesknap/gphotos-sync
+             * Video download transcodes the videos even if you ask for the original file (=vd parameter). My experience is that the result is looks similar to the original but the compression is more clearly visible. It is a smaller file with approximately 60% bitrate (same resolution).
+             **/
+             result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=vd', item.mimeType));
+           } else {
+             result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
+           }
+         });
          nextPageToken = mediaItems.nextPageToken;
          _log.info('received ${result.length} media item(s) information');
          if (nextPageToken == null || nextPageToken.isEmpty){

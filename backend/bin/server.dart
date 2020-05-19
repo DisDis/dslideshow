@@ -31,7 +31,11 @@ void main(List<String> args) async {
     Logger.root.level = config.log.levelMain;
 
     final _gphotoStorage = injector.get(Storage) as GPhotoStorage;
-    await _gphotoStorage.init();
+//    await _gphotoStorage.init();
+    var mediaList = await _gphotoStorage.googlePhotoService.getMediaItemInAlbum('TEST_slide', 100, 100);
+    mediaList.forEach((googleItem) {
+      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
+    });
 //    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;
 //     _gphoto.run();
 

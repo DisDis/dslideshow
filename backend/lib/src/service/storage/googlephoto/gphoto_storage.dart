@@ -23,6 +23,7 @@ class GPhotoStorage extends DiskStorage{
   final GPhotoStorageConfig _config;
   static const String name = 'GPhotoStorage';
   GooglePhotoService _googlePhotoService;
+  GooglePhotoService get googlePhotoService => _googlePhotoService;
 
   @override
   DateTime lastSync = new DateTime.fromMicrosecondsSinceEpoch(1);
