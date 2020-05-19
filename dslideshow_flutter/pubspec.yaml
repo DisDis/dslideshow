@@ -26,14 +26,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   path_provider: ^1.1.0
-  path: ^1.6.2
-  simple_permissions: ^0.1.9
+  path: ^1.6.4
+  permission_handler: ^5.0.0
   package_info: ^0.4.0+3
-  qr_flutter: ^2.0.0
+  qr_flutter: ^3.2.0
   isolate: ^2.0.2
   logging: ^0.11.0
-  flutter_redux: ^0.5.3
+  flutter_redux: ^0.6.0
   built_value: ^6.5.0
+  video_player: ^0.10.11
   dslideshow_backend: 
     path: ../backend
   dslideshow_common: 

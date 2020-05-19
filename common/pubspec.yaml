@@ -7,13 +7,13 @@ environment:
   sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
-  built_value: ^6.5.0
+  built_value: ^6.8.2
   logging: ^0.11.0
   isolate: ^2.0.2
 #    less_dart: ^1.1.0
 #    postgres: ^0.9.6
 #    args: ^1.4.1
-  uuid: ^1.0.3
+  uuid: ^2.0.4
 #    built_collection: ^4.0.0
 #    built_value: ^6.1.4
 #    vector_math: ^2.0.8
