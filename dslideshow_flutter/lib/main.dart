@@ -43,6 +43,7 @@ void main() async {
   SystemChrome.setEnabledSystemUIOverlays([]);
   try {
     RemoteService _backendService;
+    await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
     _log.info("Config path: '${localPath}'");
     injector = new di.ModuleInjector([getInjectorModule(),
