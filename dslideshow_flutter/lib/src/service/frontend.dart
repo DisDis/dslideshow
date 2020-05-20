@@ -18,9 +18,9 @@ class FrontendService implements RpcService {
 
   /// TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
   @deprecated
-  void _init() {
+  void _init() async{
     _log.warning('TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937');
-    _gpioService.init();
+    await _gpioService.init();
     _gpioService.onPause.listen((event) {
       _log.info('onPause = $event');
       _gpioService.powerLED = event;
@@ -46,7 +46,7 @@ class FrontendService implements RpcService {
   Future<MediaItem> getStorageCurrentItem() async{
     final result = await _backendService.send(new GetMediaItemCommand((b) =>
     b..id = RpcCommand.generateId()..isCurrent=true));
-    _log.info("Message: $result");
+//    _log.info("Message: ${result}");
     var resultMediaItem = result as GetMediaItemCommandResult;
     return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
@@ -54,15 +54,16 @@ class FrontendService implements RpcService {
   Future<MediaItem> getStorageNextItem() async{
     final result = await _backendService.send(new GetMediaItemCommand((b) =>
     b..id = RpcCommand.generateId()..isCurrent=false));
-    _log.info("Message: $result");
+//    _log.info("Message: $result");
     var resultMediaItem = result as GetMediaItemCommandResult;
     return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
 
-  Future<Null> storageNext() async{
-    final result = await _backendService.send(new StorageNextCommand((b) =>
+  Future storageNext() async{
+//    final result =
+    await _backendService.send(new StorageNextCommand((b) =>
     b..id = RpcCommand.generateId()));
-    _log.info("Message: $result");
+//    _log.info("Message: $result");
   }
 
   @override

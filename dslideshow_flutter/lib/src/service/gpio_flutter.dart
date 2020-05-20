@@ -39,11 +39,14 @@ class GPIOFlutterService extends GPIOService{
     /// Print out all GPIO chips and all lines
     /// for all GPIO chips.
     for (var chip in chips) {
-      print("$chip");
+      _log.info('chip: "$chip"');
 
       var index = 0;
       for (var line in chip.lines) {
-        print("$index:  ${await line.info}");
+        final info = await line.info;
+        if (info.consumer!=null) {
+          _log.info('$index:  ${info}');
+        }
         index++;
       }
     }

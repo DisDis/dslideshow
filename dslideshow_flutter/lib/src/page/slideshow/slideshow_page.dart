@@ -80,6 +80,8 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
     return path.extension(fileName).toLowerCase() == '.mp4';
   }
 
+  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
+  static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +106,9 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
                           builder: (BuildContext context,
                               AsyncSnapshot<String> snapshot) {
                             if (snapshot.hasData) {
-                              return _isVideo(snapshot.data)? VideoWidget(snapshot.data): Image.file(new File(snapshot.data));
+                              return _isVideo(snapshot.data)?
+                              ( isVideoSupport ? VideoWidget(snapshot.data): Container())
+                                  : Image.file(new File(snapshot.data));
                             } else {
                               return  SizedBox(
                                 child: CircularProgressIndicator(),
