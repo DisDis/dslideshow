@@ -55,15 +55,3 @@ abstract class StorageNextCommand implements RpcCommand, Built<StorageNextComman
   factory StorageNextCommand([void updates(StorageNextCommandBuilder b)]) = _$StorageNextCommand;
   StorageNextCommand._();
 }
-
-abstract class StorageEmptyResult implements RpcResult, Built<StorageEmptyResult, StorageEmptyResultBuilder> {
-  @override
-  @nullable
-  int get id;
-
-  static Serializer<StorageEmptyResult> get serializer => _$storageEmptyResultSerializer;
-
-
-  factory StorageEmptyResult([void updates(StorageEmptyResultBuilder b)]) = _$StorageEmptyResult;
-  StorageEmptyResult._();
-}

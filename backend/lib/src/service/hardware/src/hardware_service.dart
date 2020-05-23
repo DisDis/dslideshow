@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/echo.dart';
+import 'package:dslideshow_backend/src/command/empty_result.dart';
+import 'package:dslideshow_backend/src/command/screen_commands.dart';
 import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -24,10 +27,15 @@ class HardwareService implements RpcService{
 
   void _init() {
     _storage.init();
-    _gpioService.init();
+    if (Platform.isLinux) {
+      _gpioService.init();
+    }
     _gpioService.onPause.listen((event) {
       _log.info('onPause = $event');
       _gpioService.powerLED = event;
+    });
+    _screenService.onStateChangePreparation.listen((newState) {
+      screenConfigure(newState);
     });
     _gpioService.onMotion.listen((event) {
       _log.info('Motion = $event');
@@ -37,6 +45,14 @@ class HardwareService implements RpcService{
         _screenService.scheduleScreenOff();
       }
     });
+
+  }
+
+  void screenConfigure(bool enabled){
+    _frontendService.send(new ScreenTurnCommand((b) =>
+    b
+      ..id = RpcCommand.generateId()
+      ..enabled = enabled));
   }
 
   void testEcho(String text) async {
@@ -101,7 +117,7 @@ class HardwareService implements RpcService{
 
   Future<RpcResult> _executeStorageNextCommand(StorageNextCommand command) async{
     await _storage.next();
-    return new StorageEmptyResult((b) {
+    return new EmptyResult((b) {
       b.id = command.id;
       return b;
     });

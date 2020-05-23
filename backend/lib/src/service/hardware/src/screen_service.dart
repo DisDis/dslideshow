@@ -7,9 +7,14 @@ class ScreenService{
   static final Logger _log = new Logger('ScreenService');
   final HardwareConfig _config;
 
+  final _stateChangePreparation = new StreamController<bool>.broadcast();
+
+  final Duration _preparationOffTime = Duration(milliseconds: 2000);
+  Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
+
   ScreenService(this._config);
   Timer _timerScreenOff;
-  bool _screenOn = false;
+  bool _screenOn = true;
 
   void screenOn() async{
     _log.info('screenOn');
@@ -19,8 +24,9 @@ class ScreenService{
     }
     try {
       if (!_screenOn) {
-        _screenOn = true;
         io.Process.run(_config.screenPowerOnScript, [], runInShell: true);
+        _screenOn = true;
+        _stateChangePreparation.add(true);
       } else {
         _log.info('"screenOn" is skipped because the screen was turned on');
       }
@@ -47,8 +53,10 @@ class ScreenService{
       _timerScreenOff = null;
     }
     try {
-      _screenOn = false;
+      _stateChangePreparation.add(false);
+      await Future<void>.delayed(_preparationOffTime);
       io.Process.run(_config.screenPowerOffScript, [], runInShell: true);
+      _screenOn = false;
     } catch (e, s) {
       _log.severe('screenOff', e, s);
     }

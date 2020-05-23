@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -7,6 +9,8 @@ import 'package:logging/logging.dart';
 class FrontendService implements RpcService {
   static final Logger _log = new Logger('FlutterService');
   final RemoteService _backendService;
+  final _screenStateChangePreparation = new StreamController<bool>.broadcast();
+  Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
 
   FrontendService(AppConfig config, this._backendService){
   }
@@ -56,6 +60,9 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case ScreenTurnCommand.TYPE:
+        return new Future.value(_executeScreenTurnCommand(command as ScreenTurnCommand));
+        break;
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
         break;
@@ -82,5 +89,10 @@ class FrontendService implements RpcService {
       b.resultText = "${command.text} Service ${new DateTime.now()}";
       return b;
     });
+  }
+
+  FutureOr<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) {
+    _screenStateChangePreparation.add(command.enabled);
+    return new EmptyResult((b)=>b..id = command.id);
   }
 }

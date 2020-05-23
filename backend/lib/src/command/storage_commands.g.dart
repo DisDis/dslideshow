@@ -12,8 +12,6 @@ Serializer<GetMediaItemCommandResult> _$getMediaItemCommandResultSerializer =
     new _$GetMediaItemCommandResultSerializer();
 Serializer<StorageNextCommand> _$storageNextCommandSerializer =
     new _$StorageNextCommandSerializer();
-Serializer<StorageEmptyResult> _$storageEmptyResultSerializer =
-    new _$StorageEmptyResultSerializer();
 
 class _$GetMediaItemCommandSerializer
     implements StructuredSerializer<GetMediaItemCommand> {
@@ -162,49 +160,6 @@ class _$StorageNextCommandSerializer
       Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new StorageNextCommandBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final dynamic value = iterator.current;
-      switch (key) {
-        case 'id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
-          break;
-      }
-    }
-
-    return result.build();
-  }
-}
-
-class _$StorageEmptyResultSerializer
-    implements StructuredSerializer<StorageEmptyResult> {
-  @override
-  final Iterable<Type> types = const [StorageEmptyResult, _$StorageEmptyResult];
-  @override
-  final String wireName = 'StorageEmptyResult';
-
-  @override
-  Iterable<Object> serialize(Serializers serializers, StorageEmptyResult object,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
-    return result;
-  }
-
-  @override
-  StorageEmptyResult deserialize(
-      Serializers serializers, Iterable<Object> serialized,
-      {FullType specifiedType = FullType.unspecified}) {
-    final result = new StorageEmptyResultBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -487,82 +442,6 @@ class StorageNextCommandBuilder
   @override
   _$StorageNextCommand build() {
     final _$result = _$v ?? new _$StorageNextCommand._(id: id);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$StorageEmptyResult extends StorageEmptyResult {
-  @override
-  final int id;
-
-  factory _$StorageEmptyResult(
-          [void Function(StorageEmptyResultBuilder) updates]) =>
-      (new StorageEmptyResultBuilder()..update(updates)).build();
-
-  _$StorageEmptyResult._({this.id}) : super._();
-
-  @override
-  StorageEmptyResult rebuild(
-          void Function(StorageEmptyResultBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  StorageEmptyResultBuilder toBuilder() =>
-      new StorageEmptyResultBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is StorageEmptyResult && id == other.id;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, id.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('StorageEmptyResult')..add('id', id))
-        .toString();
-  }
-}
-
-class StorageEmptyResultBuilder
-    implements Builder<StorageEmptyResult, StorageEmptyResultBuilder> {
-  _$StorageEmptyResult _$v;
-
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
-
-  StorageEmptyResultBuilder();
-
-  StorageEmptyResultBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(StorageEmptyResult other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$StorageEmptyResult;
-  }
-
-  @override
-  void update(void Function(StorageEmptyResultBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$StorageEmptyResult build() {
-    final _$result = _$v ?? new _$StorageEmptyResult._(id: id);
     replace(_$result);
     return _$result;
   }

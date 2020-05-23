@@ -9,9 +9,10 @@ part of crazy_pig.serializers;
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(EchoCommand.serializer)
       ..add(EchoCommandResult.serializer)
+      ..add(EmptyResult.serializer)
       ..add(GetMediaItemCommand.serializer)
       ..add(GetMediaItemCommandResult.serializer)
-      ..add(StorageEmptyResult.serializer)
+      ..add(ScreenTurnCommand.serializer)
       ..add(StorageNextCommand.serializer))
     .build();
 

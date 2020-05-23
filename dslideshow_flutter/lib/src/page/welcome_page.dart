@@ -12,8 +12,6 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
-  static final _opacityTween = Tween<double>(begin: 0.1, end: 1);
-//  static final _sizeTween = Tween<double>(begin: 0, end: 300);
 
   @override
   void initState(){

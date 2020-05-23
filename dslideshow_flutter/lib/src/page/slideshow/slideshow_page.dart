@@ -13,6 +13,8 @@ import 'package:path/path.dart' as path;
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 
+import 'fade_widget.dart';
+
 class SlideShowPage extends StatefulWidget {
   SlideShowPage({Key key}) : super(key: key);
 
@@ -20,19 +22,27 @@ class SlideShowPage extends StatefulWidget {
   _SlideShowPageState createState() => _SlideShowPageState();
 }
 
-class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProviderStateMixin {
+class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = new Logger('_SlideShowPageState');
   AnimationController controller;
   int _listItemCount = 2;
   // Outside build method
   PageController _pageController ;
 
-  final Directory _externalStorage = environment.externalStorage;
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+
+  AnimationController _fadeController;
 
   @override
   void initState() {
     super.initState();
+    _fadeController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _fadeController.addStatusListener((status) {
+      if (status == AnimationStatus.dismissed) {
+        _fadeController.reset();
+      }
+    });
+
     _pageController = PageController(initialPage: 1,keepPage: false);
     controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
     controller.addListener((){
@@ -46,6 +56,7 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
     }
     });
     controller.forward();
+    _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
   }
   void _changeImage() async{
     _log.info('Change image');
@@ -140,11 +151,15 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
                             controller.value * 100),
                       ))
               ),
-              RaisedButton(
-                padding: EdgeInsets.only(left: 100.0),
+              FadeWidget(animation: _fadeController),
+              Positioned(
+                  right: 0,
+                  child:
+                  RaisedButton(
+//                padding: EdgeInsets.only(left: 500.0, right: 100),
                 onPressed: () {
-                Navigator.pushReplacementNamed(context, '/config');
-              },),
+                  Navigator.pushReplacementNamed(context, '/config');
+                },)),
 
 //              Text(
 //                'You have times:',
@@ -159,6 +174,17 @@ class _SlideShowPageState extends State<SlideShowPage> with SingleTickerProvider
     _pageController.dispose();
     controller.dispose();
     super.dispose();
+  }
+
+  void _screenStateChangePreparation(bool enabled) {
+    // Screen OFF
+    if (enabled == false){
+      controller.stop();
+      _fadeController.forward();
+    } else{
+      controller.forward();
+      _fadeController.reverse();
+    }
   }
 }
 
