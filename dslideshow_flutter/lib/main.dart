@@ -9,7 +9,6 @@ import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
-import 'package:dslideshow_flutter/src/service/gpio_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,8 +24,6 @@ import 'package:isolate/isolate.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 import 'package:dslideshow_backend/serializers.dart';
-import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
-import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 
 import 'dart:isolate' as isol;
 
@@ -50,9 +47,7 @@ void main() async {
     new di.Module()
       ..bind(AppConfig, toFactory: () => new AppConfig(localPath.path))
       ..bind(AppStorage, toFactory: () => new AppStorage(localPath.path))
-      ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOFlutterService(_config.hardware), inject: <dynamic>[AppConfig])
-      ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-      ..bind(FrontendService, toFactory: (AppConfig _config, GPIOService _gpioService, ScreenService _screenService) => new FrontendService(_config, _backendService, _gpioService, _screenService), inject: <dynamic>[AppConfig, GPIOService, ScreenService])
+      ..bind(FrontendService, toFactory: (AppConfig _config) => new FrontendService(_config, _backendService), inject: <dynamic>[AppConfig])
     ]);
     _log.info("externalStorage: '${environment.externalStorage.path}'");
     var config = injector.get(AppConfig) as AppConfig;

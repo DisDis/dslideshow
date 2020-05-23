@@ -12,10 +12,7 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
-    flutter_gpiod:
-      path: ../third_party/flutter_gpiod
-    flutter:
-      sdk: flutter
+    gpiod: ^1.0.0
     database: ^0.3.3
 dev_dependencies:
   built_value_generator: ^6.5.0
