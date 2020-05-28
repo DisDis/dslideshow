@@ -29,6 +29,8 @@ class HardwareService implements RpcService{
     _storage.init();
     if (Platform.isLinux) {
       _gpioService.init();
+    } else {
+      _log.warning('GPIO does not support except Linux');
     }
     _gpioService.onPause.listen((event) {
       _log.info('onPause = $event');

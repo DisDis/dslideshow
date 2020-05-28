@@ -94,6 +94,9 @@ class FlutterReduxApp extends StatelessWidget {
         // Widgets will find and use this value as the `Store`.
         store: store,
         child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+          ),
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here
 //    GlobalMaterialLocalizations.delegate,

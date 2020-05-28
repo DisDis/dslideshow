@@ -1,12 +1,18 @@
 import 'dart:io';
 
+import 'package:dslideshow_flutter/src/app_reducer.dart';
+import 'package:dslideshow_flutter/src/data_model/global_state.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
+import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
+import 'package:dslideshow_flutter/src/page/common/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:redux/redux.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:dslideshow_flutter/environment.dart' as environment;
@@ -149,11 +155,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                 Navigator.pushReplacementNamed(context, '/config');
               },
             )),
-
-//              Text(
-//                'You have times:',
-//                style: TextStyle(color: Colors.white, fontSize: 10),
-//              ),
+        DebugWidget()
       ],
     ));
   }

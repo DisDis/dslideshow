@@ -35,6 +35,7 @@ dependencies:
   flutter_redux: ^0.6.0
   built_value: ^6.5.0
   video_player: ^0.10.11
+  duration: ^2.0.2
   dslideshow_backend: 
     path: ../backend
   dslideshow_common: 
