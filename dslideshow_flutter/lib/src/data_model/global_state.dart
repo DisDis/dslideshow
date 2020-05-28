@@ -9,33 +9,49 @@ part 'global_state.g.dart';
 
 abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
   static final Duration defaultDelayBetweenItems = new Duration(seconds: 15);
+
   static Serializer<GlobalState> get serializer => _$globalStateSerializer;
-    @nullable
-    String get currentMediaFile;
-    @nullable
-    String get nextMediaFile;
-    Duration get delayBetweenItems;
-    bool get isPaused;
-    bool get hasInternet;
-    bool get isDebug;
-    StorageStatusEnum get storageStatus;
-    @nullable
-    DateTime get beginTimePowerButtonPress;
-    GlobalState._();
-    factory GlobalState.initial(){
-      return (GlobalStateBuilder()
-        ..isPaused = false
-        ..storageStatus = StorageStatusEnum.off
-        ..delayBetweenItems = defaultDelayBetweenItems
-        ..beginTimePowerButtonPress = null
-        ..isDebug = false
-        ..hasInternet = true).build();
-    }
-    factory GlobalState([void updates(GlobalStateBuilder b)]) = _$GlobalState;
+
+  factory GlobalState([void updates(GlobalStateBuilder b)]) = _$GlobalState;
+  factory GlobalState.initial() {
+    return (GlobalStateBuilder()
+          ..isPaused = false
+          ..storageStatus = StorageStatusEnum.off
+          ..delayBetweenItems = defaultDelayBetweenItems
+          ..beginTimePowerButtonPress = null
+          ..isDebug = false
+          ..hasInternet = true)
+        .build();
+  }
+
+  GlobalState._();
+
+  @nullable
+  DateTime get beginTimePowerButtonPress;
+
+  @nullable
+  String get currentMediaFile;
+
+  Duration get delayBetweenItems;
+
+  bool get hasInternet;
+
+  bool get isDebug;
+
+  bool get isPaused;
+
+  @nullable
+  String get nextMediaFile;
+
+  StorageStatusEnum get storageStatus;
 }
 
-
 class StorageStatusEnum extends EnumClass {
+  static const StorageStatusEnum download = _$download;
+
+  static const StorageStatusEnum off = _$off;
+  static const StorageStatusEnum done = _$done;
+
   /// Example of how to make an [EnumClass] serializable.
   ///
   /// Declare a static final [Serializers] field called `serializer`.
@@ -43,12 +59,8 @@ class StorageStatusEnum extends EnumClass {
   /// to do this for every type you want to serialize.
   static Serializer<StorageStatusEnum> get serializer => _$storageStatusEnumSerializer;
 
-  static const StorageStatusEnum download = _$download;
-  static const StorageStatusEnum off = _$off;
-  static const StorageStatusEnum done = _$done;
+  static BuiltSet<StorageStatusEnum> get values => _$values;
 
   const StorageStatusEnum._(String name) : super(name);
-
-  static BuiltSet<StorageStatusEnum> get values => _$values;
   static StorageStatusEnum valueOf(String name) => _$valueOf(name);
 }

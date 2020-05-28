@@ -8,12 +8,12 @@ final appReducer = combineReducers<GlobalState>([
 //  TypedReducer<GlobalState, SearchResultAction>(_onResult),
 ]);
 
-class ChangeStorageStatusAction{
+GlobalState _onStorageStatusChange(GlobalState state, ChangeStorageStatusAction action) {
+  return state.rebuild((b) => b.storageStatus = action.newStatus);
+}
+
+class ChangeStorageStatusAction {
   final StorageStatusEnum newStatus;
 
   ChangeStorageStatusAction(this.newStatus);
-}
-
-GlobalState _onStorageStatusChange(GlobalState state, ChangeStorageStatusAction action) {
-  return state.rebuild((b)=>b.storageStatus = action.newStatus);
 }

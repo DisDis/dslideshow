@@ -25,18 +25,18 @@ class ConfigPage extends StatelessWidget {
           ),
           Text(_urlData),
           new StoreConnector<GlobalState, VoidCallback>(
-              converter: (store) =>
-                  () =>
-                  store.dispatch(new ChangeStorageStatusAction(
-                      StorageStatusEnum.values.elementAt(
-                          rnd.nextInt(StorageStatusEnum.values.length - 1)))),
-              builder: (context, callback) =>
-                  RaisedButton(onPressed: callback,
-                    child: Text('StorageChange'),)),
-          RaisedButton(onPressed: () {
-            Navigator.pushReplacementNamed(context, '/slideshow');
-          },
-            child: Text('SlideShow'),),
+              converter: (store) => () => store.dispatch(new ChangeStorageStatusAction(
+                  StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
+              builder: (context, callback) => RaisedButton(
+                    onPressed: callback,
+                    child: Text('StorageChange'),
+                  )),
+          RaisedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/slideshow');
+            },
+            child: Text('SlideShow'),
+          ),
         ],
       ),
     );

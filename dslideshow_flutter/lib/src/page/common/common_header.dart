@@ -2,6 +2,33 @@ import 'package:dslideshow_flutter/src/data_model/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
+/// A builder that builds a widget given a child.
+///
+/// The child should typically be part of the returned widget tree.
+///
+/// Used by [AnimatedBuilder.builder], as well as [WidgetsApp.builder] and
+/// [MaterialApp.builder].
+///
+/// See also:
+///
+///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
+///  * [IndexedWidgetBuilder], which is similar but also takes an index.
+///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
+typedef BlinkTransitionBuilder = Widget Function(BuildContext context, Widget child, Animation<Color> animation);
+
+class BlinkAnimation extends StatefulWidget {
+  final int countBlink;
+  final int milliseconds;
+  final Widget child;
+  final bool hideAfterBlink;
+
+  const BlinkAnimation(
+      {Key key, this.countBlink: 3, this.milliseconds: 1500, @required this.child, this.hideAfterBlink: true})
+      : super(key: key);
+  @override
+  _BlinkAnimationState createState() => _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
+}
+
 class CommonHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -9,8 +36,7 @@ class CommonHeaderWidget extends StatelessWidget {
         child: new StoreConnector<GlobalState, GlobalState>(
 //            rebuildOnChange: true,
             converter: (store) => store.state,
-            builder: (context, globalState) =>
-                Row(
+            builder: (context, globalState) => Row(
                   children: <Widget>[
                     if (globalState.storageStatus == StorageStatusEnum.off)
                       BlinkAnimation(
@@ -19,33 +45,30 @@ class CommonHeaderWidget extends StatelessWidget {
                           Icons.cloud_off,
                           size: 24.0,
                           color: Colors.red,
-                        ), hideAfterBlink: false,)
-                    else
-                      if (globalState.storageStatus ==
-                          StorageStatusEnum.download)
-                        BlinkAnimation(
-                          key: const Key('cloud_download'),
+                        ),
+                        hideAfterBlink: false,
+                      )
+                    else if (globalState.storageStatus == StorageStatusEnum.download)
+                      BlinkAnimation(
+                        key: const Key('cloud_download'),
+                        child: Icon(
+                          Icons.cloud_download,
+                          size: 24.0,
+                          color: Colors.white,
+                        ),
+                      )
+                    else if (globalState.storageStatus == StorageStatusEnum.done)
+                      BlinkAnimation(
+                          key: const Key('cloud_done'),
                           child: Icon(
-                            Icons.cloud_download,
+                            Icons.cloud_done,
                             size: 24.0,
                             color: Colors.white,
-                          )
-                          ,)
-                      else
-                        if (globalState.storageStatus == StorageStatusEnum.done)
-                          BlinkAnimation(
-                              key: const Key('cloud_done'),
-                              child:
-                              Icon(
-                                Icons.cloud_done,
-                                size: 24.0,
-                                color: Colors.white,
-                              )),
+                          )),
                     if (globalState.hasInternet)
                       BlinkAnimation(
                           key: const Key('hasInternet'),
-                          child:
-                          Icon(
+                          child: Icon(
                             Icons.signal_wifi_4_bar,
                             size: 24.0,
                             color: Colors.white,
@@ -57,27 +80,15 @@ class CommonHeaderWidget extends StatelessWidget {
                           Icons.signal_wifi_off,
                           size: 24.0,
                           color: Colors.red,
-                        ), hideAfterBlink: false,)
-                  ]
-                  ,
-                )
-        ));
+                        ),
+                        hideAfterBlink: false,
+                      )
+                  ],
+                )));
   }
 }
 
-class BlinkAnimation extends StatefulWidget {
-  final int countBlink;
-  final int milliseconds;
-  final Widget child;
-  final bool hideAfterBlink;
-
-  const BlinkAnimation({Key key, this.countBlink : 3, this.milliseconds:1500, @required   this.child, this.hideAfterBlink: true}) : super(key: key);
-  @override
-  _BlinkAnimationState createState() => _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
-}
-
-class _BlinkAnimationState extends State<BlinkAnimation>
-    with SingleTickerProviderStateMixin {
+class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
   Animation<double> animation;
   AnimationController controller;
@@ -86,13 +97,28 @@ class _BlinkAnimationState extends State<BlinkAnimation>
   final Widget child;
   final bool hideAfterBlink;
 
-  _BlinkAnimationState(this.countBlink, this.milliseconds, this.hideAfterBlink,  @required this.child);
+  _BlinkAnimationState(this.countBlink, this.milliseconds, this.hideAfterBlink, @required this.child);
 
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+        animation: animation,
+        builder: (BuildContext context, Widget child) {
+          return Opacity(
+            opacity: _opacityTween.evaluate(animation),
+            child: this.child,
+          );
+        });
+  }
+
+  dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   initState() {
     super.initState();
-    controller = AnimationController(
-        duration: Duration(milliseconds: this.milliseconds), vsync: this);
+    controller = AnimationController(duration: Duration(milliseconds: this.milliseconds), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -110,36 +136,4 @@ class _BlinkAnimationState extends State<BlinkAnimation>
     });
     controller.forward();
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return
-      AnimatedBuilder(
-          animation: animation,
-          builder: (BuildContext context, Widget child) {
-            return Opacity(
-              opacity: _opacityTween.evaluate(animation),
-              child: this.child,
-            );
-          });
-  }
-
-  dispose() {
-    controller.dispose();
-    super.dispose();
-  }
 }
-
-/// A builder that builds a widget given a child.
-///
-/// The child should typically be part of the returned widget tree.
-///
-/// Used by [AnimatedBuilder.builder], as well as [WidgetsApp.builder] and
-/// [MaterialApp.builder].
-///
-/// See also:
-///
-///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
-///  * [IndexedWidgetBuilder], which is similar but also takes an index.
-///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
-typedef BlinkTransitionBuilder = Widget Function(BuildContext context, Widget child, Animation<Color> animation);

@@ -6,7 +6,7 @@ import 'package:video_player/video_player.dart';
 
 class VideoWidget extends StatefulWidget {
   final File videoFile;
-  VideoWidget(String fileName):this.videoFile = new File(fileName);
+  VideoWidget(String fileName) : this.videoFile = new File(fileName);
   @override
   _VideoWidgetState createState() => _VideoWidgetState(videoFile);
 }
@@ -19,6 +19,22 @@ class _VideoWidgetState extends State<VideoWidget> {
   _VideoWidgetState(this.videoFile);
 
   @override
+  Widget build(BuildContext context) {
+    return _controller.value.initialized
+        ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+        : Container();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _controller = VideoPlayerController.file(videoFile)
@@ -27,22 +43,5 @@ class _VideoWidgetState extends State<VideoWidget> {
         setState(() {});
       });
     _controller.play();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return
-      _controller.value.initialized
-              ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-              : Container();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
   }
 }

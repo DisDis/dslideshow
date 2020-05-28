@@ -23,16 +23,14 @@ StorageStatusEnum _$valueOf(String name) {
   }
 }
 
-final BuiltSet<StorageStatusEnum> _$values =
-    new BuiltSet<StorageStatusEnum>(const <StorageStatusEnum>[
+final BuiltSet<StorageStatusEnum> _$values = new BuiltSet<StorageStatusEnum>(const <StorageStatusEnum>[
   _$download,
   _$off,
   _$done,
 ]);
 
 Serializer<GlobalState> _$globalStateSerializer = new _$GlobalStateSerializer();
-Serializer<StorageStatusEnum> _$storageStatusEnumSerializer =
-    new _$StorageStatusEnumSerializer();
+Serializer<StorageStatusEnum> _$storageStatusEnumSerializer = new _$StorageStatusEnumSerializer();
 
 class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
   @override
@@ -41,42 +39,33 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
   final String wireName = 'GlobalState';
 
   @override
-  Iterable serialize(Serializers serializers, GlobalState object,
-      {FullType specifiedType = FullType.unspecified}) {
+  Iterable serialize(Serializers serializers, GlobalState object, {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'delayBetweenItems',
-      serializers.serialize(object.delayBetweenItems,
-          specifiedType: const FullType(Duration)),
+      serializers.serialize(object.delayBetweenItems, specifiedType: const FullType(Duration)),
       'isPaused',
-      serializers.serialize(object.isPaused,
-          specifiedType: const FullType(bool)),
+      serializers.serialize(object.isPaused, specifiedType: const FullType(bool)),
       'hasInternet',
-      serializers.serialize(object.hasInternet,
-          specifiedType: const FullType(bool)),
+      serializers.serialize(object.hasInternet, specifiedType: const FullType(bool)),
       'isDebug',
-      serializers.serialize(object.isDebug,
-          specifiedType: const FullType(bool)),
+      serializers.serialize(object.isDebug, specifiedType: const FullType(bool)),
       'storageStatus',
-      serializers.serialize(object.storageStatus,
-          specifiedType: const FullType(StorageStatusEnum)),
+      serializers.serialize(object.storageStatus, specifiedType: const FullType(StorageStatusEnum)),
     ];
     if (object.currentMediaFile != null) {
       result
         ..add('currentMediaFile')
-        ..add(serializers.serialize(object.currentMediaFile,
-            specifiedType: const FullType(String)));
+        ..add(serializers.serialize(object.currentMediaFile, specifiedType: const FullType(String)));
     }
     if (object.nextMediaFile != null) {
       result
         ..add('nextMediaFile')
-        ..add(serializers.serialize(object.nextMediaFile,
-            specifiedType: const FullType(String)));
+        ..add(serializers.serialize(object.nextMediaFile, specifiedType: const FullType(String)));
     }
     if (object.beginTimePowerButtonPress != null) {
       result
         ..add('beginTimePowerButtonPress')
-        ..add(serializers.serialize(object.beginTimePowerButtonPress,
-            specifiedType: const FullType(DateTime)));
+        ..add(serializers.serialize(object.beginTimePowerButtonPress, specifiedType: const FullType(DateTime)));
     }
 
     return result;
@@ -94,37 +83,31 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
       final dynamic value = iterator.current;
       switch (key) {
         case 'currentMediaFile':
-          result.currentMediaFile = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+          result.currentMediaFile = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
         case 'nextMediaFile':
-          result.nextMediaFile = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+          result.nextMediaFile = serializers.deserialize(value, specifiedType: const FullType(String)) as String;
           break;
         case 'delayBetweenItems':
-          result.delayBetweenItems = serializers.deserialize(value,
-              specifiedType: const FullType(Duration)) as Duration;
+          result.delayBetweenItems =
+              serializers.deserialize(value, specifiedType: const FullType(Duration)) as Duration;
           break;
         case 'isPaused':
-          result.isPaused = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+          result.isPaused = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
         case 'hasInternet':
-          result.hasInternet = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+          result.hasInternet = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
         case 'isDebug':
-          result.isDebug = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
+          result.isDebug = serializers.deserialize(value, specifiedType: const FullType(bool)) as bool;
           break;
         case 'storageStatus':
-          result.storageStatus = serializers.deserialize(value,
-                  specifiedType: const FullType(StorageStatusEnum))
-              as StorageStatusEnum;
+          result.storageStatus =
+              serializers.deserialize(value, specifiedType: const FullType(StorageStatusEnum)) as StorageStatusEnum;
           break;
         case 'beginTimePowerButtonPress':
-          result.beginTimePowerButtonPress = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
+          result.beginTimePowerButtonPress =
+              serializers.deserialize(value, specifiedType: const FullType(DateTime)) as DateTime;
           break;
       }
     }
@@ -133,8 +116,7 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
   }
 }
 
-class _$StorageStatusEnumSerializer
-    implements PrimitiveSerializer<StorageStatusEnum> {
+class _$StorageStatusEnumSerializer implements PrimitiveSerializer<StorageStatusEnum> {
   @override
   final Iterable<Type> types = const <Type>[StorageStatusEnum];
   @override
@@ -200,8 +182,7 @@ class _$GlobalState extends GlobalState {
   }
 
   @override
-  GlobalState rebuild(void Function(GlobalStateBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
+  GlobalState rebuild(void Function(GlobalStateBuilder) updates) => (toBuilder()..update(updates)).build();
 
   @override
   GlobalStateBuilder toBuilder() => new GlobalStateBuilder()..replace(this);
@@ -226,11 +207,7 @@ class _$GlobalState extends GlobalState {
         $jc(
             $jc(
                 $jc(
-                    $jc(
-                        $jc(
-                            $jc($jc(0, currentMediaFile.hashCode),
-                                nextMediaFile.hashCode),
-                            delayBetweenItems.hashCode),
+                    $jc($jc($jc($jc(0, currentMediaFile.hashCode), nextMediaFile.hashCode), delayBetweenItems.hashCode),
                         isPaused.hashCode),
                     hasInternet.hashCode),
                 isDebug.hashCode),
@@ -258,18 +235,15 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
 
   String _currentMediaFile;
   String get currentMediaFile => _$this._currentMediaFile;
-  set currentMediaFile(String currentMediaFile) =>
-      _$this._currentMediaFile = currentMediaFile;
+  set currentMediaFile(String currentMediaFile) => _$this._currentMediaFile = currentMediaFile;
 
   String _nextMediaFile;
   String get nextMediaFile => _$this._nextMediaFile;
-  set nextMediaFile(String nextMediaFile) =>
-      _$this._nextMediaFile = nextMediaFile;
+  set nextMediaFile(String nextMediaFile) => _$this._nextMediaFile = nextMediaFile;
 
   Duration _delayBetweenItems;
   Duration get delayBetweenItems => _$this._delayBetweenItems;
-  set delayBetweenItems(Duration delayBetweenItems) =>
-      _$this._delayBetweenItems = delayBetweenItems;
+  set delayBetweenItems(Duration delayBetweenItems) => _$this._delayBetweenItems = delayBetweenItems;
 
   bool _isPaused;
   bool get isPaused => _$this._isPaused;
@@ -285,8 +259,7 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
 
   StorageStatusEnum _storageStatus;
   StorageStatusEnum get storageStatus => _$this._storageStatus;
-  set storageStatus(StorageStatusEnum storageStatus) =>
-      _$this._storageStatus = storageStatus;
+  set storageStatus(StorageStatusEnum storageStatus) => _$this._storageStatus = storageStatus;
 
   DateTime _beginTimePowerButtonPress;
   DateTime get beginTimePowerButtonPress => _$this._beginTimePowerButtonPress;

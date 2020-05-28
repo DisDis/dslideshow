@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:dslideshow_flutter/src/injector.dart';
@@ -27,7 +26,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   AnimationController controller;
   int _listItemCount = 2;
   // Outside build method
-  PageController _pageController ;
+  PageController _pageController;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
 
@@ -43,51 +42,54 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       }
     });
 
-    _pageController = PageController(initialPage: 1,keepPage: false);
+    _pageController = PageController(initialPage: 1, keepPage: false);
     controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
-    controller.addListener((){
+    controller.addListener(() {
       setState(() {});
     });
     controller.addStatusListener((status) {
-    if (status == AnimationStatus.completed) {
-      _changeImage();
-      controller.reset();
-      controller.forward();
-    }
+      if (status == AnimationStatus.completed) {
+        _changeImage();
+        controller.reset();
+        controller.forward();
+      }
     });
     controller.forward();
     _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
   }
-  void _changeImage() async{
+
+  void _changeImage() async {
     _log.info('Change image');
     await _frontendService.storageNext();
-    _pageController.animateToPage(_pageController.page.toInt() + 1, duration: Duration(milliseconds: 500), curve: Curves.easeIn);
+    _pageController.animateToPage(_pageController.page.toInt() + 1,
+        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 
-  Future<String> _getCurrentMedia() async{
+  Future<String> _getCurrentMedia() async {
     var item = await _frontendService.getStorageCurrentItem();
     return item.uri.path;
   }
+
   Future<String> _getNextMedia() async {
     var item = await _frontendService.getStorageNextItem();
     return item.uri.path;
   }
 
-  Map<int, String> _mediaCache =  new Map<int, String>();
-  Future<String> _getMedia(int position, int length) async{
+  Map<int, String> _mediaCache = new Map<int, String>();
+  Future<String> _getMedia(int position, int length) async {
     var item = _mediaCache[position];
-    if (item!=null){
+    if (item != null) {
       return item;
     }
     item = await (length == position ? _getCurrentMedia() : _getNextMedia());
-    if (_mediaCache.length>10){
+    if (_mediaCache.length > 10) {
       _mediaCache.remove(_mediaCache.keys.first);
     }
     _mediaCache[position] = item;
     return item;
   }
 
-  bool _isVideo(String fileName){
+  bool _isVideo(String fileName) {
     return path.extension(fileName).toLowerCase() == '.mp4';
   }
 
@@ -96,77 +98,64 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return
-      Container(
-          child:
-          new Stack(
-            children: <Widget>[
-              new Container(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height,
-                color: Colors.black,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemBuilder: (context, position) {
-                    _listItemCount = position + 2;
-                    return Center(
-                      child: FutureBuilder<String>(
-                          future: _getMedia(position, _pageController.page.toInt()),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
-                            if (snapshot.hasData) {
-                              return _isVideo(snapshot.data)?
-                              ( isVideoSupport ? VideoWidget(snapshot.data): Container())
-                                  : Image.file(new File(snapshot.data));
-                            } else {
-                              return  SizedBox(
-                                child: CircularProgressIndicator(),
-                                width: 60,
-                                height: 60,
-                              );
-                            }
-                          }),
-
-                    );
-                  },
-                  itemCount: _listItemCount,
-                ),
-              ),
-              new Container(
-                child: CommonHeaderWidget(),
-              ),
-              new Container(
-                  child: Positioned(
-                      bottom: 0.0,
-                      right: 0.0,
-                      child:
-                      CustomPaint(
-                        size: Size(MediaQuery
-                            .of(context)
-                            .size
-                            .width, 3),
-                        painter: TimerProgressBarPainter(
-                            controller.value * 100),
-                      ))
-              ),
-              FadeWidget(animation: _fadeController),
-              Positioned(
-                  right: 0,
-                  child:
-                  RaisedButton(
+    return Container(
+        child: new Stack(
+      children: <Widget>[
+        new Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.black,
+          child: PageView.builder(
+            controller: _pageController,
+            itemBuilder: (context, position) {
+              _listItemCount = position + 2;
+              return Center(
+                child: FutureBuilder<String>(
+                    future: _getMedia(position, _pageController.page.toInt()),
+                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      if (snapshot.hasData) {
+                        return _isVideo(snapshot.data)
+                            ? (isVideoSupport ? VideoWidget(snapshot.data) : Container())
+                            : Image.file(new File(snapshot.data));
+                      } else {
+                        return SizedBox(
+                          child: CircularProgressIndicator(),
+                          width: 60,
+                          height: 60,
+                        );
+                      }
+                    }),
+              );
+            },
+            itemCount: _listItemCount,
+          ),
+        ),
+        new Container(
+          child: CommonHeaderWidget(),
+        ),
+        new Container(
+            child: Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: CustomPaint(
+                  size: Size(MediaQuery.of(context).size.width, 3),
+                  painter: TimerProgressBarPainter(controller.value * 100),
+                ))),
+        FadeWidget(animation: _fadeController),
+        Positioned(
+            right: 0,
+            child: RaisedButton(
 //                padding: EdgeInsets.only(left: 500.0, right: 100),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/config');
-                },)),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/config');
+              },
+            )),
 
 //              Text(
 //                'You have times:',
 //                style: TextStyle(color: Colors.white, fontSize: 10),
 //              ),
-            ],
-          ));
+      ],
+    ));
   }
 
   @override
@@ -178,13 +167,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _screenStateChangePreparation(bool enabled) {
     // Screen OFF
-    if (enabled == false){
+    if (enabled == false) {
       controller.stop();
       _fadeController.forward();
-    } else{
+    } else {
       controller.forward();
       _fadeController.reverse();
     }
   }
 }
-
