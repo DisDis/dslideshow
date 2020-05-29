@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+export PUB_HOSTED_URL="https://pub.dev"

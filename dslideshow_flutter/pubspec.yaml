@@ -27,7 +27,7 @@ dependencies:
   dslideshow_common: 
     path: ../common
   media_slider_widget:
-    path: ../../media_slider/media_slider_widget
+    path: ../media_slider_widget
 
 dev_dependencies:
   flutter_test:
