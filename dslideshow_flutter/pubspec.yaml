@@ -24,8 +24,10 @@ dependencies:
   video_player: ^0.10.11
   dslideshow_backend: 
     path: ../backend
+
   dslideshow_common: 
     path: ../common
+
   media_slider_widget:
     path: ../media_slider_widget
 

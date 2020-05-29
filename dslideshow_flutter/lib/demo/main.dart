@@ -80,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: Icon(Icons.transform),
             onPressed: () {
-              showDialog(
+              showDialog<void>(
                 barrierDismissible: true,
                 context: context,
                 builder: (context) {
@@ -221,8 +221,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return CubeEffect();
   }
 
-  Widget _getEffectRadio(value, groupValue, state) {
-    return _getRadio(value, groupValue, (value) {
+  Widget _getEffectRadio(Effects value, Effects groupValue, StateSetter state) {
+    return _getRadio(value, groupValue, (Effects value) {
       setState(() {
         _transform = value;
         _slideEffect = _getEffect(value);
@@ -232,7 +232,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Widget _getRadio(value, groupValue, onChange) {
+  Widget _getRadio(Effects value, Effects groupValue, ValueChanged<Effects> onChange) {
     return Row(
       children: <Widget>[
         Radio(
