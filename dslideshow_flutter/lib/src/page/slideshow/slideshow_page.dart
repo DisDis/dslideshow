@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:dslideshow_backend/src/service/storage/storage.dart';
-import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
@@ -78,19 +76,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       ),
     );
   }
-  ////                padding: EdgeInsets.only(left: 500.0, right: 100),
-//              onPressed: () {
-//                Navigator.pushReplacementNamed(context, '/config');
-//              },
-//            )),
-//
-////              Text(
-////                'You have times:',
-////                style: TextStyle(color: Colors.white, fontSize: 10),
-////              ),
-//      ],
-//    ));
-//  }
 
   @override
   void dispose() {
@@ -164,11 +149,15 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     return widget;
   }
+
   Future<String> _getCurrentMedia() async {
     var item = await _frontendService.getStorageCurrentItem();
     return item.uri.path;
   }
 
+  ///
+  /// todo: check logic to call get next media item
+  ///
   Future<String> _getMedia(int position) async {
     var item = _mediaCache[position];
     if (item != null) {
@@ -187,55 +176,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item.uri.path;
   }
 
-//  @override
-//  Widget build1(BuildContext context) {
-//    return Container(
-//        child: new Stack(
-//      children: <Widget>[
-//        new Container(
-//          height: MediaQuery.of(context).size.height,
-//          color: Colors.black,
-//          child: PageView.builder(
-//            controller: _pageController,
-//            itemBuilder: (context, position) {
-//              _listItemCount = position + 2;
-//              return Center(
-//                child: FutureBuilder<String>(
-//                    future: _getMedia(position, _pageController.page.toInt()),
-//                    builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-//                      if (snapshot.hasData) {
-//                        return _isVideo(snapshot.data)
-//                            ? (isVideoSupport ? VideoWidget(snapshot.data) : Container())
-//                            : Image.file(new File(snapshot.data));
-//                      } else {
-//                        return SizedBox(
-//                          child: CircularProgressIndicator(),
-//                          width: 60,
-//                          height: 60,
-//                        );
-//                      }
-//                    }),
-//              );
-//            },
-//            itemCount: _listItemCount,
-//          ),
-//        ),
-//        new Container(
-//          child: CommonHeaderWidget(),
-//        ),
-//        new Container(
-//            child: Positioned(
-//                bottom: 0.0,
-//                right: 0.0,
-//                child: CustomPaint(
-//                  size: Size(MediaQuery.of(context).size.width, 3),
-//                  painter: TimerProgressBarPainter(controller.value * 100),
-//                ))),
-//        FadeWidget(animation: _fadeController),
-//        Positioned(
-//            right: 0,
-//            child: RaisedButton(
-bool _isVideo(String fileName) => path.extension(fileName).toLowerCase() == '.mp4';
+  bool _isVideo(String fileName) => path.extension(fileName).toLowerCase() == '.mp4';
 
   void _screenStateChangePreparation(bool enabled) {
     // Screen OFF
