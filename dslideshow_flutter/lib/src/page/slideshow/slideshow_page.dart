@@ -119,7 +119,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       isAutoPlay: true,
       key: _sliderKey,
       unlimitedMode: true,
-      autoSliderTransitionTime: const Duration(milliseconds: 500),
+      transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
       slideBuilder: (index) {
         _listItemCount = index + 2;

@@ -82,8 +82,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Carousel Slider Demo',
-      home: MyHomePage(title: 'Flutter Carousel Slider'),
+      title: 'Media Item Slider',
+      home: MyHomePage(title: 'Media Item Slider'),
     );
   }
 }
@@ -118,7 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   Effect _slideTransitionEffect = Effect.cubeEffect;
-  bool _isPlaying = false;
   GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
 
   @override
@@ -158,62 +157,21 @@ class _MyHomePageState extends State<MyHomePage> {
             child: MediaSlider.builder(
               key: _sliderKey,
               unlimitedMode: true,
-              autoSliderTransitionTime: Duration(seconds: 1),
+              transitionTime: const Duration(milliseconds: 500),
               itemCount: letters.length,
-              slideBuilder: (index) {
-                return Container(
-                  color: colors[index],
-                  child: Center(
-                    child: Text(
-                      letters[index],
-                      style: TextStyle(
-                        fontSize: 200,
-                        color: Colors.white,
-                      ),
+              slideBuilder: (index) => Container(
+                color: colors[index],
+                child: Center(
+                  child: Text(
+                    letters[index],
+                    style: TextStyle(
+                      fontSize: 200,
+                      color: Colors.white,
                     ),
                   ),
-                );
-              },
-              slideEffect: _slideTransitionEffect.createEffect(),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: 240, maxWidth: 600),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    iconSize: 48,
-                    icon: Icon(Icons.skip_previous),
-                    onPressed: () {
-                      _sliderKey.currentState.previousSlide();
-                    },
-                  ),
-                  IconButton(
-                    iconSize: 64,
-                    icon: Icon(
-                      _isPlaying ? Icons.pause_circle_outline : Icons.play_circle_outline,
-                    ),
-                    onPressed: () {
-                      setState(
-                        () {
-                          _isPlaying = !_isPlaying;
-                          _sliderKey.currentState.setPlaying(_isPlaying);
-                        },
-                      );
-                    },
-                  ),
-                  IconButton(
-                    iconSize: 48,
-                    icon: Icon(Icons.skip_next),
-                    onPressed: () {
-                      _sliderKey.currentState.nextSlide();
-                    },
-                  ),
-                ],
+                ),
               ),
+              slideEffect: _slideTransitionEffect.createEffect(),
             ),
           ),
         ],

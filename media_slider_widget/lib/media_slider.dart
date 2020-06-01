@@ -14,11 +14,12 @@ class MediaSlider extends StatefulWidget {
   final int itemCount;
   final MediaSliderItemEffect slideEffect;
   final bool isAutoPlay;
-  final Duration autoSliderTimeout;
-  final Duration autoSliderTransitionTime;
-  final Curve autoSliderTransitionCurve;
+  final Duration timeout;
+
+  final Duration transitionTime;
+  final Curve transitionCurve;
+
   final bool unlimitedMode;
-  final bool keepPage;
   final ScrollPhysics scrollPhysics;
   final Axis scrollDirection;
 
@@ -27,10 +28,9 @@ class MediaSlider extends StatefulWidget {
     @required this.children,
     @required this.slideEffect,
     this.isAutoPlay = false,
-    this.autoSliderTimeout = const Duration(seconds: 5),
-    this.autoSliderTransitionTime = const Duration(seconds: 2),
-    this.autoSliderTransitionCurve = Curves.easeOutQuad,
-    this.keepPage = true,
+    this.timeout = const Duration(seconds: 5),
+    this.transitionTime = const Duration(seconds: 2),
+    this.transitionCurve = Curves.easeOutQuad,
     this.scrollPhysics = const BouncingScrollPhysics(),
     this.scrollDirection = Axis.horizontal,
     this.unlimitedMode = false,
@@ -44,10 +44,9 @@ class MediaSlider extends StatefulWidget {
     @required this.slideEffect,
     @required this.itemCount,
     this.isAutoPlay = false,
-    this.autoSliderTimeout = const Duration(seconds: 5),
-    this.autoSliderTransitionTime = const Duration(seconds: 2),
-    this.autoSliderTransitionCurve = Curves.easeOutQuad,
-    this.keepPage = true,
+    this.timeout = const Duration(seconds: 5),
+    this.transitionTime = const Duration(seconds: 2),
+    this.transitionCurve = Curves.easeOutQuad,
     this.scrollPhysics = const BouncingScrollPhysics(),
     this.scrollDirection = Axis.horizontal,
     this.unlimitedMode = false,
@@ -97,14 +96,12 @@ class MediaSliderState extends State<MediaSlider> {
   @override
   void initState() {
     super.initState();
-    _pageController = new PageController(
-      keepPage: widget.keepPage,
-    );
+    _pageController = PageController();
     if (_isPlaying) {
-      _timer = Timer.periodic(widget.autoSliderTimeout, (timer) {
+      _timer = Timer.periodic(widget.timeout, (timer) {
         _pageController.nextPage(
-          duration: widget.autoSliderTransitionTime,
-          curve: widget.autoSliderTransitionCurve,
+          duration: widget.transitionTime,
+          curve: widget.transitionCurve,
         );
       });
     }
@@ -118,15 +115,15 @@ class MediaSliderState extends State<MediaSlider> {
 
   void nextSlide() {
     _pageController.nextPage(
-      duration: widget.autoSliderTransitionTime,
-      curve: widget.autoSliderTransitionCurve,
+      duration: widget.transitionTime,
+      curve: widget.transitionCurve,
     );
   }
 
   void previousSlide() {
     _pageController.previousPage(
-      duration: widget.autoSliderTransitionTime,
-      curve: widget.autoSliderTransitionCurve,
+      duration: widget.transitionTime,
+      curve: widget.transitionCurve,
     );
   }
 
@@ -135,10 +132,10 @@ class MediaSliderState extends State<MediaSlider> {
       _timer.cancel();
     }
     if (playing) {
-      _timer = Timer.periodic(widget.autoSliderTimeout, (timer) {
+      _timer = Timer.periodic(widget.timeout, (timer) {
         _pageController.nextPage(
-          duration: widget.autoSliderTransitionTime,
-          curve: widget.autoSliderTransitionCurve,
+          duration: widget.transitionTime,
+          curve: widget.transitionCurve,
         );
       });
     }
