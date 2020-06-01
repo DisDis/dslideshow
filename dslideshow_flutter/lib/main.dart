@@ -30,7 +30,7 @@ import 'src/injector.dart';
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   initLog('flutter');
-  _log.info("Run");
+  _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
   try {
