@@ -1,11 +1,10 @@
-import 'package:dslideshow_flutter/src/model/effect.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:media_slider_widget/effect.dart';
 import 'package:media_slider_widget/media_slider.dart';
 
 void main() => runApp(MyApp());
-
 
 class MyApp extends StatelessWidget {
   @override

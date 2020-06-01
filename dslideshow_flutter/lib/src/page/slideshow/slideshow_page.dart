@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dslideshow_flutter/src/injector.dart';
-import 'package:dslideshow_flutter/src/model/effect.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
@@ -10,6 +9,7 @@ import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
+import 'package:media_slider_widget/effect.dart';
 import 'package:media_slider_widget/media_slider.dart';
 import 'package:path/path.dart' as path;
 

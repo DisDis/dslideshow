@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
-import 'package:dslideshow_flutter/src/redux/app_reducer.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -25,7 +25,7 @@ class ConfigPage extends StatelessWidget {
           ),
           Text(_urlData),
           new StoreConnector<GlobalState, VoidCallback>(
-              converter: (store) => () => store.dispatch(new ChangeStorageStatusAction(
+              converter: (store) => () => store.dispatch(ChangeStorageStatusAction(
                   StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
               builder: (context, callback) => RaisedButton(
                     onPressed: callback,
