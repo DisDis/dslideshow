@@ -7,21 +7,75 @@ import 'package:media_slider_widget/media_slider_item_effect.dart';
 
 void main() => runApp(MyApp());
 
-enum Effects {
-  CubeEffect,
-  AccordionEffect,
-  BackgroundToForegroundEffect,
-  ForegroundToBackgroundEffect,
-  DefaultEffect,
-  DepthEffect,
-  FlipHorizontalEffect,
-  FlipVerticalEffect,
-  ParallaxEffect,
-  StackEffect,
-  TabletEffect,
-  RotateDownEffect,
-  RotateUpEffect,
-  ZoomOutSlideEffect,
+typedef EffectImplementor = MediaSliderItemEffect Function();
+
+class Effect {
+  static const Effect cubeEffect = const Effect._('Cube', _createCubeEffect);
+  static const Effect accordionEffect = const Effect._('Accordion', _createAccordionEffect);
+  static const Effect backgroundToForegroundEffect =
+      const Effect._('Background To Foreground', _createBackgroundToForegroundEffect);
+  static const Effect foregroundToBackgroundEffect =
+      const Effect._('Foreground To Background', _createForegroundToBackgroundEffect);
+  static const Effect defaultEffect = const Effect._('Default', _createDefaultEffect);
+  static const Effect depthEffect = const Effect._('Depth', _createDepthEffect);
+  static const Effect flipHorizontalEffect = const Effect._('Flip Horizontal', _createFlipHorizontalEffect);
+  static const Effect flipVerticalEffect = const Effect._('Flip Vertical', _createFlipVerticalEffect);
+  static const Effect parallaxEffect = const Effect._('Parallax', _createParallaxEffect);
+  static const Effect stackEffect = const Effect._('Stack', _createStackEffect);
+  static const Effect tabletEffect = const Effect._('Tablet', _createTabletEffect);
+  static const Effect rotateDownEffect = const Effect._('Rotate Down', _createRotateDownEffect);
+  static const Effect rotateUpEffect = const Effect._('Rotate Up', _createRotateUpEffect);
+  static const Effect zoomOutSlideEffect = const Effect._('Zoom Out', _createZoomOutSlideEffect);
+
+  static const Iterable<Effect> values = const [
+    cubeEffect,
+    accordionEffect,
+    backgroundToForegroundEffect,
+    foregroundToBackgroundEffect,
+    defaultEffect,
+    depthEffect,
+    flipHorizontalEffect,
+    flipVerticalEffect,
+    parallaxEffect,
+    stackEffect,
+    tabletEffect,
+    rotateDownEffect,
+    rotateUpEffect,
+    zoomOutSlideEffect,
+  ];
+  final String name;
+
+  final EffectImplementor _implementor;
+
+  const Effect._(this.name, this._implementor);
+
+  @override
+  int get hashCode => name.hashCode ^ _implementor.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Effect && runtimeType == other.runtimeType && name == other.name && _implementor == other._implementor;
+
+  MediaSliderItemEffect createEffect() => _implementor();
+
+  @override
+  String toString() => 'Effect{name: $name}';
+
+  static MediaSliderItemEffect _createAccordionEffect() => AccordionEffect();
+  static MediaSliderItemEffect _createBackgroundToForegroundEffect() => BackgroundToForegroundEffect();
+  static MediaSliderItemEffect _createCubeEffect() => CubeEffect();
+  static MediaSliderItemEffect _createDefaultEffect() => DefaultEffect();
+  static MediaSliderItemEffect _createDepthEffect() => DepthEffect();
+  static MediaSliderItemEffect _createFlipHorizontalEffect() => FlipHorizontalEffect();
+  static MediaSliderItemEffect _createFlipVerticalEffect() => FlipVerticalEffect();
+  static MediaSliderItemEffect _createForegroundToBackgroundEffect() => ForegroundToBackgroundEffect();
+  static MediaSliderItemEffect _createParallaxEffect() => ParallaxEffect();
+  static MediaSliderItemEffect _createRotateDownEffect() => RotateDownEffect();
+  static MediaSliderItemEffect _createRotateUpEffect() => RotateUpEffect();
+  static MediaSliderItemEffect _createStackEffect() => StackEffect();
+  static MediaSliderItemEffect _createTabletEffect() => TabletEffect();
+  static MediaSliderItemEffect _createZoomOutSlideEffect() => ZoomOutEffect();
 }
 
 class MyApp extends StatelessWidget {
@@ -63,9 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     "G",
   ];
 
-  Effects _transform = Effects.CubeEffect;
-  MediaSliderItemEffect _slideEffect = CubeEffect();
-
+  Effect _slideTransitionEffect = Effect.cubeEffect;
   bool _isPlaying = false;
   GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
 
@@ -81,37 +133,19 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icon(Icons.transform),
             onPressed: () {
               showDialog<void>(
-                barrierDismissible: true,
                 context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    scrollable: true,
-                    title: Text("Effects"),
-                    content: StatefulBuilder(
-                      builder: (context, setState) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            _getEffectRadio(Effects.CubeEffect, _transform, setState),
-                            _getEffectRadio(Effects.ZoomOutSlideEffect, _transform, setState),
-                            _getEffectRadio(Effects.RotateUpEffect, _transform, setState),
-                            _getEffectRadio(Effects.RotateDownEffect, _transform, setState),
-                            _getEffectRadio(Effects.TabletEffect, _transform, setState),
-                            _getEffectRadio(Effects.StackEffect, _transform, setState),
-                            _getEffectRadio(Effects.ParallaxEffect, _transform, setState),
-                            _getEffectRadio(Effects.ForegroundToBackgroundEffect, _transform, setState),
-                            _getEffectRadio(Effects.FlipVerticalEffect, _transform, setState),
-                            _getEffectRadio(Effects.DepthEffect, _transform, setState),
-                            _getEffectRadio(Effects.BackgroundToForegroundEffect, _transform, setState),
-                            _getEffectRadio(Effects.AccordionEffect, _transform, setState),
-                            _getEffectRadio(Effects.DefaultEffect, _transform, setState),
-                            _getEffectRadio(Effects.FlipHorizontalEffect, _transform, setState),
-                          ],
-                        );
-                      },
+                builder: (context) => AlertDialog(
+                  scrollable: true,
+                  title: Text("Effects"),
+                  content: StatefulBuilder(
+                    builder: (context, setState) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: Effect.values
+                          .map((Effect e) => _getEffectRadioButton(value: e, currentValue: _slideTransitionEffect))
+                          .toList(),
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),
@@ -140,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 );
               },
-              slideEffect: _slideEffect,
+              slideEffect: _slideTransitionEffect.createEffect(),
             ),
           ),
           Padding(
@@ -154,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     iconSize: 48,
                     icon: Icon(Icons.skip_previous),
                     onPressed: () {
-                      _sliderKey.currentState.previousPage();
+                      _sliderKey.currentState.previousSlide();
                     },
                   ),
                   IconButton(
@@ -175,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     iconSize: 48,
                     icon: Icon(Icons.skip_next),
                     onPressed: () {
-                      _sliderKey.currentState.nextPage();
+                      _sliderKey.currentState.nextSlide();
                     },
                   ),
                 ],
@@ -187,61 +221,21 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  MediaSliderItemEffect _getEffect(Effects transform) {
-    switch (transform) {
-      case Effects.CubeEffect:
-        return CubeEffect();
-      case Effects.AccordionEffect:
-        return AccordionEffect();
-      case Effects.BackgroundToForegroundEffect:
-        return BackgroundToForegroundEffect();
-      case Effects.ForegroundToBackgroundEffect:
-        return ForegroundToBackgroundEffect();
-      case Effects.DefaultEffect:
-        return DefaultEffect();
-      case Effects.DepthEffect:
-        return DepthEffect();
-      case Effects.FlipHorizontalEffect:
-        return FlipHorizontalEffect();
-      case Effects.FlipVerticalEffect:
-        return FlipVerticalEffect();
-      case Effects.ParallaxEffect:
-        return ParallaxEffect();
-      case Effects.StackEffect:
-        return StackEffect();
-      case Effects.TabletEffect:
-        return TabletEffect();
-      case Effects.RotateDownEffect:
-        return RotateDownEffect();
-      case Effects.RotateUpEffect:
-        return RotateUpEffect();
-      case Effects.ZoomOutSlideEffect:
-        return ZoomOutEffect();
-    }
-    return CubeEffect();
-  }
-
-  Widget _getEffectRadio(Effects value, Effects groupValue, StateSetter state) {
-    return _getRadio(value, groupValue, (Effects value) {
-      setState(() {
-        _transform = value;
-        _slideEffect = _getEffect(value);
-        state(() {});
-        Navigator.of(context).pop();
-      });
-    });
-  }
-
-  Widget _getRadio(Effects value, Effects groupValue, ValueChanged<Effects> onChange) {
+  Widget _getEffectRadioButton({@required Effect value, @required Effect currentValue}) {
     return Row(
       children: <Widget>[
         Radio(
           value: value,
-          groupValue: groupValue,
-          onChanged: onChange,
+          groupValue: currentValue,
+          onChanged: (Effect value) {
+            setState(() {
+              _slideTransitionEffect = value;
+              Navigator.of(context).pop();
+            });
+          },
         ),
         Text(
-          value.toString().split('.').last,
+          value.name,
           style: TextStyle(fontSize: 16),
         )
       ],

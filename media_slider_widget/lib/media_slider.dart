@@ -13,7 +13,6 @@ class MediaSlider extends StatefulWidget {
   final List<Widget> children;
   final int itemCount;
   final MediaSliderItemEffect slideEffect;
-  final double viewportFraction;
   final bool isAutoPlay;
   final Duration autoSliderTimeout;
   final Duration autoSliderTransitionTime;
@@ -27,7 +26,6 @@ class MediaSlider extends StatefulWidget {
     Key key,
     @required this.children,
     @required this.slideEffect,
-    this.viewportFraction = 1,
     this.isAutoPlay = false,
     this.autoSliderTimeout = const Duration(seconds: 5),
     this.autoSliderTransitionTime = const Duration(seconds: 2),
@@ -45,7 +43,6 @@ class MediaSlider extends StatefulWidget {
     @required this.slideBuilder,
     @required this.slideEffect,
     @required this.itemCount,
-    this.viewportFraction = 1,
     this.isAutoPlay = false,
     this.autoSliderTimeout = const Duration(seconds: 5),
     this.autoSliderTransitionTime = const Duration(seconds: 2),
@@ -80,7 +77,7 @@ class MediaSliderState extends State<MediaSlider> {
           scrollDirection: widget.scrollDirection,
           physics: widget.scrollPhysics,
           itemBuilder: (context, index) {
-            index %= widget.itemCount;
+            index = index % widget.itemCount;
             Widget slide = widget.children == null ? widget.slideBuilder(index) : widget.children[index];
             return widget.slideEffect.transform(context, slide, index, _currentPage, _pageDelta, widget.itemCount);
           },
@@ -101,7 +98,6 @@ class MediaSliderState extends State<MediaSlider> {
   void initState() {
     super.initState();
     _pageController = new PageController(
-      viewportFraction: widget.viewportFraction,
       keepPage: widget.keepPage,
     );
     if (_isPlaying) {
@@ -120,14 +116,14 @@ class MediaSliderState extends State<MediaSlider> {
     });
   }
 
-  void nextPage() {
+  void nextSlide() {
     _pageController.nextPage(
       duration: widget.autoSliderTransitionTime,
       curve: widget.autoSliderTransitionCurve,
     );
   }
 
-  void previousPage() {
+  void previousSlide() {
     _pageController.previousPage(
       duration: widget.autoSliderTransitionTime,
       curve: widget.autoSliderTransitionCurve,
