@@ -1,4 +1,4 @@
-import 'package:dslideshow_flutter/src/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
@@ -97,7 +97,7 @@ class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProvid
   final Widget child;
   final bool hideAfterBlink;
 
-  _BlinkAnimationState(this.countBlink, this.milliseconds, this.hideAfterBlink, @required this.child);
+  _BlinkAnimationState(this.countBlink, this.milliseconds, this.hideAfterBlink, this.child);
 
   @override
   Widget build(BuildContext context) {

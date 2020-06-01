@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/model/effect.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
@@ -8,9 +9,7 @@ import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
-import 'package:media_slider_widget/effects/media_slider_item_effects.dart';
 import 'package:media_slider_widget/media_slider.dart';
-import 'package:media_slider_widget/media_slider_item_effect.dart';
 import 'package:path/path.dart' as path;
 
 import 'fade_widget.dart';
@@ -34,10 +33,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   AnimationController _fadeController;
 
   Map<int, String> _mediaCache = new Map<int, String>();
-
-  GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
-
-  MediaSliderItemEffect _slideEffect = CubeEffect();
 
   @override
   Widget build(BuildContext context) {
@@ -116,8 +111,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   Widget _createMediaSlider() {
     final widget = MediaSlider.builder(
+      slideEffect: Effect.cubeEffect.createEffect(),
       isAutoPlay: true,
-      key: _sliderKey,
       unlimitedMode: true,
       transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
@@ -144,7 +139,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           ),
         );
       },
-      slideEffect: _slideEffect,
     );
 
     return widget;

@@ -1,4 +1,4 @@
-import 'package:dslideshow_flutter/src/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:redux/redux.dart';
 
 /// Reducer

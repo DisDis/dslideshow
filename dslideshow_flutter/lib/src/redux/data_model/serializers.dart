@@ -4,9 +4,8 @@
 
 library serializers;
 
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
-import 'package:dslideshow_flutter/src/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 
 part 'serializers.g.dart';
 
