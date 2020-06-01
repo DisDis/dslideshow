@@ -1,4 +1,5 @@
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:redux/redux.dart';
@@ -7,7 +8,12 @@ import 'package:redux/redux.dart';
 final appReducer = combineReducers<GlobalState>([
   TypedReducer<GlobalState, ChangeStorageStatusAction>(_onStorageStatusChange),
   TypedReducer<GlobalState, ChangeDebugAction>(_onDebugChange),
+  TypedReducer<GlobalState, ChangePauseAction>(_onPauseChange),
 ]);
+
+GlobalState _onPauseChange(GlobalState state, ChangePauseAction action) {
+  return state.rebuild((builder) => builder.isPaused = action.isPaused);
+}
 
 GlobalState _onDebugChange(GlobalState state, ChangeDebugAction action) {
   return state.rebuild((builder) => builder.isDebug = action.isDebug);

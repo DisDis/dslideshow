@@ -4,6 +4,11 @@ import 'dart:math';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
+import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
+import 'package:dslideshow_flutter/src/page/common/system_info_widget.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
@@ -38,6 +43,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   Map<int, String> _mediaCache = new Map<int, String>();
   Effect _currentEffect = Effect.cubeEffect;
   static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
+  static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +64,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                     size: Size(MediaQuery.of(context).size.width, 3),
                     painter: TimerProgressBarPainter(controller.value * 100),
                   ))),
-          FadeWidget(animation: _fadeController),
-          Positioned(
-              right: 0,
-              child: RaisedButton(
-//                padding: EdgeInsets.only(left: 500.0, right: 100),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/config');
+          new StoreConnector<GlobalState, Store<GlobalState>>(
+              converter: (store) => store,
+              //rebuildOnChange: true,
+              onDidChange: (newStore){
+                _stateKey.currentState.isPaused = newStore.state.isPaused;
               },
-            )),
-        DebugWidget()
+              builder: (context, Store<GlobalState> store)      {
+                  return StateNotify(key: _stateKey, isPaused : store.state.isPaused);
+                }),
+          FadeWidget(animation: _fadeController),
+          DebugWidget()
       ],
     ));
   }
@@ -75,12 +82,14 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   @override
   void dispose() {
     controller.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+
     _fadeController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
     _fadeController.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
@@ -103,7 +112,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
   }
 
-  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
   void _changeImage() async {
     _log.info('Change image');
     await _frontendService.storageNext();
@@ -115,7 +123,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     final widget = MediaSlider.builder(
       key: _sliderKey,
       slideEffect: _currentEffect.createEffect(),
-//      isAutoPlay: true,
       unlimitedMode: true,
       transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
@@ -173,6 +180,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item.uri.path;
   }
 
+  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
   bool _isVideo(String fileName) => path.extension(fileName).toLowerCase() == '.mp4';
 
   void _screenStateChangePreparation(bool enabled) {
