@@ -1,9 +1,7 @@
-import 'package:dslideshow_flutter/src/app_reducer.dart';
-import 'package:dslideshow_flutter/src/data_model/global_state.dart';
-import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
 import 'package:dslideshow_flutter/src/page/common/system_info_widget.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/app_reducer.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/widgets.dart';
 import 'package:redux/redux.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 

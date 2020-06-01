@@ -3,7 +3,6 @@ library dslideshow.global.state;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:dslideshow_flutter/src/service/frontend.dart';
 
 part 'global_state.g.dart';
 

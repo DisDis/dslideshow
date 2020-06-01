@@ -10,11 +10,11 @@ import 'package:dslideshow_common/injector/di.dart' as di;
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
-import 'package:dslideshow_flutter/src/app_reducer.dart';
-import 'package:dslideshow_flutter/src/data_model/global_state.dart';
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
+import 'package:dslideshow_flutter/src/redux/app_reducer.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -56,6 +56,7 @@ void main() async {
     _backendService = new RemoteService(_backendServiceIsolate, serializers);
     final _frontendService = injector.get(FrontendService) as FrontendService;
     initRpc(_frontendService, serializers);
+
     _runFlutter(_frontendService);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
@@ -63,19 +64,14 @@ void main() async {
   }
 }
 
-//https://pub.dev/packages/flutter_redux
 final Logger _log = new Logger('main');
-
 Future<IsolateRunner> _createCurrentIsolateRunner() async {
   var remote = new IsolateRunnerRemote();
   return new IsolateRunner(isol.Isolate.current, remote.commandPort);
 }
 
 void _runFlutter(FrontendService frontendService) {
-  final store = new Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: [
-//        SearchMiddleware(GithubApi()),
-    // EpicMiddleware<SearchState>(SearchEpic(GithubApi())),
-  ]);
+  final store = new Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
   runApp(FlutterReduxApp(store: store));
 }
@@ -87,21 +83,13 @@ class FlutterReduxApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // The StoreProvider should wrap your MaterialApp or WidgetsApp. This will
-    // ensure all routes have access to the store.
     return new StoreProvider<GlobalState>(
-        // Pass the store to the StoreProvider. Any ancestor `StoreConnector`
-        // Widgets will find and use this value as the `Store`.
         store: store,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
           ),
-          localizationsDelegates: [
-            // ... app-specific localization delegate[s] here
-//    GlobalMaterialLocalizations.delegate,
-//    GlobalWidgetsLocalizations.delegate,
-          ],
+          localizationsDelegates: [],
           supportedLocales: [
             const Locale('en'), // English
             // ... other locales the app supports
