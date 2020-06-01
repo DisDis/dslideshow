@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
@@ -33,7 +34,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   AnimationController _fadeController;
 
+  Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
   Map<int, String> _mediaCache = new Map<int, String>();
+  Effect _currentEffect = Effect.cubeEffect;
+  static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
 
   @override
   Widget build(BuildContext context) {
@@ -103,12 +107,15 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void _changeImage() async {
     _log.info('Change image');
     await _frontendService.storageNext();
+    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
+    _sliderKey.currentState.nextSlide();
   }
 
   Widget _createMediaSlider() {
     final widget = MediaSlider.builder(
-      slideEffect: Effect.cubeEffect.createEffect(),
-      isAutoPlay: true,
+      key: _sliderKey,
+      slideEffect: _currentEffect.createEffect(),
+//      isAutoPlay: true,
       unlimitedMode: true,
       transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
