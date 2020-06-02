@@ -165,11 +165,13 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     if (item is ImageWidget){
 //      if (!item.provider.resolve(ImageConfiguration.empty).completer.hasListeners){
         final _completer = new Completer<void>();
-        item.provider.resolve(ImageConfiguration.empty).completer.addListener(new ImageStreamListener((info, bool sync){
+        final _listener = new ImageStreamListener((info, bool sync){
 //          _log.info('image loaded');
           _completer.complete();
-        }));
+        });
+        item.provider.resolve(ImageConfiguration.empty).completer.addListener(_listener);
         await _completer.future;
+        item.provider.resolve(ImageConfiguration.empty).completer.removeListener(_listener);
 //      }
 
     }
