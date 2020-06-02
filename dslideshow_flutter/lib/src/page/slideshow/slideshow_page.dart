@@ -40,7 +40,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   AnimationController _fadeController;
 
   Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
-  Map<int, String> _mediaCache = new Map<int, String>();
+  Map<int, Widget> _mediaCache = new Map<int, Widget>();
   Effect _currentEffect = Effect.cubeEffect;
   static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
@@ -131,7 +131,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       itemCount: _listItemCount,
       slideBuilder: (index) {
        var data = getMediaFromCache(index);
-        if (data==null){
+        if (data == null){
           return Container(
               child: Center(
                   child: SizedBox(
@@ -143,9 +143,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         }
         return Container(
           child: Center(
-              child:_isVideo(data)
-                        ? (isVideoSupport ? VideoWidget(data) : Container())
-                        : Image.file(new File(data))
+              child: data
           ),
         );
       },
@@ -159,7 +157,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item.uri.path;
   }
 
-  String getMediaFromCache(int position){
+  Widget getMediaFromCache(int position){
       var item = _mediaCache[position];
       if (item != null) {
         return item;
@@ -167,12 +165,15 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       return null;
   }
 
-  Future<String> _getMedia(int position) async {
+  Future<Widget> _getMedia(int position) async {
     var item = _mediaCache[position];
     if (item != null) {
       return item;
     }
-    item = await _getCurrentMedia();// await (length - 2 == position ? _getCurrentMedia(): _getNextMedia());
+    var data = await _getCurrentMedia();// await (length - 2 == position ? _getCurrentMedia(): _getNextMedia());
+    item = _isVideo(data)
+        ? (isVideoSupport ? VideoWidget(data) : Container())
+        : Image.file(new File(data));
     if (_mediaCache.length > 10) {
       _mediaCache.remove(_mediaCache.keys.first);
     }
