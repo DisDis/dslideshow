@@ -111,9 +111,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     });
 
     _mediaItemLoopController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
-    _mediaItemLoopController.addListener(() {
-      setState(() {});
-    });
+//    _mediaItemLoopController.addListener(() {
+//
+//    });
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -168,6 +168,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     await _sliderKey.currentState.nextSlide();
     _mediaItemLoopController.reset();
     _mediaItemLoopController.forward();
+    setState(() {});
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {
