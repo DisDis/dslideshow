@@ -16,6 +16,10 @@ class HardwareConfig  extends BaseConfig {
   int _pinPowerLED;
   int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);
 
+
+  String _systemDiskDev;
+  String get systemDiskDev => _systemDiskDev ??= readValue("systemDiskDev", '/dev/root');
+
   String _systemIfConfigScript;
   String get systemIfConfigScript => _systemIfConfigScript ??= readValue("systemIfConfigScript", 'ifconfig');
 

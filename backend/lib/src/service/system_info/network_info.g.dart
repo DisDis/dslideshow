@@ -28,10 +28,68 @@ final BuiltSet<NetworkInterfaceStatus> _$valuesNetStatus =
   _$offline,
 ]);
 
+Serializer<NetworkInfo> _$networkInfoSerializer = new _$NetworkInfoSerializer();
 Serializer<NetworkInterfaceInfo> _$networkInterfaceInfoSerializer =
     new _$NetworkInterfaceInfoSerializer();
 Serializer<NetworkInterfaceStatus> _$networkInterfaceStatusSerializer =
     new _$NetworkInterfaceStatusSerializer();
+
+class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
+  @override
+  final Iterable<Type> types = const [NetworkInfo, _$NetworkInfo];
+  @override
+  final String wireName = 'NetworkInfo';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, NetworkInfo object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'lastUpdate',
+      serializers.serialize(object.lastUpdate,
+          specifiedType: const FullType(DateTime)),
+      'hasInternet',
+      serializers.serialize(object.hasInternet,
+          specifiedType: const FullType(bool)),
+      'interfaces',
+      serializers.serialize(object.interfaces,
+          specifiedType: const FullType(
+              BuiltList, const [const FullType(NetworkInterfaceInfo)])),
+    ];
+
+    return result;
+  }
+
+  @override
+  NetworkInfo deserialize(Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new NetworkInfoBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'lastUpdate':
+          result.lastUpdate = serializers.deserialize(value,
+              specifiedType: const FullType(DateTime)) as DateTime;
+          break;
+        case 'hasInternet':
+          result.hasInternet = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'interfaces':
+          result.interfaces.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(NetworkInterfaceInfo)]))
+              as BuiltList<dynamic>);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
 
 class _$NetworkInterfaceInfoSerializer
     implements StructuredSerializer<NetworkInterfaceInfo> {
@@ -121,6 +179,129 @@ class _$NetworkInterfaceStatusSerializer
   NetworkInterfaceStatus deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
       NetworkInterfaceStatus.valueOf(serialized as String);
+}
+
+class _$NetworkInfo extends NetworkInfo {
+  @override
+  final DateTime lastUpdate;
+  @override
+  final bool hasInternet;
+  @override
+  final BuiltList<NetworkInterfaceInfo> interfaces;
+
+  factory _$NetworkInfo([void Function(NetworkInfoBuilder) updates]) =>
+      (new NetworkInfoBuilder()..update(updates)).build();
+
+  _$NetworkInfo._({this.lastUpdate, this.hasInternet, this.interfaces})
+      : super._() {
+    if (lastUpdate == null) {
+      throw new BuiltValueNullFieldError('NetworkInfo', 'lastUpdate');
+    }
+    if (hasInternet == null) {
+      throw new BuiltValueNullFieldError('NetworkInfo', 'hasInternet');
+    }
+    if (interfaces == null) {
+      throw new BuiltValueNullFieldError('NetworkInfo', 'interfaces');
+    }
+  }
+
+  @override
+  NetworkInfo rebuild(void Function(NetworkInfoBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  NetworkInfoBuilder toBuilder() => new NetworkInfoBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is NetworkInfo &&
+        lastUpdate == other.lastUpdate &&
+        hasInternet == other.hasInternet &&
+        interfaces == other.interfaces;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc($jc(0, lastUpdate.hashCode), hasInternet.hashCode),
+        interfaces.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('NetworkInfo')
+          ..add('lastUpdate', lastUpdate)
+          ..add('hasInternet', hasInternet)
+          ..add('interfaces', interfaces))
+        .toString();
+  }
+}
+
+class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
+  _$NetworkInfo _$v;
+
+  DateTime _lastUpdate;
+  DateTime get lastUpdate => _$this._lastUpdate;
+  set lastUpdate(DateTime lastUpdate) => _$this._lastUpdate = lastUpdate;
+
+  bool _hasInternet;
+  bool get hasInternet => _$this._hasInternet;
+  set hasInternet(bool hasInternet) => _$this._hasInternet = hasInternet;
+
+  ListBuilder<NetworkInterfaceInfo> _interfaces;
+  ListBuilder<NetworkInterfaceInfo> get interfaces =>
+      _$this._interfaces ??= new ListBuilder<NetworkInterfaceInfo>();
+  set interfaces(ListBuilder<NetworkInterfaceInfo> interfaces) =>
+      _$this._interfaces = interfaces;
+
+  NetworkInfoBuilder();
+
+  NetworkInfoBuilder get _$this {
+    if (_$v != null) {
+      _lastUpdate = _$v.lastUpdate;
+      _hasInternet = _$v.hasInternet;
+      _interfaces = _$v.interfaces?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(NetworkInfo other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$NetworkInfo;
+  }
+
+  @override
+  void update(void Function(NetworkInfoBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$NetworkInfo build() {
+    _$NetworkInfo _$result;
+    try {
+      _$result = _$v ??
+          new _$NetworkInfo._(
+              lastUpdate: lastUpdate,
+              hasInternet: hasInternet,
+              interfaces: interfaces.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'interfaces';
+        interfaces.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'NetworkInfo', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
 }
 
 class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {

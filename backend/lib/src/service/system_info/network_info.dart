@@ -4,6 +4,18 @@ import 'package:built_collection/built_collection.dart';
 
 part 'network_info.g.dart';
 
+abstract class NetworkInfo implements Built<NetworkInfo, NetworkInfoBuilder> {
+  DateTime get lastUpdate;
+  bool get hasInternet;
+  BuiltList<NetworkInterfaceInfo> get interfaces;
+
+  static Serializer<NetworkInfo> get serializer =>
+      _$networkInfoSerializer;
+
+  factory NetworkInfo([void updates(NetworkInfoBuilder b)]) = _$NetworkInfo;
+  NetworkInfo._();
+}
+
 abstract class NetworkInterfaceInfo implements Built<NetworkInterfaceInfo, NetworkInterfaceInfoBuilder> {
   String get name;
   NetworkInterfaceStatus get status;

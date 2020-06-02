@@ -70,6 +70,7 @@ void _testSystemInfo() async{
   final _systemInfoService = injector.get(SystemInfoService) as SystemInfoService;
   _log.info(await _systemInfoService.getNetworkInterfaces());
   _log.info('hasInternet: ${await _systemInfoService.hasInternet()}');
+  _log.info(await _systemInfoService.getFullInfo());
 }
 
 void testGPhoto() async{
