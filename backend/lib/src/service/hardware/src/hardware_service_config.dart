@@ -16,6 +16,9 @@ class HardwareConfig  extends BaseConfig {
   int _pinPowerLED;
   int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);
 
+  String _systemIfConfigScript;
+  String get systemIfConfigScript => _systemIfConfigScript ??= readValue("systemIfConfigScript", 'ifconfig');
+
   String _screenPowerOffScript;
   String get screenPowerOffScript => _screenPowerOffScript ??= readValue("screenPowerOffScript", './screenOff.sh');
 
