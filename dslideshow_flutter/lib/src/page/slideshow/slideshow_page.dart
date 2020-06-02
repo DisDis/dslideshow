@@ -160,17 +160,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     await _frontendService.storageNext();
     var item = await _getMediaWidget(_listItemCount - 1);
     if (item is ImageWidget){
-//      if (!item.provider.resolve(ImageConfiguration.empty).completer.hasListeners){
-        final _completer = new Completer<void>();
-        final _listener = new ImageStreamListener((info, bool sync){
-//          _log.info('image loaded');
-          _completer.complete();
-        });
-        item.provider.resolve(ImageConfiguration.empty).completer.addListener(_listener);
-        await _completer.future.timeout(new Duration(seconds: 5), onTimeout: ()=>_completer.complete());
-        item.provider.resolve(ImageConfiguration.empty).completer.removeListener(_listener);
-//      }
-
+        await precacheImage(item.provider, context);
     }
 
     _listItemCount++;
