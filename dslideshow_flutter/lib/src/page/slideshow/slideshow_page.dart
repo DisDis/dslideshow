@@ -1,23 +1,24 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
-import 'package:dslideshow_flutter/src/page/common/system_info_widget.dart';
-import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
+import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
+import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:media_slider_widget/effect.dart';
 import 'package:media_slider_widget/media_slider.dart';
 import 'package:path/path.dart' as path;
+import 'package:redux/redux.dart';
 
 import 'fade_widget.dart';
 
@@ -30,60 +31,66 @@ class SlideShowPage extends StatefulWidget {
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = new Logger('_SlideShowPageState');
-  static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
-  AnimationController controller;
+  static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
+  static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
+
+  AnimationController _mediaItemLoopController;
 
   int _listItemCount = 2;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
-
   AnimationController _fadeController;
-
   Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
   Map<int, Widget> _mediaCache = new Map<int, Widget>();
   Effect _currentEffect = Effect.cubeEffect;
-  static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
-  static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: new Stack(
-        children: <Widget>[
-          new Container(
-            height: MediaQuery.of(context).size.height,
-            color: Colors.black,
-            child: _createMediaSlider(),
-          ),
-          new Container(child: CommonHeaderWidget()),
-          new Container(
-              child: Positioned(
-                  bottom: 0.0,
-                  right: 0.0,
-                  child: CustomPaint(
-                    size: Size(MediaQuery.of(context).size.width, 3),
-                    painter: TimerProgressBarPainter(controller.value * 100),
-                  ))),
-          new StoreConnector<GlobalState, Store<GlobalState>>(
-              converter: (store) => store,
-              //rebuildOnChange: true,
-              onDidChange: (newStore){
-                _stateKey.currentState.isPaused = newStore.state.isPaused;
-              },
-              builder: (context, Store<GlobalState> store)      {
-                  return StateNotify(key: _stateKey, isPaused : store.state.isPaused);
-                }),
-          FadeWidget(animation: _fadeController),
-          DebugWidget()
+        child: new Stack(
+      children: <Widget>[
+        new Container(
+          height: MediaQuery.of(context).size.height,
+          color: Colors.black,
+          child: _createMediaSlider(),
+        ),
+        new Container(child: CommonHeaderWidget()),
+        new Container(
+            child: Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: CustomPaint(
+                  size: Size(MediaQuery.of(context).size.width, 3),
+                  painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                ))),
+        new StoreConnector<GlobalState, Store<GlobalState>>(
+            converter: (store) => store,
+            //rebuildOnChange: true,
+            onDidChange: (newStore) {
+              _stateKey.currentState.isPaused = newStore.state.isPaused;
+            },
+            builder: (context, Store<GlobalState> store) {
+              return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
+            }),
+        FadeWidget(animation: _fadeController),
+        DebugWidget()
       ],
     ));
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _mediaItemLoopController.dispose();
     _fadeController.dispose();
     super.dispose();
+  }
+
+  Widget getMediaFromCache(int position) {
+    var item = _mediaCache[position];
+    if (item != null) {
+      return item;
+    }
+    return null;
   }
 
   @override
@@ -97,18 +104,22 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       }
     });
 
-    controller = AnimationController(duration: const Duration(seconds: 5), vsync: this);
-    controller.addListener(() {
+    _mediaItemLoopController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
+    _mediaItemLoopController.addListener(() {
       setState(() {});
     });
-    controller.addStatusListener((status) {
+
+    _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _changeImage();
-        controller.reset();
-        controller.forward();
+
+        _mediaItemLoopController.reset();
+        _mediaItemLoopController.forward();
       }
     });
-    controller.forward();
+
+    _mediaItemLoopController.forward();
+
     _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
   }
 
@@ -116,7 +127,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _log.info('Change image');
     // cached next image
     await _frontendService.storageNext();
-    await _getMedia(_listItemCount-1);
+    await _getMediaWidget(_listItemCount - 1);
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
     _sliderKey.currentState.nextSlide();
@@ -130,21 +141,18 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
       slideBuilder: (index) {
-       var data = getMediaFromCache(index);
-        if (data == null){
+        var data = getMediaFromCache(index);
+        if (data == null) {
           return Container(
               child: Center(
                   child: SizedBox(
-                      child: CircularProgressIndicator(),
-                      width: 60,
-                      height: 60,
-                    )
-          ));
+            child: CircularProgressIndicator(),
+            width: 60,
+            height: 60,
+          )));
         }
         return Container(
-          child: Center(
-              child: data
-          ),
+          child: Center(child: data),
         );
       },
     );
@@ -152,45 +160,37 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return widget;
   }
 
-  Future<String> _getCurrentMedia() async {
+  Future<MediaItem> _getCurrentMediaItem() async {
     var item = await _frontendService.getStorageCurrentItem();
-    return item.uri.path;
-  }
-
-  Widget getMediaFromCache(int position){
-      var item = _mediaCache[position];
-      if (item != null) {
-        return item;
-      }
-      return null;
-  }
-
-  Future<Widget> _getMedia(int position) async {
-    var item = _mediaCache[position];
-    if (item != null) {
-      return item;
-    }
-    var data = await _getCurrentMedia();// await (length - 2 == position ? _getCurrentMedia(): _getNextMedia());
-    item = _isVideo(data)
-        ? (isVideoSupport ? VideoWidget(data) : Container())
-        : Image.file(new File(data));
-    if (_mediaCache.length > 10) {
-      _mediaCache.remove(_mediaCache.keys.first);
-    }
-    _mediaCache[position] = item;
     return item;
   }
 
+  Future<Widget> _getMediaWidget(int position) async {
+    var itemWidget = _mediaCache[position];
+    if (itemWidget != null) {
+      return itemWidget;
+    }
+
+    var mediaItem = await _getCurrentMediaItem();
+    itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
+
+    if (_mediaCache.length > 10) {
+      _mediaCache.remove(_mediaCache.keys.first);
+    }
+    _mediaCache[position] = itemWidget;
+    return itemWidget;
+  }
+
   //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
-  bool _isVideo(String fileName) => path.extension(fileName).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => path.extension(item.uri.path).toLowerCase() == '.mp4';
 
   void _screenStateChangePreparation(bool enabled) {
     // Screen OFF
     if (enabled == false) {
-      controller.stop();
+      _mediaItemLoopController.stop();
       _fadeController.forward();
     } else {
-      controller.forward();
+      _mediaItemLoopController.forward();
       _fadeController.reverse();
     }
   }

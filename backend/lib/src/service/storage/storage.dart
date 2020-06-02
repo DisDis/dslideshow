@@ -1,32 +1,23 @@
 // Хранить список всех файлов которые есть в облаке
-abstract class Storage{
-  Future init();
-  Future release();
-  Stream<DateTime> get onStartSync;
-  Stream<DateTime> get onEndSync;
+import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_type.dart';
 
-  StorageType get type;
-  // когда последний раз происходила синхронизация
+abstract class Storage {
   DateTime get lastSync;
-  // принудительно синхронизироваться
-  Future<Null> sync();
-  // Вернуть текищий
+  Stream<DateTime> get onEndSync;
+  Stream<DateTime> get onStartSync;
+  StorageType get type;
+
   Future<MediaItem> getCurrent();
-  // Вернуть следующий
+
+  // когда последний раз происходила синхронизация
   Future<MediaItem> getNext();
-  // Осуществить сдвиг
+  // принудительно синхронизироваться
+  Future init();
+  // Вернуть текищий
   Future<MediaItem> next();
-}
-
-class MediaItem{
-  final String id;
-  final Uri uri;
-
-  MediaItem(this.id, this.uri);
-}
-
-
-enum StorageType{
-  local,
-  remote
+  // Вернуть следующий
+  Future release();
+  // Осуществить сдвиг
+  Future<Null> sync();
 }

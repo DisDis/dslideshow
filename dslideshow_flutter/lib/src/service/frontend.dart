@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 

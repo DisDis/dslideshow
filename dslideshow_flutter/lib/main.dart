@@ -87,8 +87,7 @@ class FlutterReduxApp extends StatelessWidget {
         store: store,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-          ),
+          theme: ThemeData(),
           localizationsDelegates: [],
           supportedLocales: [
             const Locale('en'), // English

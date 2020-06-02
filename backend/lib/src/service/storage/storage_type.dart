@@ -1,0 +1,4 @@
+enum StorageType {
+  local,
+  remote,
+}

@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
-import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_type.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
