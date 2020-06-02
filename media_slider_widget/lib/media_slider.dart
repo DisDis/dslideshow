@@ -113,15 +113,15 @@ class MediaSliderState extends State<MediaSlider> {
     });
   }
 
-  void nextSlide() {
-    _pageController.nextPage(
+  Future nextSlide() {
+    return _pageController.nextPage(
       duration: widget.transitionTime,
       curve: widget.transitionCurve,
     );
   }
 
-  void previousSlide() {
-    _pageController.previousPage(
+  Future previousSlide() {
+    return _pageController.previousPage(
       duration: widget.transitionTime,
       curve: widget.transitionCurve,
     );

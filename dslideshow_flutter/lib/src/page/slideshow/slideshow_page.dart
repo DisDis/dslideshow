@@ -175,7 +175,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
-    _sliderKey.currentState.nextSlide();
+    await _sliderKey.currentState.nextSlide();
     _mediaItemLoopController.reset();
     _mediaItemLoopController.forward();
   }
