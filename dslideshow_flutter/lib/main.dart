@@ -31,29 +31,36 @@ void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   initLog('flutter');
   _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
+
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
+
   try {
     RemoteService _backendService;
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
+
     _log.info("Config path: '${localPath}'");
-    injector = new di.ModuleInjector([
+
+    injector = di.ModuleInjector([
       getInjectorModule(),
-      new di.Module()
-        ..bind(AppConfig, toFactory: () => new AppConfig(localPath.path))
-        ..bind(AppStorage, toFactory: () => new AppStorage(localPath.path))
+      di.Module()
+        ..bind(AppConfig, toFactory: () => AppConfig(localPath.path))
+        ..bind(AppStorage, toFactory: () => AppStorage(localPath.path))
         ..bind(FrontendService,
-            toFactory: (AppConfig _config) => new FrontendService(_config, _backendService),
-            inject: <dynamic>[AppConfig])
+            toFactory: (AppConfig _config) => FrontendService(_config, _backendService), inject: <dynamic>[AppConfig])
     ]);
+
     _log.info("externalStorage: '${environment.externalStorage.path}'");
+
     var config = injector.get(AppConfig) as AppConfig;
     Logger.root.level = config.log.levelMain;
+
     IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
     final currentIsoRunner = await _createCurrentIsolateRunner();
     await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
-    _backendService = new RemoteService(_backendServiceIsolate, serializers);
+    _backendService = RemoteService(_backendServiceIsolate, serializers);
+
     final _frontendService = injector.get(FrontendService) as FrontendService;
     initRpc(_frontendService, serializers);
 
@@ -64,14 +71,15 @@ void main() async {
   }
 }
 
-final Logger _log = new Logger('main');
+final Logger _log = Logger('main');
+
 Future<IsolateRunner> _createCurrentIsolateRunner() async {
-  var remote = new IsolateRunnerRemote();
-  return new IsolateRunner(isol.Isolate.current, remote.commandPort);
+  var remote = IsolateRunnerRemote();
+  return IsolateRunner(isol.Isolate.current, remote.commandPort);
 }
 
 void _runFlutter(FrontendService frontendService) {
-  final store = new Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
+  final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
   runApp(FlutterReduxApp(store: store));
 }
@@ -83,7 +91,7 @@ class FlutterReduxApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new StoreProvider<GlobalState>(
+    return StoreProvider<GlobalState>(
         store: store,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

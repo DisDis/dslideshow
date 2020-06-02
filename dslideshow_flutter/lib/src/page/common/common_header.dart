@@ -1,6 +1,8 @@
+import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
 
 /// A builder that builds a widget given a child.
 ///
@@ -33,58 +35,72 @@ class CommonHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: new StoreConnector<GlobalState, GlobalState>(
-//            rebuildOnChange: true,
-            converter: (store) => store.state,
-            builder: (context, globalState) => Row(
-                  children: <Widget>[
-                    if (globalState.storageStatus == StorageStatusEnum.off)
-                      BlinkAnimation(
-                        key: const Key('cloud_off'),
-                        child: Icon(
-                          Icons.cloud_off,
-                          size: 24.0,
-                          color: Colors.red,
-                        ),
-                        hideAfterBlink: false,
-                      )
-                    else if (globalState.storageStatus == StorageStatusEnum.download)
-                      BlinkAnimation(
-                        key: const Key('cloud_download'),
-                        child: Icon(
-                          Icons.cloud_download,
-                          size: 24.0,
-                          color: Colors.white,
-                        ),
-                      )
-                    else if (globalState.storageStatus == StorageStatusEnum.done)
-                      BlinkAnimation(
-                          key: const Key('cloud_done'),
-                          child: Icon(
-                            Icons.cloud_done,
-                            size: 24.0,
-                            color: Colors.white,
-                          )),
-                    if (globalState.hasInternet)
-                      BlinkAnimation(
-                          key: const Key('hasInternet'),
-                          child: Icon(
-                            Icons.signal_wifi_4_bar,
-                            size: 24.0,
-                            color: Colors.white,
-                          ))
-                    else
-                      BlinkAnimation(
-                        key: const Key('noInternet'),
-                        child: Icon(
-                          Icons.signal_wifi_off,
-                          size: 24.0,
-                          color: Colors.red,
-                        ),
-                        hideAfterBlink: false,
-                      )
-                  ],
-                )));
+      child: StoreConnector<GlobalState, Store<GlobalState>>(
+        converter: (store) => store,
+        builder: (context, Store<GlobalState> store) => Stack(
+          children: <Widget>[
+            Positioned(
+              right: 0,
+              top: 0,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
+                child: Container(color: Colors.transparent, width: 30, height: 30),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                if (store.state.storageStatus == StorageStatusEnum.off)
+                  BlinkAnimation(
+                    key: const Key('cloud_off'),
+                    child: Icon(
+                      Icons.cloud_off,
+                      size: 24.0,
+                      color: Colors.red,
+                    ),
+                    hideAfterBlink: false,
+                  )
+                else if (store.state.storageStatus == StorageStatusEnum.download)
+                  BlinkAnimation(
+                    key: const Key('cloud_download'),
+                    child: Icon(
+                      Icons.cloud_download,
+                      size: 24.0,
+                      color: Colors.white,
+                    ),
+                  )
+                else if (store.state.storageStatus == StorageStatusEnum.done)
+                  BlinkAnimation(
+                      key: const Key('cloud_done'),
+                      child: Icon(
+                        Icons.cloud_done,
+                        size: 24.0,
+                        color: Colors.white,
+                      )),
+                if (store.state.hasInternet)
+                  BlinkAnimation(
+                      key: const Key('hasInternet'),
+                      child: Icon(
+                        Icons.signal_wifi_4_bar,
+                        size: 24.0,
+                        color: Colors.white,
+                      ))
+                else
+                  BlinkAnimation(
+                    key: const Key('noInternet'),
+                    child: Icon(
+                      Icons.signal_wifi_off,
+                      size: 24.0,
+                      color: Colors.red,
+                    ),
+                    hideAfterBlink: false,
+                  )
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
