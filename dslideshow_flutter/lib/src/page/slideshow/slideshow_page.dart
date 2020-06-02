@@ -39,15 +39,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   int _listItemCount = 2;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+
+  final _debugButtonSize = Size(20, 20);
+
   AnimationController _fadeController;
-  Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
-  Map<int, Widget> _mediaCache = Map<int, Widget>();
+  final Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
+  final Map<int, Widget> _mediaCache = Map<int, Widget>();
   Effect _currentEffect = Effect.cubeEffect;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return Scaffold(
       body: Container(
         child: Stack(
@@ -57,7 +59,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
               color: Colors.black,
               child: _createMediaSlider(),
             ),
-            Container(child: CommonHeaderWidget()),
             Container(
                 child: Positioned(
                     bottom: 0.0,
@@ -77,6 +78,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                 }),
             FadeWidget(animation: _fadeController),
             DebugWidget(),
+            Container(child: CommonHeaderWidget()),
           ],
         ),
       ),

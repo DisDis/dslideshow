@@ -24,7 +24,7 @@ class ConfigPage extends StatelessWidget {
             size: 300.0,
           ),
           Text(_urlData),
-          new StoreConnector<GlobalState, VoidCallback>(
+          StoreConnector<GlobalState, VoidCallback>(
               converter: (store) => () => store.dispatch(ChangeStorageStatusAction(
                   StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
               builder: (context, callback) => RaisedButton(
