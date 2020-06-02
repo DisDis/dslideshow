@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -162,7 +163,20 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _log.info('Change image');
     // cached next image
     await _frontendService.storageNext();
-    await _getMediaWidget(_listItemCount - 1);
+    var item = await _getMediaWidget(_listItemCount - 1);
+    if (item is ImageWidget){
+//      if (!item.provider.resolve(ImageConfiguration.empty).completer.hasListeners){
+        final _completer = new Completer<void>();
+        final _listener = new ImageStreamListener((info, bool sync){
+//          _log.info('image loaded');
+          _completer.complete();
+        });
+        item.provider.resolve(ImageConfiguration.empty).completer.addListener(_listener);
+        await _completer.future;
+        item.provider.resolve(ImageConfiguration.empty).completer.removeListener(_listener);
+//      }
+
+    }
 
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
