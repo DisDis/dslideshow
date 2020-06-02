@@ -118,9 +118,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _fetchNextMediaItem();
-
-        _mediaItemLoopController.reset();
-        _mediaItemLoopController.forward();
       }
     });
 
@@ -170,7 +167,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           _completer.complete();
         });
         item.provider.resolve(ImageConfiguration.empty).completer.addListener(_listener);
-        await _completer.future;
+        await _completer.future.timeout(new Duration(seconds: 5), onTimeout: ()=>_completer.complete());
         item.provider.resolve(ImageConfiguration.empty).completer.removeListener(_listener);
 //      }
 
@@ -179,6 +176,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
     _sliderKey.currentState.nextSlide();
+    _mediaItemLoopController.reset();
+    _mediaItemLoopController.forward();
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {
