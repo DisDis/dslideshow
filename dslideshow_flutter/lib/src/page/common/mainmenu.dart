@@ -20,6 +20,12 @@ class _MenuOptionsScreenState extends State<MainMenuWidget> {
     _demoTimer = new Timer.periodic(new Duration(seconds: 3), _changeSelect);
   }
 
+  @override
+  void dispose() {
+    _demoTimer.cancel();
+    super.dispose();
+  }
+
   void _changeSelect(Timer _){
       setState(() {
       _selectedOption = _rnd.nextInt(options.length-1);
