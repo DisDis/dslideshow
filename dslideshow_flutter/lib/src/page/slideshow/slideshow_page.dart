@@ -9,7 +9,7 @@ import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
-import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +30,7 @@ class SlideShowPage extends StatefulWidget {
 }
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
-  static final Logger _log = new Logger('_SlideShowPageState');
+  static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
@@ -40,42 +40,47 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
   AnimationController _fadeController;
-  Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
-  Map<int, Widget> _mediaCache = new Map<int, Widget>();
+  Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
+  Map<int, Widget> _mediaCache = Map<int, Widget>();
   Effect _currentEffect = Effect.cubeEffect;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: new Stack(
-      children: <Widget>[
-        new Container(
-          height: MediaQuery.of(context).size.height,
-          color: Colors.black,
-          child: _createMediaSlider(),
+    final size = MediaQuery.of(context).size;
+
+    return Scaffold(
+      body: Container(
+        child: Stack(
+          children: <Widget>[
+            Container(
+              height: size.height,
+              color: Colors.black,
+              child: _createMediaSlider(),
+            ),
+            Container(child: CommonHeaderWidget()),
+            Container(
+                child: Positioned(
+                    bottom: 0.0,
+                    right: 0.0,
+                    child: CustomPaint(
+                      size: Size(size.width, 3),
+                      painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                    ))),
+            StoreConnector<GlobalState, Store<GlobalState>>(
+                converter: (store) => store,
+                //rebuildOnChange: true,
+                onDidChange: (newStore) {
+                  _stateKey.currentState.isPaused = newStore.state.isPaused;
+                },
+                builder: (context, Store<GlobalState> store) {
+                  return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
+                }),
+            FadeWidget(animation: _fadeController),
+            DebugWidget(),
+          ],
         ),
-        new Container(child: CommonHeaderWidget()),
-        new Container(
-            child: Positioned(
-                bottom: 0.0,
-                right: 0.0,
-                child: CustomPaint(
-                  size: Size(MediaQuery.of(context).size.width, 3),
-                  painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
-                ))),
-        new StoreConnector<GlobalState, Store<GlobalState>>(
-            converter: (store) => store,
-            //rebuildOnChange: true,
-            onDidChange: (newStore) {
-              _stateKey.currentState.isPaused = newStore.state.isPaused;
-            },
-            builder: (context, Store<GlobalState> store) {
-              return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
-            }),
-        FadeWidget(animation: _fadeController),
-        DebugWidget()
-      ],
-    ));
+      ),
+    );
   }
 
   @override
@@ -111,7 +116,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        _changeImage();
+        _fetchNextMediaItem();
 
         _mediaItemLoopController.reset();
         _mediaItemLoopController.forward();
@@ -123,19 +128,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
   }
 
-  void _changeImage() async {
-    _log.info('Change image');
-    // cached next image
-    await _frontendService.storageNext();
-    await _getMediaWidget(_listItemCount - 1);
-    _listItemCount++;
-    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
-    _sliderKey.currentState.nextSlide();
-  }
-
   Widget _createMediaSlider() {
     final widget = MediaSlider.builder(
       key: _sliderKey,
+      isAutoPlay: false,
       slideEffect: _currentEffect.createEffect(),
       unlimitedMode: true,
       transitionTime: const Duration(milliseconds: 500),
@@ -158,6 +154,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     );
 
     return widget;
+  }
+
+  void _fetchNextMediaItem() async {
+    _log.info('Change image');
+    // cached next image
+    await _frontendService.storageNext();
+    await _getMediaWidget(_listItemCount - 1);
+
+    _listItemCount++;
+    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
+    _sliderKey.currentState.nextSlide();
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {

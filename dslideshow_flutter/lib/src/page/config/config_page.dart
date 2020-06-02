@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
-import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';

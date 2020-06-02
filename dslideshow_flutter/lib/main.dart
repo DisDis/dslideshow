@@ -14,7 +14,7 @@ import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
 import 'package:dslideshow_flutter/src/redux/app_reducer.dart';
-import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

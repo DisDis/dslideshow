@@ -5,7 +5,7 @@
 library serializers;
 
 import 'package:built_value/serializer.dart';
-import 'package:dslideshow_flutter/src/redux/data_model/global_state.dart';
+import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 
 part 'serializers.g.dart';
 
