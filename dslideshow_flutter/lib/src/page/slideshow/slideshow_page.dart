@@ -113,16 +113,13 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     });
 
     _mediaItemLoopController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
-    _mediaItemLoopController.addListener(() {
-      setState(() {});
-    });
+//    _mediaItemLoopController.addListener(() {
+//
+//    });
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _fetchNextMediaItem();
-
-        _mediaItemLoopController.reset();
-        _mediaItemLoopController.forward();
       }
     });
 
@@ -165,22 +162,15 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     await _frontendService.storageNext();
     var item = await _getMediaWidget(_listItemCount - 1);
     if (item is ImageWidget){
-//      if (!item.provider.resolve(ImageConfiguration.empty).completer.hasListeners){
-        final _completer = new Completer<void>();
-        final _listener = new ImageStreamListener((info, bool sync){
-//          _log.info('image loaded');
-          _completer.complete();
-        });
-        item.provider.resolve(ImageConfiguration.empty).completer.addListener(_listener);
-        await _completer.future;
-        item.provider.resolve(ImageConfiguration.empty).completer.removeListener(_listener);
-//      }
-
+        await precacheImage(item.provider, context);
     }
 
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
-    _sliderKey.currentState.nextSlide();
+    await _sliderKey.currentState.nextSlide();
+    _mediaItemLoopController.reset();
+    _mediaItemLoopController.forward();
+    setState(() {});
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {
