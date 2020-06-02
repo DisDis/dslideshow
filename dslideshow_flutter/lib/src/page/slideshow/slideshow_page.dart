@@ -114,7 +114,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _changeImage() async {
     _log.info('Change image');
+    // cached next image
     await _frontendService.storageNext();
+    await _getMedia(_listItemCount-1);
+    _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
     _sliderKey.currentState.nextSlide();
   }
@@ -127,25 +130,22 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       transitionTime: const Duration(milliseconds: 500),
       itemCount: _listItemCount,
       slideBuilder: (index) {
-        _listItemCount = index + 2;
-
-        return Container(
-          child: Center(
-            child: FutureBuilder<String>(
-                future: _getMedia(index),
-                builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                  if (snapshot.hasData) {
-                    return _isVideo(snapshot.data)
-                        ? (isVideoSupport ? VideoWidget(snapshot.data) : Container())
-                        : Image.file(new File(snapshot.data));
-                  } else {
-                    return SizedBox(
+       var data = getMediaFromCache(index);
+        if (data==null){
+          return Container(
+              child: Center(
+                  child: SizedBox(
                       child: CircularProgressIndicator(),
                       width: 60,
                       height: 60,
-                    );
-                  }
-                }),
+                    )
+          ));
+        }
+        return Container(
+          child: Center(
+              child:_isVideo(data)
+                        ? (isVideoSupport ? VideoWidget(data) : Container())
+                        : Image.file(new File(data))
           ),
         );
       },
@@ -159,25 +159,25 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item.uri.path;
   }
 
-  ///
-  /// todo: check logic to call get next media item
-  ///
+  String getMediaFromCache(int position){
+      var item = _mediaCache[position];
+      if (item != null) {
+        return item;
+      }
+      return null;
+  }
+
   Future<String> _getMedia(int position) async {
     var item = _mediaCache[position];
     if (item != null) {
       return item;
     }
-    item = await (true ? _getCurrentMedia() : _getNextMedia());
+    item = await _getCurrentMedia();// await (length - 2 == position ? _getCurrentMedia(): _getNextMedia());
     if (_mediaCache.length > 10) {
       _mediaCache.remove(_mediaCache.keys.first);
     }
     _mediaCache[position] = item;
     return item;
-  }
-
-  Future<String> _getNextMedia() async {
-    var item = await _frontendService.getStorageNextItem();
-    return item.uri.path;
   }
 
   //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
