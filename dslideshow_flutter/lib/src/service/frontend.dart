@@ -24,22 +24,11 @@ class FrontendService implements RpcService {
   Stream<ButtonType> get onPushButton => _onPushButton.stream;
 
   final Store<GlobalState> _store;
+  Store<GlobalState> get store => _store;
 
   FrontendService(AppConfig config, this._backendService, this._store) {
     new Timer.periodic(new Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
     _updateSystemInfo();
-    onPushButton.listen((event) {
-      if (event == ButtonType.pause){
-        _store.dispatch(ChangePauseAction(!_store.state.isPaused));
-      } else
-      if (event == ButtonType.screentoggle){
-        LEDControl(LEDType.power, !_store.state.hasInternet);
-        _store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
-      } else
-      if (event == ButtonType.menu){
-        _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
-      }
-    });
   }
 
 

@@ -32,8 +32,26 @@ class AppConfig{
   HardwareConfig _hardware;
   HardwareConfig get hardware => _hardware??=new HardwareConfig(_config["hardware"] as Map<String, dynamic>);
 
+  SlideShowConfig _slideShowConfig;
+  SlideShowConfig get slideshow => _slideShowConfig??=new SlideShowConfig(_config["slideshow"] as Map<String, dynamic>);
+
   Map<String, dynamic> _storageSection;
   Map<String, dynamic> get storageSection => _storageSection??=(_config["storage"]==null?<String, dynamic>{}: _config["storage"] as Map<String, dynamic>);
+}
+
+class SlideShowConfig  extends BaseConfig {
+
+  int _displayTime;
+
+  int get displayTimeMs => _displayTime ??= readInt("displayTimeMs", 5000);
+
+  int _fadeTime;
+
+  int get fadeTimeMs => _fadeTime ??= readInt("fadeTimeMs", 2000);
+
+  int _transitionTimeMs;
+
+  int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
 }
 
 class AppStorage{

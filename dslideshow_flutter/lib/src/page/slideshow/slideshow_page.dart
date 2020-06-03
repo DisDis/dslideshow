@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
@@ -11,6 +13,9 @@ import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +46,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   int _listItemCount = 2;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+  final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
 
   AnimationController _fadeController;
   final Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
@@ -105,22 +111,24 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   }
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
+  Duration _transitionTime;
+
 
   @override
   void initState() {
     super.initState();
 
-    _fadeController = AnimationController(duration: const Duration(seconds: 2), vsync: this);
+    _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
+    final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
+    _fadeController = AnimationController(duration: fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
         _fadeController.reset();
       }
     });
 
-    _mediaItemLoopController = AnimationController(duration: const Duration(seconds: 5), vsync: this);
-//    _mediaItemLoopController.addListener(() {
-//
-//    });
+    final displayTime = Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
+    _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -132,6 +140,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
+    _subs.add(_frontendService.onPushButton.listen(_pushButton));
   }
 
   Widget _createMediaSlider() {
@@ -140,7 +149,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       isAutoPlay: false,
       slideEffect: _currentEffect.createEffect(),
       unlimitedMode: true,
-      transitionTime: const Duration(milliseconds: 500),
+      transitionTime: _transitionTime,
       itemCount: _listItemCount,
       slideBuilder: (index) {
         var data = getMediaFromCache(index);
@@ -209,12 +218,43 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       _mediaItemLoopController.stop();
       _fadeController.forward();
     } else {
-      _mediaItemLoopController.forward();
       _fadeController.reverse();
+      _restorePlayPauseState();
+    }
+  }
+
+  void _restorePlayPauseState(){
+    final _store = _frontendService.store;
+    if (_store.state.isPaused){
+      _mediaItemLoopController.stop();
+    } else {
+      _mediaItemLoopController.forward();
     }
   }
 
   void _systemInfoChanged(SystemInfo info) {
     _log.info(info);
+  }
+
+  void _pushButton(ButtonType event) {
+    final _store = _frontendService.store;
+    switch (event) {
+      case ButtonType.pause:
+        var isPausedNewValue = !_store.state.isPaused;
+        _store.dispatch(ChangePauseAction(isPausedNewValue));
+        if (isPausedNewValue){
+          _mediaItemLoopController.stop();
+        } else {
+          _mediaItemLoopController.forward();
+        }
+        break;
+      case ButtonType.screentoggle:
+        _frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
+        _store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
+        break;
+      case ButtonType.menu:
+        _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+        break;
+    }
   }
 }
