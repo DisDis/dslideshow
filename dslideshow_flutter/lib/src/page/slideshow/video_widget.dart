@@ -39,8 +39,10 @@ class _VideoWidgetState extends State<VideoWidget> {
 
   @override
   void dispose() {
+    if (_controller != null) {
+      _controller.dispose();
+    }
     super.dispose();
-    _controller.dispose();
   }
 
   @override

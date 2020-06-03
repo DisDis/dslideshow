@@ -47,7 +47,7 @@ class SystemInfoService{
   }
 
   Future<bool> hasInternet()async {
-    _log.info('hasInternet');
+//    _log.info('hasInternet');
     try {
       var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8']);
       if (result.exitCode == 0) {
@@ -60,7 +60,7 @@ class SystemInfoService{
   }
 
   Future<Iterable<NetworkInterfaceInfo>> getNetworkInterfaces() async{
-    _log.info('getNetworkInterfaces');
+//    _log.info('getNetworkInterfaces');
     try {
         var result = await io.Process.run(_config.systemIfConfigScript, []);
         if (result.exitCode == 0){
@@ -168,9 +168,9 @@ class SystemInfoService{
         b.cpuLoad5 = double.tryParse(arrData[1]);
         b.cpuLoad15 = double.tryParse(arrData[2]);
       }
-      _log.info(b.build());
+//      _log.info(b.build());
     } catch (e, s) {
-      _log.severe('_getCpuInfo', e, s);
+      _log.severe('getUpdateInfo', e, s);
     }
     b.sensors.addAll( await  _getSensorInfo() );
 
@@ -178,7 +178,7 @@ class SystemInfoService{
   }
 
   Future<CpuInfoBuilder>_getCpuInfo() async{
-    _log.info('_getCpuInfo');
+//    _log.info('_getCpuInfo');
     final b = new CpuInfoBuilder();
     b.cores = 0;
     b.hardware = '';
@@ -198,7 +198,7 @@ class SystemInfoService{
         b.model = _findModel.firstMatch(str).group(1);
         b.revision = _findRevision.firstMatch(str).group(1);
       }
-      _log.info(b.build());
+//      _log.info(b.build());
     } catch (e, s) {
       _log.severe('_getCpuInfo', e, s);
     }
@@ -212,7 +212,7 @@ class SystemInfoService{
       if (result.exitCode == 0){
         b.name = result.stdout.toString();
       }
-      _log.info(b.build());
+//      _log.info(b.build());
     } catch (e, s) {
       _log.severe('_getOSInfo', e, s);
     }

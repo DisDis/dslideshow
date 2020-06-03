@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of owl.src.service.command.echo;
+part of 'echo.dart';
 
 // **************************************************************************
 // BuiltValueGenerator

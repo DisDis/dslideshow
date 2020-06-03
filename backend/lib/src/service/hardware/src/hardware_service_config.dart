@@ -2,7 +2,7 @@ import 'package:dslideshow_backend/config.dart';
 
 class HardwareConfig  extends BaseConfig {
   int _pinPauseButton;
-  int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 15);
+  int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 17);
 
   int _pinMenuButton;
   int get pinMenuButton => _pinMenuButton ??= readInt("pinMenuButton", 27);
@@ -11,7 +11,7 @@ class HardwareConfig  extends BaseConfig {
   int get pinScreenToggleButton => _pinScreenToggleButton ??= readInt("pinScreenToggleButton", 22);
 
   int _pinPIRSensor;
-  int get pinPIRSensor => _pinPIRSensor ??= readInt("pinPIRSensor", 17);
+  int get pinPIRSensor => _pinPIRSensor ??= readInt("pinPIRSensor", 15);
 
   int _pinPowerLED;
   int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);

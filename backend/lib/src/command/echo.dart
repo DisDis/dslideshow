@@ -1,5 +1,3 @@
-library owl.src.service.command.echo;
-
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dslideshow_common/rpc.dart';

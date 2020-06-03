@@ -5,6 +5,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/echo.dart';
 import 'package:dslideshow_backend/src/command/empty_result.dart';
+import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/command/screen_commands.dart';
 import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
@@ -35,9 +36,17 @@ class HardwareService implements RpcService{
     } else {
       _log.warning('GPIO does not support except Linux');
     }
+    _gpioService.onMenu.listen((event) {
+      _log.info('onMenu button = $event');
+      if (event) _pushButton(ButtonType.menu);
+    });
+    _gpioService.onScreenToggle.listen((event) {
+      _log.info('onScreenToggle button = $event');
+      if (event) _pushButton(ButtonType.screentoggle);
+    });
     _gpioService.onPause.listen((event) {
-      _log.info('onPause = $event');
-      _gpioService.powerLED = event;
+      _log.info('onPause button = $event');
+      if (event) _pushButton(ButtonType.pause);
     });
     _screenService.onStateChangePreparation.listen((newState) {
       screenConfigure(newState);
@@ -70,18 +79,21 @@ class HardwareService implements RpcService{
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
-    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
+//    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
     Stopwatch work = new Stopwatch()
       ..reset()
       ..start();
     return _executeCommand(command).whenComplete((){
       work.stop();
-      _log.info("Processing command: [${command.hashCode}]${command.id}:${command.type} - ${work.elapsed.toString()}");
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case LEDControlCommand.TYPE:
+        return _executeLEDControlCommand(command as LEDControlCommand);
+        break;
       case GetSystemInfoCommand.TYPE:
         return _executeGetSystemInfoCommand(command as GetSystemInfoCommand);
         break;
@@ -131,7 +143,6 @@ class HardwareService implements RpcService{
     });
   }
   Future<RpcResult> _executeGetMediaItemCommand(GetMediaItemCommand command) async {
-
     final item = await (command.isCurrent?_storage.getCurrent():_storage.getNext());
     return new GetMediaItemCommandResult((b) {
       b.id = command.id;
@@ -146,6 +157,23 @@ class HardwareService implements RpcService{
     return new GetSystemInfoCommandResult((b) {
       b.id = command.id;
       b.systemInfo = info.toBuilder();
+      return b;
+    });
+  }
+
+  Future<RpcResult> _pushButton(ButtonType type) async{
+    return _frontendService.send(new PushButtonCommand((b) =>
+    b
+      ..id = RpcCommand.generateId()
+      ..button = type));
+  }
+
+  Future<RpcResult> _executeLEDControlCommand(LEDControlCommand command) async {
+    if (command.led == LEDType.power) {
+      _gpioService.powerLED = command.value;
+    }
+    return new EmptyResult((b) {
+      b.id = command.id;
       return b;
     });
   }

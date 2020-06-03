@@ -5,7 +5,9 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
@@ -15,25 +17,40 @@ class FrontendService implements RpcService {
   final RemoteService _backendService;
   final _screenStateChangePreparation = new StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = new StreamController<SystemInfo>.broadcast();
+  final _onPushButton = new StreamController<ButtonType>.broadcast();
+
+  Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
+  Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
+  Stream<ButtonType> get onPushButton => _onPushButton.stream;
+
   final Store<GlobalState> _store;
 
   FrontendService(AppConfig config, this._backendService, this._store) {
     new Timer.periodic(new Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
     _updateSystemInfo();
+    onPushButton.listen((event) {
+      if (event == ButtonType.pause){
+        _store.dispatch(ChangePauseAction(!_store.state.isPaused));
+      } else
+      if (event == ButtonType.screentoggle){
+        _store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
+      } else
+      if (event == ButtonType.menu){
+        _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+      }
+    });
   }
 
-  Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
-  Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
-    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
+//    _log.info("Execute command [${command.hashCode}]${command.id}:${command.type}");
     Stopwatch work = new Stopwatch()
       ..reset()
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info("Processing command: [${command.hashCode}]${command.id}:${command.type} - ${work.elapsed.toString()}");
+      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -70,6 +87,8 @@ class FrontendService implements RpcService {
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case PushButtonCommand.TYPE:
+        return _executePushButtonCommand(command as PushButtonCommand);
       case ScreenTurnCommand.TYPE:
         return new Future.value(_executeScreenTurnCommand(command as ScreenTurnCommand));
         break;
@@ -118,5 +137,10 @@ class FrontendService implements RpcService {
       _store.dispatch(ChangeInternetAction(result.networkInfo.hasInternet));
     }
     _onSystemInfoUpdate.add(result);
+  }
+
+  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async{
+    _onPushButton.add(command.button);
+    return new EmptyResult((b) => b..id = command.id);
   }
 }

@@ -19,7 +19,7 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
   SystemInfo _systemInfo;
   final TextStyle _style = TextStyle(
       color: Colors.black,
-      fontSize: 5.0 );
+      fontSize: 10.0 );
 
   StreamSubscription<SystemInfo> _streamSubscription;
   @override
