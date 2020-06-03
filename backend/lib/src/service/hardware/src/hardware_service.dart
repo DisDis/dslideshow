@@ -191,7 +191,7 @@ class HardwareService implements RpcService{
     if (command.enabled){
       _screenService.screenOn();
     } else {
-      _screenService.scheduleScreenOff();
+      _screenService.screenOff();
     }
     return new EmptyResult((b) {
       b.id = command.id;
