@@ -33,6 +33,7 @@ class FrontendService implements RpcService {
         _store.dispatch(ChangePauseAction(!_store.state.isPaused));
       } else
       if (event == ButtonType.screentoggle){
+        LEDControl(LEDType.power, !_store.state.hasInternet);
         _store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
       } else
       if (event == ButtonType.menu){
@@ -72,10 +73,13 @@ class FrontendService implements RpcService {
     return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
 
+  Future LEDControl(LEDType type, bool value) async {
+    return _backendService.send(new LEDControlCommand((b) => b..id = RpcCommand.generateId()..led = type..value = value));
+  }
+
+
   Future storageNext() async {
-//    final result =
-    await _backendService.send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
-//    _log.info("Message: $result");
+    return _backendService.send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
   }
 
   void testEcho(String text) async {
