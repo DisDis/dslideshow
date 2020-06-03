@@ -43,7 +43,7 @@ class CommonHeaderWidget extends StatelessWidget {
               right: 0,
               top: 0,
               child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
+                behavior: HitTestBehavior.translucent,
                 onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
                 child: Container(color: Colors.transparent, width: 30, height: 30),
               ),
