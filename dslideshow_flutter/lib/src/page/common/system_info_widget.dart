@@ -39,7 +39,10 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
 
   @override
   void dispose() {
-    _streamSubscription.cancel();
+    if (_streamSubscription!=null) {
+      _streamSubscription.cancel();
+      _streamSubscription = null;
+    }
     super.dispose();
   }
 
