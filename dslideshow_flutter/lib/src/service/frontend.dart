@@ -3,16 +3,27 @@ import 'dart:async';
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
+import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:logging/logging.dart';
+import 'package:redux/redux.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = new Logger('FlutterService');
   final RemoteService _backendService;
   final _screenStateChangePreparation = new StreamController<bool>.broadcast();
-  FrontendService(AppConfig config, this._backendService) {}
+  final _onSystemInfoUpdate = new StreamController<SystemInfo>.broadcast();
+  final Store<GlobalState> _store;
+
+  FrontendService(AppConfig config, this._backendService, this._store) {
+    new Timer.periodic(new Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
+    _updateSystemInfo();
+  }
 
   Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
+  Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
@@ -91,5 +102,21 @@ class FrontendService implements RpcService {
     return new ErrorResult((b) => b
       ..id = (command.id == null ? 0 : command.id)
       ..error = "$e");
+  }
+
+  Future<SystemInfo> getSystemInfo() async {
+    final resultRaw = await _backendService.send(new GetSystemInfoCommand((GetSystemInfoCommandBuilder b) => b
+      ..id = RpcCommand.generateId()
+      ));
+    var result = resultRaw as GetSystemInfoCommandResult;
+    return result.systemInfo;
+  }
+
+  void _updateSystemInfo() async{
+    var result = await getSystemInfo();
+    if (_store.state.hasInternet != result.networkInfo.hasInternet){
+      _store.dispatch(ChangeInternetAction(result.networkInfo.hasInternet));
+    }
+    _onSystemInfoUpdate.add(result);
   }
 }

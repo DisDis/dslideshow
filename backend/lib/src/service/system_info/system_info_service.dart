@@ -19,6 +19,10 @@ class SystemInfoService{
 
   final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
 
+  Future<SystemInfo> init(){
+    return getFullInfo();
+  }
+
   Future<SystemInfo> getFullInfo() async{
     UpdateInfoBuilder updateInfo = await getUpdateInfo();
     if (_lastInfo == null){
@@ -32,7 +36,7 @@ class SystemInfoService{
         b.networkInfo = _networkInfo;
       });
     } else {
-      var delta = new DateTime.now().difference(_lastInfo.networkInfo.lastUpdate);
+      var delta = new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo.networkInfo.lastUpdate));
       if (delta >  _networkInfoUpdatePeriod ){
         final _networkInfo = await _getNetworkInfo();
         _lastInfo = _lastInfo.rebuild((builder) => builder.networkInfo = _networkInfo);
@@ -111,7 +115,7 @@ class SystemInfoService{
 
   Future<UpdateInfoBuilder> getUpdateInfo() async{
     final b = new UpdateInfoBuilder();
-    b.lastUpdate = new DateTime.now();
+    b.lastUpdate = new DateTime.now().millisecondsSinceEpoch;
     b.cpuLoad1 = 1;
     b.cpuLoad5 = 1;
     b.cpuLoad15 = 1;
@@ -216,7 +220,7 @@ class SystemInfoService{
   }
   Future<NetworkInfoBuilder>_getNetworkInfo() async{
     final b = new NetworkInfoBuilder();
-    b.lastUpdate = new DateTime.now();
+    b.lastUpdate = new DateTime.now().millisecondsSinceEpoch;
     b.interfaces.addAll(await getNetworkInterfaces());
     b.hasInternet = await hasInternet();
     return b;

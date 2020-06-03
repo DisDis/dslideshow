@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/echo.dart';
 import 'package:dslideshow_backend/src/command/empty_result.dart';
@@ -8,6 +9,7 @@ import 'package:dslideshow_backend/src/command/screen_commands.dart';
 import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
@@ -16,12 +18,13 @@ import 'gpio_service.dart';
 class HardwareService implements RpcService{
   static final Logger _log = new Logger('HardwareService');
 
+  final SystemInfoService _systemInfoService;
   final RemoteService _frontendService;
   final Storage _storage;
 
   final GPIOService _gpioService;
   final ScreenService _screenService;
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService){
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService){
     _init();
   }
 
@@ -47,7 +50,7 @@ class HardwareService implements RpcService{
         _screenService.scheduleScreenOff();
       }
     });
-
+    _systemInfoService.init();
   }
 
   void screenConfigure(bool enabled){
@@ -79,6 +82,9 @@ class HardwareService implements RpcService{
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case GetSystemInfoCommand.TYPE:
+        return _executeGetSystemInfoCommand(command as GetSystemInfoCommand);
+        break;
       case GetMediaItemCommand.TYPE:
         return _executeGetMediaItemCommand(command as GetMediaItemCommand);
         break;
@@ -131,6 +137,15 @@ class HardwareService implements RpcService{
       b.id = command.id;
       b.mediaId = item!=null? item.id: null;
       b.mediaUri = item!=null? item.uri: null;
+      return b;
+    });
+  }
+
+  Future<RpcResult> _executeGetSystemInfoCommand(GetSystemInfoCommand command) async{
+    final info = await _systemInfoService.getFullInfo();
+    return new GetSystemInfoCommandResult((b) {
+      b.id = command.id;
+      b.systemInfo = info.toBuilder();
       return b;
     });
   }

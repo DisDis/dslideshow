@@ -20,7 +20,7 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
     final result = <Object>[
       'lastUpdate',
       serializers.serialize(object.lastUpdate,
-          specifiedType: const FullType(DateTime)),
+          specifiedType: const FullType(int)),
       'cpuLoad1',
       serializers.serialize(object.cpuLoad1,
           specifiedType: const FullType(double)),
@@ -75,7 +75,7 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
       switch (key) {
         case 'lastUpdate':
           result.lastUpdate = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
+              specifiedType: const FullType(int)) as int;
           break;
         case 'cpuLoad1':
           result.cpuLoad1 = serializers.deserialize(value,
@@ -136,7 +136,7 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
 
 class _$UpdateInfo extends UpdateInfo {
   @override
-  final DateTime lastUpdate;
+  final int lastUpdate;
   @override
   final double cpuLoad1;
   @override
@@ -298,9 +298,9 @@ class _$UpdateInfo extends UpdateInfo {
 class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
   _$UpdateInfo _$v;
 
-  DateTime _lastUpdate;
-  DateTime get lastUpdate => _$this._lastUpdate;
-  set lastUpdate(DateTime lastUpdate) => _$this._lastUpdate = lastUpdate;
+  int _lastUpdate;
+  int get lastUpdate => _$this._lastUpdate;
+  set lastUpdate(int lastUpdate) => _$this._lastUpdate = lastUpdate;
 
   double _cpuLoad1;
   double get cpuLoad1 => _$this._cpuLoad1;

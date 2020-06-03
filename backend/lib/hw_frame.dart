@@ -7,6 +7,7 @@ import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart'
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
+import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_common/injector/di.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -32,7 +33,8 @@ void main(List<dynamic> args) async{
 //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
         ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOServiceImpl(_config.hardware), inject: <dynamic>[AppConfig])
        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService])
+        ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
+      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService, SystemInfoService _systemInfoService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService, _systemInfoService), inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService, SystemInfoService])
     ]);
     var config = injector.get(AppConfig) as AppConfig;
     Logger.root.level = config.log.levelHwFrame;

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
@@ -40,8 +41,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   int _listItemCount = 2;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
-
-  final _debugButtonSize = Size(20, 20);
 
   AnimationController _fadeController;
   final Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
@@ -90,6 +89,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void dispose() {
     _mediaItemLoopController.dispose();
     _fadeController.dispose();
+    _subs.forEach((element) {
+      element.cancel();
+    });
+    _subs.clear();
     super.dispose();
   }
 
@@ -100,6 +103,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
     return null;
   }
+
+  final List<StreamSubscription> _subs = <StreamSubscription>[];
 
   @override
   void initState() {
@@ -125,7 +130,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _mediaItemLoopController.forward();
 
-    _frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation);
+    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
+    _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
   }
 
   Widget _createMediaSlider() {
@@ -206,5 +212,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       _mediaItemLoopController.forward();
       _fadeController.reverse();
     }
+  }
+
+  void _systemInfoChanged(SystemInfo info) {
+    _log.info(info);
   }
 }

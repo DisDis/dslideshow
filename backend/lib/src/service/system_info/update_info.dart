@@ -16,7 +16,7 @@ part 'update_info.g.dart';
 //String uptime = printDuration( new Duration(days: 1, hours: 13, minutes: 46, seconds: 30));
 
 abstract class UpdateInfo implements Built<UpdateInfo, UpdateInfoBuilder> {
-  DateTime get lastUpdate;
+  int get lastUpdate;
 
   double get cpuLoad1;
 

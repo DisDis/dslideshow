@@ -5,7 +5,7 @@ import 'package:built_collection/built_collection.dart';
 part 'network_info.g.dart';
 
 abstract class NetworkInfo implements Built<NetworkInfo, NetworkInfoBuilder> {
-  DateTime get lastUpdate;
+  int get lastUpdate;
   bool get hasInternet;
   BuiltList<NetworkInterfaceInfo> get interfaces;
 

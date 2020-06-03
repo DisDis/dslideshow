@@ -15,7 +15,7 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
   factory GlobalState.initial() {
     return (GlobalStateBuilder()
           ..isPaused = false
-          ..storageStatus = StorageStatusEnum.off
+          ..storageStatus = StorageStatusEnum.done
           ..delayBetweenItems = defaultDelayBetweenItems
           ..beginTimePowerButtonPress = null
           ..isDebug = false

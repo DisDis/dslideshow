@@ -46,7 +46,7 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
     final result = <Object>[
       'lastUpdate',
       serializers.serialize(object.lastUpdate,
-          specifiedType: const FullType(DateTime)),
+          specifiedType: const FullType(int)),
       'hasInternet',
       serializers.serialize(object.hasInternet,
           specifiedType: const FullType(bool)),
@@ -72,7 +72,7 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
       switch (key) {
         case 'lastUpdate':
           result.lastUpdate = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
+              specifiedType: const FullType(int)) as int;
           break;
         case 'hasInternet':
           result.hasInternet = serializers.deserialize(value,
@@ -183,7 +183,7 @@ class _$NetworkInterfaceStatusSerializer
 
 class _$NetworkInfo extends NetworkInfo {
   @override
-  final DateTime lastUpdate;
+  final int lastUpdate;
   @override
   final bool hasInternet;
   @override
@@ -240,9 +240,9 @@ class _$NetworkInfo extends NetworkInfo {
 class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
   _$NetworkInfo _$v;
 
-  DateTime _lastUpdate;
-  DateTime get lastUpdate => _$this._lastUpdate;
-  set lastUpdate(DateTime lastUpdate) => _$this._lastUpdate = lastUpdate;
+  int _lastUpdate;
+  int get lastUpdate => _$this._lastUpdate;
+  set lastUpdate(int lastUpdate) => _$this._lastUpdate = lastUpdate;
 
   bool _hasInternet;
   bool get hasInternet => _$this._hasInternet;

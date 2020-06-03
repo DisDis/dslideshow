@@ -4,11 +4,15 @@ import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_actio
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:redux/redux.dart';
 
+import 'actions/change_internet_action.dart';
+
 /// Reducer
 final appReducer = combineReducers<GlobalState>([
   TypedReducer<GlobalState, ChangeStorageStatusAction>(_onStorageStatusChange),
   TypedReducer<GlobalState, ChangeDebugAction>(_onDebugChange),
   TypedReducer<GlobalState, ChangePauseAction>(_onPauseChange),
+  TypedReducer<GlobalState, ChangeInternetAction>(_onInternetChange),
+
 ]);
 
 GlobalState _onDebugChange(GlobalState state, ChangeDebugAction action) {
@@ -21,4 +25,8 @@ GlobalState _onPauseChange(GlobalState state, ChangePauseAction action) {
 
 GlobalState _onStorageStatusChange(GlobalState state, ChangeStorageStatusAction action) {
   return state.rebuild((b) => b.storageStatus = action.newStatus);
+}
+
+GlobalState _onInternetChange(GlobalState state, ChangeInternetAction action) {
+  return state.rebuild((b) => b.hasInternet = action.newValue);
 }

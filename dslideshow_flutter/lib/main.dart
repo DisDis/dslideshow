@@ -42,13 +42,15 @@ void main() async {
 
     _log.info("Config path: '${localPath}'");
 
+    final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
+
     injector = di.ModuleInjector([
       getInjectorModule(),
       di.Module()
         ..bind(AppConfig, toFactory: () => AppConfig(localPath.path))
         ..bind(AppStorage, toFactory: () => AppStorage(localPath.path))
         ..bind(FrontendService,
-            toFactory: (AppConfig _config) => FrontendService(_config, _backendService), inject: <dynamic>[AppConfig])
+            toFactory: (AppConfig _config) => FrontendService(_config, _backendService, store), inject: <dynamic>[AppConfig])
     ]);
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -64,7 +66,7 @@ void main() async {
     final _frontendService = injector.get(FrontendService) as FrontendService;
     initRpc(_frontendService, serializers);
 
-    _runFlutter(_frontendService);
+    _runFlutter(_frontendService, store);
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
@@ -78,8 +80,8 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
   return IsolateRunner(isol.Isolate.current, remote.commandPort);
 }
 
-void _runFlutter(FrontendService frontendService) {
-  final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
+void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
+
 
   runApp(FlutterReduxApp(store: store));
 }
