@@ -117,7 +117,7 @@ class FrontendService implements RpcService {
   }
 
   Future<SystemInfo> getSystemInfo() async {
-    final resultRaw = await _backendService.send(new GetSystemInfoCommand((GetSystemInfoCommandBuilder b) => b
+    final resultRaw = await _backendService.send(new GetSystemInfoCommand((b) => b
       ..id = RpcCommand.generateId()
       ));
     var result = resultRaw as GetSystemInfoCommandResult;
@@ -135,5 +135,19 @@ class FrontendService implements RpcService {
   Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async{
     _onPushButton.add(command.button);
     return new EmptyResult((b) => b..id = command.id);
+  }
+
+  Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async{
+    return _backendService.send(new ScreenLockCommand((b) => b
+      ..isLock = isScreenLockNewValue
+      ..id = RpcCommand.generateId()
+    ));
+  }
+
+  Future screenTurn(bool value) async {
+    return _backendService.send(new ScreenTurnCommand((b) => b
+      ..enabled = value
+      ..id = RpcCommand.generateId()
+    ));
   }
 }

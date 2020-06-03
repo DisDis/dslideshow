@@ -25,6 +25,7 @@ class HardwareService implements RpcService{
 
   final GPIOService _gpioService;
   final ScreenService _screenService;
+
   HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService){
     _init();
   }
@@ -91,16 +92,16 @@ class HardwareService implements RpcService{
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case ScreenTurnCommand.TYPE:
+        return _executeScreenTurnCommand(command as ScreenTurnCommand);
+      case ScreenLockCommand.TYPE:
+        return _executeScreenLockCommand(command as ScreenLockCommand);
       case LEDControlCommand.TYPE:
         return _executeLEDControlCommand(command as LEDControlCommand);
-        break;
       case GetSystemInfoCommand.TYPE:
         return _executeGetSystemInfoCommand(command as GetSystemInfoCommand);
-        break;
       case GetMediaItemCommand.TYPE:
         return _executeGetMediaItemCommand(command as GetMediaItemCommand);
-        break;
-
       case StorageNextCommand.TYPE:
         return _executeStorageNextCommand(command as StorageNextCommand);
         break;
@@ -171,6 +172,26 @@ class HardwareService implements RpcService{
   Future<RpcResult> _executeLEDControlCommand(LEDControlCommand command) async {
     if (command.led == LEDType.power) {
       _gpioService.powerLED = command.value;
+    }
+    return new EmptyResult((b) {
+      b.id = command.id;
+      return b;
+    });
+  }
+
+  Future<RpcResult> _executeScreenLockCommand(ScreenLockCommand command) async{
+    _screenService.isScreenOffLock = command.isLock;
+    return new EmptyResult((b) {
+      b.id = command.id;
+      return b;
+    });
+  }
+
+  Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async{
+    if (command.enabled){
+      _screenService.screenOn();
+    } else {
+      _screenService.scheduleScreenOff();
     }
     return new EmptyResult((b) {
       b.id = command.id;

@@ -19,3 +19,19 @@ abstract class ScreenTurnCommand implements RpcCommand, Built<ScreenTurnCommand,
   factory ScreenTurnCommand([void updates(ScreenTurnCommandBuilder b)]) = _$ScreenTurnCommand;
   ScreenTurnCommand._();
 }
+
+abstract class ScreenLockCommand implements RpcCommand, Built<ScreenLockCommand, ScreenLockCommandBuilder> {
+  static const String TYPE = 'screen_lock';
+  @override
+  String get type => TYPE;
+  bool get isLock;
+  @override
+  @nullable
+  int get id;
+
+  static Serializer<ScreenLockCommand> get serializer =>
+      _$screenLockCommandSerializer;
+
+  factory ScreenLockCommand([void updates(ScreenLockCommandBuilder b)]) = _$ScreenLockCommand;
+  ScreenLockCommand._();
+}

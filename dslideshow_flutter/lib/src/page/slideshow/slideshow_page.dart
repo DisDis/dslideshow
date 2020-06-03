@@ -16,6 +16,7 @@ import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
+import 'package:dslideshow_flutter/src/redux/actions/change_screen_lock_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -237,24 +238,46 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   }
 
   void _pushButton(ButtonType event) {
-    final _store = _frontendService.store;
     switch (event) {
       case ButtonType.pause:
-        var isPausedNewValue = !_store.state.isPaused;
-        _store.dispatch(ChangePauseAction(isPausedNewValue));
-        if (isPausedNewValue){
-          _mediaItemLoopController.stop();
-        } else {
-          _mediaItemLoopController.forward();
-        }
+        _pushPauseButton();
         break;
       case ButtonType.screentoggle:
-        _frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
-        _store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
+        _pushScreenToggleButton();
         break;
       case ButtonType.menu:
-        _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+        _pushMenuButton();
         break;
+    }
+  }
+
+  void _pushPauseButton() {
+    final _store = _frontendService.store;
+    var isPausedNewValue = !_store.state.isPaused;
+    _store.dispatch(ChangePauseAction(isPausedNewValue));
+    if (isPausedNewValue){
+      _mediaItemLoopController.stop();
+    } else {
+      _mediaItemLoopController.forward();
+    }
+  }
+
+  void _pushMenuButton() {
+    final _store = _frontendService.store;
+    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+  }
+
+  Future _pushScreenToggleButton() async {
+    final _store = _frontendService.store;
+    var isScreenLockNewValue = !_store.state.isScreenLock;
+    //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
+    //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
+    _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
+    await _frontendService.changeScreenLock(isScreenLockNewValue);
+    if (isScreenLockNewValue){
+       _frontendService.screenTurn(false);
+    } else {
+      _frontendService.screenTurn(true);
     }
   }
 }

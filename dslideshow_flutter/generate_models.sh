@@ -1,2 +1,2 @@
 #!/bin/bash
-flutter packages run build_runner watch
+flutter packages run build_runner watch --delete-conflicting-outputs

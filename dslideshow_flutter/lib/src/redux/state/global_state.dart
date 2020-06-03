@@ -18,6 +18,7 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
           ..storageStatus = StorageStatusEnum.done
           ..delayBetweenItems = defaultDelayBetweenItems
           ..beginTimePowerButtonPress = null
+          ..isScreenLock = false
           ..isDebug = false
           ..hasInternet = true)
         .build();
@@ -34,6 +35,8 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
   Duration get delayBetweenItems;
 
   bool get hasInternet;
+
+  bool get isScreenLock;
 
   bool get isDebug;
 

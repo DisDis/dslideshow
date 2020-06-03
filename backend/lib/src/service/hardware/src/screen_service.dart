@@ -7,6 +7,9 @@ class ScreenService{
   static final Logger _log = new Logger('ScreenService');
   final HardwareConfig _config;
 
+  // Property?
+  bool isScreenOffLock = false;
+
   final _stateChangePreparation = new StreamController<bool>.broadcast();
 
   final Duration _preparationOffTime = Duration(milliseconds: 2000);
@@ -18,6 +21,10 @@ class ScreenService{
 
   void screenOn() async{
     _log.info('screenOn');
+    if (isScreenOffLock){
+      _log.info('"screenOn" is canceled because the screen is lock');
+      return;
+    }
     if (_timerScreenOff != null){
       _timerScreenOff.cancel();
       _timerScreenOff = null;

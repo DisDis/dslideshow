@@ -37,6 +37,7 @@ part 'serializers.g.dart';
   LEDControlCommand,
   PushButtonCommand,
   LEDType,
-  ButtonType
+  ButtonType,
+  ScreenLockCommand
  ])
 Serializers serializers = _$serializers;
