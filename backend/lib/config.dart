@@ -52,6 +52,8 @@ class SlideShowConfig  extends BaseConfig {
   int _transitionTimeMs;
 
   int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
+
+  SlideShowConfig(Map<String, dynamic> config) :super(config);
 }
 
 class AppStorage{
