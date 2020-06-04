@@ -210,17 +210,22 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return itemWidget;
   }
 
-  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
   bool _isVideo(MediaItem item) => path.extension(item.uri.path).toLowerCase() == '.mp4';
 
-  void _screenStateChangePreparation(bool enabled) {
+  bool _screenState = true;
+  void _screenStateChangePreparation(bool enabled) async{
     // Screen OFF
+    _screenState = enabled;
     if (enabled == false) {
       _mediaItemLoopController.stop();
       _fadeController.forward();
     } else {
-      _fadeController.reverse();
-      _restorePlayPauseState();
+      await Future<void>.delayed(Duration(seconds: 4));
+      // Double check, after delay
+      if (_screenState == enabled) {
+        _fadeController.reverse();
+        _restorePlayPauseState();
+      }
     }
   }
 

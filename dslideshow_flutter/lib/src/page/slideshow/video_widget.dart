@@ -15,6 +15,7 @@ class VideoWidget extends StatefulWidget {
 }
 
 class _VideoWidgetState extends State<VideoWidget> {
+  //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
   static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
 
   final File videoFile;
