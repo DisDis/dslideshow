@@ -19,7 +19,7 @@ frame_thickness = 10;
 
 M3_rad = 3.5;
 
-cover_version = "07.06.2020 v0.3";
+cover_version = "07.06.2020 v0.4";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 85;
@@ -28,9 +28,15 @@ pcbPowerX = frame_thickness + 7;
 pcbPowerY = height - pcbPowerH - frame_thickness - 7;
 pcbPowerZ = back_thickness + 1.5 + 2;
 
+cooling_holes_width = 1.5;
+cooling_holes_deep = wall_depth + back_thickness - 2;
+cooling_holes_height = 15;
+cooling_holes_interval = 5;
+cooling_holes_startx = frame_thickness + cooling_holes_width;
+cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 
 /*TODO:
-1. Дыхательные прорези :)
+1. [+]Дыхательные прорези :)
 2. [+]Углубления для саморезов на которые будет крепиться крышка
 3. Вырез для разьёма питания
 4. Вырез для Pi4
@@ -80,6 +86,34 @@ module cover_mount_holes(r = 1.3){
             cylinder(h = mount_z+0.01, r = r, $fn = 20);
           }
   }
+}
+
+
+/*
+cooling_holes_width
+cooling_holes_deep
+cooling_holes_height
+cooling_holes_interval
+cooling_holes_startx
+cooling_holes_endx
+*/
+module cooling_holes(){
+    // UP
+    for ( cooling_x = [cooling_holes_startx : cooling_holes_interval : cooling_holes_endx] ){
+        translate([cooling_x+0.01,height-cooling_holes_height + 0.01, -0.01 ]) {
+            color("Lime"){
+                cube([cooling_holes_width,cooling_holes_height,cooling_holes_deep]);
+            }
+        }
+    }
+    //Down
+    for ( cooling_x = [cooling_holes_startx : cooling_holes_interval : cooling_holes_endx] ){
+        translate([cooling_x+0.01,-0.01, -0.01 ]) {
+            color("Lime"){
+                cube([cooling_holes_width,cooling_holes_height,cooling_holes_deep]);
+            }
+        }
+    }
 }
 
 
@@ -146,8 +180,8 @@ difference(){
          }   
          translate([0,height-wall_thickness,0]) cube([width,wall_thickness,wall_depth]);
         }
-        color("Green"){
-          translate([width / 2,height - 20,back_thickness]) {
+        color("Black"){
+          translate([20,20,back_thickness]) {
             linear_extrude(height = 0.5, convexity = 10)
                 {
                     text(cover_version, 5);
@@ -160,8 +194,10 @@ difference(){
     translate([width-frame_thickness,0,0]) cover_mount_holes();
     translate([width-frame_thickness,height-frame_thickness,0]) cover_mount_holes();
     translate([0,height-frame_thickness,0]) cover_mount_holes();
+    // cooling holes
+    cooling_holes();
 }
-
+    
 
 
 
