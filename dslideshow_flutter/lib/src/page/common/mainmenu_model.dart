@@ -11,9 +11,9 @@ class Option {
 
 final options = [
   Option(
-    icon: Icon(Icons.play_arrow, size: 40.0),
-    title: 'Option One',
-    subtitle: 'Lorem ipsum dolor sit amet, consect.',
+    icon: Icon(Icons.keyboard_backspace, size: 40.0),
+    title: 'Return',
+    subtitle: 'Return to slideshow.',
   ),
   Option(
     icon: Icon(Icons.do_not_disturb, size: 40.0),

@@ -12,7 +12,7 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
-    gpiod: ^1.0.0
+    gpiod: ^1.0.1
     database: ^0.3.3
 dev_dependencies:
   built_value_generator: ^6.5.0
