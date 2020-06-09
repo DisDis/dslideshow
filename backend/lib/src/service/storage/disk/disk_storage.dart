@@ -53,13 +53,18 @@ class DiskStorage extends Storage {
   @override
   DateTime get lastSync => new DateTime.now();
 
+  List<Uri> _cache = <Uri>[];
+
   Future<Uri> _getRandomItem() async {
-    final items = await _folder.listSync();
-    if (items.length == 0) {
-      return null;
+    if (_cache.isEmpty) {
+      final items = await _folder.listSync();
+      if (items.length == 0) {
+        return null;
+      }
+      _cache = items.map((e) => e.uri).toList(growable: true);
+      _log.info('File cache has ${_cache.length} file(s)');
     }
-    final index = _rnd.nextInt(items.length);
-    return items[index].uri;
+    return _cache.removeAt(_rnd.nextInt(_cache.length));
   }
 
   @override
@@ -78,12 +83,24 @@ class DiskStorage extends Storage {
   @override
   final StorageType type = StorageType.local;
 
+  StreamSubscription _watchSubscription;
+
   @override
   Future init() async {
+    _watchSubscription = _folder.watch().listen(_onFolderUpdated);
     await next();
     await next();
     return;
   }
 
-  Future release() async {}
+  Future release() async {
+    if (_watchSubscription!=null){
+      _watchSubscription.cancel();
+    }
+  }
+
+  void _onFolderUpdated(FileSystemEvent event) {
+    _log.info('Storage folder changed, file cache flushed');
+    _cache = <Uri>[];
+  }
 }

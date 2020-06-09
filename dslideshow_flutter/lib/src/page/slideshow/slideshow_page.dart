@@ -210,7 +210,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return itemWidget;
   }
 
-  bool _isVideo(MediaItem item) => path.extension(item.uri.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri==null? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
 
   bool _screenState = true;
   void _screenStateChangePreparation(bool enabled) async{
@@ -239,7 +239,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   }
 
   void _systemInfoChanged(SystemInfo info) {
-    _log.info(info);
+    _log.info(info.updateInfo);
   }
 
   void _pushButton(ButtonType event) {
