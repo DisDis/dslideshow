@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_metrics.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
@@ -54,6 +55,8 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
       );
     }
 
+    return SystemInfoMetrics();
+
     List<Widget> sensors = <Widget>[];
     _systemInfo.updateInfo.sensors.forEach((item) {
       sensors.add(Text(
@@ -81,8 +84,12 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
             'Core(s): ${_systemInfo.cpuInfo.cores}',
             style: _style,
           ),
+//          Text(
+//            'Mem: ${_systemInfo.updateInfo.memTotal}/${_systemInfo.updateInfo.memUsed}(${(_systemInfo.updateInfo.memUsed*100/_systemInfo.updateInfo.memTotal).truncate()}%)  ${_systemInfo.updateInfo.swapTotal}/${_systemInfo.updateInfo.swapUsed}(${(_systemInfo.updateInfo.swapUsed*100/_systemInfo.updateInfo.swapTotal).truncate()}%)',
+//            style: _style,
+//          ),
           Text(
-            'Mem: ${_systemInfo.updateInfo.memTotal}/${_systemInfo.updateInfo.memUsed}(${(_systemInfo.updateInfo.memUsed*100/_systemInfo.updateInfo.memTotal).truncate()}%)  ${_systemInfo.updateInfo.swapTotal}/${_systemInfo.updateInfo.swapUsed}(${(_systemInfo.updateInfo.swapUsed*100/_systemInfo.updateInfo.swapTotal).truncate()}%)',
+            'Mem: ${_systemInfo.updateInfo.memTotal}/${_systemInfo.updateInfo.memUsed}(${(_systemInfo.updateInfo.memUsed*100/_systemInfo.updateInfo.memTotal).truncate()}%)',
             style: _style,
           ),
           Text(

@@ -10,6 +10,7 @@ import 'package:dslideshow_common/injector/di.dart' as di;
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
@@ -106,7 +107,7 @@ class FlutterReduxApp extends StatelessWidget {
           home: WelcomePage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
-            '/slideshow': (BuildContext context) => SlideShowPage(),
+            '/slideshow': (BuildContext context) => true ? SystemInfoWidget() : SlideShowPage(),
             '/config': (BuildContext context) => ConfigPage(),
           },
         ));

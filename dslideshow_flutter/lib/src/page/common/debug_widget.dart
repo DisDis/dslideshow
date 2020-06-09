@@ -1,5 +1,5 @@
 import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
-import 'package:dslideshow_flutter/src/page/common/system_info_widget.dart';
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
