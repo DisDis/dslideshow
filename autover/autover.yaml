@@ -1,0 +1,9 @@
+autover:
+  projects:
+      backend:
+          path: '../backend'
+          match_token: '_BACK_'
+      frontend:
+          path: '../dslideshow_flutter'
+          match_token: '_FRONT_'
+  targets: ["../common/lib/version.dart.template"]

@@ -1,0 +1,4 @@
+class ApplicationInfo{
+  final String frontendVersion = '_FRONT_';
+  final String backendVersion = '_BACK_';
+}
