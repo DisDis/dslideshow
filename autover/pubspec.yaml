@@ -1,7 +1,8 @@
 name: 'autover'
 version: 1.0.0
-description: An absolute bare-bones web app.
-author: Igor Demyanov
+description: Auto version increment.
+homepage: https://github.com/DisDis/dslideshow/autover
+
 
 environment:
   sdk: '>=2.0.0 <3.0.0'
