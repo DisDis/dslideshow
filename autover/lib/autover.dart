@@ -110,7 +110,7 @@ class AutoVer {
       final newVersion = _modifyVerions(element.version,_argResults['increase-version']);
       _log.info(' "${element.name}" ${element.version} -> ${newVersion}');
       var content = new File(path.join(element.path,'pubspec.yaml')).readAsStringSync();
-      content.replaceFirst(element.version.toString(), newVersion.toString());
+      content = content.replaceFirst(element.version.toString(), newVersion.toString());
       element.version = newVersion;
       new File(path.join(element.path,'pubspec.yaml')).writeAsStringSync(content);
     });
