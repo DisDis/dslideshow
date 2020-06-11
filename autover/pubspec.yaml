@@ -1,6 +1,6 @@
 name: 'autover'
-version: 1.0.1
-description: Auto version increment.
+version: 1.0.1+1
+description: Auto version increment. Auto-increment version in pubspec.yaml for multiple projects. It generate file by template with projects versions
 homepage: https://github.com/DisDis/dslideshow/tree/master/autover
 
 

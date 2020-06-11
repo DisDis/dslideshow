@@ -73,6 +73,7 @@ class AutoVer {
     _parser.addOption('config',
       abbr: 'c',
       help: 'config.yaml',
+      defaultsTo: 'autover.yaml'
 
     );
     _parser.addMultiOption('project',
