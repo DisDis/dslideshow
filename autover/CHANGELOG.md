@@ -1,3 +1,7 @@
+## 1.0.2
+
+* Added example
+
 ## 1.0.1+1
 
 * Fix README.MD
