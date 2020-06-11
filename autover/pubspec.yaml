@@ -1,11 +1,11 @@
 name: 'autover'
-version: 1.0.0
+version: 1.0.1
 description: Auto version increment.
-homepage: https://github.com/DisDis/dslideshow/autover
+homepage: https://github.com/DisDis/dslideshow/tree/master/autover
 
 
 environment:
-  sdk: '>=2.0.0 <3.0.0'
+  sdk: '>=2.1.0 <3.0.0'
 
 dependencies:
   logging: ^0.11.0
@@ -13,3 +13,6 @@ dependencies:
   pub_semver: ^1.4.4
   args: ^1.6.0
   path: ^1.7.0
+
+dev_dependencies:
+    pedantic: ^1.9.0

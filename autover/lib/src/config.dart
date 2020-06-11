@@ -9,9 +9,9 @@ class AutoVerConfig{
 class ProjectConfig{
   final String name;
   final String path;
-  final String match_token;
+  final String matchToken;
   Version version;
-  ProjectConfig(this.name, this.path, this.match_token);
+  ProjectConfig(this.name, this.path, this.matchToken);
 }
 
 class TargetConfig{

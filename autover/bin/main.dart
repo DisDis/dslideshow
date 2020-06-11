@@ -6,12 +6,10 @@ import 'package:autover/autover.dart';
 import 'package:logging/logging.dart';
 
 void initLog([String isolateMarker]) {
-  if (isolateMarker == null){
-    isolateMarker = "I${Isolate.current.hashCode}";
-  }
+  isolateMarker ??= 'I${Isolate.current.hashCode}';
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
-    StringBuffer message = new StringBuffer();
+    final message = StringBuffer();
     message.write('[$isolateMarker] ${rec.time} ${rec.level.name}:${rec.loggerName}: ${rec.message}');
     if (rec.error != null) {
       message.write(' ${rec.error}');
@@ -20,12 +18,12 @@ void initLog([String isolateMarker]) {
   });
 }
 
-Logger _log = new Logger('main');
-void main(List<String> args) async{
+Logger _log = Logger('main');
+void main(List<String> args) {
   try {
     initLog('autover');
-    await new AutoVer().execute(args);
-  } catch (e,st){
+    AutoVer().execute(args);
+  } on Exception catch (e,st){
     _log.severe('FATAL', e, st);
   }
 }
