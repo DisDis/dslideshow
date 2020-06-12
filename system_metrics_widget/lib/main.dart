@@ -76,9 +76,9 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
   return IsolateRunner(isol.Isolate.current, remote.commandPort);
 }
 
-void _runFlutter(FrontendService frontendService) => runApp(FlutterReduxApp());
+void _runFlutter(FrontendService frontendService) => runApp(DemoApp());
 
-class FlutterReduxApp extends StatelessWidget {
+class DemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         home: SystemInfoMetrics(),
