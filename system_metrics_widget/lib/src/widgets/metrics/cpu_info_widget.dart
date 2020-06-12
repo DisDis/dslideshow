@@ -7,10 +7,7 @@ class CpuInfoWidget extends StatelessWidget {
     return Container(
       color: Colors.yellow,
       child: Center(
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Text('cpu'),
-        ),
+        child: Text('cpu'),
       ),
     );
   }

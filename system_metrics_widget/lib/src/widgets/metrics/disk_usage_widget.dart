@@ -7,10 +7,7 @@ class DiskUsageWidget extends StatelessWidget {
     return Container(
       color: Colors.blue,
       child: Center(
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Text('disk'),
-        ),
+        child: Text('disk'),
       ),
     );
   }

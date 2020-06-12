@@ -7,10 +7,7 @@ class SystemInfoWidget extends StatelessWidget {
     return Container(
       color: Colors.deepPurpleAccent,
       child: Center(
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Text('system info'),
-        ),
+        child: Text('system info'),
       ),
     );
   }

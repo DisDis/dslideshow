@@ -7,10 +7,7 @@ class MemoryUsageWidget extends StatelessWidget {
     return Container(
       color: Colors.redAccent,
       child: Center(
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Text('memory'),
-        ),
+        child: Text('memory'),
       ),
     );
   }

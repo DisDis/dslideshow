@@ -7,10 +7,7 @@ class NetworkUsageWidget extends StatelessWidget {
     return Container(
       color: Colors.green,
       child: Center(
-        child: CircleAvatar(
-          backgroundColor: Colors.white,
-          child: Text('network'),
-        ),
+        child: Text('network'),
       ),
     );
   }
