@@ -5,7 +5,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/cpu_info_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/disk_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/memory_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/network_usage_widget.dart';
-import 'package:system_metrics_widget/src/widgets/metrics/system_info_widget.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/os_info_widget.dart';
 
 class SystemInfoMetrics extends StatelessWidget {
   @override
@@ -22,7 +22,7 @@ class SystemInfoMetrics extends StatelessWidget {
       scrollDirection: Axis.vertical,
       children: <Widget>[
         CpuInfoWidget(),
-        SystemInfoWidget(),
+        OSInfoWidget(),
         MemoryUsageWidget(),
         NetworkUsageWidget(),
         DiskUsageWidget(),
