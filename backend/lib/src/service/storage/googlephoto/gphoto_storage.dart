@@ -119,7 +119,7 @@ class GPhotoStorage extends DiskStorage{
   @override
   Future init() async{
     _log.info('init');
-    await sync();
+    sync();
     await super.init();
     _log.info('Start periodic sync timer d:${_config.syncPeriod}');
     _syncTimer = new Timer.periodic(_config.syncPeriod, (_){

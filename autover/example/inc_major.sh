@@ -1,0 +1,1 @@
+dart ../bin/main.dart -c pubspec.yaml -v major --apply true

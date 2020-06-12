@@ -1,0 +1,18 @@
+name: 'autover'
+version: 1.0.2
+description: Auto version increment. Auto-increment version in pubspec.yaml for multiple projects. It generate file by template with projects versions
+homepage: https://github.com/DisDis/dslideshow/tree/master/autover
+
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+dependencies:
+  logging: ^0.11.0
+  yaml: ^2.2.1
+  pub_semver: ^1.4.4
+  args: ^1.6.0
+  path: ^1.7.0
+
+dev_dependencies:
+    pedantic: ^1.9.0

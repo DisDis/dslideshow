@@ -1,0 +1,16 @@
+name: 'demo_application'
+version: 1.1.0
+description: Demo app
+homepage: https://github.com/DisDis/dslideshow/tree/master/autover
+
+
+environment:
+  sdk: '>=2.1.0 <3.0.0'
+
+
+autover:
+  projects:
+    demo_project:
+      path: './'
+      match_token: '_DEMO_'
+  targets: ["./lib/version.dart.template","./lib/version.json.template"]
