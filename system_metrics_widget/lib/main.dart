@@ -17,7 +17,7 @@ import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:system_metrics_widget/environment.dart' as environment;
 import 'package:system_metrics_widget/src/service/frontend.dart';
-import 'package:system_metrics_widget/src/system_metrics.dart';
+import 'package:system_metrics_widget/src/widgets/system_metrics.dart';
 
 import 'src/injector.dart';
 
