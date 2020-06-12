@@ -1,0 +1,46 @@
+name: system_metrics_widget
+description: A new Flutter project.
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.2
+  path_provider: ^1.1.0
+  path: ^1.6.4
+  permission_handler: ^5.0.0
+  package_info: ^0.4.0+3
+  qr_flutter: ^3.2.0
+  isolate: ^2.0.2
+  logging: ^0.11.0
+  flutter_redux: ^0.6.0
+  built_value: ^6.5.0
+  video_player: ^0.10.11
+  duration: ^2.0.2
+  flutter_staggered_grid_view: ^0.3.0
+  dslideshow_backend:
+    path: ../backend
+
+  dslideshow_common:
+    path: ../common
+
+  media_slider_widget:
+    path: ../media_slider_widget
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  built_value_generator: ^6.5.0
+  build_runner: ^1.2.1
+
+flutter:
+  uses-material-design: true
