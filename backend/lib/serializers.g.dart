@@ -7,6 +7,7 @@ part of crazy_pig.serializers;
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(AreYouReadyCommand.serializer)
       ..add(ButtonType.serializer)
       ..add(CpuInfo.serializer)
       ..add(EchoCommand.serializer)
@@ -29,6 +30,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(StorageNextCommand.serializer)
       ..add(SystemInfo.serializer)
       ..add(UpdateInfo.serializer)
+      ..add(WebServerControlCommand.serializer)
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(NetworkInterfaceInfo)]),

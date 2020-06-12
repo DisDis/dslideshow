@@ -3,9 +3,6 @@ library crazy_pig.serializers;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/command.dart';
-import 'package:dslideshow_backend/src/command/echo.dart';
-import 'package:dslideshow_backend/src/command/hardware_commands.dart';
-import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/cpu_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/network_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/os_info.dart';
@@ -38,6 +35,8 @@ part 'serializers.g.dart';
   PushButtonCommand,
   LEDType,
   ButtonType,
-  ScreenLockCommand
+  ScreenLockCommand,
+  WebServerControlCommand,
+  AreYouReadyCommand
  ])
 Serializers serializers = _$serializers;

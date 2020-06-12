@@ -150,4 +150,24 @@ class FrontendService implements RpcService {
       ..id = RpcCommand.generateId()
     ));
   }
+
+  Future backendIsReady() async{
+    return _backendService.send(new AreYouReadyCommand((b) => b
+      ..id = RpcCommand.generateId()
+    ));
+  }
+
+  Future stopWebServer() async{
+    return _backendService.send(new WebServerControlCommand((b) => b
+      ..enable = false
+      ..id = RpcCommand.generateId()
+    ));
+  }
+
+  Future startWebServer() async{
+    return _backendService.send(new WebServerControlCommand((b) => b
+      ..enable = true
+      ..id = RpcCommand.generateId()
+    ));
+  }
 }
