@@ -94,6 +94,14 @@ class DemoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        home: SystemInfoMetrics(),
+        theme: ThemeData(
+          textTheme: TextTheme(
+            caption: TextStyle(fontSize: 10.0),
+            bodyText1: TextStyle(fontSize: 12.0),
+          ),
+        ),
+        home: SystemInfoMetrics(
+          model: systemInfo,
+        ),
       );
 }

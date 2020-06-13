@@ -20,7 +20,9 @@ part 'serializers.g.dart';
 @SerializersFor([
   CpuInfo,
   NetworkInfo,
+  SensorInfo,
   OSInfo,
+  OSType,
   SystemInfo,
   UpdateInfo,
 ])

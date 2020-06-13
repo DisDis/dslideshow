@@ -20,11 +20,13 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
     final result = <Object>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
-      'osType',
-      serializers.serialize(object.osType,
-          specifiedType: const FullType(OSType)),
     ];
-
+    if (object.osType != null) {
+      result
+        ..add('osType')
+        ..add(serializers.serialize(object.osType,
+            specifiedType: const FullType(OSType)));
+    }
     return result;
   }
 
@@ -66,9 +68,6 @@ class _$OSInfo extends OSInfo {
   _$OSInfo._({this.name, this.osType}) : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('OSInfo', 'name');
-    }
-    if (osType == null) {
-      throw new BuiltValueNullFieldError('OSInfo', 'osType');
     }
   }
 
