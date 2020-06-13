@@ -14,6 +14,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:system_metrics_widget/environment.dart' as environment;
@@ -95,9 +96,9 @@ class DemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
         theme: ThemeData(
-          textTheme: TextTheme(
-            caption: TextStyle(fontSize: 10.0),
-            bodyText1: TextStyle(fontSize: 12.0),
+          primaryColor: Colors.white,
+          textTheme: GoogleFonts.robotoTextTheme(
+            Theme.of(context).textTheme,
           ),
         ),
         home: SystemInfoMetrics(
