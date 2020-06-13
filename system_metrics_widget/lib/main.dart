@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate' as isol;
 
-import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/injector_module.dart';
+import 'package:dslideshow_backend/serializers.dart' as backend;
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart' as backend;
 import 'package:dslideshow_common/injector/di.dart' as di;
 import 'package:dslideshow_common/log.dart';
@@ -18,7 +18,7 @@ import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:system_metrics_widget/environment.dart' as environment;
 import 'package:system_metrics_widget/src/model/system_info/system_info.dart';
-import 'package:system_metrics_widget/src/serializers.dart';
+import 'package:system_metrics_widget/src/serializers.dart' as metrics;
 import 'package:system_metrics_widget/src/service/frontend.dart';
 import 'package:system_metrics_widget/src/widgets/system_metrics.dart';
 
@@ -60,10 +60,10 @@ void main() async {
     IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
     final currentIsoRunner = await _createCurrentIsolateRunner();
     await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
-    _backendService = RemoteService(_backendServiceIsolate, serializers);
+    _backendService = RemoteService(_backendServiceIsolate, backend.serializers);
 
     final _frontendService = injector.get(FrontendService) as FrontendService;
-    initRpc(_frontendService, serializers);
+    initRpc(_frontendService, backend.serializers);
 
     _runFlutter(_frontendService);
   } catch (e, s) {
@@ -81,9 +81,10 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 
 Future<void> _runFlutter(FrontendService frontendService) async {
   final backend.SystemInfo systemInfo = await frontendService.getSystemInfo();
-  final serialized = serializers.serialize(systemInfo);
+  final serialized = backend.serializers.serialize(systemInfo);
 
-  runApp(DemoApp(serializers.deserialize(serialized) as SystemInfo));
+  final so = metrics.serializers.deserialize(serialized) as SystemInfo;
+  runApp(DemoApp(so));
 }
 
 class DemoApp extends StatelessWidget {
