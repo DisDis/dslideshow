@@ -30,9 +30,16 @@ class SystemInfoMetrics extends StatelessWidget {
       children: <Widget>[
         CpuInfoWidget(model: _model.cpuInfo),
         OSInfoWidget(model: _model.osInfo),
-        MemoryUsageWidget(),
+        MemoryUsageWidget(
+          totalMemory: _model.updateInfo.memTotal,
+          usedMemory: _model.updateInfo.memUsed,
+        ),
         NetworkUsageWidget(model: _model.networkInfo),
-        DiskUsageWidget(),
+        DiskUsageWidget(
+          totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
+          usedMemory: _model.updateInfo.diskUsed,
+          usagePercent: _model.updateInfo.diskUsedPercent,
+        ),
       ],
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
