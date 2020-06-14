@@ -21,12 +21,10 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Column(
       children: [
         Text(
-          '$title $total, used: $used, free: $free, usage $usagePercent %',
+          '$title: $total, used: $used, free: $free, usage $usagePercent %',
           style: Settings.metricsDetailsTextStyle,
         ),
         UsageBar(
