@@ -87,7 +87,11 @@ class DiskStorage extends Storage {
 
   @override
   Future init() async {
-    _watchSubscription = _folder.watch().listen(_onFolderUpdated);
+    try{
+      _watchSubscription = _folder.watch().listen(_onFolderUpdated);
+    } catch(e, st){
+      _log.fine('init', e,st);
+    }
     await next();
     await next();
     return;

@@ -8,7 +8,7 @@ void initLog([String isolateMarker]) {
   Logger.root.level = Level.ALL;
   Logger.root.onRecord.listen((LogRecord rec) {
     StringBuffer message = new StringBuffer();
-    message.write('[$isolateMarker] ${rec.time} ${rec.level.name}:${rec.loggerName}: ${rec.message}');
+    message.write('${rec.time} [$isolateMarker] ${rec.level.name}:${rec.loggerName}: ${rec.message}');
     if (rec.error != null) {
       message.write(' ${rec.error}');
     }

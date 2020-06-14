@@ -21,19 +21,21 @@ class HardwareService implements RpcService{
 
   final SystemInfoService _systemInfoService;
   final RemoteService _frontendService;
+  final RemoteService _webServer;
   final Storage _storage;
 
   final GPIOService _gpioService;
   final ScreenService _screenService;
 
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService){
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer){
     _init();
   }
 
+  final List<Future> _initFutures = <Future>[];
   void _init() {
-    _storage.init();
+    _initFutures.add( _storage.init());
     if (Platform.isLinux) {
-      _gpioService.init();
+      _initFutures.add(_gpioService.init());
     } else {
       _log.warning('GPIO does not support except Linux');
     }
@@ -60,7 +62,7 @@ class HardwareService implements RpcService{
         _screenService.scheduleScreenOff();
       }
     });
-    _systemInfoService.init();
+    _initFutures.add(_systemInfoService.init());
   }
 
   void screenConfigure(bool enabled){
@@ -92,6 +94,10 @@ class HardwareService implements RpcService{
 
   Future<RpcResult> _executeCommand(RpcCommand command) {
     switch (command.type) {
+      case AreYouReadyCommand.TYPE:
+        return _executeAreYouReadyCommand(command as AreYouReadyCommand);
+      case WebServerControlCommand.TYPE:
+        return _executeWebServerControlCommand(command as WebServerControlCommand);
       case ScreenTurnCommand.TYPE:
         return _executeScreenTurnCommand(command as ScreenTurnCommand);
       case ScreenLockCommand.TYPE:
@@ -192,6 +198,21 @@ class HardwareService implements RpcService{
       _screenService.screenOn();
     } else {
       _screenService.screenOff();
+    }
+    return new EmptyResult((b) {
+      b.id = command.id;
+      return b;
+    });
+  }
+
+  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async{
+    return _webServer.send(command);
+  }
+
+  Future<RpcResult> _executeAreYouReadyCommand(AreYouReadyCommand command) async{
+    if (_initFutures.isNotEmpty) {
+      await Future.wait<dynamic>(_initFutures);
+      _initFutures.clear();
     }
     return new EmptyResult((b) {
       b.id = command.id;

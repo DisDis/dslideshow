@@ -1,4 +1,6 @@
 import 'package:dslideshow_flutter/environment.dart' as environment;
+import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
@@ -75,6 +77,7 @@ class WelcomePage extends StatefulWidget {
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
+  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
 
   @override
   Widget build(BuildContext context) => AnimatedLogo(animation: animation);
@@ -97,7 +100,9 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
           controller.reverse();
         } else if (status == AnimationStatus.dismissed) {
           controller.stop();
-          future.then((dynamic _) => Navigator.pushReplacementNamed(context, '/slideshow'));
+          _frontendService.backendIsReady().then((dynamic _){
+            future.then((dynamic _) => Navigator.pushReplacementNamed(context, '/slideshow'));
+          });
         }
       });
     controller.forward();

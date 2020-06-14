@@ -45,12 +45,57 @@ final BuiltSet<ButtonType> _$valuesButtonType =
   _$pause,
 ]);
 
+Serializer<AreYouReadyCommand> _$areYouReadyCommandSerializer =
+    new _$AreYouReadyCommandSerializer();
 Serializer<PushButtonCommand> _$pushButtonCommandSerializer =
     new _$PushButtonCommandSerializer();
 Serializer<LEDControlCommand> _$lEDControlCommandSerializer =
     new _$LEDControlCommandSerializer();
 Serializer<LEDType> _$lEDTypeSerializer = new _$LEDTypeSerializer();
 Serializer<ButtonType> _$buttonTypeSerializer = new _$ButtonTypeSerializer();
+
+class _$AreYouReadyCommandSerializer
+    implements StructuredSerializer<AreYouReadyCommand> {
+  @override
+  final Iterable<Type> types = const [AreYouReadyCommand, _$AreYouReadyCommand];
+  @override
+  final String wireName = 'AreYouReadyCommand';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, AreYouReadyCommand object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[];
+    if (object.id != null) {
+      result
+        ..add('id')
+        ..add(serializers.serialize(object.id,
+            specifiedType: const FullType(int)));
+    }
+    return result;
+  }
+
+  @override
+  AreYouReadyCommand deserialize(
+      Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new AreYouReadyCommandBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
 
 class _$PushButtonCommandSerializer
     implements StructuredSerializer<PushButtonCommand> {
@@ -191,6 +236,82 @@ class _$ButtonTypeSerializer implements PrimitiveSerializer<ButtonType> {
   ButtonType deserialize(Serializers serializers, Object serialized,
           {FullType specifiedType = FullType.unspecified}) =>
       ButtonType.valueOf(serialized as String);
+}
+
+class _$AreYouReadyCommand extends AreYouReadyCommand {
+  @override
+  final int id;
+
+  factory _$AreYouReadyCommand(
+          [void Function(AreYouReadyCommandBuilder) updates]) =>
+      (new AreYouReadyCommandBuilder()..update(updates)).build();
+
+  _$AreYouReadyCommand._({this.id}) : super._();
+
+  @override
+  AreYouReadyCommand rebuild(
+          void Function(AreYouReadyCommandBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  AreYouReadyCommandBuilder toBuilder() =>
+      new AreYouReadyCommandBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is AreYouReadyCommand && id == other.id;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, id.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('AreYouReadyCommand')..add('id', id))
+        .toString();
+  }
+}
+
+class AreYouReadyCommandBuilder
+    implements Builder<AreYouReadyCommand, AreYouReadyCommandBuilder> {
+  _$AreYouReadyCommand _$v;
+
+  int _id;
+  int get id => _$this._id;
+  set id(int id) => _$this._id = id;
+
+  AreYouReadyCommandBuilder();
+
+  AreYouReadyCommandBuilder get _$this {
+    if (_$v != null) {
+      _id = _$v.id;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(AreYouReadyCommand other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$AreYouReadyCommand;
+  }
+
+  @override
+  void update(void Function(AreYouReadyCommandBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$AreYouReadyCommand build() {
+    final _$result = _$v ?? new _$AreYouReadyCommand._(id: id);
+    replace(_$result);
+    return _$result;
+  }
 }
 
 class _$PushButtonCommand extends PushButtonCommand {
