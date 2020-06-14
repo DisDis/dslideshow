@@ -67,13 +67,15 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
               child: _createMediaSlider(),
             ),
             Container(
-                child: Positioned(
-                    bottom: 0.0,
-                    right: 0.0,
-                    child: CustomPaint(
-                      size: Size(size.width, 3),
-                      painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
-                    ))),
+              child: Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: CustomPaint(
+                  size: Size(size.width, 3),
+                  painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                ),
+              ),
+            ),
             StoreConnector<GlobalState, Store<GlobalState>>(
                 converter: (store) => store,
                 //rebuildOnChange: true,
@@ -113,7 +115,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
   Duration _transitionTime;
-
 
   @override
   void initState() {
@@ -177,8 +178,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     // cached next image
     await _frontendService.storageNext();
     var item = await _getMediaWidget(_listItemCount - 1);
-    if (item is ImageWidget){
-        await precacheImage(item.provider, context);
+    if (item is ImageWidget) {
+      await precacheImage(item.provider, context);
     }
 
     _listItemCount++;
@@ -210,10 +211,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return itemWidget;
   }
 
-  bool _isVideo(MediaItem item) => item.uri==null? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
 
   bool _screenState = true;
-  void _screenStateChangePreparation(bool enabled) async{
+  void _screenStateChangePreparation(bool enabled) async {
     // Screen OFF
     _screenState = enabled;
     if (enabled == false) {
@@ -229,9 +230,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
   }
 
-  void _restorePlayPauseState(){
+  void _restorePlayPauseState() {
     final _store = _frontendService.store;
-    if (_store.state.isPaused){
+    if (_store.state.isPaused) {
       _mediaItemLoopController.stop();
     } else {
       _mediaItemLoopController.forward();
@@ -260,7 +261,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     final _store = _frontendService.store;
     var isPausedNewValue = !_store.state.isPaused;
     _store.dispatch(ChangePauseAction(isPausedNewValue));
-    if (isPausedNewValue){
+    if (isPausedNewValue) {
       _mediaItemLoopController.stop();
     } else {
       _mediaItemLoopController.forward();
@@ -279,8 +280,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
     _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
     await _frontendService.changeScreenLock(isScreenLockNewValue);
-    if (isScreenLockNewValue){
-       _frontendService.screenTurn(false);
+    if (isScreenLockNewValue) {
+      _frontendService.screenTurn(false);
     } else {
       _frontendService.screenTurn(true);
     }

@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_bar.dart';
 
 abstract class UsageIndicatorWidget extends StatelessWidget {
   final String title;
@@ -20,15 +21,24 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      '$title $total, used: $used, free: $free, usage $usagePercent %',
-      style: Settings.metricsDetailsTextStyle,
+    final size = MediaQuery.of(context).size;
+
+    return Column(
+      children: [
+        Text(
+          '$title $total, used: $used, free: $free, usage $usagePercent %',
+          style: Settings.metricsDetailsTextStyle,
+        ),
+        UsageBar(
+          usagePercent: usagePercent,
+        ),
+      ],
     );
   }
 
   static String formatBytes(int bytes, int decimals) {
-    if (bytes <= 0) return "0 B";
-    const suffixes = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+    if (bytes <= 0) return '0 B';
+    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     var i = (log(bytes) / log(1024)).floor();
     return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
   }
