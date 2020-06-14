@@ -93,7 +93,7 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
             style: _style,
           ),
           Text(
-            'Disk used: ${_systemInfo.updateInfo.diskUsed}(${_systemInfo.updateInfo.diskUsedPercent}), free: ${_systemInfo.updateInfo.diskAvail}',
+            'Disk used: ${_systemInfo.updateInfo.diskUsed}(${_systemInfo.updateInfo.diskUsedPercent}), free: ${_systemInfo.updateInfo.diskAvailable}',
             style: _style,
           ),
           Text(

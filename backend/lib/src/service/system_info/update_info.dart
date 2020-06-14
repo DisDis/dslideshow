@@ -1,6 +1,6 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:dslideshow_backend/src/service/system_info/sensor_info.dart';
 
 part 'update_info.g.dart';
@@ -16,38 +16,35 @@ part 'update_info.g.dart';
 //String uptime = printDuration( new Duration(days: 1, hours: 13, minutes: 46, seconds: 30));
 
 abstract class UpdateInfo implements Built<UpdateInfo, UpdateInfoBuilder> {
-  int get lastUpdate;
+  static Serializer<UpdateInfo> get serializer => _$updateInfoSerializer;
+
+  factory UpdateInfo([void updates(UpdateInfoBuilder b)]) = _$UpdateInfo;
+
+  UpdateInfo._();
 
   double get cpuLoad1;
 
+  double get cpuLoad15;
+
   double get cpuLoad5;
 
-  double get cpuLoad15;
+  int get diskAvailable;
+
+  int get diskUsed;
+
+  int get diskUsedPercent;
+
+  int get lastUpdate;
 
   int get memTotal;
 
   int get memUsed;
 
+  BuiltList<SensorInfo> get sensors;
+
   int get swapTotal;
 
   int get swapUsed;
 
-  String get diskUsedPercent;
-
-  String get diskUsed;
-
-  String get diskAvail;
-
   String get uptime;
-
-  BuiltList<SensorInfo> get sensors;
-
-
-  static Serializer<UpdateInfo> get serializer =>
-      _$updateInfoSerializer;
-
-  factory UpdateInfo([void updates(UpdateInfoBuilder b)]) = _$UpdateInfo;
-
-  UpdateInfo._();
 }
-

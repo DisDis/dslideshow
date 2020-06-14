@@ -41,15 +41,15 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
       'swapUsed',
       serializers.serialize(object.swapUsed,
           specifiedType: const FullType(int)),
-      'diskUsedPercent',
-      serializers.serialize(object.diskUsedPercent,
-          specifiedType: const FullType(String)),
+      'diskAvailable',
+      serializers.serialize(object.diskAvailable,
+          specifiedType: const FullType(int)),
       'diskUsed',
       serializers.serialize(object.diskUsed,
-          specifiedType: const FullType(String)),
-      'diskAvail',
-      serializers.serialize(object.diskAvail,
-          specifiedType: const FullType(String)),
+          specifiedType: const FullType(int)),
+      'diskUsedPercent',
+      serializers.serialize(object.diskUsedPercent,
+          specifiedType: const FullType(int)),
       'uptime',
       serializers.serialize(object.uptime,
           specifiedType: const FullType(String)),
@@ -105,17 +105,17 @@ class _$UpdateInfoSerializer implements StructuredSerializer<UpdateInfo> {
           result.swapUsed = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
           break;
-        case 'diskUsedPercent':
-          result.diskUsedPercent = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+        case 'diskAvailable':
+          result.diskAvailable = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
         case 'diskUsed':
           result.diskUsed = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(int)) as int;
           break;
-        case 'diskAvail':
-          result.diskAvail = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+        case 'diskUsedPercent':
+          result.diskUsedPercent = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
         case 'uptime':
           result.uptime = serializers.deserialize(value,
@@ -152,11 +152,11 @@ class _$UpdateInfo extends UpdateInfo {
   @override
   final int swapUsed;
   @override
-  final String diskUsedPercent;
+  final int diskAvailable;
   @override
-  final String diskUsed;
+  final int diskUsed;
   @override
-  final String diskAvail;
+  final int diskUsedPercent;
   @override
   final String uptime;
   @override
@@ -174,9 +174,9 @@ class _$UpdateInfo extends UpdateInfo {
       this.memUsed,
       this.swapTotal,
       this.swapUsed,
-      this.diskUsedPercent,
+      this.diskAvailable,
       this.diskUsed,
-      this.diskAvail,
+      this.diskUsedPercent,
       this.uptime,
       this.sensors})
       : super._() {
@@ -204,14 +204,14 @@ class _$UpdateInfo extends UpdateInfo {
     if (swapUsed == null) {
       throw new BuiltValueNullFieldError('UpdateInfo', 'swapUsed');
     }
-    if (diskUsedPercent == null) {
-      throw new BuiltValueNullFieldError('UpdateInfo', 'diskUsedPercent');
+    if (diskAvailable == null) {
+      throw new BuiltValueNullFieldError('UpdateInfo', 'diskAvailable');
     }
     if (diskUsed == null) {
       throw new BuiltValueNullFieldError('UpdateInfo', 'diskUsed');
     }
-    if (diskAvail == null) {
-      throw new BuiltValueNullFieldError('UpdateInfo', 'diskAvail');
+    if (diskUsedPercent == null) {
+      throw new BuiltValueNullFieldError('UpdateInfo', 'diskUsedPercent');
     }
     if (uptime == null) {
       throw new BuiltValueNullFieldError('UpdateInfo', 'uptime');
@@ -240,9 +240,9 @@ class _$UpdateInfo extends UpdateInfo {
         memUsed == other.memUsed &&
         swapTotal == other.swapTotal &&
         swapUsed == other.swapUsed &&
-        diskUsedPercent == other.diskUsedPercent &&
+        diskAvailable == other.diskAvailable &&
         diskUsed == other.diskUsed &&
-        diskAvail == other.diskAvail &&
+        diskUsedPercent == other.diskUsedPercent &&
         uptime == other.uptime &&
         sensors == other.sensors;
   }
@@ -268,9 +268,9 @@ class _$UpdateInfo extends UpdateInfo {
                                     memUsed.hashCode),
                                 swapTotal.hashCode),
                             swapUsed.hashCode),
-                        diskUsedPercent.hashCode),
+                        diskAvailable.hashCode),
                     diskUsed.hashCode),
-                diskAvail.hashCode),
+                diskUsedPercent.hashCode),
             uptime.hashCode),
         sensors.hashCode));
   }
@@ -286,9 +286,9 @@ class _$UpdateInfo extends UpdateInfo {
           ..add('memUsed', memUsed)
           ..add('swapTotal', swapTotal)
           ..add('swapUsed', swapUsed)
-          ..add('diskUsedPercent', diskUsedPercent)
+          ..add('diskAvailable', diskAvailable)
           ..add('diskUsed', diskUsed)
-          ..add('diskAvail', diskAvail)
+          ..add('diskUsedPercent', diskUsedPercent)
           ..add('uptime', uptime)
           ..add('sensors', sensors))
         .toString();
@@ -330,18 +330,18 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
   int get swapUsed => _$this._swapUsed;
   set swapUsed(int swapUsed) => _$this._swapUsed = swapUsed;
 
-  String _diskUsedPercent;
-  String get diskUsedPercent => _$this._diskUsedPercent;
-  set diskUsedPercent(String diskUsedPercent) =>
+  int _diskAvailable;
+  int get diskAvailable => _$this._diskAvailable;
+  set diskAvailable(int diskAvailable) => _$this._diskAvailable = diskAvailable;
+
+  int _diskUsed;
+  int get diskUsed => _$this._diskUsed;
+  set diskUsed(int diskUsed) => _$this._diskUsed = diskUsed;
+
+  int _diskUsedPercent;
+  int get diskUsedPercent => _$this._diskUsedPercent;
+  set diskUsedPercent(int diskUsedPercent) =>
       _$this._diskUsedPercent = diskUsedPercent;
-
-  String _diskUsed;
-  String get diskUsed => _$this._diskUsed;
-  set diskUsed(String diskUsed) => _$this._diskUsed = diskUsed;
-
-  String _diskAvail;
-  String get diskAvail => _$this._diskAvail;
-  set diskAvail(String diskAvail) => _$this._diskAvail = diskAvail;
 
   String _uptime;
   String get uptime => _$this._uptime;
@@ -364,9 +364,9 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
       _memUsed = _$v.memUsed;
       _swapTotal = _$v.swapTotal;
       _swapUsed = _$v.swapUsed;
-      _diskUsedPercent = _$v.diskUsedPercent;
+      _diskAvailable = _$v.diskAvailable;
       _diskUsed = _$v.diskUsed;
-      _diskAvail = _$v.diskAvail;
+      _diskUsedPercent = _$v.diskUsedPercent;
       _uptime = _$v.uptime;
       _sensors = _$v.sensors?.toBuilder();
       _$v = null;
@@ -401,9 +401,9 @@ class UpdateInfoBuilder implements Builder<UpdateInfo, UpdateInfoBuilder> {
               memUsed: memUsed,
               swapTotal: swapTotal,
               swapUsed: swapUsed,
-              diskUsedPercent: diskUsedPercent,
+              diskAvailable: diskAvailable,
               diskUsed: diskUsed,
-              diskAvail: diskAvail,
+              diskUsedPercent: diskUsedPercent,
               uptime: uptime,
               sensors: sensors.build());
     } catch (_) {
