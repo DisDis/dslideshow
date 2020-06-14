@@ -11,7 +11,7 @@ class MemoryUsageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.redAccent,
+      color: Colors.transparent,
       child: Center(
         child: MemoryUsageIndicatorWidget(
           totalMemory: totalMemory,

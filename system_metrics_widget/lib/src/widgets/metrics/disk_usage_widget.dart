@@ -13,7 +13,7 @@ class DiskUsageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.blue,
+      color: Colors.transparent,
       child: Center(
         child: DiskUsageIndicatorWidget(
           totalMemory: totalMemory,

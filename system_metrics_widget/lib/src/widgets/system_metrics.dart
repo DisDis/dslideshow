@@ -21,20 +21,20 @@ class SystemInfoMetrics extends StatelessWidget {
       staggeredTiles: [
         StaggeredTile.fit(1),
         StaggeredTile.fit(3),
+        StaggeredTile.fit(4),
         StaggeredTile.fit(2),
         StaggeredTile.fit(2),
-        StaggeredTile.fit(1),
       ],
       crossAxisCount: 4,
       scrollDirection: Axis.vertical,
       children: <Widget>[
         CpuInfoWidget(model: _model.cpuInfo),
         OSInfoWidget(model: _model.osInfo),
+        NetworkUsageWidget(model: _model.networkInfo),
         MemoryUsageWidget(
           totalMemory: _model.updateInfo.memTotal,
           usedMemory: _model.updateInfo.memUsed,
         ),
-        NetworkUsageWidget(model: _model.networkInfo),
         DiskUsageWidget(
           totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
           usedMemory: _model.updateInfo.diskUsed,
