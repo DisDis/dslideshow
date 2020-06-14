@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/details/MetricsDetailsWidget.dart';
 
 class MemoryUsageWidget extends StatelessWidget {
   @override
@@ -7,7 +8,7 @@ class MemoryUsageWidget extends StatelessWidget {
     return Container(
       color: Colors.redAccent,
       child: Center(
-        child: Text('memory'),
+        child: MetricsDetails('memory'),
       ),
     );
   }

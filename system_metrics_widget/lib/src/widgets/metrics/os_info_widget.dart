@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:system_metrics_widget/src/model/system_info/os_info.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/details/MetricsDetailsWidget.dart';
 
 class OSInfoWidget extends StatelessWidget {
   final OSInfo _model;
@@ -14,7 +15,7 @@ class OSInfoWidget extends StatelessWidget {
     return Container(
       color: Colors.deepPurpleAccent,
       child: Center(
-        child: Text('os info: ${_model.name}, ${_model.osType}'),
+        child: MetricsDetails('os info: ${_model.name}, ${_model.osType}'),
       ),
     );
   }
