@@ -32,7 +32,7 @@ class UsageBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final usageEndPosition = size.width * usagePercent / 100;
     final usedRect = Offset.zero & Size(usageEndPosition, size.height);
-    final freeRect = usedRect.topRight & Size(50, size.height);
+    final freeRect = usedRect.topRight & Size(size.width - usageEndPosition, size.height);
 
     final Paint usedPaint = Paint()
       ..shader = LinearGradient(
