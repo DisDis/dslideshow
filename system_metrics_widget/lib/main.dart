@@ -31,7 +31,10 @@ void main() async {
   _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  ]);
 
   try {
     RemoteService _backendService;
