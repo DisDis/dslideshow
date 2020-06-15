@@ -7,6 +7,7 @@ import 'package:system_metrics_widget/src/widgets/metrics/disk_usage_widget.dart
 import 'package:system_metrics_widget/src/widgets/metrics/memory_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/network_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/os_info_widget.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/uptime_info_widget.dart';
 
 class SystemInfoMetrics extends StatelessWidget {
   final SystemInfo _model;
@@ -24,6 +25,7 @@ class SystemInfoMetrics extends StatelessWidget {
         StaggeredTile.fit(4),
         StaggeredTile.fit(2),
         StaggeredTile.fit(2),
+        StaggeredTile.fit(4),
       ],
       crossAxisCount: 4,
       scrollDirection: Axis.vertical,
@@ -40,6 +42,7 @@ class SystemInfoMetrics extends StatelessWidget {
           usedMemory: _model.updateInfo.diskUsed,
           usagePercent: _model.updateInfo.diskUsedPercent,
         ),
+        UptimeInfoWidget(model: _model.updateInfo.uptime),
       ],
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
