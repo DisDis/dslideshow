@@ -18,19 +18,39 @@ class UsageBar extends StatelessWidget {
 }
 
 class UsageBarPainter extends CustomPainter {
-  final int usagePercent;
+  final Color _usedColorStart = Colors.red.withAlpha(100);
+  final Color _usedColoEnd = Colors.red;
 
-  final Paint _usedPaint = Paint()..color = Colors.red;
-  final Paint _freePaint = Paint()..color = Colors.lightGreen;
+  final Color _freeColorStart = Colors.lightGreenAccent;
+  final Color _freeColoEnd = Colors.lightGreenAccent.withAlpha(100);
+
+  final int usagePercent;
 
   UsageBarPainter(this.usagePercent);
 
   @override
   void paint(Canvas canvas, Size size) {
     final usageEndPosition = size.width * usagePercent / 100;
-    canvas
-      ..drawRect(Rect.fromPoints(Offset(0, 0), Offset(usageEndPosition, size.height)), _usedPaint)
-      ..drawRect(Rect.fromPoints(Offset(usageEndPosition, 0), Offset(size.width, size.height)), _freePaint);
+    final usedRect = Offset.zero & Size(usageEndPosition, size.height);
+    final freeRect = usedRect.topRight & Size(50, size.height);
+
+    final Paint usedPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          _usedColorStart,
+          _usedColoEnd,
+        ],
+      ).createShader(usedRect);
+
+    final Paint freePaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          _freeColorStart,
+          _freeColoEnd,
+        ],
+      ).createShader(freeRect);
+
+    canvas..drawRect(usedRect, usedPaint)..drawRect(freeRect, freePaint);
   }
 
   @override

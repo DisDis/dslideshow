@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:system_metrics_widget/src/model/system_info/network_info.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
@@ -11,28 +12,29 @@ class NetworkUsageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.green,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(children: [MetricsDetails('network: ${_model.lastUpdate}')]),
-          if (_model.hasInternet)
-            Icon(
-              Icons.cast_connected,
-              color: Colors.white,
-              size: 24.0,
-            )
-          else
-            Icon(
-              Icons.cast,
-              color: Colors.white,
-              size: 24.0,
-            ),
-          for (final interface in _model.interfaces)
-            Row(children: [MetricsDetails('${interface.name} - ${interface.status}')]),
-        ],
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Flexible(
+          flex: 0,
+          child: Icon(
+            _model.hasInternet ? FlutterIcons.lan_connect_mco : FlutterIcons.lan_disconnect_mco,
+            color: Colors.white,
+            size: 20.0,
+          ),
+        ),
+        Flexible(
+          flex: 6,
+          child: Container(
+            color: Colors.lightBlueAccent,
+            child: Column(children: <Widget>[
+              Row(children: [MetricsDetails(' network: ${_model.lastUpdate}')]),
+              for (final interface in _model.interfaces)
+                Row(children: [MetricsDetails('${interface.name} - ${interface.status}')]),
+            ]),
+          ),
+        ),
+      ],
     );
   }
 }
