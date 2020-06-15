@@ -23,7 +23,7 @@ class CpuInfoWidget extends StatelessWidget {
         Flexible(
           flex: 6,
           child: Container(
-            color: Colors.yellow,
+            color: Colors.orangeAccent,
             child: Column(children: <Widget>[
               Row(children: [MetricsDetails(' cpu:')]),
             ]),
