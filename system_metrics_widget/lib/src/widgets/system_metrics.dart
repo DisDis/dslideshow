@@ -20,16 +20,17 @@ class SystemInfoMetrics extends StatelessWidget {
   Widget build(BuildContext context) {
     return StaggeredGridView.count(
       staggeredTiles: [
-        StaggeredTile.fit(1),
+        StaggeredTile.fit(8),
         StaggeredTile.fit(3),
+        StaggeredTile.fit(5),
+        StaggeredTile.fit(8),
         StaggeredTile.fit(4),
-        StaggeredTile.fit(2),
-        StaggeredTile.fit(2),
         StaggeredTile.fit(4),
       ],
-      crossAxisCount: 4,
+      crossAxisCount: 8,
       scrollDirection: Axis.vertical,
       children: <Widget>[
+        UptimeInfoWidget(model: _model.updateInfo.uptime),
         CpuInfoWidget(model: _model.cpuInfo),
         OSInfoWidget(model: _model.osInfo),
         NetworkUsageWidget(model: _model.networkInfo),
@@ -42,7 +43,6 @@ class SystemInfoMetrics extends StatelessWidget {
           usedMemory: _model.updateInfo.diskUsed,
           usagePercent: _model.updateInfo.diskUsedPercent,
         ),
-        UptimeInfoWidget(model: _model.updateInfo.uptime),
       ],
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 8.0,
