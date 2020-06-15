@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_indicator_widget.dart';
 

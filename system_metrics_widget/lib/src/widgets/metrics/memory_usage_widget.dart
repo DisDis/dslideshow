@@ -15,7 +15,7 @@ class MemoryUsageWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Flexible(
-          flex: 1,
+          flex: 0,
           child: Icon(
             FlutterIcons.data_usage_mdi,
             color: Colors.white,

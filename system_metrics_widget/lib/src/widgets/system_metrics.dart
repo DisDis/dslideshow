@@ -45,7 +45,7 @@ class SystemInfoMetrics extends StatelessWidget {
         UptimeInfoWidget(model: _model.updateInfo.uptime),
       ],
       mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+      crossAxisSpacing: 8.0,
     );
   }
 }
