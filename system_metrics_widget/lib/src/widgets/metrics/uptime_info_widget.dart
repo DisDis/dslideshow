@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class UptimeInfoWidget extends StatefulWidget {
@@ -26,29 +27,17 @@ class _UptimeInfoWidgetState extends State<UptimeInfoWidget> {
   Widget build(BuildContext context) {
     final now = DateTime.now();
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Flexible(
-          flex: 0,
-          child: Icon(
-            FlutterIcons.activity_fea,
-            color: Colors.white,
-            size: 20.0,
-          ),
-        ),
-        Flexible(
-          flex: 6,
-          child: Container(
-            color: Colors.teal,
-            child: Column(children: <Widget>[
-              Row(children: [MetricsDetails('${_dateFormatter.format(now)}')]),
-              Row(children: [MetricsDetails('${_timeFormatter.format(now)}')]),
-              Row(children: [MetricsDetails('${widget.uptime}')]),
-            ]),
-          ),
-        ),
-      ],
+    return MetricsContainerWidget(
+      iconData: FlutterIcons.activity_fea,
+      backgroundColor: Colors.teal,
+      child: Container(
+        color: Colors.teal,
+        child: Column(children: <Widget>[
+          Row(children: [MetricsDetails('${_dateFormatter.format(now)}')]),
+          Row(children: [MetricsDetails('${_timeFormatter.format(now)}')]),
+          Row(children: [MetricsDetails('${widget.uptime}')]),
+        ]),
+      ),
     );
   }
 

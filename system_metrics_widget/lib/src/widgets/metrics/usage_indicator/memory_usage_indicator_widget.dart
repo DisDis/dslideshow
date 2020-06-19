@@ -4,10 +4,11 @@ import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_
 class MemoryUsageIndicatorWidget extends UsageIndicatorWidget {
   final int totalMemory;
   final int usedMemory;
+  final String title;
 
-  MemoryUsageIndicatorWidget({@required this.totalMemory, @required this.usedMemory})
+  MemoryUsageIndicatorWidget({@required this.totalMemory, @required this.usedMemory, this.title = 'Mem'})
       : super(
-          title: 'Mem',
+          title: title,
           total: _formatter(totalMemory),
           free: _formatter(totalMemory - usedMemory),
           used: _formatter(usedMemory),

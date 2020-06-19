@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_bar.dart';
 
@@ -22,6 +23,7 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '$title: $total, used: $used, free: $free, usage $usagePercent %',

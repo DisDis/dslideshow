@@ -28,7 +28,7 @@ class SystemInfoMetrics extends StatelessWidget {
     return OrientationBuilder(builder: (context, orientation) {
       return StaggeredGridView.count(
         staggeredTiles: [
-          StaggeredTile.fit(8),
+          StaggeredTile.fit(6),
           StaggeredTile.fit(3),
           StaggeredTile.fit(5),
           StaggeredTile.fit(8),
@@ -45,6 +45,8 @@ class SystemInfoMetrics extends StatelessWidget {
           MemoryUsageWidget(
             totalMemory: _model.updateInfo.memTotal,
             usedMemory: _model.updateInfo.memUsed,
+            totalSwapMemory: _model.updateInfo.swapTotal,
+            usedSwapMemory: _model.updateInfo.swapUsed,
           ),
           DiskUsageWidget(
             totalMemory: _model.updateInfo.diskUsed + _model.updateInfo.diskAvailable,
