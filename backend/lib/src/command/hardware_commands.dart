@@ -5,6 +5,21 @@ import 'package:built_collection/built_collection.dart';
 
 part 'hardware_commands.g.dart';
 
+abstract class AreYouReadyCommand implements RpcCommand, Built<AreYouReadyCommand, AreYouReadyCommandBuilder> {
+  static const String TYPE = 'are_you_ready?';
+  @override
+  String get type => TYPE;
+  @override
+  @nullable
+  int get id;
+
+  static Serializer<AreYouReadyCommand> get serializer =>
+      _$areYouReadyCommandSerializer;
+
+  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)]) = _$AreYouReadyCommand;
+  AreYouReadyCommand._();
+}
+
 abstract class PushButtonCommand implements RpcCommand, Built<PushButtonCommand, PushButtonCommandBuilder> {
   static const String TYPE = 'push_button';
   @override

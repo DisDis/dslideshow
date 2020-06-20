@@ -4,6 +4,7 @@ import 'dart:io';
 //import 'package:crazy_pigs_backend/result_service/src/result_service_config.dart';
 //import 'package:crazy_pigs_backend/universe_service/src/universe_config.dart';
 //import 'package:crazy_pigs_backend/world_service/src/avatar_config.dart';
+import 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
@@ -34,6 +35,9 @@ class AppConfig{
 
   SlideShowConfig _slideShowConfig;
   SlideShowConfig get slideshow => _slideShowConfig??=new SlideShowConfig(_config["slideshow"] as Map<String, dynamic>);
+
+  WebServerConfig _webServerConfig;
+  WebServerConfig get webServer => _webServerConfig??=new WebServerConfig(_config["web"] as Map<String, dynamic>);
 
   Map<String, dynamic> _storageSection;
   Map<String, dynamic> get storageSection => _storageSection??=(_config["storage"]==null?<String, dynamic>{}: _config["storage"] as Map<String, dynamic>);

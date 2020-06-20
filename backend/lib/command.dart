@@ -4,3 +4,4 @@ export 'package:dslideshow_backend/src/command/screen_commands.dart';
 export 'package:dslideshow_backend/src/command/storage_commands.dart';
 export 'package:dslideshow_backend/src/command/system_info_commands.dart';
 export 'package:dslideshow_backend/src/command/hardware_commands.dart';
+export 'package:dslideshow_backend/src/command/web_server_commands.dart';

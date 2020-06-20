@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 1.0.0
+version: 1.1.0
 description: A sample command-line application
 environment:
   sdk: '>=2.7.0 <3.0.0'
@@ -14,7 +14,17 @@ dependencies:
     googleapis_auth: any
     gpiod: ^1.0.1
     database: ^0.3.3
+    shelf: ^0.7.5
+    shelf_router: ^0.7.2
 dev_dependencies:
   built_value_generator: ^6.5.0
+  shelf_router_generator: ^0.7.0+1
   build_runner: ^1.2.1
 #  unittest: any
+
+autover:
+  projects:
+    backend:
+      path: './'
+      match_token: '_BACK_'
+  targets: ["../common/lib/version.dart.template"]
