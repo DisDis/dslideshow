@@ -39,9 +39,11 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
  *
  * @return {Float[]}
  */
-function getHoles() = [
-    [ 3.5, 61.5 ], // X
-    [ 3.5, 52.5 ]  // Y
+function getRaspberry4Holes() = [    
+    [ 3.5, 3.5 ],
+    [ 3.5, 52.5 ], // X
+    [ 61.5, 3.5 ],
+    [ 61.5, 52.5]
 ];
 
 /**
@@ -206,16 +208,14 @@ module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0)
                     if (diameter)
                     {
                         // Agujeros para los tornillos.
-                        _holes = getHoles();
-                        for (_x = _holes[0])
-                        {
-                            for (_y = _holes[1])
-                            {
-                                translate([ _x, _y ])
+                        _holes = getRaspberry4Holes();
+                        for (_xy = _holes)
+                        { 
+                                translate([ _xy[0], _xy[1] ])
                                 {
-                                    circle(d = diameter);
+                                    circle(d = diameter, $fn = 20);
                                 }
-                            }
+                            
                         }
                     }
                 }
@@ -288,3 +288,4 @@ module roundedRect(x, y, r = 3)
         }
     }
 }
+raspberry4();

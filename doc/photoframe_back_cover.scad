@@ -9,17 +9,20 @@ wall_thickness = 1.5;
 wall_depth = 5;
 pcbDriverW = 65;
 pcbDriverH = 67.5;
+pcbDriverRotate = [0,0,90];//[180,0,-90];
 pcbPowerH  = 45;
-pcbPowerW  = 31;
+pcbPowerW  = 30.5;
 pcbRPiH    = 56;  // Alto del PCB (eje Y).
 pcbRPiW    = 85;  // Ancho del PCB (eje X).
 pcbRPiT    = 1.4; 
+pcbRPi4Rotate = [0,0,-90];
+
 
 frame_thickness = 10;
 
 M3_rad = 3.5;
 
-cover_version = "07.06.2020 v0.5";
+cover_version = "21.06.2020 v0.6";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87;
@@ -41,6 +44,7 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 3. Вырез для разьёма питания
 4. [+]Вырез для Pi4
 5. [+]Дырки для крепления плат
+6. [ ]Крючёк и ножка для стойки 
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
@@ -48,16 +52,22 @@ use <./pcbPowerDistribution.scad>
 use <./PCB/RaspberryPi4.scad>
 //-----------------------------------------------------------------------------
 
-pcbMount_ddriver_offx=1.3;
-pcbMount_ddriver_offy=3.3;
+pcbPowerHoles = getPcbPowerDistributionHoles();
+pcbDisplayHoles = getPcbDisplayDriverHoles();
+pcbRaspberry4Holes = getRaspberry4Holes();
+
+pcbMount_ddriver_offx = 1.3;
+pcbMount_ddriver_offy = 3.3;
+
 pcbMounts = [
  // M_POWER
- // pcbPostion, positions[4], height_base, height_holder
- [[pcbPowerX, pcbPowerY, back_thickness], [[2,2,0],[pcbPowerW-2,2,0],[2,pcbPowerH-2,0], [pcbPowerW-2,pcbPowerH-2,0]],2, 3],
+ // pcbPostion, positions[4], height_base, height_holder, rotate, radius
+ [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 3, [0,0,0], M3_rad/2  - 0.1],
   // M_DDRIVER
- [[(width-pcbDriverW)/2,(height-pcbDriverH)/2,back_thickness],[[pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0]], 10,3],
+ [ [(width+pcbDriverW)/2,(height)/2,back_thickness] , /*[[pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0]]*/
+ pcbDisplayHoles, 8.5,3 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
 // M_RPI4
- [[pcbRPi4X, pcbRPi4Y, back_thickness],[[3.5,-3.5,0],[61.5-9,-3.5,0],[3.5,-52.5 - 9,0],[61.5-9,-52.5-9,0]],2.5,3]
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 3 , pcbRPi4Rotate, M3_rad/2 - 0.5]
 ];
    //[ 3.5, 61.5 ], // X
     //[ 3.5, 52.5 ]  
@@ -195,22 +205,26 @@ module pcbsMounts(){
              pcbMountInfo = pcbMounts[i];
              pcbPos = pcbMountInfo[0];
              pcbMountPos = pcbMountInfo[1];
+             pcbRot = pcbMountInfo[4];
+             holeRadius = pcbMountInfo[5];
              translate(pcbPos){
                  mount_h = pcbMountInfo[3];
                  mount_base_h = pcbMountInfo[2];
-                for (ii =[0:3]) translate(pcbMountPos[ii]) {
+                 rotate(a = pcbRot){
+                for (ii = pcbMountPos) translate(ii) {
                     difference(){
                     union(){
                     // base
                     translate([0,0,mount_base_h/2]) cylinder(h=mount_base_h, r= (M3_rad/2 + 1) , center= true, $fn=20);
                     // holder
                     translate([0,0,mount_base_h])
-                        cylinder(h=mount_h, r=M3_rad/2, center = true, $fn=20);
+                        cylinder(h=mount_h, r=holeRadius, center = true, $fn=20);
                     }
                 
                     translate([0,0,mount_base_h]) translate([0,0,-2.5]) {cylinder(h=mount_h+1.01, r=M3_rad/2-1,  $fn=20);}
                     }
                 }
+            }
              }
             }
          }
@@ -250,11 +264,13 @@ difference(){
 
 
 
+if ($preview) {
 //RasPi4
-translate([pcbRPi4X, pcbRPi4Y, pcbRPi4Z]) rotate(a=[0,0,-90]) raspberry4();
+translate([pcbRPi4X, pcbRPi4Y, pcbRPi4Z]) rotate(a= pcbRPi4Rotate) raspberry4();
 
 //Display Driver 
-translate([(width-pcbDriverW)/2+pcbDriverW/2,(height-pcbDriverH)/2+pcbDriverH/2,back_thickness+10]) rotate(a=[180,0,-90]) translate([-pcbDriverW/2,-pcbDriverH/2,0])  pcbDisplayDriver();
+translate([(width+pcbDriverW)/2,(height)/2,back_thickness+10]) rotate(a=pcbDriverRotate) /*translate([-pcbDriverW/2,-pcbDriverH/2,0])*/  pcbDisplayDriver();
 
 //PoweDistib
 translate([pcbPowerX, pcbPowerY, pcbPowerZ]) pcbPowerDistribution();
+}
