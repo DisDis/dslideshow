@@ -20,9 +20,9 @@ pcbRPi4Rotate = [0,0,-90];
 
 frame_thickness = 10;
 
-M3_rad = 3.5;
+M3_rad = 3.3;
 
-cover_version = "21.06.2020 v0.6.1";
+cover_version = "21.06.2020 v0.6.2";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87;
@@ -44,12 +44,13 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 3. Вырез для разьёма питания
 4. [+]Вырез для Pi4
 5. [+]Дырки для крепления плат
-6. [ ]Крючёк и ножка для стойки 
+6. [+]Монтаж на стену или ножка 
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
 use <./pcbPowerDistribution.scad>
 use <./PCB/RaspberryPi4.scad>
+use <./keyhole_hanger.scad>
 //-----------------------------------------------------------------------------
 
 pcbPowerHoles = getPcbPowerDistributionHoles();
@@ -68,6 +69,12 @@ pcbMounts = [
  pcbDisplayHoles, 8.5,3 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
 // M_RPI4
  [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 3 , pcbRPi4Rotate, M3_rad/2 - 0.5]
+];
+
+keyholes_hanger_pos = [
+ [width / 2, height * 0.79, -0.01 ],
+ [width / 2 - 50, height * 0.79, -0.01 ],
+ [width / 2 + 50, height * 0.79, -0.01 ]
 ];
 
 module regular_polygon( r= 1.0){
@@ -226,6 +233,12 @@ module pcbsMounts(){
          }
 }
 
+module buildKeyHolesHangar(){
+    for (ii = keyholes_hanger_pos){
+            translate(ii) create_keyhole_hanger_hangar(hole_h = back_thickness, wall_thickness = 3);
+    }
+}
+
 
 /*
 //Example use of module
@@ -251,12 +264,20 @@ difference(){
         pcbsMounts();
         //frame
         buildFrame();
+        //keyholes hanger hangar
+        buildKeyHolesHangar();
     }
     // Frame mount holes
     frameMountHoles();
     // cooling holes
     cooling_holes();
     raPi4_back_holes();
+    //keyholes hanger
+    color("pink") {
+        for (ii = keyholes_hanger_pos){
+            translate(ii) create_keyhole_hanger(h = back_thickness + 0.5);
+        }
+    }
 }
 }
 
