@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.5;
 
-cover_version = "21.06.2020 v0.6";
+cover_version = "21.06.2020 v0.6.1";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87;
@@ -64,15 +64,11 @@ pcbMounts = [
  // pcbPostion, positions[4], height_base, height_holder, rotate, radius
  [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 3, [0,0,0], M3_rad/2  - 0.1],
   // M_DDRIVER
- [ [(width+pcbDriverW)/2,(height)/2,back_thickness] , /*[[pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbMount_ddriver_offy,0],[pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0],[pcbDriverW-pcbMount_ddriver_offx,pcbDriverH-pcbMount_ddriver_offy,0]]*/
+ [ [(width+pcbDriverW)/2,(height)/2,back_thickness] ,
  pcbDisplayHoles, 8.5,3 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
 // M_RPI4
  [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 3 , pcbRPi4Rotate, M3_rad/2 - 0.5]
 ];
-   //[ 3.5, 61.5 ], // X
-    //[ 3.5, 52.5 ]  
-
-
 
 module regular_polygon( r= 1.0){
     order = 6;
@@ -244,7 +240,9 @@ standoff(
     ,pcbLength = 50
     ,fn = 25
 );*/
-
+//projection(cut=true) 
+//translate([0,0,-4.5])
+{
 difference(){
     union(){
         //Frame mount blocks
@@ -260,7 +258,7 @@ difference(){
     cooling_holes();
     raPi4_back_holes();
 }
-    
+}
 
 
 
@@ -269,7 +267,7 @@ if ($preview) {
 translate([pcbRPi4X, pcbRPi4Y, pcbRPi4Z]) rotate(a= pcbRPi4Rotate) raspberry4();
 
 //Display Driver 
-translate([(width+pcbDriverW)/2,(height)/2,back_thickness+10]) rotate(a=pcbDriverRotate) /*translate([-pcbDriverW/2,-pcbDriverH/2,0])*/  pcbDisplayDriver();
+translate([(width+pcbDriverW)/2,(height)/2,back_thickness+10]) rotate(a=pcbDriverRotate)  pcbDisplayDriver();
 
 //PoweDistib
 translate([pcbPowerX, pcbPowerY, pcbPowerZ]) pcbPowerDistribution();

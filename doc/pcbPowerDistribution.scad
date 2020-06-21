@@ -31,15 +31,17 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
 
 ];
 
+hole1x = 2 + pcbHoleDiameter/2;
+hole1y = 2.0 + pcbHoleDiameter/2;
 /**
  * Devuelve las coordenadas de los agujeros del PCB.
  *
  * @return {Float[[]]}
  */
 function getPcbPowerDistributionHoles() = [
-    [ 2 + pcbHoleDiameter/2,2.0 + pcbHoleDiameter/2],
-    [ pcbWidth - 2 - pcbHoleDiameter/2, 2.0 + pcbHoleDiameter/2 ],
-    [ 13.5 + pcbHoleDiameter/2 , 37.6 + pcbHoleDiameter/2]
+    [ hole1x, hole1y],
+    [ hole1x+ 19.5 + pcbHoleDiameter, hole1y ],
+    [ 13.5 + pcbHoleDiameter/2 , hole1y + 35.4]
 ];
 
 /**

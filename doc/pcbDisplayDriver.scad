@@ -30,13 +30,18 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
     [ [  8.0 + tolerance,  6.00 + tolerance,  3.1 + tolerance ], "Silver",        [ 32.00,  1.40,  0.0 ],      0 ], // 7 Micro USB
 ];
 
+hole1x = 0.75 + pcbHoleDiam / 2;
+hole1y= 0.75 + pcbHoleDiam / 2;
 /**
  * Devuelve las coordenadas de los agujeros del PCB.
  *
  * @return {Float[]}
  */
 function getPcbDisplayDriverHoles() = [
-    [ 0.75 + pcbHoleDiam / 2, 0.75 + pcbHoleDiam / 2],[ 0.75 + pcbHoleDiam / 2, pcbHeight - 0.75 - pcbHoleDiam / 2 ], [ pcbWidth - 0.75 - pcbHoleDiam / 2, 0.75 + pcbHoleDiam / 2], [ pcbWidth - 0.75 - pcbHoleDiam / 2, pcbHeight - 0.75 - pcbHoleDiam / 2]
+    [ hole1x                     , hole1y ],
+    [ hole1x                     , hole1y + 58.6 + pcbHoleDiam ], 
+    [ hole1x + 56.6 + pcbHoleDiam, hole1y ], 
+    [ hole1x + 56.6 + pcbHoleDiam, hole1y + 58.6 + pcbHoleDiam ]
 ];
 
 /**
