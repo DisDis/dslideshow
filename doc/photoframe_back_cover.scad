@@ -22,10 +22,10 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "21.06.2020 v0.6.2";
+cover_version = "21.06.2020 v0.6.4";
 
 pcbRPi4X = 153;
-pcbRPi4Y = 87;
+pcbRPi4Y = 87.9;
 pcbRPi4Z = back_thickness+4;
 pcbPowerX = frame_thickness + 7;
 pcbPowerY = height - pcbPowerH - frame_thickness - 7;
@@ -41,10 +41,11 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 /*TODO:
 1. [+]Дыхательные прорези :)
 2. [+]Углубления для саморезов на которые будет крепиться крышка
-3. Вырез для разьёма питания
+3. [ ]Вырез для разьёма питания
 4. [+]Вырез для Pi4
 5. [+]Дырки для крепления плат
 6. [+]Монтаж на стену или ножка 
+7. [ ]Высокие поддержки требуют ребёр жёсткости
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
@@ -63,12 +64,12 @@ pcbMount_ddriver_offy = 3.3;
 pcbMounts = [
  // M_POWER
  // pcbPostion, positions[4], height_base, height_holder, rotate, radius
- [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 3, [0,0,0], M3_rad/2  - 0.1],
+ [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 4, [0,0,0], M3_rad/2  - 0.1],
   // M_DDRIVER
  [ [(width+pcbDriverW)/2,(height)/2,back_thickness] ,
- pcbDisplayHoles, 8.5,3 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
+ pcbDisplayHoles, 8.5, 4 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
 // M_RPI4
- [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 3 , pcbRPi4Rotate, M3_rad/2 - 0.5]
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5]
 ];
 
 keyholes_hanger_pos = [
@@ -109,16 +110,20 @@ module raPi4_back_holes(){
     [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 10.25,  0.0 ],     90 ], // 4 Ethernet
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 47.00,  0.0 ],     90 ], // 8 USB 1
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 29.00,  0.0 ],     90 ], // 9 USB 2
+        
+    [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 45.75,  0.0 ],     90 ], // 4 Ethernet
+    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 27.00,  0.0 ],     90 ], // 8 USB 3
+    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45,  9.00,  0.0 ],     90 ], // 9 USB 2
         */
-        rpi4_ethernet_w = 15.9;
-        rpi4_ethernet_x = 10.25;
+        rpi4_ethernet_w = 15.9+0.1*2;
+        rpi4_ethernet_x = 45.75;
         rpi4_ethernet_d = 13.5+0.1;
-        rpi4_usb1_w = 13.1;
-        rpi4_usb1_x = 47.0;
+        rpi4_usb1_w = 13.1 + 0.1*2;
+        rpi4_usb1_x = 27.0;
         rpi4_usb1_d = 16.8+0.1;
-        rpi4_usb2_w = 13.1;
-        rpi4_usb2_x = 29.0;
-        rpi4_usb2_d = 16.8+0.1;
+        rpi4_usb2_w = rpi4_usb1_w;
+        rpi4_usb2_x =  9.0;
+        rpi4_usb2_d = rpi4_usb1_d;
         //Ethernet
         translate([pcbRPi4X/*X*/+ rpi4_ethernet_x - rpi4_ethernet_w/2,-0.1, pcbRPi4Z]){
            color("Lime") cube([rpi4_ethernet_w,wall_thickness+0.2,rpi4_ethernet_d]);
@@ -235,7 +240,7 @@ module pcbsMounts(){
 
 module buildKeyHolesHangar(){
     for (ii = keyholes_hanger_pos){
-            translate(ii) create_keyhole_hanger_hangar(hole_h = back_thickness, wall_thickness = 3);
+            translate(ii) create_keyhole_hanger_hangar(hole_h = back_thickness, wall_thickness = 3, free_h = 2.5);
     }
 }
 
@@ -255,6 +260,7 @@ standoff(
 );*/
 //projection(cut=true) 
 //translate([0,0,-4.5])
+//intersection()
 {
 difference(){
     union(){
@@ -279,6 +285,27 @@ difference(){
         }
     }
 }
+/* //Power + Driver
+color("red") union(){
+    translate([pcbPowerX,pcbPowerY,0])      cube(size=[60,48,20]);
+    translate([pcbPowerX+50,pcbPowerY-25,0])cube(size=[80,15,20]);
+    translate([pcbPowerX+50,pcbPowerY-25,0])cube(size=[10,30,20]);
+    translate([pcbPowerX+50,pcbPowerY+35,0])cube(size=[80,10,20]);
+    translate([pcbPowerX+120,pcbPowerY-25,0])cube(size=[10,70,20]);
+}*/
+// RaPi4
+/*color("red") union(){
+    translate([pcbRPi4X-5,-5,0])      cube(size=[80,18,20]);
+    translate([pcbRPi4X,-5,0])      cube(size=[10,93,20]);
+    translate([pcbRPi4X+48,-5,0])      cube(size=[10,93,20]);
+    translate([pcbRPi4X,80,0])      cube(size=[55,6,20]);
+  }*/
+//RaPi4 front
+/*color("red") union(){
+    translate([pcbRPi4X-5,-5,0])      cube(size=[60,10,20]);
+    translate([pcbRPi4X,-5,0])      cube(size=[10,35,20]);
+    translate([pcbRPi4X+48,-5,0])      cube(size=[10,35,20]);
+  }*/
 }
 
 

@@ -9,7 +9,7 @@ module create_keyhole_hanger(big_r = 4.5, small_r = 2, h=1){
     }
 }
 
-module create_keyhole_hanger_hangar(big_r = 4.5, small_r = 2, hole_h = 1.5, wall_thickness = 2.5, top_thickness = 2.5, free_h = 2){
+module create_keyhole_hanger_hangar(big_r = 4.5, small_r = 2, hole_h = 1.5, wall_thickness = 2.5, top_thickness = 2.5, free_h = 2.5){
     gap = 0.4;
     cube_free_w = big_r * 2 + gap;
     cube_free_h = 2 * big_r + keyhole_size(big_r, small_r) + gap;
