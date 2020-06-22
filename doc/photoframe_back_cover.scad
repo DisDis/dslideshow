@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "22.06.2020 v0.7";
+cover_version = "22.06.2020 v0.8";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -46,8 +46,9 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 5. [+]Дырки для крепления плат
 6. [+]Монтаж на стену или ножка 
 7. [ ]Высокие поддержки требуют ребёр жёсткости
-8. [ ]Укрепить углы вентиляции
+8. [+]Укрепить углы вентиляции
 9. [+]Поддержка краёв Pi4 + убрать выямку под usb
+10.[+]Зазоры между usb и ent заполнить 
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
@@ -105,15 +106,8 @@ module cover_mount_holes(r = 1.3){
   }
 }
 
-// Вырез под разъёмы RaPi4
-module raPi4_back_holes(){
-    union(){
-        
-        /**
-    [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 10.25,  0.0 ],     90 ], // 4 Ethernet
-    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 47.00,  0.0 ],     90 ], // 8 USB 1
-    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 29.00,  0.0 ],     90 ], // 9 USB 2
-        
+
+ /**        
     [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 45.75,  0.0 ],     90 ], // 4 Ethernet
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 27.00,  0.0 ],     90 ], // 8 USB 3
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45,  9.00,  0.0 ],     90 ], // 9 USB 2
@@ -121,13 +115,27 @@ module raPi4_back_holes(){
         rpi4_usb_gap = 1;
         rpi4_ethernet_w = 15.9+0.2*2;
         rpi4_ethernet_x = 45.75;
-        rpi4_ethernet_d = 13.5+0.1;
+        rpi4_ethernet_d = 13.5+0.2*2;
         rpi4_usb1_w = 13.1 + 0.1*2;
         rpi4_usb1_x = 27.0;
         rpi4_usb1_d = 16.8 + 0.1 - rpi4_usb_gap;
         rpi4_usb2_w = rpi4_usb1_w;
         rpi4_usb2_x =  9.0;
         rpi4_usb2_d = rpi4_usb1_d;
+
+// Задняя панель на RaPi4
+module raPi4_back_panel(){
+    max_z = 16.8; 
+    back_panel_w = pcbRPiH;
+   translate([pcbRPi4X/*X*/ ,0, pcbRPi4Z]){
+           color("red") cube([back_panel_w,wall_thickness,max_z]);
+   }
+}
+// Вырез под разъёмы RaPi4
+module raPi4_back_holes(){
+    union(){ 
+     
+        
         //Ethernet
         translate([pcbRPi4X/*X*/+ rpi4_ethernet_x - rpi4_ethernet_w/2,-0.1, pcbRPi4Z]){
            color("Lime") cube([rpi4_ethernet_w,wall_thickness+0.2,rpi4_ethernet_d]);
@@ -192,6 +200,21 @@ module buildFrame(){
          }   
          translate([0,height-wall_thickness,0]) cube([width,wall_thickness,wall_depth]);
         }
+        
+    color("#6dc7ff"){
+        tri_h = 3;
+        tri_l = 4;
+     hull() {
+             translate([frame_thickness,wall_thickness,back_thickness])polyhedron(points=[[0,0,0], [0,tri_l,0], [0,0,tri_h]], faces=[[0,1,2]]);
+            translate([width - frame_thickness,wall_thickness,back_thickness]) polyhedron(points=[[0,0,0], [0,tri_l,0], [0,0,tri_h]],faces=[[0,1,2]]);
+         }
+        
+     hull() {
+             translate([frame_thickness,height - wall_thickness,back_thickness])polyhedron(points=[[0,0,0], [0,-tri_l,0], [0,0,tri_h]], faces=[[0,1,2]]);
+            translate([width - frame_thickness,height - wall_thickness,back_thickness]) polyhedron(points=[[0,0,0], [0,-tri_l,0], [0,0,tri_h]],faces=[[0,1,2]]);
+         }
+        }
+        
         color("Black"){
           translate([20,20,back_thickness]) {
             linear_extrude(height = 0.5, convexity = 10)
@@ -267,7 +290,8 @@ standoff(
 //translate([0,0,-4.5])
 //intersection()
 {
-difference(){
+difference()
+    {
     union(){
         //Frame mount blocks
         frameMountBlocks();
@@ -277,6 +301,8 @@ difference(){
         buildFrame();
         //keyholes hanger hangar
         buildKeyHolesHangar();
+        //RaPi4 back panel
+        raPi4_back_panel();
     }
     // Frame mount holes
     frameMountHoles();
@@ -312,8 +338,11 @@ color("red") union(){
     translate([pcbRPi4X,-5,0])      cube(size=[10,35,20]);
     translate([pcbRPi4X+48,-5,0])      cube(size=[10,35,20]);
   }*/
+//raPi4_panel
+/*color("red") union(){
+    translate([pcbRPi4X-5,-5,0])      cube(size=[61,10,25]);
+ }*/
 }
-
 
 
 if ($preview) {
