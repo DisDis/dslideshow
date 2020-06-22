@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "22.06.2020 v0.8";
+cover_version = "23.06.2020 v0.8.1";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -125,7 +125,7 @@ module cover_mount_holes(r = 1.3){
 
 // Задняя панель на RaPi4
 module raPi4_back_panel(){
-    max_z = 16.8; 
+    max_z = 16.8 - 0.8; 
     back_panel_w = pcbRPiH;
    translate([pcbRPi4X/*X*/ ,0, pcbRPi4Z]){
            color("red") cube([back_panel_w,wall_thickness,max_z]);
