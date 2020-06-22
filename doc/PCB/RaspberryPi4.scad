@@ -41,7 +41,7 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
  */
 function getRaspberry4Holes() = [    
     [ 3.5, 3.5 ],
-    [ 3.5, 52.5 ], // X
+    [ 3.5, 52.5 ],
     [ 61.5, 3.5 ],
     [ 61.5, 52.5]
 ];

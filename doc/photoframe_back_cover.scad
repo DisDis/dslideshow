@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "21.06.2020 v0.6.4";
+cover_version = "22.06.2020 v0.7";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -46,6 +46,8 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 5. [+]Дырки для крепления плат
 6. [+]Монтаж на стену или ножка 
 7. [ ]Высокие поддержки требуют ребёр жёсткости
+8. [ ]Укрепить углы вентиляции
+9. [+]Поддержка краёв Pi4 + убрать выямку под usb
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
@@ -63,13 +65,14 @@ pcbMount_ddriver_offy = 3.3;
 
 pcbMounts = [
  // M_POWER
- // pcbPostion, positions[4], height_base, height_holder, rotate, radius
- [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 4, [0,0,0], M3_rad/2  - 0.1],
+ // pcbPostion, positions[4], height_base, height_holder, rotate, radius, hole?, innerMount?
+ [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 4, [0,0,0], M3_rad/2  - 0.1, false, true],
   // M_DDRIVER
- [ [(width+pcbDriverW)/2,(height)/2,back_thickness] ,
- pcbDisplayHoles, 8.5, 4 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1],
+ [ [(width+pcbDriverW)/2,(height)/2,back_thickness] , pcbDisplayHoles, 8.5, 4 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1, false, true],
 // M_RPI4
- [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5]
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
+ 
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false]
 ];
 
 keyholes_hanger_pos = [
@@ -115,12 +118,13 @@ module raPi4_back_holes(){
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 27.00,  0.0 ],     90 ], // 8 USB 3
     [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45,  9.00,  0.0 ],     90 ], // 9 USB 2
         */
-        rpi4_ethernet_w = 15.9+0.1*2;
+        rpi4_usb_gap = 1;
+        rpi4_ethernet_w = 15.9+0.2*2;
         rpi4_ethernet_x = 45.75;
         rpi4_ethernet_d = 13.5+0.1;
         rpi4_usb1_w = 13.1 + 0.1*2;
         rpi4_usb1_x = 27.0;
-        rpi4_usb1_d = 16.8+0.1;
+        rpi4_usb1_d = 16.8 + 0.1 - rpi4_usb_gap;
         rpi4_usb2_w = rpi4_usb1_w;
         rpi4_usb2_x =  9.0;
         rpi4_usb2_d = rpi4_usb1_d;
@@ -129,11 +133,11 @@ module raPi4_back_holes(){
            color("Lime") cube([rpi4_ethernet_w,wall_thickness+0.2,rpi4_ethernet_d]);
         }
         //USB 1
-        translate([pcbRPi4X/*X*/+rpi4_usb1_x - rpi4_usb1_w/2,-0.1, pcbRPi4Z]){
+        translate([pcbRPi4X/*X*/+rpi4_usb1_x - rpi4_usb1_w/2,-0.1, pcbRPi4Z + rpi4_usb_gap]){
             color("Lime") cube([rpi4_usb1_w,wall_thickness+0.2,rpi4_usb1_d]);
         }
         //USB 2
-        translate([pcbRPi4X/*X*/+rpi4_usb2_x - rpi4_usb2_w/2,-0.1, pcbRPi4Z]){
+        translate([pcbRPi4X/*X*/+rpi4_usb2_x - rpi4_usb2_w/2,-0.1, pcbRPi4Z + rpi4_usb_gap]){
            color("Lime") cube([rpi4_usb2_w,wall_thickness+0.2,rpi4_usb2_d]);
         }
   
@@ -208,13 +212,14 @@ module frameMountHoles(){
    
 module pcbsMounts(){
   color("Gray") {
-             for (i =[0:2])
+             for (pcbMountInfo = pcbMounts)
              {
-             pcbMountInfo = pcbMounts[i];
              pcbPos = pcbMountInfo[0];
              pcbMountPos = pcbMountInfo[1];
              pcbRot = pcbMountInfo[4];
              holeRadius = pcbMountInfo[5];
+             isCreateHole = pcbMountInfo[6];
+             innerMount = pcbMountInfo[7];
              translate(pcbPos){
                  mount_h = pcbMountInfo[3];
                  mount_base_h = pcbMountInfo[2];
@@ -225,11 +230,11 @@ module pcbsMounts(){
                     // base
                     translate([0,0,mount_base_h/2]) cylinder(h=mount_base_h, r= (M3_rad/2 + 1) , center= true, $fn=20);
                     // holder
-                    translate([0,0,mount_base_h])
+                    if (innerMount)translate([0,0,mount_base_h])
                         cylinder(h=mount_h, r=holeRadius, center = true, $fn=20);
                     }
-                
-                    translate([0,0,mount_base_h]) translate([0,0,-2.5]) {cylinder(h=mount_h+1.01, r=M3_rad/2-1,  $fn=20);}
+                    // inner hole
+                    if (isCreateHole)translate([0,0,mount_base_h]) translate([0,0,-2.5]) {cylinder(h=mount_h+1.01, r=M3_rad/2-1,  $fn=20);}
                     }
                 }
             }
@@ -285,6 +290,7 @@ difference(){
         }
     }
 }
+
 /* //Power + Driver
 color("red") union(){
     translate([pcbPowerX,pcbPowerY,0])      cube(size=[60,48,20]);
