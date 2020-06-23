@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "23.06.2020 v0.8.1";
+cover_version = "23.06.2020 v0.8.2";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -73,7 +73,9 @@ pcbMounts = [
 // M_RPI4
  [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
  
- [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false]
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false],
+ // Wires mount
+ //[[pcbPowerX, pcbPowerY - 30, back_thickness], [[ pcbPowerW / 2-5, 0, 0],[ pcbPowerW / 2+5, 0, 0]], 2.5, 4.2 , [0,0,0], M3_rad/2 - 0.5, true, true]
 ];
 
 keyholes_hanger_pos = [
@@ -190,6 +192,13 @@ module frameMountBlocks(){
         }
 }
 
+module stiffening_rib(sr_start = [0,0,0],sr_end = [0,0,10], sr_points=[[0,0,0], [0,10,0], [0,0,10]], sr_faces = [[0,1,2]]){
+ hull() {
+    translate(sr_start) polyhedron(points= sr_points, faces=sr_faces);
+    translate(sr_end)   polyhedron(points= sr_points, faces=sr_faces);
+ }
+}
+
 module buildFrame(){
         cube([width,height,back_thickness]);
         translate([0,0,back_thickness]){
@@ -204,15 +213,21 @@ module buildFrame(){
     color("#6dc7ff"){
         tri_h = 3;
         tri_l = 4;
-     hull() {
-             translate([frame_thickness,wall_thickness,back_thickness])polyhedron(points=[[0,0,0], [0,tri_l,0], [0,0,tri_h]], faces=[[0,1,2]]);
-            translate([width - frame_thickness,wall_thickness,back_thickness]) polyhedron(points=[[0,0,0], [0,tri_l,0], [0,0,tri_h]],faces=[[0,1,2]]);
-         }
+       stiffening_rib(
+        sr_start = [frame_thickness,wall_thickness,back_thickness],
+        sr_end = [width - frame_thickness,wall_thickness,back_thickness], sr_points=[[0,0,0], [0,tri_l,0], [0,0,tri_h]]);
+       stiffening_rib(
+        sr_start = [frame_thickness,height - wall_thickness,back_thickness],
+        sr_end= [width - frame_thickness,height - wall_thickness,back_thickness], sr_points=[[0,0,0], [0,-tri_l,0], [0,0,tri_h]]);
+       
+        stiffening_rib(
+        sr_start = [wall_thickness,frame_thickness,back_thickness],
+        sr_end= [wall_thickness,height - wall_thickness,back_thickness], sr_points=[[0,0,0], [tri_l,0,0], [0,0,tri_h]]);
+        stiffening_rib(
+        sr_start = [width - wall_thickness,frame_thickness,back_thickness],
+        sr_end= [width - wall_thickness,height - wall_thickness,back_thickness], sr_points=[[0,0,0], [-tri_l,0,0], [0,0,tri_h]]);
         
-     hull() {
-             translate([frame_thickness,height - wall_thickness,back_thickness])polyhedron(points=[[0,0,0], [0,-tri_l,0], [0,0,tri_h]], faces=[[0,1,2]]);
-            translate([width - frame_thickness,height - wall_thickness,back_thickness]) polyhedron(points=[[0,0,0], [0,-tri_l,0], [0,0,tri_h]],faces=[[0,1,2]]);
-         }
+        
         }
         
         color("Black"){
