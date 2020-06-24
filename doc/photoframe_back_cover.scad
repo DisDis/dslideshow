@@ -130,8 +130,9 @@ module cover_mount_holes(r = 1.3){
 // Задняя панель на RaPi4
 module raPi4_back_panel(){
     max_z = 16.8 - 1.0; 
-    back_panel_w = pcbRPiH;
-   translate([pcbRPi4X/*X*/ ,0, 0]){
+    inc_w = 2;
+    back_panel_w = pcbRPiH + inc_w;
+   translate([pcbRPi4X - inc_w/*X*/ ,0, 0]){
            color("red") cube([back_panel_w,wall_thickness + 1.0,max_z + pcbRPi4Z]);
    }
 }
