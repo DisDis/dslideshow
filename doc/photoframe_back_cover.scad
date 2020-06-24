@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "24.06.2020 v0.8.3";
+cover_version = "24.06.2020 v0.8.4";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -139,18 +139,18 @@ module raPi4_back_panel(){
 module raPi4_back_holes(){
     union(){ 
      
-        
+        back_panel_deep = wall_thickness + 0.2 + 5;
         //Ethernet
         translate([pcbRPi4X/*X*/+ rpi4_ethernet_x - rpi4_ethernet_w/2,-0.1, pcbRPi4Z]){
-           color("Lime") cube([rpi4_ethernet_w,wall_thickness+0.2,rpi4_ethernet_d]);
+           color("Lime") cube([rpi4_ethernet_w, back_panel_deep, rpi4_ethernet_d]);
         }
         //USB 1
         translate([pcbRPi4X/*X*/+rpi4_usb1_x - rpi4_usb1_w/2,-0.1, pcbRPi4Z + rpi4_usb_gap]){
-            color("Lime") cube([rpi4_usb1_w,wall_thickness+0.2,rpi4_usb1_d]);
+            color("Lime") cube([rpi4_usb1_w, back_panel_deep, rpi4_usb1_d]);
         }
         //USB 2
         translate([pcbRPi4X/*X*/+rpi4_usb2_x - rpi4_usb2_w/2,-0.1, pcbRPi4Z + rpi4_usb_gap]){
-           color("Lime") cube([rpi4_usb2_w,wall_thickness+0.2,rpi4_usb2_d]);
+           color("Lime") cube([rpi4_usb2_w, back_panel_deep, rpi4_usb2_d]);
         }
   
  }
@@ -357,7 +357,7 @@ color("red") union(){
   }*/
 //raPi4_panel
 /*color("red") union(){
-    translate([pcbRPi4X-5,-5,0])      cube(size=[61,10,25]);
+    translate([pcbRPi4X-5,-5,0])      cube(size=[81,20,25]);
  }*/
 }
 
