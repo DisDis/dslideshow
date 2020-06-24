@@ -38,7 +38,7 @@ hole1y= 0.75 + pcbHoleDiam / 2;
  * @return {Float[]}
  */
 function getPcbDisplayDriverHoles() = [
-    [ hole1x                     , hole1y ],
+    [ hole1x                     , hole1y - 0.3 ], /* magic 0.3 */
     [ hole1x                     , hole1y + 58.6 + pcbHoleDiam ], 
     [ hole1x + 56.6 + pcbHoleDiam, hole1y ], 
     [ hole1x + 56.6 + pcbHoleDiam, hole1y + 58.6 + pcbHoleDiam ]

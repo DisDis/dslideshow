@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "23.06.2020 v0.8.2";
+cover_version = "24.06.2020 v0.8.3";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -49,6 +49,8 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 8. [+]Укрепить углы вентиляции
 9. [+]Поддержка краёв Pi4 + убрать выямку под usb
 10.[+]Зазоры между usb и ent заполнить 
+11.[+]Увеличить до 2мм back pi panel
+12.[ ]Переделать eth держатель
 */
 //-----------------------------------------------------------------------------
 use <./pcbDisplayDriver.scad>
@@ -127,10 +129,10 @@ module cover_mount_holes(r = 1.3){
 
 // Задняя панель на RaPi4
 module raPi4_back_panel(){
-    max_z = 16.8 - 0.8; 
+    max_z = 16.8 - 1.0; 
     back_panel_w = pcbRPiH;
-   translate([pcbRPi4X/*X*/ ,0, pcbRPi4Z]){
-           color("red") cube([back_panel_w,wall_thickness,max_z]);
+   translate([pcbRPi4X/*X*/ ,0, 0]){
+           color("red") cube([back_panel_w,wall_thickness + 1.0,max_z + pcbRPi4Z]);
    }
 }
 // Вырез под разъёмы RaPi4
@@ -234,7 +236,7 @@ module buildFrame(){
           translate([20,20,back_thickness]) {
             linear_extrude(height = 0.5, convexity = 10)
                 {
-                    text(cover_version, 5);
+                    text(cover_version, 7);
                 }
             }
         }

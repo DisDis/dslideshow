@@ -41,7 +41,7 @@ hole1y = 2.0 + pcbHoleDiameter/2;
 function getPcbPowerDistributionHoles() = [
     [ hole1x, hole1y],
     [ hole1x+ 19.5 + pcbHoleDiameter, hole1y ],
-    [ 13.5 + pcbHoleDiameter/2 , hole1y + 35.4]
+    [ 13.5 + pcbHoleDiameter/2 , hole1y + 35.7]
 ];
 
 /**
