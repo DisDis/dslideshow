@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "24.06.2020 v0.8.4";
+cover_version = "24.06.2020 v0.8.5";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -105,7 +105,7 @@ module cover_mount_holes(r = 1.3){
       base_z = 3;
       translate([frame_thickness/2,frame_thickness/2,0]){
             translate([0,0,base_z/2-0.01]) cube([5,5,base_z],center = true);
-            cylinder(h = mount_z+0.01, r = r, $fn = 20);
+            translate([0,0,base_z+0.1])cylinder(h = mount_z+0.01, r = r, $fn = 20);
           }
   }
 }
