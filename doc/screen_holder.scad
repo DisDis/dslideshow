@@ -16,7 +16,7 @@ active_area_offsetx = (display_width - active_area_width) / 2;
 tolerance = 0.3;
 
 
-thickness = 0.5;
+thickness = 1.0;
 display_thickness = 1.82;
 mount_thickness = 3;
 mount_w = 10;
