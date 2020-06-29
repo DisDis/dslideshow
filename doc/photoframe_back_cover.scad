@@ -22,7 +22,7 @@ frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "24.06.2020 v0.8.5";
+cover_version = "24.06.2020 v1.0.0";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
