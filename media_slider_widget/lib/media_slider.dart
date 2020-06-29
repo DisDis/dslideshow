@@ -3,8 +3,8 @@ library fluttercarouselslider;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:media_slider_widget/media_slider_item_effect.dart';
+import 'src/page_view.dart' as custom;
 
 typedef Widget MediaSlideBuilder(int index);
 
@@ -31,7 +31,7 @@ class MediaSlider extends StatefulWidget {
     this.timeout = const Duration(seconds: 5),
     this.transitionTime = const Duration(seconds: 2),
     this.transitionCurve = Curves.easeOutQuad,
-    this.scrollPhysics = const BouncingScrollPhysics(),
+    this.scrollPhysics = const NeverScrollableScrollPhysics(),
     this.scrollDirection = Axis.horizontal,
     this.unlimitedMode = false,
   })  : slideBuilder = null,
@@ -47,7 +47,7 @@ class MediaSlider extends StatefulWidget {
     this.timeout = const Duration(seconds: 5),
     this.transitionTime = const Duration(seconds: 2),
     this.transitionCurve = Curves.easeOutQuad,
-    this.scrollPhysics = const BouncingScrollPhysics(),
+    this.scrollPhysics = const NeverScrollableScrollPhysics(),
     this.scrollDirection = Axis.horizontal,
     this.unlimitedMode = false,
   })  : children = null,
@@ -70,11 +70,11 @@ class MediaSliderState extends State<MediaSlider> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        PageView.builder(
+        custom.PageView.builder(
           itemCount: widget.unlimitedMode ? null : widget.itemCount,
           controller: _pageController,
           scrollDirection: widget.scrollDirection,
-          physics: widget.scrollPhysics,
+//          physics: widget.scrollPhysics,
           itemBuilder: (context, index) {
             index = index % widget.itemCount;
             Widget slide = widget.children == null ? widget.slideBuilder(index) : widget.children[index];

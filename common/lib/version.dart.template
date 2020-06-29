@@ -1,4 +1,4 @@
-class ApplicationInfo{
-  final String frontendVersion = '_FRONT_';
-  final String backendVersion = '_BACK_';
+abstract class ApplicationInfo{
+  static const String frontendVersion = '_FRONT_';
+  static const String backendVersion = '_BACK_';
 }
