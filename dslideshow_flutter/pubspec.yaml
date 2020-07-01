@@ -1,6 +1,6 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 1.0.0+6
+version: 1.0.0+7
 
 environment:
   sdk: ">=2.2.3 <3.0.0"

@@ -1,8 +1,12 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @version 2.0
+ * @version 2.1
  */
+/*
+TODO:
+[ ] Легко ломаются держатели. Может их клеить?
+*/
 frame_inner_width = 200;
 frame_inner_hieght = 150;
 

@@ -1,5 +1,5 @@
 name: 'dslideshow_backend'
-version: 1.1.0+5
+version: 1.1.0+6
 description: A sample command-line application
 environment:
   sdk: '>=2.7.0 <3.0.0'

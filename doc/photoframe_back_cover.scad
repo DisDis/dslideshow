@@ -358,9 +358,12 @@ color("red") union(){
   }*/
 //raPi4_panel
 /*color("red") union(){
-    translate([pcbRPi4X-5,-5,0])      cube(size=[81,20,25]);
+    translate([pcbRPi4X-5,-5,0])      cube(size=[81,15,25]);
  }*/
 }
+//raPi4_panel mount cube
+//mount_z = wall_depth+back_thickness;
+//translate([pcbRPi4X-frame_thickness,0,0]) cube([frame_thickness,frame_thickness,mount_z]);
 
 
 if ($preview) {

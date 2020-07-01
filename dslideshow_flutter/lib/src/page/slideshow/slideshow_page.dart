@@ -164,7 +164,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           )));
         }
         return Container(
-          child: Center(child: data),
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: data
         );
       },
     );
