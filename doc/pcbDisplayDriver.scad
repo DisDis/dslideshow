@@ -8,9 +8,10 @@
  */
 pcbHeight    = 67.5;  // Alto del PCB (eje Y).
 pcbWidth     = 65;  // Ancho del PCB (eje X).
-pcbThickness = 1.4; // Grosor del PCB (eje Z).
+pcbThickness = 1.6; // Grosor del PCB (eje Z).
 pcbName = "Display Driver";
 pcbNameSize = 5;
+pcbHoleDiam = 3.5;
 //-----------------------------------------------------------------------------
 //use <./pin.scad>
 //-----------------------------------------------------------------------------
@@ -29,14 +30,18 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
     [ [  8.0 + tolerance,  6.00 + tolerance,  3.1 + tolerance ], "Silver",        [ 32.00,  1.40,  0.0 ],      0 ], // 7 Micro USB
 ];
 
+hole1x = 0.75 + pcbHoleDiam / 2;
+hole1y= 0.75 + pcbHoleDiam / 2;
 /**
  * Devuelve las coordenadas de los agujeros del PCB.
  *
  * @return {Float[]}
  */
-function getHoles() = [
-    [ 2.0, 63 ], // X
-    [ 2.0, 65 ]  // Y
+function getPcbDisplayDriverHoles() = [
+    [ hole1x                     , hole1y - 0.3 ], /* magic 0.3 */
+    [ hole1x                     , hole1y + 58.6 + pcbHoleDiam ], 
+    [ hole1x + 56.6 + pcbHoleDiam, hole1y ], 
+    [ hole1x + 56.6 + pcbHoleDiam, hole1y + 58.6 + pcbHoleDiam ]
 ];
 
 /**
@@ -142,16 +147,14 @@ module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0, 
                     if (diameter)
                     {
                         // Agujeros para los tornillos.
-                        _holes = getHoles();
-                        for (_x = _holes[0])
-                        {
-                            for (_y = _holes[1])
-                            {
-                                translate([ _x, _y ])
+                        _holes = getPcbDisplayDriverHoles();
+                        for (_xy = _holes)
+                        { 
+                                translate([ _xy[0], _xy[1] ])
                                 {
-                                    circle(d = diameter);
+                                    circle(d = diameter, $fn = 20);
                                 }
-                            }
+                            
                         }
                     }
                 }
@@ -170,7 +173,7 @@ module pcbDisplayDriver(tolerance = 0)
     _blocks = getBlocks(tolerance);
     //difference()
     //{
-        pcb(diameter = 4, tolerance = tolerance);
+        pcb(diameter = pcbHoleDiam, tolerance = tolerance);
         translate([ (pcbWidth) / 2, (pcbHeight + tolerance), - 0.1 ])
         {
             rotate([ 0, 0, 270 ])

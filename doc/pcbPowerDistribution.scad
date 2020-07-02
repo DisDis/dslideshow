@@ -7,10 +7,11 @@
  * @see     http://www.thingiverse.com/thing:3645641
  */
 pcbHeight    = 45;  // Alto del PCB (eje Y).
-pcbWidth     = 31;  // Ancho del PCB (eje X).
-pcbThickness = 1.4; // Grosor del PCB (eje Z).
+pcbWidth     = 30.5;  // Ancho del PCB (eje X).
+pcbThickness = 1.6; // Grosor del PCB (eje Z).
 pcbName = "DC-DC 5V5A";
 pcbNameSize = 3;
+pcbHoleDiameter = 3.6;
 //-----------------------------------------------------------------------------
 //use <./pin.scad>
 //-----------------------------------------------------------------------------
@@ -24,20 +25,23 @@ pcbNameSize = 3;
  */
 function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance) / 2 ) [
     // Dimensiones [x,y,z]                                       Color            Posición [x,y,z]        Rotación
-    [ [  10.0 + tolerance,  10.00 + tolerance,  16.0 + tolerance ], "Silver",      [ 10.00,  pcbHeight - 10.0,  0.0 ],      0 ],
-    [ [  10.0 + tolerance,  10.00 + tolerance,  16.0 + tolerance ], "Silver",      [ 23.00,  pcbHeight - 10.0,  0.0 ],      0 ],  
-    [ [ 15.5 + tolerance, 10 + tolerance,  16.0 + tolerance ], "Blue",          [ 15.00,  6,  0.0 ],      0 ],// DC-DC connector
+    [ [  10.0 + tolerance,  10.00 + tolerance,  14.0 + tolerance ], "Silver",      [ 5.10,  pcbHeight - 5.10,  0.0 ],      0 ],
+    [ [  10.0 + tolerance,  10.00 + tolerance,  14.0 + tolerance ], "Silver",      [ pcbWidth - 5.10,  pcbHeight - 5.10,  0.0 ],      0 ],  
+    [ [ 15.5 + tolerance, 7.9 + tolerance,  10.6 + tolerance ], "Blue",          [ pcbWidth / 2,  4.2,  0.0 ],      0 ],// DC-DC connector
 
 ];
 
+hole1x = 2 + pcbHoleDiameter/2;
+hole1y = 2.0 + pcbHoleDiameter/2;
 /**
  * Devuelve las coordenadas de los agujeros del PCB.
  *
- * @return {Float[]}
+ * @return {Float[[]]}
  */
-function getHoles() = [
-    [ 2.0, 29 ], // X
-    [ 2.0, 43 ]  // Y
+function getPcbPowerDistributionHoles() = [
+    [ hole1x, hole1y],
+    [ hole1x+ 19.5 + pcbHoleDiameter, hole1y ],
+    [ 13.5 + pcbHoleDiameter/2 , hole1y + 35.7]
 ];
 
 /**
@@ -126,7 +130,7 @@ module printPcbName(width = 0, height = 0, length = 1)
  * @param {Float} tolerance Tolerancia a usar para las dimensiones del PCB.
  *                          Un valor positivo aumenta el tamaño.
  */
-module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0, radius = 0.1)
+module pcb(thickness = pcbThickness, diameter = 3.6, delta = 0, tolerance = 0, radius = 0.1)
 {
     _r = radius;                     // Radio de los bordes del PCB.
     _h = pcbHeight + tolerance; // Alto del PCB (eje Y).
@@ -144,16 +148,14 @@ module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0, 
                     if (diameter)
                     {
                         // Agujeros para los tornillos.
-                        _holes = getHoles();
-                        for (_x = _holes[0])
-                        {
-                            for (_y = _holes[1])
-                            {
-                                translate([ _x, _y ])
+                        _holes = getPcbPowerDistributionHoles();
+                        for (_xy = _holes)
+                        { 
+                                translate([ _xy[0], _xy[1] ])
                                 {
-                                    circle(d = diameter);
+                                    circle(d = diameter, $fn = 20);
                                 }
-                            }
+                            
                         }
                     }
                 }
@@ -172,7 +174,7 @@ module pcbPowerDistribution(tolerance = 0)
     _blocks = getBlocks(tolerance);
     //difference()
     //{
-        pcb(diameter = 4, tolerance = tolerance);
+        pcb(diameter = pcbHoleDiameter, tolerance = tolerance);
 
         translate([ (pcbWidth) / 2, (pcbHeight + tolerance), - 0.1 ])
         {

@@ -9,7 +9,9 @@ class ImageWidget extends StatelessWidget {
 
   ImageProvider get provider => _image.image;
 
-  ImageWidget(MediaItem item) :_image = Image.file(new File(item.uri.path));
+  ImageWidget(MediaItem item) :_image = Image.file(
+      new File(item.uri.path),
+      fit: BoxFit.contain);
 
   @override
   Widget build(BuildContext context) => _image;

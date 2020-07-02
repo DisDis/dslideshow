@@ -1,10 +1,10 @@
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:package_info/package_info.dart';
 
 class AnimatedLogo extends AnimatedWidget {
   // Make the Tweens static because they don't change.
@@ -40,15 +40,11 @@ class AnimatedLogo extends AnimatedWidget {
                 welcomeText,
                 style: TextStyle(color: Colors.white, fontSize: 50),
               ),
-              FutureBuilder<PackageInfo>(
-                  future: PackageInfo.fromPlatform(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return Text("v${snapshot.data.version}#${snapshot.data.buildNumber}",
-                          style: TextStyle(color: Colors.white, fontSize: 25));
-                    }
-                    return new Container();
-                  }),
+                    Text("front: v${ApplicationInfo.frontendVersion}",
+                          style: TextStyle(color: Colors.white, fontSize: 25)),
+              Text("back: v${ApplicationInfo.backendVersion}",
+                  style: TextStyle(color: Colors.white, fontSize: 25))
+
             ],
           ),
         ),

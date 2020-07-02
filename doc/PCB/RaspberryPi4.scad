@@ -26,12 +26,12 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
     [ [ 50.8 + tolerance,  5.08 + tolerance,  8.5 + tolerance ], "DarkSlateGray", [ 32.40, 52.50,  0.0 ],      0 ], // 1 GPIO
     [ [  4.0 + tolerance, 22.40 + tolerance,  5.5 + tolerance ], "Orange",        [ 45.00, 11.50,  0.0 ],      0 ], // 2 Cámara
     [ [  4.0 + tolerance, 22.40 + tolerance,  5.5 + tolerance ], "DarkOrange",    [  3.80, 28.00,  0.0 ],      0 ], // 3 Display
-    [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 10.25,  0.0 ],     90 ], // 4 Ethernet
+    [ [ 15.9 + tolerance, 21.20 + tolerance, 13.5 + tolerance ], "Violet",        [ 76.50, 45.75,  0.0 ],     90 ], // 4 Ethernet
     [ [ 15.5 + tolerance, 11.50 + tolerance,  6.3 + tolerance ], "Cyan",          [ 32.00,  4.55,  0.0 ],      0 ], // 5 HDMI
     [ [ 14.6 + tolerance, 14.60 + tolerance,  1.8 + tolerance ], "Purple",        [  7.30, 28.80,  zSD ],      0 ], // 6 Micro SD
     [ [  8.0 + tolerance,  6.00 + tolerance,  3.1 + tolerance ], "Silver",        [ 10.60,  1.40,  0.0 ],      0 ], // 7 Micro USB
-    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 47.00,  0.0 ],     90 ], // 8 USB 1
-    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 29.00,  0.0 ],     90 ], // 9 USB 2
+    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 27.00,  0.0 ],     90 ], // 8 USB 3
+    [ [ 13.1 + tolerance, 17.30 + tolerance, 16.8 + tolerance ], "Silver",        [ 78.45, 9.00,  0.0 ],     90 ], // 9 USB 2
 ];
 
 /**
@@ -39,9 +39,11 @@ function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance)
  *
  * @return {Float[]}
  */
-function getHoles() = [
-    [ 3.5, 61.5 ], // X
-    [ 3.5, 52.5 ]  // Y
+function getRaspberry4Holes() = [    
+    [ 3.5, 3.5 ],
+    [ 3.5, 52.5 ],
+    [ 61.5, 3.5 ],
+    [ 61.5, 52.5]
 ];
 
 /**
@@ -206,16 +208,14 @@ module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0)
                     if (diameter)
                     {
                         // Agujeros para los tornillos.
-                        _holes = getHoles();
-                        for (_x = _holes[0])
-                        {
-                            for (_y = _holes[1])
-                            {
-                                translate([ _x, _y ])
+                        _holes = getRaspberry4Holes();
+                        for (_xy = _holes)
+                        { 
+                                translate([ _xy[0], _xy[1] ])
                                 {
-                                    circle(d = diameter);
+                                    circle(d = diameter, $fn = 20);
                                 }
-                            }
+                            
                         }
                     }
                 }
@@ -288,3 +288,4 @@ module roundedRect(x, y, r = 3)
         }
     }
 }
+raspberry4();

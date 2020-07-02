@@ -96,7 +96,7 @@ class GPIOServiceImpl extends GPIOService{
 
       _linePIR.onEvent.listen((event) {
         _log.info('PIR: $event');
-        _scMotion.add(event.edge == SignalEdge.falling);
+        _scMotion.add(event.edge == SignalEdge.rising);
       });
 
       _linePauseButton.onEvent.listen((event) {
