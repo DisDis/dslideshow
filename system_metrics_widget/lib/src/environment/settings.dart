@@ -9,7 +9,12 @@ class Settings {
   );
 
   static TextStyle loadAverageDetailsTextStyle = GoogleFonts.roboto(
-    fontSize: 9,
+    fontSize: 8,
+    color: Colors.white,
+  );
+
+  static TextStyle loadAverageTitleTextStyle = GoogleFonts.roboto(
+    fontSize: 10,
     color: Colors.white,
   );
 

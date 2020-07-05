@@ -2,6 +2,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/circular_indicator/circular_indicator_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
@@ -29,35 +30,75 @@ class CpuInfoWidget extends StatelessWidget {
         Row(children: [MetricsDetails('hardware', value: cpu.hardware)]),
         Row(children: [MetricsDetails('revision', value: cpu.revision)]),
         Row(children: [MetricsDetails('cores', value: cpu.cores)]),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: cpuUsedSize,
-              height: cpuUsedSize,
-              child: CircularIndicatorWidget(
-                percent: cpuLoad1 / cpu.cores,
-                backgroundColor: backgroundBarColor,
+        Row(children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(
+                          'LA1',
+                          style: Settings.loadAverageTitleTextStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        width: cpuUsedSize,
+                        height: cpuUsedSize,
+                        child: CircularIndicatorWidget(
+                          percent: cpuLoad1 / cpu.cores,
+                          backgroundColor: backgroundBarColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(
+                          'LA5',
+                          style: Settings.loadAverageTitleTextStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        width: cpuUsedSize,
+                        height: cpuUsedSize,
+                        child: CircularIndicatorWidget(
+                          percent: cpuLoad5 / cpu.cores,
+                          backgroundColor: backgroundBarColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(6),
+                        child: Text(
+                          'LA15',
+                          style: Settings.loadAverageTitleTextStyle,
+                        ),
+                      ),
+                      SizedBox(
+                        width: cpuUsedSize,
+                        height: cpuUsedSize,
+                        child: CircularIndicatorWidget(
+                          percent: cpuLoad15 / cpu.cores,
+                          backgroundColor: backgroundBarColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            SizedBox(
-              width: cpuUsedSize,
-              height: cpuUsedSize,
-              child: CircularIndicatorWidget(
-                percent: cpuLoad5 / cpu.cores,
-                backgroundColor: backgroundBarColor,
-              ),
-            ),
-            SizedBox(
-              width: cpuUsedSize,
-              height: cpuUsedSize,
-              child: CircularIndicatorWidget(
-                percent: cpuLoad15 / cpu.cores,
-                backgroundColor: backgroundBarColor,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ]),
       ]),
     );
   }
