@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:math' as math;
 
 class UsageBar extends StatelessWidget {
   final int usagePercent;
@@ -11,7 +12,7 @@ class UsageBar extends StatelessWidget {
     final size = MediaQuery.of(context).size;
 
     return CustomPaint(
-      size: Size(size.width, 6),
+      size: Size(size.width, 8),
       painter: UsageBarPainter(usagePercent),
     );
   }
@@ -30,7 +31,10 @@ class UsageBarPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final transitionWidth = 8.0;
     final usageEndPosition = size.width * usagePercent / 100;
+    final hasTransition = math.min(usageEndPosition, size.width - usageEndPosition) > 10;
+
     final usedRect = Offset.zero & Size(usageEndPosition, size.height);
     final freeRect = usedRect.topRight & Size(size.width - usageEndPosition, size.height);
 
@@ -50,7 +54,20 @@ class UsageBarPainter extends CustomPainter {
         ],
       ).createShader(freeRect);
 
-    canvas..drawRect(usedRect, usedPaint)..drawRect(freeRect, freePaint);
+    final transitionRect = hasTransition
+        ? (usedRect.topRight - Offset(transitionWidth, 0) &
+            Size(transitionWidth, usedRect.height))
+        : Rect.zero;
+
+    final Paint transitionPaint = Paint()
+      ..shader = LinearGradient(
+        colors: [
+          _usedColoEnd,
+          _freeColorStart,
+        ],
+      ).createShader(transitionRect);
+
+    canvas..drawRect(usedRect, usedPaint)..drawRect(freeRect, freePaint)..drawRect(transitionRect, transitionPaint);
   }
 
   @override

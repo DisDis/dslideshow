@@ -7,4 +7,9 @@ class Settings {
     fontSize: 14,
     color: Colors.white,
   );
+
+  static TextStyle metricsClockTextDigitalStyle = GoogleFonts.righteous(
+    fontSize: 40,
+    color: Colors.white,
+  );
 }

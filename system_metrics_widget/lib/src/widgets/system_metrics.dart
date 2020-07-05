@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/cpu_info_widget.dart';
+import 'package:system_metrics_widget/src/widgets/metrics/current_time_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/disk_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/memory_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/network_usage_widget.dart';
@@ -28,6 +29,7 @@ class SystemInfoMetrics extends StatelessWidget {
     return OrientationBuilder(builder: (context, orientation) {
       return StaggeredGridView.count(
         staggeredTiles: [
+          StaggeredTile.fit(8),
           StaggeredTile.fit(5),
           StaggeredTile.fit(3),
           StaggeredTile.fit(5),
@@ -38,6 +40,7 @@ class SystemInfoMetrics extends StatelessWidget {
         crossAxisCount: 8,
         scrollDirection: Axis.vertical,
         children: <Widget>[
+          CurrentTimeWidget(),
           UptimeInfoWidget(model: _model.updateInfo.uptime),
           CpuInfoWidget(
             cpu: _model.cpuInfo,

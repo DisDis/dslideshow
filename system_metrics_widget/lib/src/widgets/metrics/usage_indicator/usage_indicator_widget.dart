@@ -29,8 +29,11 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
           '$title: $total, used: $used, free: $free, usage $usagePercent %',
           style: Settings.metricsDetailsTextStyle,
         ),
-        UsageBar(
-          usagePercent: usagePercent,
+        Padding(
+          padding: EdgeInsets.only(top: 4),
+          child: UsageBar(
+            usagePercent: usagePercent,
+          ),
         ),
       ],
     );
