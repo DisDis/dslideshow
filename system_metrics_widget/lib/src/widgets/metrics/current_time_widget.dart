@@ -30,8 +30,13 @@ class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
       child: Container(
         color: Colors.black,
         child: Column(children: <Widget>[
-          Row(children: [MetricsDetails('${_dateFormatter.format(now)}')]),
-          Row(children: [MetricsDetails('${_timeFormatter.format(now)}', style: Settings.metricsClockTextDigitalStyle,)]),
+          Row(children: [
+            MetricsDetails('${_dateFormatter.format(now)}',
+                style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))
+          ]),
+          Row(children: [
+            MetricsDetails('${_timeFormatter.format(now)}', style: Settings.metricsClockTextDigitalStyle)
+          ]),
         ]),
       ),
     );
