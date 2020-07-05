@@ -59,7 +59,7 @@ class CircularArcPainter extends CustomPainter {
 }
 
 class CircularIndicatorWidget extends StatelessWidget {
-  final String title;
+  final String _title;
   final double percent;
   final Color _endColor = Colors.red;
   final Color _startColor = Colors.lightGreenAccent;
@@ -67,15 +67,17 @@ class CircularIndicatorWidget extends StatelessWidget {
 
   CircularIndicatorWidget({
     @required this.percent,
+    String title,
     Color backgroundColor = Colors.white70,
-  }) : _backgroundColor = backgroundColor, title = '${(percent * 100).round()}%';
+  })  : _backgroundColor = backgroundColor,
+        _title = title ?? '${(percent * 100).round()}%';
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       child: Center(
         child: Text(
-          '$title',
+          '$_title',
           style: Settings.loadAverageDetailsTextStyle,
         ),
       ),

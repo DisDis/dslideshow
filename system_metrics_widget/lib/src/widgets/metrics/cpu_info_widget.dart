@@ -34,6 +34,8 @@ class CpuInfoWidget extends StatelessWidget {
           Expanded(
             child: Container(
               padding: EdgeInsets.all(10),
+              margin: EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(border: Border(top: BorderSide(color: Colors.purple.shade200))),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -42,7 +44,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA1',
+                          'LA1 - $cpuLoad1',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
@@ -61,7 +63,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA5',
+                          'LA5 - $cpuLoad5',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
@@ -80,7 +82,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA15',
+                          'LA15 - $cpuLoad15',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
