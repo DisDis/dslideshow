@@ -82,8 +82,13 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 }
 
 Future<void> _runFlutter(FrontendService frontendService) async {
-  final SystemInfo systemInfo = await frontendService.getSystemInfo();
-
+  SystemInfo systemInfo = await frontendService.getSystemInfo();
+  systemInfo = systemInfo.rebuild((builder) {
+    builder.cpuInfo.cores = 4;
+    builder.updateInfo.cpuLoad1 = 1;
+    builder.updateInfo.cpuLoad5 = 3;
+    builder.updateInfo.cpuLoad15 = 3.5;
+  });
   runApp(DemoApp(systemInfo));
 }
 

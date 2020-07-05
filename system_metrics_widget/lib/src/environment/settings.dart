@@ -8,6 +8,11 @@ class Settings {
     color: Colors.white,
   );
 
+  static TextStyle loadAverageDetailsTextStyle = GoogleFonts.roboto(
+    fontSize: 9,
+    color: Colors.white,
+  );
+
   static TextStyle metricsClockTextDigitalStyle = GoogleFonts.righteous(
     fontSize: 40,
     color: Colors.white,

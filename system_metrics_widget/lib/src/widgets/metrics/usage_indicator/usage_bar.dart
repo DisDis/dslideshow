@@ -1,6 +1,7 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'dart:math' as math;
 
 class UsageBar extends StatelessWidget {
   final int usagePercent;
@@ -19,11 +20,11 @@ class UsageBar extends StatelessWidget {
 }
 
 class UsageBarPainter extends CustomPainter {
-  final Color _usedColorStart = Colors.red.withAlpha(100);
+  final Color _usedColorStart = Colors.red;
   final Color _usedColoEnd = Colors.red;
 
   final Color _freeColorStart = Colors.lightGreenAccent;
-  final Color _freeColoEnd = Colors.lightGreenAccent.withAlpha(100);
+  final Color _freeColoEnd = Colors.lightGreenAccent;
 
   final int usagePercent;
 
@@ -55,8 +56,7 @@ class UsageBarPainter extends CustomPainter {
       ).createShader(freeRect);
 
     final transitionRect = hasTransition
-        ? (usedRect.topRight - Offset(transitionWidth, 0) &
-            Size(transitionWidth, usedRect.height))
+        ? (usedRect.topRight - Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
         : Rect.zero;
 
     final Paint transitionPaint = Paint()

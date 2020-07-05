@@ -21,7 +21,7 @@ class MemoryUsageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
       iconData: FlutterIcons.data_usage_mdi,
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.indigo,
       child: Column(
         children: <Widget>[
           MemoryUsageIndicatorWidget(
