@@ -55,10 +55,10 @@ class CircularArcPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
 
-class CircularIndicatorWidget extends StatelessWidget {
+class CircularIndicatorWidget extends StatefulWidget {
   final String _title;
   final double percent;
   final Color _endColor = Colors.red;
@@ -72,22 +72,46 @@ class CircularIndicatorWidget extends StatelessWidget {
   })  : _backgroundColor = backgroundColor,
         _title = title ?? '${(percent * 100).round()}%';
 
+  Color get backgroundColor => _backgroundColor;
+
+  Color get endColor => _endColor;
+
+  Color get startColor => _startColor;
+
+  String get title => _title;
+
+  @override
+  State<StatefulWidget> createState() => _CircularIndicatorWidgetState();
+}
+
+class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       child: Center(
         child: Text(
-          '$_title',
+          '${widget.title}',
           style: Settings.loadAverageDetailsTextStyle,
         ),
       ),
       painter: CircularArcPainter(
-        percent: percent,
+        percent: widget.percent * _controller.value,
         width: 10,
-        endColor: _endColor,
-        startColor: _startColor,
-        backgroundColor: _backgroundColor,
+        endColor: widget.endColor,
+        startColor: widget.startColor,
+        backgroundColor: widget.backgroundColor,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _controller
+      ..addListener(() => setState(() {}))
+      ..forward();
   }
 }

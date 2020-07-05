@@ -3,20 +3,13 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class UsageBar extends StatelessWidget {
+class UsageBar extends StatefulWidget {
   final int usagePercent;
 
   UsageBar({@required this.usagePercent});
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return CustomPaint(
-      size: Size(size.width, 8),
-      painter: UsageBarPainter(usagePercent),
-    );
-  }
+  State<StatefulWidget> createState() => _UsageBarState();
 }
 
 class UsageBarPainter extends CustomPainter {
@@ -72,4 +65,27 @@ class UsageBarPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(UsageBarPainter oldDelegate) => oldDelegate.usagePercent != usagePercent;
+}
+
+class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
+  AnimationController _controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return CustomPaint(
+      size: Size(size.width, 8),
+      painter: UsageBarPainter((widget.usagePercent * _controller.value).toInt()),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _controller
+      ..addListener(() => setState(() {}))
+      ..forward();
+  }
 }
