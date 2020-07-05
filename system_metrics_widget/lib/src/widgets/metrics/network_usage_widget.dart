@@ -1,7 +1,7 @@
+import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:system_metrics_widget/src/model/system_info/network_info.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 

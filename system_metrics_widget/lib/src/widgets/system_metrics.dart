@@ -1,7 +1,7 @@
+import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:system_metrics_widget/src/model/system_info/system_info.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/cpu_info_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/disk_usage_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/memory_usage_widget.dart';
@@ -39,7 +39,12 @@ class SystemInfoMetrics extends StatelessWidget {
         scrollDirection: Axis.vertical,
         children: <Widget>[
           UptimeInfoWidget(model: _model.updateInfo.uptime),
-          CpuInfoWidget(model: _model.cpuInfo),
+          CpuInfoWidget(
+            cpu: _model.cpuInfo,
+            cpuLoad1: _model.updateInfo.cpuLoad1,
+            cpuLoad5: _model.updateInfo.cpuLoad5,
+            cpuLoad15: _model.updateInfo.cpuLoad15,
+          ),
           OSInfoWidget(model: _model.osInfo),
           NetworkUsageWidget(model: _model.networkInfo),
           MemoryUsageWidget(

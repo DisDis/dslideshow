@@ -18,17 +18,17 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
   Iterable<Object> serialize(Serializers serializers, CpuInfo object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'model',
-      serializers.serialize(object.model,
-          specifiedType: const FullType(String)),
+      'cores',
+      serializers.serialize(object.cores, specifiedType: const FullType(int)),
       'hardware',
       serializers.serialize(object.hardware,
+          specifiedType: const FullType(String)),
+      'model',
+      serializers.serialize(object.model,
           specifiedType: const FullType(String)),
       'revision',
       serializers.serialize(object.revision,
           specifiedType: const FullType(String)),
-      'cores',
-      serializers.serialize(object.cores, specifiedType: const FullType(int)),
     ];
 
     return result;
@@ -45,21 +45,21 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'model':
-          result.model = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+        case 'cores':
+          result.cores = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
           break;
         case 'hardware':
           result.hardware = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'model':
+          result.model = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'revision':
           result.revision = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
-          break;
-        case 'cores':
-          result.cores = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
           break;
       }
     }
@@ -70,30 +70,30 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
 
 class _$CpuInfo extends CpuInfo {
   @override
-  final String model;
+  final int cores;
   @override
   final String hardware;
   @override
-  final String revision;
+  final String model;
   @override
-  final int cores;
+  final String revision;
 
   factory _$CpuInfo([void Function(CpuInfoBuilder) updates]) =>
       (new CpuInfoBuilder()..update(updates)).build();
 
-  _$CpuInfo._({this.model, this.hardware, this.revision, this.cores})
+  _$CpuInfo._({this.cores, this.hardware, this.model, this.revision})
       : super._() {
-    if (model == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'model');
+    if (cores == null) {
+      throw new BuiltValueNullFieldError('CpuInfo', 'cores');
     }
     if (hardware == null) {
       throw new BuiltValueNullFieldError('CpuInfo', 'hardware');
     }
+    if (model == null) {
+      throw new BuiltValueNullFieldError('CpuInfo', 'model');
+    }
     if (revision == null) {
       throw new BuiltValueNullFieldError('CpuInfo', 'revision');
-    }
-    if (cores == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'cores');
     }
   }
 
@@ -108,26 +108,26 @@ class _$CpuInfo extends CpuInfo {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is CpuInfo &&
-        model == other.model &&
+        cores == other.cores &&
         hardware == other.hardware &&
-        revision == other.revision &&
-        cores == other.cores;
+        model == other.model &&
+        revision == other.revision;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, model.hashCode), hardware.hashCode), revision.hashCode),
-        cores.hashCode));
+        $jc($jc($jc(0, cores.hashCode), hardware.hashCode), model.hashCode),
+        revision.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('CpuInfo')
-          ..add('model', model)
+          ..add('cores', cores)
           ..add('hardware', hardware)
-          ..add('revision', revision)
-          ..add('cores', cores))
+          ..add('model', model)
+          ..add('revision', revision))
         .toString();
   }
 }
@@ -135,30 +135,30 @@ class _$CpuInfo extends CpuInfo {
 class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
   _$CpuInfo _$v;
 
-  String _model;
-  String get model => _$this._model;
-  set model(String model) => _$this._model = model;
+  int _cores;
+  int get cores => _$this._cores;
+  set cores(int cores) => _$this._cores = cores;
 
   String _hardware;
   String get hardware => _$this._hardware;
   set hardware(String hardware) => _$this._hardware = hardware;
 
+  String _model;
+  String get model => _$this._model;
+  set model(String model) => _$this._model = model;
+
   String _revision;
   String get revision => _$this._revision;
   set revision(String revision) => _$this._revision = revision;
-
-  int _cores;
-  int get cores => _$this._cores;
-  set cores(int cores) => _$this._cores = cores;
 
   CpuInfoBuilder();
 
   CpuInfoBuilder get _$this {
     if (_$v != null) {
-      _model = _$v.model;
-      _hardware = _$v.hardware;
-      _revision = _$v.revision;
       _cores = _$v.cores;
+      _hardware = _$v.hardware;
+      _model = _$v.model;
+      _revision = _$v.revision;
       _$v = null;
     }
     return this;
@@ -181,7 +181,7 @@ class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
   _$CpuInfo build() {
     final _$result = _$v ??
         new _$CpuInfo._(
-            model: model, hardware: hardware, revision: revision, cores: cores);
+            cores: cores, hardware: hardware, model: model, revision: revision);
     replace(_$result);
     return _$result;
   }

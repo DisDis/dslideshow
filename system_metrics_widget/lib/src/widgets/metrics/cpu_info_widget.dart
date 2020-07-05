@@ -1,13 +1,19 @@
+import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:system_metrics_widget/src/model/system_info/cpu_info.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class CpuInfoWidget extends StatelessWidget {
-  final CpuInfo model;
-  CpuInfoWidget({@required this.model, Key key}) : super(key: key);
+  final CpuInfo cpu;
+  final double cpuLoad1;
+  final double cpuLoad15;
+  final double cpuLoad5;
+
+  CpuInfoWidget(
+      {@required this.cpu, @required this.cpuLoad1, @required this.cpuLoad5, @required this.cpuLoad15, Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,10 +22,10 @@ class CpuInfoWidget extends StatelessWidget {
       backgroundColor: Colors.orangeAccent,
       child: Column(children: <Widget>[
         Row(children: [MetricsDetails('cpu')]),
-        Row(children: [MetricsDetails('model', value: model.model)]),
-        Row(children: [MetricsDetails('hardware', value: model.hardware)]),
-        Row(children: [MetricsDetails('revision', value: model.revision)]),
-        Row(children: [MetricsDetails('cores', value: model.cores)]),
+        Row(children: [MetricsDetails('model', value: cpu.model)]),
+        Row(children: [MetricsDetails('hardware', value: cpu.hardware)]),
+        Row(children: [MetricsDetails('revision', value: cpu.revision)]),
+        Row(children: [MetricsDetails('cores', value: cpu.cores)]),
       ]),
     );
   }

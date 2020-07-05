@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate' as isol;
 
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_backend/serializers.dart' as backend;
-import 'package:dslideshow_backend/src/service/system_info/system_info.dart' as backend;
 import 'package:dslideshow_common/injector/di.dart' as di;
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -18,8 +18,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:system_metrics_widget/environment.dart' as environment;
-import 'package:system_metrics_widget/src/model/system_info/system_info.dart';
-import 'package:system_metrics_widget/src/serializers.dart' as metrics;
 import 'package:system_metrics_widget/src/service/frontend.dart';
 import 'package:system_metrics_widget/src/widgets/system_metrics.dart';
 
@@ -84,11 +82,9 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 }
 
 Future<void> _runFlutter(FrontendService frontendService) async {
-  final backend.SystemInfo systemInfo = await frontendService.getSystemInfo();
-  final serialized = backend.serializers.serialize(systemInfo);
+  final SystemInfo systemInfo = await frontendService.getSystemInfo();
 
-  final so = metrics.serializers.deserialize(serialized) as SystemInfo;
-  runApp(DemoApp(so));
+  runApp(DemoApp(systemInfo));
 }
 
 class DemoApp extends StatelessWidget {

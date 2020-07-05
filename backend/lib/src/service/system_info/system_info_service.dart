@@ -1,27 +1,34 @@
+import 'dart:io' as io;
+
+import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
 import 'package:dslideshow_backend/src/service/system_info/cpu_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/sensor_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/update_info.dart';
 import 'package:logging/logging.dart';
-import 'dart:io' as io;
 
 import 'network_info.dart';
 import 'os_info.dart';
 
 class SystemInfoService {
   static final Logger _log = new Logger('SystemInfoService');
-  final HardwareConfig _config;
 
-  SystemInfoService(this._config);
+  static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
+  static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
+  static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
+  static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
 
   SystemInfo _lastInfo;
 
   final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
+  final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
+  final RegExp _findIp4 = new RegExp('inet ([^ ]*)');
+  final RegExp _findIp6 = new RegExp('inet6 ([^ ]*)');
+  final HardwareConfig _config;
 
-  Future<SystemInfo> init() {
-    return getFullInfo();
-  }
+  SystemInfoService(this._config);
 
   Future<SystemInfo> getFullInfo() async {
     UpdateInfoBuilder updateInfo = await getUpdateInfo();
@@ -47,21 +54,8 @@ class SystemInfoService {
     return _lastInfo;
   }
 
-  Future<bool> hasInternet() async {
-//    _log.info('hasInternet');
-    try {
-      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8']);
-      if (result.exitCode == 0) {
-        return !result.stdout.toString().contains('100% packet loss');
-      }
-    } catch (e, s) {
-      _log.severe('hasInternet', e, s);
-    }
-    return false;
-  }
-
   Future<Iterable<NetworkInterfaceInfo>> getNetworkInterfaces() async {
-//    _log.info('getNetworkInterfaces');
+    //    _log.info('getNetworkInterfaces');
     try {
       var result = await io.Process.run(_config.systemIfConfigScript, []);
       if (result.exitCode == 0) {
@@ -72,46 +66,6 @@ class SystemInfoService {
     }
     return <NetworkInterfaceInfo>[];
   }
-
-  final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
-  final RegExp _findIp4 = new RegExp('inet ([^ ]*)');
-  final RegExp _findIp6 = new RegExp('inet6 ([^ ]*)');
-
-  List<NetworkInterfaceInfo> _parseIfconfigOutput(List<String> output) {
-    if (output == null || output.isEmpty) {
-      return <NetworkInterfaceInfo>[];
-    }
-    output.removeWhere((element) => element == null || element.isEmpty);
-    var result = <NetworkInterfaceInfo>[];
-    output.forEach((element) {
-      try {
-        var interfaceName = element.substring(0, element.indexOf(':'));
-        var interfaceStatus = _findFlags.firstMatch(element).group(0).indexOf('RUNNING') != -1
-            ? NetworkInterfaceStatus.running
-            : NetworkInterfaceStatus.offline;
-        var interfaceIp4 = _findIp4.firstMatch(element);
-        var interfaceIp4Str = interfaceIp4 == null ? '' : interfaceIp4.groupCount == 1 ? interfaceIp4.group(1) : '';
-        var interfaceIp6 = _findIp6.firstMatch(element);
-        var interfaceIp6Str = interfaceIp6 == null ? '' : interfaceIp6.groupCount == 1 ? interfaceIp6.group(1) : '';
-        result.add(new NetworkInterfaceInfo((b) {
-          b.name = interfaceName;
-          b.status = interfaceStatus;
-          b.ip4 = interfaceIp4Str;
-          b.ip6 = interfaceIp6Str;
-        }));
-      } catch (e, st) {
-        _log.severe('_parseIfconfigOutput', e, st);
-      }
-    });
-    return result;
-  }
-
-  static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
-  static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
-  static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
-
-  static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
-  static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
 
   Future<UpdateInfoBuilder> getUpdateInfo() async {
     final b = new UpdateInfoBuilder();
@@ -136,7 +90,7 @@ class SystemInfoService {
         var diskInfo = strArr.firstWhere((element) => element.startsWith(_config.systemDiskDev), orElse: () => '');
         if (diskInfo.isNotEmpty) {
           var parseDiskInfo = RegExp('${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
-          //Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
+          //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
 
           var info = parseDiskInfo.firstMatch(diskInfo);
           b
@@ -170,7 +124,7 @@ class SystemInfoService {
         b.cpuLoad5 = double.tryParse(arrData[1]);
         b.cpuLoad15 = double.tryParse(arrData[2]);
       }
-//      _log.info(b.build());
+      //  _log.info(b.build());
     } catch (e, s) {
       _log.severe('getUpdateInfo', e, s);
     }
@@ -179,8 +133,25 @@ class SystemInfoService {
     return b;
   }
 
+  Future<bool> hasInternet() async {
+    //    _log.info('hasInternet');
+    try {
+      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8']);
+      if (result.exitCode == 0) {
+        return !result.stdout.toString().contains('100% packet loss');
+      }
+    } catch (e, s) {
+      _log.severe('hasInternet', e, s);
+    }
+    return false;
+  }
+
+  Future<SystemInfo> init() {
+    return getFullInfo();
+  }
+
   Future<CpuInfoBuilder> _getCpuInfo() async {
-//    _log.info('_getCpuInfo');
+    //    _log.info('_getCpuInfo');
     final b = new CpuInfoBuilder();
     b.cores = 0;
     b.hardware = '';
@@ -200,24 +171,9 @@ class SystemInfoService {
         b.model = _findModel.firstMatch(str).group(1);
         b.revision = _findRevision.firstMatch(str).group(1);
       }
-//      _log.info(b.build());
+      //      _log.info(b.build());
     } catch (e, s) {
       _log.severe('_getCpuInfo', e, s);
-    }
-    return b;
-  }
-
-  Future<OSInfoBuilder> _getOSInfo() async {
-    final b = new OSInfoBuilder();
-    b.name = '';
-    try {
-      var result = await io.Process.run('uname', ['-a']);
-      if (result.exitCode == 0) {
-        b.name = result.stdout.toString();
-      }
-//      _log.info(b.build());
-    } catch (e, s) {
-      _log.severe('_getOSInfo', e, s);
     }
     return b;
   }
@@ -230,9 +186,29 @@ class SystemInfoService {
     return b;
   }
 
+  Future<OSInfoBuilder> _getOSInfo() async {
+    final b = OSInfoBuilder()
+      ..name = ''
+      ..osType = OSType.unknown;
+
+    try {
+      var result = await io.Process.run('uname', ['-a']);
+      if (result.exitCode == 0) {
+        final osInfo = result.stdout.toString().replaceAll('\n', '');
+        b
+          ..name = osInfo
+          ..osType = _resolveOSType(osInfo);
+      }
+      //  _log.info(b.build());
+    } catch (e, s) {
+      _log.severe('_getOSInfo', e, s);
+    }
+    return b;
+  }
+
   Future<Iterable<SensorInfo>> _getSensorInfo() async {
     var result = <SensorInfo>[];
-    //vcgencmd measure_temp
+    //  vcgencmd measure_temp
     try {
       var resultCommand = await io.Process.run('vcgencmd', ['measure_temp']);
       if (resultCommand.exitCode == 0) {
@@ -248,5 +224,46 @@ class SystemInfoService {
     }
 
     return result;
+  }
+
+  List<NetworkInterfaceInfo> _parseIfconfigOutput(List<String> output) {
+    if (output == null || output.isEmpty) {
+      return <NetworkInterfaceInfo>[];
+    }
+    output.removeWhere((element) => element == null || element.isEmpty);
+    var result = <NetworkInterfaceInfo>[];
+    output.forEach((element) {
+      try {
+        var interfaceName = element.substring(0, element.indexOf(':'));
+        var interfaceStatus = _findFlags.firstMatch(element).group(0).indexOf('RUNNING') != -1
+            ? NetworkInterfaceStatus.running
+            : NetworkInterfaceStatus.offline;
+        var interfaceIp4 = _findIp4.firstMatch(element);
+        var interfaceIp4Str = interfaceIp4 == null ? '' : interfaceIp4.groupCount == 1 ? interfaceIp4.group(1) : '';
+        var interfaceIp6 = _findIp6.firstMatch(element);
+        var interfaceIp6Str = interfaceIp6 == null ? '' : interfaceIp6.groupCount == 1 ? interfaceIp6.group(1) : '';
+        result.add(new NetworkInterfaceInfo((b) {
+          b.name = interfaceName;
+          b.status = interfaceStatus;
+          b.ip4 = interfaceIp4Str;
+          b.ip6 = interfaceIp6Str;
+        }));
+      } catch (e, st) {
+        _log.severe('_parseIfconfigOutput', e, st);
+      }
+    });
+    return result;
+  }
+
+  OSType _resolveOSType(String osInfo) {
+    if (osInfo.toLowerCase().contains('linux')) {
+      return OSType.linux;
+    }
+
+    if (osInfo.toLowerCase().contains('darwin')) {
+      return OSType.ios;
+    }
+
+    return OSType.unknown;
   }
 }

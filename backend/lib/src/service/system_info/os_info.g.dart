@@ -21,7 +21,12 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
     ];
-
+    if (object.osType != null) {
+      result
+        ..add('osType')
+        ..add(serializers.serialize(object.osType,
+            specifiedType: const FullType(OSType)));
+    }
     return result;
   }
 
@@ -40,6 +45,10 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'osType':
+          result.osType = serializers.deserialize(value,
+              specifiedType: const FullType(OSType)) as OSType;
+          break;
       }
     }
 
@@ -50,11 +59,13 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
 class _$OSInfo extends OSInfo {
   @override
   final String name;
+  @override
+  final OSType osType;
 
   factory _$OSInfo([void Function(OSInfoBuilder) updates]) =>
       (new OSInfoBuilder()..update(updates)).build();
 
-  _$OSInfo._({this.name}) : super._() {
+  _$OSInfo._({this.name, this.osType}) : super._() {
     if (name == null) {
       throw new BuiltValueNullFieldError('OSInfo', 'name');
     }
@@ -70,17 +81,19 @@ class _$OSInfo extends OSInfo {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is OSInfo && name == other.name;
+    return other is OSInfo && name == other.name && osType == other.osType;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, name.hashCode));
+    return $jf($jc($jc(0, name.hashCode), osType.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OSInfo')..add('name', name))
+    return (newBuiltValueToStringHelper('OSInfo')
+          ..add('name', name)
+          ..add('osType', osType))
         .toString();
   }
 }
@@ -92,11 +105,16 @@ class OSInfoBuilder implements Builder<OSInfo, OSInfoBuilder> {
   String get name => _$this._name;
   set name(String name) => _$this._name = name;
 
+  OSType _osType;
+  OSType get osType => _$this._osType;
+  set osType(OSType osType) => _$this._osType = osType;
+
   OSInfoBuilder();
 
   OSInfoBuilder get _$this {
     if (_$v != null) {
       _name = _$v.name;
+      _osType = _$v.osType;
       _$v = null;
     }
     return this;
@@ -117,7 +135,7 @@ class OSInfoBuilder implements Builder<OSInfo, OSInfoBuilder> {
 
   @override
   _$OSInfo build() {
-    final _$result = _$v ?? new _$OSInfo._(name: name);
+    final _$result = _$v ?? new _$OSInfo._(name: name, osType: osType);
     replace(_$result);
     return _$result;
   }

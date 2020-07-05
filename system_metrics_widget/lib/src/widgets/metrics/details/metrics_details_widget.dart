@@ -9,7 +9,7 @@ class MetricsDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Text(
-        '$title ${(value != null ? ':$value' : '')}',
+        '$title${(value != null ? ': $value' : '')}',
         style: Settings.metricsDetailsTextStyle,
       );
 }
