@@ -44,7 +44,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA1 - $cpuLoad1',
+                          'LA1 - ${cpuLoad1.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
@@ -52,7 +52,7 @@ class CpuInfoWidget extends StatelessWidget {
                         width: cpuUsedSize,
                         height: cpuUsedSize,
                         child: CircularIndicatorWidget(
-                          percent: cpuLoad1 / cpu.cores,
+                          percent: cpu.cores > 0 ? cpuLoad1 / cpu.cores : 0,
                           backgroundColor: backgroundBarColor,
                         ),
                       ),
@@ -63,7 +63,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA5 - $cpuLoad5',
+                          'LA5 - ${cpuLoad5.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
@@ -71,7 +71,7 @@ class CpuInfoWidget extends StatelessWidget {
                         width: cpuUsedSize,
                         height: cpuUsedSize,
                         child: CircularIndicatorWidget(
-                          percent: cpuLoad5 / cpu.cores,
+                          percent: cpu.cores > 0 ? cpuLoad5 / cpu.cores : 0,
                           backgroundColor: backgroundBarColor,
                         ),
                       ),
@@ -82,7 +82,7 @@ class CpuInfoWidget extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.all(6),
                         child: Text(
-                          'LA15 - $cpuLoad15',
+                          'LA15 - ${cpuLoad15.toStringAsFixed(2)}',
                           style: Settings.loadAverageTitleTextStyle,
                         ),
                       ),
@@ -90,7 +90,7 @@ class CpuInfoWidget extends StatelessWidget {
                         width: cpuUsedSize,
                         height: cpuUsedSize,
                         child: CircularIndicatorWidget(
-                          percent: cpuLoad15 / cpu.cores,
+                          percent: cpu.cores > 0 ? cpuLoad15 / cpu.cores : 0,
                           backgroundColor: backgroundBarColor,
                         ),
                       ),

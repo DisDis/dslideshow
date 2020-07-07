@@ -32,6 +32,9 @@ dependencies:
   media_slider_widget:
     path: ../media_slider_widget
 
+  system_metrics_widget:
+    path: ../system_metrics_widget
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

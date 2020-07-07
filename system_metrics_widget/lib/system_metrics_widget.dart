@@ -1,0 +1,1 @@
+export 'package:system_metrics_widget/src/widgets/system_metrics.dart';
