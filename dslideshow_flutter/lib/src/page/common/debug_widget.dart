@@ -7,30 +7,37 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux/redux.dart';
 
 class DebugWidget extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return StoreConnector<GlobalState, Store<GlobalState>>(
-        converter: (store) => store,
-        builder: (context, Store<GlobalState> store) => Column(children: <Widget>[
-              if (store.state.isDebug) SystemInfoWidget(),
-              if (store.state.isDebug)
-                SizedBox(
-                  height: 300,
-                  child: MainMenuWidget(),
-                ),
-              if (store.state.isDebug)
-                RaisedButton(
-                  onPressed: () => store.dispatch(new ChangePauseAction(!store.state.isPaused)),
-                  child: Text('Pause'),
-                ),
-              if (store.state.isDebug)
-                RaisedButton(
-                  child: Text('Config'),
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, '/config');
-                  },
-                ),
-            ]));
+      converter: (store) => store,
+      builder: (context, Store<GlobalState> store) => Stack(
+        children: <Widget>[
+          SystemInfoWidget(),
+          //          SizedBox(
+          //            height: 300,
+          //            child: MainMenuWidget(),
+          //          ),
+          Positioned(
+            top: 10.0,
+            right: 70.0,
+            child: RaisedButton(
+              onPressed: () => store.dispatch(new ChangePauseAction(!store.state.isPaused)),
+              child: Text('Pause'),
+            ),
+          ),
+          Positioned(
+            top: 10.0,
+            right: 170.0,
+            child: RaisedButton(
+              child: Text('Config'),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/config');
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

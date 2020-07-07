@@ -23,9 +23,7 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
   @override
   Widget build(BuildContext context) {
     if (_systemInfo == null) {
-      return new Container(
-        color: Color.fromARGB(150, 133, 133, 133),
-      );
+      return Container(color: Color.fromARGB(150, 133, 133, 133));
     }
 
     if (_systemInfo.cpuInfo.cores == 0) {

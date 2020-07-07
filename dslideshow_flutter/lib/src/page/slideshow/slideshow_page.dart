@@ -13,6 +13,7 @@ import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/timer_progress_bar.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
@@ -54,43 +55,69 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   final Map<int, Widget> _mediaCache = Map<int, Widget>();
   Effect _currentEffect = Effect.cubeEffect;
 
+  final List<StreamSubscription> _subs = <StreamSubscription>[];
+
+  Duration _transitionTime;
+
+  bool _screenState = true;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: Container(
-        child: Stack(
-          children: <Widget>[
-            Container(
-              height: size.height,
-              color: Colors.black,
-              child: _createMediaSlider(),
-            ),
-            Container(
-              child: Positioned(
-                bottom: 0.0,
-                right: 0.0,
-                child: CustomPaint(
-                  size: Size(size.width, 3),
-                  painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
-                ),
+      body: StoreConnector<GlobalState, Store<GlobalState>>(
+          converter: (store) => store,
+          onDidChange: (newStore) {
+            _stateKey.currentState.isPaused = newStore.state.isPaused;
+          },
+          builder: (context, Store<GlobalState> store) {
+            return Container(
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    height: size.height,
+                    color: Colors.black,
+                    child: _createMediaSlider(),
+                  ),
+                  if (store.state.isDebug) Container(
+                    height: size.height,
+                    color: Colors.black,
+                    child: DebugWidget(),
+                  ),
+                  Container(
+                    child: Positioned(
+                      bottom: 0.0,
+                      right: 0.0,
+                      child: CustomPaint(
+                        size: Size(size.width, 3),
+                        painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                      ),
+                    ),
+                  ),
+                  StoreConnector<GlobalState, Store<GlobalState>>(
+                      converter: (store) => store,
+                      //rebuildOnChange: true,
+                      onDidChange: (newStore) {
+                        _stateKey.currentState.isPaused = newStore.state.isPaused;
+                      },
+                      builder: (context, Store<GlobalState> store) {
+                        return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
+                      }),
+                  FadeWidget(animation: _fadeController),
+//            Positioned(
+//              top: 0.0,
+//              left: 0.0,
+//              child: Container(
+//                height: size.height,
+//                color: Colors.black,
+//                child: DebugWidget(),
+//              ),
+//            ),
+                  Container(child: CommonHeaderWidget()),
+                ],
               ),
-            ),
-            StoreConnector<GlobalState, Store<GlobalState>>(
-                converter: (store) => store,
-                //rebuildOnChange: true,
-                onDidChange: (newStore) {
-                  _stateKey.currentState.isPaused = newStore.state.isPaused;
-                },
-                builder: (context, Store<GlobalState> store) {
-                  return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
-                }),
-            FadeWidget(animation: _fadeController),
-            DebugWidget(),
-            Container(child: CommonHeaderWidget()),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -112,9 +139,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
     return null;
   }
-
-  final List<StreamSubscription> _subs = <StreamSubscription>[];
-  Duration _transitionTime;
 
   @override
   void initState() {
@@ -157,18 +181,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         var data = getMediaFromCache(index);
         if (data == null) {
           return Container(
-              child: Center(
-                  child: SizedBox(
-            child: CircularProgressIndicator(),
-            width: 60,
-            height: 60,
-          )));
+            child: Center(
+              child: SizedBox(
+                child: CircularProgressIndicator(),
+                width: 60,
+                height: 60,
+              ),
+            ),
+          );
         }
         return Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: data
-        );
+            width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: data);
       },
     );
 
@@ -214,8 +237,59 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   }
 
   bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
+  void _pushButton(ButtonType event) {
+    switch (event) {
+      case ButtonType.pause:
+        _pushPauseButton();
+        break;
+      case ButtonType.screentoggle:
+        _pushScreenToggleButton();
+        break;
+      case ButtonType.menu:
+        _pushMenuButton();
+        break;
+    }
+  }
 
-  bool _screenState = true;
+  void _pushMenuButton() {
+    final _store = _frontendService.store;
+    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+  }
+
+  void _pushPauseButton() {
+    final _store = _frontendService.store;
+    var isPausedNewValue = !_store.state.isPaused;
+    _store.dispatch(ChangePauseAction(isPausedNewValue));
+    if (isPausedNewValue) {
+      _mediaItemLoopController.stop();
+    } else {
+      _mediaItemLoopController.forward();
+    }
+  }
+
+  Future _pushScreenToggleButton() async {
+    final _store = _frontendService.store;
+    var isScreenLockNewValue = !_store.state.isScreenLock;
+    //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
+    //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
+    _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
+    await _frontendService.changeScreenLock(isScreenLockNewValue);
+    if (isScreenLockNewValue) {
+      _frontendService.screenTurn(false);
+    } else {
+      _frontendService.screenTurn(true);
+    }
+  }
+
+  void _restorePlayPauseState() {
+    final _store = _frontendService.store;
+    if (_store.state.isPaused) {
+      _mediaItemLoopController.stop();
+    } else {
+      _mediaItemLoopController.forward();
+    }
+  }
+
   void _screenStateChangePreparation(bool enabled) async {
     // Screen OFF
     _screenState = enabled;
@@ -232,60 +306,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
   }
 
-  void _restorePlayPauseState() {
-    final _store = _frontendService.store;
-    if (_store.state.isPaused) {
-      _mediaItemLoopController.stop();
-    } else {
-      _mediaItemLoopController.forward();
-    }
-  }
-
   void _systemInfoChanged(SystemInfo info) {
     _log.info(info.updateInfo);
-  }
-
-  void _pushButton(ButtonType event) {
-    switch (event) {
-      case ButtonType.pause:
-        _pushPauseButton();
-        break;
-      case ButtonType.screentoggle:
-        _pushScreenToggleButton();
-        break;
-      case ButtonType.menu:
-        _pushMenuButton();
-        break;
-    }
-  }
-
-  void _pushPauseButton() {
-    final _store = _frontendService.store;
-    var isPausedNewValue = !_store.state.isPaused;
-    _store.dispatch(ChangePauseAction(isPausedNewValue));
-    if (isPausedNewValue) {
-      _mediaItemLoopController.stop();
-    } else {
-      _mediaItemLoopController.forward();
-    }
-  }
-
-  void _pushMenuButton() {
-    final _store = _frontendService.store;
-    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
-  }
-
-  Future _pushScreenToggleButton() async {
-    final _store = _frontendService.store;
-    var isScreenLockNewValue = !_store.state.isScreenLock;
-    //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
-    //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
-    _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
-    await _frontendService.changeScreenLock(isScreenLockNewValue);
-    if (isScreenLockNewValue) {
-      _frontendService.screenTurn(false);
-    } else {
-      _frontendService.screenTurn(true);
-    }
   }
 }

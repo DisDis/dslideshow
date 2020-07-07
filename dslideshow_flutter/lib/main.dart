@@ -101,7 +101,7 @@ class FlutterReduxApp extends StatelessWidget {
         store: store,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(),
+          theme: ThemeData(backgroundColor: Colors.black),
           localizationsDelegates: [],
           supportedLocales: [
             const Locale('en'), // English
@@ -110,7 +110,7 @@ class FlutterReduxApp extends StatelessWidget {
           home: WelcomePage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
-            '/slideshow': (BuildContext context) => true ? SystemInfoWidget() : SlideShowPage(),
+            '/slideshow': (BuildContext context) => SlideShowPage(),
             '/config': (BuildContext context) => ConfigPage(),
           },
         ));
