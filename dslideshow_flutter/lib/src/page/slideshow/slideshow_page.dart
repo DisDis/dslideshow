@@ -85,16 +85,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                       color: Colors.black,
                       child: DebugWidget(),
                     ),
-                  Container(
-                    child: Positioned(
-                      bottom: 0.0,
-                      right: 0.0,
-                      child: CustomPaint(
-                        size: Size(size.width, 3),
-                        painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                  if (!store.state.isDebug)
+                    Container(
+                      child: Positioned(
+                        bottom: 0.0,
+                        right: 0.0,
+                        child: CustomPaint(
+                          size: Size(size.width, 3),
+                          painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                        ),
                       ),
                     ),
-                  ),
                   StoreConnector<GlobalState, Store<GlobalState>>(
                       converter: (store) => store,
                       //rebuildOnChange: true,
