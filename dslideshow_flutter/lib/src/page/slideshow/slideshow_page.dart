@@ -79,9 +79,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                     color: Colors.black,
                     child: _createMediaSlider(),
                   ),
+                  //  /* remove it to get it transparent */ if (store.state.isDebug) DebugWidget(),
                   if (store.state.isDebug)
                     Container(
-                      height: size.height,
                       color: Colors.black,
                       child: DebugWidget(),
                     ),
