@@ -1,4 +1,3 @@
-import 'package:dslideshow_flutter/src/page/common/mainmenu.dart';
 import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
@@ -14,10 +13,6 @@ class DebugWidget extends StatelessWidget {
       builder: (context, Store<GlobalState> store) => Stack(
         children: <Widget>[
           SystemInfoWidget(),
-          //          SizedBox(
-          //            height: 300,
-          //            child: MainMenuWidget(),
-          //          ),
           Positioned(
             top: 10.0,
             right: 70.0,

@@ -79,11 +79,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                     color: Colors.black,
                     child: _createMediaSlider(),
                   ),
-                  if (store.state.isDebug) Container(
-                    height: size.height,
-                    color: Colors.black,
-                    child: DebugWidget(),
-                  ),
+                  if (store.state.isDebug)
+                    Container(
+                      height: size.height,
+                      color: Colors.black,
+                      child: DebugWidget(),
+                    ),
                   Container(
                     child: Positioned(
                       bottom: 0.0,
@@ -104,15 +105,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                         return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
                       }),
                   FadeWidget(animation: _fadeController),
-//            Positioned(
-//              top: 0.0,
-//              left: 0.0,
-//              child: Container(
-//                height: size.height,
-//                color: Colors.black,
-//                child: DebugWidget(),
-//              ),
-//            ),
                   Container(child: CommonHeaderWidget()),
                 ],
               ),
