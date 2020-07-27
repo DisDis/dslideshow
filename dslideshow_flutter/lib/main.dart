@@ -10,6 +10,7 @@ import 'package:dslideshow_common/injector/di.dart' as di;
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
+import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
@@ -33,7 +34,10 @@ void main() async {
   _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setEnabledSystemUIOverlays([]);
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.landscapeLeft,
+  ]);
 
   try {
     RemoteService _backendService;
@@ -97,7 +101,7 @@ class FlutterReduxApp extends StatelessWidget {
         store: store,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          theme: ThemeData(),
+          theme: ThemeData(backgroundColor: Colors.black),
           localizationsDelegates: [],
           supportedLocales: [
             const Locale('en'), // English

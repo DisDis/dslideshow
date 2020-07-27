@@ -18,18 +18,18 @@ class _$SystemInfoSerializer implements StructuredSerializer<SystemInfo> {
   Iterable<Object> serialize(Serializers serializers, SystemInfo object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'updateInfo',
-      serializers.serialize(object.updateInfo,
-          specifiedType: const FullType(UpdateInfo)),
       'cpuInfo',
       serializers.serialize(object.cpuInfo,
           specifiedType: const FullType(CpuInfo)),
-      'osInfo',
-      serializers.serialize(object.osInfo,
-          specifiedType: const FullType(OSInfo)),
       'networkInfo',
       serializers.serialize(object.networkInfo,
           specifiedType: const FullType(NetworkInfo)),
+      'osInfo',
+      serializers.serialize(object.osInfo,
+          specifiedType: const FullType(OSInfo)),
+      'updateInfo',
+      serializers.serialize(object.updateInfo,
+          specifiedType: const FullType(UpdateInfo)),
     ];
 
     return result;
@@ -46,21 +46,21 @@ class _$SystemInfoSerializer implements StructuredSerializer<SystemInfo> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'updateInfo':
-          result.updateInfo.replace(serializers.deserialize(value,
-              specifiedType: const FullType(UpdateInfo)) as UpdateInfo);
-          break;
         case 'cpuInfo':
           result.cpuInfo.replace(serializers.deserialize(value,
               specifiedType: const FullType(CpuInfo)) as CpuInfo);
+          break;
+        case 'networkInfo':
+          result.networkInfo.replace(serializers.deserialize(value,
+              specifiedType: const FullType(NetworkInfo)) as NetworkInfo);
           break;
         case 'osInfo':
           result.osInfo.replace(serializers.deserialize(value,
               specifiedType: const FullType(OSInfo)) as OSInfo);
           break;
-        case 'networkInfo':
-          result.networkInfo.replace(serializers.deserialize(value,
-              specifiedType: const FullType(NetworkInfo)) as NetworkInfo);
+        case 'updateInfo':
+          result.updateInfo.replace(serializers.deserialize(value,
+              specifiedType: const FullType(UpdateInfo)) as UpdateInfo);
           break;
       }
     }
@@ -71,30 +71,30 @@ class _$SystemInfoSerializer implements StructuredSerializer<SystemInfo> {
 
 class _$SystemInfo extends SystemInfo {
   @override
-  final UpdateInfo updateInfo;
-  @override
   final CpuInfo cpuInfo;
+  @override
+  final NetworkInfo networkInfo;
   @override
   final OSInfo osInfo;
   @override
-  final NetworkInfo networkInfo;
+  final UpdateInfo updateInfo;
 
   factory _$SystemInfo([void Function(SystemInfoBuilder) updates]) =>
       (new SystemInfoBuilder()..update(updates)).build();
 
-  _$SystemInfo._({this.updateInfo, this.cpuInfo, this.osInfo, this.networkInfo})
+  _$SystemInfo._({this.cpuInfo, this.networkInfo, this.osInfo, this.updateInfo})
       : super._() {
-    if (updateInfo == null) {
-      throw new BuiltValueNullFieldError('SystemInfo', 'updateInfo');
-    }
     if (cpuInfo == null) {
       throw new BuiltValueNullFieldError('SystemInfo', 'cpuInfo');
+    }
+    if (networkInfo == null) {
+      throw new BuiltValueNullFieldError('SystemInfo', 'networkInfo');
     }
     if (osInfo == null) {
       throw new BuiltValueNullFieldError('SystemInfo', 'osInfo');
     }
-    if (networkInfo == null) {
-      throw new BuiltValueNullFieldError('SystemInfo', 'networkInfo');
+    if (updateInfo == null) {
+      throw new BuiltValueNullFieldError('SystemInfo', 'updateInfo');
     }
   }
 
@@ -109,27 +109,27 @@ class _$SystemInfo extends SystemInfo {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is SystemInfo &&
-        updateInfo == other.updateInfo &&
         cpuInfo == other.cpuInfo &&
+        networkInfo == other.networkInfo &&
         osInfo == other.osInfo &&
-        networkInfo == other.networkInfo;
+        updateInfo == other.updateInfo;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, updateInfo.hashCode), cpuInfo.hashCode),
+        $jc($jc($jc(0, cpuInfo.hashCode), networkInfo.hashCode),
             osInfo.hashCode),
-        networkInfo.hashCode));
+        updateInfo.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SystemInfo')
-          ..add('updateInfo', updateInfo)
           ..add('cpuInfo', cpuInfo)
+          ..add('networkInfo', networkInfo)
           ..add('osInfo', osInfo)
-          ..add('networkInfo', networkInfo))
+          ..add('updateInfo', updateInfo))
         .toString();
   }
 }
@@ -137,19 +137,9 @@ class _$SystemInfo extends SystemInfo {
 class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
   _$SystemInfo _$v;
 
-  UpdateInfoBuilder _updateInfo;
-  UpdateInfoBuilder get updateInfo =>
-      _$this._updateInfo ??= new UpdateInfoBuilder();
-  set updateInfo(UpdateInfoBuilder updateInfo) =>
-      _$this._updateInfo = updateInfo;
-
   CpuInfoBuilder _cpuInfo;
   CpuInfoBuilder get cpuInfo => _$this._cpuInfo ??= new CpuInfoBuilder();
   set cpuInfo(CpuInfoBuilder cpuInfo) => _$this._cpuInfo = cpuInfo;
-
-  OSInfoBuilder _osInfo;
-  OSInfoBuilder get osInfo => _$this._osInfo ??= new OSInfoBuilder();
-  set osInfo(OSInfoBuilder osInfo) => _$this._osInfo = osInfo;
 
   NetworkInfoBuilder _networkInfo;
   NetworkInfoBuilder get networkInfo =>
@@ -157,14 +147,24 @@ class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
   set networkInfo(NetworkInfoBuilder networkInfo) =>
       _$this._networkInfo = networkInfo;
 
+  OSInfoBuilder _osInfo;
+  OSInfoBuilder get osInfo => _$this._osInfo ??= new OSInfoBuilder();
+  set osInfo(OSInfoBuilder osInfo) => _$this._osInfo = osInfo;
+
+  UpdateInfoBuilder _updateInfo;
+  UpdateInfoBuilder get updateInfo =>
+      _$this._updateInfo ??= new UpdateInfoBuilder();
+  set updateInfo(UpdateInfoBuilder updateInfo) =>
+      _$this._updateInfo = updateInfo;
+
   SystemInfoBuilder();
 
   SystemInfoBuilder get _$this {
     if (_$v != null) {
-      _updateInfo = _$v.updateInfo?.toBuilder();
       _cpuInfo = _$v.cpuInfo?.toBuilder();
-      _osInfo = _$v.osInfo?.toBuilder();
       _networkInfo = _$v.networkInfo?.toBuilder();
+      _osInfo = _$v.osInfo?.toBuilder();
+      _updateInfo = _$v.updateInfo?.toBuilder();
       _$v = null;
     }
     return this;
@@ -189,21 +189,21 @@ class SystemInfoBuilder implements Builder<SystemInfo, SystemInfoBuilder> {
     try {
       _$result = _$v ??
           new _$SystemInfo._(
-              updateInfo: updateInfo.build(),
               cpuInfo: cpuInfo.build(),
+              networkInfo: networkInfo.build(),
               osInfo: osInfo.build(),
-              networkInfo: networkInfo.build());
+              updateInfo: updateInfo.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'updateInfo';
-        updateInfo.build();
         _$failedField = 'cpuInfo';
         cpuInfo.build();
-        _$failedField = 'osInfo';
-        osInfo.build();
         _$failedField = 'networkInfo';
         networkInfo.build();
+        _$failedField = 'osInfo';
+        osInfo.build();
+        _$failedField = 'updateInfo';
+        updateInfo.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'SystemInfo', _$failedField, e.toString());

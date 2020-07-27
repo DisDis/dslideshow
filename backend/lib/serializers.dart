@@ -27,6 +27,7 @@ part 'serializers.g.dart';
   GetSystemInfoCommandResult,
   SystemInfo,
   OSInfo,
+  OSType,
   UpdateInfo,
   SensorInfo,
   CpuInfo,
@@ -38,5 +39,5 @@ part 'serializers.g.dart';
   ScreenLockCommand,
   WebServerControlCommand,
   AreYouReadyCommand
- ])
+])
 Serializers serializers = _$serializers;
