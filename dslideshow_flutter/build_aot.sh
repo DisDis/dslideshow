@@ -40,3 +40,5 @@ CMD="$ENGINE_BINARIES/gen_snapshot_linux_x64 \
 
 echo "$CMD"
 eval $CMD
+
+echo "Output: $OUTPUT_SO"
