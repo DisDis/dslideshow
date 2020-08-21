@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_common/version.dart';
@@ -5,6 +7,7 @@ import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:logging/logging.dart';
 
 class AnimatedLogo extends AnimatedWidget {
   // Make the Tweens static because they don't change.
@@ -71,6 +74,7 @@ class WelcomePage extends StatefulWidget {
 */
 
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
+  static final Logger _log = Logger('_WelcomePageState');
   Animation<double> animation;
   AnimationController controller;
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
@@ -86,6 +90,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
 
   @override
   void initState() {
+    _log.info("initState");
     super.initState();
     var future = environment.checkPermissionReadExternalStorage();
 

@@ -107,7 +107,7 @@ class FlutterReduxApp extends StatelessWidget {
             const Locale('en'), // English
             // ... other locales the app supports
           ],
-          home: WelcomePage(),
+          home: SlideShowPage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
             '/slideshow': (BuildContext context) => SlideShowPage(),
