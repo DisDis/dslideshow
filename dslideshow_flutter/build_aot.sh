@@ -2,7 +2,7 @@
 FLUTTER_PATH=~/bin/flutter
 OUTPUT_KERNEL_DILL=./build/kernel_snapshot.dill
 OUTPUT_KERNEL_D=./build/kernel_snapshot.d
-OUTPUT_SO=./build/app.so
+OUTPUT_SO=./build/flutter_assets/app.so
 APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
 ENGINE_BINARIES=.
 echo "----------- README -----------"
