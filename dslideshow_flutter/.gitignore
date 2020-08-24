@@ -73,3 +73,4 @@ pubspec.lock
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /images/
 /gen_snapshot_linux_x64
+/images/
