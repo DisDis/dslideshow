@@ -40,7 +40,7 @@ class SlideShowPage extends StatefulWidget {
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
-  static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
+  // static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   AnimationController _mediaItemLoopController;
@@ -85,17 +85,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                       color: Colors.black,
                       child: DebugWidget(),
                     ),
-                  if (!store.state.isDebug)
-                    Container(
-                      child: Positioned(
-                        bottom: 0.0,
-                        right: 0.0,
-                        child: CustomPaint(
-                          size: Size(size.width, 3),
-                          painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
-                        ),
-                      ),
-                    ),
+                  // if (!store.state.isDebug)
+                  //   Container(
+                  //     child: Positioned(
+                  //       bottom: 0.0,
+                  //       right: 0.0,
+                  //       child: CustomPaint(
+                  //         size: Size(size.width, 3),
+                  //         painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
+                  //       ),
+                  //     ),
+                  //   ),
                   StoreConnector<GlobalState, Store<GlobalState>>(
                       converter: (store) => store,
                       //rebuildOnChange: true,
@@ -163,7 +163,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   }
 
   Widget _createMediaSlider() {
-    final widget = MediaSlider.builder(
+   /* final widget = MediaSlider.builder(
       key: _sliderKey,
       isAutoPlay: false,
       slideEffect: _currentEffect.createEffect(),
@@ -188,7 +188,22 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       },
     );
 
-    return widget;
+    return widget;*/
+    int index = _mediaCache.keys.isNotEmpty?_mediaCache.keys.last:0;
+    var data = getMediaFromCache(index);
+    if (data == null) {
+      return Container(
+        child: Center(
+          child: SizedBox(
+            child: CircularProgressIndicator(),
+            width: 60,
+            height: 60,
+          ),
+        ),
+      );
+    }
+    return Container(
+        width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: data);
   }
 
   void _fetchNextMediaItem() async {
@@ -202,7 +217,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _listItemCount++;
     _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
-    await _sliderKey.currentState.nextSlide();
+    // await _sliderKey.currentState.nextSlide();
     _mediaItemLoopController.reset();
     _mediaItemLoopController.forward();
     setState(() {});
@@ -221,9 +236,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     var mediaItem = await _getCurrentMediaItem();
     itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
-
-    if (_mediaCache.length > 10) {
+    if (mediaItem != null){
+      _log.info('position: ${position}, file: "${mediaItem.uri.path}"');
+    }
+    if (_mediaCache.length > 3) {
       _mediaCache.remove(_mediaCache.keys.first);
+      _log.info('imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}');
+      _log.info('imageCache.currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
+      // PaintingBinding.instance.imageCache.clear();
+      // PaintingBinding.instance.imageCache.clearLiveImages();
+      // _log.info('>imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}');
+      // _log.info('>imageCache.currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
     }
     _mediaCache[position] = itemWidget;
     return itemWidget;
