@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:dslideshow_backend/config.dart';
@@ -25,7 +24,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:media_slider_widget/effect.dart';
-import 'package:media_slider_widget/media_slider.dart';
 import 'package:media_slider_widget/media_slider_item_effect.dart';
 import 'package:path/path.dart' as path;
 import 'package:redux/redux.dart';
@@ -53,8 +51,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
 
   AnimationController _fadeController;
-  final Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
+  static final Random _rnd = Random();
   MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
+  final List<Effect> _effectPool = [];
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
@@ -143,6 +142,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         setState(() {
           _currentWidget = _nextWidget;
         });
+        imageCache.clear();
       }
     });
     _effectController.addListener(() {
@@ -183,32 +183,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   );
 
   Widget _createMediaSlider() {
-   /* final widget = MediaSlider.builder(
-      key: _sliderKey,
-      isAutoPlay: false,
-      slideEffect: _currentEffect.createEffect(),
-      unlimitedMode: true,
-      transitionTime: _transitionTime,
-      itemCount: _listItemCount,
-      slideBuilder: (index) {
-        var data = getMediaFromCache(index);
-        if (data == null) {
-          return Container(
-            child: Center(
-              child: SizedBox(
-                child: CircularProgressIndicator(),
-                width: 60,
-                height: 60,
-              ),
-            ),
-          );
-        }
-        return Container(
-            width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: data);
-      },
-    );
-
-    return widget;*/
     final screenW = MediaQuery
         .of(context)
         .size
@@ -254,9 +228,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     var mediaItem = await _getCurrentMediaItem();
     var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
     if (mediaItem != null){
-      _log.info('file: "${mediaItem.uri.path}"');
+      _log.info('file: "${path.basename(mediaItem.uri.path)}"');
     }
-      _log.info('imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}, .currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
+    _log.info('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
 
     if (itemWidget is ImageWidget) {
       await precacheImage(itemWidget.provider, context);
@@ -265,7 +239,11 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _effectController.reset();
     _mediaItemLoopController.reset();
-    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length)).createEffect();
+    if (_effectPool.isEmpty){
+      _effectPool.addAll(Effect.values);
+      _effectPool.shuffle(_rnd);
+    }
+    _currentEffect = _effectPool.removeLast().createEffect();
     setState(() {});
     await _effectController.forward().orCancel;
     _mediaItemLoopController.forward();
