@@ -26,6 +26,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:media_slider_widget/effect.dart';
 import 'package:media_slider_widget/media_slider.dart';
+import 'package:media_slider_widget/media_slider_item_effect.dart';
 import 'package:path/path.dart' as path;
 import 'package:redux/redux.dart';
 
@@ -40,26 +41,28 @@ class SlideShowPage extends StatefulWidget {
 
 class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
-  // static GlobalKey<MediaSliderState> _sliderKey = GlobalKey<MediaSliderState>();
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   AnimationController _mediaItemLoopController;
+  AnimationController _effectController;
 
-  int _listItemCount = 2;
+  Widget _currentWidget = null;
+  Widget _nextWidget = null;
 
   final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
   final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
 
   AnimationController _fadeController;
   final Random _rnd = Random(DateTime.now().millisecondsSinceEpoch);
-  final Map<int, Widget> _mediaCache = Map<int, Widget>();
-  Effect _currentEffect = Effect.cubeEffect;
+  MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
   Duration _transitionTime;
 
   bool _screenState = true;
+
+  bool get isItemChaging => _currentWidget != _nextWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -116,6 +119,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   @override
   void dispose() {
+    _effectController.dispose();
     _mediaItemLoopController.dispose();
     _fadeController.dispose();
     _subs.forEach((element) {
@@ -125,20 +129,26 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     super.dispose();
   }
 
-  Widget getMediaFromCache(int position) {
-    var item = _mediaCache[position];
-    if (item != null) {
-      return item;
-    }
-    return null;
-  }
-
   @override
   void initState() {
     super.initState();
 
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
+
+    _effectController = AnimationController(duration: _transitionTime, vsync: this);
+    //Curves.easeOutQuad;
+    _effectController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          _currentWidget = _nextWidget;
+        });
+      }
+    });
+    _effectController.addListener(() {
+      setState(() {});
+    });
+
     _fadeController = AnimationController(duration: fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
@@ -161,6 +171,16 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
   }
+
+  final _loaderWidget = Container(
+    child: Center(
+      child: SizedBox(
+        child: CircularProgressIndicator(),
+        width: 60,
+        height: 60,
+      ),
+    ),
+  );
 
   Widget _createMediaSlider() {
    /* final widget = MediaSlider.builder(
@@ -189,38 +209,66 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     );
 
     return widget;*/
-    int index = _mediaCache.keys.isNotEmpty?_mediaCache.keys.last:0;
-    var data = getMediaFromCache(index);
-    if (data == null) {
-      return Container(
-        child: Center(
-          child: SizedBox(
-            child: CircularProgressIndicator(),
-            width: 60,
-            height: 60,
-          ),
-        ),
-      );
-    }
-    return Container(
-        width: MediaQuery.of(context).size.width, height: MediaQuery.of(context).size.height, child: data);
+    final screenW = MediaQuery
+        .of(context)
+        .size
+        .width;
+    final screenH = MediaQuery
+        .of(context)
+        .size
+        .height;
+
+    final _currentWidgetC =  _currentWidget == null ?_loaderWidget : Container(
+        width: screenW, height: screenH, child: _currentWidget);
+    final _nextWidgetC = Container(
+        width: screenW, height: screenH, child: _nextWidget);
+
+    return Stack(
+        children: <Widget>[
+          if (isItemChaging)
+            Transform.translate(
+                offset: Offset(
+                    -_effectController.value * screenW,0.0),
+                child: _currentEffect.transform(
+                    context, _currentWidgetC,
+                    0, 0,
+                    _effectController.value,
+                    2)),
+          if (isItemChaging) Transform.translate(
+              offset: Offset(
+                  screenW - _effectController.value * screenW,
+                  0.0),
+              child: _currentEffect.transform(
+                  context, _nextWidgetC,
+                  1, 0,
+                  _effectController.value,
+                  1)),
+          if (!isItemChaging)
+            _currentWidgetC
+        ]);
   }
 
   void _fetchNextMediaItem() async {
     _log.info('Change image');
-    // cached next image
     await _frontendService.storageNext();
-    var item = await _getMediaWidget(_listItemCount - 1);
-    if (item is ImageWidget) {
-      await precacheImage(item.provider, context);
+    var mediaItem = await _getCurrentMediaItem();
+    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
+    if (mediaItem != null){
+      _log.info('file: "${mediaItem.uri.path}"');
     }
+      _log.info('imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}, .currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
 
-    _listItemCount++;
-    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length));
-    // await _sliderKey.currentState.nextSlide();
+    if (itemWidget is ImageWidget) {
+      await precacheImage(itemWidget.provider, context);
+    }
+    _nextWidget = itemWidget;
+
+    _effectController.reset();
     _mediaItemLoopController.reset();
-    _mediaItemLoopController.forward();
+    _currentEffect = Effect.values.elementAt(_rnd.nextInt(Effect.values.length)).createEffect();
     setState(() {});
+    await _effectController.forward().orCancel;
+    _mediaItemLoopController.forward();
   }
 
   Future<MediaItem> _getCurrentMediaItem() async {
@@ -228,29 +276,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item;
   }
 
-  Future<Widget> _getMediaWidget(int position) async {
-    var itemWidget = _mediaCache[position];
-    if (itemWidget != null) {
-      return itemWidget;
-    }
 
-    var mediaItem = await _getCurrentMediaItem();
-    itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
-    if (mediaItem != null){
-      _log.info('position: ${position}, file: "${mediaItem.uri.path}"');
-    }
-    if (_mediaCache.length > 3) {
-      _mediaCache.remove(_mediaCache.keys.first);
-      _log.info('imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}');
-      _log.info('imageCache.currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
-      // PaintingBinding.instance.imageCache.clear();
-      // PaintingBinding.instance.imageCache.clearLiveImages();
-      // _log.info('>imageCache.liveImageCount = ${PaintingBinding.instance.imageCache.liveImageCount}');
-      // _log.info('>imageCache.currentSize = ${PaintingBinding.instance.imageCache.currentSize}');
-    }
-    _mediaCache[position] = itemWidget;
-    return itemWidget;
-  }
 
   bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
   void _pushButton(ButtonType event) {

@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:video_player/video_player.dart';
 
-class VideoWidget extends StatefulWidget {
-  final File mediaFile;
+import 'item_widget.dart';
 
-  VideoWidget(MediaItem item) : this.mediaFile = new File(item.uri.path);
+class VideoWidget extends StatefulWidget implements ItemWidget {
+  final File mediaFile;
+  final MediaItem item;
+
+  VideoWidget(this.item) : this.mediaFile = new File(item.uri.path);
 
   @override
   _VideoWidgetState createState() => _VideoWidgetState(mediaFile);
