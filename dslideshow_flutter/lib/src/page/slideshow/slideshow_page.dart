@@ -37,7 +37,8 @@ class SlideShowPage extends StatefulWidget {
   _SlideShowPageState createState() => _SlideShowPageState();
 }
 
-class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
+class _SlideShowPageState extends State<SlideShowPage>
+    with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
@@ -47,7 +48,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   Widget _currentWidget = null;
   Widget _nextWidget = null;
 
-  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+  final FrontendService _frontendService =
+      injector.get(FrontendService) as FrontendService;
   final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
 
   AnimationController _fadeController;
@@ -102,10 +104,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
                       converter: (store) => store,
                       //rebuildOnChange: true,
                       onDidChange: (newStore) {
-                        _stateKey.currentState.isPaused = newStore.state.isPaused;
+                        _stateKey.currentState.isPaused =
+                            newStore.state.isPaused;
                       },
                       builder: (context, Store<GlobalState> store) {
-                        return StateNotify(key: _stateKey, isPaused: store.state.isPaused);
+                        return StateNotify(
+                            key: _stateKey, isPaused: store.state.isPaused);
                       }),
                   FadeWidget(animation: _fadeController),
                   Container(child: CommonHeaderWidget()),
@@ -132,10 +136,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void initState() {
     super.initState();
 
-    _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
+    _transitionTime =
+        Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
-    _effectController = AnimationController(duration: _transitionTime, vsync: this);
+    _effectController =
+        AnimationController(duration: _transitionTime, vsync: this);
     //Curves.easeOutQuad;
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -145,9 +151,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         imageCache.clear();
       }
     });
-    _effectController.addListener(() {
-      setState(() {});
-    });
+    // _effectController.addListener(() {
+    //   setState(() {});
+    // });
 
     _fadeController = AnimationController(duration: fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
@@ -156,8 +162,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       }
     });
 
-    final displayTime = Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
-    _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
+    final displayTime =
+        Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
+    _mediaItemLoopController =
+        AnimationController(duration: displayTime, vsync: this);
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -167,12 +175,14 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _mediaItemLoopController.forward();
 
-    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
+    _subs.add(_frontendService.onScreenStateChangePreparation
+        .listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
   }
 
   final _loaderWidget = Container(
+    key: Key('loader'),
     child: Center(
       child: SizedBox(
         child: CircularProgressIndicator(),
@@ -183,42 +193,37 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   );
 
   Widget _createMediaSlider() {
-    final screenW = MediaQuery
-        .of(context)
-        .size
-        .width;
-    final screenH = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final screenW = MediaQuery.of(context).size.width;
+    final screenH = MediaQuery.of(context).size.height;
 
-    final _currentWidgetC =  _currentWidget == null ?_loaderWidget : Container(
-        width: screenW, height: screenH, child: _currentWidget);
-    final _nextWidgetC = Container(
-        width: screenW, height: screenH, child: _nextWidget);
+    final _currentWidgetC = _currentWidget == null
+        ? _loaderWidget
+        : Container(width: screenW, height: screenH, child: _currentWidget);
+    final _nextWidgetC =
+    Container(width: screenW, height: screenH, child: _nextWidget);
 
-    return Stack(
+    return !isItemChaging? _currentWidgetC:
+    Stack(
         children: <Widget>[
-          if (isItemChaging)
-            Transform.translate(
-                offset: Offset(
-                    -_effectController.value * screenW,0.0),
-                child: _currentEffect.transform(
-                    context, _currentWidgetC,
-                    0, 0,
-                    _effectController.value,
-                    2)),
-          if (isItemChaging) Transform.translate(
-              offset: Offset(
-                  screenW - _effectController.value * screenW,
-                  0.0),
-              child: _currentEffect.transform(
-                  context, _nextWidgetC,
-                  1, 0,
-                  _effectController.value,
-                  1)),
-          if (!isItemChaging)
-            _currentWidgetC
+          AnimatedBuilder(
+              animation: _effectController,
+              builder: (_, child) {
+                return Transform.translate(
+                    offset: Offset(-_effectController.value * screenW, 0.0),
+                    child: _currentEffect.transform(
+                        context, child, 0, 0, _effectController.value, 2));
+              },
+              child: _currentWidgetC),
+          AnimatedBuilder(
+              animation: _effectController,
+              builder: (_, child) {
+                return Transform.translate(
+                    offset:
+                    Offset(screenW - _effectController.value * screenW, 0.0),
+                    child: _currentEffect.transform(
+                        context, child, 1, 0, _effectController.value, 1));
+              },
+              child: _nextWidgetC),
         ]);
   }
 
@@ -227,8 +232,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     await _frontendService.storageNext();
     var mediaItem = await _getCurrentMediaItem();
     var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
-    if (mediaItem != null){
-      _log.info('file: "${path.basename(mediaItem.uri.path)}"');
+    if (mediaItem != null) {
+      _log.info('file: "${path.basename(mediaItem.uri.toFilePath())}"');
     }
     _log.info('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
 
@@ -239,7 +244,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     _effectController.reset();
     _mediaItemLoopController.reset();
-    if (_effectPool.isEmpty){
+    if (_effectPool.isEmpty) {
       _effectPool.addAll(Effect.values);
       _effectPool.shuffle(_rnd);
     }
@@ -254,9 +259,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item;
   }
 
+  bool _isVideo(MediaItem item) => item.uri == null
+      ? false
+      : path.extension(item.uri.path).toLowerCase() == '.mp4';
 
-
-  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
   void _pushButton(ButtonType event) {
     switch (event) {
       case ButtonType.pause:

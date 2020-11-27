@@ -11,7 +11,7 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
   final File mediaFile;
   final MediaItem item;
 
-  VideoWidget(this.item) : this.mediaFile = new File(item.uri.path);
+  VideoWidget(this.item) : this.mediaFile = new File(item.uri.toFilePath());
 
   @override
   _VideoWidgetState createState() => _VideoWidgetState(mediaFile);
