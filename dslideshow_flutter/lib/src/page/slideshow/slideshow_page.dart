@@ -196,35 +196,25 @@ class _SlideShowPageState extends State<SlideShowPage>
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
 
-    final _currentWidgetC = _currentWidget == null
-        ? _loaderWidget
-        : Container(width: screenW, height: screenH, child: _currentWidget);
-    final _nextWidgetC =
-    Container(width: screenW, height: screenH, child: _nextWidget);
+    final _currentWidgetC =
+    _currentWidget == null ? _loaderWidget : Container(width: screenW, height: screenH, child: _currentWidget);
+    final _nextWidgetC = Container(width: screenW, height: screenH, child: _nextWidget);
 
-    return !isItemChaging? _currentWidgetC:
-    Stack(
-        children: <Widget>[
-          AnimatedBuilder(
-              animation: _effectController,
-              builder: (_, child) {
-                return Transform.translate(
-                    offset: Offset(-_effectController.value * screenW, 0.0),
-                    child: _currentEffect.transform(
-                        context, child, 0, 0, _effectController.value, 2));
-              },
-              child: _currentWidgetC),
-          AnimatedBuilder(
-              animation: _effectController,
-              builder: (_, child) {
-                return Transform.translate(
-                    offset:
-                    Offset(screenW - _effectController.value * screenW, 0.0),
-                    child: _currentEffect.transform(
-                        context, child, 1, 0, _effectController.value, 1));
-              },
-              child: _nextWidgetC),
-        ]);
+    return !isItemChaging
+        ? _currentWidgetC
+        : AnimatedBuilder(
+        animation: _effectController,
+        builder: (_, __) {
+          return Stack(children: <Widget>[
+            Transform.translate(
+                offset: Offset(-_effectController.value * screenW, 0.0),
+                child: _currentEffect.transform(context, _currentWidgetC, 0, 0, _effectController.value, 2)),
+            Transform.translate(
+                offset: Offset(screenW - _effectController.value * screenW, 0.0),
+                child: _currentEffect.transform(context, _nextWidgetC, 1, 0, _effectController.value, 1))
+          ]);
+        },
+        child: _loaderWidget);
   }
 
   void _fetchNextMediaItem() async {
