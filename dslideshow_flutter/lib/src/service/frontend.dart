@@ -144,6 +144,13 @@ class FrontendService implements RpcService {
     ));
   }
 
+  Future pushButton(ButtonType buttonType) async{
+    return _backendService.send(new PushButtonCommand((b) => b
+      ..button = buttonType
+      ..id = RpcCommand.generateId()
+    ));
+  }
+
   Future screenTurn(bool value) async {
     return _backendService.send(new ScreenTurnCommand((b) => b
       ..enabled = value

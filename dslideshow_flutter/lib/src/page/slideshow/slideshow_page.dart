@@ -5,6 +5,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/storage.dart';
+import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
@@ -37,19 +38,29 @@ class SlideShowPage extends StatefulWidget {
   _SlideShowPageState createState() => _SlideShowPageState();
 }
 
-class _SlideShowPageState extends State<SlideShowPage>
-    with TickerProviderStateMixin {
+final _loaderWidget = Container(
+  key: Key('loader'),
+  child: Center(
+    child: SizedBox(
+      child: CircularProgressIndicator(),
+      width: 60,
+      height: 60,
+    ),
+  ),
+);
+
+class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
   AnimationController _mediaItemLoopController;
   AnimationController _effectController;
 
-  Widget _currentWidget = null;
-  Widget _nextWidget = null;
+  Widget _currentWidget = _loaderWidget;
+  Widget _nextWidget = _loaderWidget;
+  Widget _transitionWidget = _loaderWidget;
 
-  final FrontendService _frontendService =
-      injector.get(FrontendService) as FrontendService;
+  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
   final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
 
   AnimationController _fadeController;
@@ -62,61 +73,33 @@ class _SlideShowPageState extends State<SlideShowPage>
   Duration _transitionTime;
 
   bool _screenState = true;
+  bool _isPaused = false;
 
-  bool get isItemChaging => _currentWidget != _nextWidget;
+  bool get isItemChanging => _currentWidget != _nextWidget;
+
+  Key _fadeWidgetKey = Key('fadeWidget');
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: StoreConnector<GlobalState, Store<GlobalState>>(
-          converter: (store) => store,
-          onDidChange: (newStore) {
-            _stateKey.currentState.isPaused = newStore.state.isPaused;
-          },
-          builder: (context, Store<GlobalState> store) {
-            return Container(
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    height: size.height,
-                    color: Colors.black,
-                    child: _createMediaSlider(),
-                  ),
-                  //  /* remove it to get it transparent */ if (store.state.isDebug) DebugWidget(),
-                  if (store.state.isDebug)
-                    Container(
-                      color: Colors.black,
-                      child: DebugWidget(),
-                    ),
-                  // if (!store.state.isDebug)
-                  //   Container(
-                  //     child: Positioned(
-                  //       bottom: 0.0,
-                  //       right: 0.0,
-                  //       child: CustomPaint(
-                  //         size: Size(size.width, 3),
-                  //         painter: TimerProgressBarPainter(_mediaItemLoopController.value * 100),
-                  //       ),
-                  //     ),
-                  //   ),
-                  StoreConnector<GlobalState, Store<GlobalState>>(
-                      converter: (store) => store,
-                      //rebuildOnChange: true,
-                      onDidChange: (newStore) {
-                        _stateKey.currentState.isPaused =
-                            newStore.state.isPaused;
-                      },
-                      builder: (context, Store<GlobalState> store) {
-                        return StateNotify(
-                            key: _stateKey, isPaused: store.state.isPaused);
-                      }),
-                  FadeWidget(animation: _fadeController),
-                  Container(child: CommonHeaderWidget()),
-                ],
-              ),
-            );
-          }),
+        body: Stack(
+        children: <Widget>[
+          Container(
+            height: size.height,
+            color: Colors.black,
+            child: !isItemChanging ? _currentWidget : _transitionWidget,
+          ),
+          StateNotify( key: _stateKey, isPaused: _isPaused),
+          FadeWidget(key: _fadeWidgetKey, animation: _fadeController),
+          if (!isLinuxEmbedded) StoreConnector<GlobalState, Store<GlobalState>>(
+              converter: (store) => store,
+              builder: (context, Store<GlobalState> store) {
+                return store.state.isDebug? DebugWidget(_frontendService):  Container();
+              }),
+          CommonHeaderWidget(),
+        ],
+    )
     );
   }
 
@@ -136,12 +119,10 @@ class _SlideShowPageState extends State<SlideShowPage>
   void initState() {
     super.initState();
 
-    _transitionTime =
-        Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
+    _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
-    _effectController =
-        AnimationController(duration: _transitionTime, vsync: this);
+    _effectController = AnimationController(duration: _transitionTime, vsync: this);
     //Curves.easeOutQuad;
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -162,10 +143,8 @@ class _SlideShowPageState extends State<SlideShowPage>
       }
     });
 
-    final displayTime =
-        Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
-    _mediaItemLoopController =
-        AnimationController(duration: displayTime, vsync: this);
+    final displayTime = Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
+    _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -175,46 +154,9 @@ class _SlideShowPageState extends State<SlideShowPage>
 
     _mediaItemLoopController.forward();
 
-    _subs.add(_frontendService.onScreenStateChangePreparation
-        .listen(_screenStateChangePreparation));
+    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
-  }
-
-  final _loaderWidget = Container(
-    key: Key('loader'),
-    child: Center(
-      child: SizedBox(
-        child: CircularProgressIndicator(),
-        width: 60,
-        height: 60,
-      ),
-    ),
-  );
-
-  Widget _createMediaSlider() {
-    final screenW = MediaQuery.of(context).size.width;
-    final screenH = MediaQuery.of(context).size.height;
-
-    final _currentWidgetC =
-    _currentWidget == null ? _loaderWidget : Container(width: screenW, height: screenH, child: _currentWidget);
-    final _nextWidgetC = Container(width: screenW, height: screenH, child: _nextWidget);
-
-    return !isItemChaging
-        ? _currentWidgetC
-        : AnimatedBuilder(
-        animation: _effectController,
-        builder: (_, __) {
-          return Stack(children: <Widget>[
-            Transform.translate(
-                offset: Offset(-_effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _currentWidgetC, 0, 0, _effectController.value, 2)),
-            Transform.translate(
-                offset: Offset(screenW - _effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _nextWidgetC, 1, 0, _effectController.value, 1))
-          ]);
-        },
-        child: _loaderWidget);
   }
 
   void _fetchNextMediaItem() async {
@@ -230,7 +172,25 @@ class _SlideShowPageState extends State<SlideShowPage>
     if (itemWidget is ImageWidget) {
       await precacheImage(itemWidget.provider, context);
     }
-    _nextWidget = itemWidget;
+
+    final screenW = MediaQuery.of(context).size.width;
+    final screenH = MediaQuery.of(context).size.height;
+    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+
+    _transitionWidget = AnimatedBuilder(
+        key: Key('anim'),
+        animation: _effectController,
+        builder: (_, __) {
+          return Stack(children: <Widget>[
+            Transform.translate(
+                offset: Offset(-_effectController.value * screenW, 0.0),
+                child: _currentEffect.transform(context, _currentWidget, 0, 0, _effectController.value, 2)),
+            Transform.translate(
+                offset: Offset(screenW - _effectController.value * screenW, 0.0),
+                child: _currentEffect.transform(context, _nextWidget, 1, 0, _effectController.value, 1))
+          ]);
+        },
+        child: _loaderWidget);
 
     _effectController.reset();
     _mediaItemLoopController.reset();
@@ -249,9 +209,7 @@ class _SlideShowPageState extends State<SlideShowPage>
     return item;
   }
 
-  bool _isVideo(MediaItem item) => item.uri == null
-      ? false
-      : path.extension(item.uri.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
 
   void _pushButton(ButtonType event) {
     switch (event) {
@@ -281,6 +239,9 @@ class _SlideShowPageState extends State<SlideShowPage>
     } else {
       _mediaItemLoopController.forward();
     }
+    setState(() {
+      _stateKey.currentState.isPaused = _isPaused = isPausedNewValue;
+    });
   }
 
   Future _pushScreenToggleButton() async {

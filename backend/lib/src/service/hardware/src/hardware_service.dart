@@ -110,10 +110,10 @@ class HardwareService implements RpcService{
         return _executeGetMediaItemCommand(command as GetMediaItemCommand);
       case StorageNextCommand.TYPE:
         return _executeStorageNextCommand(command as StorageNextCommand);
-        break;
+      case PushButtonCommand.TYPE:
+        return _executePushButtonCommand(command as PushButtonCommand);
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
-        break;
       default:
         return new Future.value(_generateErrorResult(
             new Exception("Unknown command: ${command.type}"), command));
@@ -214,6 +214,15 @@ class HardwareService implements RpcService{
       await Future.wait<dynamic>(_initFutures);
       _initFutures.clear();
     }
+    return new EmptyResult((b) {
+      b.id = command.id;
+      return b;
+    });
+  }
+
+  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async{
+    //Emulate
+    _pushButton(command.button);
     return new EmptyResult((b) {
       b.id = command.id;
       return b;

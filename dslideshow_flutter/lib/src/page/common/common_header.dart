@@ -1,3 +1,4 @@
+import 'package:dslideshow_flutter/environment.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
 import 'package:flutter/material.dart';
@@ -34,12 +35,13 @@ class BlinkAnimation extends StatefulWidget {
 class CommonHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // return Container();
     return Container(
       child: StoreConnector<GlobalState, Store<GlobalState>>(
         converter: (store) => store,
         builder: (context, Store<GlobalState> store) => Stack(
           children: <Widget>[
-            Positioned(
+            if (!isLinuxEmbedded) Positioned(
               right: 0,
               top: 0,
               child: GestureDetector(

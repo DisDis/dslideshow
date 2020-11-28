@@ -13,7 +13,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
   ImageWidget(this.item) :_image = Image.file(
       new File(item.uri.toFilePath()),
-      fit: BoxFit.contain);
+      fit: BoxFit.contain), super(key: Key('img:${item.uri.toFilePath()}'));
 
   @override
   Widget build(BuildContext context) => _image;
