@@ -12,7 +12,7 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
-    gpiod: ^1.0.1
+    gpiod: ^2.0.0
     database: ^0.3.3
     shelf: ^0.7.5
     shelf_router: ^0.7.2

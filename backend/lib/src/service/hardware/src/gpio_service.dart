@@ -19,7 +19,7 @@ abstract class GPIOService{
 class GPIOServiceImpl extends GPIOService{
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;
-  ProxyGpiod _gpio;
+  static final ProxyGpiod _gpio = ProxyGpiod.getInstance();
   GpioChip _chip;
   GpioLine _linePowerLED;
   GpioLine _linePIR;
@@ -63,14 +63,15 @@ class GPIOServiceImpl extends GPIOService{
   }
 
   Future init() async{
-    _log.info('initing...');
+    _log.info('init...');
     try {
-      _gpio = ProxyGpiod.getInstance();
-
       /// Retrieve the list of GPIO chips.
       final chips = _gpio.chips;
+      _log.info('chips - OK');
       _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2835');
+      _log.info('pinctrl-bcm2835 - OK');
       _linePowerLED = _chip.lines[_config.pinPowerLED];
+      _log.info('linePowerLED - OK');
       _linePIR = _chip.lines[_config.pinPIRSensor];
       _linePauseButton = _chip.lines[_config.pinPauseButton];
       _lineMenuButton = _chip.lines[_config.pinMenuButton];
