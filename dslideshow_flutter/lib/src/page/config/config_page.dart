@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:dslideshow_flutter/src/injector.dart';
+import 'package:injector/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
@@ -22,7 +22,7 @@ class _ConfigPageState extends State<ConfigPage>{
   static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
   static final Random rnd = new Random();
-  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+  final FrontendService _frontendService = Injector.appInstance.get<FrontendService>();
 
   @override
   void initState() {

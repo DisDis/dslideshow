@@ -6,6 +6,7 @@ environment:
 dependencies:
     isolate: ^2.0.3
     logging: ^0.11.2
+    injector: ^1.0.10-nullsafety.0
     built_value: ^7.1.0 #^8.0.0-nullsafety.0
     dslideshow_common:
         path: ../common
@@ -13,9 +14,9 @@ dependencies:
         path: ../third_party/googleapis
     googleapis_auth: any
     gpiod: ^2.0.0
-    database: ^0.3.3
-    shelf: ^0.7.5
-    shelf_router: ^0.7.2
+    #database: ^0.3.3
+    shelf: ^0.7.9
+    shelf_router: ^0.7.4
 dev_dependencies:
   built_value_generator: ^7.1.0
   shelf_router_generator: ^0.7.0+1

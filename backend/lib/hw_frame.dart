@@ -9,7 +9,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
-import 'package:dslideshow_common/injector/di.dart';
+import 'package:injector/injector.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:isolate/isolate.dart';
@@ -35,20 +35,35 @@ void main(List<dynamic> args) async{
     _webServer.run(web_server.main,<IsolateRunner>[currentIsoRunner]);
     final  _remoteWebServer = new RemoteService(_webServer, serializers);
 
-    var injector = new ModuleInjector([getInjectorModule(),
-     new Module()
-       ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
-//         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
-        ..bind(GPIOService, toFactory: (AppConfig _config) => new GPIOServiceImpl(_config.hardware), inject: <dynamic>[AppConfig])
-       ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
-        ..bind(SystemInfoService, toFactory: (AppConfig _config)=>new SystemInfoService(_config.hardware), inject: <dynamic>[AppConfig])
-      ..bind(HardwareService, toFactory: (AppConfig _config, Storage _storage, GPIOService _gPIOService, ScreenService _screenService, SystemInfoService _systemInfoService) => new HardwareService(_config, _remoteFrontendService, _storage, _gPIOService, _screenService, _systemInfoService, _remoteWebServer),
-          inject: <dynamic>[AppConfig, Storage, GPIOService, ScreenService, SystemInfoService])
-    ]);
-    var config = injector.get(AppConfig) as AppConfig;
+    // Use this static instance
+    final injector = Injector.appInstance;
+    getInjectorModule();
+    injector.registerSingleton<Storage>((){
+      final _config = injector.get<AppConfig>();
+      return new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>);
+      //return new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage);
+    });
+    injector.registerSingleton<GPIOService>((){
+      final _config = injector.get<AppConfig>();
+      return new GPIOServiceImpl(_config.hardware);
+    });
+    injector.registerSingleton<ScreenService>((){
+      final _config = injector.get<AppConfig>();
+      return new ScreenService(_config.hardware);
+    });
+    injector.registerSingleton<SystemInfoService>((){
+      final _config = injector.get<AppConfig>();
+      return new SystemInfoService(_config.hardware);
+    });
+    injector.registerSingleton<HardwareService>((){
+      final _config = injector.get<AppConfig>();
+      return new HardwareService(_config, _remoteFrontendService, injector.get<Storage>(),
+          injector.get<GPIOService>(),  injector.get<ScreenService>(), injector.get<SystemInfoService>(), _remoteWebServer);
+    });
+    var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelHwFrame;
 
-    _service = injector.get(HardwareService) as HardwareService;
+    _service = injector.get<HardwareService>();
     initRpc(_service, serializers);
   } catch(e, s){
     _log.fine('Fatal error: $e, $s');

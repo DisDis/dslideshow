@@ -22,12 +22,11 @@ import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/web_server/web_server.dart';
 import 'package:dslideshow_backend/src/web_server/web_service.dart';
-import 'package:dslideshow_common/injector/di.dart';
-import 'package:dslideshow_common/injector/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
+import 'package:injector/injector.dart';
 
 final Logger _log = new Logger('main');
 WebServer _webServer;
@@ -38,14 +37,20 @@ void main(List<dynamic> args) async{
     IsolateRunner remoteBackEndService = args[0] as IsolateRunner;
     final RemoteService _remoteBackendService = new RemoteService(remoteBackEndService, serializers);
 
-    var injector = new ModuleInjector([getInjectorModule(),
-      new Module()
-        ..bind(WebService, toFactory: (AppConfig _config) => new WebService(_config.webServer), inject: <dynamic>[AppConfig])
-        ..bind(WebServer, toFactory: (AppConfig _config, WebService _webService) => new WebServer(_config.webServer, _remoteBackendService, _webService), inject: <dynamic>[AppConfig, WebService])
-    ]);
-    final config = injector.get(AppConfig) as AppConfig;
+    // Use this static instance
+    final injector = Injector.appInstance;
+    getInjectorModule();
+    injector.registerSingleton<WebService>((){
+      final _config = injector.get<AppConfig>();
+      return new WebService(_config.webServer);
+    });
+    injector.registerSingleton<WebServer>((){
+      final _config = injector.get<AppConfig>();
+      return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
+    });
+    final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;
-    _webServer = injector.get(WebServer) as WebServer;
+    _webServer = injector.get<WebServer>();
     initRpc(_webServer, serializers);
 
   } catch(e, s){

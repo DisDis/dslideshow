@@ -12,7 +12,7 @@ class RemoteService{
   final RemoteServiceTransport _transport;
   final Serializers _serializers;
 
-  RemoteService(this._service, this._serializers,[RemoteServiceTransport transport]): _transport = transport == null? new DirectSpawnTransport(): transport {
+  RemoteService(this._service, this._serializers,[RemoteServiceTransport?/*!*/ transport]): _transport = transport == null? new DirectSpawnTransport(): transport {
   }
 
   // Запрос и ответ не обрабатывается

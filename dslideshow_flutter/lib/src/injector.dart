@@ -1,3 +1,4 @@
-import 'package:dslideshow_common/injector/di.dart';
+import 'package:injector/injector.dart';
 
-Injector injector;
+// Use this static instance
+final injector = Injector.appInstance;

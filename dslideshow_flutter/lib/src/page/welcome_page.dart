@@ -77,7 +77,7 @@ class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStat
   static final Logger _log = Logger('_WelcomePageState');
   Animation<double> animation;
   AnimationController controller;
-  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
+  final FrontendService _frontendService = injector.get<FrontendService>();
 
   @override
   Widget build(BuildContext context) => AnimatedLogo(animation: animation);

@@ -60,8 +60,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   Widget _nextWidget = _loaderWidget;
   Widget _transitionWidget = _loaderWidget;
 
-  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
-  final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
+  final FrontendService _frontendService = injector.get<FrontendService>();
+  final AppConfig _appConfig = injector.get<AppConfig>();
 
   AnimationController _fadeController;
   static final Random _rnd = Random();
