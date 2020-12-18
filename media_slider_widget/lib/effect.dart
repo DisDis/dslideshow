@@ -70,4 +70,8 @@ class Effect {
   static MediaSliderItemEffect _createStackEffect() => StackEffect();
   static MediaSliderItemEffect _createTabletEffect() => TabletEffect();
   static MediaSliderItemEffect _createZoomOutSlideEffect() => ZoomOutEffect();
+
+  static Effect parse(String name) {
+    return values.firstWhere((element) => element.name == name, orElse: ()=>defaultEffect);
+  }
 }

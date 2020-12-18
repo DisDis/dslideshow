@@ -9,8 +9,8 @@ class GPhotoStorageConfig  extends BaseConfig {
   Duration _syncPeriod;
   Duration get syncPeriod => _syncPeriod ??= new Duration(seconds: readInt("syncPeriodSec", 60*60));//1 hour
 
-  String _albumName;
-  String get albumName => _albumName ??= readValue<String>("albumName", "SlideShow");
+  List<String> _albumNames;
+  List<String> get albumNames => _albumNames ??= readValue<List<String>>("albumNames", <String>["SlideShow"]);
 
   GPhotoClientIdConfig _clientId;
   GPhotoClientIdConfig get clientId => _clientId??=new GPhotoClientIdConfig(readRaw("clientId") as Map<String, dynamic>);

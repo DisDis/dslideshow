@@ -64,53 +64,52 @@ class GPhotoStorage extends DiskStorage{
   }
 
   @override
-  Future<Null> sync() async{
-    _log.info('sync GPhoto Album:"${_config.albumName}" ${_config.imageWidth}x${_config.imageHeight}');
-    if (_syncInProcess){
+  Future<Null> sync() async {
+    _log.info('sync GPhoto Albums:"${_config.albumNames}" ${_config.imageWidth}x${_config.imageHeight}');
+    if (_syncInProcess) {
       _log.info('synchronization in progress');
       return;
     }
     var delta = new DateTime.now().difference(lastSync);
-    if (delta <  _config.syncPeriod ){
+    if (delta < _config.syncPeriod) {
       _log.info('last sync was done at $lastSync d:${delta}, period: ${_config.syncPeriod}');
       return;
     }
     _syncInProcess = true;
 
-    final items = await _googlePhotoService.getMediaItemInAlbum(_config.albumName, _config.imageWidth, _config.imageHeight);
-    final Map<String, GooglePhotoItem> itemMap = new Map.fromIterables(items.map((e) => _getFileName(e)), items);
-    final localItems = (await folder.listSync()).map((e) => path.basename(e.path));
-    localItems.forEach((element)=>itemMap.remove(element));
-
-    var allItems = itemMap.keys.length;
-    _log.info('Detect ${allItems} new media item(s)');
     final syncDate = new DateTime.now();
-    if (itemMap.isNotEmpty){
-      _scStartSync.add(syncDate);
-    }
+    _scStartSync.add(syncDate);
 
+    for (String albumName in _config.albumNames) {
+      _log.info('sync GPhoto Album:"${albumName}"');
+      final items = await _googlePhotoService.getMediaItemInAlbum(albumName, _config.imageWidth, _config.imageHeight);
+      final Map<String, GooglePhotoItem> itemMap = new Map.fromIterables(items.map((e) => _getFileName(e)), items);
+      final localItems = (await folder.listSync()).map((e) => path.basename(e.path));
+      localItems.forEach((element) => itemMap.remove(element));
 
-    var count = 0;
-    await Future.forEach(itemMap.keys,(String fileName) async{
-      var googleItem = itemMap[fileName];
-      _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType}');
-      HttpClient client = new HttpClient();
-      await client.getUrl(Uri.parse(googleItem.url))
-          .then((HttpClientRequest request) {
-        return request.close();
-      })
-        .then((HttpClientResponse response) {
-        response.pipe(new File(path.join(folder.path, fileName)).openWrite());
+      var allItems = itemMap.keys.length;
+      _log.info('Detect ${allItems} new media item(s)');
+
+      var count = 0;
+      await Future.forEach(itemMap.keys, (String fileName) async {
+        var googleItem = itemMap[fileName];
+        _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType}');
+        HttpClient client = new HttpClient();
+        await client.getUrl(Uri.parse(googleItem.url))
+            .then((HttpClientRequest request) {
+          return request.close();
+        })
+            .then((HttpClientResponse response) {
+          response.pipe(new File(path.join(folder.path, fileName)).openWrite());
+        });
+        count++;
+        _log.info('  downloaded $count/$allItems(${(count * 100 / allItems).truncate()}%), "$fileName"');
       });
-      count++;
-      _log.info('  downloaded $count/$allItems(${(count*100/allItems).truncate()}%), "$fileName"');
-    });
-
-    if (itemMap.isNotEmpty){
-      _scEndSync.add(syncDate);
     }
+
+    _scEndSync.add(syncDate);
     lastSync = syncDate;
-    _appStorage.setValue<String>(GPhotoStorage_lastSync,lastSync.toIso8601String());
+    _appStorage.setValue<String>(GPhotoStorage_lastSync, lastSync.toIso8601String());
     _syncInProcess = false;
     return;
   }

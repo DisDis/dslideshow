@@ -67,6 +67,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   static final Random _rnd = Random();
   MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
   final List<Effect> _effectPool = [];
+  final List<Effect> _allowedEffects = <Effect>[];
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
@@ -118,6 +119,16 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+
+    var allowedETmp = _appConfig.slideshow.allowedEffects;
+    if (allowedETmp.isNotEmpty) {
+      _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
+    }
+
+    if (_allowedEffects.isEmpty){
+      _allowedEffects.addAll(Effect.values);
+    }
+    _log.info('Allowed effects: ${_allowedEffects}');
 
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
@@ -195,7 +206,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _effectController.reset();
     _mediaItemLoopController.reset();
     if (_effectPool.isEmpty) {
-      _effectPool.addAll(Effect.values);
+      _effectPool.addAll(_allowedEffects);
       _effectPool.shuffle(_rnd);
     }
     _currentEffect = _effectPool.removeLast().createEffect();

@@ -57,6 +57,10 @@ class SlideShowConfig  extends BaseConfig {
 
   int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
 
+  List<String> _allowedEffects;
+
+  List<String> get allowedEffects => _allowedEffects ??= readValue<List<String>>("allowedEffects", <String>[]);
+
   SlideShowConfig(Map<String, dynamic> config) :super(config);
 }
 
@@ -139,9 +143,13 @@ abstract class BaseConfig{
   BaseConfig(Map<String, dynamic> config): _config = config??<String, dynamic>{};
 
   T readValue<T>(String field, [T defaultValue]){
-    var value = _config[field] as T;
-    if (value == null){
-      if (defaultValue == null){
+    dynamic tmp = _config[field];
+    T value = null;
+    if (tmp is T){
+      value = tmp;
+    }
+    if (value == null) {
+      if (defaultValue == null) {
         throw new Exception('Field "$field" not set.');
       }
       return defaultValue;
