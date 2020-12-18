@@ -1,9 +1,9 @@
 name: dslideshow_flutter
 description: Flutter SlideShow
-version: 1.0.0+7
+version: 1.1.0
 
 environment:
-  sdk: ">=2.2.3 <3.0.0"
+  sdk: ">=2.11.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -15,10 +15,10 @@ dependencies:
   path: ^1.6.4
   permission_handler: ^5.0.0
   qr_flutter: ^3.2.0
-  isolate: ^2.0.2
-  logging: ^0.11.0
+  isolate: ^2.0.3
+  logging: ^0.11.2
   flutter_redux: ^0.6.0
-  built_value: ^6.5.0
+  built_value: ^7.1.0
   omxplayer_video_player: ^1.2.0
   video_player: ^0.10.11
   duration: ^2.0.2
@@ -37,8 +37,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  built_value_generator: ^6.5.0
-  build_runner: ^1.2.1
+  built_value_generator: ^7.1.0
+  build_runner: ^1.10.2
 
 flutter:
   uses-material-design: true

@@ -2,11 +2,11 @@ name: 'dslideshow_backend'
 version: 2.0.0
 description: A sample command-line application
 environment:
-  sdk: '>=2.7.0 <3.0.0'
+  sdk: '>=2.11.0 <3.0.0'
 dependencies:
-    isolate: ^2.0.2
-    logging: ^0.11.0
-    built_value: ^6.8.2
+    isolate: ^2.0.3
+    logging: ^0.11.2
+    built_value: ^7.1.0 #^8.0.0-nullsafety.0
     dslideshow_common:
         path: ../common
     googleapis:
@@ -17,9 +17,9 @@ dependencies:
     shelf: ^0.7.5
     shelf_router: ^0.7.2
 dev_dependencies:
-  built_value_generator: ^6.5.0
+  built_value_generator: ^7.1.0
   shelf_router_generator: ^0.7.0+1
-  build_runner: ^1.2.1
+  build_runner: ^1.10.2
 #  unittest: any
 
 autover:

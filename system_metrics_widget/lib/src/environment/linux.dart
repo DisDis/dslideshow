@@ -9,10 +9,10 @@ export 'package:dslideshow_backend/environment.dart';
 
 final bool isLinuxEmbedded = true;
 
-Future<Directory> getApplicationDocumentsDirectory() async {
-  return new Directory(path.current);
-}
-
-Future<bool> checkPermissionReadExternalStorage() async {
-  return true;
-}
+// Future<Directory> getApplicationDocumentsDirectory() async {
+//   return new Directory(path.current);
+// }
+//
+// Future<bool> checkPermissionReadExternalStorage() async {
+//   return true;
+// }
