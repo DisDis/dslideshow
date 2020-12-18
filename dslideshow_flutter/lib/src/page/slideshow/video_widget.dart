@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
 import 'package:video_player/video_player.dart';
 
 import 'item_widget.dart';
@@ -20,6 +21,8 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
 class _VideoWidgetState extends State<VideoWidget> {
   //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
   static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
+
+  static final Logger _log = Logger('_VideoWidgetState');
 
   final File videoFile;
 
@@ -52,14 +55,17 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void initState() {
     super.initState();
-
     if (isVideoSupport) {
       _controller = VideoPlayerController.file(videoFile)
         ..initialize().then((_) {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           setState(() {});
+        }).catchError((dynamic message, StackTrace s){
+          _log.severe(message, s);
         });
-      _controller.play();
+      _controller.play().catchError((dynamic message, StackTrace s){
+        _log.severe(message, s);
+      });
     }
   }
 }

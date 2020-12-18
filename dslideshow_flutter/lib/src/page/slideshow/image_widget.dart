@@ -11,8 +11,8 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
   ImageProvider get provider => _image.image;
 
-  ImageWidget(this.item) :_image = Image.file(
-      new File(item.uri.toFilePath()),
+  ImageWidget(this.item) :_image = Image.memory(
+      new File(item.uri.toFilePath()).readAsBytesSync(),
       fit: BoxFit.contain), super(key: Key('img:${item.uri.toFilePath()}'));
 
   @override
