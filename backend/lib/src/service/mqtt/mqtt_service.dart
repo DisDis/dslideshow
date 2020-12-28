@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -116,7 +117,7 @@ class MqttService {
         ',"state_topic": "${discovery_prefix + _config.state_topic}"'
         ',"unique_id": "${_config.deviceId}_action_${id}"'
         ',"device":{ "ids": ["${_config.deviceId}"], "name":"${_config
-        .deviceName}", "sw": "1.2.3", "mdl": "Proto 1", "mf": "DIY" }'
+        .deviceName}", "sw": "f:${ApplicationInfo.frontendVersion}, b:${ApplicationInfo.backendVersion}", "mdl": "Proto 1", "mf": "DIY" }'
         '}';
     _client.publishMessage(
         discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()

@@ -4,7 +4,6 @@ import 'dart:isolate' as isol;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
-import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
@@ -51,7 +50,6 @@ void main() async {
 
     final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
-    getInjectorModule();
     injector.registerSingleton<AppConfig>((){
       return AppConfig(localPath.path);
     });
