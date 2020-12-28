@@ -3,7 +3,7 @@ description: Flutter SlideShow
 version: 1.1.0
 
 environment:
-  sdk: ">=2.11.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -11,7 +11,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  injector: ^1.0.10-nullsafety.0
+  injector: ^1.0.9  #injector: ^1.0.10-nullsafety.0
   path_provider: ^1.1.0
   path: ^1.6.4
   permission_handler: ^5.0.0

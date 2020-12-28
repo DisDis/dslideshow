@@ -12,6 +12,6 @@ abstract class ErrorResult implements RpcErrorResult, Built<ErrorResult, ErrorRe
   static Serializer<ErrorResult> get serializer =>
       _$errorResultSerializer;
 
-  factory ErrorResult([void updates(ErrorResultBuilder b)?]) = _$ErrorResult;
+  factory ErrorResult([void updates(ErrorResultBuilder b)]) = _$ErrorResult;
   ErrorResult._();
 }

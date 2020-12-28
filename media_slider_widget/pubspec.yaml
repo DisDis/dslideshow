@@ -5,7 +5,7 @@ author: andrey smirnov [guid.empty]
 homepage: https://github.com/guid-empty
 
 environment:
-  sdk: ">=2.11.0 <3.0.0"
+  sdk: ">=2.10.0 <3.0.0"
 
 dependencies:
   flutter:

@@ -5,8 +5,8 @@ import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:logging/logging.dart';
 
-late Serializers _serializers;
-late RpcService _service;
+/*late*/ Serializers _serializers;
+/*late*/ RpcService _service;
 final Logger _log = new Logger('rpc_service');
 
 void initRpc(RpcService service, Serializers serializers){
@@ -16,7 +16,7 @@ void initRpc(RpcService service, Serializers serializers){
 
 FutureOr<String> executeCommandStr(String commandStr) async {
   try {
-    RpcCommand cmd = _serializers.deserialize(json.decode(commandStr)) as RpcCommand;
+    RpcCommand cmd = _serializers.deserialize(json.decode(commandStr) as Object) as RpcCommand;
     var result = await _service.executeCommand(cmd);
     var str = json.encode(_serializers.serialize(result));
     return str;

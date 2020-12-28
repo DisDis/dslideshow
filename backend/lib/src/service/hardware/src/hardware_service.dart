@@ -9,6 +9,7 @@ import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/command/screen_commands.dart';
 import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
+import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -26,8 +27,9 @@ class HardwareService implements RpcService{
 
   final GPIOService _gpioService;
   final ScreenService _screenService;
+  final MqttService _mqttService;
 
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer){
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer, this._mqttService){
     _init();
   }
 
@@ -61,6 +63,15 @@ class HardwareService implements RpcService{
       } else {
         _screenService.scheduleScreenOff();
       }
+    });
+    _mqttService.onPause.listen((event) {
+      _pushButton(ButtonType.pause);
+    });
+    _mqttService.onScreenToggle.listen((event) {
+      _pushButton(ButtonType.screentoggle);
+    });
+    _mqttService.onMenu.listen((event) {
+      _pushButton(ButtonType.menu);
     });
     _initFutures.add(_systemInfoService.init());
   }

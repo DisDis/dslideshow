@@ -64,17 +64,17 @@ class _$ErrorResultSerializer implements StructuredSerializer<ErrorResult> {
 
 class _$ErrorResult extends ErrorResult {
   @override
-  final String error;
+  /*late*/ final String error;
   @override
-  final int id;
+  /*late*/ final int id;
 
-  factory _$ErrorResult([void updates(ErrorResultBuilder b)?]) =>
+  factory _$ErrorResult([void updates(ErrorResultBuilder b)/*?*/]) =>
       (new ErrorResultBuilder()..update(updates)).build();
 
-  _$ErrorResult._({this.error, this.id}) : super._() {
-    if (error == null)
-      throw new BuiltValueNullFieldError('ErrorResult', 'error');
-    if (id == null) throw new BuiltValueNullFieldError('ErrorResult', 'id');
+  _$ErrorResult._({String error, int id}) : this.error=error, this.id = id, super._() {
+    // if (error == null)
+    //   throw new BuiltValueNullFieldError('ErrorResult', 'error');
+    // if (id == null) throw new BuiltValueNullFieldError('ErrorResult', 'id');
   }
 
   @override
@@ -134,7 +134,7 @@ class ErrorResultBuilder implements Builder<ErrorResult, ErrorResultBuilder> {
   }
 
   @override
-  void update(void updates(ErrorResultBuilder b)) {
+  void update(void updates(ErrorResultBuilder b)/*?*/) {
     if (updates != null) updates(this);
   }
 
