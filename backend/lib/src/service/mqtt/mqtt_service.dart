@@ -25,6 +25,8 @@ class MqttService {
   final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
   Stream<bool> get onScreenToggle =>_scScreenToggle.stream;
 
+  bool get isConnected => _client.connectionStatus.state == MqttConnectionState.connected;
+
   MqttService(this._config)
       :_client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
         _prefixPauseTopic = _config.getDiscoveryPrefix('switch', 'pause'),
@@ -40,11 +42,13 @@ class MqttService {
     _client.keepAlivePeriod = _config.keepAlivePeriod;
     _client.onDisconnected = _onDisconnected;
     _client.onConnected = _onConnected;
+    _client.onAutoReconnected = _onAutoReconnected;
     _client.autoReconnect = true;
+    _client.resubscribeOnAutoReconnect = true;
 
     final connMess = MqttConnectMessage()
         .withClientIdentifier(_config.clientId)
-        .keepAliveFor(30) // Must agree with the keep alive set above or not set
+        .keepAliveFor(_config.keepAlivePeriod) // Must agree with the keep alive set above or not set
     // .withWillTopic(mqttConfig.discovery_prefix+mqttConfig.configuration_topic) // If you set this you must set a will message
     // .withWillMessage(configPayload)
         .startClean() // Non persistent session for testing
@@ -63,20 +67,13 @@ class MqttService {
     }
 
     /// Check we are connected
-    if (_client.connectionStatus.state == MqttConnectionState.connected) {
+    if (isConnected) {
       _log.info('Mosquitto client connected "${_config.server}" port:${_config.serverPort}');
+      _client.updates.listen(_onUpdate);
     } else {
       _log.warning('Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus.state}');
       _client.disconnect();
     }
-
-
-
-
-    /// The client has a change notifier object(see the Observable class) which we then listen to to get
-    /// notifications of published updates to each subscribed topic.
-    // ignore: avoid_types_on_closure_parameters
-    _client.updates.listen(_onUpdate);
   }
   void _onUpdate(List<MqttReceivedMessage<MqttMessage>> msgs) {
     msgs.forEach((element) {
@@ -126,7 +123,7 @@ class MqttService {
 
   /// The unsolicited disconnect callback
   void _onDisconnected() {
-    _log.info('Client disconnection');
+    _log.info('Client onDisconnected');
   }
 
   void _onConnected() {
@@ -145,5 +142,9 @@ class MqttService {
     _client.publishMessage(
         _prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
       ..addUTF8String('OFF')).payload);
+  }
+
+  void _onAutoReconnected() {
+    _log.info('Client onAutoReconnected');
   }
 }

@@ -23,9 +23,9 @@ class SystemInfoService {
   SystemInfo _lastInfo;
 
   final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
-  final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
-  final RegExp _findIp4 = new RegExp('inet ([^ ]*)');
-  final RegExp _findIp6 = new RegExp('inet6 ([^ ]*)');
+  static final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
+  static final RegExp _findIp4 = new RegExp('inet ([^ ]*)');
+  static final RegExp _findIp6 = new RegExp('inet6 ([^ ]*)');
   final HardwareConfig _config;
 
   SystemInfoService(this._config);

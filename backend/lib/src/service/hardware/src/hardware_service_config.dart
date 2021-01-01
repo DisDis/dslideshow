@@ -1,11 +1,17 @@
 import 'package:dslideshow_backend/config.dart';
 
 class HardwareConfig  extends BaseConfig {
+  int _smoothingGPIOMs;
+  int get smoothingGPIOMs => _smoothingGPIOMs ??= readInt("smoothingGPIOMs", 100);
+
   int _pinPauseButton;
   int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 17);
 
   int _pinMenuButton;
   int get pinMenuButton => _pinMenuButton ??= readInt("pinMenuButton", 27);
+
+  int _pinBackButton;
+  int get pinBackButton => _pinBackButton ??= readInt("pinBackButton", 23);
 
   int _pinScreenToggleButton;
   int get pinScreenToggleButton => _pinScreenToggleButton ??= readInt("pinScreenToggleButton", 22);

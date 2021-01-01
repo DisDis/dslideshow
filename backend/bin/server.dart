@@ -6,6 +6,7 @@ import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
+import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -29,6 +30,10 @@ void main(List<String> args) async {
       final _config = injector.get<AppConfig>();
       return  new GPIOServiceImpl(_config.hardware);
     });
+    injector.registerSingleton<MqttService>((){
+      final _config = injector.get<AppConfig>();
+      return new MqttService(_config.mqtt);
+    });
 //        ..bind(Storage, toFactory: (AppConfig _config) => new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>), inject: <dynamic>[AppConfig])
 //         ..bind(Storage, toFactory: (AppConfig _config, AppStorage appStorage) => new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage), inject: <dynamic>[AppConfig, AppStorage])
 //        ..bind(ScreenService, toFactory: (AppConfig _config) => new ScreenService(_config.hardware), inject: <dynamic>[AppConfig])
@@ -37,8 +42,11 @@ void main(List<String> args) async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
+    final mqtt = injector.get<MqttService>();
+    await mqtt.onMenu.first;
+
     //await _testSystemInfo();
-    await _testGPIO();
+    // await _testGPIO();
 //    await _gphotoStorage.init();
 
 //    final _gphoto = injector.get(GooglePhotoService) as GooglePhotoService;

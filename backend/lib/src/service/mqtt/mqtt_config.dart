@@ -8,7 +8,7 @@ class MqttConfig  extends BaseConfig {
   bool get enabled => _enabled ??= readValue("enabled", false);
 
   int _keepAlivePeriod;
-  int get keepAlivePeriod => _keepAlivePeriod ??= readInt("keepAlivePeriod", 60 * 10);
+  int get keepAlivePeriod => _keepAlivePeriod ??= readInt("keepAlivePeriod", 60*10);
 
   String _deviceId;
   String get deviceId => _deviceId ??= readValue("deviceId", 'dslideshow1');
