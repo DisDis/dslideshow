@@ -128,7 +128,7 @@ class GPIOServiceImpl extends GPIOService{
         if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
           _log.info('BackButton: $event');
           _lastBackButtonTime = DateTime.now();
-          _scPause.add(event.edge == SignalEdge.falling);
+          _scBack.add(event.edge == SignalEdge.falling);
         }
       });
       _lineMenuButton.onEvent.listen((event) {
