@@ -1,7 +1,7 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @version 2.1
+ * @version 2.2
  */
 /*
 TODO:
@@ -21,10 +21,10 @@ tolerance = 0.3;
 
 
 thickness = 1.0;
-display_thickness = 1.82;
-mount_thickness = 3;
-mount_w = 10;
-mount_h = 3;
+display_thickness = 1.82;//толщина дисплея
+mount_thickness = 3;//
+mount_w = 30;
+mount_h = 5;
 
 //Paper
 module paper_form(){
@@ -40,14 +40,23 @@ projection(cut=true)
 }
 }
 
+module stiffening_rib(sr_start = [0,0,0],sr_end = [0,0,10], sr_points=[[0,0,0], [0,10,0], [0,0,10]], sr_faces = [[0,1,2]]){
+ //polyhedron(points= sr_points, faces=sr_faces);
+    hull() {
+    translate(sr_start) polyhedron(points= sr_points, faces=sr_faces);
+    translate(sr_end)   polyhedron(points= sr_points, faces=sr_faces);
+ }
+}
+
+
 module 3dmodel_form(){
     //translate([0,0,thickness+display_thickness])
     {
-    difference()
-    {
-        cube(size=[frame_inner_width,frame_inner_hieght,thickness]);
-        color("pink") translate([(frame_inner_width - active_area_width) / 2, (frame_inner_hieght -   active_area_hieght) / 2,-0.1]) cube(size=[active_area_width,active_area_hieght,thickness+1]);
-    } 
+        difference()
+        {
+            cube(size=[frame_inner_width,frame_inner_hieght,thickness]);
+            color("pink") translate([(frame_inner_width - active_area_width) / 2, (frame_inner_hieght -   active_area_hieght) / 2,-0.1]) cube(size=[active_area_width,active_area_hieght,thickness+1]);
+        } 
     }
     active_area_x = (display_width - active_area_width)/2;
     active_area_y = (display_hieght - active_area_offsety - active_area_hieght);

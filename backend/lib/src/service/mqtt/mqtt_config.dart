@@ -2,7 +2,7 @@ import 'package:dslideshow_backend/config.dart';
 
 class MqttConfig  extends BaseConfig {
   int _serverPort;
-  int get serverPort => _serverPort ??= readInt("serverPort", 1883);
+  int get serverPort => _serverPort ??= readInt("port", 1883);
 
   bool _enabled;
   bool get enabled => _enabled ??= readValue("enabled", false);

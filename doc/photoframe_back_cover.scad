@@ -1,14 +1,23 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
+ * @version 1.1.2
  */
+
+cover_version = "04.01.2021 v1.1.2";
+
 width = 220;
 height = 170;
 back_thickness = 1.5;
 wall_thickness = 1.5;
 wall_depth = 5;
-pcbDriverW = 65;
-pcbDriverH = 67.5;
+// China
+//pcbDriverW = 65;
+//pcbDriverH = 67.5;
+// Toshiba
+pcbDriverW = 70.10;
+pcbDriverH = 40.15;
+
 pcbDriverRotate = [0,0,90];//[180,0,-90];
 pcbPowerH  = 45;
 pcbPowerW  = 30.5;
@@ -17,12 +26,13 @@ pcbRPiW    = 85;  // Ancho del PCB (eje X).
 pcbRPiT    = 1.4; 
 pcbRPi4Rotate = [0,0,-90];
 
+hasKeyHoles = false;
+
 
 frame_thickness = 10;
 
 M3_rad = 3.3;
 
-cover_version = "24.06.2020 v1.0.0";
 
 pcbRPi4X = 153;
 pcbRPi4Y = 87.9;
@@ -30,10 +40,13 @@ pcbRPi4Z = back_thickness+4;
 pcbPowerX = frame_thickness + 7;
 pcbPowerY = height - pcbPowerH - frame_thickness - 7;
 pcbPowerZ = back_thickness + 1.5 + 2;
+pcbDriverX = (width+pcbDriverW)/2-10;
+pcbDriverY = (height)/2 + 15;
+//pcbDriverZ = ;
 
 cooling_holes_width = 1.5;
-cooling_holes_deep = wall_depth + back_thickness - 2;
-cooling_holes_height = 15;
+cooling_holes_deep = wall_depth + back_thickness - 4;
+cooling_holes_height = 8;
 cooling_holes_interval = 5;
 cooling_holes_startx = frame_thickness + cooling_holes_width;
 cooling_holes_endx = width - frame_thickness - cooling_holes_width;
@@ -53,7 +66,8 @@ cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 12.[ ]Переделать eth держатель
 */
 //-----------------------------------------------------------------------------
-use <./pcbDisplayDriver.scad>
+//use <./pcbDisplayDriver.scad>
+use <./pcbDisplayDriver_Toshiba.scad>
 use <./pcbPowerDistribution.scad>
 use <./PCB/RaspberryPi4.scad>
 use <./keyhole_hanger.scad>
@@ -63,17 +77,14 @@ pcbPowerHoles = getPcbPowerDistributionHoles();
 pcbDisplayHoles = getPcbDisplayDriverHoles();
 pcbRaspberry4Holes = getRaspberry4Holes();
 
-pcbMount_ddriver_offx = 1.3;
-pcbMount_ddriver_offy = 3.3;
-
 pcbMounts = [
  // M_POWER
  // pcbPostion, positions[4], height_base, height_holder, rotate, radius, hole?, innerMount?
- [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 4, [0,0,0], M3_rad/2  - 0.1, false, true],
+ [[pcbPowerX, pcbPowerY, back_thickness], pcbPowerHoles,2, 5, [0,0,0], M3_rad/2  - 0.1, false, true],
   // M_DDRIVER
- [ [(width+pcbDriverW)/2,(height)/2,back_thickness] , pcbDisplayHoles, 8.5, 4 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1, false, true],
+ [ [pcbDriverX, pcbDriverY, back_thickness] , pcbDisplayHoles, 8.5, 5 , [0,0,pcbDriverRotate[2]], M3_rad/2 - 0.1, false, true],
 // M_RPI4
- [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
+ [[pcbRPi4X, pcbRPi4Y, back_thickness], pcbRaspberry4Holes, 2.5, 5 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, true],
  
  [[pcbRPi4X, pcbRPi4Y, back_thickness], [[pcbRPiW, pcbRaspberry4Holes[0][1]],[pcbRPiW, pcbRaspberry4Holes[3][1]]], 2.5, 4.2 , pcbRPi4Rotate, M3_rad/2 - 0.5, false, false],
  // Wires mount
@@ -81,7 +92,7 @@ pcbMounts = [
 ];
 
 keyholes_hanger_pos = [
- [width / 2, height * 0.79, -0.01 ],
+ //[width / 2, height * 0.79, -0.01 ],
  [width / 2 - 50, height * 0.79, -0.01 ],
  [width / 2 + 50, height * 0.79, -0.01 ]
 ];
@@ -104,7 +115,7 @@ module cover_mount_holes(r = 1.3){
       mount_z = wall_depth+back_thickness;
       base_z = 3;
       translate([frame_thickness/2,frame_thickness/2,0]){
-            translate([0,0,base_z/2-0.01]) cube([5,5,base_z],center = true);
+            translate([0,0,base_z/2+0.15/*-0.01*/]) cube([5,5,base_z],center = true);
             translate([0,0,base_z+0.1])cylinder(h = mount_z+0.01, r = r, $fn = 20);
           }
   }
@@ -165,6 +176,7 @@ cooling_holes_interval
 cooling_holes_startx
 cooling_holes_endx
 */
+//Отверстия охлаждения
 module cooling_holes(){
     // UP
     for ( cooling_x = [cooling_holes_startx : cooling_holes_interval : cooling_holes_endx] ){
@@ -235,9 +247,9 @@ module buildFrame(){
         
         color("Black"){
           translate([20,20,back_thickness]) {
-            linear_extrude(height = 0.5, convexity = 10)
+            linear_extrude(height = 0.4, convexity = 20)
                 {
-                    text(cover_version, 7);
+                    text(cover_version, 8);
                 }
             }
         }
@@ -266,10 +278,13 @@ module pcbsMounts(){
                  mount_base_h = pcbMountInfo[2];
                  rotate(a = pcbRot){
                 for (ii = pcbMountPos) translate(ii) {
-                    difference(){
+                    //difference()
+                    {
                     union(){
                     // base
-                    translate([0,0,mount_base_h/2]) cylinder(h=mount_base_h, r= (M3_rad/2 + 1) , center= true, $fn=20);
+                    translate([0,0,mount_base_h/2]) 
+                        cube(size=[(M3_rad + 1),(M3_rad + 1),mount_base_h], center= true);
+                        //cylinder(h=mount_base_h, r= (M3_rad/2 + 1) , center= true, $fn=20);
                     // holder
                     if (innerMount)translate([0,0,mount_base_h])
                         cylinder(h=mount_h, r=holeRadius, center = true, $fn=20);
@@ -290,23 +305,9 @@ module buildKeyHolesHangar(){
     }
 }
 
-
-/*
-//Example use of module
-standoff(
-     height = 2
-    ,diameter = 5
-    ,holediameter = 2
-    ,firstTX = 100
-    ,firstTY = 10
-    ,firstTZ = back_thickness
-    ,pcbWidth = 25
-    ,pcbLength = 50
-    ,fn = 25
-);*/
 //projection(cut=true) 
-//translate([0,0,-4.5])
-//intersection()
+//translate([0,0,-10.5])
+//intersection() // Пересечение
 {
 difference()
     {
@@ -318,7 +319,7 @@ difference()
         //frame
         buildFrame();
         //keyholes hanger hangar
-        buildKeyHolesHangar();
+        if (hasKeyHoles) buildKeyHolesHangar();
         //RaPi4 back panel
         raPi4_back_panel();
     }
@@ -330,18 +331,24 @@ difference()
     //keyholes hanger
     color("pink") {
         for (ii = keyholes_hanger_pos){
-            translate(ii) create_keyhole_hanger(h = back_thickness + 0.5);
+            if (hasKeyHoles) translate(ii) create_keyhole_hanger(h = back_thickness + 0.5);
         }
     }
 }
 
-/* //Power + Driver
-color("red") union(){
-    translate([pcbPowerX,pcbPowerY,0])      cube(size=[60,48,20]);
-    translate([pcbPowerX+50,pcbPowerY-25,0])cube(size=[80,15,20]);
-    translate([pcbPowerX+50,pcbPowerY-25,0])cube(size=[10,30,20]);
-    translate([pcbPowerX+50,pcbPowerY+35,0])cube(size=[80,10,20]);
-    translate([pcbPowerX+120,pcbPowerY-25,0])cube(size=[10,70,20]);
+// Часть
+/*color("red") union(){
+    translate([pcbDriverX-pcbDriverW/2-5,pcbDriverY+pcbDriverH-7,-1])cube(size=[10,pcbDriverH+20,20]); //L
+}*/
+
+ //Power + Driver
+/*color("red") union(){
+    //translate([pcbPowerX,pcbPowerY,0])      cube(size=[60,48,20]);//Power
+    // Display Driver
+    translate([pcbDriverX-pcbDriverW-5,pcbDriverY-5,-1])cube(size=[pcbDriverW+10,15,15]);//B
+    translate([pcbDriverX-pcbDriverW-5,pcbDriverY,-1])cube(size=[10,pcbDriverH,20]); //L
+    translate([pcbDriverX-5,pcbDriverY,-1])cube(size=[10,pcbDriverH,20]); //R
+    translate([pcbDriverX-pcbDriverW-5,pcbDriverY+pcbDriverH-10,-1])cube(size=[pcbDriverW+10,15,15]); //T
 }*/
 // RaPi4
 /*color("red") union(){
@@ -371,7 +378,7 @@ if ($preview) {
 translate([pcbRPi4X, pcbRPi4Y, pcbRPi4Z]) rotate(a= pcbRPi4Rotate) raspberry4();
 
 //Display Driver 
-translate([(width+pcbDriverW)/2,(height)/2,back_thickness+10]) rotate(a=pcbDriverRotate)  pcbDisplayDriver();
+translate([pcbDriverX,pcbDriverY,back_thickness+10]) rotate(a=pcbDriverRotate)  pcbDisplayDriver();
 
 //PoweDistib
 translate([pcbPowerX, pcbPowerY, pcbPowerZ]) pcbPowerDistribution();

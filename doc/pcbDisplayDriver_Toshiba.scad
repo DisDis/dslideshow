@@ -1,14 +1,16 @@
 /*
+ * HDMI to MIPI, hardware ver 3.2 (TOSHIBA)
+ *
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
  * @version 1.0
  */
-pcbHeight    = 45;  // Alto del PCB (eje Y).
-pcbWidth     = 30.5;  // Ancho del PCB (eje X).
+pcbHeight    = 70.10;  // Alto del PCB (eje Y).
+pcbWidth     = 40.15;  // Ancho del PCB (eje X).
 pcbThickness = 1.6; // Grosor del PCB (eje Z).
-pcbName = "DC-DC 5V5A";
-pcbNameSize = 3;
-pcbHoleDiameter = 3.6;
+pcbName = "Toshiba r3.2";
+pcbNameSize = 5; //размер надписи
+pcbHoleDiam = 3.5; // диаметр дырок
 //-----------------------------------------------------------------------------
 //use <./pin.scad>
 //-----------------------------------------------------------------------------
@@ -22,23 +24,25 @@ pcbHoleDiameter = 3.6;
  */
 function getBlocks(tolerance = 0) = let(zSD = - pcbThickness - (1.8 + tolerance) / 2 ) [
     // Dimensiones [x,y,z]                                       Color            Posición [x,y,z]        Rotación
-    [ [  10.0 + tolerance,  10.00 + tolerance,  14.0 + tolerance ], "Silver",      [ 5.10,  pcbHeight - 5.10,  0.0 ],      0 ],
-    [ [  10.0 + tolerance,  10.00 + tolerance,  14.0 + tolerance ], "Silver",      [ pcbWidth - 5.10,  pcbHeight - 5.10,  0.0 ],      0 ],  
-    [ [ 15.5 + tolerance, 7.9 + tolerance,  10.6 + tolerance ], "Blue",          [ pcbWidth / 2,  4.2,  0.0 ],      0 ],// DC-DC connector
-
+    [ [  4.0 + tolerance, 40.0 + tolerance,  2.0 + tolerance ], "DarkOrange",    [  2.80, 37.80,  0.0 ],      0 ], // 3 Display
+    [ [ 15.5 + tolerance, 11.50 + tolerance,  6.3 + tolerance ], "Cyan",          [ 15.00,  4.55,  0.0 ],      0 ], // 5 HDMI
+    [ [  8.0 + tolerance,  6.00 + tolerance,  3.1 + tolerance ], "Silver",        [ 32.00,  1.40,  0.0 ],      0 ], // 7 Mini USB
 ];
 
-hole1x = 2 + pcbHoleDiameter/2;
-hole1y = 2.0 + pcbHoleDiameter/2;
+hole1x = 0.8 + pcbHoleDiam / 2;
+hole1y = 2.0 + pcbHoleDiam / 2;
+hole2x = hole1x;
+hole2y = 64.4 + pcbHoleDiam / 2;
 /**
  * Devuelve las coordenadas de los agujeros del PCB.
  *
- * @return {Float[[]]}
+ * @return {Float[]}
  */
-function getPcbPowerDistributionHoles() = [
-    [ hole1x, hole1y],
-    [ hole1x+ 19.5 + pcbHoleDiameter, hole1y ],
-    [ 13.5 + pcbHoleDiameter/2 , hole1y + 35.7]
+function getPcbDisplayDriverHoles() = [
+    [ hole1x                     , hole1y],
+    [ hole2x                     , hole2y ], 
+    [ 35.8 + pcbHoleDiam / 2, 33.2  + pcbHoleDiam / 2], 
+    //[ hole1x + 56.6 + pcbHoleDiam, hole1y + 58.6 + pcbHoleDiam ]
 ];
 
 /**
@@ -55,6 +59,7 @@ function getPcbDimensions(tolerance = 0) = [
 ];
 
 
+
 /**
  * Las siguientes funciones devuelven el índice que con el tipo de información que almacena cada bloque.
  *
@@ -64,8 +69,6 @@ function RPI_T_SIZE()  = 0;
 function RPI_T_COLOR() = 1;
 function RPI_T_POS()   = 2;
 function RPI_T_ROT()   = 3;
-
-
 
 /**
  * Dibuja un bloque.
@@ -127,7 +130,7 @@ module printPcbName(width = 0, height = 0, length = 1)
  * @param {Float} tolerance Tolerancia a usar para las dimensiones del PCB.
  *                          Un valor positivo aumenta el tamaño.
  */
-module pcb(thickness = pcbThickness, diameter = 3.6, delta = 0, tolerance = 0, radius = 0.1)
+module pcb(thickness = pcbThickness, diameter = 2.75, delta = 0, tolerance = 0, radius = 0.1)
 {
     _r = radius;                     // Radio de los bordes del PCB.
     _h = pcbHeight + tolerance; // Alto del PCB (eje Y).
@@ -145,7 +148,7 @@ module pcb(thickness = pcbThickness, diameter = 3.6, delta = 0, tolerance = 0, r
                     if (diameter)
                     {
                         // Agujeros para los tornillos.
-                        _holes = getPcbPowerDistributionHoles();
+                        _holes = getPcbDisplayDriverHoles();
                         for (_xy = _holes)
                         { 
                                 translate([ _xy[0], _xy[1] ])
@@ -162,17 +165,16 @@ module pcb(thickness = pcbThickness, diameter = 3.6, delta = 0, tolerance = 0, r
 }
 
 /**
- * Dibuja la pcbPowerDistribution
+ * Dibuja la Raspberry Pi 4
  *
  * @param {Float} tolerance Tolerancia a usar para las dimensiones de los bloques.
  */
-module pcbPowerDistribution(tolerance = 0)
+module pcbDisplayDriver(tolerance = 0)
 {
     _blocks = getBlocks(tolerance);
     //difference()
     //{
-        pcb(diameter = pcbHoleDiameter, tolerance = tolerance);
-
+        pcb(diameter = pcbHoleDiam, tolerance = tolerance);
         translate([ (pcbWidth) / 2, (pcbHeight + tolerance), - 0.1 ])
         {
             rotate([ 0, 0, 270 ])
@@ -212,4 +214,5 @@ module roundedRect(x, y, r = 3)
     }
 }
 
-pcbPowerDistribution();
+//projection(cut=true) 
+pcbDisplayDriver();
