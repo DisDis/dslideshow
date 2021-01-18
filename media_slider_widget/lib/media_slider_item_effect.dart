@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
 abstract class MediaSliderItemEffect {
-  Widget transform(BuildContext context, Widget page, int index, int currentPage, double pageDelta, int itemCount);
+  // current:itemCount = 2
+  // next:itemCount = 1
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage /* int index, int currentPage*/, double pageDelta/*, int itemCount*/,
+      double screenW, double screenH);
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/hardware_commands.dart';
@@ -143,9 +144,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         imageCache.clear();
       }
     });
-    // _effectController.addListener(() {
-    //   setState(() {});
-    // });
 
     _fadeController = AnimationController(duration: fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
@@ -170,6 +168,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
   }
 
+  bool _isGif(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.gif';
+
   void _fetchNextMediaItem() async {
     _log.info('Change image');
     await _frontendService.storageNext();
@@ -181,24 +181,38 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _log.info('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
 
     if (itemWidget is ImageWidget) {
-      await precacheImage(itemWidget.provider, context);
+      await itemWidget.precache(context);
     }
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
     _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    /*_nextWidget = _isVideo(mediaItem) || _isGif(mediaItem)? Container(width: screenW, height: screenH, child: itemWidget)
+    : Stack(
+      children: [
+      new Container(width: screenW, height: screenH, child: ImageFiltered(
+          imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: (itemWidget as ImageWidget).imageCover
+      )),
+        new Container(width: screenW, height: screenH, child: itemWidget)
+      ],
+    );*/
 
     _transitionWidget = AnimatedBuilder(
         key: Key('anim'),
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            Transform.translate(
-                offset: Offset(-_effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _currentWidget, 0, 0, _effectController.value, 2)),
-            Transform.translate(
-                offset: Offset(screenW - _effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _nextWidget, 1, 0, _effectController.value, 1))
+            //Transform.translate(
+             //   offset: Offset(-_effectController.value * screenW, 0.0),
+          //      child:
+          _currentEffect.transform(context, _currentWidget, true/*,0,0*/, _effectController.value/*, 2*/, screenW, screenH),
+    // ),
+            // Transform.translate(
+            //     offset: Offset(screenW - _effectController.value * screenW, 0.0),
+            //     child:
+    _currentEffect.transform(context, _nextWidget, false/*1, 0*/, _effectController.value/*, 1*/, screenW, screenH)
+          // )
           ]);
         },
         child: _loaderWidget);
