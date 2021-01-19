@@ -3,6 +3,13 @@
     "port":8080,
     "addr":"0.0.0.0"
   },
+  "slideshow": {
+   "displayTimeMs": 5000,
+   "fadeTimeMs": 2000,
+   "transitionTimeMs": 1000,
+   "allowedEffects": ["Fade"],
+   "isBlurredBackground": false
+  },
   "storage": {
     "GPhotoStorage": {
       "refreshToken": "",

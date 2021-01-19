@@ -121,7 +121,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void initState() {
     super.initState();
 
-    var allowedETmp = _appConfig.slideshow.allowedEffects;
+    final allowedETmp = _appConfig.slideshow.allowedEffects;
+    _log.info('Config effects = ${allowedETmp}');
     if (allowedETmp.isNotEmpty) {
       _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
     }
@@ -166,6 +167,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
+    if (_currentWidget == _loaderWidget){
+      _fetchNextMediaItem();
+    }
   }
 
   bool _isGif(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.gif';
@@ -186,33 +190,27 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
-    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
-    /*_nextWidget = _isVideo(mediaItem) || _isGif(mediaItem)? Container(width: screenW, height: screenH, child: itemWidget)
-    : Stack(
-      children: [
-      new Container(width: screenW, height: screenH, child: ImageFiltered(
-          imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-          child: (itemWidget as ImageWidget).imageCover
-      )),
-        new Container(width: screenW, height: screenH, child: itemWidget)
-      ],
-    );*/
+    if (!(_isVideo(mediaItem) || _isGif(mediaItem)) &&  _appConfig.slideshow.isBlurredBackground) {
+      _nextWidget = Stack(
+          children: [
+            new Container(width: screenW, height: screenH, child: ImageFiltered(
+                imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                child: (itemWidget as ImageWidget).imageCover
+            )),
+            new Container(width: screenW, height: screenH, child: itemWidget)
+          ]);
+    } else {
+      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    }
+
 
     _transitionWidget = AnimatedBuilder(
         key: Key('anim'),
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            //Transform.translate(
-             //   offset: Offset(-_effectController.value * screenW, 0.0),
-          //      child:
-          _currentEffect.transform(context, _currentWidget, true/*,0,0*/, _effectController.value/*, 2*/, screenW, screenH),
-    // ),
-            // Transform.translate(
-            //     offset: Offset(screenW - _effectController.value * screenW, 0.0),
-            //     child:
-    _currentEffect.transform(context, _nextWidget, false/*1, 0*/, _effectController.value/*, 1*/, screenW, screenH)
-          // )
+            _currentEffect.transform(context, _currentWidget, true/*,0,0*/, _effectController.value/*, 2*/, screenW, screenH),
+            _currentEffect.transform(context, _nextWidget, false/*1, 0*/, _effectController.value/*, 1*/, screenW, screenH)
           ]);
         },
         child: _loaderWidget);
@@ -262,6 +260,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     if (isPausedNewValue) {
       _mediaItemLoopController.stop();
     } else {
+      _mediaItemLoopController.reset();
       _mediaItemLoopController.forward();
     }
     setState(() {

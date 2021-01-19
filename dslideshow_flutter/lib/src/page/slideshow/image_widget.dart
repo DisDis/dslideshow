@@ -15,6 +15,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
   Image _imageCover;
   final MediaItem item;
 
+  Image get image => _image;
+  Image get imageCover => _imageCover;
+
   static bool _isGif(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.gif';
 
   ImageWidget(this.item) : super(key: Key('img:${item.uri.toFilePath()}')) {

@@ -492,3 +492,11 @@ class ZoomOutEffect with TranslateEffect implements MediaSliderItemEffect {
     }
   }
 }
+
+class FadeEffect implements MediaSliderItemEffect {
+  @override
+  Widget transform(BuildContext context, Widget page, bool isCurrentPage, double pageDelta,
+      double screenW, double screenH) {
+    return isCurrentPage? Opacity(opacity: 1 - pageDelta, child: page):  Opacity(opacity: pageDelta, child: page);
+  }
+}

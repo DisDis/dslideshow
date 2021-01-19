@@ -27,6 +27,10 @@ class AppConfig{
     _config = json.decode(configStr) as Map<String,dynamic>;
     _log.info("Config loaded");
   }
+  AppConfig.json(String data){
+    _config = json.decode(data) as Map<String,dynamic>;
+    _log.info("Config loaded");
+  }
 
   _LogConfig _logConfig;
   _LogConfig get log => _logConfig??=new _LogConfig(_config["log"] as Map<String, dynamic>);
@@ -51,6 +55,7 @@ class SlideShowConfig  extends BaseConfig {
 
   int _displayTime;
 
+  /// How long the image is shown
   int get displayTimeMs => _displayTime ??= readInt("displayTimeMs", 5000);
 
   int _fadeTime;
@@ -58,12 +63,19 @@ class SlideShowConfig  extends BaseConfig {
   int get fadeTimeMs => _fadeTime ??= readInt("fadeTimeMs", 2000);
 
   int _transitionTimeMs;
-
+  /// How long do images change
   int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
 
-  List<String> _allowedEffects;
+  Iterable<String> _allowedEffects;
 
-  List<String> get allowedEffects => _allowedEffects ??= readValue<List<String>>("allowedEffects", <String>[]);
+  /// Allowed effects
+  Iterable<String> get allowedEffects => _allowedEffects ??=
+        List<String>()..addAll(readValue<List<dynamic>>("allowedEffects", <dynamic>[]).map((dynamic i) => i.toString()));
+
+  bool _isBlurredBackground;
+
+  ///create a blurred background
+  bool get isBlurredBackground => _isBlurredBackground ??= readValue("isBlurredBackground", true);
 
   SlideShowConfig(Map<String, dynamic> config) :super(config);
 }
@@ -151,11 +163,14 @@ abstract class BaseConfig{
     T value = null;
     if (tmp is T){
       value = tmp;
+    } else {
+      _log.fine('Field "$field" expects "$T", actual "${tmp==null?'null':tmp.runtimeType}"');
     }
     if (value == null) {
       if (defaultValue == null) {
         throw new Exception('Field "$field" not set.');
       }
+      _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
       return defaultValue;
     }
     return value;

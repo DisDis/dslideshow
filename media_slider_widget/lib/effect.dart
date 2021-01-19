@@ -20,6 +20,7 @@ class Effect {
   static const Effect rotateDownEffect = const Effect._('Rotate Down', _createRotateDownEffect);
   static const Effect rotateUpEffect = const Effect._('Rotate Up', _createRotateUpEffect);
   static const Effect zoomOutSlideEffect = const Effect._('Zoom Out', _createZoomOutSlideEffect);
+  static const Effect fadeEffect = const Effect._('Fade', _createFadeEffect);
 
   static const Iterable<Effect> values = const [
     cubeEffect,
@@ -36,6 +37,7 @@ class Effect {
     rotateDownEffect,
     rotateUpEffect,
     zoomOutSlideEffect,
+    fadeEffect
   ];
   final String name;
 
@@ -54,7 +56,7 @@ class Effect {
   MediaSliderItemEffect createEffect() => _implementor();
 
   @override
-  String toString() => 'Effect{name: $name}';
+  String toString() => name;
 
   static MediaSliderItemEffect _createAccordionEffect() => AccordionEffect();
   static MediaSliderItemEffect _createBackgroundToForegroundEffect() => BackgroundToForegroundEffect();
@@ -70,6 +72,7 @@ class Effect {
   static MediaSliderItemEffect _createStackEffect() => StackEffect();
   static MediaSliderItemEffect _createTabletEffect() => TabletEffect();
   static MediaSliderItemEffect _createZoomOutSlideEffect() => ZoomOutEffect();
+  static MediaSliderItemEffect _createFadeEffect() => FadeEffect();
 
   static Effect parse(String name) {
     return values.firstWhere((element) => element.name == name, orElse: ()=>defaultEffect);
