@@ -178,7 +178,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _log.info('Change image');
     await _frontendService.storageNext();
     var mediaItem = await _getCurrentMediaItem();
-    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
+    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
     if (mediaItem != null) {
       _log.info('file: "${path.basename(mediaItem.uri.toFilePath())}"');
     }
@@ -190,18 +190,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
-    if (!(_isVideo(mediaItem) || _isGif(mediaItem)) &&  _appConfig.slideshow.isBlurredBackground) {
-      _nextWidget = Stack(
-          children: [
-            new Container(width: screenW, height: screenH, child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                child: (itemWidget as ImageWidget).imageCover
-            )),
-            new Container(width: screenW, height: screenH, child: itemWidget)
-          ]);
-    } else {
-      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
-    }
+    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
 
 
     _transitionWidget = AnimatedBuilder(
