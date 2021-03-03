@@ -77,6 +77,20 @@ class SlideShowConfig  extends BaseConfig {
   ///create a blurred background
   bool get isBlurredBackground => _isBlurredBackground ??= readValue("isBlurredBackground", true);
 
+  int _backgroundBlurSigma;
+  int get backgroundBlurSigma => _backgroundBlurSigma ??= readInt("backgroundBlurSigma", 20);
+  double _backgroundOpacity;
+  double get backgroundOpacity => _backgroundOpacity ??= readDouble("backgroundOpacity", 0.9);
+
+  int _backgroundColorR;
+  int get backgroundColorR => _backgroundColorR ??= readInt("backgroundColorR", 255);
+  int _backgroundColorG;
+  int get backgroundColorG => _backgroundColorG ??= readInt("backgroundColorG", 255);
+  int _backgroundColorB;
+  int get backgroundColorB => _backgroundColorB ??= readInt("backgroundColorB", 255);
+
+
+
   SlideShowConfig(Map<String, dynamic> config) :super(config);
 }
 
@@ -192,6 +206,21 @@ abstract class BaseConfig{
       return value;
     }
     return int.parse(value as String, onError: (val) {
+      _log.fine('Could not parse value "$val" (field "$field") into a number.');
+      return defaultValue;
+    });
+  }
+
+  double readDouble(String field, double defaultValue) {
+    dynamic value = readRaw(field);
+    if (value == null){
+      _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
+      return defaultValue;
+    }
+    if (value is double){
+      return value;
+    }
+    return double.parse(value as String, (val) {
       _log.fine('Could not parse value "$val" (field "$field") into a number.');
       return defaultValue;
     });
