@@ -1,29 +1,143 @@
-## 0.53.0+special
+## 2.0.0+special
 
  * [api-added] photoslibrary:v1
 
+## 2.0.0-dev
+
+- APIs are now null-safe and require Dart 2.12.
+- Now requires `package:_discoveryapis_commons` v1.
+
+### API updates
+
+- `cloudresourcemanager` - added v3
+- `mybusinessaccountmanagement` - added v1
+- `webrisk` - added v1
+
+## 1.0.0
+
+### BREAKING changes to API shape
+
+* `USER_AGENT` has been removed from each library. All libraries within the
+  package share a common user-agent value.
+* API classes have been renamed to use more standard casing.
+  For example: `FirebasedynamiclinksApi` to `FirebaseDynamicLinksApi`.
+* Resource classes have been renamed to drop the `Api` suffix.
+  For example: `ManagedShortLinksResourceApi` to `ManagedShortLinksResource`.
+
+### API updates
+
+- `apigateway` - new
+- `artifactregistry` - new
+- `assuredworkloads` - new
+- `billingbudgets` - new
+- `chromemanagement` - new
+- `chromeuxreport` - new
+- `cloudchannel` - new
+- `datafusion` - new
+- `dialogflow` - added v3 API
+- `eventarc` - new
+- `firebasehosting` - new
+- `firebaseml` - new
+- `gameservices` - new
+- `gmailpostmastertools` - new
+- `jobs` - dropped v2, added v3 API
+- `localservices` - new
+- `memcache` - new
+- `notebooks` - new
+- `playablelocations` - new
+- `pubsublite` - new
+- `realtimebidding` - new
+- `retail` - new
+- `servicecontrol` - added v2 API
+- `servicedirectory` - new
+- `smartdevicemanagement` - new
+- `sts` - new
+- `trafficdirector` - new
+- `vectortile` - new
+- `workflowexecutions` - new
+- `workflows` - new
+- `youtubeAnalytics` - dropped v1 API
+
+## 0.56.1
+* [api-add] oauth2:v2 (appears to have been unintentionally missing from 0.55.0)
+
+## 0.56.0
+* [api-new] networkmanagement:v1
+* [api-new] recommender:v1
+* [api-removed] androidpublisher:v2
+* [api-removed] appsactivity:v1
+* [api-removed] oauth2:v2
+* [api-removed] plus:v1
+
+## 0.55.0
+* [api-new] accessapproval:v1
+* [api-new] admob:v1
+* [api-new] apigee:v1
+* [api-new] bigqueryreservation:v1
+* [api-new] binaryauthorization:v1
+* [api-new] dfareporting:v3.4
+* [api-new] displayvideo:v1
+* [api-new] domainsrdap:v1
+* [api-new] doubleclickbidmanager:v1.1
+* [api-new] healthcare:v1
+* [api-new] homegraph:v1
+* [api-new] osconfig:v1
+* [api-new] policytroubleshooter:v1
+* [api-new] secretmanager:v1
+* [api-new] managedidentities:v1
+* [api-new] translate:v3
+* [api-new] verifiedaccess:v1
+* [api-removed] appstate:v1
+* [api-removed] fusiontables:v1
+* [api-removed] fusiontables:v2
+* [api-removed] mirror:v1
+* [api-removed] plusDomains:v1
+* [api-removed] servicebroker:v1
+* [api-removed] surveys:v2
+* [api-removed] urlshortener:v1
+* [api-removed] dfareporting:v3.3
+* [api-removed] doubleclickbidmanager:v1
+* [api-removed] translate:v2
+
+## 0.54.0
+
+* [api-new] accesscontextmanager:v1
+* [api-new] cloudasset:v1
+* [api-new] cloudscheduler:v1
+* [api-new] cloudtasks:v2
+* [api-new] dfareporting:v3.3
+* [api-new] docs:v1
+* [api-new] fcm:v1
+* [api-new] file:v1
+* [api-new] remotebuildexecution:v2
+* [api-new] run:v1
+* [api-new] securitycenter:v1
+* [api-new] servicenetworking:v1
+* [api-new] websecurityscanner:v1
+* [api-removed] dfareporting:v3.2
+
 ## 0.53.0
 
- * [api-added] bigtableadmin:v2
- * [api-added] cloudidentity:v1
- * [api-added] cloudsearch:v1
- * [api-added] content:v2_1
- * [api-added] driveactivity:v2
- * [api-added] iap:v1
- * [api-added] libraryagent:v1
- * [api-added] pagespeedonline:v5
- * [api-added] redis:v1
- * [api-removed] adexchangeseller:v1_1
- * [api-removed] adexchangeseller:v2_0
- * [api-removed] cloudtrace:v1
- * [api-removed] content:v2 
- * [api-removed] content:v2sandbox
- * [api-removed] dfareporting:v2_8
- * [api-removed] dfareporting:v3_0
- * [api-removed] dfareporting:v3_1
- * [api-removed] firebaseremoteconfig:v1
- * [api-removed] partners:v2
- * [api-removed] serviceuser:v1
+* [api-new] bigtableadmin:v2
+* [api-new] cloudidentity:v1
+* [api-new] cloudsearch:v1
+* [api-new] content:v2_1
+* [api-new] driveactivity:v2
+* [api-new] iap:v1
+* [api-new] libraryagent:v1
+* [api-new] pagespeedonline:v5
+* [api-new] redis:v1
+* [api-removed] adexchangeseller:v1_1
+* [api-removed] adexchangeseller:v2_0
+* [api-removed] cloudtrace:v1
+* [api-removed] content:v2
+* [api-removed] content:v2sandbox
+* [api-removed] dfareporting:v2_8
+* [api-removed] dfareporting:v3_0
+* [api-removed] dfareporting:v3_1
+* [api-removed] firebaseremoteconfig:v1
+* [api-removed] partners:v2
+* [api-removed] serviceuser:v1
 
 ## 0.52.0+1
 

@@ -1,1471 +1,1929 @@
-library googleapis.safebrowsing.v4.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/safebrowsing/v4.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
+import '../test_shared.dart';
 
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
-
-core.int buildCounterChecksum = 0;
-buildChecksum() {
-  var o = new api.Checksum();
-  buildCounterChecksum++;
-  if (buildCounterChecksum < 3) {
-    o.sha256 = "foo";
-  }
-  buildCounterChecksum--;
+core.int buildCounterGoogleProtobufEmpty = 0;
+api.GoogleProtobufEmpty buildGoogleProtobufEmpty() {
+  var o = api.GoogleProtobufEmpty();
+  buildCounterGoogleProtobufEmpty++;
+  if (buildCounterGoogleProtobufEmpty < 3) {}
+  buildCounterGoogleProtobufEmpty--;
   return o;
 }
 
-checkChecksum(api.Checksum o) {
-  buildCounterChecksum++;
-  if (buildCounterChecksum < 3) {
-    unittest.expect(o.sha256, unittest.equals('foo'));
-  }
-  buildCounterChecksum--;
+void checkGoogleProtobufEmpty(api.GoogleProtobufEmpty o) {
+  buildCounterGoogleProtobufEmpty++;
+  if (buildCounterGoogleProtobufEmpty < 3) {}
+  buildCounterGoogleProtobufEmpty--;
 }
 
-core.int buildCounterClientInfo = 0;
-buildClientInfo() {
-  var o = new api.ClientInfo();
-  buildCounterClientInfo++;
-  if (buildCounterClientInfo < 3) {
-    o.clientId = "foo";
-    o.clientVersion = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4Checksum = 0;
+api.GoogleSecuritySafebrowsingV4Checksum
+    buildGoogleSecuritySafebrowsingV4Checksum() {
+  var o = api.GoogleSecuritySafebrowsingV4Checksum();
+  buildCounterGoogleSecuritySafebrowsingV4Checksum++;
+  if (buildCounterGoogleSecuritySafebrowsingV4Checksum < 3) {
+    o.sha256 = 'foo';
   }
-  buildCounterClientInfo--;
+  buildCounterGoogleSecuritySafebrowsingV4Checksum--;
   return o;
 }
 
-checkClientInfo(api.ClientInfo o) {
-  buildCounterClientInfo++;
-  if (buildCounterClientInfo < 3) {
-    unittest.expect(o.clientId, unittest.equals('foo'));
-    unittest.expect(o.clientVersion, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4Checksum(
+    api.GoogleSecuritySafebrowsingV4Checksum o) {
+  buildCounterGoogleSecuritySafebrowsingV4Checksum++;
+  if (buildCounterGoogleSecuritySafebrowsingV4Checksum < 3) {
+    unittest.expect(
+      o.sha256!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterClientInfo--;
+  buildCounterGoogleSecuritySafebrowsingV4Checksum--;
 }
 
-buildUnnamed3140() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.int buildCounterGoogleSecuritySafebrowsingV4ClientInfo = 0;
+api.GoogleSecuritySafebrowsingV4ClientInfo
+    buildGoogleSecuritySafebrowsingV4ClientInfo() {
+  var o = api.GoogleSecuritySafebrowsingV4ClientInfo();
+  buildCounterGoogleSecuritySafebrowsingV4ClientInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ClientInfo < 3) {
+    o.clientId = 'foo';
+    o.clientVersion = 'foo';
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ClientInfo--;
   return o;
 }
 
-checkUnnamed3140(core.List<core.String> o) {
+void checkGoogleSecuritySafebrowsingV4ClientInfo(
+    api.GoogleSecuritySafebrowsingV4ClientInfo o) {
+  buildCounterGoogleSecuritySafebrowsingV4ClientInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ClientInfo < 3) {
+    unittest.expect(
+      o.clientId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.clientVersion!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ClientInfo--;
+}
+
+core.List<
+        api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest>
+    buildUnnamed5614() {
+  var o = <
+      api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest>[];
+  o.add(
+      buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest());
+  o.add(
+      buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest());
+  return o;
+}
+
+void checkUnnamed5614(
+    core.List<
+            api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest>
+        o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest(
+      o[0] as api
+          .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest);
+  checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest(
+      o[1] as api
+          .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest);
 }
 
-core.int buildCounterConstraints = 0;
-buildConstraints() {
-  var o = new api.Constraints();
-  buildCounterConstraints++;
-  if (buildCounterConstraints < 3) {
-    o.deviceLocation = "foo";
-    o.language = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest =
+    0;
+api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest
+    buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest() {
+  var o = api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest();
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest <
+      3) {
+    o.client = buildGoogleSecuritySafebrowsingV4ClientInfo();
+    o.listUpdateRequests = buildUnnamed5614();
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest--;
+  return o;
+}
+
+void checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest(
+    api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest o) {
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest <
+      3) {
+    checkGoogleSecuritySafebrowsingV4ClientInfo(
+        o.client! as api.GoogleSecuritySafebrowsingV4ClientInfo);
+    checkUnnamed5614(o.listUpdateRequests!);
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest--;
+}
+
+core.int
+    buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest =
+    0;
+api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest
+    buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest() {
+  var o = api
+      .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest();
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest <
+      3) {
+    o.constraints =
+        buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints();
+    o.platformType = 'foo';
+    o.state = 'foo';
+    o.threatEntryType = 'foo';
+    o.threatType = 'foo';
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest--;
+  return o;
+}
+
+void checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest(
+    api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest
+        o) {
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest <
+      3) {
+    checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints(
+        o.constraints! as api
+            .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints);
+    unittest.expect(
+      o.platformType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.state!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatEntryType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatType!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest--;
+}
+
+core.List<core.String> buildUnnamed5615() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
+  return o;
+}
+
+void checkUnnamed5615(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int
+    buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints =
+    0;
+api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints
+    buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints() {
+  var o = api
+      .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints();
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints <
+      3) {
+    o.deviceLocation = 'foo';
+    o.language = 'foo';
     o.maxDatabaseEntries = 42;
     o.maxUpdateEntries = 42;
-    o.region = "foo";
-    o.supportedCompressions = buildUnnamed3140();
+    o.region = 'foo';
+    o.supportedCompressions = buildUnnamed5615();
   }
-  buildCounterConstraints--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints--;
   return o;
 }
 
-checkConstraints(api.Constraints o) {
-  buildCounterConstraints++;
-  if (buildCounterConstraints < 3) {
-    unittest.expect(o.deviceLocation, unittest.equals('foo'));
-    unittest.expect(o.language, unittest.equals('foo'));
-    unittest.expect(o.maxDatabaseEntries, unittest.equals(42));
-    unittest.expect(o.maxUpdateEntries, unittest.equals(42));
-    unittest.expect(o.region, unittest.equals('foo'));
-    checkUnnamed3140(o.supportedCompressions);
+void checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints(
+    api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints
+        o) {
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints <
+      3) {
+    unittest.expect(
+      o.deviceLocation!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.language!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.maxDatabaseEntries!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.maxUpdateEntries!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.region!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5615(o.supportedCompressions!);
   }
-  buildCounterConstraints--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints--;
 }
 
-core.int buildCounterEmpty = 0;
-buildEmpty() {
-  var o = new api.Empty();
-  buildCounterEmpty++;
-  if (buildCounterEmpty < 3) {}
-  buildCounterEmpty--;
+core.List<
+        api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse>
+    buildUnnamed5616() {
+  var o = <
+      api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse>[];
+  o.add(
+      buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse());
+  o.add(
+      buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse());
   return o;
 }
 
-checkEmpty(api.Empty o) {
-  buildCounterEmpty++;
-  if (buildCounterEmpty < 3) {}
-  buildCounterEmpty--;
-}
-
-buildUnnamed3141() {
-  var o = new core.List<api.ListUpdateRequest>();
-  o.add(buildListUpdateRequest());
-  o.add(buildListUpdateRequest());
-  return o;
-}
-
-checkUnnamed3141(core.List<api.ListUpdateRequest> o) {
+void checkUnnamed5616(
+    core.List<
+            api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse>
+        o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkListUpdateRequest(o[0]);
-  checkListUpdateRequest(o[1]);
+  checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse(
+      o[0] as api
+          .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse);
+  checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse(
+      o[1] as api
+          .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse);
 }
 
-core.int buildCounterFetchThreatListUpdatesRequest = 0;
-buildFetchThreatListUpdatesRequest() {
-  var o = new api.FetchThreatListUpdatesRequest();
-  buildCounterFetchThreatListUpdatesRequest++;
-  if (buildCounterFetchThreatListUpdatesRequest < 3) {
-    o.client = buildClientInfo();
-    o.listUpdateRequests = buildUnnamed3141();
+core.int
+    buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse = 0;
+api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse
+    buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse() {
+  var o = api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse();
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse <
+      3) {
+    o.listUpdateResponses = buildUnnamed5616();
+    o.minimumWaitDuration = 'foo';
   }
-  buildCounterFetchThreatListUpdatesRequest--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse--;
   return o;
 }
 
-checkFetchThreatListUpdatesRequest(api.FetchThreatListUpdatesRequest o) {
-  buildCounterFetchThreatListUpdatesRequest++;
-  if (buildCounterFetchThreatListUpdatesRequest < 3) {
-    checkClientInfo(o.client);
-    checkUnnamed3141(o.listUpdateRequests);
+void checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse(
+    api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse o) {
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse <
+      3) {
+    checkUnnamed5616(o.listUpdateResponses!);
+    unittest.expect(
+      o.minimumWaitDuration!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterFetchThreatListUpdatesRequest--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse--;
 }
 
-buildUnnamed3142() {
-  var o = new core.List<api.ListUpdateResponse>();
-  o.add(buildListUpdateResponse());
-  o.add(buildListUpdateResponse());
+core.List<api.GoogleSecuritySafebrowsingV4ThreatEntrySet> buildUnnamed5617() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatEntrySet>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntrySet());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntrySet());
   return o;
 }
 
-checkUnnamed3142(core.List<api.ListUpdateResponse> o) {
+void checkUnnamed5617(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatEntrySet> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkListUpdateResponse(o[0]);
-  checkListUpdateResponse(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatEntrySet);
+  checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatEntrySet);
 }
 
-core.int buildCounterFetchThreatListUpdatesResponse = 0;
-buildFetchThreatListUpdatesResponse() {
-  var o = new api.FetchThreatListUpdatesResponse();
-  buildCounterFetchThreatListUpdatesResponse++;
-  if (buildCounterFetchThreatListUpdatesResponse < 3) {
-    o.listUpdateResponses = buildUnnamed3142();
-    o.minimumWaitDuration = "foo";
-  }
-  buildCounterFetchThreatListUpdatesResponse--;
+core.List<api.GoogleSecuritySafebrowsingV4ThreatEntrySet> buildUnnamed5618() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatEntrySet>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntrySet());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntrySet());
   return o;
 }
 
-checkFetchThreatListUpdatesResponse(api.FetchThreatListUpdatesResponse o) {
-  buildCounterFetchThreatListUpdatesResponse++;
-  if (buildCounterFetchThreatListUpdatesResponse < 3) {
-    checkUnnamed3142(o.listUpdateResponses);
-    unittest.expect(o.minimumWaitDuration, unittest.equals('foo'));
-  }
-  buildCounterFetchThreatListUpdatesResponse--;
-}
-
-buildUnnamed3143() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
-  return o;
-}
-
-checkUnnamed3143(core.List<core.String> o) {
+void checkUnnamed5618(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatEntrySet> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatEntrySet);
+  checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatEntrySet);
 }
 
-core.int buildCounterFindFullHashesRequest = 0;
-buildFindFullHashesRequest() {
-  var o = new api.FindFullHashesRequest();
-  buildCounterFindFullHashesRequest++;
-  if (buildCounterFindFullHashesRequest < 3) {
-    o.apiClient = buildClientInfo();
-    o.client = buildClientInfo();
-    o.clientStates = buildUnnamed3143();
-    o.threatInfo = buildThreatInfo();
+core.int
+    buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse =
+    0;
+api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse
+    buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse() {
+  var o = api
+      .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse();
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse <
+      3) {
+    o.additions = buildUnnamed5617();
+    o.checksum = buildGoogleSecuritySafebrowsingV4Checksum();
+    o.newClientState = 'foo';
+    o.platformType = 'foo';
+    o.removals = buildUnnamed5618();
+    o.responseType = 'foo';
+    o.threatEntryType = 'foo';
+    o.threatType = 'foo';
   }
-  buildCounterFindFullHashesRequest--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse--;
   return o;
 }
 
-checkFindFullHashesRequest(api.FindFullHashesRequest o) {
-  buildCounterFindFullHashesRequest++;
-  if (buildCounterFindFullHashesRequest < 3) {
-    checkClientInfo(o.apiClient);
-    checkClientInfo(o.client);
-    checkUnnamed3143(o.clientStates);
-    checkThreatInfo(o.threatInfo);
+void checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse(
+    api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse
+        o) {
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse <
+      3) {
+    checkUnnamed5617(o.additions!);
+    checkGoogleSecuritySafebrowsingV4Checksum(
+        o.checksum! as api.GoogleSecuritySafebrowsingV4Checksum);
+    unittest.expect(
+      o.newClientState!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.platformType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5618(o.removals!);
+    unittest.expect(
+      o.responseType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatEntryType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatType!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterFindFullHashesRequest--;
+  buildCounterGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse--;
 }
 
-buildUnnamed3144() {
-  var o = new core.List<api.ThreatMatch>();
-  o.add(buildThreatMatch());
-  o.add(buildThreatMatch());
+core.List<core.String> buildUnnamed5619() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3144(core.List<api.ThreatMatch> o) {
+void checkUnnamed5619(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatMatch(o[0]);
-  checkThreatMatch(o[1]);
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-core.int buildCounterFindFullHashesResponse = 0;
-buildFindFullHashesResponse() {
-  var o = new api.FindFullHashesResponse();
-  buildCounterFindFullHashesResponse++;
-  if (buildCounterFindFullHashesResponse < 3) {
-    o.matches = buildUnnamed3144();
-    o.minimumWaitDuration = "foo";
-    o.negativeCacheDuration = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest = 0;
+api.GoogleSecuritySafebrowsingV4FindFullHashesRequest
+    buildGoogleSecuritySafebrowsingV4FindFullHashesRequest() {
+  var o = api.GoogleSecuritySafebrowsingV4FindFullHashesRequest();
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest < 3) {
+    o.apiClient = buildGoogleSecuritySafebrowsingV4ClientInfo();
+    o.client = buildGoogleSecuritySafebrowsingV4ClientInfo();
+    o.clientStates = buildUnnamed5619();
+    o.threatInfo = buildGoogleSecuritySafebrowsingV4ThreatInfo();
   }
-  buildCounterFindFullHashesResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest--;
   return o;
 }
 
-checkFindFullHashesResponse(api.FindFullHashesResponse o) {
-  buildCounterFindFullHashesResponse++;
-  if (buildCounterFindFullHashesResponse < 3) {
-    checkUnnamed3144(o.matches);
-    unittest.expect(o.minimumWaitDuration, unittest.equals('foo'));
-    unittest.expect(o.negativeCacheDuration, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4FindFullHashesRequest(
+    api.GoogleSecuritySafebrowsingV4FindFullHashesRequest o) {
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest < 3) {
+    checkGoogleSecuritySafebrowsingV4ClientInfo(
+        o.apiClient! as api.GoogleSecuritySafebrowsingV4ClientInfo);
+    checkGoogleSecuritySafebrowsingV4ClientInfo(
+        o.client! as api.GoogleSecuritySafebrowsingV4ClientInfo);
+    checkUnnamed5619(o.clientStates!);
+    checkGoogleSecuritySafebrowsingV4ThreatInfo(
+        o.threatInfo! as api.GoogleSecuritySafebrowsingV4ThreatInfo);
   }
-  buildCounterFindFullHashesResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesRequest--;
 }
 
-core.int buildCounterFindThreatMatchesRequest = 0;
-buildFindThreatMatchesRequest() {
-  var o = new api.FindThreatMatchesRequest();
-  buildCounterFindThreatMatchesRequest++;
-  if (buildCounterFindThreatMatchesRequest < 3) {
-    o.client = buildClientInfo();
-    o.threatInfo = buildThreatInfo();
-  }
-  buildCounterFindThreatMatchesRequest--;
+core.List<api.GoogleSecuritySafebrowsingV4ThreatMatch> buildUnnamed5620() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatMatch>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatMatch());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatMatch());
   return o;
 }
 
-checkFindThreatMatchesRequest(api.FindThreatMatchesRequest o) {
-  buildCounterFindThreatMatchesRequest++;
-  if (buildCounterFindThreatMatchesRequest < 3) {
-    checkClientInfo(o.client);
-    checkThreatInfo(o.threatInfo);
-  }
-  buildCounterFindThreatMatchesRequest--;
-}
-
-buildUnnamed3145() {
-  var o = new core.List<api.ThreatMatch>();
-  o.add(buildThreatMatch());
-  o.add(buildThreatMatch());
-  return o;
-}
-
-checkUnnamed3145(core.List<api.ThreatMatch> o) {
+void checkUnnamed5620(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatMatch> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatMatch(o[0]);
-  checkThreatMatch(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatMatch(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatMatch);
+  checkGoogleSecuritySafebrowsingV4ThreatMatch(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatMatch);
 }
 
-core.int buildCounterFindThreatMatchesResponse = 0;
-buildFindThreatMatchesResponse() {
-  var o = new api.FindThreatMatchesResponse();
-  buildCounterFindThreatMatchesResponse++;
-  if (buildCounterFindThreatMatchesResponse < 3) {
-    o.matches = buildUnnamed3145();
+core.int buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse = 0;
+api.GoogleSecuritySafebrowsingV4FindFullHashesResponse
+    buildGoogleSecuritySafebrowsingV4FindFullHashesResponse() {
+  var o = api.GoogleSecuritySafebrowsingV4FindFullHashesResponse();
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse < 3) {
+    o.matches = buildUnnamed5620();
+    o.minimumWaitDuration = 'foo';
+    o.negativeCacheDuration = 'foo';
   }
-  buildCounterFindThreatMatchesResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse--;
   return o;
 }
 
-checkFindThreatMatchesResponse(api.FindThreatMatchesResponse o) {
-  buildCounterFindThreatMatchesResponse++;
-  if (buildCounterFindThreatMatchesResponse < 3) {
-    checkUnnamed3145(o.matches);
+void checkGoogleSecuritySafebrowsingV4FindFullHashesResponse(
+    api.GoogleSecuritySafebrowsingV4FindFullHashesResponse o) {
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse < 3) {
+    checkUnnamed5620(o.matches!);
+    unittest.expect(
+      o.minimumWaitDuration!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.negativeCacheDuration!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterFindThreatMatchesResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindFullHashesResponse--;
 }
 
-buildUnnamed3146() {
-  var o = new core.List<api.ThreatListDescriptor>();
-  o.add(buildThreatListDescriptor());
-  o.add(buildThreatListDescriptor());
+core.int buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest = 0;
+api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest
+    buildGoogleSecuritySafebrowsingV4FindThreatMatchesRequest() {
+  var o = api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest();
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest < 3) {
+    o.client = buildGoogleSecuritySafebrowsingV4ClientInfo();
+    o.threatInfo = buildGoogleSecuritySafebrowsingV4ThreatInfo();
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest--;
   return o;
 }
 
-checkUnnamed3146(core.List<api.ThreatListDescriptor> o) {
+void checkGoogleSecuritySafebrowsingV4FindThreatMatchesRequest(
+    api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest o) {
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest < 3) {
+    checkGoogleSecuritySafebrowsingV4ClientInfo(
+        o.client! as api.GoogleSecuritySafebrowsingV4ClientInfo);
+    checkGoogleSecuritySafebrowsingV4ThreatInfo(
+        o.threatInfo! as api.GoogleSecuritySafebrowsingV4ThreatInfo);
+  }
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesRequest--;
+}
+
+core.List<api.GoogleSecuritySafebrowsingV4ThreatMatch> buildUnnamed5621() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatMatch>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatMatch());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatMatch());
+  return o;
+}
+
+void checkUnnamed5621(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatMatch> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatListDescriptor(o[0]);
-  checkThreatListDescriptor(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatMatch(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatMatch);
+  checkGoogleSecuritySafebrowsingV4ThreatMatch(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatMatch);
 }
 
-core.int buildCounterListThreatListsResponse = 0;
-buildListThreatListsResponse() {
-  var o = new api.ListThreatListsResponse();
-  buildCounterListThreatListsResponse++;
-  if (buildCounterListThreatListsResponse < 3) {
-    o.threatLists = buildUnnamed3146();
+core.int buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse = 0;
+api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse
+    buildGoogleSecuritySafebrowsingV4FindThreatMatchesResponse() {
+  var o = api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse();
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse < 3) {
+    o.matches = buildUnnamed5621();
   }
-  buildCounterListThreatListsResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse--;
   return o;
 }
 
-checkListThreatListsResponse(api.ListThreatListsResponse o) {
-  buildCounterListThreatListsResponse++;
-  if (buildCounterListThreatListsResponse < 3) {
-    checkUnnamed3146(o.threatLists);
+void checkGoogleSecuritySafebrowsingV4FindThreatMatchesResponse(
+    api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse o) {
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse < 3) {
+    checkUnnamed5621(o.matches!);
   }
-  buildCounterListThreatListsResponse--;
+  buildCounterGoogleSecuritySafebrowsingV4FindThreatMatchesResponse--;
 }
 
-core.int buildCounterListUpdateRequest = 0;
-buildListUpdateRequest() {
-  var o = new api.ListUpdateRequest();
-  buildCounterListUpdateRequest++;
-  if (buildCounterListUpdateRequest < 3) {
-    o.constraints = buildConstraints();
-    o.platformType = "foo";
-    o.state = "foo";
-    o.threatEntryType = "foo";
-    o.threatType = "foo";
-  }
-  buildCounterListUpdateRequest--;
+core.List<api.GoogleSecuritySafebrowsingV4ThreatListDescriptor>
+    buildUnnamed5622() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatListDescriptor>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatListDescriptor());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatListDescriptor());
   return o;
 }
 
-checkListUpdateRequest(api.ListUpdateRequest o) {
-  buildCounterListUpdateRequest++;
-  if (buildCounterListUpdateRequest < 3) {
-    checkConstraints(o.constraints);
-    unittest.expect(o.platformType, unittest.equals('foo'));
-    unittest.expect(o.state, unittest.equals('foo'));
-    unittest.expect(o.threatEntryType, unittest.equals('foo'));
-    unittest.expect(o.threatType, unittest.equals('foo'));
-  }
-  buildCounterListUpdateRequest--;
-}
-
-buildUnnamed3147() {
-  var o = new core.List<api.ThreatEntrySet>();
-  o.add(buildThreatEntrySet());
-  o.add(buildThreatEntrySet());
-  return o;
-}
-
-checkUnnamed3147(core.List<api.ThreatEntrySet> o) {
+void checkUnnamed5622(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatListDescriptor> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatEntrySet(o[0]);
-  checkThreatEntrySet(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatListDescriptor(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatListDescriptor);
+  checkGoogleSecuritySafebrowsingV4ThreatListDescriptor(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatListDescriptor);
 }
 
-buildUnnamed3148() {
-  var o = new core.List<api.ThreatEntrySet>();
-  o.add(buildThreatEntrySet());
-  o.add(buildThreatEntrySet());
+core.int buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse = 0;
+api.GoogleSecuritySafebrowsingV4ListThreatListsResponse
+    buildGoogleSecuritySafebrowsingV4ListThreatListsResponse() {
+  var o = api.GoogleSecuritySafebrowsingV4ListThreatListsResponse();
+  buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse < 3) {
+    o.threatLists = buildUnnamed5622();
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse--;
   return o;
 }
 
-checkUnnamed3148(core.List<api.ThreatEntrySet> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  checkThreatEntrySet(o[0]);
-  checkThreatEntrySet(o[1]);
-}
-
-core.int buildCounterListUpdateResponse = 0;
-buildListUpdateResponse() {
-  var o = new api.ListUpdateResponse();
-  buildCounterListUpdateResponse++;
-  if (buildCounterListUpdateResponse < 3) {
-    o.additions = buildUnnamed3147();
-    o.checksum = buildChecksum();
-    o.newClientState = "foo";
-    o.platformType = "foo";
-    o.removals = buildUnnamed3148();
-    o.responseType = "foo";
-    o.threatEntryType = "foo";
-    o.threatType = "foo";
+void checkGoogleSecuritySafebrowsingV4ListThreatListsResponse(
+    api.GoogleSecuritySafebrowsingV4ListThreatListsResponse o) {
+  buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse < 3) {
+    checkUnnamed5622(o.threatLists!);
   }
-  buildCounterListUpdateResponse--;
-  return o;
+  buildCounterGoogleSecuritySafebrowsingV4ListThreatListsResponse--;
 }
 
-checkListUpdateResponse(api.ListUpdateResponse o) {
-  buildCounterListUpdateResponse++;
-  if (buildCounterListUpdateResponse < 3) {
-    checkUnnamed3147(o.additions);
-    checkChecksum(o.checksum);
-    unittest.expect(o.newClientState, unittest.equals('foo'));
-    unittest.expect(o.platformType, unittest.equals('foo'));
-    checkUnnamed3148(o.removals);
-    unittest.expect(o.responseType, unittest.equals('foo'));
-    unittest.expect(o.threatEntryType, unittest.equals('foo'));
-    unittest.expect(o.threatType, unittest.equals('foo'));
-  }
-  buildCounterListUpdateResponse--;
-}
-
-core.int buildCounterMetadataEntry = 0;
-buildMetadataEntry() {
-  var o = new api.MetadataEntry();
-  buildCounterMetadataEntry++;
-  if (buildCounterMetadataEntry < 3) {
-    o.key = "foo";
-    o.value = "foo";
-  }
-  buildCounterMetadataEntry--;
-  return o;
-}
-
-checkMetadataEntry(api.MetadataEntry o) {
-  buildCounterMetadataEntry++;
-  if (buildCounterMetadataEntry < 3) {
-    unittest.expect(o.key, unittest.equals('foo'));
-    unittest.expect(o.value, unittest.equals('foo'));
-  }
-  buildCounterMetadataEntry--;
-}
-
-core.int buildCounterRawHashes = 0;
-buildRawHashes() {
-  var o = new api.RawHashes();
-  buildCounterRawHashes++;
-  if (buildCounterRawHashes < 3) {
+core.int buildCounterGoogleSecuritySafebrowsingV4RawHashes = 0;
+api.GoogleSecuritySafebrowsingV4RawHashes
+    buildGoogleSecuritySafebrowsingV4RawHashes() {
+  var o = api.GoogleSecuritySafebrowsingV4RawHashes();
+  buildCounterGoogleSecuritySafebrowsingV4RawHashes++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RawHashes < 3) {
     o.prefixSize = 42;
-    o.rawHashes = "foo";
+    o.rawHashes = 'foo';
   }
-  buildCounterRawHashes--;
+  buildCounterGoogleSecuritySafebrowsingV4RawHashes--;
   return o;
 }
 
-checkRawHashes(api.RawHashes o) {
-  buildCounterRawHashes++;
-  if (buildCounterRawHashes < 3) {
-    unittest.expect(o.prefixSize, unittest.equals(42));
-    unittest.expect(o.rawHashes, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4RawHashes(
+    api.GoogleSecuritySafebrowsingV4RawHashes o) {
+  buildCounterGoogleSecuritySafebrowsingV4RawHashes++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RawHashes < 3) {
+    unittest.expect(
+      o.prefixSize!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.rawHashes!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterRawHashes--;
+  buildCounterGoogleSecuritySafebrowsingV4RawHashes--;
 }
 
-buildUnnamed3149() {
-  var o = new core.List<core.int>();
+core.List<core.int> buildUnnamed5623() {
+  var o = <core.int>[];
   o.add(42);
   o.add(42);
   return o;
 }
 
-checkUnnamed3149(core.List<core.int> o) {
+void checkUnnamed5623(core.List<core.int> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals(42));
-  unittest.expect(o[1], unittest.equals(42));
+  unittest.expect(
+    o[0],
+    unittest.equals(42),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals(42),
+  );
 }
 
-core.int buildCounterRawIndices = 0;
-buildRawIndices() {
-  var o = new api.RawIndices();
-  buildCounterRawIndices++;
-  if (buildCounterRawIndices < 3) {
-    o.indices = buildUnnamed3149();
+core.int buildCounterGoogleSecuritySafebrowsingV4RawIndices = 0;
+api.GoogleSecuritySafebrowsingV4RawIndices
+    buildGoogleSecuritySafebrowsingV4RawIndices() {
+  var o = api.GoogleSecuritySafebrowsingV4RawIndices();
+  buildCounterGoogleSecuritySafebrowsingV4RawIndices++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RawIndices < 3) {
+    o.indices = buildUnnamed5623();
   }
-  buildCounterRawIndices--;
+  buildCounterGoogleSecuritySafebrowsingV4RawIndices--;
   return o;
 }
 
-checkRawIndices(api.RawIndices o) {
-  buildCounterRawIndices++;
-  if (buildCounterRawIndices < 3) {
-    checkUnnamed3149(o.indices);
+void checkGoogleSecuritySafebrowsingV4RawIndices(
+    api.GoogleSecuritySafebrowsingV4RawIndices o) {
+  buildCounterGoogleSecuritySafebrowsingV4RawIndices++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RawIndices < 3) {
+    checkUnnamed5623(o.indices!);
   }
-  buildCounterRawIndices--;
+  buildCounterGoogleSecuritySafebrowsingV4RawIndices--;
 }
 
-core.int buildCounterRiceDeltaEncoding = 0;
-buildRiceDeltaEncoding() {
-  var o = new api.RiceDeltaEncoding();
-  buildCounterRiceDeltaEncoding++;
-  if (buildCounterRiceDeltaEncoding < 3) {
-    o.encodedData = "foo";
-    o.firstValue = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding = 0;
+api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding
+    buildGoogleSecuritySafebrowsingV4RiceDeltaEncoding() {
+  var o = api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding();
+  buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding < 3) {
+    o.encodedData = 'foo';
+    o.firstValue = 'foo';
     o.numEntries = 42;
     o.riceParameter = 42;
   }
-  buildCounterRiceDeltaEncoding--;
+  buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding--;
   return o;
 }
 
-checkRiceDeltaEncoding(api.RiceDeltaEncoding o) {
-  buildCounterRiceDeltaEncoding++;
-  if (buildCounterRiceDeltaEncoding < 3) {
-    unittest.expect(o.encodedData, unittest.equals('foo'));
-    unittest.expect(o.firstValue, unittest.equals('foo'));
-    unittest.expect(o.numEntries, unittest.equals(42));
-    unittest.expect(o.riceParameter, unittest.equals(42));
+void checkGoogleSecuritySafebrowsingV4RiceDeltaEncoding(
+    api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding o) {
+  buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding++;
+  if (buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding < 3) {
+    unittest.expect(
+      o.encodedData!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.firstValue!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.numEntries!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.riceParameter!,
+      unittest.equals(42),
+    );
   }
-  buildCounterRiceDeltaEncoding--;
+  buildCounterGoogleSecuritySafebrowsingV4RiceDeltaEncoding--;
 }
 
-core.int buildCounterThreatEntry = 0;
-buildThreatEntry() {
-  var o = new api.ThreatEntry();
-  buildCounterThreatEntry++;
-  if (buildCounterThreatEntry < 3) {
-    o.digest = "foo";
-    o.hash = "foo";
-    o.url = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatEntry = 0;
+api.GoogleSecuritySafebrowsingV4ThreatEntry
+    buildGoogleSecuritySafebrowsingV4ThreatEntry() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatEntry();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntry++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntry < 3) {
+    o.digest = 'foo';
+    o.hash = 'foo';
+    o.url = 'foo';
   }
-  buildCounterThreatEntry--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntry--;
   return o;
 }
 
-checkThreatEntry(api.ThreatEntry o) {
-  buildCounterThreatEntry++;
-  if (buildCounterThreatEntry < 3) {
-    unittest.expect(o.digest, unittest.equals('foo'));
-    unittest.expect(o.hash, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4ThreatEntry(
+    api.GoogleSecuritySafebrowsingV4ThreatEntry o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntry++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntry < 3) {
+    unittest.expect(
+      o.digest!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.hash!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterThreatEntry--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntry--;
 }
 
-buildUnnamed3150() {
-  var o = new core.List<api.MetadataEntry>();
-  o.add(buildMetadataEntry());
-  o.add(buildMetadataEntry());
+core.List<api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry>
+    buildUnnamed5624() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry());
   return o;
 }
 
-checkUnnamed3150(core.List<api.MetadataEntry> o) {
+void checkUnnamed5624(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry>
+        o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMetadataEntry(o[0]);
-  checkMetadataEntry(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry);
+  checkGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry);
 }
 
-core.int buildCounterThreatEntryMetadata = 0;
-buildThreatEntryMetadata() {
-  var o = new api.ThreatEntryMetadata();
-  buildCounterThreatEntryMetadata++;
-  if (buildCounterThreatEntryMetadata < 3) {
-    o.entries = buildUnnamed3150();
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata = 0;
+api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata
+    buildGoogleSecuritySafebrowsingV4ThreatEntryMetadata() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata < 3) {
+    o.entries = buildUnnamed5624();
   }
-  buildCounterThreatEntryMetadata--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata--;
   return o;
 }
 
-checkThreatEntryMetadata(api.ThreatEntryMetadata o) {
-  buildCounterThreatEntryMetadata++;
-  if (buildCounterThreatEntryMetadata < 3) {
-    checkUnnamed3150(o.entries);
+void checkGoogleSecuritySafebrowsingV4ThreatEntryMetadata(
+    api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata < 3) {
+    checkUnnamed5624(o.entries!);
   }
-  buildCounterThreatEntryMetadata--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadata--;
 }
 
-core.int buildCounterThreatEntrySet = 0;
-buildThreatEntrySet() {
-  var o = new api.ThreatEntrySet();
-  buildCounterThreatEntrySet++;
-  if (buildCounterThreatEntrySet < 3) {
-    o.compressionType = "foo";
-    o.rawHashes = buildRawHashes();
-    o.rawIndices = buildRawIndices();
-    o.riceHashes = buildRiceDeltaEncoding();
-    o.riceIndices = buildRiceDeltaEncoding();
+core.int
+    buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry =
+    0;
+api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry
+    buildGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry <
+      3) {
+    o.key = 'foo';
+    o.value = 'foo';
   }
-  buildCounterThreatEntrySet--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry--;
   return o;
 }
 
-checkThreatEntrySet(api.ThreatEntrySet o) {
-  buildCounterThreatEntrySet++;
-  if (buildCounterThreatEntrySet < 3) {
-    unittest.expect(o.compressionType, unittest.equals('foo'));
-    checkRawHashes(o.rawHashes);
-    checkRawIndices(o.rawIndices);
-    checkRiceDeltaEncoding(o.riceHashes);
-    checkRiceDeltaEncoding(o.riceIndices);
+void checkGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry(
+    api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry <
+      3) {
+    unittest.expect(
+      o.key!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.value!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterThreatEntrySet--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry--;
 }
 
-buildUnnamed3151() {
-  var o = new core.List<api.ThreatSource>();
-  o.add(buildThreatSource());
-  o.add(buildThreatSource());
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet = 0;
+api.GoogleSecuritySafebrowsingV4ThreatEntrySet
+    buildGoogleSecuritySafebrowsingV4ThreatEntrySet() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatEntrySet();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet < 3) {
+    o.compressionType = 'foo';
+    o.rawHashes = buildGoogleSecuritySafebrowsingV4RawHashes();
+    o.rawIndices = buildGoogleSecuritySafebrowsingV4RawIndices();
+    o.riceHashes = buildGoogleSecuritySafebrowsingV4RiceDeltaEncoding();
+    o.riceIndices = buildGoogleSecuritySafebrowsingV4RiceDeltaEncoding();
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet--;
   return o;
 }
 
-checkUnnamed3151(core.List<api.ThreatSource> o) {
+void checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+    api.GoogleSecuritySafebrowsingV4ThreatEntrySet o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet < 3) {
+    unittest.expect(
+      o.compressionType!,
+      unittest.equals('foo'),
+    );
+    checkGoogleSecuritySafebrowsingV4RawHashes(
+        o.rawHashes! as api.GoogleSecuritySafebrowsingV4RawHashes);
+    checkGoogleSecuritySafebrowsingV4RawIndices(
+        o.rawIndices! as api.GoogleSecuritySafebrowsingV4RawIndices);
+    checkGoogleSecuritySafebrowsingV4RiceDeltaEncoding(
+        o.riceHashes! as api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding);
+    checkGoogleSecuritySafebrowsingV4RiceDeltaEncoding(
+        o.riceIndices! as api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding);
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatEntrySet--;
+}
+
+core.List<api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource>
+    buildUnnamed5625() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatHitThreatSource());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatHitThreatSource());
+  return o;
+}
+
+void checkUnnamed5625(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatSource(o[0]);
-  checkThreatSource(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatHitThreatSource(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource);
+  checkGoogleSecuritySafebrowsingV4ThreatHitThreatSource(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource);
 }
 
-core.int buildCounterThreatHit = 0;
-buildThreatHit() {
-  var o = new api.ThreatHit();
-  buildCounterThreatHit++;
-  if (buildCounterThreatHit < 3) {
-    o.clientInfo = buildClientInfo();
-    o.entry = buildThreatEntry();
-    o.platformType = "foo";
-    o.resources = buildUnnamed3151();
-    o.threatType = "foo";
-    o.userInfo = buildUserInfo();
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatHit = 0;
+api.GoogleSecuritySafebrowsingV4ThreatHit
+    buildGoogleSecuritySafebrowsingV4ThreatHit() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatHit();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHit++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHit < 3) {
+    o.clientInfo = buildGoogleSecuritySafebrowsingV4ClientInfo();
+    o.entry = buildGoogleSecuritySafebrowsingV4ThreatEntry();
+    o.platformType = 'foo';
+    o.resources = buildUnnamed5625();
+    o.threatType = 'foo';
+    o.userInfo = buildGoogleSecuritySafebrowsingV4ThreatHitUserInfo();
   }
-  buildCounterThreatHit--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHit--;
   return o;
 }
 
-checkThreatHit(api.ThreatHit o) {
-  buildCounterThreatHit++;
-  if (buildCounterThreatHit < 3) {
-    checkClientInfo(o.clientInfo);
-    checkThreatEntry(o.entry);
-    unittest.expect(o.platformType, unittest.equals('foo'));
-    checkUnnamed3151(o.resources);
-    unittest.expect(o.threatType, unittest.equals('foo'));
-    checkUserInfo(o.userInfo);
+void checkGoogleSecuritySafebrowsingV4ThreatHit(
+    api.GoogleSecuritySafebrowsingV4ThreatHit o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHit++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHit < 3) {
+    checkGoogleSecuritySafebrowsingV4ClientInfo(
+        o.clientInfo! as api.GoogleSecuritySafebrowsingV4ClientInfo);
+    checkGoogleSecuritySafebrowsingV4ThreatEntry(
+        o.entry! as api.GoogleSecuritySafebrowsingV4ThreatEntry);
+    unittest.expect(
+      o.platformType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5625(o.resources!);
+    unittest.expect(
+      o.threatType!,
+      unittest.equals('foo'),
+    );
+    checkGoogleSecuritySafebrowsingV4ThreatHitUserInfo(
+        o.userInfo! as api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo);
   }
-  buildCounterThreatHit--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHit--;
 }
 
-buildUnnamed3152() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource = 0;
+api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource
+    buildGoogleSecuritySafebrowsingV4ThreatHitThreatSource() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource < 3) {
+    o.referrer = 'foo';
+    o.remoteIp = 'foo';
+    o.type = 'foo';
+    o.url = 'foo';
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource--;
   return o;
 }
 
-checkUnnamed3152(core.List<core.String> o) {
+void checkGoogleSecuritySafebrowsingV4ThreatHitThreatSource(
+    api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource < 3) {
+    unittest.expect(
+      o.referrer!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.remoteIp!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitThreatSource--;
+}
+
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo = 0;
+api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo
+    buildGoogleSecuritySafebrowsingV4ThreatHitUserInfo() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo < 3) {
+    o.regionCode = 'foo';
+    o.userId = 'foo';
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo--;
+  return o;
+}
+
+void checkGoogleSecuritySafebrowsingV4ThreatHitUserInfo(
+    api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo < 3) {
+    unittest.expect(
+      o.regionCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.userId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGoogleSecuritySafebrowsingV4ThreatHitUserInfo--;
+}
+
+core.List<core.String> buildUnnamed5626() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
+  return o;
+}
+
+void checkUnnamed5626(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3153() {
-  var o = new core.List<api.ThreatEntry>();
-  o.add(buildThreatEntry());
-  o.add(buildThreatEntry());
+core.List<api.GoogleSecuritySafebrowsingV4ThreatEntry> buildUnnamed5627() {
+  var o = <api.GoogleSecuritySafebrowsingV4ThreatEntry>[];
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntry());
+  o.add(buildGoogleSecuritySafebrowsingV4ThreatEntry());
   return o;
 }
 
-checkUnnamed3153(core.List<api.ThreatEntry> o) {
+void checkUnnamed5627(
+    core.List<api.GoogleSecuritySafebrowsingV4ThreatEntry> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThreatEntry(o[0]);
-  checkThreatEntry(o[1]);
+  checkGoogleSecuritySafebrowsingV4ThreatEntry(
+      o[0] as api.GoogleSecuritySafebrowsingV4ThreatEntry);
+  checkGoogleSecuritySafebrowsingV4ThreatEntry(
+      o[1] as api.GoogleSecuritySafebrowsingV4ThreatEntry);
 }
 
-buildUnnamed3154() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5628() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3154(core.List<core.String> o) {
+void checkUnnamed5628(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3155() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5629() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3155(core.List<core.String> o) {
+void checkUnnamed5629(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-core.int buildCounterThreatInfo = 0;
-buildThreatInfo() {
-  var o = new api.ThreatInfo();
-  buildCounterThreatInfo++;
-  if (buildCounterThreatInfo < 3) {
-    o.platformTypes = buildUnnamed3152();
-    o.threatEntries = buildUnnamed3153();
-    o.threatEntryTypes = buildUnnamed3154();
-    o.threatTypes = buildUnnamed3155();
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatInfo = 0;
+api.GoogleSecuritySafebrowsingV4ThreatInfo
+    buildGoogleSecuritySafebrowsingV4ThreatInfo() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatInfo();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatInfo < 3) {
+    o.platformTypes = buildUnnamed5626();
+    o.threatEntries = buildUnnamed5627();
+    o.threatEntryTypes = buildUnnamed5628();
+    o.threatTypes = buildUnnamed5629();
   }
-  buildCounterThreatInfo--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatInfo--;
   return o;
 }
 
-checkThreatInfo(api.ThreatInfo o) {
-  buildCounterThreatInfo++;
-  if (buildCounterThreatInfo < 3) {
-    checkUnnamed3152(o.platformTypes);
-    checkUnnamed3153(o.threatEntries);
-    checkUnnamed3154(o.threatEntryTypes);
-    checkUnnamed3155(o.threatTypes);
+void checkGoogleSecuritySafebrowsingV4ThreatInfo(
+    api.GoogleSecuritySafebrowsingV4ThreatInfo o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatInfo++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatInfo < 3) {
+    checkUnnamed5626(o.platformTypes!);
+    checkUnnamed5627(o.threatEntries!);
+    checkUnnamed5628(o.threatEntryTypes!);
+    checkUnnamed5629(o.threatTypes!);
   }
-  buildCounterThreatInfo--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatInfo--;
 }
 
-core.int buildCounterThreatListDescriptor = 0;
-buildThreatListDescriptor() {
-  var o = new api.ThreatListDescriptor();
-  buildCounterThreatListDescriptor++;
-  if (buildCounterThreatListDescriptor < 3) {
-    o.platformType = "foo";
-    o.threatEntryType = "foo";
-    o.threatType = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor = 0;
+api.GoogleSecuritySafebrowsingV4ThreatListDescriptor
+    buildGoogleSecuritySafebrowsingV4ThreatListDescriptor() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatListDescriptor();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor < 3) {
+    o.platformType = 'foo';
+    o.threatEntryType = 'foo';
+    o.threatType = 'foo';
   }
-  buildCounterThreatListDescriptor--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor--;
   return o;
 }
 
-checkThreatListDescriptor(api.ThreatListDescriptor o) {
-  buildCounterThreatListDescriptor++;
-  if (buildCounterThreatListDescriptor < 3) {
-    unittest.expect(o.platformType, unittest.equals('foo'));
-    unittest.expect(o.threatEntryType, unittest.equals('foo'));
-    unittest.expect(o.threatType, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4ThreatListDescriptor(
+    api.GoogleSecuritySafebrowsingV4ThreatListDescriptor o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor < 3) {
+    unittest.expect(
+      o.platformType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatEntryType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatType!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterThreatListDescriptor--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatListDescriptor--;
 }
 
-core.int buildCounterThreatMatch = 0;
-buildThreatMatch() {
-  var o = new api.ThreatMatch();
-  buildCounterThreatMatch++;
-  if (buildCounterThreatMatch < 3) {
-    o.cacheDuration = "foo";
-    o.platformType = "foo";
-    o.threat = buildThreatEntry();
-    o.threatEntryMetadata = buildThreatEntryMetadata();
-    o.threatEntryType = "foo";
-    o.threatType = "foo";
+core.int buildCounterGoogleSecuritySafebrowsingV4ThreatMatch = 0;
+api.GoogleSecuritySafebrowsingV4ThreatMatch
+    buildGoogleSecuritySafebrowsingV4ThreatMatch() {
+  var o = api.GoogleSecuritySafebrowsingV4ThreatMatch();
+  buildCounterGoogleSecuritySafebrowsingV4ThreatMatch++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatMatch < 3) {
+    o.cacheDuration = 'foo';
+    o.platformType = 'foo';
+    o.threat = buildGoogleSecuritySafebrowsingV4ThreatEntry();
+    o.threatEntryMetadata =
+        buildGoogleSecuritySafebrowsingV4ThreatEntryMetadata();
+    o.threatEntryType = 'foo';
+    o.threatType = 'foo';
   }
-  buildCounterThreatMatch--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatMatch--;
   return o;
 }
 
-checkThreatMatch(api.ThreatMatch o) {
-  buildCounterThreatMatch++;
-  if (buildCounterThreatMatch < 3) {
-    unittest.expect(o.cacheDuration, unittest.equals('foo'));
-    unittest.expect(o.platformType, unittest.equals('foo'));
-    checkThreatEntry(o.threat);
-    checkThreatEntryMetadata(o.threatEntryMetadata);
-    unittest.expect(o.threatEntryType, unittest.equals('foo'));
-    unittest.expect(o.threatType, unittest.equals('foo'));
+void checkGoogleSecuritySafebrowsingV4ThreatMatch(
+    api.GoogleSecuritySafebrowsingV4ThreatMatch o) {
+  buildCounterGoogleSecuritySafebrowsingV4ThreatMatch++;
+  if (buildCounterGoogleSecuritySafebrowsingV4ThreatMatch < 3) {
+    unittest.expect(
+      o.cacheDuration!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.platformType!,
+      unittest.equals('foo'),
+    );
+    checkGoogleSecuritySafebrowsingV4ThreatEntry(
+        o.threat! as api.GoogleSecuritySafebrowsingV4ThreatEntry);
+    checkGoogleSecuritySafebrowsingV4ThreatEntryMetadata(o.threatEntryMetadata!
+        as api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata);
+    unittest.expect(
+      o.threatEntryType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.threatType!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterThreatMatch--;
+  buildCounterGoogleSecuritySafebrowsingV4ThreatMatch--;
 }
 
-core.int buildCounterThreatSource = 0;
-buildThreatSource() {
-  var o = new api.ThreatSource();
-  buildCounterThreatSource++;
-  if (buildCounterThreatSource < 3) {
-    o.referrer = "foo";
-    o.remoteIp = "foo";
-    o.type = "foo";
-    o.url = "foo";
-  }
-  buildCounterThreatSource--;
-  return o;
-}
-
-checkThreatSource(api.ThreatSource o) {
-  buildCounterThreatSource++;
-  if (buildCounterThreatSource < 3) {
-    unittest.expect(o.referrer, unittest.equals('foo'));
-    unittest.expect(o.remoteIp, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
-  }
-  buildCounterThreatSource--;
-}
-
-core.int buildCounterUserInfo = 0;
-buildUserInfo() {
-  var o = new api.UserInfo();
-  buildCounterUserInfo++;
-  if (buildCounterUserInfo < 3) {
-    o.regionCode = "foo";
-    o.userId = "foo";
-  }
-  buildCounterUserInfo--;
-  return o;
-}
-
-checkUserInfo(api.UserInfo o) {
-  buildCounterUserInfo++;
-  if (buildCounterUserInfo < 3) {
-    unittest.expect(o.regionCode, unittest.equals('foo'));
-    unittest.expect(o.userId, unittest.equals('foo'));
-  }
-  buildCounterUserInfo--;
-}
-
-main() {
-  unittest.group("obj-schema-Checksum", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildChecksum();
-      var od = new api.Checksum.fromJson(o.toJson());
-      checkChecksum(od);
+void main() {
+  unittest.group('obj-schema-GoogleProtobufEmpty', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleProtobufEmpty();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleProtobufEmpty.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleProtobufEmpty(od as api.GoogleProtobufEmpty);
     });
   });
 
-  unittest.group("obj-schema-ClientInfo", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildClientInfo();
-      var od = new api.ClientInfo.fromJson(o.toJson());
-      checkClientInfo(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4Checksum', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4Checksum();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4Checksum.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4Checksum(
+          od as api.GoogleSecuritySafebrowsingV4Checksum);
     });
   });
 
-  unittest.group("obj-schema-Constraints", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildConstraints();
-      var od = new api.Constraints.fromJson(o.toJson());
-      checkConstraints(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ClientInfo', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ClientInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ClientInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ClientInfo(
+          od as api.GoogleSecuritySafebrowsingV4ClientInfo);
     });
   });
 
-  unittest.group("obj-schema-Empty", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildEmpty();
-      var od = new api.Empty.fromJson(o.toJson());
-      checkEmpty(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest
+          .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest(
+          od as api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest);
     });
   });
 
-  unittest.group("obj-schema-FetchThreatListUpdatesRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFetchThreatListUpdatesRequest();
-      var od = new api.FetchThreatListUpdatesRequest.fromJson(o.toJson());
-      checkFetchThreatListUpdatesRequest(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o =
+          buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest
+              .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest(
+          od as api
+              .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequest);
     });
   });
 
-  unittest.group("obj-schema-FetchThreatListUpdatesResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFetchThreatListUpdatesResponse();
-      var od = new api.FetchThreatListUpdatesResponse.fromJson(o.toJson());
-      checkFetchThreatListUpdatesResponse(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o =
+          buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints
+              .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints(
+          od as api
+              .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequestListUpdateRequestConstraints);
     });
   });
 
-  unittest.group("obj-schema-FindFullHashesRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindFullHashesRequest();
-      var od = new api.FindFullHashesRequest.fromJson(o.toJson());
-      checkFindFullHashesRequest(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse
+          .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse(
+          od as api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse);
     });
   });
 
-  unittest.group("obj-schema-FindFullHashesResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindFullHashesResponse();
-      var od = new api.FindFullHashesResponse.fromJson(o.toJson());
-      checkFindFullHashesResponse(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o =
+          buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse
+              .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse(
+          od as api
+              .GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponseListUpdateResponse);
     });
   });
 
-  unittest.group("obj-schema-FindThreatMatchesRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindThreatMatchesRequest();
-      var od = new api.FindThreatMatchesRequest.fromJson(o.toJson());
-      checkFindThreatMatchesRequest(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4FindFullHashesRequest',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FindFullHashesRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4FindFullHashesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FindFullHashesRequest(
+          od as api.GoogleSecuritySafebrowsingV4FindFullHashesRequest);
     });
   });
 
-  unittest.group("obj-schema-FindThreatMatchesResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindThreatMatchesResponse();
-      var od = new api.FindThreatMatchesResponse.fromJson(o.toJson());
-      checkFindThreatMatchesResponse(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FindFullHashesResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FindFullHashesResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4FindFullHashesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FindFullHashesResponse(
+          od as api.GoogleSecuritySafebrowsingV4FindFullHashesResponse);
     });
   });
 
-  unittest.group("obj-schema-ListThreatListsResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildListThreatListsResponse();
-      var od = new api.ListThreatListsResponse.fromJson(o.toJson());
-      checkListThreatListsResponse(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FindThreatMatchesRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FindThreatMatchesRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest.fromJson(
+              oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FindThreatMatchesRequest(
+          od as api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest);
     });
   });
 
-  unittest.group("obj-schema-ListUpdateRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildListUpdateRequest();
-      var od = new api.ListUpdateRequest.fromJson(o.toJson());
-      checkListUpdateRequest(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4FindThreatMatchesResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4FindThreatMatchesResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse.fromJson(
+              oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4FindThreatMatchesResponse(
+          od as api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse);
     });
   });
 
-  unittest.group("obj-schema-ListUpdateResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildListUpdateResponse();
-      var od = new api.ListUpdateResponse.fromJson(o.toJson());
-      checkListUpdateResponse(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4ListThreatListsResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ListThreatListsResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ListThreatListsResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ListThreatListsResponse(
+          od as api.GoogleSecuritySafebrowsingV4ListThreatListsResponse);
     });
   });
 
-  unittest.group("obj-schema-MetadataEntry", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildMetadataEntry();
-      var od = new api.MetadataEntry.fromJson(o.toJson());
-      checkMetadataEntry(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4RawHashes', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4RawHashes();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4RawHashes.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4RawHashes(
+          od as api.GoogleSecuritySafebrowsingV4RawHashes);
     });
   });
 
-  unittest.group("obj-schema-RawHashes", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRawHashes();
-      var od = new api.RawHashes.fromJson(o.toJson());
-      checkRawHashes(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4RawIndices', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4RawIndices();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4RawIndices.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4RawIndices(
+          od as api.GoogleSecuritySafebrowsingV4RawIndices);
     });
   });
 
-  unittest.group("obj-schema-RawIndices", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRawIndices();
-      var od = new api.RawIndices.fromJson(o.toJson());
-      checkRawIndices(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4RiceDeltaEncoding',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4RiceDeltaEncoding();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4RiceDeltaEncoding(
+          od as api.GoogleSecuritySafebrowsingV4RiceDeltaEncoding);
     });
   });
 
-  unittest.group("obj-schema-RiceDeltaEncoding", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRiceDeltaEncoding();
-      var od = new api.RiceDeltaEncoding.fromJson(o.toJson());
-      checkRiceDeltaEncoding(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatEntry', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatEntry();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatEntry.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatEntry(
+          od as api.GoogleSecuritySafebrowsingV4ThreatEntry);
     });
   });
 
-  unittest.group("obj-schema-ThreatEntry", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatEntry();
-      var od = new api.ThreatEntry.fromJson(o.toJson());
-      checkThreatEntry(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatEntryMetadata',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatEntryMetadata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatEntryMetadata(
+          od as api.GoogleSecuritySafebrowsingV4ThreatEntryMetadata);
     });
   });
 
-  unittest.group("obj-schema-ThreatEntryMetadata", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatEntryMetadata();
-      var od = new api.ThreatEntryMetadata.fromJson(o.toJson());
-      checkThreatEntryMetadata(od);
+  unittest.group(
+      'obj-schema-GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o =
+          buildGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry
+          .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry(od
+          as api.GoogleSecuritySafebrowsingV4ThreatEntryMetadataMetadataEntry);
     });
   });
 
-  unittest.group("obj-schema-ThreatEntrySet", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatEntrySet();
-      var od = new api.ThreatEntrySet.fromJson(o.toJson());
-      checkThreatEntrySet(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatEntrySet', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatEntrySet();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatEntrySet.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatEntrySet(
+          od as api.GoogleSecuritySafebrowsingV4ThreatEntrySet);
     });
   });
 
-  unittest.group("obj-schema-ThreatHit", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatHit();
-      var od = new api.ThreatHit.fromJson(o.toJson());
-      checkThreatHit(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatHit', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatHit();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatHit.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatHit(
+          od as api.GoogleSecuritySafebrowsingV4ThreatHit);
     });
   });
 
-  unittest.group("obj-schema-ThreatInfo", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatInfo();
-      var od = new api.ThreatInfo.fromJson(o.toJson());
-      checkThreatInfo(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatHitThreatSource',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatHitThreatSource();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatHitThreatSource(
+          od as api.GoogleSecuritySafebrowsingV4ThreatHitThreatSource);
     });
   });
 
-  unittest.group("obj-schema-ThreatListDescriptor", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatListDescriptor();
-      var od = new api.ThreatListDescriptor.fromJson(o.toJson());
-      checkThreatListDescriptor(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatHitUserInfo',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatHitUserInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatHitUserInfo(
+          od as api.GoogleSecuritySafebrowsingV4ThreatHitUserInfo);
     });
   });
 
-  unittest.group("obj-schema-ThreatMatch", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatMatch();
-      var od = new api.ThreatMatch.fromJson(o.toJson());
-      checkThreatMatch(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatInfo', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatInfo(
+          od as api.GoogleSecuritySafebrowsingV4ThreatInfo);
     });
   });
 
-  unittest.group("obj-schema-ThreatSource", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildThreatSource();
-      var od = new api.ThreatSource.fromJson(o.toJson());
-      checkThreatSource(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatListDescriptor',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatListDescriptor();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatListDescriptor.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatListDescriptor(
+          od as api.GoogleSecuritySafebrowsingV4ThreatListDescriptor);
     });
   });
 
-  unittest.group("obj-schema-UserInfo", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUserInfo();
-      var od = new api.UserInfo.fromJson(o.toJson());
-      checkUserInfo(od);
+  unittest.group('obj-schema-GoogleSecuritySafebrowsingV4ThreatMatch', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGoogleSecuritySafebrowsingV4ThreatMatch();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GoogleSecuritySafebrowsingV4ThreatMatch.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleSecuritySafebrowsingV4ThreatMatch(
+          od as api.GoogleSecuritySafebrowsingV4ThreatMatch);
     });
   });
 
-  unittest.group("resource-EncodedFullHashesResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.EncodedFullHashesResourceApi res =
-          new api.SafebrowsingApi(mock).encodedFullHashes;
-      var arg_encodedRequest = "foo";
-      var arg_clientId = "foo";
-      var arg_clientVersion = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-EncodedFullHashesResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).encodedFullHashes;
+      var arg_encodedRequest = 'foo';
+      var arg_clientId = 'foo';
+      var arg_clientVersion = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("v4/encodedFullHashes/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals("v4/encodedFullHashes/"),
+        );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_encodedRequest"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_encodedRequest'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["clientId"].first, unittest.equals(arg_clientId));
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["clientId"]!.first,
+          unittest.equals(arg_clientId),
+        );
+        unittest.expect(
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFindFullHashesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json
+            .encode(buildGoogleSecuritySafebrowsingV4FindFullHashesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_encodedRequest,
-              clientId: arg_clientId,
-              clientVersion: arg_clientVersion,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFindFullHashesResponse(response);
-      })));
+      final response = await res.get(arg_encodedRequest,
+          clientId: arg_clientId,
+          clientVersion: arg_clientVersion,
+          $fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4FindFullHashesResponse(
+          response as api.GoogleSecuritySafebrowsingV4FindFullHashesResponse);
     });
   });
 
-  unittest.group("resource-EncodedUpdatesResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.EncodedUpdatesResourceApi res =
-          new api.SafebrowsingApi(mock).encodedUpdates;
-      var arg_encodedRequest = "foo";
-      var arg_clientId = "foo";
-      var arg_clientVersion = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-EncodedUpdatesResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).encodedUpdates;
+      var arg_encodedRequest = 'foo';
+      var arg_clientId = 'foo';
+      var arg_clientVersion = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 18),
-            unittest.equals("v4/encodedUpdates/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 18),
+          unittest.equals("v4/encodedUpdates/"),
+        );
         pathOffset += 18;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_encodedRequest"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_encodedRequest'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["clientId"].first, unittest.equals(arg_clientId));
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["clientId"]!.first,
+          unittest.equals(arg_clientId),
+        );
+        unittest.expect(
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFetchThreatListUpdatesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(
+            buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_encodedRequest,
-              clientId: arg_clientId,
-              clientVersion: arg_clientVersion,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFetchThreatListUpdatesResponse(response);
-      })));
+      final response = await res.get(arg_encodedRequest,
+          clientId: arg_clientId,
+          clientVersion: arg_clientVersion,
+          $fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse(response
+          as api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse);
     });
   });
 
-  unittest.group("resource-FullHashesResourceApi", () {
-    unittest.test("method--find", () {
-      var mock = new HttpServerMock();
-      api.FullHashesResourceApi res = new api.SafebrowsingApi(mock).fullHashes;
-      var arg_request = buildFindFullHashesRequest();
-      var arg_$fields = "foo";
+  unittest.group('resource-FullHashesResource', () {
+    unittest.test('method--find', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).fullHashes;
+      var arg_request =
+          buildGoogleSecuritySafebrowsingV4FindFullHashesRequest();
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.FindFullHashesRequest.fromJson(json);
-        checkFindFullHashesRequest(obj);
+        var obj =
+            api.GoogleSecuritySafebrowsingV4FindFullHashesRequest.fromJson(
+                json as core.Map<core.String, core.dynamic>);
+        checkGoogleSecuritySafebrowsingV4FindFullHashesRequest(
+            obj as api.GoogleSecuritySafebrowsingV4FindFullHashesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 18),
-            unittest.equals("v4/fullHashes:find"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 18),
+          unittest.equals("v4/fullHashes:find"),
+        );
         pathOffset += 18;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFindFullHashesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json
+            .encode(buildGoogleSecuritySafebrowsingV4FindFullHashesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .find(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFindFullHashesResponse(response);
-      })));
+      final response = await res.find(arg_request, $fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4FindFullHashesResponse(
+          response as api.GoogleSecuritySafebrowsingV4FindFullHashesResponse);
     });
   });
 
-  unittest.group("resource-ThreatHitsResourceApi", () {
-    unittest.test("method--create", () {
-      var mock = new HttpServerMock();
-      api.ThreatHitsResourceApi res = new api.SafebrowsingApi(mock).threatHits;
-      var arg_request = buildThreatHit();
-      var arg_$fields = "foo";
+  unittest.group('resource-ThreatHitsResource', () {
+    unittest.test('method--create', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).threatHits;
+      var arg_request = buildGoogleSecuritySafebrowsingV4ThreatHit();
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.ThreatHit.fromJson(json);
-        checkThreatHit(obj);
+        var obj = api.GoogleSecuritySafebrowsingV4ThreatHit.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkGoogleSecuritySafebrowsingV4ThreatHit(
+            obj as api.GoogleSecuritySafebrowsingV4ThreatHit);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("v4/threatHits"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("v4/threatHits"),
+        );
         pathOffset += 13;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildGoogleProtobufEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .create(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkEmpty(response);
-      })));
+      final response = await res.create(arg_request, $fields: arg_$fields);
+      checkGoogleProtobufEmpty(response as api.GoogleProtobufEmpty);
     });
   });
 
-  unittest.group("resource-ThreatListUpdatesResourceApi", () {
-    unittest.test("method--fetch", () {
-      var mock = new HttpServerMock();
-      api.ThreatListUpdatesResourceApi res =
-          new api.SafebrowsingApi(mock).threatListUpdates;
-      var arg_request = buildFetchThreatListUpdatesRequest();
-      var arg_$fields = "foo";
+  unittest.group('resource-ThreatListUpdatesResource', () {
+    unittest.test('method--fetch', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).threatListUpdates;
+      var arg_request =
+          buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest();
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.FetchThreatListUpdatesRequest.fromJson(json);
-        checkFetchThreatListUpdatesRequest(obj);
+        var obj = api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest
+            .fromJson(json as core.Map<core.String, core.dynamic>);
+        checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest(obj
+            as api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 26),
-            unittest.equals("v4/threatListUpdates:fetch"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 26),
+          unittest.equals("v4/threatListUpdates:fetch"),
+        );
         pathOffset += 26;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFetchThreatListUpdatesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(
+            buildGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .fetch(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFetchThreatListUpdatesResponse(response);
-      })));
+      final response = await res.fetch(arg_request, $fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse(response
+          as api.GoogleSecuritySafebrowsingV4FetchThreatListUpdatesResponse);
     });
   });
 
-  unittest.group("resource-ThreatListsResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.ThreatListsResourceApi res =
-          new api.SafebrowsingApi(mock).threatLists;
-      var arg_$fields = "foo";
+  unittest.group('resource-ThreatListsResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).threatLists;
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 14),
-            unittest.equals("v4/threatLists"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 14),
+          unittest.equals("v4/threatLists"),
+        );
         pathOffset += 14;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListThreatListsResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json
+            .encode(buildGoogleSecuritySafebrowsingV4ListThreatListsResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res.list($fields: arg_$fields).then(unittest.expectAsync1(((response) {
-        checkListThreatListsResponse(response);
-      })));
+      final response = await res.list($fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4ListThreatListsResponse(
+          response as api.GoogleSecuritySafebrowsingV4ListThreatListsResponse);
     });
   });
 
-  unittest.group("resource-ThreatMatchesResourceApi", () {
-    unittest.test("method--find", () {
-      var mock = new HttpServerMock();
-      api.ThreatMatchesResourceApi res =
-          new api.SafebrowsingApi(mock).threatMatches;
-      var arg_request = buildFindThreatMatchesRequest();
-      var arg_$fields = "foo";
+  unittest.group('resource-ThreatMatchesResource', () {
+    unittest.test('method--find', () async {
+      var mock = HttpServerMock();
+      var res = api.SafebrowsingApi(mock).threatMatches;
+      var arg_request =
+          buildGoogleSecuritySafebrowsingV4FindThreatMatchesRequest();
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.FindThreatMatchesRequest.fromJson(json);
-        checkFindThreatMatchesRequest(obj);
+        var obj =
+            api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest.fromJson(
+                json as core.Map<core.String, core.dynamic>);
+        checkGoogleSecuritySafebrowsingV4FindThreatMatchesRequest(
+            obj as api.GoogleSecuritySafebrowsingV4FindThreatMatchesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("v4/threatMatches:find"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals("v4/threatMatches:find"),
+        );
         pathOffset += 21;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFindThreatMatchesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(
+            buildGoogleSecuritySafebrowsingV4FindThreatMatchesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .find(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFindThreatMatchesResponse(response);
-      })));
+      final response = await res.find(arg_request, $fields: arg_$fields);
+      checkGoogleSecuritySafebrowsingV4FindThreatMatchesResponse(response
+          as api.GoogleSecuritySafebrowsingV4FindThreatMatchesResponse);
     });
   });
 }

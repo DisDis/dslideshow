@@ -33,6 +33,7 @@ class _ConfigPageState extends State<ConfigPage>{
   @override
   void dispose() {
     _frontendService.stopWebServer();
+    this.dispose();
   }
 
   @override
@@ -50,11 +51,11 @@ class _ConfigPageState extends State<ConfigPage>{
           StoreConnector<GlobalState, VoidCallback>(
               converter: (store) => () => store.dispatch(ChangeStorageStatusAction(
                   StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
-              builder: (context, callback) => RaisedButton(
+              builder: (context, callback) => ElevatedButton(
                     onPressed: callback,
                     child: Text('StorageChange'),
                   )),
-          RaisedButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.pushReplacementNamed(context, '/slideshow');
             },

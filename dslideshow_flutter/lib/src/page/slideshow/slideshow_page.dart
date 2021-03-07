@@ -172,8 +172,6 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
   }
 
-  bool _isGif(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.gif';
-
   void _fetchNextMediaItem() async {
     _log.info('Change image');
     await _frontendService.storageNext();

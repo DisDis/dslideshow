@@ -2,13 +2,29 @@ import 'dart:async';
 
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
-import 'package:mqtt_client/mqtt_client.dart';
-import 'package:mqtt_client/mqtt_server_client.dart';
+// import 'package:mqtt_client/mqtt_client.dart';
+// import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
 import 'mqtt_config.dart';
 
-class MqttService {
+//TODO: Remove stub class
+class MqttService{
+  final MqttConfig _config;
+  final StreamController<bool> _scPause = new StreamController.broadcast();
+  Stream<bool> get onPause =>_scPause.stream;
+
+  final StreamController<bool> _scMenu = new StreamController.broadcast();
+  Stream<bool> get onMenu =>_scMenu.stream;
+
+  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
+  Stream<bool> get onScreenToggle =>_scScreenToggle.stream;
+
+  bool get isConnected => false;
+  MqttService(this._config);
+}
+
+/*class MqttService {
   static final Logger _log = new Logger('MqttService');
   final MqttConfig _config;
   final MqttServerClient _client;
@@ -147,4 +163,4 @@ class MqttService {
   void _onAutoReconnected() {
     _log.info('Client onAutoReconnected');
   }
-}
+}*/

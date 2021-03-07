@@ -1,58 +1,35 @@
-library googleapis.sheets.v4.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/sheets/v4.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
-
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
+import '../test_shared.dart';
 
 core.int buildCounterAddBandingRequest = 0;
-buildAddBandingRequest() {
-  var o = new api.AddBandingRequest();
+api.AddBandingRequest buildAddBandingRequest() {
+  var o = api.AddBandingRequest();
   buildCounterAddBandingRequest++;
   if (buildCounterAddBandingRequest < 3) {
     o.bandedRange = buildBandedRange();
@@ -61,17 +38,17 @@ buildAddBandingRequest() {
   return o;
 }
 
-checkAddBandingRequest(api.AddBandingRequest o) {
+void checkAddBandingRequest(api.AddBandingRequest o) {
   buildCounterAddBandingRequest++;
   if (buildCounterAddBandingRequest < 3) {
-    checkBandedRange(o.bandedRange);
+    checkBandedRange(o.bandedRange! as api.BandedRange);
   }
   buildCounterAddBandingRequest--;
 }
 
 core.int buildCounterAddBandingResponse = 0;
-buildAddBandingResponse() {
-  var o = new api.AddBandingResponse();
+api.AddBandingResponse buildAddBandingResponse() {
+  var o = api.AddBandingResponse();
   buildCounterAddBandingResponse++;
   if (buildCounterAddBandingResponse < 3) {
     o.bandedRange = buildBandedRange();
@@ -80,17 +57,17 @@ buildAddBandingResponse() {
   return o;
 }
 
-checkAddBandingResponse(api.AddBandingResponse o) {
+void checkAddBandingResponse(api.AddBandingResponse o) {
   buildCounterAddBandingResponse++;
   if (buildCounterAddBandingResponse < 3) {
-    checkBandedRange(o.bandedRange);
+    checkBandedRange(o.bandedRange! as api.BandedRange);
   }
   buildCounterAddBandingResponse--;
 }
 
 core.int buildCounterAddChartRequest = 0;
-buildAddChartRequest() {
-  var o = new api.AddChartRequest();
+api.AddChartRequest buildAddChartRequest() {
+  var o = api.AddChartRequest();
   buildCounterAddChartRequest++;
   if (buildCounterAddChartRequest < 3) {
     o.chart = buildEmbeddedChart();
@@ -99,17 +76,17 @@ buildAddChartRequest() {
   return o;
 }
 
-checkAddChartRequest(api.AddChartRequest o) {
+void checkAddChartRequest(api.AddChartRequest o) {
   buildCounterAddChartRequest++;
   if (buildCounterAddChartRequest < 3) {
-    checkEmbeddedChart(o.chart);
+    checkEmbeddedChart(o.chart! as api.EmbeddedChart);
   }
   buildCounterAddChartRequest--;
 }
 
 core.int buildCounterAddChartResponse = 0;
-buildAddChartResponse() {
-  var o = new api.AddChartResponse();
+api.AddChartResponse buildAddChartResponse() {
+  var o = api.AddChartResponse();
   buildCounterAddChartResponse++;
   if (buildCounterAddChartResponse < 3) {
     o.chart = buildEmbeddedChart();
@@ -118,17 +95,17 @@ buildAddChartResponse() {
   return o;
 }
 
-checkAddChartResponse(api.AddChartResponse o) {
+void checkAddChartResponse(api.AddChartResponse o) {
   buildCounterAddChartResponse++;
   if (buildCounterAddChartResponse < 3) {
-    checkEmbeddedChart(o.chart);
+    checkEmbeddedChart(o.chart! as api.EmbeddedChart);
   }
   buildCounterAddChartResponse--;
 }
 
 core.int buildCounterAddConditionalFormatRuleRequest = 0;
-buildAddConditionalFormatRuleRequest() {
-  var o = new api.AddConditionalFormatRuleRequest();
+api.AddConditionalFormatRuleRequest buildAddConditionalFormatRuleRequest() {
+  var o = api.AddConditionalFormatRuleRequest();
   buildCounterAddConditionalFormatRuleRequest++;
   if (buildCounterAddConditionalFormatRuleRequest < 3) {
     o.index = 42;
@@ -138,18 +115,62 @@ buildAddConditionalFormatRuleRequest() {
   return o;
 }
 
-checkAddConditionalFormatRuleRequest(api.AddConditionalFormatRuleRequest o) {
+void checkAddConditionalFormatRuleRequest(
+    api.AddConditionalFormatRuleRequest o) {
   buildCounterAddConditionalFormatRuleRequest++;
   if (buildCounterAddConditionalFormatRuleRequest < 3) {
-    unittest.expect(o.index, unittest.equals(42));
-    checkConditionalFormatRule(o.rule);
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    checkConditionalFormatRule(o.rule! as api.ConditionalFormatRule);
   }
   buildCounterAddConditionalFormatRuleRequest--;
 }
 
+core.int buildCounterAddDataSourceRequest = 0;
+api.AddDataSourceRequest buildAddDataSourceRequest() {
+  var o = api.AddDataSourceRequest();
+  buildCounterAddDataSourceRequest++;
+  if (buildCounterAddDataSourceRequest < 3) {
+    o.dataSource = buildDataSource();
+  }
+  buildCounterAddDataSourceRequest--;
+  return o;
+}
+
+void checkAddDataSourceRequest(api.AddDataSourceRequest o) {
+  buildCounterAddDataSourceRequest++;
+  if (buildCounterAddDataSourceRequest < 3) {
+    checkDataSource(o.dataSource! as api.DataSource);
+  }
+  buildCounterAddDataSourceRequest--;
+}
+
+core.int buildCounterAddDataSourceResponse = 0;
+api.AddDataSourceResponse buildAddDataSourceResponse() {
+  var o = api.AddDataSourceResponse();
+  buildCounterAddDataSourceResponse++;
+  if (buildCounterAddDataSourceResponse < 3) {
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSource = buildDataSource();
+  }
+  buildCounterAddDataSourceResponse--;
+  return o;
+}
+
+void checkAddDataSourceResponse(api.AddDataSourceResponse o) {
+  buildCounterAddDataSourceResponse++;
+  if (buildCounterAddDataSourceResponse < 3) {
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    checkDataSource(o.dataSource! as api.DataSource);
+  }
+  buildCounterAddDataSourceResponse--;
+}
+
 core.int buildCounterAddDimensionGroupRequest = 0;
-buildAddDimensionGroupRequest() {
-  var o = new api.AddDimensionGroupRequest();
+api.AddDimensionGroupRequest buildAddDimensionGroupRequest() {
+  var o = api.AddDimensionGroupRequest();
   buildCounterAddDimensionGroupRequest++;
   if (buildCounterAddDimensionGroupRequest < 3) {
     o.range = buildDimensionRange();
@@ -158,49 +179,49 @@ buildAddDimensionGroupRequest() {
   return o;
 }
 
-checkAddDimensionGroupRequest(api.AddDimensionGroupRequest o) {
+void checkAddDimensionGroupRequest(api.AddDimensionGroupRequest o) {
   buildCounterAddDimensionGroupRequest++;
   if (buildCounterAddDimensionGroupRequest < 3) {
-    checkDimensionRange(o.range);
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterAddDimensionGroupRequest--;
 }
 
-buildUnnamed3600() {
-  var o = new core.List<api.DimensionGroup>();
+core.List<api.DimensionGroup> buildUnnamed5285() {
+  var o = <api.DimensionGroup>[];
   o.add(buildDimensionGroup());
   o.add(buildDimensionGroup());
   return o;
 }
 
-checkUnnamed3600(core.List<api.DimensionGroup> o) {
+void checkUnnamed5285(core.List<api.DimensionGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionGroup(o[0]);
-  checkDimensionGroup(o[1]);
+  checkDimensionGroup(o[0] as api.DimensionGroup);
+  checkDimensionGroup(o[1] as api.DimensionGroup);
 }
 
 core.int buildCounterAddDimensionGroupResponse = 0;
-buildAddDimensionGroupResponse() {
-  var o = new api.AddDimensionGroupResponse();
+api.AddDimensionGroupResponse buildAddDimensionGroupResponse() {
+  var o = api.AddDimensionGroupResponse();
   buildCounterAddDimensionGroupResponse++;
   if (buildCounterAddDimensionGroupResponse < 3) {
-    o.dimensionGroups = buildUnnamed3600();
+    o.dimensionGroups = buildUnnamed5285();
   }
   buildCounterAddDimensionGroupResponse--;
   return o;
 }
 
-checkAddDimensionGroupResponse(api.AddDimensionGroupResponse o) {
+void checkAddDimensionGroupResponse(api.AddDimensionGroupResponse o) {
   buildCounterAddDimensionGroupResponse++;
   if (buildCounterAddDimensionGroupResponse < 3) {
-    checkUnnamed3600(o.dimensionGroups);
+    checkUnnamed5285(o.dimensionGroups!);
   }
   buildCounterAddDimensionGroupResponse--;
 }
 
 core.int buildCounterAddFilterViewRequest = 0;
-buildAddFilterViewRequest() {
-  var o = new api.AddFilterViewRequest();
+api.AddFilterViewRequest buildAddFilterViewRequest() {
+  var o = api.AddFilterViewRequest();
   buildCounterAddFilterViewRequest++;
   if (buildCounterAddFilterViewRequest < 3) {
     o.filter = buildFilterView();
@@ -209,17 +230,17 @@ buildAddFilterViewRequest() {
   return o;
 }
 
-checkAddFilterViewRequest(api.AddFilterViewRequest o) {
+void checkAddFilterViewRequest(api.AddFilterViewRequest o) {
   buildCounterAddFilterViewRequest++;
   if (buildCounterAddFilterViewRequest < 3) {
-    checkFilterView(o.filter);
+    checkFilterView(o.filter! as api.FilterView);
   }
   buildCounterAddFilterViewRequest--;
 }
 
 core.int buildCounterAddFilterViewResponse = 0;
-buildAddFilterViewResponse() {
-  var o = new api.AddFilterViewResponse();
+api.AddFilterViewResponse buildAddFilterViewResponse() {
+  var o = api.AddFilterViewResponse();
   buildCounterAddFilterViewResponse++;
   if (buildCounterAddFilterViewResponse < 3) {
     o.filter = buildFilterView();
@@ -228,17 +249,17 @@ buildAddFilterViewResponse() {
   return o;
 }
 
-checkAddFilterViewResponse(api.AddFilterViewResponse o) {
+void checkAddFilterViewResponse(api.AddFilterViewResponse o) {
   buildCounterAddFilterViewResponse++;
   if (buildCounterAddFilterViewResponse < 3) {
-    checkFilterView(o.filter);
+    checkFilterView(o.filter! as api.FilterView);
   }
   buildCounterAddFilterViewResponse--;
 }
 
 core.int buildCounterAddNamedRangeRequest = 0;
-buildAddNamedRangeRequest() {
-  var o = new api.AddNamedRangeRequest();
+api.AddNamedRangeRequest buildAddNamedRangeRequest() {
+  var o = api.AddNamedRangeRequest();
   buildCounterAddNamedRangeRequest++;
   if (buildCounterAddNamedRangeRequest < 3) {
     o.namedRange = buildNamedRange();
@@ -247,17 +268,17 @@ buildAddNamedRangeRequest() {
   return o;
 }
 
-checkAddNamedRangeRequest(api.AddNamedRangeRequest o) {
+void checkAddNamedRangeRequest(api.AddNamedRangeRequest o) {
   buildCounterAddNamedRangeRequest++;
   if (buildCounterAddNamedRangeRequest < 3) {
-    checkNamedRange(o.namedRange);
+    checkNamedRange(o.namedRange! as api.NamedRange);
   }
   buildCounterAddNamedRangeRequest--;
 }
 
 core.int buildCounterAddNamedRangeResponse = 0;
-buildAddNamedRangeResponse() {
-  var o = new api.AddNamedRangeResponse();
+api.AddNamedRangeResponse buildAddNamedRangeResponse() {
+  var o = api.AddNamedRangeResponse();
   buildCounterAddNamedRangeResponse++;
   if (buildCounterAddNamedRangeResponse < 3) {
     o.namedRange = buildNamedRange();
@@ -266,17 +287,17 @@ buildAddNamedRangeResponse() {
   return o;
 }
 
-checkAddNamedRangeResponse(api.AddNamedRangeResponse o) {
+void checkAddNamedRangeResponse(api.AddNamedRangeResponse o) {
   buildCounterAddNamedRangeResponse++;
   if (buildCounterAddNamedRangeResponse < 3) {
-    checkNamedRange(o.namedRange);
+    checkNamedRange(o.namedRange! as api.NamedRange);
   }
   buildCounterAddNamedRangeResponse--;
 }
 
 core.int buildCounterAddProtectedRangeRequest = 0;
-buildAddProtectedRangeRequest() {
-  var o = new api.AddProtectedRangeRequest();
+api.AddProtectedRangeRequest buildAddProtectedRangeRequest() {
+  var o = api.AddProtectedRangeRequest();
   buildCounterAddProtectedRangeRequest++;
   if (buildCounterAddProtectedRangeRequest < 3) {
     o.protectedRange = buildProtectedRange();
@@ -285,17 +306,17 @@ buildAddProtectedRangeRequest() {
   return o;
 }
 
-checkAddProtectedRangeRequest(api.AddProtectedRangeRequest o) {
+void checkAddProtectedRangeRequest(api.AddProtectedRangeRequest o) {
   buildCounterAddProtectedRangeRequest++;
   if (buildCounterAddProtectedRangeRequest < 3) {
-    checkProtectedRange(o.protectedRange);
+    checkProtectedRange(o.protectedRange! as api.ProtectedRange);
   }
   buildCounterAddProtectedRangeRequest--;
 }
 
 core.int buildCounterAddProtectedRangeResponse = 0;
-buildAddProtectedRangeResponse() {
-  var o = new api.AddProtectedRangeResponse();
+api.AddProtectedRangeResponse buildAddProtectedRangeResponse() {
+  var o = api.AddProtectedRangeResponse();
   buildCounterAddProtectedRangeResponse++;
   if (buildCounterAddProtectedRangeResponse < 3) {
     o.protectedRange = buildProtectedRange();
@@ -304,17 +325,17 @@ buildAddProtectedRangeResponse() {
   return o;
 }
 
-checkAddProtectedRangeResponse(api.AddProtectedRangeResponse o) {
+void checkAddProtectedRangeResponse(api.AddProtectedRangeResponse o) {
   buildCounterAddProtectedRangeResponse++;
   if (buildCounterAddProtectedRangeResponse < 3) {
-    checkProtectedRange(o.protectedRange);
+    checkProtectedRange(o.protectedRange! as api.ProtectedRange);
   }
   buildCounterAddProtectedRangeResponse--;
 }
 
 core.int buildCounterAddSheetRequest = 0;
-buildAddSheetRequest() {
-  var o = new api.AddSheetRequest();
+api.AddSheetRequest buildAddSheetRequest() {
+  var o = api.AddSheetRequest();
   buildCounterAddSheetRequest++;
   if (buildCounterAddSheetRequest < 3) {
     o.properties = buildSheetProperties();
@@ -323,17 +344,17 @@ buildAddSheetRequest() {
   return o;
 }
 
-checkAddSheetRequest(api.AddSheetRequest o) {
+void checkAddSheetRequest(api.AddSheetRequest o) {
   buildCounterAddSheetRequest++;
   if (buildCounterAddSheetRequest < 3) {
-    checkSheetProperties(o.properties);
+    checkSheetProperties(o.properties! as api.SheetProperties);
   }
   buildCounterAddSheetRequest--;
 }
 
 core.int buildCounterAddSheetResponse = 0;
-buildAddSheetResponse() {
-  var o = new api.AddSheetResponse();
+api.AddSheetResponse buildAddSheetResponse() {
+  var o = api.AddSheetResponse();
   buildCounterAddSheetResponse++;
   if (buildCounterAddSheetResponse < 3) {
     o.properties = buildSheetProperties();
@@ -342,56 +363,100 @@ buildAddSheetResponse() {
   return o;
 }
 
-checkAddSheetResponse(api.AddSheetResponse o) {
+void checkAddSheetResponse(api.AddSheetResponse o) {
   buildCounterAddSheetResponse++;
   if (buildCounterAddSheetResponse < 3) {
-    checkSheetProperties(o.properties);
+    checkSheetProperties(o.properties! as api.SheetProperties);
   }
   buildCounterAddSheetResponse--;
 }
 
-buildUnnamed3601() {
-  var o = new core.List<api.RowData>();
+core.int buildCounterAddSlicerRequest = 0;
+api.AddSlicerRequest buildAddSlicerRequest() {
+  var o = api.AddSlicerRequest();
+  buildCounterAddSlicerRequest++;
+  if (buildCounterAddSlicerRequest < 3) {
+    o.slicer = buildSlicer();
+  }
+  buildCounterAddSlicerRequest--;
+  return o;
+}
+
+void checkAddSlicerRequest(api.AddSlicerRequest o) {
+  buildCounterAddSlicerRequest++;
+  if (buildCounterAddSlicerRequest < 3) {
+    checkSlicer(o.slicer! as api.Slicer);
+  }
+  buildCounterAddSlicerRequest--;
+}
+
+core.int buildCounterAddSlicerResponse = 0;
+api.AddSlicerResponse buildAddSlicerResponse() {
+  var o = api.AddSlicerResponse();
+  buildCounterAddSlicerResponse++;
+  if (buildCounterAddSlicerResponse < 3) {
+    o.slicer = buildSlicer();
+  }
+  buildCounterAddSlicerResponse--;
+  return o;
+}
+
+void checkAddSlicerResponse(api.AddSlicerResponse o) {
+  buildCounterAddSlicerResponse++;
+  if (buildCounterAddSlicerResponse < 3) {
+    checkSlicer(o.slicer! as api.Slicer);
+  }
+  buildCounterAddSlicerResponse--;
+}
+
+core.List<api.RowData> buildUnnamed5286() {
+  var o = <api.RowData>[];
   o.add(buildRowData());
   o.add(buildRowData());
   return o;
 }
 
-checkUnnamed3601(core.List<api.RowData> o) {
+void checkUnnamed5286(core.List<api.RowData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRowData(o[0]);
-  checkRowData(o[1]);
+  checkRowData(o[0] as api.RowData);
+  checkRowData(o[1] as api.RowData);
 }
 
 core.int buildCounterAppendCellsRequest = 0;
-buildAppendCellsRequest() {
-  var o = new api.AppendCellsRequest();
+api.AppendCellsRequest buildAppendCellsRequest() {
+  var o = api.AppendCellsRequest();
   buildCounterAppendCellsRequest++;
   if (buildCounterAppendCellsRequest < 3) {
-    o.fields = "foo";
-    o.rows = buildUnnamed3601();
+    o.fields = 'foo';
+    o.rows = buildUnnamed5286();
     o.sheetId = 42;
   }
   buildCounterAppendCellsRequest--;
   return o;
 }
 
-checkAppendCellsRequest(api.AppendCellsRequest o) {
+void checkAppendCellsRequest(api.AppendCellsRequest o) {
   buildCounterAppendCellsRequest++;
   if (buildCounterAppendCellsRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkUnnamed3601(o.rows);
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5286(o.rows!);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterAppendCellsRequest--;
 }
 
 core.int buildCounterAppendDimensionRequest = 0;
-buildAppendDimensionRequest() {
-  var o = new api.AppendDimensionRequest();
+api.AppendDimensionRequest buildAppendDimensionRequest() {
+  var o = api.AppendDimensionRequest();
   buildCounterAppendDimensionRequest++;
   if (buildCounterAppendDimensionRequest < 3) {
-    o.dimension = "foo";
+    o.dimension = 'foo';
     o.length = 42;
     o.sheetId = 42;
   }
@@ -399,42 +464,57 @@ buildAppendDimensionRequest() {
   return o;
 }
 
-checkAppendDimensionRequest(api.AppendDimensionRequest o) {
+void checkAppendDimensionRequest(api.AppendDimensionRequest o) {
   buildCounterAppendDimensionRequest++;
   if (buildCounterAppendDimensionRequest < 3) {
-    unittest.expect(o.dimension, unittest.equals('foo'));
-    unittest.expect(o.length, unittest.equals(42));
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.dimension!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.length!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterAppendDimensionRequest--;
 }
 
 core.int buildCounterAppendValuesResponse = 0;
-buildAppendValuesResponse() {
-  var o = new api.AppendValuesResponse();
+api.AppendValuesResponse buildAppendValuesResponse() {
+  var o = api.AppendValuesResponse();
   buildCounterAppendValuesResponse++;
   if (buildCounterAppendValuesResponse < 3) {
-    o.spreadsheetId = "foo";
-    o.tableRange = "foo";
+    o.spreadsheetId = 'foo';
+    o.tableRange = 'foo';
     o.updates = buildUpdateValuesResponse();
   }
   buildCounterAppendValuesResponse--;
   return o;
 }
 
-checkAppendValuesResponse(api.AppendValuesResponse o) {
+void checkAppendValuesResponse(api.AppendValuesResponse o) {
   buildCounterAppendValuesResponse++;
   if (buildCounterAppendValuesResponse < 3) {
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    unittest.expect(o.tableRange, unittest.equals('foo'));
-    checkUpdateValuesResponse(o.updates);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.tableRange!,
+      unittest.equals('foo'),
+    );
+    checkUpdateValuesResponse(o.updates! as api.UpdateValuesResponse);
   }
   buildCounterAppendValuesResponse--;
 }
 
 core.int buildCounterAutoFillRequest = 0;
-buildAutoFillRequest() {
-  var o = new api.AutoFillRequest();
+api.AutoFillRequest buildAutoFillRequest() {
+  var o = api.AutoFillRequest();
   buildCounterAutoFillRequest++;
   if (buildCounterAutoFillRequest < 3) {
     o.range = buildGridRange();
@@ -445,38 +525,42 @@ buildAutoFillRequest() {
   return o;
 }
 
-checkAutoFillRequest(api.AutoFillRequest o) {
+void checkAutoFillRequest(api.AutoFillRequest o) {
   buildCounterAutoFillRequest++;
   if (buildCounterAutoFillRequest < 3) {
-    checkGridRange(o.range);
-    checkSourceAndDestination(o.sourceAndDestination);
-    unittest.expect(o.useAlternateSeries, unittest.isTrue);
+    checkGridRange(o.range! as api.GridRange);
+    checkSourceAndDestination(
+        o.sourceAndDestination! as api.SourceAndDestination);
+    unittest.expect(o.useAlternateSeries!, unittest.isTrue);
   }
   buildCounterAutoFillRequest--;
 }
 
 core.int buildCounterAutoResizeDimensionsRequest = 0;
-buildAutoResizeDimensionsRequest() {
-  var o = new api.AutoResizeDimensionsRequest();
+api.AutoResizeDimensionsRequest buildAutoResizeDimensionsRequest() {
+  var o = api.AutoResizeDimensionsRequest();
   buildCounterAutoResizeDimensionsRequest++;
   if (buildCounterAutoResizeDimensionsRequest < 3) {
+    o.dataSourceSheetDimensions = buildDataSourceSheetDimensionRange();
     o.dimensions = buildDimensionRange();
   }
   buildCounterAutoResizeDimensionsRequest--;
   return o;
 }
 
-checkAutoResizeDimensionsRequest(api.AutoResizeDimensionsRequest o) {
+void checkAutoResizeDimensionsRequest(api.AutoResizeDimensionsRequest o) {
   buildCounterAutoResizeDimensionsRequest++;
   if (buildCounterAutoResizeDimensionsRequest < 3) {
-    checkDimensionRange(o.dimensions);
+    checkDataSourceSheetDimensionRange(
+        o.dataSourceSheetDimensions! as api.DataSourceSheetDimensionRange);
+    checkDimensionRange(o.dimensions! as api.DimensionRange);
   }
   buildCounterAutoResizeDimensionsRequest--;
 }
 
 core.int buildCounterBandedRange = 0;
-buildBandedRange() {
-  var o = new api.BandedRange();
+api.BandedRange buildBandedRange() {
+  var o = api.BandedRange();
   buildCounterBandedRange++;
   if (buildCounterBandedRange < 3) {
     o.bandedRangeId = 42;
@@ -488,70 +572,129 @@ buildBandedRange() {
   return o;
 }
 
-checkBandedRange(api.BandedRange o) {
+void checkBandedRange(api.BandedRange o) {
   buildCounterBandedRange++;
   if (buildCounterBandedRange < 3) {
-    unittest.expect(o.bandedRangeId, unittest.equals(42));
-    checkBandingProperties(o.columnProperties);
-    checkGridRange(o.range);
-    checkBandingProperties(o.rowProperties);
+    unittest.expect(
+      o.bandedRangeId!,
+      unittest.equals(42),
+    );
+    checkBandingProperties(o.columnProperties! as api.BandingProperties);
+    checkGridRange(o.range! as api.GridRange);
+    checkBandingProperties(o.rowProperties! as api.BandingProperties);
   }
   buildCounterBandedRange--;
 }
 
 core.int buildCounterBandingProperties = 0;
-buildBandingProperties() {
-  var o = new api.BandingProperties();
+api.BandingProperties buildBandingProperties() {
+  var o = api.BandingProperties();
   buildCounterBandingProperties++;
   if (buildCounterBandingProperties < 3) {
     o.firstBandColor = buildColor();
+    o.firstBandColorStyle = buildColorStyle();
     o.footerColor = buildColor();
+    o.footerColorStyle = buildColorStyle();
     o.headerColor = buildColor();
+    o.headerColorStyle = buildColorStyle();
     o.secondBandColor = buildColor();
+    o.secondBandColorStyle = buildColorStyle();
   }
   buildCounterBandingProperties--;
   return o;
 }
 
-checkBandingProperties(api.BandingProperties o) {
+void checkBandingProperties(api.BandingProperties o) {
   buildCounterBandingProperties++;
   if (buildCounterBandingProperties < 3) {
-    checkColor(o.firstBandColor);
-    checkColor(o.footerColor);
-    checkColor(o.headerColor);
-    checkColor(o.secondBandColor);
+    checkColor(o.firstBandColor! as api.Color);
+    checkColorStyle(o.firstBandColorStyle! as api.ColorStyle);
+    checkColor(o.footerColor! as api.Color);
+    checkColorStyle(o.footerColorStyle! as api.ColorStyle);
+    checkColor(o.headerColor! as api.Color);
+    checkColorStyle(o.headerColorStyle! as api.ColorStyle);
+    checkColor(o.secondBandColor! as api.Color);
+    checkColorStyle(o.secondBandColorStyle! as api.ColorStyle);
   }
   buildCounterBandingProperties--;
 }
 
+core.int buildCounterBaselineValueFormat = 0;
+api.BaselineValueFormat buildBaselineValueFormat() {
+  var o = api.BaselineValueFormat();
+  buildCounterBaselineValueFormat++;
+  if (buildCounterBaselineValueFormat < 3) {
+    o.comparisonType = 'foo';
+    o.description = 'foo';
+    o.negativeColor = buildColor();
+    o.negativeColorStyle = buildColorStyle();
+    o.position = buildTextPosition();
+    o.positiveColor = buildColor();
+    o.positiveColorStyle = buildColorStyle();
+    o.textFormat = buildTextFormat();
+  }
+  buildCounterBaselineValueFormat--;
+  return o;
+}
+
+void checkBaselineValueFormat(api.BaselineValueFormat o) {
+  buildCounterBaselineValueFormat++;
+  if (buildCounterBaselineValueFormat < 3) {
+    unittest.expect(
+      o.comparisonType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    checkColor(o.negativeColor! as api.Color);
+    checkColorStyle(o.negativeColorStyle! as api.ColorStyle);
+    checkTextPosition(o.position! as api.TextPosition);
+    checkColor(o.positiveColor! as api.Color);
+    checkColorStyle(o.positiveColorStyle! as api.ColorStyle);
+    checkTextFormat(o.textFormat! as api.TextFormat);
+  }
+  buildCounterBaselineValueFormat--;
+}
+
 core.int buildCounterBasicChartAxis = 0;
-buildBasicChartAxis() {
-  var o = new api.BasicChartAxis();
+api.BasicChartAxis buildBasicChartAxis() {
+  var o = api.BasicChartAxis();
   buildCounterBasicChartAxis++;
   if (buildCounterBasicChartAxis < 3) {
     o.format = buildTextFormat();
-    o.position = "foo";
-    o.title = "foo";
+    o.position = 'foo';
+    o.title = 'foo';
     o.titleTextPosition = buildTextPosition();
+    o.viewWindowOptions = buildChartAxisViewWindowOptions();
   }
   buildCounterBasicChartAxis--;
   return o;
 }
 
-checkBasicChartAxis(api.BasicChartAxis o) {
+void checkBasicChartAxis(api.BasicChartAxis o) {
   buildCounterBasicChartAxis++;
   if (buildCounterBasicChartAxis < 3) {
-    checkTextFormat(o.format);
-    unittest.expect(o.position, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
-    checkTextPosition(o.titleTextPosition);
+    checkTextFormat(o.format! as api.TextFormat);
+    unittest.expect(
+      o.position!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    checkTextPosition(o.titleTextPosition! as api.TextPosition);
+    checkChartAxisViewWindowOptions(
+        o.viewWindowOptions! as api.ChartAxisViewWindowOptions);
   }
   buildCounterBasicChartAxis--;
 }
 
 core.int buildCounterBasicChartDomain = 0;
-buildBasicChartDomain() {
-  var o = new api.BasicChartDomain();
+api.BasicChartDomain buildBasicChartDomain() {
+  var o = api.BasicChartDomain();
   buildCounterBasicChartDomain++;
   if (buildCounterBasicChartDomain < 3) {
     o.domain = buildChartData();
@@ -561,559 +704,713 @@ buildBasicChartDomain() {
   return o;
 }
 
-checkBasicChartDomain(api.BasicChartDomain o) {
+void checkBasicChartDomain(api.BasicChartDomain o) {
   buildCounterBasicChartDomain++;
   if (buildCounterBasicChartDomain < 3) {
-    checkChartData(o.domain);
-    unittest.expect(o.reversed, unittest.isTrue);
+    checkChartData(o.domain! as api.ChartData);
+    unittest.expect(o.reversed!, unittest.isTrue);
   }
   buildCounterBasicChartDomain--;
 }
 
+core.List<api.BasicSeriesDataPointStyleOverride> buildUnnamed5287() {
+  var o = <api.BasicSeriesDataPointStyleOverride>[];
+  o.add(buildBasicSeriesDataPointStyleOverride());
+  o.add(buildBasicSeriesDataPointStyleOverride());
+  return o;
+}
+
+void checkUnnamed5287(core.List<api.BasicSeriesDataPointStyleOverride> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkBasicSeriesDataPointStyleOverride(
+      o[0] as api.BasicSeriesDataPointStyleOverride);
+  checkBasicSeriesDataPointStyleOverride(
+      o[1] as api.BasicSeriesDataPointStyleOverride);
+}
+
 core.int buildCounterBasicChartSeries = 0;
-buildBasicChartSeries() {
-  var o = new api.BasicChartSeries();
+api.BasicChartSeries buildBasicChartSeries() {
+  var o = api.BasicChartSeries();
   buildCounterBasicChartSeries++;
   if (buildCounterBasicChartSeries < 3) {
     o.color = buildColor();
+    o.colorStyle = buildColorStyle();
+    o.dataLabel = buildDataLabel();
     o.lineStyle = buildLineStyle();
+    o.pointStyle = buildPointStyle();
     o.series = buildChartData();
-    o.targetAxis = "foo";
-    o.type = "foo";
+    o.styleOverrides = buildUnnamed5287();
+    o.targetAxis = 'foo';
+    o.type = 'foo';
   }
   buildCounterBasicChartSeries--;
   return o;
 }
 
-checkBasicChartSeries(api.BasicChartSeries o) {
+void checkBasicChartSeries(api.BasicChartSeries o) {
   buildCounterBasicChartSeries++;
   if (buildCounterBasicChartSeries < 3) {
-    checkColor(o.color);
-    checkLineStyle(o.lineStyle);
-    checkChartData(o.series);
-    unittest.expect(o.targetAxis, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+    checkDataLabel(o.dataLabel! as api.DataLabel);
+    checkLineStyle(o.lineStyle! as api.LineStyle);
+    checkPointStyle(o.pointStyle! as api.PointStyle);
+    checkChartData(o.series! as api.ChartData);
+    checkUnnamed5287(o.styleOverrides!);
+    unittest.expect(
+      o.targetAxis!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBasicChartSeries--;
 }
 
-buildUnnamed3602() {
-  var o = new core.List<api.BasicChartAxis>();
+core.List<api.BasicChartAxis> buildUnnamed5288() {
+  var o = <api.BasicChartAxis>[];
   o.add(buildBasicChartAxis());
   o.add(buildBasicChartAxis());
   return o;
 }
 
-checkUnnamed3602(core.List<api.BasicChartAxis> o) {
+void checkUnnamed5288(core.List<api.BasicChartAxis> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBasicChartAxis(o[0]);
-  checkBasicChartAxis(o[1]);
+  checkBasicChartAxis(o[0] as api.BasicChartAxis);
+  checkBasicChartAxis(o[1] as api.BasicChartAxis);
 }
 
-buildUnnamed3603() {
-  var o = new core.List<api.BasicChartDomain>();
+core.List<api.BasicChartDomain> buildUnnamed5289() {
+  var o = <api.BasicChartDomain>[];
   o.add(buildBasicChartDomain());
   o.add(buildBasicChartDomain());
   return o;
 }
 
-checkUnnamed3603(core.List<api.BasicChartDomain> o) {
+void checkUnnamed5289(core.List<api.BasicChartDomain> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBasicChartDomain(o[0]);
-  checkBasicChartDomain(o[1]);
+  checkBasicChartDomain(o[0] as api.BasicChartDomain);
+  checkBasicChartDomain(o[1] as api.BasicChartDomain);
 }
 
-buildUnnamed3604() {
-  var o = new core.List<api.BasicChartSeries>();
+core.List<api.BasicChartSeries> buildUnnamed5290() {
+  var o = <api.BasicChartSeries>[];
   o.add(buildBasicChartSeries());
   o.add(buildBasicChartSeries());
   return o;
 }
 
-checkUnnamed3604(core.List<api.BasicChartSeries> o) {
+void checkUnnamed5290(core.List<api.BasicChartSeries> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBasicChartSeries(o[0]);
-  checkBasicChartSeries(o[1]);
+  checkBasicChartSeries(o[0] as api.BasicChartSeries);
+  checkBasicChartSeries(o[1] as api.BasicChartSeries);
 }
 
 core.int buildCounterBasicChartSpec = 0;
-buildBasicChartSpec() {
-  var o = new api.BasicChartSpec();
+api.BasicChartSpec buildBasicChartSpec() {
+  var o = api.BasicChartSpec();
   buildCounterBasicChartSpec++;
   if (buildCounterBasicChartSpec < 3) {
-    o.axis = buildUnnamed3602();
-    o.chartType = "foo";
-    o.compareMode = "foo";
-    o.domains = buildUnnamed3603();
+    o.axis = buildUnnamed5288();
+    o.chartType = 'foo';
+    o.compareMode = 'foo';
+    o.domains = buildUnnamed5289();
     o.headerCount = 42;
     o.interpolateNulls = true;
-    o.legendPosition = "foo";
+    o.legendPosition = 'foo';
     o.lineSmoothing = true;
-    o.series = buildUnnamed3604();
-    o.stackedType = "foo";
+    o.series = buildUnnamed5290();
+    o.stackedType = 'foo';
     o.threeDimensional = true;
+    o.totalDataLabel = buildDataLabel();
   }
   buildCounterBasicChartSpec--;
   return o;
 }
 
-checkBasicChartSpec(api.BasicChartSpec o) {
+void checkBasicChartSpec(api.BasicChartSpec o) {
   buildCounterBasicChartSpec++;
   if (buildCounterBasicChartSpec < 3) {
-    checkUnnamed3602(o.axis);
-    unittest.expect(o.chartType, unittest.equals('foo'));
-    unittest.expect(o.compareMode, unittest.equals('foo'));
-    checkUnnamed3603(o.domains);
-    unittest.expect(o.headerCount, unittest.equals(42));
-    unittest.expect(o.interpolateNulls, unittest.isTrue);
-    unittest.expect(o.legendPosition, unittest.equals('foo'));
-    unittest.expect(o.lineSmoothing, unittest.isTrue);
-    checkUnnamed3604(o.series);
-    unittest.expect(o.stackedType, unittest.equals('foo'));
-    unittest.expect(o.threeDimensional, unittest.isTrue);
+    checkUnnamed5288(o.axis!);
+    unittest.expect(
+      o.chartType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.compareMode!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5289(o.domains!);
+    unittest.expect(
+      o.headerCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.interpolateNulls!, unittest.isTrue);
+    unittest.expect(
+      o.legendPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.lineSmoothing!, unittest.isTrue);
+    checkUnnamed5290(o.series!);
+    unittest.expect(
+      o.stackedType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.threeDimensional!, unittest.isTrue);
+    checkDataLabel(o.totalDataLabel! as api.DataLabel);
   }
   buildCounterBasicChartSpec--;
 }
 
-buildUnnamed3605() {
-  var o = new core.Map<core.String, api.FilterCriteria>();
-  o["x"] = buildFilterCriteria();
-  o["y"] = buildFilterCriteria();
+core.Map<core.String, api.FilterCriteria> buildUnnamed5291() {
+  var o = <core.String, api.FilterCriteria>{};
+  o['x'] = buildFilterCriteria();
+  o['y'] = buildFilterCriteria();
   return o;
 }
 
-checkUnnamed3605(core.Map<core.String, api.FilterCriteria> o) {
+void checkUnnamed5291(core.Map<core.String, api.FilterCriteria> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFilterCriteria(o["x"]);
-  checkFilterCriteria(o["y"]);
+  checkFilterCriteria(o['x']! as api.FilterCriteria);
+  checkFilterCriteria(o['y']! as api.FilterCriteria);
 }
 
-buildUnnamed3606() {
-  var o = new core.List<api.SortSpec>();
+core.List<api.FilterSpec> buildUnnamed5292() {
+  var o = <api.FilterSpec>[];
+  o.add(buildFilterSpec());
+  o.add(buildFilterSpec());
+  return o;
+}
+
+void checkUnnamed5292(core.List<api.FilterSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkFilterSpec(o[0] as api.FilterSpec);
+  checkFilterSpec(o[1] as api.FilterSpec);
+}
+
+core.List<api.SortSpec> buildUnnamed5293() {
+  var o = <api.SortSpec>[];
   o.add(buildSortSpec());
   o.add(buildSortSpec());
   return o;
 }
 
-checkUnnamed3606(core.List<api.SortSpec> o) {
+void checkUnnamed5293(core.List<api.SortSpec> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSortSpec(o[0]);
-  checkSortSpec(o[1]);
+  checkSortSpec(o[0] as api.SortSpec);
+  checkSortSpec(o[1] as api.SortSpec);
 }
 
 core.int buildCounterBasicFilter = 0;
-buildBasicFilter() {
-  var o = new api.BasicFilter();
+api.BasicFilter buildBasicFilter() {
+  var o = api.BasicFilter();
   buildCounterBasicFilter++;
   if (buildCounterBasicFilter < 3) {
-    o.criteria = buildUnnamed3605();
+    o.criteria = buildUnnamed5291();
+    o.filterSpecs = buildUnnamed5292();
     o.range = buildGridRange();
-    o.sortSpecs = buildUnnamed3606();
+    o.sortSpecs = buildUnnamed5293();
   }
   buildCounterBasicFilter--;
   return o;
 }
 
-checkBasicFilter(api.BasicFilter o) {
+void checkBasicFilter(api.BasicFilter o) {
   buildCounterBasicFilter++;
   if (buildCounterBasicFilter < 3) {
-    checkUnnamed3605(o.criteria);
-    checkGridRange(o.range);
-    checkUnnamed3606(o.sortSpecs);
+    checkUnnamed5291(o.criteria!);
+    checkUnnamed5292(o.filterSpecs!);
+    checkGridRange(o.range! as api.GridRange);
+    checkUnnamed5293(o.sortSpecs!);
   }
   buildCounterBasicFilter--;
 }
 
-buildUnnamed3607() {
-  var o = new core.List<api.DataFilter>();
+core.int buildCounterBasicSeriesDataPointStyleOverride = 0;
+api.BasicSeriesDataPointStyleOverride buildBasicSeriesDataPointStyleOverride() {
+  var o = api.BasicSeriesDataPointStyleOverride();
+  buildCounterBasicSeriesDataPointStyleOverride++;
+  if (buildCounterBasicSeriesDataPointStyleOverride < 3) {
+    o.color = buildColor();
+    o.colorStyle = buildColorStyle();
+    o.index = 42;
+    o.pointStyle = buildPointStyle();
+  }
+  buildCounterBasicSeriesDataPointStyleOverride--;
+  return o;
+}
+
+void checkBasicSeriesDataPointStyleOverride(
+    api.BasicSeriesDataPointStyleOverride o) {
+  buildCounterBasicSeriesDataPointStyleOverride++;
+  if (buildCounterBasicSeriesDataPointStyleOverride < 3) {
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    checkPointStyle(o.pointStyle! as api.PointStyle);
+  }
+  buildCounterBasicSeriesDataPointStyleOverride--;
+}
+
+core.List<api.DataFilter> buildUnnamed5294() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3607(core.List<api.DataFilter> o) {
+void checkUnnamed5294(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterBatchClearValuesByDataFilterRequest = 0;
-buildBatchClearValuesByDataFilterRequest() {
-  var o = new api.BatchClearValuesByDataFilterRequest();
+api.BatchClearValuesByDataFilterRequest
+    buildBatchClearValuesByDataFilterRequest() {
+  var o = api.BatchClearValuesByDataFilterRequest();
   buildCounterBatchClearValuesByDataFilterRequest++;
   if (buildCounterBatchClearValuesByDataFilterRequest < 3) {
-    o.dataFilters = buildUnnamed3607();
+    o.dataFilters = buildUnnamed5294();
   }
   buildCounterBatchClearValuesByDataFilterRequest--;
   return o;
 }
 
-checkBatchClearValuesByDataFilterRequest(
+void checkBatchClearValuesByDataFilterRequest(
     api.BatchClearValuesByDataFilterRequest o) {
   buildCounterBatchClearValuesByDataFilterRequest++;
   if (buildCounterBatchClearValuesByDataFilterRequest < 3) {
-    checkUnnamed3607(o.dataFilters);
+    checkUnnamed5294(o.dataFilters!);
   }
   buildCounterBatchClearValuesByDataFilterRequest--;
 }
 
-buildUnnamed3608() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5295() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3608(core.List<core.String> o) {
+void checkUnnamed5295(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterBatchClearValuesByDataFilterResponse = 0;
-buildBatchClearValuesByDataFilterResponse() {
-  var o = new api.BatchClearValuesByDataFilterResponse();
+api.BatchClearValuesByDataFilterResponse
+    buildBatchClearValuesByDataFilterResponse() {
+  var o = api.BatchClearValuesByDataFilterResponse();
   buildCounterBatchClearValuesByDataFilterResponse++;
   if (buildCounterBatchClearValuesByDataFilterResponse < 3) {
-    o.clearedRanges = buildUnnamed3608();
-    o.spreadsheetId = "foo";
+    o.clearedRanges = buildUnnamed5295();
+    o.spreadsheetId = 'foo';
   }
   buildCounterBatchClearValuesByDataFilterResponse--;
   return o;
 }
 
-checkBatchClearValuesByDataFilterResponse(
+void checkBatchClearValuesByDataFilterResponse(
     api.BatchClearValuesByDataFilterResponse o) {
   buildCounterBatchClearValuesByDataFilterResponse++;
   if (buildCounterBatchClearValuesByDataFilterResponse < 3) {
-    checkUnnamed3608(o.clearedRanges);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
+    checkUnnamed5295(o.clearedRanges!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBatchClearValuesByDataFilterResponse--;
 }
 
-buildUnnamed3609() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5296() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3609(core.List<core.String> o) {
+void checkUnnamed5296(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterBatchClearValuesRequest = 0;
-buildBatchClearValuesRequest() {
-  var o = new api.BatchClearValuesRequest();
+api.BatchClearValuesRequest buildBatchClearValuesRequest() {
+  var o = api.BatchClearValuesRequest();
   buildCounterBatchClearValuesRequest++;
   if (buildCounterBatchClearValuesRequest < 3) {
-    o.ranges = buildUnnamed3609();
+    o.ranges = buildUnnamed5296();
   }
   buildCounterBatchClearValuesRequest--;
   return o;
 }
 
-checkBatchClearValuesRequest(api.BatchClearValuesRequest o) {
+void checkBatchClearValuesRequest(api.BatchClearValuesRequest o) {
   buildCounterBatchClearValuesRequest++;
   if (buildCounterBatchClearValuesRequest < 3) {
-    checkUnnamed3609(o.ranges);
+    checkUnnamed5296(o.ranges!);
   }
   buildCounterBatchClearValuesRequest--;
 }
 
-buildUnnamed3610() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5297() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3610(core.List<core.String> o) {
+void checkUnnamed5297(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterBatchClearValuesResponse = 0;
-buildBatchClearValuesResponse() {
-  var o = new api.BatchClearValuesResponse();
+api.BatchClearValuesResponse buildBatchClearValuesResponse() {
+  var o = api.BatchClearValuesResponse();
   buildCounterBatchClearValuesResponse++;
   if (buildCounterBatchClearValuesResponse < 3) {
-    o.clearedRanges = buildUnnamed3610();
-    o.spreadsheetId = "foo";
+    o.clearedRanges = buildUnnamed5297();
+    o.spreadsheetId = 'foo';
   }
   buildCounterBatchClearValuesResponse--;
   return o;
 }
 
-checkBatchClearValuesResponse(api.BatchClearValuesResponse o) {
+void checkBatchClearValuesResponse(api.BatchClearValuesResponse o) {
   buildCounterBatchClearValuesResponse++;
   if (buildCounterBatchClearValuesResponse < 3) {
-    checkUnnamed3610(o.clearedRanges);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
+    checkUnnamed5297(o.clearedRanges!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBatchClearValuesResponse--;
 }
 
-buildUnnamed3611() {
-  var o = new core.List<api.DataFilter>();
+core.List<api.DataFilter> buildUnnamed5298() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3611(core.List<api.DataFilter> o) {
+void checkUnnamed5298(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterBatchGetValuesByDataFilterRequest = 0;
-buildBatchGetValuesByDataFilterRequest() {
-  var o = new api.BatchGetValuesByDataFilterRequest();
+api.BatchGetValuesByDataFilterRequest buildBatchGetValuesByDataFilterRequest() {
+  var o = api.BatchGetValuesByDataFilterRequest();
   buildCounterBatchGetValuesByDataFilterRequest++;
   if (buildCounterBatchGetValuesByDataFilterRequest < 3) {
-    o.dataFilters = buildUnnamed3611();
-    o.dateTimeRenderOption = "foo";
-    o.majorDimension = "foo";
-    o.valueRenderOption = "foo";
+    o.dataFilters = buildUnnamed5298();
+    o.dateTimeRenderOption = 'foo';
+    o.majorDimension = 'foo';
+    o.valueRenderOption = 'foo';
   }
   buildCounterBatchGetValuesByDataFilterRequest--;
   return o;
 }
 
-checkBatchGetValuesByDataFilterRequest(
+void checkBatchGetValuesByDataFilterRequest(
     api.BatchGetValuesByDataFilterRequest o) {
   buildCounterBatchGetValuesByDataFilterRequest++;
   if (buildCounterBatchGetValuesByDataFilterRequest < 3) {
-    checkUnnamed3611(o.dataFilters);
-    unittest.expect(o.dateTimeRenderOption, unittest.equals('foo'));
-    unittest.expect(o.majorDimension, unittest.equals('foo'));
-    unittest.expect(o.valueRenderOption, unittest.equals('foo'));
+    checkUnnamed5298(o.dataFilters!);
+    unittest.expect(
+      o.dateTimeRenderOption!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.majorDimension!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.valueRenderOption!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBatchGetValuesByDataFilterRequest--;
 }
 
-buildUnnamed3612() {
-  var o = new core.List<api.MatchedValueRange>();
+core.List<api.MatchedValueRange> buildUnnamed5299() {
+  var o = <api.MatchedValueRange>[];
   o.add(buildMatchedValueRange());
   o.add(buildMatchedValueRange());
   return o;
 }
 
-checkUnnamed3612(core.List<api.MatchedValueRange> o) {
+void checkUnnamed5299(core.List<api.MatchedValueRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMatchedValueRange(o[0]);
-  checkMatchedValueRange(o[1]);
+  checkMatchedValueRange(o[0] as api.MatchedValueRange);
+  checkMatchedValueRange(o[1] as api.MatchedValueRange);
 }
 
 core.int buildCounterBatchGetValuesByDataFilterResponse = 0;
-buildBatchGetValuesByDataFilterResponse() {
-  var o = new api.BatchGetValuesByDataFilterResponse();
+api.BatchGetValuesByDataFilterResponse
+    buildBatchGetValuesByDataFilterResponse() {
+  var o = api.BatchGetValuesByDataFilterResponse();
   buildCounterBatchGetValuesByDataFilterResponse++;
   if (buildCounterBatchGetValuesByDataFilterResponse < 3) {
-    o.spreadsheetId = "foo";
-    o.valueRanges = buildUnnamed3612();
+    o.spreadsheetId = 'foo';
+    o.valueRanges = buildUnnamed5299();
   }
   buildCounterBatchGetValuesByDataFilterResponse--;
   return o;
 }
 
-checkBatchGetValuesByDataFilterResponse(
+void checkBatchGetValuesByDataFilterResponse(
     api.BatchGetValuesByDataFilterResponse o) {
   buildCounterBatchGetValuesByDataFilterResponse++;
   if (buildCounterBatchGetValuesByDataFilterResponse < 3) {
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    checkUnnamed3612(o.valueRanges);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5299(o.valueRanges!);
   }
   buildCounterBatchGetValuesByDataFilterResponse--;
 }
 
-buildUnnamed3613() {
-  var o = new core.List<api.ValueRange>();
+core.List<api.ValueRange> buildUnnamed5300() {
+  var o = <api.ValueRange>[];
   o.add(buildValueRange());
   o.add(buildValueRange());
   return o;
 }
 
-checkUnnamed3613(core.List<api.ValueRange> o) {
+void checkUnnamed5300(core.List<api.ValueRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkValueRange(o[0]);
-  checkValueRange(o[1]);
+  checkValueRange(o[0] as api.ValueRange);
+  checkValueRange(o[1] as api.ValueRange);
 }
 
 core.int buildCounterBatchGetValuesResponse = 0;
-buildBatchGetValuesResponse() {
-  var o = new api.BatchGetValuesResponse();
+api.BatchGetValuesResponse buildBatchGetValuesResponse() {
+  var o = api.BatchGetValuesResponse();
   buildCounterBatchGetValuesResponse++;
   if (buildCounterBatchGetValuesResponse < 3) {
-    o.spreadsheetId = "foo";
-    o.valueRanges = buildUnnamed3613();
+    o.spreadsheetId = 'foo';
+    o.valueRanges = buildUnnamed5300();
   }
   buildCounterBatchGetValuesResponse--;
   return o;
 }
 
-checkBatchGetValuesResponse(api.BatchGetValuesResponse o) {
+void checkBatchGetValuesResponse(api.BatchGetValuesResponse o) {
   buildCounterBatchGetValuesResponse++;
   if (buildCounterBatchGetValuesResponse < 3) {
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    checkUnnamed3613(o.valueRanges);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5300(o.valueRanges!);
   }
   buildCounterBatchGetValuesResponse--;
 }
 
-buildUnnamed3614() {
-  var o = new core.List<api.Request>();
+core.List<api.Request> buildUnnamed5301() {
+  var o = <api.Request>[];
   o.add(buildRequest());
   o.add(buildRequest());
   return o;
 }
 
-checkUnnamed3614(core.List<api.Request> o) {
+void checkUnnamed5301(core.List<api.Request> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRequest(o[0]);
-  checkRequest(o[1]);
+  checkRequest(o[0] as api.Request);
+  checkRequest(o[1] as api.Request);
 }
 
-buildUnnamed3615() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5302() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3615(core.List<core.String> o) {
+void checkUnnamed5302(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterBatchUpdateSpreadsheetRequest = 0;
-buildBatchUpdateSpreadsheetRequest() {
-  var o = new api.BatchUpdateSpreadsheetRequest();
+api.BatchUpdateSpreadsheetRequest buildBatchUpdateSpreadsheetRequest() {
+  var o = api.BatchUpdateSpreadsheetRequest();
   buildCounterBatchUpdateSpreadsheetRequest++;
   if (buildCounterBatchUpdateSpreadsheetRequest < 3) {
     o.includeSpreadsheetInResponse = true;
-    o.requests = buildUnnamed3614();
+    o.requests = buildUnnamed5301();
     o.responseIncludeGridData = true;
-    o.responseRanges = buildUnnamed3615();
+    o.responseRanges = buildUnnamed5302();
   }
   buildCounterBatchUpdateSpreadsheetRequest--;
   return o;
 }
 
-checkBatchUpdateSpreadsheetRequest(api.BatchUpdateSpreadsheetRequest o) {
+void checkBatchUpdateSpreadsheetRequest(api.BatchUpdateSpreadsheetRequest o) {
   buildCounterBatchUpdateSpreadsheetRequest++;
   if (buildCounterBatchUpdateSpreadsheetRequest < 3) {
-    unittest.expect(o.includeSpreadsheetInResponse, unittest.isTrue);
-    checkUnnamed3614(o.requests);
-    unittest.expect(o.responseIncludeGridData, unittest.isTrue);
-    checkUnnamed3615(o.responseRanges);
+    unittest.expect(o.includeSpreadsheetInResponse!, unittest.isTrue);
+    checkUnnamed5301(o.requests!);
+    unittest.expect(o.responseIncludeGridData!, unittest.isTrue);
+    checkUnnamed5302(o.responseRanges!);
   }
   buildCounterBatchUpdateSpreadsheetRequest--;
 }
 
-buildUnnamed3616() {
-  var o = new core.List<api.Response>();
+core.List<api.Response> buildUnnamed5303() {
+  var o = <api.Response>[];
   o.add(buildResponse());
   o.add(buildResponse());
   return o;
 }
 
-checkUnnamed3616(core.List<api.Response> o) {
+void checkUnnamed5303(core.List<api.Response> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkResponse(o[0]);
-  checkResponse(o[1]);
+  checkResponse(o[0] as api.Response);
+  checkResponse(o[1] as api.Response);
 }
 
 core.int buildCounterBatchUpdateSpreadsheetResponse = 0;
-buildBatchUpdateSpreadsheetResponse() {
-  var o = new api.BatchUpdateSpreadsheetResponse();
+api.BatchUpdateSpreadsheetResponse buildBatchUpdateSpreadsheetResponse() {
+  var o = api.BatchUpdateSpreadsheetResponse();
   buildCounterBatchUpdateSpreadsheetResponse++;
   if (buildCounterBatchUpdateSpreadsheetResponse < 3) {
-    o.replies = buildUnnamed3616();
-    o.spreadsheetId = "foo";
+    o.replies = buildUnnamed5303();
+    o.spreadsheetId = 'foo';
     o.updatedSpreadsheet = buildSpreadsheet();
   }
   buildCounterBatchUpdateSpreadsheetResponse--;
   return o;
 }
 
-checkBatchUpdateSpreadsheetResponse(api.BatchUpdateSpreadsheetResponse o) {
+void checkBatchUpdateSpreadsheetResponse(api.BatchUpdateSpreadsheetResponse o) {
   buildCounterBatchUpdateSpreadsheetResponse++;
   if (buildCounterBatchUpdateSpreadsheetResponse < 3) {
-    checkUnnamed3616(o.replies);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    checkSpreadsheet(o.updatedSpreadsheet);
+    checkUnnamed5303(o.replies!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    checkSpreadsheet(o.updatedSpreadsheet! as api.Spreadsheet);
   }
   buildCounterBatchUpdateSpreadsheetResponse--;
 }
 
-buildUnnamed3617() {
-  var o = new core.List<api.DataFilterValueRange>();
+core.List<api.DataFilterValueRange> buildUnnamed5304() {
+  var o = <api.DataFilterValueRange>[];
   o.add(buildDataFilterValueRange());
   o.add(buildDataFilterValueRange());
   return o;
 }
 
-checkUnnamed3617(core.List<api.DataFilterValueRange> o) {
+void checkUnnamed5304(core.List<api.DataFilterValueRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilterValueRange(o[0]);
-  checkDataFilterValueRange(o[1]);
+  checkDataFilterValueRange(o[0] as api.DataFilterValueRange);
+  checkDataFilterValueRange(o[1] as api.DataFilterValueRange);
 }
 
 core.int buildCounterBatchUpdateValuesByDataFilterRequest = 0;
-buildBatchUpdateValuesByDataFilterRequest() {
-  var o = new api.BatchUpdateValuesByDataFilterRequest();
+api.BatchUpdateValuesByDataFilterRequest
+    buildBatchUpdateValuesByDataFilterRequest() {
+  var o = api.BatchUpdateValuesByDataFilterRequest();
   buildCounterBatchUpdateValuesByDataFilterRequest++;
   if (buildCounterBatchUpdateValuesByDataFilterRequest < 3) {
-    o.data = buildUnnamed3617();
+    o.data = buildUnnamed5304();
     o.includeValuesInResponse = true;
-    o.responseDateTimeRenderOption = "foo";
-    o.responseValueRenderOption = "foo";
-    o.valueInputOption = "foo";
+    o.responseDateTimeRenderOption = 'foo';
+    o.responseValueRenderOption = 'foo';
+    o.valueInputOption = 'foo';
   }
   buildCounterBatchUpdateValuesByDataFilterRequest--;
   return o;
 }
 
-checkBatchUpdateValuesByDataFilterRequest(
+void checkBatchUpdateValuesByDataFilterRequest(
     api.BatchUpdateValuesByDataFilterRequest o) {
   buildCounterBatchUpdateValuesByDataFilterRequest++;
   if (buildCounterBatchUpdateValuesByDataFilterRequest < 3) {
-    checkUnnamed3617(o.data);
-    unittest.expect(o.includeValuesInResponse, unittest.isTrue);
-    unittest.expect(o.responseDateTimeRenderOption, unittest.equals('foo'));
-    unittest.expect(o.responseValueRenderOption, unittest.equals('foo'));
-    unittest.expect(o.valueInputOption, unittest.equals('foo'));
+    checkUnnamed5304(o.data!);
+    unittest.expect(o.includeValuesInResponse!, unittest.isTrue);
+    unittest.expect(
+      o.responseDateTimeRenderOption!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.responseValueRenderOption!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.valueInputOption!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBatchUpdateValuesByDataFilterRequest--;
 }
 
-buildUnnamed3618() {
-  var o = new core.List<api.UpdateValuesByDataFilterResponse>();
+core.List<api.UpdateValuesByDataFilterResponse> buildUnnamed5305() {
+  var o = <api.UpdateValuesByDataFilterResponse>[];
   o.add(buildUpdateValuesByDataFilterResponse());
   o.add(buildUpdateValuesByDataFilterResponse());
   return o;
 }
 
-checkUnnamed3618(core.List<api.UpdateValuesByDataFilterResponse> o) {
+void checkUnnamed5305(core.List<api.UpdateValuesByDataFilterResponse> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUpdateValuesByDataFilterResponse(o[0]);
-  checkUpdateValuesByDataFilterResponse(o[1]);
+  checkUpdateValuesByDataFilterResponse(
+      o[0] as api.UpdateValuesByDataFilterResponse);
+  checkUpdateValuesByDataFilterResponse(
+      o[1] as api.UpdateValuesByDataFilterResponse);
 }
 
 core.int buildCounterBatchUpdateValuesByDataFilterResponse = 0;
-buildBatchUpdateValuesByDataFilterResponse() {
-  var o = new api.BatchUpdateValuesByDataFilterResponse();
+api.BatchUpdateValuesByDataFilterResponse
+    buildBatchUpdateValuesByDataFilterResponse() {
+  var o = api.BatchUpdateValuesByDataFilterResponse();
   buildCounterBatchUpdateValuesByDataFilterResponse++;
   if (buildCounterBatchUpdateValuesByDataFilterResponse < 3) {
-    o.responses = buildUnnamed3618();
-    o.spreadsheetId = "foo";
+    o.responses = buildUnnamed5305();
+    o.spreadsheetId = 'foo';
     o.totalUpdatedCells = 42;
     o.totalUpdatedColumns = 42;
     o.totalUpdatedRows = 42;
@@ -1123,80 +1420,104 @@ buildBatchUpdateValuesByDataFilterResponse() {
   return o;
 }
 
-checkBatchUpdateValuesByDataFilterResponse(
+void checkBatchUpdateValuesByDataFilterResponse(
     api.BatchUpdateValuesByDataFilterResponse o) {
   buildCounterBatchUpdateValuesByDataFilterResponse++;
   if (buildCounterBatchUpdateValuesByDataFilterResponse < 3) {
-    checkUnnamed3618(o.responses);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    unittest.expect(o.totalUpdatedCells, unittest.equals(42));
-    unittest.expect(o.totalUpdatedColumns, unittest.equals(42));
-    unittest.expect(o.totalUpdatedRows, unittest.equals(42));
-    unittest.expect(o.totalUpdatedSheets, unittest.equals(42));
+    checkUnnamed5305(o.responses!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalUpdatedCells!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedColumns!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedRows!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedSheets!,
+      unittest.equals(42),
+    );
   }
   buildCounterBatchUpdateValuesByDataFilterResponse--;
 }
 
-buildUnnamed3619() {
-  var o = new core.List<api.ValueRange>();
+core.List<api.ValueRange> buildUnnamed5306() {
+  var o = <api.ValueRange>[];
   o.add(buildValueRange());
   o.add(buildValueRange());
   return o;
 }
 
-checkUnnamed3619(core.List<api.ValueRange> o) {
+void checkUnnamed5306(core.List<api.ValueRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkValueRange(o[0]);
-  checkValueRange(o[1]);
+  checkValueRange(o[0] as api.ValueRange);
+  checkValueRange(o[1] as api.ValueRange);
 }
 
 core.int buildCounterBatchUpdateValuesRequest = 0;
-buildBatchUpdateValuesRequest() {
-  var o = new api.BatchUpdateValuesRequest();
+api.BatchUpdateValuesRequest buildBatchUpdateValuesRequest() {
+  var o = api.BatchUpdateValuesRequest();
   buildCounterBatchUpdateValuesRequest++;
   if (buildCounterBatchUpdateValuesRequest < 3) {
-    o.data = buildUnnamed3619();
+    o.data = buildUnnamed5306();
     o.includeValuesInResponse = true;
-    o.responseDateTimeRenderOption = "foo";
-    o.responseValueRenderOption = "foo";
-    o.valueInputOption = "foo";
+    o.responseDateTimeRenderOption = 'foo';
+    o.responseValueRenderOption = 'foo';
+    o.valueInputOption = 'foo';
   }
   buildCounterBatchUpdateValuesRequest--;
   return o;
 }
 
-checkBatchUpdateValuesRequest(api.BatchUpdateValuesRequest o) {
+void checkBatchUpdateValuesRequest(api.BatchUpdateValuesRequest o) {
   buildCounterBatchUpdateValuesRequest++;
   if (buildCounterBatchUpdateValuesRequest < 3) {
-    checkUnnamed3619(o.data);
-    unittest.expect(o.includeValuesInResponse, unittest.isTrue);
-    unittest.expect(o.responseDateTimeRenderOption, unittest.equals('foo'));
-    unittest.expect(o.responseValueRenderOption, unittest.equals('foo'));
-    unittest.expect(o.valueInputOption, unittest.equals('foo'));
+    checkUnnamed5306(o.data!);
+    unittest.expect(o.includeValuesInResponse!, unittest.isTrue);
+    unittest.expect(
+      o.responseDateTimeRenderOption!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.responseValueRenderOption!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.valueInputOption!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBatchUpdateValuesRequest--;
 }
 
-buildUnnamed3620() {
-  var o = new core.List<api.UpdateValuesResponse>();
+core.List<api.UpdateValuesResponse> buildUnnamed5307() {
+  var o = <api.UpdateValuesResponse>[];
   o.add(buildUpdateValuesResponse());
   o.add(buildUpdateValuesResponse());
   return o;
 }
 
-checkUnnamed3620(core.List<api.UpdateValuesResponse> o) {
+void checkUnnamed5307(core.List<api.UpdateValuesResponse> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUpdateValuesResponse(o[0]);
-  checkUpdateValuesResponse(o[1]);
+  checkUpdateValuesResponse(o[0] as api.UpdateValuesResponse);
+  checkUpdateValuesResponse(o[1] as api.UpdateValuesResponse);
 }
 
 core.int buildCounterBatchUpdateValuesResponse = 0;
-buildBatchUpdateValuesResponse() {
-  var o = new api.BatchUpdateValuesResponse();
+api.BatchUpdateValuesResponse buildBatchUpdateValuesResponse() {
+  var o = api.BatchUpdateValuesResponse();
   buildCounterBatchUpdateValuesResponse++;
   if (buildCounterBatchUpdateValuesResponse < 3) {
-    o.responses = buildUnnamed3620();
-    o.spreadsheetId = "foo";
+    o.responses = buildUnnamed5307();
+    o.spreadsheetId = 'foo';
     o.totalUpdatedCells = 42;
     o.totalUpdatedColumns = 42;
     o.totalUpdatedRows = 42;
@@ -1206,56 +1527,154 @@ buildBatchUpdateValuesResponse() {
   return o;
 }
 
-checkBatchUpdateValuesResponse(api.BatchUpdateValuesResponse o) {
+void checkBatchUpdateValuesResponse(api.BatchUpdateValuesResponse o) {
   buildCounterBatchUpdateValuesResponse++;
   if (buildCounterBatchUpdateValuesResponse < 3) {
-    checkUnnamed3620(o.responses);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    unittest.expect(o.totalUpdatedCells, unittest.equals(42));
-    unittest.expect(o.totalUpdatedColumns, unittest.equals(42));
-    unittest.expect(o.totalUpdatedRows, unittest.equals(42));
-    unittest.expect(o.totalUpdatedSheets, unittest.equals(42));
+    checkUnnamed5307(o.responses!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalUpdatedCells!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedColumns!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedRows!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.totalUpdatedSheets!,
+      unittest.equals(42),
+    );
   }
   buildCounterBatchUpdateValuesResponse--;
 }
 
-buildUnnamed3621() {
-  var o = new core.List<api.ConditionValue>();
+core.int buildCounterBigQueryDataSourceSpec = 0;
+api.BigQueryDataSourceSpec buildBigQueryDataSourceSpec() {
+  var o = api.BigQueryDataSourceSpec();
+  buildCounterBigQueryDataSourceSpec++;
+  if (buildCounterBigQueryDataSourceSpec < 3) {
+    o.projectId = 'foo';
+    o.querySpec = buildBigQueryQuerySpec();
+    o.tableSpec = buildBigQueryTableSpec();
+  }
+  buildCounterBigQueryDataSourceSpec--;
+  return o;
+}
+
+void checkBigQueryDataSourceSpec(api.BigQueryDataSourceSpec o) {
+  buildCounterBigQueryDataSourceSpec++;
+  if (buildCounterBigQueryDataSourceSpec < 3) {
+    unittest.expect(
+      o.projectId!,
+      unittest.equals('foo'),
+    );
+    checkBigQueryQuerySpec(o.querySpec! as api.BigQueryQuerySpec);
+    checkBigQueryTableSpec(o.tableSpec! as api.BigQueryTableSpec);
+  }
+  buildCounterBigQueryDataSourceSpec--;
+}
+
+core.int buildCounterBigQueryQuerySpec = 0;
+api.BigQueryQuerySpec buildBigQueryQuerySpec() {
+  var o = api.BigQueryQuerySpec();
+  buildCounterBigQueryQuerySpec++;
+  if (buildCounterBigQueryQuerySpec < 3) {
+    o.rawQuery = 'foo';
+  }
+  buildCounterBigQueryQuerySpec--;
+  return o;
+}
+
+void checkBigQueryQuerySpec(api.BigQueryQuerySpec o) {
+  buildCounterBigQueryQuerySpec++;
+  if (buildCounterBigQueryQuerySpec < 3) {
+    unittest.expect(
+      o.rawQuery!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterBigQueryQuerySpec--;
+}
+
+core.int buildCounterBigQueryTableSpec = 0;
+api.BigQueryTableSpec buildBigQueryTableSpec() {
+  var o = api.BigQueryTableSpec();
+  buildCounterBigQueryTableSpec++;
+  if (buildCounterBigQueryTableSpec < 3) {
+    o.datasetId = 'foo';
+    o.tableId = 'foo';
+    o.tableProjectId = 'foo';
+  }
+  buildCounterBigQueryTableSpec--;
+  return o;
+}
+
+void checkBigQueryTableSpec(api.BigQueryTableSpec o) {
+  buildCounterBigQueryTableSpec++;
+  if (buildCounterBigQueryTableSpec < 3) {
+    unittest.expect(
+      o.datasetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.tableId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.tableProjectId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterBigQueryTableSpec--;
+}
+
+core.List<api.ConditionValue> buildUnnamed5308() {
+  var o = <api.ConditionValue>[];
   o.add(buildConditionValue());
   o.add(buildConditionValue());
   return o;
 }
 
-checkUnnamed3621(core.List<api.ConditionValue> o) {
+void checkUnnamed5308(core.List<api.ConditionValue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkConditionValue(o[0]);
-  checkConditionValue(o[1]);
+  checkConditionValue(o[0] as api.ConditionValue);
+  checkConditionValue(o[1] as api.ConditionValue);
 }
 
 core.int buildCounterBooleanCondition = 0;
-buildBooleanCondition() {
-  var o = new api.BooleanCondition();
+api.BooleanCondition buildBooleanCondition() {
+  var o = api.BooleanCondition();
   buildCounterBooleanCondition++;
   if (buildCounterBooleanCondition < 3) {
-    o.type = "foo";
-    o.values = buildUnnamed3621();
+    o.type = 'foo';
+    o.values = buildUnnamed5308();
   }
   buildCounterBooleanCondition--;
   return o;
 }
 
-checkBooleanCondition(api.BooleanCondition o) {
+void checkBooleanCondition(api.BooleanCondition o) {
   buildCounterBooleanCondition++;
   if (buildCounterBooleanCondition < 3) {
-    unittest.expect(o.type, unittest.equals('foo'));
-    checkUnnamed3621(o.values);
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5308(o.values!);
   }
   buildCounterBooleanCondition--;
 }
 
 core.int buildCounterBooleanRule = 0;
-buildBooleanRule() {
-  var o = new api.BooleanRule();
+api.BooleanRule buildBooleanRule() {
+  var o = api.BooleanRule();
   buildCounterBooleanRule++;
   if (buildCounterBooleanRule < 3) {
     o.condition = buildBooleanCondition();
@@ -1265,41 +1684,49 @@ buildBooleanRule() {
   return o;
 }
 
-checkBooleanRule(api.BooleanRule o) {
+void checkBooleanRule(api.BooleanRule o) {
   buildCounterBooleanRule++;
   if (buildCounterBooleanRule < 3) {
-    checkBooleanCondition(o.condition);
-    checkCellFormat(o.format);
+    checkBooleanCondition(o.condition! as api.BooleanCondition);
+    checkCellFormat(o.format! as api.CellFormat);
   }
   buildCounterBooleanRule--;
 }
 
 core.int buildCounterBorder = 0;
-buildBorder() {
-  var o = new api.Border();
+api.Border buildBorder() {
+  var o = api.Border();
   buildCounterBorder++;
   if (buildCounterBorder < 3) {
     o.color = buildColor();
-    o.style = "foo";
+    o.colorStyle = buildColorStyle();
+    o.style = 'foo';
     o.width = 42;
   }
   buildCounterBorder--;
   return o;
 }
 
-checkBorder(api.Border o) {
+void checkBorder(api.Border o) {
   buildCounterBorder++;
   if (buildCounterBorder < 3) {
-    checkColor(o.color);
-    unittest.expect(o.style, unittest.equals('foo'));
-    unittest.expect(o.width, unittest.equals(42));
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.style!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.width!,
+      unittest.equals(42),
+    );
   }
   buildCounterBorder--;
 }
 
 core.int buildCounterBorders = 0;
-buildBorders() {
-  var o = new api.Borders();
+api.Borders buildBorders() {
+  var o = api.Borders();
   buildCounterBorders++;
   if (buildCounterBorders < 3) {
     o.bottom = buildBorder();
@@ -1311,23 +1738,24 @@ buildBorders() {
   return o;
 }
 
-checkBorders(api.Borders o) {
+void checkBorders(api.Borders o) {
   buildCounterBorders++;
   if (buildCounterBorders < 3) {
-    checkBorder(o.bottom);
-    checkBorder(o.left);
-    checkBorder(o.right);
-    checkBorder(o.top);
+    checkBorder(o.bottom! as api.Border);
+    checkBorder(o.left! as api.Border);
+    checkBorder(o.right! as api.Border);
+    checkBorder(o.top! as api.Border);
   }
   buildCounterBorders--;
 }
 
 core.int buildCounterBubbleChartSpec = 0;
-buildBubbleChartSpec() {
-  var o = new api.BubbleChartSpec();
+api.BubbleChartSpec buildBubbleChartSpec() {
+  var o = api.BubbleChartSpec();
   buildCounterBubbleChartSpec++;
   if (buildCounterBubbleChartSpec < 3) {
     o.bubbleBorderColor = buildColor();
+    o.bubbleBorderColorStyle = buildColorStyle();
     o.bubbleLabels = buildChartData();
     o.bubbleMaxRadiusSize = 42;
     o.bubbleMinRadiusSize = 42;
@@ -1336,68 +1764,81 @@ buildBubbleChartSpec() {
     o.bubbleTextStyle = buildTextFormat();
     o.domain = buildChartData();
     o.groupIds = buildChartData();
-    o.legendPosition = "foo";
+    o.legendPosition = 'foo';
     o.series = buildChartData();
   }
   buildCounterBubbleChartSpec--;
   return o;
 }
 
-checkBubbleChartSpec(api.BubbleChartSpec o) {
+void checkBubbleChartSpec(api.BubbleChartSpec o) {
   buildCounterBubbleChartSpec++;
   if (buildCounterBubbleChartSpec < 3) {
-    checkColor(o.bubbleBorderColor);
-    checkChartData(o.bubbleLabels);
-    unittest.expect(o.bubbleMaxRadiusSize, unittest.equals(42));
-    unittest.expect(o.bubbleMinRadiusSize, unittest.equals(42));
-    unittest.expect(o.bubbleOpacity, unittest.equals(42.0));
-    checkChartData(o.bubbleSizes);
-    checkTextFormat(o.bubbleTextStyle);
-    checkChartData(o.domain);
-    checkChartData(o.groupIds);
-    unittest.expect(o.legendPosition, unittest.equals('foo'));
-    checkChartData(o.series);
+    checkColor(o.bubbleBorderColor! as api.Color);
+    checkColorStyle(o.bubbleBorderColorStyle! as api.ColorStyle);
+    checkChartData(o.bubbleLabels! as api.ChartData);
+    unittest.expect(
+      o.bubbleMaxRadiusSize!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.bubbleMinRadiusSize!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.bubbleOpacity!,
+      unittest.equals(42.0),
+    );
+    checkChartData(o.bubbleSizes! as api.ChartData);
+    checkTextFormat(o.bubbleTextStyle! as api.TextFormat);
+    checkChartData(o.domain! as api.ChartData);
+    checkChartData(o.groupIds! as api.ChartData);
+    unittest.expect(
+      o.legendPosition!,
+      unittest.equals('foo'),
+    );
+    checkChartData(o.series! as api.ChartData);
   }
   buildCounterBubbleChartSpec--;
 }
 
-buildUnnamed3622() {
-  var o = new core.List<api.CandlestickData>();
+core.List<api.CandlestickData> buildUnnamed5309() {
+  var o = <api.CandlestickData>[];
   o.add(buildCandlestickData());
   o.add(buildCandlestickData());
   return o;
 }
 
-checkUnnamed3622(core.List<api.CandlestickData> o) {
+void checkUnnamed5309(core.List<api.CandlestickData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCandlestickData(o[0]);
-  checkCandlestickData(o[1]);
+  checkCandlestickData(o[0] as api.CandlestickData);
+  checkCandlestickData(o[1] as api.CandlestickData);
 }
 
 core.int buildCounterCandlestickChartSpec = 0;
-buildCandlestickChartSpec() {
-  var o = new api.CandlestickChartSpec();
+api.CandlestickChartSpec buildCandlestickChartSpec() {
+  var o = api.CandlestickChartSpec();
   buildCounterCandlestickChartSpec++;
   if (buildCounterCandlestickChartSpec < 3) {
-    o.data = buildUnnamed3622();
+    o.data = buildUnnamed5309();
     o.domain = buildCandlestickDomain();
   }
   buildCounterCandlestickChartSpec--;
   return o;
 }
 
-checkCandlestickChartSpec(api.CandlestickChartSpec o) {
+void checkCandlestickChartSpec(api.CandlestickChartSpec o) {
   buildCounterCandlestickChartSpec++;
   if (buildCounterCandlestickChartSpec < 3) {
-    checkUnnamed3622(o.data);
-    checkCandlestickDomain(o.domain);
+    checkUnnamed5309(o.data!);
+    checkCandlestickDomain(o.domain! as api.CandlestickDomain);
   }
   buildCounterCandlestickChartSpec--;
 }
 
 core.int buildCounterCandlestickData = 0;
-buildCandlestickData() {
-  var o = new api.CandlestickData();
+api.CandlestickData buildCandlestickData() {
+  var o = api.CandlestickData();
   buildCounterCandlestickData++;
   if (buildCounterCandlestickData < 3) {
     o.closeSeries = buildCandlestickSeries();
@@ -1409,20 +1850,20 @@ buildCandlestickData() {
   return o;
 }
 
-checkCandlestickData(api.CandlestickData o) {
+void checkCandlestickData(api.CandlestickData o) {
   buildCounterCandlestickData++;
   if (buildCounterCandlestickData < 3) {
-    checkCandlestickSeries(o.closeSeries);
-    checkCandlestickSeries(o.highSeries);
-    checkCandlestickSeries(o.lowSeries);
-    checkCandlestickSeries(o.openSeries);
+    checkCandlestickSeries(o.closeSeries! as api.CandlestickSeries);
+    checkCandlestickSeries(o.highSeries! as api.CandlestickSeries);
+    checkCandlestickSeries(o.lowSeries! as api.CandlestickSeries);
+    checkCandlestickSeries(o.openSeries! as api.CandlestickSeries);
   }
   buildCounterCandlestickData--;
 }
 
 core.int buildCounterCandlestickDomain = 0;
-buildCandlestickDomain() {
-  var o = new api.CandlestickDomain();
+api.CandlestickDomain buildCandlestickDomain() {
+  var o = api.CandlestickDomain();
   buildCounterCandlestickDomain++;
   if (buildCounterCandlestickDomain < 3) {
     o.data = buildChartData();
@@ -1432,18 +1873,18 @@ buildCandlestickDomain() {
   return o;
 }
 
-checkCandlestickDomain(api.CandlestickDomain o) {
+void checkCandlestickDomain(api.CandlestickDomain o) {
   buildCounterCandlestickDomain++;
   if (buildCounterCandlestickDomain < 3) {
-    checkChartData(o.data);
-    unittest.expect(o.reversed, unittest.isTrue);
+    checkChartData(o.data! as api.ChartData);
+    unittest.expect(o.reversed!, unittest.isTrue);
   }
   buildCounterCandlestickDomain--;
 }
 
 core.int buildCounterCandlestickSeries = 0;
-buildCandlestickSeries() {
-  var o = new api.CandlestickSeries();
+api.CandlestickSeries buildCandlestickSeries() {
+  var o = api.CandlestickSeries();
   buildCounterCandlestickSeries++;
   if (buildCounterCandlestickSeries < 3) {
     o.data = buildChartData();
@@ -1452,40 +1893,42 @@ buildCandlestickSeries() {
   return o;
 }
 
-checkCandlestickSeries(api.CandlestickSeries o) {
+void checkCandlestickSeries(api.CandlestickSeries o) {
   buildCounterCandlestickSeries++;
   if (buildCounterCandlestickSeries < 3) {
-    checkChartData(o.data);
+    checkChartData(o.data! as api.ChartData);
   }
   buildCounterCandlestickSeries--;
 }
 
-buildUnnamed3623() {
-  var o = new core.List<api.TextFormatRun>();
+core.List<api.TextFormatRun> buildUnnamed5310() {
+  var o = <api.TextFormatRun>[];
   o.add(buildTextFormatRun());
   o.add(buildTextFormatRun());
   return o;
 }
 
-checkUnnamed3623(core.List<api.TextFormatRun> o) {
+void checkUnnamed5310(core.List<api.TextFormatRun> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTextFormatRun(o[0]);
-  checkTextFormatRun(o[1]);
+  checkTextFormatRun(o[0] as api.TextFormatRun);
+  checkTextFormatRun(o[1] as api.TextFormatRun);
 }
 
 core.int buildCounterCellData = 0;
-buildCellData() {
-  var o = new api.CellData();
+api.CellData buildCellData() {
+  var o = api.CellData();
   buildCounterCellData++;
   if (buildCounterCellData < 3) {
+    o.dataSourceFormula = buildDataSourceFormula();
+    o.dataSourceTable = buildDataSourceTable();
     o.dataValidation = buildDataValidationRule();
     o.effectiveFormat = buildCellFormat();
     o.effectiveValue = buildExtendedValue();
-    o.formattedValue = "foo";
-    o.hyperlink = "foo";
-    o.note = "foo";
+    o.formattedValue = 'foo';
+    o.hyperlink = 'foo';
+    o.note = 'foo';
     o.pivotTable = buildPivotTable();
-    o.textFormatRuns = buildUnnamed3623();
+    o.textFormatRuns = buildUnnamed5310();
     o.userEnteredFormat = buildCellFormat();
     o.userEnteredValue = buildExtendedValue();
   }
@@ -1493,133 +1936,336 @@ buildCellData() {
   return o;
 }
 
-checkCellData(api.CellData o) {
+void checkCellData(api.CellData o) {
   buildCounterCellData++;
   if (buildCounterCellData < 3) {
-    checkDataValidationRule(o.dataValidation);
-    checkCellFormat(o.effectiveFormat);
-    checkExtendedValue(o.effectiveValue);
-    unittest.expect(o.formattedValue, unittest.equals('foo'));
-    unittest.expect(o.hyperlink, unittest.equals('foo'));
-    unittest.expect(o.note, unittest.equals('foo'));
-    checkPivotTable(o.pivotTable);
-    checkUnnamed3623(o.textFormatRuns);
-    checkCellFormat(o.userEnteredFormat);
-    checkExtendedValue(o.userEnteredValue);
+    checkDataSourceFormula(o.dataSourceFormula! as api.DataSourceFormula);
+    checkDataSourceTable(o.dataSourceTable! as api.DataSourceTable);
+    checkDataValidationRule(o.dataValidation! as api.DataValidationRule);
+    checkCellFormat(o.effectiveFormat! as api.CellFormat);
+    checkExtendedValue(o.effectiveValue! as api.ExtendedValue);
+    unittest.expect(
+      o.formattedValue!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.hyperlink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.note!,
+      unittest.equals('foo'),
+    );
+    checkPivotTable(o.pivotTable! as api.PivotTable);
+    checkUnnamed5310(o.textFormatRuns!);
+    checkCellFormat(o.userEnteredFormat! as api.CellFormat);
+    checkExtendedValue(o.userEnteredValue! as api.ExtendedValue);
   }
   buildCounterCellData--;
 }
 
 core.int buildCounterCellFormat = 0;
-buildCellFormat() {
-  var o = new api.CellFormat();
+api.CellFormat buildCellFormat() {
+  var o = api.CellFormat();
   buildCounterCellFormat++;
   if (buildCounterCellFormat < 3) {
     o.backgroundColor = buildColor();
+    o.backgroundColorStyle = buildColorStyle();
     o.borders = buildBorders();
-    o.horizontalAlignment = "foo";
-    o.hyperlinkDisplayType = "foo";
+    o.horizontalAlignment = 'foo';
+    o.hyperlinkDisplayType = 'foo';
     o.numberFormat = buildNumberFormat();
     o.padding = buildPadding();
-    o.textDirection = "foo";
+    o.textDirection = 'foo';
     o.textFormat = buildTextFormat();
     o.textRotation = buildTextRotation();
-    o.verticalAlignment = "foo";
-    o.wrapStrategy = "foo";
+    o.verticalAlignment = 'foo';
+    o.wrapStrategy = 'foo';
   }
   buildCounterCellFormat--;
   return o;
 }
 
-checkCellFormat(api.CellFormat o) {
+void checkCellFormat(api.CellFormat o) {
   buildCounterCellFormat++;
   if (buildCounterCellFormat < 3) {
-    checkColor(o.backgroundColor);
-    checkBorders(o.borders);
-    unittest.expect(o.horizontalAlignment, unittest.equals('foo'));
-    unittest.expect(o.hyperlinkDisplayType, unittest.equals('foo'));
-    checkNumberFormat(o.numberFormat);
-    checkPadding(o.padding);
-    unittest.expect(o.textDirection, unittest.equals('foo'));
-    checkTextFormat(o.textFormat);
-    checkTextRotation(o.textRotation);
-    unittest.expect(o.verticalAlignment, unittest.equals('foo'));
-    unittest.expect(o.wrapStrategy, unittest.equals('foo'));
+    checkColor(o.backgroundColor! as api.Color);
+    checkColorStyle(o.backgroundColorStyle! as api.ColorStyle);
+    checkBorders(o.borders! as api.Borders);
+    unittest.expect(
+      o.horizontalAlignment!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.hyperlinkDisplayType!,
+      unittest.equals('foo'),
+    );
+    checkNumberFormat(o.numberFormat! as api.NumberFormat);
+    checkPadding(o.padding! as api.Padding);
+    unittest.expect(
+      o.textDirection!,
+      unittest.equals('foo'),
+    );
+    checkTextFormat(o.textFormat! as api.TextFormat);
+    checkTextRotation(o.textRotation! as api.TextRotation);
+    unittest.expect(
+      o.verticalAlignment!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.wrapStrategy!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterCellFormat--;
 }
 
+core.int buildCounterChartAxisViewWindowOptions = 0;
+api.ChartAxisViewWindowOptions buildChartAxisViewWindowOptions() {
+  var o = api.ChartAxisViewWindowOptions();
+  buildCounterChartAxisViewWindowOptions++;
+  if (buildCounterChartAxisViewWindowOptions < 3) {
+    o.viewWindowMax = 42.0;
+    o.viewWindowMin = 42.0;
+    o.viewWindowMode = 'foo';
+  }
+  buildCounterChartAxisViewWindowOptions--;
+  return o;
+}
+
+void checkChartAxisViewWindowOptions(api.ChartAxisViewWindowOptions o) {
+  buildCounterChartAxisViewWindowOptions++;
+  if (buildCounterChartAxisViewWindowOptions < 3) {
+    unittest.expect(
+      o.viewWindowMax!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.viewWindowMin!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.viewWindowMode!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterChartAxisViewWindowOptions--;
+}
+
+core.int buildCounterChartCustomNumberFormatOptions = 0;
+api.ChartCustomNumberFormatOptions buildChartCustomNumberFormatOptions() {
+  var o = api.ChartCustomNumberFormatOptions();
+  buildCounterChartCustomNumberFormatOptions++;
+  if (buildCounterChartCustomNumberFormatOptions < 3) {
+    o.prefix = 'foo';
+    o.suffix = 'foo';
+  }
+  buildCounterChartCustomNumberFormatOptions--;
+  return o;
+}
+
+void checkChartCustomNumberFormatOptions(api.ChartCustomNumberFormatOptions o) {
+  buildCounterChartCustomNumberFormatOptions++;
+  if (buildCounterChartCustomNumberFormatOptions < 3) {
+    unittest.expect(
+      o.prefix!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.suffix!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterChartCustomNumberFormatOptions--;
+}
+
 core.int buildCounterChartData = 0;
-buildChartData() {
-  var o = new api.ChartData();
+api.ChartData buildChartData() {
+  var o = api.ChartData();
   buildCounterChartData++;
   if (buildCounterChartData < 3) {
+    o.aggregateType = 'foo';
+    o.columnReference = buildDataSourceColumnReference();
+    o.groupRule = buildChartGroupRule();
     o.sourceRange = buildChartSourceRange();
   }
   buildCounterChartData--;
   return o;
 }
 
-checkChartData(api.ChartData o) {
+void checkChartData(api.ChartData o) {
   buildCounterChartData++;
   if (buildCounterChartData < 3) {
-    checkChartSourceRange(o.sourceRange);
+    unittest.expect(
+      o.aggregateType!,
+      unittest.equals('foo'),
+    );
+    checkDataSourceColumnReference(
+        o.columnReference! as api.DataSourceColumnReference);
+    checkChartGroupRule(o.groupRule! as api.ChartGroupRule);
+    checkChartSourceRange(o.sourceRange! as api.ChartSourceRange);
   }
   buildCounterChartData--;
 }
 
-buildUnnamed3624() {
-  var o = new core.List<api.GridRange>();
+core.int buildCounterChartDateTimeRule = 0;
+api.ChartDateTimeRule buildChartDateTimeRule() {
+  var o = api.ChartDateTimeRule();
+  buildCounterChartDateTimeRule++;
+  if (buildCounterChartDateTimeRule < 3) {
+    o.type = 'foo';
+  }
+  buildCounterChartDateTimeRule--;
+  return o;
+}
+
+void checkChartDateTimeRule(api.ChartDateTimeRule o) {
+  buildCounterChartDateTimeRule++;
+  if (buildCounterChartDateTimeRule < 3) {
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterChartDateTimeRule--;
+}
+
+core.int buildCounterChartGroupRule = 0;
+api.ChartGroupRule buildChartGroupRule() {
+  var o = api.ChartGroupRule();
+  buildCounterChartGroupRule++;
+  if (buildCounterChartGroupRule < 3) {
+    o.dateTimeRule = buildChartDateTimeRule();
+    o.histogramRule = buildChartHistogramRule();
+  }
+  buildCounterChartGroupRule--;
+  return o;
+}
+
+void checkChartGroupRule(api.ChartGroupRule o) {
+  buildCounterChartGroupRule++;
+  if (buildCounterChartGroupRule < 3) {
+    checkChartDateTimeRule(o.dateTimeRule! as api.ChartDateTimeRule);
+    checkChartHistogramRule(o.histogramRule! as api.ChartHistogramRule);
+  }
+  buildCounterChartGroupRule--;
+}
+
+core.int buildCounterChartHistogramRule = 0;
+api.ChartHistogramRule buildChartHistogramRule() {
+  var o = api.ChartHistogramRule();
+  buildCounterChartHistogramRule++;
+  if (buildCounterChartHistogramRule < 3) {
+    o.intervalSize = 42.0;
+    o.maxValue = 42.0;
+    o.minValue = 42.0;
+  }
+  buildCounterChartHistogramRule--;
+  return o;
+}
+
+void checkChartHistogramRule(api.ChartHistogramRule o) {
+  buildCounterChartHistogramRule++;
+  if (buildCounterChartHistogramRule < 3) {
+    unittest.expect(
+      o.intervalSize!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.maxValue!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.minValue!,
+      unittest.equals(42.0),
+    );
+  }
+  buildCounterChartHistogramRule--;
+}
+
+core.List<api.GridRange> buildUnnamed5311() {
+  var o = <api.GridRange>[];
   o.add(buildGridRange());
   o.add(buildGridRange());
   return o;
 }
 
-checkUnnamed3624(core.List<api.GridRange> o) {
+void checkUnnamed5311(core.List<api.GridRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGridRange(o[0]);
-  checkGridRange(o[1]);
+  checkGridRange(o[0] as api.GridRange);
+  checkGridRange(o[1] as api.GridRange);
 }
 
 core.int buildCounterChartSourceRange = 0;
-buildChartSourceRange() {
-  var o = new api.ChartSourceRange();
+api.ChartSourceRange buildChartSourceRange() {
+  var o = api.ChartSourceRange();
   buildCounterChartSourceRange++;
   if (buildCounterChartSourceRange < 3) {
-    o.sources = buildUnnamed3624();
+    o.sources = buildUnnamed5311();
   }
   buildCounterChartSourceRange--;
   return o;
 }
 
-checkChartSourceRange(api.ChartSourceRange o) {
+void checkChartSourceRange(api.ChartSourceRange o) {
   buildCounterChartSourceRange++;
   if (buildCounterChartSourceRange < 3) {
-    checkUnnamed3624(o.sources);
+    checkUnnamed5311(o.sources!);
   }
   buildCounterChartSourceRange--;
 }
 
+core.List<api.FilterSpec> buildUnnamed5312() {
+  var o = <api.FilterSpec>[];
+  o.add(buildFilterSpec());
+  o.add(buildFilterSpec());
+  return o;
+}
+
+void checkUnnamed5312(core.List<api.FilterSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkFilterSpec(o[0] as api.FilterSpec);
+  checkFilterSpec(o[1] as api.FilterSpec);
+}
+
+core.List<api.SortSpec> buildUnnamed5313() {
+  var o = <api.SortSpec>[];
+  o.add(buildSortSpec());
+  o.add(buildSortSpec());
+  return o;
+}
+
+void checkUnnamed5313(core.List<api.SortSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkSortSpec(o[0] as api.SortSpec);
+  checkSortSpec(o[1] as api.SortSpec);
+}
+
 core.int buildCounterChartSpec = 0;
-buildChartSpec() {
-  var o = new api.ChartSpec();
+api.ChartSpec buildChartSpec() {
+  var o = api.ChartSpec();
   buildCounterChartSpec++;
   if (buildCounterChartSpec < 3) {
-    o.altText = "foo";
+    o.altText = 'foo';
     o.backgroundColor = buildColor();
+    o.backgroundColorStyle = buildColorStyle();
     o.basicChart = buildBasicChartSpec();
     o.bubbleChart = buildBubbleChartSpec();
     o.candlestickChart = buildCandlestickChartSpec();
-    o.fontName = "foo";
-    o.hiddenDimensionStrategy = "foo";
+    o.dataSourceChartProperties = buildDataSourceChartProperties();
+    o.filterSpecs = buildUnnamed5312();
+    o.fontName = 'foo';
+    o.hiddenDimensionStrategy = 'foo';
     o.histogramChart = buildHistogramChartSpec();
     o.maximized = true;
     o.orgChart = buildOrgChartSpec();
     o.pieChart = buildPieChartSpec();
-    o.subtitle = "foo";
+    o.scorecardChart = buildScorecardChartSpec();
+    o.sortSpecs = buildUnnamed5313();
+    o.subtitle = 'foo';
     o.subtitleTextFormat = buildTextFormat();
     o.subtitleTextPosition = buildTextPosition();
-    o.title = "foo";
+    o.title = 'foo';
     o.titleTextFormat = buildTextFormat();
     o.titleTextPosition = buildTextPosition();
     o.treemapChart = buildTreemapChartSpec();
@@ -1629,35 +2275,56 @@ buildChartSpec() {
   return o;
 }
 
-checkChartSpec(api.ChartSpec o) {
+void checkChartSpec(api.ChartSpec o) {
   buildCounterChartSpec++;
   if (buildCounterChartSpec < 3) {
-    unittest.expect(o.altText, unittest.equals('foo'));
-    checkColor(o.backgroundColor);
-    checkBasicChartSpec(o.basicChart);
-    checkBubbleChartSpec(o.bubbleChart);
-    checkCandlestickChartSpec(o.candlestickChart);
-    unittest.expect(o.fontName, unittest.equals('foo'));
-    unittest.expect(o.hiddenDimensionStrategy, unittest.equals('foo'));
-    checkHistogramChartSpec(o.histogramChart);
-    unittest.expect(o.maximized, unittest.isTrue);
-    checkOrgChartSpec(o.orgChart);
-    checkPieChartSpec(o.pieChart);
-    unittest.expect(o.subtitle, unittest.equals('foo'));
-    checkTextFormat(o.subtitleTextFormat);
-    checkTextPosition(o.subtitleTextPosition);
-    unittest.expect(o.title, unittest.equals('foo'));
-    checkTextFormat(o.titleTextFormat);
-    checkTextPosition(o.titleTextPosition);
-    checkTreemapChartSpec(o.treemapChart);
-    checkWaterfallChartSpec(o.waterfallChart);
+    unittest.expect(
+      o.altText!,
+      unittest.equals('foo'),
+    );
+    checkColor(o.backgroundColor! as api.Color);
+    checkColorStyle(o.backgroundColorStyle! as api.ColorStyle);
+    checkBasicChartSpec(o.basicChart! as api.BasicChartSpec);
+    checkBubbleChartSpec(o.bubbleChart! as api.BubbleChartSpec);
+    checkCandlestickChartSpec(o.candlestickChart! as api.CandlestickChartSpec);
+    checkDataSourceChartProperties(
+        o.dataSourceChartProperties! as api.DataSourceChartProperties);
+    checkUnnamed5312(o.filterSpecs!);
+    unittest.expect(
+      o.fontName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.hiddenDimensionStrategy!,
+      unittest.equals('foo'),
+    );
+    checkHistogramChartSpec(o.histogramChart! as api.HistogramChartSpec);
+    unittest.expect(o.maximized!, unittest.isTrue);
+    checkOrgChartSpec(o.orgChart! as api.OrgChartSpec);
+    checkPieChartSpec(o.pieChart! as api.PieChartSpec);
+    checkScorecardChartSpec(o.scorecardChart! as api.ScorecardChartSpec);
+    checkUnnamed5313(o.sortSpecs!);
+    unittest.expect(
+      o.subtitle!,
+      unittest.equals('foo'),
+    );
+    checkTextFormat(o.subtitleTextFormat! as api.TextFormat);
+    checkTextPosition(o.subtitleTextPosition! as api.TextPosition);
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    checkTextFormat(o.titleTextFormat! as api.TextFormat);
+    checkTextPosition(o.titleTextPosition! as api.TextPosition);
+    checkTreemapChartSpec(o.treemapChart! as api.TreemapChartSpec);
+    checkWaterfallChartSpec(o.waterfallChart! as api.WaterfallChartSpec);
   }
   buildCounterChartSpec--;
 }
 
 core.int buildCounterClearBasicFilterRequest = 0;
-buildClearBasicFilterRequest() {
-  var o = new api.ClearBasicFilterRequest();
+api.ClearBasicFilterRequest buildClearBasicFilterRequest() {
+  var o = api.ClearBasicFilterRequest();
   buildCounterClearBasicFilterRequest++;
   if (buildCounterClearBasicFilterRequest < 3) {
     o.sheetId = 42;
@@ -1666,53 +2333,62 @@ buildClearBasicFilterRequest() {
   return o;
 }
 
-checkClearBasicFilterRequest(api.ClearBasicFilterRequest o) {
+void checkClearBasicFilterRequest(api.ClearBasicFilterRequest o) {
   buildCounterClearBasicFilterRequest++;
   if (buildCounterClearBasicFilterRequest < 3) {
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterClearBasicFilterRequest--;
 }
 
 core.int buildCounterClearValuesRequest = 0;
-buildClearValuesRequest() {
-  var o = new api.ClearValuesRequest();
+api.ClearValuesRequest buildClearValuesRequest() {
+  var o = api.ClearValuesRequest();
   buildCounterClearValuesRequest++;
   if (buildCounterClearValuesRequest < 3) {}
   buildCounterClearValuesRequest--;
   return o;
 }
 
-checkClearValuesRequest(api.ClearValuesRequest o) {
+void checkClearValuesRequest(api.ClearValuesRequest o) {
   buildCounterClearValuesRequest++;
   if (buildCounterClearValuesRequest < 3) {}
   buildCounterClearValuesRequest--;
 }
 
 core.int buildCounterClearValuesResponse = 0;
-buildClearValuesResponse() {
-  var o = new api.ClearValuesResponse();
+api.ClearValuesResponse buildClearValuesResponse() {
+  var o = api.ClearValuesResponse();
   buildCounterClearValuesResponse++;
   if (buildCounterClearValuesResponse < 3) {
-    o.clearedRange = "foo";
-    o.spreadsheetId = "foo";
+    o.clearedRange = 'foo';
+    o.spreadsheetId = 'foo';
   }
   buildCounterClearValuesResponse--;
   return o;
 }
 
-checkClearValuesResponse(api.ClearValuesResponse o) {
+void checkClearValuesResponse(api.ClearValuesResponse o) {
   buildCounterClearValuesResponse++;
   if (buildCounterClearValuesResponse < 3) {
-    unittest.expect(o.clearedRange, unittest.equals('foo'));
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
+    unittest.expect(
+      o.clearedRange!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterClearValuesResponse--;
 }
 
 core.int buildCounterColor = 0;
-buildColor() {
-  var o = new api.Color();
+api.Color buildColor() {
+  var o = api.Color();
   buildCounterColor++;
   if (buildCounterColor < 3) {
     o.alpha = 42.0;
@@ -1724,122 +2400,174 @@ buildColor() {
   return o;
 }
 
-checkColor(api.Color o) {
+void checkColor(api.Color o) {
   buildCounterColor++;
   if (buildCounterColor < 3) {
-    unittest.expect(o.alpha, unittest.equals(42.0));
-    unittest.expect(o.blue, unittest.equals(42.0));
-    unittest.expect(o.green, unittest.equals(42.0));
-    unittest.expect(o.red, unittest.equals(42.0));
+    unittest.expect(
+      o.alpha!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.blue!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.green!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.red!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterColor--;
 }
 
+core.int buildCounterColorStyle = 0;
+api.ColorStyle buildColorStyle() {
+  var o = api.ColorStyle();
+  buildCounterColorStyle++;
+  if (buildCounterColorStyle < 3) {
+    o.rgbColor = buildColor();
+    o.themeColor = 'foo';
+  }
+  buildCounterColorStyle--;
+  return o;
+}
+
+void checkColorStyle(api.ColorStyle o) {
+  buildCounterColorStyle++;
+  if (buildCounterColorStyle < 3) {
+    checkColor(o.rgbColor! as api.Color);
+    unittest.expect(
+      o.themeColor!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterColorStyle--;
+}
+
 core.int buildCounterConditionValue = 0;
-buildConditionValue() {
-  var o = new api.ConditionValue();
+api.ConditionValue buildConditionValue() {
+  var o = api.ConditionValue();
   buildCounterConditionValue++;
   if (buildCounterConditionValue < 3) {
-    o.relativeDate = "foo";
-    o.userEnteredValue = "foo";
+    o.relativeDate = 'foo';
+    o.userEnteredValue = 'foo';
   }
   buildCounterConditionValue--;
   return o;
 }
 
-checkConditionValue(api.ConditionValue o) {
+void checkConditionValue(api.ConditionValue o) {
   buildCounterConditionValue++;
   if (buildCounterConditionValue < 3) {
-    unittest.expect(o.relativeDate, unittest.equals('foo'));
-    unittest.expect(o.userEnteredValue, unittest.equals('foo'));
+    unittest.expect(
+      o.relativeDate!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.userEnteredValue!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterConditionValue--;
 }
 
-buildUnnamed3625() {
-  var o = new core.List<api.GridRange>();
+core.List<api.GridRange> buildUnnamed5314() {
+  var o = <api.GridRange>[];
   o.add(buildGridRange());
   o.add(buildGridRange());
   return o;
 }
 
-checkUnnamed3625(core.List<api.GridRange> o) {
+void checkUnnamed5314(core.List<api.GridRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGridRange(o[0]);
-  checkGridRange(o[1]);
+  checkGridRange(o[0] as api.GridRange);
+  checkGridRange(o[1] as api.GridRange);
 }
 
 core.int buildCounterConditionalFormatRule = 0;
-buildConditionalFormatRule() {
-  var o = new api.ConditionalFormatRule();
+api.ConditionalFormatRule buildConditionalFormatRule() {
+  var o = api.ConditionalFormatRule();
   buildCounterConditionalFormatRule++;
   if (buildCounterConditionalFormatRule < 3) {
     o.booleanRule = buildBooleanRule();
     o.gradientRule = buildGradientRule();
-    o.ranges = buildUnnamed3625();
+    o.ranges = buildUnnamed5314();
   }
   buildCounterConditionalFormatRule--;
   return o;
 }
 
-checkConditionalFormatRule(api.ConditionalFormatRule o) {
+void checkConditionalFormatRule(api.ConditionalFormatRule o) {
   buildCounterConditionalFormatRule++;
   if (buildCounterConditionalFormatRule < 3) {
-    checkBooleanRule(o.booleanRule);
-    checkGradientRule(o.gradientRule);
-    checkUnnamed3625(o.ranges);
+    checkBooleanRule(o.booleanRule! as api.BooleanRule);
+    checkGradientRule(o.gradientRule! as api.GradientRule);
+    checkUnnamed5314(o.ranges!);
   }
   buildCounterConditionalFormatRule--;
 }
 
 core.int buildCounterCopyPasteRequest = 0;
-buildCopyPasteRequest() {
-  var o = new api.CopyPasteRequest();
+api.CopyPasteRequest buildCopyPasteRequest() {
+  var o = api.CopyPasteRequest();
   buildCounterCopyPasteRequest++;
   if (buildCounterCopyPasteRequest < 3) {
     o.destination = buildGridRange();
-    o.pasteOrientation = "foo";
-    o.pasteType = "foo";
+    o.pasteOrientation = 'foo';
+    o.pasteType = 'foo';
     o.source = buildGridRange();
   }
   buildCounterCopyPasteRequest--;
   return o;
 }
 
-checkCopyPasteRequest(api.CopyPasteRequest o) {
+void checkCopyPasteRequest(api.CopyPasteRequest o) {
   buildCounterCopyPasteRequest++;
   if (buildCounterCopyPasteRequest < 3) {
-    checkGridRange(o.destination);
-    unittest.expect(o.pasteOrientation, unittest.equals('foo'));
-    unittest.expect(o.pasteType, unittest.equals('foo'));
-    checkGridRange(o.source);
+    checkGridRange(o.destination! as api.GridRange);
+    unittest.expect(
+      o.pasteOrientation!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pasteType!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.source! as api.GridRange);
   }
   buildCounterCopyPasteRequest--;
 }
 
 core.int buildCounterCopySheetToAnotherSpreadsheetRequest = 0;
-buildCopySheetToAnotherSpreadsheetRequest() {
-  var o = new api.CopySheetToAnotherSpreadsheetRequest();
+api.CopySheetToAnotherSpreadsheetRequest
+    buildCopySheetToAnotherSpreadsheetRequest() {
+  var o = api.CopySheetToAnotherSpreadsheetRequest();
   buildCounterCopySheetToAnotherSpreadsheetRequest++;
   if (buildCounterCopySheetToAnotherSpreadsheetRequest < 3) {
-    o.destinationSpreadsheetId = "foo";
+    o.destinationSpreadsheetId = 'foo';
   }
   buildCounterCopySheetToAnotherSpreadsheetRequest--;
   return o;
 }
 
-checkCopySheetToAnotherSpreadsheetRequest(
+void checkCopySheetToAnotherSpreadsheetRequest(
     api.CopySheetToAnotherSpreadsheetRequest o) {
   buildCounterCopySheetToAnotherSpreadsheetRequest++;
   if (buildCounterCopySheetToAnotherSpreadsheetRequest < 3) {
-    unittest.expect(o.destinationSpreadsheetId, unittest.equals('foo'));
+    unittest.expect(
+      o.destinationSpreadsheetId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterCopySheetToAnotherSpreadsheetRequest--;
 }
 
 core.int buildCounterCreateDeveloperMetadataRequest = 0;
-buildCreateDeveloperMetadataRequest() {
-  var o = new api.CreateDeveloperMetadataRequest();
+api.CreateDeveloperMetadataRequest buildCreateDeveloperMetadataRequest() {
+  var o = api.CreateDeveloperMetadataRequest();
   buildCounterCreateDeveloperMetadataRequest++;
   if (buildCounterCreateDeveloperMetadataRequest < 3) {
     o.developerMetadata = buildDeveloperMetadata();
@@ -1848,17 +2576,17 @@ buildCreateDeveloperMetadataRequest() {
   return o;
 }
 
-checkCreateDeveloperMetadataRequest(api.CreateDeveloperMetadataRequest o) {
+void checkCreateDeveloperMetadataRequest(api.CreateDeveloperMetadataRequest o) {
   buildCounterCreateDeveloperMetadataRequest++;
   if (buildCounterCreateDeveloperMetadataRequest < 3) {
-    checkDeveloperMetadata(o.developerMetadata);
+    checkDeveloperMetadata(o.developerMetadata! as api.DeveloperMetadata);
   }
   buildCounterCreateDeveloperMetadataRequest--;
 }
 
 core.int buildCounterCreateDeveloperMetadataResponse = 0;
-buildCreateDeveloperMetadataResponse() {
-  var o = new api.CreateDeveloperMetadataResponse();
+api.CreateDeveloperMetadataResponse buildCreateDeveloperMetadataResponse() {
+  var o = api.CreateDeveloperMetadataResponse();
   buildCounterCreateDeveloperMetadataResponse++;
   if (buildCounterCreateDeveloperMetadataResponse < 3) {
     o.developerMetadata = buildDeveloperMetadata();
@@ -1867,43 +2595,84 @@ buildCreateDeveloperMetadataResponse() {
   return o;
 }
 
-checkCreateDeveloperMetadataResponse(api.CreateDeveloperMetadataResponse o) {
+void checkCreateDeveloperMetadataResponse(
+    api.CreateDeveloperMetadataResponse o) {
   buildCounterCreateDeveloperMetadataResponse++;
   if (buildCounterCreateDeveloperMetadataResponse < 3) {
-    checkDeveloperMetadata(o.developerMetadata);
+    checkDeveloperMetadata(o.developerMetadata! as api.DeveloperMetadata);
   }
   buildCounterCreateDeveloperMetadataResponse--;
 }
 
 core.int buildCounterCutPasteRequest = 0;
-buildCutPasteRequest() {
-  var o = new api.CutPasteRequest();
+api.CutPasteRequest buildCutPasteRequest() {
+  var o = api.CutPasteRequest();
   buildCounterCutPasteRequest++;
   if (buildCounterCutPasteRequest < 3) {
     o.destination = buildGridCoordinate();
-    o.pasteType = "foo";
+    o.pasteType = 'foo';
     o.source = buildGridRange();
   }
   buildCounterCutPasteRequest--;
   return o;
 }
 
-checkCutPasteRequest(api.CutPasteRequest o) {
+void checkCutPasteRequest(api.CutPasteRequest o) {
   buildCounterCutPasteRequest++;
   if (buildCounterCutPasteRequest < 3) {
-    checkGridCoordinate(o.destination);
-    unittest.expect(o.pasteType, unittest.equals('foo'));
-    checkGridRange(o.source);
+    checkGridCoordinate(o.destination! as api.GridCoordinate);
+    unittest.expect(
+      o.pasteType!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.source! as api.GridRange);
   }
   buildCounterCutPasteRequest--;
 }
 
+core.int buildCounterDataExecutionStatus = 0;
+api.DataExecutionStatus buildDataExecutionStatus() {
+  var o = api.DataExecutionStatus();
+  buildCounterDataExecutionStatus++;
+  if (buildCounterDataExecutionStatus < 3) {
+    o.errorCode = 'foo';
+    o.errorMessage = 'foo';
+    o.lastRefreshTime = 'foo';
+    o.state = 'foo';
+  }
+  buildCounterDataExecutionStatus--;
+  return o;
+}
+
+void checkDataExecutionStatus(api.DataExecutionStatus o) {
+  buildCounterDataExecutionStatus++;
+  if (buildCounterDataExecutionStatus < 3) {
+    unittest.expect(
+      o.errorCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.errorMessage!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.lastRefreshTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.state!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataExecutionStatus--;
+}
+
 core.int buildCounterDataFilter = 0;
-buildDataFilter() {
-  var o = new api.DataFilter();
+api.DataFilter buildDataFilter() {
+  var o = api.DataFilter();
   buildCounterDataFilter++;
   if (buildCounterDataFilter < 3) {
-    o.a1Range = "foo";
+    o.a1Range = 'foo';
     o.developerMetadataLookup = buildDeveloperMetadataLookup();
     o.gridRange = buildGridRange();
   }
@@ -1911,18 +2680,22 @@ buildDataFilter() {
   return o;
 }
 
-checkDataFilter(api.DataFilter o) {
+void checkDataFilter(api.DataFilter o) {
   buildCounterDataFilter++;
   if (buildCounterDataFilter < 3) {
-    unittest.expect(o.a1Range, unittest.equals('foo'));
-    checkDeveloperMetadataLookup(o.developerMetadataLookup);
-    checkGridRange(o.gridRange);
+    unittest.expect(
+      o.a1Range!,
+      unittest.equals('foo'),
+    );
+    checkDeveloperMetadataLookup(
+        o.developerMetadataLookup! as api.DeveloperMetadataLookup);
+    checkGridRange(o.gridRange! as api.GridRange);
   }
   buildCounterDataFilter--;
 }
 
-buildUnnamed3626() {
-  var o = new core.List<core.Object>();
+core.List<core.Object> buildUnnamed5315() {
+  var o = <core.Object>[];
   o.add({
     'list': [1, 2, 3],
     'bool': true,
@@ -1936,63 +2709,674 @@ buildUnnamed3626() {
   return o;
 }
 
-checkUnnamed3626(core.List<core.Object> o) {
+void checkUnnamed5315(core.List<core.Object> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted1 = (o[0]) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
-  unittest.expect(casted1["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted1["bool"], unittest.equals(true));
-  unittest.expect(casted1["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted1['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted1['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted1['string'],
+    unittest.equals('foo'),
+  );
   var casted2 = (o[1]) as core.Map;
   unittest.expect(casted2, unittest.hasLength(3));
-  unittest.expect(casted2["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted2["bool"], unittest.equals(true));
-  unittest.expect(casted2["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted2['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted2['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted2['string'],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3627() {
-  var o = new core.List<core.List<core.Object>>();
-  o.add(buildUnnamed3626());
-  o.add(buildUnnamed3626());
+core.List<core.List<core.Object>> buildUnnamed5316() {
+  var o = <core.List<core.Object>>[];
+  o.add(buildUnnamed5315());
+  o.add(buildUnnamed5315());
   return o;
 }
 
-checkUnnamed3627(core.List<core.List<core.Object>> o) {
+void checkUnnamed5316(core.List<core.List<core.Object>> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed3626(o[0]);
-  checkUnnamed3626(o[1]);
+  checkUnnamed5315(o[0]);
+  checkUnnamed5315(o[1]);
 }
 
 core.int buildCounterDataFilterValueRange = 0;
-buildDataFilterValueRange() {
-  var o = new api.DataFilterValueRange();
+api.DataFilterValueRange buildDataFilterValueRange() {
+  var o = api.DataFilterValueRange();
   buildCounterDataFilterValueRange++;
   if (buildCounterDataFilterValueRange < 3) {
     o.dataFilter = buildDataFilter();
-    o.majorDimension = "foo";
-    o.values = buildUnnamed3627();
+    o.majorDimension = 'foo';
+    o.values = buildUnnamed5316();
   }
   buildCounterDataFilterValueRange--;
   return o;
 }
 
-checkDataFilterValueRange(api.DataFilterValueRange o) {
+void checkDataFilterValueRange(api.DataFilterValueRange o) {
   buildCounterDataFilterValueRange++;
   if (buildCounterDataFilterValueRange < 3) {
-    checkDataFilter(o.dataFilter);
-    unittest.expect(o.majorDimension, unittest.equals('foo'));
-    checkUnnamed3627(o.values);
+    checkDataFilter(o.dataFilter! as api.DataFilter);
+    unittest.expect(
+      o.majorDimension!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5316(o.values!);
   }
   buildCounterDataFilterValueRange--;
 }
 
+core.int buildCounterDataLabel = 0;
+api.DataLabel buildDataLabel() {
+  var o = api.DataLabel();
+  buildCounterDataLabel++;
+  if (buildCounterDataLabel < 3) {
+    o.customLabelData = buildChartData();
+    o.placement = 'foo';
+    o.textFormat = buildTextFormat();
+    o.type = 'foo';
+  }
+  buildCounterDataLabel--;
+  return o;
+}
+
+void checkDataLabel(api.DataLabel o) {
+  buildCounterDataLabel++;
+  if (buildCounterDataLabel < 3) {
+    checkChartData(o.customLabelData! as api.ChartData);
+    unittest.expect(
+      o.placement!,
+      unittest.equals('foo'),
+    );
+    checkTextFormat(o.textFormat! as api.TextFormat);
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataLabel--;
+}
+
+core.List<api.DataSourceColumn> buildUnnamed5317() {
+  var o = <api.DataSourceColumn>[];
+  o.add(buildDataSourceColumn());
+  o.add(buildDataSourceColumn());
+  return o;
+}
+
+void checkUnnamed5317(core.List<api.DataSourceColumn> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceColumn(o[0] as api.DataSourceColumn);
+  checkDataSourceColumn(o[1] as api.DataSourceColumn);
+}
+
+core.int buildCounterDataSource = 0;
+api.DataSource buildDataSource() {
+  var o = api.DataSource();
+  buildCounterDataSource++;
+  if (buildCounterDataSource < 3) {
+    o.calculatedColumns = buildUnnamed5317();
+    o.dataSourceId = 'foo';
+    o.sheetId = 42;
+    o.spec = buildDataSourceSpec();
+  }
+  buildCounterDataSource--;
+  return o;
+}
+
+void checkDataSource(api.DataSource o) {
+  buildCounterDataSource++;
+  if (buildCounterDataSource < 3) {
+    checkUnnamed5317(o.calculatedColumns!);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+    checkDataSourceSpec(o.spec! as api.DataSourceSpec);
+  }
+  buildCounterDataSource--;
+}
+
+core.int buildCounterDataSourceChartProperties = 0;
+api.DataSourceChartProperties buildDataSourceChartProperties() {
+  var o = api.DataSourceChartProperties();
+  buildCounterDataSourceChartProperties++;
+  if (buildCounterDataSourceChartProperties < 3) {
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSourceId = 'foo';
+  }
+  buildCounterDataSourceChartProperties--;
+  return o;
+}
+
+void checkDataSourceChartProperties(api.DataSourceChartProperties o) {
+  buildCounterDataSourceChartProperties++;
+  if (buildCounterDataSourceChartProperties < 3) {
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataSourceChartProperties--;
+}
+
+core.int buildCounterDataSourceColumn = 0;
+api.DataSourceColumn buildDataSourceColumn() {
+  var o = api.DataSourceColumn();
+  buildCounterDataSourceColumn++;
+  if (buildCounterDataSourceColumn < 3) {
+    o.formula = 'foo';
+    o.reference = buildDataSourceColumnReference();
+  }
+  buildCounterDataSourceColumn--;
+  return o;
+}
+
+void checkDataSourceColumn(api.DataSourceColumn o) {
+  buildCounterDataSourceColumn++;
+  if (buildCounterDataSourceColumn < 3) {
+    unittest.expect(
+      o.formula!,
+      unittest.equals('foo'),
+    );
+    checkDataSourceColumnReference(
+        o.reference! as api.DataSourceColumnReference);
+  }
+  buildCounterDataSourceColumn--;
+}
+
+core.int buildCounterDataSourceColumnReference = 0;
+api.DataSourceColumnReference buildDataSourceColumnReference() {
+  var o = api.DataSourceColumnReference();
+  buildCounterDataSourceColumnReference++;
+  if (buildCounterDataSourceColumnReference < 3) {
+    o.name = 'foo';
+  }
+  buildCounterDataSourceColumnReference--;
+  return o;
+}
+
+void checkDataSourceColumnReference(api.DataSourceColumnReference o) {
+  buildCounterDataSourceColumnReference++;
+  if (buildCounterDataSourceColumnReference < 3) {
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataSourceColumnReference--;
+}
+
+core.int buildCounterDataSourceFormula = 0;
+api.DataSourceFormula buildDataSourceFormula() {
+  var o = api.DataSourceFormula();
+  buildCounterDataSourceFormula++;
+  if (buildCounterDataSourceFormula < 3) {
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSourceId = 'foo';
+  }
+  buildCounterDataSourceFormula--;
+  return o;
+}
+
+void checkDataSourceFormula(api.DataSourceFormula o) {
+  buildCounterDataSourceFormula++;
+  if (buildCounterDataSourceFormula < 3) {
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataSourceFormula--;
+}
+
+core.int buildCounterDataSourceObjectReference = 0;
+api.DataSourceObjectReference buildDataSourceObjectReference() {
+  var o = api.DataSourceObjectReference();
+  buildCounterDataSourceObjectReference++;
+  if (buildCounterDataSourceObjectReference < 3) {
+    o.chartId = 42;
+    o.dataSourceFormulaCell = buildGridCoordinate();
+    o.dataSourcePivotTableAnchorCell = buildGridCoordinate();
+    o.dataSourceTableAnchorCell = buildGridCoordinate();
+    o.sheetId = 'foo';
+  }
+  buildCounterDataSourceObjectReference--;
+  return o;
+}
+
+void checkDataSourceObjectReference(api.DataSourceObjectReference o) {
+  buildCounterDataSourceObjectReference++;
+  if (buildCounterDataSourceObjectReference < 3) {
+    unittest.expect(
+      o.chartId!,
+      unittest.equals(42),
+    );
+    checkGridCoordinate(o.dataSourceFormulaCell! as api.GridCoordinate);
+    checkGridCoordinate(
+        o.dataSourcePivotTableAnchorCell! as api.GridCoordinate);
+    checkGridCoordinate(o.dataSourceTableAnchorCell! as api.GridCoordinate);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataSourceObjectReference--;
+}
+
+core.List<api.DataSourceObjectReference> buildUnnamed5318() {
+  var o = <api.DataSourceObjectReference>[];
+  o.add(buildDataSourceObjectReference());
+  o.add(buildDataSourceObjectReference());
+  return o;
+}
+
+void checkUnnamed5318(core.List<api.DataSourceObjectReference> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceObjectReference(o[0] as api.DataSourceObjectReference);
+  checkDataSourceObjectReference(o[1] as api.DataSourceObjectReference);
+}
+
+core.int buildCounterDataSourceObjectReferences = 0;
+api.DataSourceObjectReferences buildDataSourceObjectReferences() {
+  var o = api.DataSourceObjectReferences();
+  buildCounterDataSourceObjectReferences++;
+  if (buildCounterDataSourceObjectReferences < 3) {
+    o.references = buildUnnamed5318();
+  }
+  buildCounterDataSourceObjectReferences--;
+  return o;
+}
+
+void checkDataSourceObjectReferences(api.DataSourceObjectReferences o) {
+  buildCounterDataSourceObjectReferences++;
+  if (buildCounterDataSourceObjectReferences < 3) {
+    checkUnnamed5318(o.references!);
+  }
+  buildCounterDataSourceObjectReferences--;
+}
+
+core.int buildCounterDataSourceParameter = 0;
+api.DataSourceParameter buildDataSourceParameter() {
+  var o = api.DataSourceParameter();
+  buildCounterDataSourceParameter++;
+  if (buildCounterDataSourceParameter < 3) {
+    o.name = 'foo';
+    o.namedRangeId = 'foo';
+    o.range = buildGridRange();
+  }
+  buildCounterDataSourceParameter--;
+  return o;
+}
+
+void checkDataSourceParameter(api.DataSourceParameter o) {
+  buildCounterDataSourceParameter++;
+  if (buildCounterDataSourceParameter < 3) {
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.namedRangeId!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
+  }
+  buildCounterDataSourceParameter--;
+}
+
+core.int buildCounterDataSourceRefreshDailySchedule = 0;
+api.DataSourceRefreshDailySchedule buildDataSourceRefreshDailySchedule() {
+  var o = api.DataSourceRefreshDailySchedule();
+  buildCounterDataSourceRefreshDailySchedule++;
+  if (buildCounterDataSourceRefreshDailySchedule < 3) {
+    o.startTime = buildTimeOfDay();
+  }
+  buildCounterDataSourceRefreshDailySchedule--;
+  return o;
+}
+
+void checkDataSourceRefreshDailySchedule(api.DataSourceRefreshDailySchedule o) {
+  buildCounterDataSourceRefreshDailySchedule++;
+  if (buildCounterDataSourceRefreshDailySchedule < 3) {
+    checkTimeOfDay(o.startTime! as api.TimeOfDay);
+  }
+  buildCounterDataSourceRefreshDailySchedule--;
+}
+
+core.List<core.int> buildUnnamed5319() {
+  var o = <core.int>[];
+  o.add(42);
+  o.add(42);
+  return o;
+}
+
+void checkUnnamed5319(core.List<core.int> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals(42),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals(42),
+  );
+}
+
+core.int buildCounterDataSourceRefreshMonthlySchedule = 0;
+api.DataSourceRefreshMonthlySchedule buildDataSourceRefreshMonthlySchedule() {
+  var o = api.DataSourceRefreshMonthlySchedule();
+  buildCounterDataSourceRefreshMonthlySchedule++;
+  if (buildCounterDataSourceRefreshMonthlySchedule < 3) {
+    o.daysOfMonth = buildUnnamed5319();
+    o.startTime = buildTimeOfDay();
+  }
+  buildCounterDataSourceRefreshMonthlySchedule--;
+  return o;
+}
+
+void checkDataSourceRefreshMonthlySchedule(
+    api.DataSourceRefreshMonthlySchedule o) {
+  buildCounterDataSourceRefreshMonthlySchedule++;
+  if (buildCounterDataSourceRefreshMonthlySchedule < 3) {
+    checkUnnamed5319(o.daysOfMonth!);
+    checkTimeOfDay(o.startTime! as api.TimeOfDay);
+  }
+  buildCounterDataSourceRefreshMonthlySchedule--;
+}
+
+core.int buildCounterDataSourceRefreshSchedule = 0;
+api.DataSourceRefreshSchedule buildDataSourceRefreshSchedule() {
+  var o = api.DataSourceRefreshSchedule();
+  buildCounterDataSourceRefreshSchedule++;
+  if (buildCounterDataSourceRefreshSchedule < 3) {
+    o.dailySchedule = buildDataSourceRefreshDailySchedule();
+    o.enabled = true;
+    o.monthlySchedule = buildDataSourceRefreshMonthlySchedule();
+    o.nextRun = buildInterval();
+    o.refreshScope = 'foo';
+    o.weeklySchedule = buildDataSourceRefreshWeeklySchedule();
+  }
+  buildCounterDataSourceRefreshSchedule--;
+  return o;
+}
+
+void checkDataSourceRefreshSchedule(api.DataSourceRefreshSchedule o) {
+  buildCounterDataSourceRefreshSchedule++;
+  if (buildCounterDataSourceRefreshSchedule < 3) {
+    checkDataSourceRefreshDailySchedule(
+        o.dailySchedule! as api.DataSourceRefreshDailySchedule);
+    unittest.expect(o.enabled!, unittest.isTrue);
+    checkDataSourceRefreshMonthlySchedule(
+        o.monthlySchedule! as api.DataSourceRefreshMonthlySchedule);
+    checkInterval(o.nextRun! as api.Interval);
+    unittest.expect(
+      o.refreshScope!,
+      unittest.equals('foo'),
+    );
+    checkDataSourceRefreshWeeklySchedule(
+        o.weeklySchedule! as api.DataSourceRefreshWeeklySchedule);
+  }
+  buildCounterDataSourceRefreshSchedule--;
+}
+
+core.List<core.String> buildUnnamed5320() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
+  return o;
+}
+
+void checkUnnamed5320(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterDataSourceRefreshWeeklySchedule = 0;
+api.DataSourceRefreshWeeklySchedule buildDataSourceRefreshWeeklySchedule() {
+  var o = api.DataSourceRefreshWeeklySchedule();
+  buildCounterDataSourceRefreshWeeklySchedule++;
+  if (buildCounterDataSourceRefreshWeeklySchedule < 3) {
+    o.daysOfWeek = buildUnnamed5320();
+    o.startTime = buildTimeOfDay();
+  }
+  buildCounterDataSourceRefreshWeeklySchedule--;
+  return o;
+}
+
+void checkDataSourceRefreshWeeklySchedule(
+    api.DataSourceRefreshWeeklySchedule o) {
+  buildCounterDataSourceRefreshWeeklySchedule++;
+  if (buildCounterDataSourceRefreshWeeklySchedule < 3) {
+    checkUnnamed5320(o.daysOfWeek!);
+    checkTimeOfDay(o.startTime! as api.TimeOfDay);
+  }
+  buildCounterDataSourceRefreshWeeklySchedule--;
+}
+
+core.List<api.DataSourceColumnReference> buildUnnamed5321() {
+  var o = <api.DataSourceColumnReference>[];
+  o.add(buildDataSourceColumnReference());
+  o.add(buildDataSourceColumnReference());
+  return o;
+}
+
+void checkUnnamed5321(core.List<api.DataSourceColumnReference> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceColumnReference(o[0] as api.DataSourceColumnReference);
+  checkDataSourceColumnReference(o[1] as api.DataSourceColumnReference);
+}
+
+core.int buildCounterDataSourceSheetDimensionRange = 0;
+api.DataSourceSheetDimensionRange buildDataSourceSheetDimensionRange() {
+  var o = api.DataSourceSheetDimensionRange();
+  buildCounterDataSourceSheetDimensionRange++;
+  if (buildCounterDataSourceSheetDimensionRange < 3) {
+    o.columnReferences = buildUnnamed5321();
+    o.sheetId = 42;
+  }
+  buildCounterDataSourceSheetDimensionRange--;
+  return o;
+}
+
+void checkDataSourceSheetDimensionRange(api.DataSourceSheetDimensionRange o) {
+  buildCounterDataSourceSheetDimensionRange++;
+  if (buildCounterDataSourceSheetDimensionRange < 3) {
+    checkUnnamed5321(o.columnReferences!);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterDataSourceSheetDimensionRange--;
+}
+
+core.List<api.DataSourceColumn> buildUnnamed5322() {
+  var o = <api.DataSourceColumn>[];
+  o.add(buildDataSourceColumn());
+  o.add(buildDataSourceColumn());
+  return o;
+}
+
+void checkUnnamed5322(core.List<api.DataSourceColumn> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceColumn(o[0] as api.DataSourceColumn);
+  checkDataSourceColumn(o[1] as api.DataSourceColumn);
+}
+
+core.int buildCounterDataSourceSheetProperties = 0;
+api.DataSourceSheetProperties buildDataSourceSheetProperties() {
+  var o = api.DataSourceSheetProperties();
+  buildCounterDataSourceSheetProperties++;
+  if (buildCounterDataSourceSheetProperties < 3) {
+    o.columns = buildUnnamed5322();
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSourceId = 'foo';
+  }
+  buildCounterDataSourceSheetProperties--;
+  return o;
+}
+
+void checkDataSourceSheetProperties(api.DataSourceSheetProperties o) {
+  buildCounterDataSourceSheetProperties++;
+  if (buildCounterDataSourceSheetProperties < 3) {
+    checkUnnamed5322(o.columns!);
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataSourceSheetProperties--;
+}
+
+core.List<api.DataSourceParameter> buildUnnamed5323() {
+  var o = <api.DataSourceParameter>[];
+  o.add(buildDataSourceParameter());
+  o.add(buildDataSourceParameter());
+  return o;
+}
+
+void checkUnnamed5323(core.List<api.DataSourceParameter> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceParameter(o[0] as api.DataSourceParameter);
+  checkDataSourceParameter(o[1] as api.DataSourceParameter);
+}
+
+core.int buildCounterDataSourceSpec = 0;
+api.DataSourceSpec buildDataSourceSpec() {
+  var o = api.DataSourceSpec();
+  buildCounterDataSourceSpec++;
+  if (buildCounterDataSourceSpec < 3) {
+    o.bigQuery = buildBigQueryDataSourceSpec();
+    o.parameters = buildUnnamed5323();
+  }
+  buildCounterDataSourceSpec--;
+  return o;
+}
+
+void checkDataSourceSpec(api.DataSourceSpec o) {
+  buildCounterDataSourceSpec++;
+  if (buildCounterDataSourceSpec < 3) {
+    checkBigQueryDataSourceSpec(o.bigQuery! as api.BigQueryDataSourceSpec);
+    checkUnnamed5323(o.parameters!);
+  }
+  buildCounterDataSourceSpec--;
+}
+
+core.List<api.DataSourceColumnReference> buildUnnamed5324() {
+  var o = <api.DataSourceColumnReference>[];
+  o.add(buildDataSourceColumnReference());
+  o.add(buildDataSourceColumnReference());
+  return o;
+}
+
+void checkUnnamed5324(core.List<api.DataSourceColumnReference> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceColumnReference(o[0] as api.DataSourceColumnReference);
+  checkDataSourceColumnReference(o[1] as api.DataSourceColumnReference);
+}
+
+core.List<api.FilterSpec> buildUnnamed5325() {
+  var o = <api.FilterSpec>[];
+  o.add(buildFilterSpec());
+  o.add(buildFilterSpec());
+  return o;
+}
+
+void checkUnnamed5325(core.List<api.FilterSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkFilterSpec(o[0] as api.FilterSpec);
+  checkFilterSpec(o[1] as api.FilterSpec);
+}
+
+core.List<api.SortSpec> buildUnnamed5326() {
+  var o = <api.SortSpec>[];
+  o.add(buildSortSpec());
+  o.add(buildSortSpec());
+  return o;
+}
+
+void checkUnnamed5326(core.List<api.SortSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkSortSpec(o[0] as api.SortSpec);
+  checkSortSpec(o[1] as api.SortSpec);
+}
+
+core.int buildCounterDataSourceTable = 0;
+api.DataSourceTable buildDataSourceTable() {
+  var o = api.DataSourceTable();
+  buildCounterDataSourceTable++;
+  if (buildCounterDataSourceTable < 3) {
+    o.columnSelectionType = 'foo';
+    o.columns = buildUnnamed5324();
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSourceId = 'foo';
+    o.filterSpecs = buildUnnamed5325();
+    o.rowLimit = 42;
+    o.sortSpecs = buildUnnamed5326();
+  }
+  buildCounterDataSourceTable--;
+  return o;
+}
+
+void checkDataSourceTable(api.DataSourceTable o) {
+  buildCounterDataSourceTable++;
+  if (buildCounterDataSourceTable < 3) {
+    unittest.expect(
+      o.columnSelectionType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5324(o.columns!);
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5325(o.filterSpecs!);
+    unittest.expect(
+      o.rowLimit!,
+      unittest.equals(42),
+    );
+    checkUnnamed5326(o.sortSpecs!);
+  }
+  buildCounterDataSourceTable--;
+}
+
 core.int buildCounterDataValidationRule = 0;
-buildDataValidationRule() {
-  var o = new api.DataValidationRule();
+api.DataValidationRule buildDataValidationRule() {
+  var o = api.DataValidationRule();
   buildCounterDataValidationRule++;
   if (buildCounterDataValidationRule < 3) {
     o.condition = buildBooleanCondition();
-    o.inputMessage = "foo";
+    o.inputMessage = 'foo';
     o.showCustomUi = true;
     o.strict = true;
   }
@@ -2000,39 +3384,45 @@ buildDataValidationRule() {
   return o;
 }
 
-checkDataValidationRule(api.DataValidationRule o) {
+void checkDataValidationRule(api.DataValidationRule o) {
   buildCounterDataValidationRule++;
   if (buildCounterDataValidationRule < 3) {
-    checkBooleanCondition(o.condition);
-    unittest.expect(o.inputMessage, unittest.equals('foo'));
-    unittest.expect(o.showCustomUi, unittest.isTrue);
-    unittest.expect(o.strict, unittest.isTrue);
+    checkBooleanCondition(o.condition! as api.BooleanCondition);
+    unittest.expect(
+      o.inputMessage!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.showCustomUi!, unittest.isTrue);
+    unittest.expect(o.strict!, unittest.isTrue);
   }
   buildCounterDataValidationRule--;
 }
 
 core.int buildCounterDateTimeRule = 0;
-buildDateTimeRule() {
-  var o = new api.DateTimeRule();
+api.DateTimeRule buildDateTimeRule() {
+  var o = api.DateTimeRule();
   buildCounterDateTimeRule++;
   if (buildCounterDateTimeRule < 3) {
-    o.type = "foo";
+    o.type = 'foo';
   }
   buildCounterDateTimeRule--;
   return o;
 }
 
-checkDateTimeRule(api.DateTimeRule o) {
+void checkDateTimeRule(api.DateTimeRule o) {
   buildCounterDateTimeRule++;
   if (buildCounterDateTimeRule < 3) {
-    unittest.expect(o.type, unittest.equals('foo'));
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDateTimeRule--;
 }
 
 core.int buildCounterDeleteBandingRequest = 0;
-buildDeleteBandingRequest() {
-  var o = new api.DeleteBandingRequest();
+api.DeleteBandingRequest buildDeleteBandingRequest() {
+  var o = api.DeleteBandingRequest();
   buildCounterDeleteBandingRequest++;
   if (buildCounterDeleteBandingRequest < 3) {
     o.bandedRangeId = 42;
@@ -2041,17 +3431,21 @@ buildDeleteBandingRequest() {
   return o;
 }
 
-checkDeleteBandingRequest(api.DeleteBandingRequest o) {
+void checkDeleteBandingRequest(api.DeleteBandingRequest o) {
   buildCounterDeleteBandingRequest++;
   if (buildCounterDeleteBandingRequest < 3) {
-    unittest.expect(o.bandedRangeId, unittest.equals(42));
+    unittest.expect(
+      o.bandedRangeId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteBandingRequest--;
 }
 
 core.int buildCounterDeleteConditionalFormatRuleRequest = 0;
-buildDeleteConditionalFormatRuleRequest() {
-  var o = new api.DeleteConditionalFormatRuleRequest();
+api.DeleteConditionalFormatRuleRequest
+    buildDeleteConditionalFormatRuleRequest() {
+  var o = api.DeleteConditionalFormatRuleRequest();
   buildCounterDeleteConditionalFormatRuleRequest++;
   if (buildCounterDeleteConditionalFormatRuleRequest < 3) {
     o.index = 42;
@@ -2061,19 +3455,26 @@ buildDeleteConditionalFormatRuleRequest() {
   return o;
 }
 
-checkDeleteConditionalFormatRuleRequest(
+void checkDeleteConditionalFormatRuleRequest(
     api.DeleteConditionalFormatRuleRequest o) {
   buildCounterDeleteConditionalFormatRuleRequest++;
   if (buildCounterDeleteConditionalFormatRuleRequest < 3) {
-    unittest.expect(o.index, unittest.equals(42));
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteConditionalFormatRuleRequest--;
 }
 
 core.int buildCounterDeleteConditionalFormatRuleResponse = 0;
-buildDeleteConditionalFormatRuleResponse() {
-  var o = new api.DeleteConditionalFormatRuleResponse();
+api.DeleteConditionalFormatRuleResponse
+    buildDeleteConditionalFormatRuleResponse() {
+  var o = api.DeleteConditionalFormatRuleResponse();
   buildCounterDeleteConditionalFormatRuleResponse++;
   if (buildCounterDeleteConditionalFormatRuleResponse < 3) {
     o.rule = buildConditionalFormatRule();
@@ -2082,18 +3483,40 @@ buildDeleteConditionalFormatRuleResponse() {
   return o;
 }
 
-checkDeleteConditionalFormatRuleResponse(
+void checkDeleteConditionalFormatRuleResponse(
     api.DeleteConditionalFormatRuleResponse o) {
   buildCounterDeleteConditionalFormatRuleResponse++;
   if (buildCounterDeleteConditionalFormatRuleResponse < 3) {
-    checkConditionalFormatRule(o.rule);
+    checkConditionalFormatRule(o.rule! as api.ConditionalFormatRule);
   }
   buildCounterDeleteConditionalFormatRuleResponse--;
 }
 
+core.int buildCounterDeleteDataSourceRequest = 0;
+api.DeleteDataSourceRequest buildDeleteDataSourceRequest() {
+  var o = api.DeleteDataSourceRequest();
+  buildCounterDeleteDataSourceRequest++;
+  if (buildCounterDeleteDataSourceRequest < 3) {
+    o.dataSourceId = 'foo';
+  }
+  buildCounterDeleteDataSourceRequest--;
+  return o;
+}
+
+void checkDeleteDataSourceRequest(api.DeleteDataSourceRequest o) {
+  buildCounterDeleteDataSourceRequest++;
+  if (buildCounterDeleteDataSourceRequest < 3) {
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDeleteDataSourceRequest--;
+}
+
 core.int buildCounterDeleteDeveloperMetadataRequest = 0;
-buildDeleteDeveloperMetadataRequest() {
-  var o = new api.DeleteDeveloperMetadataRequest();
+api.DeleteDeveloperMetadataRequest buildDeleteDeveloperMetadataRequest() {
+  var o = api.DeleteDeveloperMetadataRequest();
   buildCounterDeleteDeveloperMetadataRequest++;
   if (buildCounterDeleteDeveloperMetadataRequest < 3) {
     o.dataFilter = buildDataFilter();
@@ -2102,49 +3525,50 @@ buildDeleteDeveloperMetadataRequest() {
   return o;
 }
 
-checkDeleteDeveloperMetadataRequest(api.DeleteDeveloperMetadataRequest o) {
+void checkDeleteDeveloperMetadataRequest(api.DeleteDeveloperMetadataRequest o) {
   buildCounterDeleteDeveloperMetadataRequest++;
   if (buildCounterDeleteDeveloperMetadataRequest < 3) {
-    checkDataFilter(o.dataFilter);
+    checkDataFilter(o.dataFilter! as api.DataFilter);
   }
   buildCounterDeleteDeveloperMetadataRequest--;
 }
 
-buildUnnamed3628() {
-  var o = new core.List<api.DeveloperMetadata>();
+core.List<api.DeveloperMetadata> buildUnnamed5327() {
+  var o = <api.DeveloperMetadata>[];
   o.add(buildDeveloperMetadata());
   o.add(buildDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3628(core.List<api.DeveloperMetadata> o) {
+void checkUnnamed5327(core.List<api.DeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDeveloperMetadata(o[0]);
-  checkDeveloperMetadata(o[1]);
+  checkDeveloperMetadata(o[0] as api.DeveloperMetadata);
+  checkDeveloperMetadata(o[1] as api.DeveloperMetadata);
 }
 
 core.int buildCounterDeleteDeveloperMetadataResponse = 0;
-buildDeleteDeveloperMetadataResponse() {
-  var o = new api.DeleteDeveloperMetadataResponse();
+api.DeleteDeveloperMetadataResponse buildDeleteDeveloperMetadataResponse() {
+  var o = api.DeleteDeveloperMetadataResponse();
   buildCounterDeleteDeveloperMetadataResponse++;
   if (buildCounterDeleteDeveloperMetadataResponse < 3) {
-    o.deletedDeveloperMetadata = buildUnnamed3628();
+    o.deletedDeveloperMetadata = buildUnnamed5327();
   }
   buildCounterDeleteDeveloperMetadataResponse--;
   return o;
 }
 
-checkDeleteDeveloperMetadataResponse(api.DeleteDeveloperMetadataResponse o) {
+void checkDeleteDeveloperMetadataResponse(
+    api.DeleteDeveloperMetadataResponse o) {
   buildCounterDeleteDeveloperMetadataResponse++;
   if (buildCounterDeleteDeveloperMetadataResponse < 3) {
-    checkUnnamed3628(o.deletedDeveloperMetadata);
+    checkUnnamed5327(o.deletedDeveloperMetadata!);
   }
   buildCounterDeleteDeveloperMetadataResponse--;
 }
 
 core.int buildCounterDeleteDimensionGroupRequest = 0;
-buildDeleteDimensionGroupRequest() {
-  var o = new api.DeleteDimensionGroupRequest();
+api.DeleteDimensionGroupRequest buildDeleteDimensionGroupRequest() {
+  var o = api.DeleteDimensionGroupRequest();
   buildCounterDeleteDimensionGroupRequest++;
   if (buildCounterDeleteDimensionGroupRequest < 3) {
     o.range = buildDimensionRange();
@@ -2153,49 +3577,49 @@ buildDeleteDimensionGroupRequest() {
   return o;
 }
 
-checkDeleteDimensionGroupRequest(api.DeleteDimensionGroupRequest o) {
+void checkDeleteDimensionGroupRequest(api.DeleteDimensionGroupRequest o) {
   buildCounterDeleteDimensionGroupRequest++;
   if (buildCounterDeleteDimensionGroupRequest < 3) {
-    checkDimensionRange(o.range);
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterDeleteDimensionGroupRequest--;
 }
 
-buildUnnamed3629() {
-  var o = new core.List<api.DimensionGroup>();
+core.List<api.DimensionGroup> buildUnnamed5328() {
+  var o = <api.DimensionGroup>[];
   o.add(buildDimensionGroup());
   o.add(buildDimensionGroup());
   return o;
 }
 
-checkUnnamed3629(core.List<api.DimensionGroup> o) {
+void checkUnnamed5328(core.List<api.DimensionGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionGroup(o[0]);
-  checkDimensionGroup(o[1]);
+  checkDimensionGroup(o[0] as api.DimensionGroup);
+  checkDimensionGroup(o[1] as api.DimensionGroup);
 }
 
 core.int buildCounterDeleteDimensionGroupResponse = 0;
-buildDeleteDimensionGroupResponse() {
-  var o = new api.DeleteDimensionGroupResponse();
+api.DeleteDimensionGroupResponse buildDeleteDimensionGroupResponse() {
+  var o = api.DeleteDimensionGroupResponse();
   buildCounterDeleteDimensionGroupResponse++;
   if (buildCounterDeleteDimensionGroupResponse < 3) {
-    o.dimensionGroups = buildUnnamed3629();
+    o.dimensionGroups = buildUnnamed5328();
   }
   buildCounterDeleteDimensionGroupResponse--;
   return o;
 }
 
-checkDeleteDimensionGroupResponse(api.DeleteDimensionGroupResponse o) {
+void checkDeleteDimensionGroupResponse(api.DeleteDimensionGroupResponse o) {
   buildCounterDeleteDimensionGroupResponse++;
   if (buildCounterDeleteDimensionGroupResponse < 3) {
-    checkUnnamed3629(o.dimensionGroups);
+    checkUnnamed5328(o.dimensionGroups!);
   }
   buildCounterDeleteDimensionGroupResponse--;
 }
 
 core.int buildCounterDeleteDimensionRequest = 0;
-buildDeleteDimensionRequest() {
-  var o = new api.DeleteDimensionRequest();
+api.DeleteDimensionRequest buildDeleteDimensionRequest() {
+  var o = api.DeleteDimensionRequest();
   buildCounterDeleteDimensionRequest++;
   if (buildCounterDeleteDimensionRequest < 3) {
     o.range = buildDimensionRange();
@@ -2204,17 +3628,73 @@ buildDeleteDimensionRequest() {
   return o;
 }
 
-checkDeleteDimensionRequest(api.DeleteDimensionRequest o) {
+void checkDeleteDimensionRequest(api.DeleteDimensionRequest o) {
   buildCounterDeleteDimensionRequest++;
   if (buildCounterDeleteDimensionRequest < 3) {
-    checkDimensionRange(o.range);
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterDeleteDimensionRequest--;
 }
 
+core.List<api.DimensionRange> buildUnnamed5329() {
+  var o = <api.DimensionRange>[];
+  o.add(buildDimensionRange());
+  o.add(buildDimensionRange());
+  return o;
+}
+
+void checkUnnamed5329(core.List<api.DimensionRange> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDimensionRange(o[0] as api.DimensionRange);
+  checkDimensionRange(o[1] as api.DimensionRange);
+}
+
+core.int buildCounterDeleteDuplicatesRequest = 0;
+api.DeleteDuplicatesRequest buildDeleteDuplicatesRequest() {
+  var o = api.DeleteDuplicatesRequest();
+  buildCounterDeleteDuplicatesRequest++;
+  if (buildCounterDeleteDuplicatesRequest < 3) {
+    o.comparisonColumns = buildUnnamed5329();
+    o.range = buildGridRange();
+  }
+  buildCounterDeleteDuplicatesRequest--;
+  return o;
+}
+
+void checkDeleteDuplicatesRequest(api.DeleteDuplicatesRequest o) {
+  buildCounterDeleteDuplicatesRequest++;
+  if (buildCounterDeleteDuplicatesRequest < 3) {
+    checkUnnamed5329(o.comparisonColumns!);
+    checkGridRange(o.range! as api.GridRange);
+  }
+  buildCounterDeleteDuplicatesRequest--;
+}
+
+core.int buildCounterDeleteDuplicatesResponse = 0;
+api.DeleteDuplicatesResponse buildDeleteDuplicatesResponse() {
+  var o = api.DeleteDuplicatesResponse();
+  buildCounterDeleteDuplicatesResponse++;
+  if (buildCounterDeleteDuplicatesResponse < 3) {
+    o.duplicatesRemovedCount = 42;
+  }
+  buildCounterDeleteDuplicatesResponse--;
+  return o;
+}
+
+void checkDeleteDuplicatesResponse(api.DeleteDuplicatesResponse o) {
+  buildCounterDeleteDuplicatesResponse++;
+  if (buildCounterDeleteDuplicatesResponse < 3) {
+    unittest.expect(
+      o.duplicatesRemovedCount!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterDeleteDuplicatesResponse--;
+}
+
 core.int buildCounterDeleteEmbeddedObjectRequest = 0;
-buildDeleteEmbeddedObjectRequest() {
-  var o = new api.DeleteEmbeddedObjectRequest();
+api.DeleteEmbeddedObjectRequest buildDeleteEmbeddedObjectRequest() {
+  var o = api.DeleteEmbeddedObjectRequest();
   buildCounterDeleteEmbeddedObjectRequest++;
   if (buildCounterDeleteEmbeddedObjectRequest < 3) {
     o.objectId = 42;
@@ -2223,17 +3703,20 @@ buildDeleteEmbeddedObjectRequest() {
   return o;
 }
 
-checkDeleteEmbeddedObjectRequest(api.DeleteEmbeddedObjectRequest o) {
+void checkDeleteEmbeddedObjectRequest(api.DeleteEmbeddedObjectRequest o) {
   buildCounterDeleteEmbeddedObjectRequest++;
   if (buildCounterDeleteEmbeddedObjectRequest < 3) {
-    unittest.expect(o.objectId, unittest.equals(42));
+    unittest.expect(
+      o.objectId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteEmbeddedObjectRequest--;
 }
 
 core.int buildCounterDeleteFilterViewRequest = 0;
-buildDeleteFilterViewRequest() {
-  var o = new api.DeleteFilterViewRequest();
+api.DeleteFilterViewRequest buildDeleteFilterViewRequest() {
+  var o = api.DeleteFilterViewRequest();
   buildCounterDeleteFilterViewRequest++;
   if (buildCounterDeleteFilterViewRequest < 3) {
     o.filterId = 42;
@@ -2242,36 +3725,42 @@ buildDeleteFilterViewRequest() {
   return o;
 }
 
-checkDeleteFilterViewRequest(api.DeleteFilterViewRequest o) {
+void checkDeleteFilterViewRequest(api.DeleteFilterViewRequest o) {
   buildCounterDeleteFilterViewRequest++;
   if (buildCounterDeleteFilterViewRequest < 3) {
-    unittest.expect(o.filterId, unittest.equals(42));
+    unittest.expect(
+      o.filterId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteFilterViewRequest--;
 }
 
 core.int buildCounterDeleteNamedRangeRequest = 0;
-buildDeleteNamedRangeRequest() {
-  var o = new api.DeleteNamedRangeRequest();
+api.DeleteNamedRangeRequest buildDeleteNamedRangeRequest() {
+  var o = api.DeleteNamedRangeRequest();
   buildCounterDeleteNamedRangeRequest++;
   if (buildCounterDeleteNamedRangeRequest < 3) {
-    o.namedRangeId = "foo";
+    o.namedRangeId = 'foo';
   }
   buildCounterDeleteNamedRangeRequest--;
   return o;
 }
 
-checkDeleteNamedRangeRequest(api.DeleteNamedRangeRequest o) {
+void checkDeleteNamedRangeRequest(api.DeleteNamedRangeRequest o) {
   buildCounterDeleteNamedRangeRequest++;
   if (buildCounterDeleteNamedRangeRequest < 3) {
-    unittest.expect(o.namedRangeId, unittest.equals('foo'));
+    unittest.expect(
+      o.namedRangeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDeleteNamedRangeRequest--;
 }
 
 core.int buildCounterDeleteProtectedRangeRequest = 0;
-buildDeleteProtectedRangeRequest() {
-  var o = new api.DeleteProtectedRangeRequest();
+api.DeleteProtectedRangeRequest buildDeleteProtectedRangeRequest() {
+  var o = api.DeleteProtectedRangeRequest();
   buildCounterDeleteProtectedRangeRequest++;
   if (buildCounterDeleteProtectedRangeRequest < 3) {
     o.protectedRangeId = 42;
@@ -2280,38 +3769,44 @@ buildDeleteProtectedRangeRequest() {
   return o;
 }
 
-checkDeleteProtectedRangeRequest(api.DeleteProtectedRangeRequest o) {
+void checkDeleteProtectedRangeRequest(api.DeleteProtectedRangeRequest o) {
   buildCounterDeleteProtectedRangeRequest++;
   if (buildCounterDeleteProtectedRangeRequest < 3) {
-    unittest.expect(o.protectedRangeId, unittest.equals(42));
+    unittest.expect(
+      o.protectedRangeId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteProtectedRangeRequest--;
 }
 
 core.int buildCounterDeleteRangeRequest = 0;
-buildDeleteRangeRequest() {
-  var o = new api.DeleteRangeRequest();
+api.DeleteRangeRequest buildDeleteRangeRequest() {
+  var o = api.DeleteRangeRequest();
   buildCounterDeleteRangeRequest++;
   if (buildCounterDeleteRangeRequest < 3) {
     o.range = buildGridRange();
-    o.shiftDimension = "foo";
+    o.shiftDimension = 'foo';
   }
   buildCounterDeleteRangeRequest--;
   return o;
 }
 
-checkDeleteRangeRequest(api.DeleteRangeRequest o) {
+void checkDeleteRangeRequest(api.DeleteRangeRequest o) {
   buildCounterDeleteRangeRequest++;
   if (buildCounterDeleteRangeRequest < 3) {
-    checkGridRange(o.range);
-    unittest.expect(o.shiftDimension, unittest.equals('foo'));
+    checkGridRange(o.range! as api.GridRange);
+    unittest.expect(
+      o.shiftDimension!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDeleteRangeRequest--;
 }
 
 core.int buildCounterDeleteSheetRequest = 0;
-buildDeleteSheetRequest() {
-  var o = new api.DeleteSheetRequest();
+api.DeleteSheetRequest buildDeleteSheetRequest() {
+  var o = api.DeleteSheetRequest();
   buildCounterDeleteSheetRequest++;
   if (buildCounterDeleteSheetRequest < 3) {
     o.sheetId = 42;
@@ -2320,48 +3815,64 @@ buildDeleteSheetRequest() {
   return o;
 }
 
-checkDeleteSheetRequest(api.DeleteSheetRequest o) {
+void checkDeleteSheetRequest(api.DeleteSheetRequest o) {
   buildCounterDeleteSheetRequest++;
   if (buildCounterDeleteSheetRequest < 3) {
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDeleteSheetRequest--;
 }
 
 core.int buildCounterDeveloperMetadata = 0;
-buildDeveloperMetadata() {
-  var o = new api.DeveloperMetadata();
+api.DeveloperMetadata buildDeveloperMetadata() {
+  var o = api.DeveloperMetadata();
   buildCounterDeveloperMetadata++;
   if (buildCounterDeveloperMetadata < 3) {
     o.location = buildDeveloperMetadataLocation();
     o.metadataId = 42;
-    o.metadataKey = "foo";
-    o.metadataValue = "foo";
-    o.visibility = "foo";
+    o.metadataKey = 'foo';
+    o.metadataValue = 'foo';
+    o.visibility = 'foo';
   }
   buildCounterDeveloperMetadata--;
   return o;
 }
 
-checkDeveloperMetadata(api.DeveloperMetadata o) {
+void checkDeveloperMetadata(api.DeveloperMetadata o) {
   buildCounterDeveloperMetadata++;
   if (buildCounterDeveloperMetadata < 3) {
-    checkDeveloperMetadataLocation(o.location);
-    unittest.expect(o.metadataId, unittest.equals(42));
-    unittest.expect(o.metadataKey, unittest.equals('foo'));
-    unittest.expect(o.metadataValue, unittest.equals('foo'));
-    unittest.expect(o.visibility, unittest.equals('foo'));
+    checkDeveloperMetadataLocation(
+        o.location! as api.DeveloperMetadataLocation);
+    unittest.expect(
+      o.metadataId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.metadataKey!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.metadataValue!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.visibility!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDeveloperMetadata--;
 }
 
 core.int buildCounterDeveloperMetadataLocation = 0;
-buildDeveloperMetadataLocation() {
-  var o = new api.DeveloperMetadataLocation();
+api.DeveloperMetadataLocation buildDeveloperMetadataLocation() {
+  var o = api.DeveloperMetadataLocation();
   buildCounterDeveloperMetadataLocation++;
   if (buildCounterDeveloperMetadataLocation < 3) {
     o.dimensionRange = buildDimensionRange();
-    o.locationType = "foo";
+    o.locationType = 'foo';
     o.sheetId = 42;
     o.spreadsheet = true;
   }
@@ -2369,51 +3880,76 @@ buildDeveloperMetadataLocation() {
   return o;
 }
 
-checkDeveloperMetadataLocation(api.DeveloperMetadataLocation o) {
+void checkDeveloperMetadataLocation(api.DeveloperMetadataLocation o) {
   buildCounterDeveloperMetadataLocation++;
   if (buildCounterDeveloperMetadataLocation < 3) {
-    checkDimensionRange(o.dimensionRange);
-    unittest.expect(o.locationType, unittest.equals('foo'));
-    unittest.expect(o.sheetId, unittest.equals(42));
-    unittest.expect(o.spreadsheet, unittest.isTrue);
+    checkDimensionRange(o.dimensionRange! as api.DimensionRange);
+    unittest.expect(
+      o.locationType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.spreadsheet!, unittest.isTrue);
   }
   buildCounterDeveloperMetadataLocation--;
 }
 
 core.int buildCounterDeveloperMetadataLookup = 0;
-buildDeveloperMetadataLookup() {
-  var o = new api.DeveloperMetadataLookup();
+api.DeveloperMetadataLookup buildDeveloperMetadataLookup() {
+  var o = api.DeveloperMetadataLookup();
   buildCounterDeveloperMetadataLookup++;
   if (buildCounterDeveloperMetadataLookup < 3) {
-    o.locationMatchingStrategy = "foo";
-    o.locationType = "foo";
+    o.locationMatchingStrategy = 'foo';
+    o.locationType = 'foo';
     o.metadataId = 42;
-    o.metadataKey = "foo";
+    o.metadataKey = 'foo';
     o.metadataLocation = buildDeveloperMetadataLocation();
-    o.metadataValue = "foo";
-    o.visibility = "foo";
+    o.metadataValue = 'foo';
+    o.visibility = 'foo';
   }
   buildCounterDeveloperMetadataLookup--;
   return o;
 }
 
-checkDeveloperMetadataLookup(api.DeveloperMetadataLookup o) {
+void checkDeveloperMetadataLookup(api.DeveloperMetadataLookup o) {
   buildCounterDeveloperMetadataLookup++;
   if (buildCounterDeveloperMetadataLookup < 3) {
-    unittest.expect(o.locationMatchingStrategy, unittest.equals('foo'));
-    unittest.expect(o.locationType, unittest.equals('foo'));
-    unittest.expect(o.metadataId, unittest.equals(42));
-    unittest.expect(o.metadataKey, unittest.equals('foo'));
-    checkDeveloperMetadataLocation(o.metadataLocation);
-    unittest.expect(o.metadataValue, unittest.equals('foo'));
-    unittest.expect(o.visibility, unittest.equals('foo'));
+    unittest.expect(
+      o.locationMatchingStrategy!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.locationType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.metadataId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.metadataKey!,
+      unittest.equals('foo'),
+    );
+    checkDeveloperMetadataLocation(
+        o.metadataLocation! as api.DeveloperMetadataLocation);
+    unittest.expect(
+      o.metadataValue!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.visibility!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDeveloperMetadataLookup--;
 }
 
 core.int buildCounterDimensionGroup = 0;
-buildDimensionGroup() {
-  var o = new api.DimensionGroup();
+api.DimensionGroup buildDimensionGroup() {
+  var o = api.DimensionGroup();
   buildCounterDimensionGroup++;
   if (buildCounterDimensionGroup < 3) {
     o.collapsed = true;
@@ -2424,35 +3960,39 @@ buildDimensionGroup() {
   return o;
 }
 
-checkDimensionGroup(api.DimensionGroup o) {
+void checkDimensionGroup(api.DimensionGroup o) {
   buildCounterDimensionGroup++;
   if (buildCounterDimensionGroup < 3) {
-    unittest.expect(o.collapsed, unittest.isTrue);
-    unittest.expect(o.depth, unittest.equals(42));
-    checkDimensionRange(o.range);
+    unittest.expect(o.collapsed!, unittest.isTrue);
+    unittest.expect(
+      o.depth!,
+      unittest.equals(42),
+    );
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterDimensionGroup--;
 }
 
-buildUnnamed3630() {
-  var o = new core.List<api.DeveloperMetadata>();
+core.List<api.DeveloperMetadata> buildUnnamed5330() {
+  var o = <api.DeveloperMetadata>[];
   o.add(buildDeveloperMetadata());
   o.add(buildDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3630(core.List<api.DeveloperMetadata> o) {
+void checkUnnamed5330(core.List<api.DeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDeveloperMetadata(o[0]);
-  checkDeveloperMetadata(o[1]);
+  checkDeveloperMetadata(o[0] as api.DeveloperMetadata);
+  checkDeveloperMetadata(o[1] as api.DeveloperMetadata);
 }
 
 core.int buildCounterDimensionProperties = 0;
-buildDimensionProperties() {
-  var o = new api.DimensionProperties();
+api.DimensionProperties buildDimensionProperties() {
+  var o = api.DimensionProperties();
   buildCounterDimensionProperties++;
   if (buildCounterDimensionProperties < 3) {
-    o.developerMetadata = buildUnnamed3630();
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
+    o.developerMetadata = buildUnnamed5330();
     o.hiddenByFilter = true;
     o.hiddenByUser = true;
     o.pixelSize = 42;
@@ -2461,23 +4001,28 @@ buildDimensionProperties() {
   return o;
 }
 
-checkDimensionProperties(api.DimensionProperties o) {
+void checkDimensionProperties(api.DimensionProperties o) {
   buildCounterDimensionProperties++;
   if (buildCounterDimensionProperties < 3) {
-    checkUnnamed3630(o.developerMetadata);
-    unittest.expect(o.hiddenByFilter, unittest.isTrue);
-    unittest.expect(o.hiddenByUser, unittest.isTrue);
-    unittest.expect(o.pixelSize, unittest.equals(42));
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    checkUnnamed5330(o.developerMetadata!);
+    unittest.expect(o.hiddenByFilter!, unittest.isTrue);
+    unittest.expect(o.hiddenByUser!, unittest.isTrue);
+    unittest.expect(
+      o.pixelSize!,
+      unittest.equals(42),
+    );
   }
   buildCounterDimensionProperties--;
 }
 
 core.int buildCounterDimensionRange = 0;
-buildDimensionRange() {
-  var o = new api.DimensionRange();
+api.DimensionRange buildDimensionRange() {
+  var o = api.DimensionRange();
   buildCounterDimensionRange++;
   if (buildCounterDimensionRange < 3) {
-    o.dimension = "foo";
+    o.dimension = 'foo';
     o.endIndex = 42;
     o.sheetId = 42;
     o.startIndex = 42;
@@ -2486,20 +4031,32 @@ buildDimensionRange() {
   return o;
 }
 
-checkDimensionRange(api.DimensionRange o) {
+void checkDimensionRange(api.DimensionRange o) {
   buildCounterDimensionRange++;
   if (buildCounterDimensionRange < 3) {
-    unittest.expect(o.dimension, unittest.equals('foo'));
-    unittest.expect(o.endIndex, unittest.equals(42));
-    unittest.expect(o.sheetId, unittest.equals(42));
-    unittest.expect(o.startIndex, unittest.equals(42));
+    unittest.expect(
+      o.dimension!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.endIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.startIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterDimensionRange--;
 }
 
 core.int buildCounterDuplicateFilterViewRequest = 0;
-buildDuplicateFilterViewRequest() {
-  var o = new api.DuplicateFilterViewRequest();
+api.DuplicateFilterViewRequest buildDuplicateFilterViewRequest() {
+  var o = api.DuplicateFilterViewRequest();
   buildCounterDuplicateFilterViewRequest++;
   if (buildCounterDuplicateFilterViewRequest < 3) {
     o.filterId = 42;
@@ -2508,17 +4065,20 @@ buildDuplicateFilterViewRequest() {
   return o;
 }
 
-checkDuplicateFilterViewRequest(api.DuplicateFilterViewRequest o) {
+void checkDuplicateFilterViewRequest(api.DuplicateFilterViewRequest o) {
   buildCounterDuplicateFilterViewRequest++;
   if (buildCounterDuplicateFilterViewRequest < 3) {
-    unittest.expect(o.filterId, unittest.equals(42));
+    unittest.expect(
+      o.filterId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDuplicateFilterViewRequest--;
 }
 
 core.int buildCounterDuplicateFilterViewResponse = 0;
-buildDuplicateFilterViewResponse() {
-  var o = new api.DuplicateFilterViewResponse();
+api.DuplicateFilterViewResponse buildDuplicateFilterViewResponse() {
+  var o = api.DuplicateFilterViewResponse();
   buildCounterDuplicateFilterViewResponse++;
   if (buildCounterDuplicateFilterViewResponse < 3) {
     o.filter = buildFilterView();
@@ -2527,42 +4087,54 @@ buildDuplicateFilterViewResponse() {
   return o;
 }
 
-checkDuplicateFilterViewResponse(api.DuplicateFilterViewResponse o) {
+void checkDuplicateFilterViewResponse(api.DuplicateFilterViewResponse o) {
   buildCounterDuplicateFilterViewResponse++;
   if (buildCounterDuplicateFilterViewResponse < 3) {
-    checkFilterView(o.filter);
+    checkFilterView(o.filter! as api.FilterView);
   }
   buildCounterDuplicateFilterViewResponse--;
 }
 
 core.int buildCounterDuplicateSheetRequest = 0;
-buildDuplicateSheetRequest() {
-  var o = new api.DuplicateSheetRequest();
+api.DuplicateSheetRequest buildDuplicateSheetRequest() {
+  var o = api.DuplicateSheetRequest();
   buildCounterDuplicateSheetRequest++;
   if (buildCounterDuplicateSheetRequest < 3) {
     o.insertSheetIndex = 42;
     o.newSheetId = 42;
-    o.newSheetName = "foo";
+    o.newSheetName = 'foo';
     o.sourceSheetId = 42;
   }
   buildCounterDuplicateSheetRequest--;
   return o;
 }
 
-checkDuplicateSheetRequest(api.DuplicateSheetRequest o) {
+void checkDuplicateSheetRequest(api.DuplicateSheetRequest o) {
   buildCounterDuplicateSheetRequest++;
   if (buildCounterDuplicateSheetRequest < 3) {
-    unittest.expect(o.insertSheetIndex, unittest.equals(42));
-    unittest.expect(o.newSheetId, unittest.equals(42));
-    unittest.expect(o.newSheetName, unittest.equals('foo'));
-    unittest.expect(o.sourceSheetId, unittest.equals(42));
+    unittest.expect(
+      o.insertSheetIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.newSheetId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.newSheetName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sourceSheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterDuplicateSheetRequest--;
 }
 
 core.int buildCounterDuplicateSheetResponse = 0;
-buildDuplicateSheetResponse() {
-  var o = new api.DuplicateSheetResponse();
+api.DuplicateSheetResponse buildDuplicateSheetResponse() {
+  var o = api.DuplicateSheetResponse();
   buildCounterDuplicateSheetResponse++;
   if (buildCounterDuplicateSheetResponse < 3) {
     o.properties = buildSheetProperties();
@@ -2571,68 +4143,81 @@ buildDuplicateSheetResponse() {
   return o;
 }
 
-checkDuplicateSheetResponse(api.DuplicateSheetResponse o) {
+void checkDuplicateSheetResponse(api.DuplicateSheetResponse o) {
   buildCounterDuplicateSheetResponse++;
   if (buildCounterDuplicateSheetResponse < 3) {
-    checkSheetProperties(o.properties);
+    checkSheetProperties(o.properties! as api.SheetProperties);
   }
   buildCounterDuplicateSheetResponse--;
 }
 
-buildUnnamed3631() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5331() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3631(core.List<core.String> o) {
+void checkUnnamed5331(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3632() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5332() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3632(core.List<core.String> o) {
+void checkUnnamed5332(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterEditors = 0;
-buildEditors() {
-  var o = new api.Editors();
+api.Editors buildEditors() {
+  var o = api.Editors();
   buildCounterEditors++;
   if (buildCounterEditors < 3) {
     o.domainUsersCanEdit = true;
-    o.groups = buildUnnamed3631();
-    o.users = buildUnnamed3632();
+    o.groups = buildUnnamed5331();
+    o.users = buildUnnamed5332();
   }
   buildCounterEditors--;
   return o;
 }
 
-checkEditors(api.Editors o) {
+void checkEditors(api.Editors o) {
   buildCounterEditors++;
   if (buildCounterEditors < 3) {
-    unittest.expect(o.domainUsersCanEdit, unittest.isTrue);
-    checkUnnamed3631(o.groups);
-    checkUnnamed3632(o.users);
+    unittest.expect(o.domainUsersCanEdit!, unittest.isTrue);
+    checkUnnamed5331(o.groups!);
+    checkUnnamed5332(o.users!);
   }
   buildCounterEditors--;
 }
 
 core.int buildCounterEmbeddedChart = 0;
-buildEmbeddedChart() {
-  var o = new api.EmbeddedChart();
+api.EmbeddedChart buildEmbeddedChart() {
+  var o = api.EmbeddedChart();
   buildCounterEmbeddedChart++;
   if (buildCounterEmbeddedChart < 3) {
+    o.border = buildEmbeddedObjectBorder();
     o.chartId = 42;
     o.position = buildEmbeddedObjectPosition();
     o.spec = buildChartSpec();
@@ -2641,19 +4226,44 @@ buildEmbeddedChart() {
   return o;
 }
 
-checkEmbeddedChart(api.EmbeddedChart o) {
+void checkEmbeddedChart(api.EmbeddedChart o) {
   buildCounterEmbeddedChart++;
   if (buildCounterEmbeddedChart < 3) {
-    unittest.expect(o.chartId, unittest.equals(42));
-    checkEmbeddedObjectPosition(o.position);
-    checkChartSpec(o.spec);
+    checkEmbeddedObjectBorder(o.border! as api.EmbeddedObjectBorder);
+    unittest.expect(
+      o.chartId!,
+      unittest.equals(42),
+    );
+    checkEmbeddedObjectPosition(o.position! as api.EmbeddedObjectPosition);
+    checkChartSpec(o.spec! as api.ChartSpec);
   }
   buildCounterEmbeddedChart--;
 }
 
+core.int buildCounterEmbeddedObjectBorder = 0;
+api.EmbeddedObjectBorder buildEmbeddedObjectBorder() {
+  var o = api.EmbeddedObjectBorder();
+  buildCounterEmbeddedObjectBorder++;
+  if (buildCounterEmbeddedObjectBorder < 3) {
+    o.color = buildColor();
+    o.colorStyle = buildColorStyle();
+  }
+  buildCounterEmbeddedObjectBorder--;
+  return o;
+}
+
+void checkEmbeddedObjectBorder(api.EmbeddedObjectBorder o) {
+  buildCounterEmbeddedObjectBorder++;
+  if (buildCounterEmbeddedObjectBorder < 3) {
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+  }
+  buildCounterEmbeddedObjectBorder--;
+}
+
 core.int buildCounterEmbeddedObjectPosition = 0;
-buildEmbeddedObjectPosition() {
-  var o = new api.EmbeddedObjectPosition();
+api.EmbeddedObjectPosition buildEmbeddedObjectPosition() {
+  var o = api.EmbeddedObjectPosition();
   buildCounterEmbeddedObjectPosition++;
   if (buildCounterEmbeddedObjectPosition < 3) {
     o.newSheet = true;
@@ -2664,165 +4274,248 @@ buildEmbeddedObjectPosition() {
   return o;
 }
 
-checkEmbeddedObjectPosition(api.EmbeddedObjectPosition o) {
+void checkEmbeddedObjectPosition(api.EmbeddedObjectPosition o) {
   buildCounterEmbeddedObjectPosition++;
   if (buildCounterEmbeddedObjectPosition < 3) {
-    unittest.expect(o.newSheet, unittest.isTrue);
-    checkOverlayPosition(o.overlayPosition);
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(o.newSheet!, unittest.isTrue);
+    checkOverlayPosition(o.overlayPosition! as api.OverlayPosition);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterEmbeddedObjectPosition--;
 }
 
 core.int buildCounterErrorValue = 0;
-buildErrorValue() {
-  var o = new api.ErrorValue();
+api.ErrorValue buildErrorValue() {
+  var o = api.ErrorValue();
   buildCounterErrorValue++;
   if (buildCounterErrorValue < 3) {
-    o.message = "foo";
-    o.type = "foo";
+    o.message = 'foo';
+    o.type = 'foo';
   }
   buildCounterErrorValue--;
   return o;
 }
 
-checkErrorValue(api.ErrorValue o) {
+void checkErrorValue(api.ErrorValue o) {
   buildCounterErrorValue++;
   if (buildCounterErrorValue < 3) {
-    unittest.expect(o.message, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
+    unittest.expect(
+      o.message!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterErrorValue--;
 }
 
 core.int buildCounterExtendedValue = 0;
-buildExtendedValue() {
-  var o = new api.ExtendedValue();
+api.ExtendedValue buildExtendedValue() {
+  var o = api.ExtendedValue();
   buildCounterExtendedValue++;
   if (buildCounterExtendedValue < 3) {
     o.boolValue = true;
     o.errorValue = buildErrorValue();
-    o.formulaValue = "foo";
+    o.formulaValue = 'foo';
     o.numberValue = 42.0;
-    o.stringValue = "foo";
+    o.stringValue = 'foo';
   }
   buildCounterExtendedValue--;
   return o;
 }
 
-checkExtendedValue(api.ExtendedValue o) {
+void checkExtendedValue(api.ExtendedValue o) {
   buildCounterExtendedValue++;
   if (buildCounterExtendedValue < 3) {
-    unittest.expect(o.boolValue, unittest.isTrue);
-    checkErrorValue(o.errorValue);
-    unittest.expect(o.formulaValue, unittest.equals('foo'));
-    unittest.expect(o.numberValue, unittest.equals(42.0));
-    unittest.expect(o.stringValue, unittest.equals('foo'));
+    unittest.expect(o.boolValue!, unittest.isTrue);
+    checkErrorValue(o.errorValue! as api.ErrorValue);
+    unittest.expect(
+      o.formulaValue!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.numberValue!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.stringValue!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterExtendedValue--;
 }
 
-buildUnnamed3633() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5333() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3633(core.List<core.String> o) {
+void checkUnnamed5333(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterFilterCriteria = 0;
-buildFilterCriteria() {
-  var o = new api.FilterCriteria();
+api.FilterCriteria buildFilterCriteria() {
+  var o = api.FilterCriteria();
   buildCounterFilterCriteria++;
   if (buildCounterFilterCriteria < 3) {
     o.condition = buildBooleanCondition();
-    o.hiddenValues = buildUnnamed3633();
+    o.hiddenValues = buildUnnamed5333();
+    o.visibleBackgroundColor = buildColor();
+    o.visibleBackgroundColorStyle = buildColorStyle();
+    o.visibleForegroundColor = buildColor();
+    o.visibleForegroundColorStyle = buildColorStyle();
   }
   buildCounterFilterCriteria--;
   return o;
 }
 
-checkFilterCriteria(api.FilterCriteria o) {
+void checkFilterCriteria(api.FilterCriteria o) {
   buildCounterFilterCriteria++;
   if (buildCounterFilterCriteria < 3) {
-    checkBooleanCondition(o.condition);
-    checkUnnamed3633(o.hiddenValues);
+    checkBooleanCondition(o.condition! as api.BooleanCondition);
+    checkUnnamed5333(o.hiddenValues!);
+    checkColor(o.visibleBackgroundColor! as api.Color);
+    checkColorStyle(o.visibleBackgroundColorStyle! as api.ColorStyle);
+    checkColor(o.visibleForegroundColor! as api.Color);
+    checkColorStyle(o.visibleForegroundColorStyle! as api.ColorStyle);
   }
   buildCounterFilterCriteria--;
 }
 
-buildUnnamed3634() {
-  var o = new core.Map<core.String, api.FilterCriteria>();
-  o["x"] = buildFilterCriteria();
-  o["y"] = buildFilterCriteria();
+core.int buildCounterFilterSpec = 0;
+api.FilterSpec buildFilterSpec() {
+  var o = api.FilterSpec();
+  buildCounterFilterSpec++;
+  if (buildCounterFilterSpec < 3) {
+    o.columnIndex = 42;
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
+    o.filterCriteria = buildFilterCriteria();
+  }
+  buildCounterFilterSpec--;
   return o;
 }
 
-checkUnnamed3634(core.Map<core.String, api.FilterCriteria> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  checkFilterCriteria(o["x"]);
-  checkFilterCriteria(o["y"]);
+void checkFilterSpec(api.FilterSpec o) {
+  buildCounterFilterSpec++;
+  if (buildCounterFilterSpec < 3) {
+    unittest.expect(
+      o.columnIndex!,
+      unittest.equals(42),
+    );
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    checkFilterCriteria(o.filterCriteria! as api.FilterCriteria);
+  }
+  buildCounterFilterSpec--;
 }
 
-buildUnnamed3635() {
-  var o = new core.List<api.SortSpec>();
+core.Map<core.String, api.FilterCriteria> buildUnnamed5334() {
+  var o = <core.String, api.FilterCriteria>{};
+  o['x'] = buildFilterCriteria();
+  o['y'] = buildFilterCriteria();
+  return o;
+}
+
+void checkUnnamed5334(core.Map<core.String, api.FilterCriteria> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkFilterCriteria(o['x']! as api.FilterCriteria);
+  checkFilterCriteria(o['y']! as api.FilterCriteria);
+}
+
+core.List<api.FilterSpec> buildUnnamed5335() {
+  var o = <api.FilterSpec>[];
+  o.add(buildFilterSpec());
+  o.add(buildFilterSpec());
+  return o;
+}
+
+void checkUnnamed5335(core.List<api.FilterSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkFilterSpec(o[0] as api.FilterSpec);
+  checkFilterSpec(o[1] as api.FilterSpec);
+}
+
+core.List<api.SortSpec> buildUnnamed5336() {
+  var o = <api.SortSpec>[];
   o.add(buildSortSpec());
   o.add(buildSortSpec());
   return o;
 }
 
-checkUnnamed3635(core.List<api.SortSpec> o) {
+void checkUnnamed5336(core.List<api.SortSpec> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSortSpec(o[0]);
-  checkSortSpec(o[1]);
+  checkSortSpec(o[0] as api.SortSpec);
+  checkSortSpec(o[1] as api.SortSpec);
 }
 
 core.int buildCounterFilterView = 0;
-buildFilterView() {
-  var o = new api.FilterView();
+api.FilterView buildFilterView() {
+  var o = api.FilterView();
   buildCounterFilterView++;
   if (buildCounterFilterView < 3) {
-    o.criteria = buildUnnamed3634();
+    o.criteria = buildUnnamed5334();
+    o.filterSpecs = buildUnnamed5335();
     o.filterViewId = 42;
-    o.namedRangeId = "foo";
+    o.namedRangeId = 'foo';
     o.range = buildGridRange();
-    o.sortSpecs = buildUnnamed3635();
-    o.title = "foo";
+    o.sortSpecs = buildUnnamed5336();
+    o.title = 'foo';
   }
   buildCounterFilterView--;
   return o;
 }
 
-checkFilterView(api.FilterView o) {
+void checkFilterView(api.FilterView o) {
   buildCounterFilterView++;
   if (buildCounterFilterView < 3) {
-    checkUnnamed3634(o.criteria);
-    unittest.expect(o.filterViewId, unittest.equals(42));
-    unittest.expect(o.namedRangeId, unittest.equals('foo'));
-    checkGridRange(o.range);
-    checkUnnamed3635(o.sortSpecs);
-    unittest.expect(o.title, unittest.equals('foo'));
+    checkUnnamed5334(o.criteria!);
+    checkUnnamed5335(o.filterSpecs!);
+    unittest.expect(
+      o.filterViewId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.namedRangeId!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
+    checkUnnamed5336(o.sortSpecs!);
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterFilterView--;
 }
 
 core.int buildCounterFindReplaceRequest = 0;
-buildFindReplaceRequest() {
-  var o = new api.FindReplaceRequest();
+api.FindReplaceRequest buildFindReplaceRequest() {
+  var o = api.FindReplaceRequest();
   buildCounterFindReplaceRequest++;
   if (buildCounterFindReplaceRequest < 3) {
     o.allSheets = true;
-    o.find = "foo";
+    o.find = 'foo';
     o.includeFormulas = true;
     o.matchCase = true;
     o.matchEntireCell = true;
     o.range = buildGridRange();
-    o.replacement = "foo";
+    o.replacement = 'foo';
     o.searchByRegex = true;
     o.sheetId = 42;
   }
@@ -2830,25 +4523,34 @@ buildFindReplaceRequest() {
   return o;
 }
 
-checkFindReplaceRequest(api.FindReplaceRequest o) {
+void checkFindReplaceRequest(api.FindReplaceRequest o) {
   buildCounterFindReplaceRequest++;
   if (buildCounterFindReplaceRequest < 3) {
-    unittest.expect(o.allSheets, unittest.isTrue);
-    unittest.expect(o.find, unittest.equals('foo'));
-    unittest.expect(o.includeFormulas, unittest.isTrue);
-    unittest.expect(o.matchCase, unittest.isTrue);
-    unittest.expect(o.matchEntireCell, unittest.isTrue);
-    checkGridRange(o.range);
-    unittest.expect(o.replacement, unittest.equals('foo'));
-    unittest.expect(o.searchByRegex, unittest.isTrue);
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(o.allSheets!, unittest.isTrue);
+    unittest.expect(
+      o.find!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.includeFormulas!, unittest.isTrue);
+    unittest.expect(o.matchCase!, unittest.isTrue);
+    unittest.expect(o.matchEntireCell!, unittest.isTrue);
+    checkGridRange(o.range! as api.GridRange);
+    unittest.expect(
+      o.replacement!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.searchByRegex!, unittest.isTrue);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterFindReplaceRequest--;
 }
 
 core.int buildCounterFindReplaceResponse = 0;
-buildFindReplaceResponse() {
-  var o = new api.FindReplaceResponse();
+api.FindReplaceResponse buildFindReplaceResponse() {
+  var o = api.FindReplaceResponse();
   buildCounterFindReplaceResponse++;
   if (buildCounterFindReplaceResponse < 3) {
     o.formulasChanged = 42;
@@ -2861,56 +4563,71 @@ buildFindReplaceResponse() {
   return o;
 }
 
-checkFindReplaceResponse(api.FindReplaceResponse o) {
+void checkFindReplaceResponse(api.FindReplaceResponse o) {
   buildCounterFindReplaceResponse++;
   if (buildCounterFindReplaceResponse < 3) {
-    unittest.expect(o.formulasChanged, unittest.equals(42));
-    unittest.expect(o.occurrencesChanged, unittest.equals(42));
-    unittest.expect(o.rowsChanged, unittest.equals(42));
-    unittest.expect(o.sheetsChanged, unittest.equals(42));
-    unittest.expect(o.valuesChanged, unittest.equals(42));
+    unittest.expect(
+      o.formulasChanged!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.occurrencesChanged!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.rowsChanged!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetsChanged!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.valuesChanged!,
+      unittest.equals(42),
+    );
   }
   buildCounterFindReplaceResponse--;
 }
 
-buildUnnamed3636() {
-  var o = new core.List<api.DataFilter>();
+core.List<api.DataFilter> buildUnnamed5337() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3636(core.List<api.DataFilter> o) {
+void checkUnnamed5337(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterGetSpreadsheetByDataFilterRequest = 0;
-buildGetSpreadsheetByDataFilterRequest() {
-  var o = new api.GetSpreadsheetByDataFilterRequest();
+api.GetSpreadsheetByDataFilterRequest buildGetSpreadsheetByDataFilterRequest() {
+  var o = api.GetSpreadsheetByDataFilterRequest();
   buildCounterGetSpreadsheetByDataFilterRequest++;
   if (buildCounterGetSpreadsheetByDataFilterRequest < 3) {
-    o.dataFilters = buildUnnamed3636();
+    o.dataFilters = buildUnnamed5337();
     o.includeGridData = true;
   }
   buildCounterGetSpreadsheetByDataFilterRequest--;
   return o;
 }
 
-checkGetSpreadsheetByDataFilterRequest(
+void checkGetSpreadsheetByDataFilterRequest(
     api.GetSpreadsheetByDataFilterRequest o) {
   buildCounterGetSpreadsheetByDataFilterRequest++;
   if (buildCounterGetSpreadsheetByDataFilterRequest < 3) {
-    checkUnnamed3636(o.dataFilters);
-    unittest.expect(o.includeGridData, unittest.isTrue);
+    checkUnnamed5337(o.dataFilters!);
+    unittest.expect(o.includeGridData!, unittest.isTrue);
   }
   buildCounterGetSpreadsheetByDataFilterRequest--;
 }
 
 core.int buildCounterGradientRule = 0;
-buildGradientRule() {
-  var o = new api.GradientRule();
+api.GradientRule buildGradientRule() {
+  var o = api.GradientRule();
   buildCounterGradientRule++;
   if (buildCounterGradientRule < 3) {
     o.maxpoint = buildInterpolationPoint();
@@ -2921,19 +4638,19 @@ buildGradientRule() {
   return o;
 }
 
-checkGradientRule(api.GradientRule o) {
+void checkGradientRule(api.GradientRule o) {
   buildCounterGradientRule++;
   if (buildCounterGradientRule < 3) {
-    checkInterpolationPoint(o.maxpoint);
-    checkInterpolationPoint(o.midpoint);
-    checkInterpolationPoint(o.minpoint);
+    checkInterpolationPoint(o.maxpoint! as api.InterpolationPoint);
+    checkInterpolationPoint(o.midpoint! as api.InterpolationPoint);
+    checkInterpolationPoint(o.minpoint! as api.InterpolationPoint);
   }
   buildCounterGradientRule--;
 }
 
 core.int buildCounterGridCoordinate = 0;
-buildGridCoordinate() {
-  var o = new api.GridCoordinate();
+api.GridCoordinate buildGridCoordinate() {
+  var o = api.GridCoordinate();
   buildCounterGridCoordinate++;
   if (buildCounterGridCoordinate < 3) {
     o.columnIndex = 42;
@@ -2944,63 +4661,72 @@ buildGridCoordinate() {
   return o;
 }
 
-checkGridCoordinate(api.GridCoordinate o) {
+void checkGridCoordinate(api.GridCoordinate o) {
   buildCounterGridCoordinate++;
   if (buildCounterGridCoordinate < 3) {
-    unittest.expect(o.columnIndex, unittest.equals(42));
-    unittest.expect(o.rowIndex, unittest.equals(42));
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.columnIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.rowIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterGridCoordinate--;
 }
 
-buildUnnamed3637() {
-  var o = new core.List<api.DimensionProperties>();
+core.List<api.DimensionProperties> buildUnnamed5338() {
+  var o = <api.DimensionProperties>[];
   o.add(buildDimensionProperties());
   o.add(buildDimensionProperties());
   return o;
 }
 
-checkUnnamed3637(core.List<api.DimensionProperties> o) {
+void checkUnnamed5338(core.List<api.DimensionProperties> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionProperties(o[0]);
-  checkDimensionProperties(o[1]);
+  checkDimensionProperties(o[0] as api.DimensionProperties);
+  checkDimensionProperties(o[1] as api.DimensionProperties);
 }
 
-buildUnnamed3638() {
-  var o = new core.List<api.RowData>();
+core.List<api.RowData> buildUnnamed5339() {
+  var o = <api.RowData>[];
   o.add(buildRowData());
   o.add(buildRowData());
   return o;
 }
 
-checkUnnamed3638(core.List<api.RowData> o) {
+void checkUnnamed5339(core.List<api.RowData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRowData(o[0]);
-  checkRowData(o[1]);
+  checkRowData(o[0] as api.RowData);
+  checkRowData(o[1] as api.RowData);
 }
 
-buildUnnamed3639() {
-  var o = new core.List<api.DimensionProperties>();
+core.List<api.DimensionProperties> buildUnnamed5340() {
+  var o = <api.DimensionProperties>[];
   o.add(buildDimensionProperties());
   o.add(buildDimensionProperties());
   return o;
 }
 
-checkUnnamed3639(core.List<api.DimensionProperties> o) {
+void checkUnnamed5340(core.List<api.DimensionProperties> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionProperties(o[0]);
-  checkDimensionProperties(o[1]);
+  checkDimensionProperties(o[0] as api.DimensionProperties);
+  checkDimensionProperties(o[1] as api.DimensionProperties);
 }
 
 core.int buildCounterGridData = 0;
-buildGridData() {
-  var o = new api.GridData();
+api.GridData buildGridData() {
+  var o = api.GridData();
   buildCounterGridData++;
   if (buildCounterGridData < 3) {
-    o.columnMetadata = buildUnnamed3637();
-    o.rowData = buildUnnamed3638();
-    o.rowMetadata = buildUnnamed3639();
+    o.columnMetadata = buildUnnamed5338();
+    o.rowData = buildUnnamed5339();
+    o.rowMetadata = buildUnnamed5340();
     o.startColumn = 42;
     o.startRow = 42;
   }
@@ -3008,21 +4734,27 @@ buildGridData() {
   return o;
 }
 
-checkGridData(api.GridData o) {
+void checkGridData(api.GridData o) {
   buildCounterGridData++;
   if (buildCounterGridData < 3) {
-    checkUnnamed3637(o.columnMetadata);
-    checkUnnamed3638(o.rowData);
-    checkUnnamed3639(o.rowMetadata);
-    unittest.expect(o.startColumn, unittest.equals(42));
-    unittest.expect(o.startRow, unittest.equals(42));
+    checkUnnamed5338(o.columnMetadata!);
+    checkUnnamed5339(o.rowData!);
+    checkUnnamed5340(o.rowMetadata!);
+    unittest.expect(
+      o.startColumn!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.startRow!,
+      unittest.equals(42),
+    );
   }
   buildCounterGridData--;
 }
 
 core.int buildCounterGridProperties = 0;
-buildGridProperties() {
-  var o = new api.GridProperties();
+api.GridProperties buildGridProperties() {
+  var o = api.GridProperties();
   buildCounterGridProperties++;
   if (buildCounterGridProperties < 3) {
     o.columnCount = 42;
@@ -3037,23 +4769,35 @@ buildGridProperties() {
   return o;
 }
 
-checkGridProperties(api.GridProperties o) {
+void checkGridProperties(api.GridProperties o) {
   buildCounterGridProperties++;
   if (buildCounterGridProperties < 3) {
-    unittest.expect(o.columnCount, unittest.equals(42));
-    unittest.expect(o.columnGroupControlAfter, unittest.isTrue);
-    unittest.expect(o.frozenColumnCount, unittest.equals(42));
-    unittest.expect(o.frozenRowCount, unittest.equals(42));
-    unittest.expect(o.hideGridlines, unittest.isTrue);
-    unittest.expect(o.rowCount, unittest.equals(42));
-    unittest.expect(o.rowGroupControlAfter, unittest.isTrue);
+    unittest.expect(
+      o.columnCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.columnGroupControlAfter!, unittest.isTrue);
+    unittest.expect(
+      o.frozenColumnCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.frozenRowCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.hideGridlines!, unittest.isTrue);
+    unittest.expect(
+      o.rowCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.rowGroupControlAfter!, unittest.isTrue);
   }
   buildCounterGridProperties--;
 }
 
 core.int buildCounterGridRange = 0;
-buildGridRange() {
-  var o = new api.GridRange();
+api.GridRange buildGridRange() {
+  var o = api.GridRange();
   buildCounterGridRange++;
   if (buildCounterGridRange < 3) {
     o.endColumnIndex = 42;
@@ -3066,61 +4810,85 @@ buildGridRange() {
   return o;
 }
 
-checkGridRange(api.GridRange o) {
+void checkGridRange(api.GridRange o) {
   buildCounterGridRange++;
   if (buildCounterGridRange < 3) {
-    unittest.expect(o.endColumnIndex, unittest.equals(42));
-    unittest.expect(o.endRowIndex, unittest.equals(42));
-    unittest.expect(o.sheetId, unittest.equals(42));
-    unittest.expect(o.startColumnIndex, unittest.equals(42));
-    unittest.expect(o.startRowIndex, unittest.equals(42));
+    unittest.expect(
+      o.endColumnIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.endRowIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.startColumnIndex!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.startRowIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterGridRange--;
 }
 
-buildUnnamed3640() {
-  var o = new core.List<api.HistogramSeries>();
+core.List<api.HistogramSeries> buildUnnamed5341() {
+  var o = <api.HistogramSeries>[];
   o.add(buildHistogramSeries());
   o.add(buildHistogramSeries());
   return o;
 }
 
-checkUnnamed3640(core.List<api.HistogramSeries> o) {
+void checkUnnamed5341(core.List<api.HistogramSeries> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkHistogramSeries(o[0]);
-  checkHistogramSeries(o[1]);
+  checkHistogramSeries(o[0] as api.HistogramSeries);
+  checkHistogramSeries(o[1] as api.HistogramSeries);
 }
 
 core.int buildCounterHistogramChartSpec = 0;
-buildHistogramChartSpec() {
-  var o = new api.HistogramChartSpec();
+api.HistogramChartSpec buildHistogramChartSpec() {
+  var o = api.HistogramChartSpec();
   buildCounterHistogramChartSpec++;
   if (buildCounterHistogramChartSpec < 3) {
     o.bucketSize = 42.0;
-    o.legendPosition = "foo";
+    o.legendPosition = 'foo';
     o.outlierPercentile = 42.0;
-    o.series = buildUnnamed3640();
+    o.series = buildUnnamed5341();
     o.showItemDividers = true;
   }
   buildCounterHistogramChartSpec--;
   return o;
 }
 
-checkHistogramChartSpec(api.HistogramChartSpec o) {
+void checkHistogramChartSpec(api.HistogramChartSpec o) {
   buildCounterHistogramChartSpec++;
   if (buildCounterHistogramChartSpec < 3) {
-    unittest.expect(o.bucketSize, unittest.equals(42.0));
-    unittest.expect(o.legendPosition, unittest.equals('foo'));
-    unittest.expect(o.outlierPercentile, unittest.equals(42.0));
-    checkUnnamed3640(o.series);
-    unittest.expect(o.showItemDividers, unittest.isTrue);
+    unittest.expect(
+      o.bucketSize!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.legendPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.outlierPercentile!,
+      unittest.equals(42.0),
+    );
+    checkUnnamed5341(o.series!);
+    unittest.expect(o.showItemDividers!, unittest.isTrue);
   }
   buildCounterHistogramChartSpec--;
 }
 
 core.int buildCounterHistogramRule = 0;
-buildHistogramRule() {
-  var o = new api.HistogramRule();
+api.HistogramRule buildHistogramRule() {
+  var o = api.HistogramRule();
   buildCounterHistogramRule++;
   if (buildCounterHistogramRule < 3) {
     o.end = 42.0;
@@ -3131,40 +4899,51 @@ buildHistogramRule() {
   return o;
 }
 
-checkHistogramRule(api.HistogramRule o) {
+void checkHistogramRule(api.HistogramRule o) {
   buildCounterHistogramRule++;
   if (buildCounterHistogramRule < 3) {
-    unittest.expect(o.end, unittest.equals(42.0));
-    unittest.expect(o.interval, unittest.equals(42.0));
-    unittest.expect(o.start, unittest.equals(42.0));
+    unittest.expect(
+      o.end!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.interval!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.start!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterHistogramRule--;
 }
 
 core.int buildCounterHistogramSeries = 0;
-buildHistogramSeries() {
-  var o = new api.HistogramSeries();
+api.HistogramSeries buildHistogramSeries() {
+  var o = api.HistogramSeries();
   buildCounterHistogramSeries++;
   if (buildCounterHistogramSeries < 3) {
     o.barColor = buildColor();
+    o.barColorStyle = buildColorStyle();
     o.data = buildChartData();
   }
   buildCounterHistogramSeries--;
   return o;
 }
 
-checkHistogramSeries(api.HistogramSeries o) {
+void checkHistogramSeries(api.HistogramSeries o) {
   buildCounterHistogramSeries++;
   if (buildCounterHistogramSeries < 3) {
-    checkColor(o.barColor);
-    checkChartData(o.data);
+    checkColor(o.barColor! as api.Color);
+    checkColorStyle(o.barColorStyle! as api.ColorStyle);
+    checkChartData(o.data! as api.ChartData);
   }
   buildCounterHistogramSeries--;
 }
 
 core.int buildCounterInsertDimensionRequest = 0;
-buildInsertDimensionRequest() {
-  var o = new api.InsertDimensionRequest();
+api.InsertDimensionRequest buildInsertDimensionRequest() {
+  var o = api.InsertDimensionRequest();
   buildCounterInsertDimensionRequest++;
   if (buildCounterInsertDimensionRequest < 3) {
     o.inheritFromBefore = true;
@@ -3174,62 +4953,100 @@ buildInsertDimensionRequest() {
   return o;
 }
 
-checkInsertDimensionRequest(api.InsertDimensionRequest o) {
+void checkInsertDimensionRequest(api.InsertDimensionRequest o) {
   buildCounterInsertDimensionRequest++;
   if (buildCounterInsertDimensionRequest < 3) {
-    unittest.expect(o.inheritFromBefore, unittest.isTrue);
-    checkDimensionRange(o.range);
+    unittest.expect(o.inheritFromBefore!, unittest.isTrue);
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterInsertDimensionRequest--;
 }
 
 core.int buildCounterInsertRangeRequest = 0;
-buildInsertRangeRequest() {
-  var o = new api.InsertRangeRequest();
+api.InsertRangeRequest buildInsertRangeRequest() {
+  var o = api.InsertRangeRequest();
   buildCounterInsertRangeRequest++;
   if (buildCounterInsertRangeRequest < 3) {
     o.range = buildGridRange();
-    o.shiftDimension = "foo";
+    o.shiftDimension = 'foo';
   }
   buildCounterInsertRangeRequest--;
   return o;
 }
 
-checkInsertRangeRequest(api.InsertRangeRequest o) {
+void checkInsertRangeRequest(api.InsertRangeRequest o) {
   buildCounterInsertRangeRequest++;
   if (buildCounterInsertRangeRequest < 3) {
-    checkGridRange(o.range);
-    unittest.expect(o.shiftDimension, unittest.equals('foo'));
+    checkGridRange(o.range! as api.GridRange);
+    unittest.expect(
+      o.shiftDimension!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterInsertRangeRequest--;
 }
 
 core.int buildCounterInterpolationPoint = 0;
-buildInterpolationPoint() {
-  var o = new api.InterpolationPoint();
+api.InterpolationPoint buildInterpolationPoint() {
+  var o = api.InterpolationPoint();
   buildCounterInterpolationPoint++;
   if (buildCounterInterpolationPoint < 3) {
     o.color = buildColor();
-    o.type = "foo";
-    o.value = "foo";
+    o.colorStyle = buildColorStyle();
+    o.type = 'foo';
+    o.value = 'foo';
   }
   buildCounterInterpolationPoint--;
   return o;
 }
 
-checkInterpolationPoint(api.InterpolationPoint o) {
+void checkInterpolationPoint(api.InterpolationPoint o) {
   buildCounterInterpolationPoint++;
   if (buildCounterInterpolationPoint < 3) {
-    checkColor(o.color);
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.value, unittest.equals('foo'));
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.value!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterInterpolationPoint--;
 }
 
+core.int buildCounterInterval = 0;
+api.Interval buildInterval() {
+  var o = api.Interval();
+  buildCounterInterval++;
+  if (buildCounterInterval < 3) {
+    o.endTime = 'foo';
+    o.startTime = 'foo';
+  }
+  buildCounterInterval--;
+  return o;
+}
+
+void checkInterval(api.Interval o) {
+  buildCounterInterval++;
+  if (buildCounterInterval < 3) {
+    unittest.expect(
+      o.endTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.startTime!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterInterval--;
+}
+
 core.int buildCounterIterativeCalculationSettings = 0;
-buildIterativeCalculationSettings() {
-  var o = new api.IterativeCalculationSettings();
+api.IterativeCalculationSettings buildIterativeCalculationSettings() {
+  var o = api.IterativeCalculationSettings();
   buildCounterIterativeCalculationSettings++;
   if (buildCounterIterativeCalculationSettings < 3) {
     o.convergenceThreshold = 42.0;
@@ -3239,194 +5056,230 @@ buildIterativeCalculationSettings() {
   return o;
 }
 
-checkIterativeCalculationSettings(api.IterativeCalculationSettings o) {
+void checkIterativeCalculationSettings(api.IterativeCalculationSettings o) {
   buildCounterIterativeCalculationSettings++;
   if (buildCounterIterativeCalculationSettings < 3) {
-    unittest.expect(o.convergenceThreshold, unittest.equals(42.0));
-    unittest.expect(o.maxIterations, unittest.equals(42));
+    unittest.expect(
+      o.convergenceThreshold!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.maxIterations!,
+      unittest.equals(42),
+    );
   }
   buildCounterIterativeCalculationSettings--;
 }
 
+core.int buildCounterKeyValueFormat = 0;
+api.KeyValueFormat buildKeyValueFormat() {
+  var o = api.KeyValueFormat();
+  buildCounterKeyValueFormat++;
+  if (buildCounterKeyValueFormat < 3) {
+    o.position = buildTextPosition();
+    o.textFormat = buildTextFormat();
+  }
+  buildCounterKeyValueFormat--;
+  return o;
+}
+
+void checkKeyValueFormat(api.KeyValueFormat o) {
+  buildCounterKeyValueFormat++;
+  if (buildCounterKeyValueFormat < 3) {
+    checkTextPosition(o.position! as api.TextPosition);
+    checkTextFormat(o.textFormat! as api.TextFormat);
+  }
+  buildCounterKeyValueFormat--;
+}
+
 core.int buildCounterLineStyle = 0;
-buildLineStyle() {
-  var o = new api.LineStyle();
+api.LineStyle buildLineStyle() {
+  var o = api.LineStyle();
   buildCounterLineStyle++;
   if (buildCounterLineStyle < 3) {
-    o.type = "foo";
+    o.type = 'foo';
     o.width = 42;
   }
   buildCounterLineStyle--;
   return o;
 }
 
-checkLineStyle(api.LineStyle o) {
+void checkLineStyle(api.LineStyle o) {
   buildCounterLineStyle++;
   if (buildCounterLineStyle < 3) {
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.width, unittest.equals(42));
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.width!,
+      unittest.equals(42),
+    );
   }
   buildCounterLineStyle--;
 }
 
-buildUnnamed3641() {
-  var o = new core.List<api.ManualRuleGroup>();
+core.List<api.ManualRuleGroup> buildUnnamed5342() {
+  var o = <api.ManualRuleGroup>[];
   o.add(buildManualRuleGroup());
   o.add(buildManualRuleGroup());
   return o;
 }
 
-checkUnnamed3641(core.List<api.ManualRuleGroup> o) {
+void checkUnnamed5342(core.List<api.ManualRuleGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkManualRuleGroup(o[0]);
-  checkManualRuleGroup(o[1]);
+  checkManualRuleGroup(o[0] as api.ManualRuleGroup);
+  checkManualRuleGroup(o[1] as api.ManualRuleGroup);
 }
 
 core.int buildCounterManualRule = 0;
-buildManualRule() {
-  var o = new api.ManualRule();
+api.ManualRule buildManualRule() {
+  var o = api.ManualRule();
   buildCounterManualRule++;
   if (buildCounterManualRule < 3) {
-    o.groups = buildUnnamed3641();
+    o.groups = buildUnnamed5342();
   }
   buildCounterManualRule--;
   return o;
 }
 
-checkManualRule(api.ManualRule o) {
+void checkManualRule(api.ManualRule o) {
   buildCounterManualRule++;
   if (buildCounterManualRule < 3) {
-    checkUnnamed3641(o.groups);
+    checkUnnamed5342(o.groups!);
   }
   buildCounterManualRule--;
 }
 
-buildUnnamed3642() {
-  var o = new core.List<api.ExtendedValue>();
+core.List<api.ExtendedValue> buildUnnamed5343() {
+  var o = <api.ExtendedValue>[];
   o.add(buildExtendedValue());
   o.add(buildExtendedValue());
   return o;
 }
 
-checkUnnamed3642(core.List<api.ExtendedValue> o) {
+void checkUnnamed5343(core.List<api.ExtendedValue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExtendedValue(o[0]);
-  checkExtendedValue(o[1]);
+  checkExtendedValue(o[0] as api.ExtendedValue);
+  checkExtendedValue(o[1] as api.ExtendedValue);
 }
 
 core.int buildCounterManualRuleGroup = 0;
-buildManualRuleGroup() {
-  var o = new api.ManualRuleGroup();
+api.ManualRuleGroup buildManualRuleGroup() {
+  var o = api.ManualRuleGroup();
   buildCounterManualRuleGroup++;
   if (buildCounterManualRuleGroup < 3) {
     o.groupName = buildExtendedValue();
-    o.items = buildUnnamed3642();
+    o.items = buildUnnamed5343();
   }
   buildCounterManualRuleGroup--;
   return o;
 }
 
-checkManualRuleGroup(api.ManualRuleGroup o) {
+void checkManualRuleGroup(api.ManualRuleGroup o) {
   buildCounterManualRuleGroup++;
   if (buildCounterManualRuleGroup < 3) {
-    checkExtendedValue(o.groupName);
-    checkUnnamed3642(o.items);
+    checkExtendedValue(o.groupName! as api.ExtendedValue);
+    checkUnnamed5343(o.items!);
   }
   buildCounterManualRuleGroup--;
 }
 
-buildUnnamed3643() {
-  var o = new core.List<api.DataFilter>();
+core.List<api.DataFilter> buildUnnamed5344() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3643(core.List<api.DataFilter> o) {
+void checkUnnamed5344(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterMatchedDeveloperMetadata = 0;
-buildMatchedDeveloperMetadata() {
-  var o = new api.MatchedDeveloperMetadata();
+api.MatchedDeveloperMetadata buildMatchedDeveloperMetadata() {
+  var o = api.MatchedDeveloperMetadata();
   buildCounterMatchedDeveloperMetadata++;
   if (buildCounterMatchedDeveloperMetadata < 3) {
-    o.dataFilters = buildUnnamed3643();
+    o.dataFilters = buildUnnamed5344();
     o.developerMetadata = buildDeveloperMetadata();
   }
   buildCounterMatchedDeveloperMetadata--;
   return o;
 }
 
-checkMatchedDeveloperMetadata(api.MatchedDeveloperMetadata o) {
+void checkMatchedDeveloperMetadata(api.MatchedDeveloperMetadata o) {
   buildCounterMatchedDeveloperMetadata++;
   if (buildCounterMatchedDeveloperMetadata < 3) {
-    checkUnnamed3643(o.dataFilters);
-    checkDeveloperMetadata(o.developerMetadata);
+    checkUnnamed5344(o.dataFilters!);
+    checkDeveloperMetadata(o.developerMetadata! as api.DeveloperMetadata);
   }
   buildCounterMatchedDeveloperMetadata--;
 }
 
-buildUnnamed3644() {
-  var o = new core.List<api.DataFilter>();
+core.List<api.DataFilter> buildUnnamed5345() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3644(core.List<api.DataFilter> o) {
+void checkUnnamed5345(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterMatchedValueRange = 0;
-buildMatchedValueRange() {
-  var o = new api.MatchedValueRange();
+api.MatchedValueRange buildMatchedValueRange() {
+  var o = api.MatchedValueRange();
   buildCounterMatchedValueRange++;
   if (buildCounterMatchedValueRange < 3) {
-    o.dataFilters = buildUnnamed3644();
+    o.dataFilters = buildUnnamed5345();
     o.valueRange = buildValueRange();
   }
   buildCounterMatchedValueRange--;
   return o;
 }
 
-checkMatchedValueRange(api.MatchedValueRange o) {
+void checkMatchedValueRange(api.MatchedValueRange o) {
   buildCounterMatchedValueRange++;
   if (buildCounterMatchedValueRange < 3) {
-    checkUnnamed3644(o.dataFilters);
-    checkValueRange(o.valueRange);
+    checkUnnamed5345(o.dataFilters!);
+    checkValueRange(o.valueRange! as api.ValueRange);
   }
   buildCounterMatchedValueRange--;
 }
 
 core.int buildCounterMergeCellsRequest = 0;
-buildMergeCellsRequest() {
-  var o = new api.MergeCellsRequest();
+api.MergeCellsRequest buildMergeCellsRequest() {
+  var o = api.MergeCellsRequest();
   buildCounterMergeCellsRequest++;
   if (buildCounterMergeCellsRequest < 3) {
-    o.mergeType = "foo";
+    o.mergeType = 'foo';
     o.range = buildGridRange();
   }
   buildCounterMergeCellsRequest--;
   return o;
 }
 
-checkMergeCellsRequest(api.MergeCellsRequest o) {
+void checkMergeCellsRequest(api.MergeCellsRequest o) {
   buildCounterMergeCellsRequest++;
   if (buildCounterMergeCellsRequest < 3) {
-    unittest.expect(o.mergeType, unittest.equals('foo'));
-    checkGridRange(o.range);
+    unittest.expect(
+      o.mergeType!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
   }
   buildCounterMergeCellsRequest--;
 }
 
 core.int buildCounterMoveDimensionRequest = 0;
-buildMoveDimensionRequest() {
-  var o = new api.MoveDimensionRequest();
+api.MoveDimensionRequest buildMoveDimensionRequest() {
+  var o = api.MoveDimensionRequest();
   buildCounterMoveDimensionRequest++;
   if (buildCounterMoveDimensionRequest < 3) {
     o.destinationIndex = 42;
@@ -3436,91 +5289,113 @@ buildMoveDimensionRequest() {
   return o;
 }
 
-checkMoveDimensionRequest(api.MoveDimensionRequest o) {
+void checkMoveDimensionRequest(api.MoveDimensionRequest o) {
   buildCounterMoveDimensionRequest++;
   if (buildCounterMoveDimensionRequest < 3) {
-    unittest.expect(o.destinationIndex, unittest.equals(42));
-    checkDimensionRange(o.source);
+    unittest.expect(
+      o.destinationIndex!,
+      unittest.equals(42),
+    );
+    checkDimensionRange(o.source! as api.DimensionRange);
   }
   buildCounterMoveDimensionRequest--;
 }
 
 core.int buildCounterNamedRange = 0;
-buildNamedRange() {
-  var o = new api.NamedRange();
+api.NamedRange buildNamedRange() {
+  var o = api.NamedRange();
   buildCounterNamedRange++;
   if (buildCounterNamedRange < 3) {
-    o.name = "foo";
-    o.namedRangeId = "foo";
+    o.name = 'foo';
+    o.namedRangeId = 'foo';
     o.range = buildGridRange();
   }
   buildCounterNamedRange--;
   return o;
 }
 
-checkNamedRange(api.NamedRange o) {
+void checkNamedRange(api.NamedRange o) {
   buildCounterNamedRange++;
   if (buildCounterNamedRange < 3) {
-    unittest.expect(o.name, unittest.equals('foo'));
-    unittest.expect(o.namedRangeId, unittest.equals('foo'));
-    checkGridRange(o.range);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.namedRangeId!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
   }
   buildCounterNamedRange--;
 }
 
 core.int buildCounterNumberFormat = 0;
-buildNumberFormat() {
-  var o = new api.NumberFormat();
+api.NumberFormat buildNumberFormat() {
+  var o = api.NumberFormat();
   buildCounterNumberFormat++;
   if (buildCounterNumberFormat < 3) {
-    o.pattern = "foo";
-    o.type = "foo";
+    o.pattern = 'foo';
+    o.type = 'foo';
   }
   buildCounterNumberFormat--;
   return o;
 }
 
-checkNumberFormat(api.NumberFormat o) {
+void checkNumberFormat(api.NumberFormat o) {
   buildCounterNumberFormat++;
   if (buildCounterNumberFormat < 3) {
-    unittest.expect(o.pattern, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
+    unittest.expect(
+      o.pattern!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterNumberFormat--;
 }
 
 core.int buildCounterOrgChartSpec = 0;
-buildOrgChartSpec() {
-  var o = new api.OrgChartSpec();
+api.OrgChartSpec buildOrgChartSpec() {
+  var o = api.OrgChartSpec();
   buildCounterOrgChartSpec++;
   if (buildCounterOrgChartSpec < 3) {
     o.labels = buildChartData();
     o.nodeColor = buildColor();
-    o.nodeSize = "foo";
+    o.nodeColorStyle = buildColorStyle();
+    o.nodeSize = 'foo';
     o.parentLabels = buildChartData();
     o.selectedNodeColor = buildColor();
+    o.selectedNodeColorStyle = buildColorStyle();
     o.tooltips = buildChartData();
   }
   buildCounterOrgChartSpec--;
   return o;
 }
 
-checkOrgChartSpec(api.OrgChartSpec o) {
+void checkOrgChartSpec(api.OrgChartSpec o) {
   buildCounterOrgChartSpec++;
   if (buildCounterOrgChartSpec < 3) {
-    checkChartData(o.labels);
-    checkColor(o.nodeColor);
-    unittest.expect(o.nodeSize, unittest.equals('foo'));
-    checkChartData(o.parentLabels);
-    checkColor(o.selectedNodeColor);
-    checkChartData(o.tooltips);
+    checkChartData(o.labels! as api.ChartData);
+    checkColor(o.nodeColor! as api.Color);
+    checkColorStyle(o.nodeColorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.nodeSize!,
+      unittest.equals('foo'),
+    );
+    checkChartData(o.parentLabels! as api.ChartData);
+    checkColor(o.selectedNodeColor! as api.Color);
+    checkColorStyle(o.selectedNodeColorStyle! as api.ColorStyle);
+    checkChartData(o.tooltips! as api.ChartData);
   }
   buildCounterOrgChartSpec--;
 }
 
 core.int buildCounterOverlayPosition = 0;
-buildOverlayPosition() {
-  var o = new api.OverlayPosition();
+api.OverlayPosition buildOverlayPosition() {
+  var o = api.OverlayPosition();
   buildCounterOverlayPosition++;
   if (buildCounterOverlayPosition < 3) {
     o.anchorCell = buildGridCoordinate();
@@ -3533,21 +5408,33 @@ buildOverlayPosition() {
   return o;
 }
 
-checkOverlayPosition(api.OverlayPosition o) {
+void checkOverlayPosition(api.OverlayPosition o) {
   buildCounterOverlayPosition++;
   if (buildCounterOverlayPosition < 3) {
-    checkGridCoordinate(o.anchorCell);
-    unittest.expect(o.heightPixels, unittest.equals(42));
-    unittest.expect(o.offsetXPixels, unittest.equals(42));
-    unittest.expect(o.offsetYPixels, unittest.equals(42));
-    unittest.expect(o.widthPixels, unittest.equals(42));
+    checkGridCoordinate(o.anchorCell! as api.GridCoordinate);
+    unittest.expect(
+      o.heightPixels!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.offsetXPixels!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.offsetYPixels!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.widthPixels!,
+      unittest.equals(42),
+    );
   }
   buildCounterOverlayPosition--;
 }
 
 core.int buildCounterPadding = 0;
-buildPadding() {
-  var o = new api.Padding();
+api.Padding buildPadding() {
+  var o = api.Padding();
   buildCounterPadding++;
   if (buildCounterPadding < 3) {
     o.bottom = 42;
@@ -3559,51 +5446,72 @@ buildPadding() {
   return o;
 }
 
-checkPadding(api.Padding o) {
+void checkPadding(api.Padding o) {
   buildCounterPadding++;
   if (buildCounterPadding < 3) {
-    unittest.expect(o.bottom, unittest.equals(42));
-    unittest.expect(o.left, unittest.equals(42));
-    unittest.expect(o.right, unittest.equals(42));
-    unittest.expect(o.top, unittest.equals(42));
+    unittest.expect(
+      o.bottom!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.left!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.right!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.top!,
+      unittest.equals(42),
+    );
   }
   buildCounterPadding--;
 }
 
 core.int buildCounterPasteDataRequest = 0;
-buildPasteDataRequest() {
-  var o = new api.PasteDataRequest();
+api.PasteDataRequest buildPasteDataRequest() {
+  var o = api.PasteDataRequest();
   buildCounterPasteDataRequest++;
   if (buildCounterPasteDataRequest < 3) {
     o.coordinate = buildGridCoordinate();
-    o.data = "foo";
-    o.delimiter = "foo";
+    o.data = 'foo';
+    o.delimiter = 'foo';
     o.html = true;
-    o.type = "foo";
+    o.type = 'foo';
   }
   buildCounterPasteDataRequest--;
   return o;
 }
 
-checkPasteDataRequest(api.PasteDataRequest o) {
+void checkPasteDataRequest(api.PasteDataRequest o) {
   buildCounterPasteDataRequest++;
   if (buildCounterPasteDataRequest < 3) {
-    checkGridCoordinate(o.coordinate);
-    unittest.expect(o.data, unittest.equals('foo'));
-    unittest.expect(o.delimiter, unittest.equals('foo'));
-    unittest.expect(o.html, unittest.isTrue);
-    unittest.expect(o.type, unittest.equals('foo'));
+    checkGridCoordinate(o.coordinate! as api.GridCoordinate);
+    unittest.expect(
+      o.data!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.delimiter!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.html!, unittest.isTrue);
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterPasteDataRequest--;
 }
 
 core.int buildCounterPieChartSpec = 0;
-buildPieChartSpec() {
-  var o = new api.PieChartSpec();
+api.PieChartSpec buildPieChartSpec() {
+  var o = api.PieChartSpec();
   buildCounterPieChartSpec++;
   if (buildCounterPieChartSpec < 3) {
     o.domain = buildChartData();
-    o.legendPosition = "foo";
+    o.legendPosition = 'foo';
     o.pieHole = 42.0;
     o.series = buildChartData();
     o.threeDimensional = true;
@@ -3612,99 +5520,184 @@ buildPieChartSpec() {
   return o;
 }
 
-checkPieChartSpec(api.PieChartSpec o) {
+void checkPieChartSpec(api.PieChartSpec o) {
   buildCounterPieChartSpec++;
   if (buildCounterPieChartSpec < 3) {
-    checkChartData(o.domain);
-    unittest.expect(o.legendPosition, unittest.equals('foo'));
-    unittest.expect(o.pieHole, unittest.equals(42.0));
-    checkChartData(o.series);
-    unittest.expect(o.threeDimensional, unittest.isTrue);
+    checkChartData(o.domain! as api.ChartData);
+    unittest.expect(
+      o.legendPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pieHole!,
+      unittest.equals(42.0),
+    );
+    checkChartData(o.series! as api.ChartData);
+    unittest.expect(o.threeDimensional!, unittest.isTrue);
   }
   buildCounterPieChartSpec--;
 }
 
-buildUnnamed3645() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5346() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3645(core.List<core.String> o) {
+void checkUnnamed5346(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterPivotFilterCriteria = 0;
-buildPivotFilterCriteria() {
-  var o = new api.PivotFilterCriteria();
+api.PivotFilterCriteria buildPivotFilterCriteria() {
+  var o = api.PivotFilterCriteria();
   buildCounterPivotFilterCriteria++;
   if (buildCounterPivotFilterCriteria < 3) {
-    o.visibleValues = buildUnnamed3645();
+    o.condition = buildBooleanCondition();
+    o.visibleByDefault = true;
+    o.visibleValues = buildUnnamed5346();
   }
   buildCounterPivotFilterCriteria--;
   return o;
 }
 
-checkPivotFilterCriteria(api.PivotFilterCriteria o) {
+void checkPivotFilterCriteria(api.PivotFilterCriteria o) {
   buildCounterPivotFilterCriteria++;
   if (buildCounterPivotFilterCriteria < 3) {
-    checkUnnamed3645(o.visibleValues);
+    checkBooleanCondition(o.condition! as api.BooleanCondition);
+    unittest.expect(o.visibleByDefault!, unittest.isTrue);
+    checkUnnamed5346(o.visibleValues!);
   }
   buildCounterPivotFilterCriteria--;
 }
 
-buildUnnamed3646() {
-  var o = new core.List<api.PivotGroupValueMetadata>();
+core.int buildCounterPivotFilterSpec = 0;
+api.PivotFilterSpec buildPivotFilterSpec() {
+  var o = api.PivotFilterSpec();
+  buildCounterPivotFilterSpec++;
+  if (buildCounterPivotFilterSpec < 3) {
+    o.columnOffsetIndex = 42;
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
+    o.filterCriteria = buildPivotFilterCriteria();
+  }
+  buildCounterPivotFilterSpec--;
+  return o;
+}
+
+void checkPivotFilterSpec(api.PivotFilterSpec o) {
+  buildCounterPivotFilterSpec++;
+  if (buildCounterPivotFilterSpec < 3) {
+    unittest.expect(
+      o.columnOffsetIndex!,
+      unittest.equals(42),
+    );
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    checkPivotFilterCriteria(o.filterCriteria! as api.PivotFilterCriteria);
+  }
+  buildCounterPivotFilterSpec--;
+}
+
+core.List<api.PivotGroupValueMetadata> buildUnnamed5347() {
+  var o = <api.PivotGroupValueMetadata>[];
   o.add(buildPivotGroupValueMetadata());
   o.add(buildPivotGroupValueMetadata());
   return o;
 }
 
-checkUnnamed3646(core.List<api.PivotGroupValueMetadata> o) {
+void checkUnnamed5347(core.List<api.PivotGroupValueMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPivotGroupValueMetadata(o[0]);
-  checkPivotGroupValueMetadata(o[1]);
+  checkPivotGroupValueMetadata(o[0] as api.PivotGroupValueMetadata);
+  checkPivotGroupValueMetadata(o[1] as api.PivotGroupValueMetadata);
 }
 
 core.int buildCounterPivotGroup = 0;
-buildPivotGroup() {
-  var o = new api.PivotGroup();
+api.PivotGroup buildPivotGroup() {
+  var o = api.PivotGroup();
   buildCounterPivotGroup++;
   if (buildCounterPivotGroup < 3) {
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
+    o.groupLimit = buildPivotGroupLimit();
     o.groupRule = buildPivotGroupRule();
-    o.label = "foo";
+    o.label = 'foo';
     o.repeatHeadings = true;
     o.showTotals = true;
-    o.sortOrder = "foo";
+    o.sortOrder = 'foo';
     o.sourceColumnOffset = 42;
     o.valueBucket = buildPivotGroupSortValueBucket();
-    o.valueMetadata = buildUnnamed3646();
+    o.valueMetadata = buildUnnamed5347();
   }
   buildCounterPivotGroup--;
   return o;
 }
 
-checkPivotGroup(api.PivotGroup o) {
+void checkPivotGroup(api.PivotGroup o) {
   buildCounterPivotGroup++;
   if (buildCounterPivotGroup < 3) {
-    checkPivotGroupRule(o.groupRule);
-    unittest.expect(o.label, unittest.equals('foo'));
-    unittest.expect(o.repeatHeadings, unittest.isTrue);
-    unittest.expect(o.showTotals, unittest.isTrue);
-    unittest.expect(o.sortOrder, unittest.equals('foo'));
-    unittest.expect(o.sourceColumnOffset, unittest.equals(42));
-    checkPivotGroupSortValueBucket(o.valueBucket);
-    checkUnnamed3646(o.valueMetadata);
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    checkPivotGroupLimit(o.groupLimit! as api.PivotGroupLimit);
+    checkPivotGroupRule(o.groupRule! as api.PivotGroupRule);
+    unittest.expect(
+      o.label!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.repeatHeadings!, unittest.isTrue);
+    unittest.expect(o.showTotals!, unittest.isTrue);
+    unittest.expect(
+      o.sortOrder!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sourceColumnOffset!,
+      unittest.equals(42),
+    );
+    checkPivotGroupSortValueBucket(
+        o.valueBucket! as api.PivotGroupSortValueBucket);
+    checkUnnamed5347(o.valueMetadata!);
   }
   buildCounterPivotGroup--;
 }
 
+core.int buildCounterPivotGroupLimit = 0;
+api.PivotGroupLimit buildPivotGroupLimit() {
+  var o = api.PivotGroupLimit();
+  buildCounterPivotGroupLimit++;
+  if (buildCounterPivotGroupLimit < 3) {
+    o.applyOrder = 42;
+    o.countLimit = 42;
+  }
+  buildCounterPivotGroupLimit--;
+  return o;
+}
+
+void checkPivotGroupLimit(api.PivotGroupLimit o) {
+  buildCounterPivotGroupLimit++;
+  if (buildCounterPivotGroupLimit < 3) {
+    unittest.expect(
+      o.applyOrder!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.countLimit!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterPivotGroupLimit--;
+}
+
 core.int buildCounterPivotGroupRule = 0;
-buildPivotGroupRule() {
-  var o = new api.PivotGroupRule();
+api.PivotGroupRule buildPivotGroupRule() {
+  var o = api.PivotGroupRule();
   buildCounterPivotGroupRule++;
   if (buildCounterPivotGroupRule < 3) {
     o.dateTimeRule = buildDateTimeRule();
@@ -3715,53 +5708,56 @@ buildPivotGroupRule() {
   return o;
 }
 
-checkPivotGroupRule(api.PivotGroupRule o) {
+void checkPivotGroupRule(api.PivotGroupRule o) {
   buildCounterPivotGroupRule++;
   if (buildCounterPivotGroupRule < 3) {
-    checkDateTimeRule(o.dateTimeRule);
-    checkHistogramRule(o.histogramRule);
-    checkManualRule(o.manualRule);
+    checkDateTimeRule(o.dateTimeRule! as api.DateTimeRule);
+    checkHistogramRule(o.histogramRule! as api.HistogramRule);
+    checkManualRule(o.manualRule! as api.ManualRule);
   }
   buildCounterPivotGroupRule--;
 }
 
-buildUnnamed3647() {
-  var o = new core.List<api.ExtendedValue>();
+core.List<api.ExtendedValue> buildUnnamed5348() {
+  var o = <api.ExtendedValue>[];
   o.add(buildExtendedValue());
   o.add(buildExtendedValue());
   return o;
 }
 
-checkUnnamed3647(core.List<api.ExtendedValue> o) {
+void checkUnnamed5348(core.List<api.ExtendedValue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExtendedValue(o[0]);
-  checkExtendedValue(o[1]);
+  checkExtendedValue(o[0] as api.ExtendedValue);
+  checkExtendedValue(o[1] as api.ExtendedValue);
 }
 
 core.int buildCounterPivotGroupSortValueBucket = 0;
-buildPivotGroupSortValueBucket() {
-  var o = new api.PivotGroupSortValueBucket();
+api.PivotGroupSortValueBucket buildPivotGroupSortValueBucket() {
+  var o = api.PivotGroupSortValueBucket();
   buildCounterPivotGroupSortValueBucket++;
   if (buildCounterPivotGroupSortValueBucket < 3) {
-    o.buckets = buildUnnamed3647();
+    o.buckets = buildUnnamed5348();
     o.valuesIndex = 42;
   }
   buildCounterPivotGroupSortValueBucket--;
   return o;
 }
 
-checkPivotGroupSortValueBucket(api.PivotGroupSortValueBucket o) {
+void checkPivotGroupSortValueBucket(api.PivotGroupSortValueBucket o) {
   buildCounterPivotGroupSortValueBucket++;
   if (buildCounterPivotGroupSortValueBucket < 3) {
-    checkUnnamed3647(o.buckets);
-    unittest.expect(o.valuesIndex, unittest.equals(42));
+    checkUnnamed5348(o.buckets!);
+    unittest.expect(
+      o.valuesIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterPivotGroupSortValueBucket--;
 }
 
 core.int buildCounterPivotGroupValueMetadata = 0;
-buildPivotGroupValueMetadata() {
-  var o = new api.PivotGroupValueMetadata();
+api.PivotGroupValueMetadata buildPivotGroupValueMetadata() {
+  var o = api.PivotGroupValueMetadata();
   buildCounterPivotGroupValueMetadata++;
   if (buildCounterPivotGroupValueMetadata < 3) {
     o.collapsed = true;
@@ -3771,172 +5767,251 @@ buildPivotGroupValueMetadata() {
   return o;
 }
 
-checkPivotGroupValueMetadata(api.PivotGroupValueMetadata o) {
+void checkPivotGroupValueMetadata(api.PivotGroupValueMetadata o) {
   buildCounterPivotGroupValueMetadata++;
   if (buildCounterPivotGroupValueMetadata < 3) {
-    unittest.expect(o.collapsed, unittest.isTrue);
-    checkExtendedValue(o.value);
+    unittest.expect(o.collapsed!, unittest.isTrue);
+    checkExtendedValue(o.value! as api.ExtendedValue);
   }
   buildCounterPivotGroupValueMetadata--;
 }
 
-buildUnnamed3648() {
-  var o = new core.List<api.PivotGroup>();
+core.List<api.PivotGroup> buildUnnamed5349() {
+  var o = <api.PivotGroup>[];
   o.add(buildPivotGroup());
   o.add(buildPivotGroup());
   return o;
 }
 
-checkUnnamed3648(core.List<api.PivotGroup> o) {
+void checkUnnamed5349(core.List<api.PivotGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPivotGroup(o[0]);
-  checkPivotGroup(o[1]);
+  checkPivotGroup(o[0] as api.PivotGroup);
+  checkPivotGroup(o[1] as api.PivotGroup);
 }
 
-buildUnnamed3649() {
-  var o = new core.Map<core.String, api.PivotFilterCriteria>();
-  o["x"] = buildPivotFilterCriteria();
-  o["y"] = buildPivotFilterCriteria();
+core.Map<core.String, api.PivotFilterCriteria> buildUnnamed5350() {
+  var o = <core.String, api.PivotFilterCriteria>{};
+  o['x'] = buildPivotFilterCriteria();
+  o['y'] = buildPivotFilterCriteria();
   return o;
 }
 
-checkUnnamed3649(core.Map<core.String, api.PivotFilterCriteria> o) {
+void checkUnnamed5350(core.Map<core.String, api.PivotFilterCriteria> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPivotFilterCriteria(o["x"]);
-  checkPivotFilterCriteria(o["y"]);
+  checkPivotFilterCriteria(o['x']! as api.PivotFilterCriteria);
+  checkPivotFilterCriteria(o['y']! as api.PivotFilterCriteria);
 }
 
-buildUnnamed3650() {
-  var o = new core.List<api.PivotGroup>();
+core.List<api.PivotFilterSpec> buildUnnamed5351() {
+  var o = <api.PivotFilterSpec>[];
+  o.add(buildPivotFilterSpec());
+  o.add(buildPivotFilterSpec());
+  return o;
+}
+
+void checkUnnamed5351(core.List<api.PivotFilterSpec> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkPivotFilterSpec(o[0] as api.PivotFilterSpec);
+  checkPivotFilterSpec(o[1] as api.PivotFilterSpec);
+}
+
+core.List<api.PivotGroup> buildUnnamed5352() {
+  var o = <api.PivotGroup>[];
   o.add(buildPivotGroup());
   o.add(buildPivotGroup());
   return o;
 }
 
-checkUnnamed3650(core.List<api.PivotGroup> o) {
+void checkUnnamed5352(core.List<api.PivotGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPivotGroup(o[0]);
-  checkPivotGroup(o[1]);
+  checkPivotGroup(o[0] as api.PivotGroup);
+  checkPivotGroup(o[1] as api.PivotGroup);
 }
 
-buildUnnamed3651() {
-  var o = new core.List<api.PivotValue>();
+core.List<api.PivotValue> buildUnnamed5353() {
+  var o = <api.PivotValue>[];
   o.add(buildPivotValue());
   o.add(buildPivotValue());
   return o;
 }
 
-checkUnnamed3651(core.List<api.PivotValue> o) {
+void checkUnnamed5353(core.List<api.PivotValue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPivotValue(o[0]);
-  checkPivotValue(o[1]);
+  checkPivotValue(o[0] as api.PivotValue);
+  checkPivotValue(o[1] as api.PivotValue);
 }
 
 core.int buildCounterPivotTable = 0;
-buildPivotTable() {
-  var o = new api.PivotTable();
+api.PivotTable buildPivotTable() {
+  var o = api.PivotTable();
   buildCounterPivotTable++;
   if (buildCounterPivotTable < 3) {
-    o.columns = buildUnnamed3648();
-    o.criteria = buildUnnamed3649();
-    o.rows = buildUnnamed3650();
+    o.columns = buildUnnamed5349();
+    o.criteria = buildUnnamed5350();
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSourceId = 'foo';
+    o.filterSpecs = buildUnnamed5351();
+    o.rows = buildUnnamed5352();
     o.source = buildGridRange();
-    o.valueLayout = "foo";
-    o.values = buildUnnamed3651();
+    o.valueLayout = 'foo';
+    o.values = buildUnnamed5353();
   }
   buildCounterPivotTable--;
   return o;
 }
 
-checkPivotTable(api.PivotTable o) {
+void checkPivotTable(api.PivotTable o) {
   buildCounterPivotTable++;
   if (buildCounterPivotTable < 3) {
-    checkUnnamed3648(o.columns);
-    checkUnnamed3649(o.criteria);
-    checkUnnamed3650(o.rows);
-    checkGridRange(o.source);
-    unittest.expect(o.valueLayout, unittest.equals('foo'));
-    checkUnnamed3651(o.values);
+    checkUnnamed5349(o.columns!);
+    checkUnnamed5350(o.criteria!);
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5351(o.filterSpecs!);
+    checkUnnamed5352(o.rows!);
+    checkGridRange(o.source! as api.GridRange);
+    unittest.expect(
+      o.valueLayout!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5353(o.values!);
   }
   buildCounterPivotTable--;
 }
 
 core.int buildCounterPivotValue = 0;
-buildPivotValue() {
-  var o = new api.PivotValue();
+api.PivotValue buildPivotValue() {
+  var o = api.PivotValue();
   buildCounterPivotValue++;
   if (buildCounterPivotValue < 3) {
-    o.calculatedDisplayType = "foo";
-    o.formula = "foo";
-    o.name = "foo";
+    o.calculatedDisplayType = 'foo';
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
+    o.formula = 'foo';
+    o.name = 'foo';
     o.sourceColumnOffset = 42;
-    o.summarizeFunction = "foo";
+    o.summarizeFunction = 'foo';
   }
   buildCounterPivotValue--;
   return o;
 }
 
-checkPivotValue(api.PivotValue o) {
+void checkPivotValue(api.PivotValue o) {
   buildCounterPivotValue++;
   if (buildCounterPivotValue < 3) {
-    unittest.expect(o.calculatedDisplayType, unittest.equals('foo'));
-    unittest.expect(o.formula, unittest.equals('foo'));
-    unittest.expect(o.name, unittest.equals('foo'));
-    unittest.expect(o.sourceColumnOffset, unittest.equals(42));
-    unittest.expect(o.summarizeFunction, unittest.equals('foo'));
+    unittest.expect(
+      o.calculatedDisplayType!,
+      unittest.equals('foo'),
+    );
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    unittest.expect(
+      o.formula!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sourceColumnOffset!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.summarizeFunction!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterPivotValue--;
 }
 
-buildUnnamed3652() {
-  var o = new core.List<api.GridRange>();
+core.int buildCounterPointStyle = 0;
+api.PointStyle buildPointStyle() {
+  var o = api.PointStyle();
+  buildCounterPointStyle++;
+  if (buildCounterPointStyle < 3) {
+    o.shape = 'foo';
+    o.size = 42.0;
+  }
+  buildCounterPointStyle--;
+  return o;
+}
+
+void checkPointStyle(api.PointStyle o) {
+  buildCounterPointStyle++;
+  if (buildCounterPointStyle < 3) {
+    unittest.expect(
+      o.shape!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.size!,
+      unittest.equals(42.0),
+    );
+  }
+  buildCounterPointStyle--;
+}
+
+core.List<api.GridRange> buildUnnamed5354() {
+  var o = <api.GridRange>[];
   o.add(buildGridRange());
   o.add(buildGridRange());
   return o;
 }
 
-checkUnnamed3652(core.List<api.GridRange> o) {
+void checkUnnamed5354(core.List<api.GridRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGridRange(o[0]);
-  checkGridRange(o[1]);
+  checkGridRange(o[0] as api.GridRange);
+  checkGridRange(o[1] as api.GridRange);
 }
 
 core.int buildCounterProtectedRange = 0;
-buildProtectedRange() {
-  var o = new api.ProtectedRange();
+api.ProtectedRange buildProtectedRange() {
+  var o = api.ProtectedRange();
   buildCounterProtectedRange++;
   if (buildCounterProtectedRange < 3) {
-    o.description = "foo";
+    o.description = 'foo';
     o.editors = buildEditors();
-    o.namedRangeId = "foo";
+    o.namedRangeId = 'foo';
     o.protectedRangeId = 42;
     o.range = buildGridRange();
     o.requestingUserCanEdit = true;
-    o.unprotectedRanges = buildUnnamed3652();
+    o.unprotectedRanges = buildUnnamed5354();
     o.warningOnly = true;
   }
   buildCounterProtectedRange--;
   return o;
 }
 
-checkProtectedRange(api.ProtectedRange o) {
+void checkProtectedRange(api.ProtectedRange o) {
   buildCounterProtectedRange++;
   if (buildCounterProtectedRange < 3) {
-    unittest.expect(o.description, unittest.equals('foo'));
-    checkEditors(o.editors);
-    unittest.expect(o.namedRangeId, unittest.equals('foo'));
-    unittest.expect(o.protectedRangeId, unittest.equals(42));
-    checkGridRange(o.range);
-    unittest.expect(o.requestingUserCanEdit, unittest.isTrue);
-    checkUnnamed3652(o.unprotectedRanges);
-    unittest.expect(o.warningOnly, unittest.isTrue);
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    checkEditors(o.editors! as api.Editors);
+    unittest.expect(
+      o.namedRangeId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.protectedRangeId!,
+      unittest.equals(42),
+    );
+    checkGridRange(o.range! as api.GridRange);
+    unittest.expect(o.requestingUserCanEdit!, unittest.isTrue);
+    checkUnnamed5354(o.unprotectedRanges!);
+    unittest.expect(o.warningOnly!, unittest.isTrue);
   }
   buildCounterProtectedRange--;
 }
 
 core.int buildCounterRandomizeRangeRequest = 0;
-buildRandomizeRangeRequest() {
-  var o = new api.RandomizeRangeRequest();
+api.RandomizeRangeRequest buildRandomizeRangeRequest() {
+  var o = api.RandomizeRangeRequest();
   buildCounterRandomizeRangeRequest++;
   if (buildCounterRandomizeRangeRequest < 3) {
     o.range = buildGridRange();
@@ -3945,50 +6020,142 @@ buildRandomizeRangeRequest() {
   return o;
 }
 
-checkRandomizeRangeRequest(api.RandomizeRangeRequest o) {
+void checkRandomizeRangeRequest(api.RandomizeRangeRequest o) {
   buildCounterRandomizeRangeRequest++;
   if (buildCounterRandomizeRangeRequest < 3) {
-    checkGridRange(o.range);
+    checkGridRange(o.range! as api.GridRange);
   }
   buildCounterRandomizeRangeRequest--;
 }
 
+core.int buildCounterRefreshDataSourceObjectExecutionStatus = 0;
+api.RefreshDataSourceObjectExecutionStatus
+    buildRefreshDataSourceObjectExecutionStatus() {
+  var o = api.RefreshDataSourceObjectExecutionStatus();
+  buildCounterRefreshDataSourceObjectExecutionStatus++;
+  if (buildCounterRefreshDataSourceObjectExecutionStatus < 3) {
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.reference = buildDataSourceObjectReference();
+  }
+  buildCounterRefreshDataSourceObjectExecutionStatus--;
+  return o;
+}
+
+void checkRefreshDataSourceObjectExecutionStatus(
+    api.RefreshDataSourceObjectExecutionStatus o) {
+  buildCounterRefreshDataSourceObjectExecutionStatus++;
+  if (buildCounterRefreshDataSourceObjectExecutionStatus < 3) {
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    checkDataSourceObjectReference(
+        o.reference! as api.DataSourceObjectReference);
+  }
+  buildCounterRefreshDataSourceObjectExecutionStatus--;
+}
+
+core.int buildCounterRefreshDataSourceRequest = 0;
+api.RefreshDataSourceRequest buildRefreshDataSourceRequest() {
+  var o = api.RefreshDataSourceRequest();
+  buildCounterRefreshDataSourceRequest++;
+  if (buildCounterRefreshDataSourceRequest < 3) {
+    o.dataSourceId = 'foo';
+    o.force = true;
+    o.isAll = true;
+    o.references = buildDataSourceObjectReferences();
+  }
+  buildCounterRefreshDataSourceRequest--;
+  return o;
+}
+
+void checkRefreshDataSourceRequest(api.RefreshDataSourceRequest o) {
+  buildCounterRefreshDataSourceRequest++;
+  if (buildCounterRefreshDataSourceRequest < 3) {
+    unittest.expect(
+      o.dataSourceId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.force!, unittest.isTrue);
+    unittest.expect(o.isAll!, unittest.isTrue);
+    checkDataSourceObjectReferences(
+        o.references! as api.DataSourceObjectReferences);
+  }
+  buildCounterRefreshDataSourceRequest--;
+}
+
+core.List<api.RefreshDataSourceObjectExecutionStatus> buildUnnamed5355() {
+  var o = <api.RefreshDataSourceObjectExecutionStatus>[];
+  o.add(buildRefreshDataSourceObjectExecutionStatus());
+  o.add(buildRefreshDataSourceObjectExecutionStatus());
+  return o;
+}
+
+void checkUnnamed5355(core.List<api.RefreshDataSourceObjectExecutionStatus> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkRefreshDataSourceObjectExecutionStatus(
+      o[0] as api.RefreshDataSourceObjectExecutionStatus);
+  checkRefreshDataSourceObjectExecutionStatus(
+      o[1] as api.RefreshDataSourceObjectExecutionStatus);
+}
+
+core.int buildCounterRefreshDataSourceResponse = 0;
+api.RefreshDataSourceResponse buildRefreshDataSourceResponse() {
+  var o = api.RefreshDataSourceResponse();
+  buildCounterRefreshDataSourceResponse++;
+  if (buildCounterRefreshDataSourceResponse < 3) {
+    o.statuses = buildUnnamed5355();
+  }
+  buildCounterRefreshDataSourceResponse--;
+  return o;
+}
+
+void checkRefreshDataSourceResponse(api.RefreshDataSourceResponse o) {
+  buildCounterRefreshDataSourceResponse++;
+  if (buildCounterRefreshDataSourceResponse < 3) {
+    checkUnnamed5355(o.statuses!);
+  }
+  buildCounterRefreshDataSourceResponse--;
+}
+
 core.int buildCounterRepeatCellRequest = 0;
-buildRepeatCellRequest() {
-  var o = new api.RepeatCellRequest();
+api.RepeatCellRequest buildRepeatCellRequest() {
+  var o = api.RepeatCellRequest();
   buildCounterRepeatCellRequest++;
   if (buildCounterRepeatCellRequest < 3) {
     o.cell = buildCellData();
-    o.fields = "foo";
+    o.fields = 'foo';
     o.range = buildGridRange();
   }
   buildCounterRepeatCellRequest--;
   return o;
 }
 
-checkRepeatCellRequest(api.RepeatCellRequest o) {
+void checkRepeatCellRequest(api.RepeatCellRequest o) {
   buildCounterRepeatCellRequest++;
   if (buildCounterRepeatCellRequest < 3) {
-    checkCellData(o.cell);
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkGridRange(o.range);
+    checkCellData(o.cell! as api.CellData);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
   }
   buildCounterRepeatCellRequest--;
 }
 
 core.int buildCounterRequest = 0;
-buildRequest() {
-  var o = new api.Request();
+api.Request buildRequest() {
+  var o = api.Request();
   buildCounterRequest++;
   if (buildCounterRequest < 3) {
     o.addBanding = buildAddBandingRequest();
     o.addChart = buildAddChartRequest();
     o.addConditionalFormatRule = buildAddConditionalFormatRuleRequest();
+    o.addDataSource = buildAddDataSourceRequest();
     o.addDimensionGroup = buildAddDimensionGroupRequest();
     o.addFilterView = buildAddFilterViewRequest();
     o.addNamedRange = buildAddNamedRangeRequest();
     o.addProtectedRange = buildAddProtectedRangeRequest();
     o.addSheet = buildAddSheetRequest();
+    o.addSlicer = buildAddSlicerRequest();
     o.appendCells = buildAppendCellsRequest();
     o.appendDimension = buildAppendDimensionRequest();
     o.autoFill = buildAutoFillRequest();
@@ -3999,9 +6166,11 @@ buildRequest() {
     o.cutPaste = buildCutPasteRequest();
     o.deleteBanding = buildDeleteBandingRequest();
     o.deleteConditionalFormatRule = buildDeleteConditionalFormatRuleRequest();
+    o.deleteDataSource = buildDeleteDataSourceRequest();
     o.deleteDeveloperMetadata = buildDeleteDeveloperMetadataRequest();
     o.deleteDimension = buildDeleteDimensionRequest();
     o.deleteDimensionGroup = buildDeleteDimensionGroupRequest();
+    o.deleteDuplicates = buildDeleteDuplicatesRequest();
     o.deleteEmbeddedObject = buildDeleteEmbeddedObjectRequest();
     o.deleteFilterView = buildDeleteFilterViewRequest();
     o.deleteNamedRange = buildDeleteNamedRangeRequest();
@@ -4017,114 +6186,169 @@ buildRequest() {
     o.moveDimension = buildMoveDimensionRequest();
     o.pasteData = buildPasteDataRequest();
     o.randomizeRange = buildRandomizeRangeRequest();
+    o.refreshDataSource = buildRefreshDataSourceRequest();
     o.repeatCell = buildRepeatCellRequest();
     o.setBasicFilter = buildSetBasicFilterRequest();
     o.setDataValidation = buildSetDataValidationRequest();
     o.sortRange = buildSortRangeRequest();
     o.textToColumns = buildTextToColumnsRequest();
+    o.trimWhitespace = buildTrimWhitespaceRequest();
     o.unmergeCells = buildUnmergeCellsRequest();
     o.updateBanding = buildUpdateBandingRequest();
     o.updateBorders = buildUpdateBordersRequest();
     o.updateCells = buildUpdateCellsRequest();
     o.updateChartSpec = buildUpdateChartSpecRequest();
     o.updateConditionalFormatRule = buildUpdateConditionalFormatRuleRequest();
+    o.updateDataSource = buildUpdateDataSourceRequest();
     o.updateDeveloperMetadata = buildUpdateDeveloperMetadataRequest();
     o.updateDimensionGroup = buildUpdateDimensionGroupRequest();
     o.updateDimensionProperties = buildUpdateDimensionPropertiesRequest();
+    o.updateEmbeddedObjectBorder = buildUpdateEmbeddedObjectBorderRequest();
     o.updateEmbeddedObjectPosition = buildUpdateEmbeddedObjectPositionRequest();
     o.updateFilterView = buildUpdateFilterViewRequest();
     o.updateNamedRange = buildUpdateNamedRangeRequest();
     o.updateProtectedRange = buildUpdateProtectedRangeRequest();
     o.updateSheetProperties = buildUpdateSheetPropertiesRequest();
+    o.updateSlicerSpec = buildUpdateSlicerSpecRequest();
     o.updateSpreadsheetProperties = buildUpdateSpreadsheetPropertiesRequest();
   }
   buildCounterRequest--;
   return o;
 }
 
-checkRequest(api.Request o) {
+void checkRequest(api.Request o) {
   buildCounterRequest++;
   if (buildCounterRequest < 3) {
-    checkAddBandingRequest(o.addBanding);
-    checkAddChartRequest(o.addChart);
-    checkAddConditionalFormatRuleRequest(o.addConditionalFormatRule);
-    checkAddDimensionGroupRequest(o.addDimensionGroup);
-    checkAddFilterViewRequest(o.addFilterView);
-    checkAddNamedRangeRequest(o.addNamedRange);
-    checkAddProtectedRangeRequest(o.addProtectedRange);
-    checkAddSheetRequest(o.addSheet);
-    checkAppendCellsRequest(o.appendCells);
-    checkAppendDimensionRequest(o.appendDimension);
-    checkAutoFillRequest(o.autoFill);
-    checkAutoResizeDimensionsRequest(o.autoResizeDimensions);
-    checkClearBasicFilterRequest(o.clearBasicFilter);
-    checkCopyPasteRequest(o.copyPaste);
-    checkCreateDeveloperMetadataRequest(o.createDeveloperMetadata);
-    checkCutPasteRequest(o.cutPaste);
-    checkDeleteBandingRequest(o.deleteBanding);
-    checkDeleteConditionalFormatRuleRequest(o.deleteConditionalFormatRule);
-    checkDeleteDeveloperMetadataRequest(o.deleteDeveloperMetadata);
-    checkDeleteDimensionRequest(o.deleteDimension);
-    checkDeleteDimensionGroupRequest(o.deleteDimensionGroup);
-    checkDeleteEmbeddedObjectRequest(o.deleteEmbeddedObject);
-    checkDeleteFilterViewRequest(o.deleteFilterView);
-    checkDeleteNamedRangeRequest(o.deleteNamedRange);
-    checkDeleteProtectedRangeRequest(o.deleteProtectedRange);
-    checkDeleteRangeRequest(o.deleteRange);
-    checkDeleteSheetRequest(o.deleteSheet);
-    checkDuplicateFilterViewRequest(o.duplicateFilterView);
-    checkDuplicateSheetRequest(o.duplicateSheet);
-    checkFindReplaceRequest(o.findReplace);
-    checkInsertDimensionRequest(o.insertDimension);
-    checkInsertRangeRequest(o.insertRange);
-    checkMergeCellsRequest(o.mergeCells);
-    checkMoveDimensionRequest(o.moveDimension);
-    checkPasteDataRequest(o.pasteData);
-    checkRandomizeRangeRequest(o.randomizeRange);
-    checkRepeatCellRequest(o.repeatCell);
-    checkSetBasicFilterRequest(o.setBasicFilter);
-    checkSetDataValidationRequest(o.setDataValidation);
-    checkSortRangeRequest(o.sortRange);
-    checkTextToColumnsRequest(o.textToColumns);
-    checkUnmergeCellsRequest(o.unmergeCells);
-    checkUpdateBandingRequest(o.updateBanding);
-    checkUpdateBordersRequest(o.updateBorders);
-    checkUpdateCellsRequest(o.updateCells);
-    checkUpdateChartSpecRequest(o.updateChartSpec);
-    checkUpdateConditionalFormatRuleRequest(o.updateConditionalFormatRule);
-    checkUpdateDeveloperMetadataRequest(o.updateDeveloperMetadata);
-    checkUpdateDimensionGroupRequest(o.updateDimensionGroup);
-    checkUpdateDimensionPropertiesRequest(o.updateDimensionProperties);
-    checkUpdateEmbeddedObjectPositionRequest(o.updateEmbeddedObjectPosition);
-    checkUpdateFilterViewRequest(o.updateFilterView);
-    checkUpdateNamedRangeRequest(o.updateNamedRange);
-    checkUpdateProtectedRangeRequest(o.updateProtectedRange);
-    checkUpdateSheetPropertiesRequest(o.updateSheetProperties);
-    checkUpdateSpreadsheetPropertiesRequest(o.updateSpreadsheetProperties);
+    checkAddBandingRequest(o.addBanding! as api.AddBandingRequest);
+    checkAddChartRequest(o.addChart! as api.AddChartRequest);
+    checkAddConditionalFormatRuleRequest(
+        o.addConditionalFormatRule! as api.AddConditionalFormatRuleRequest);
+    checkAddDataSourceRequest(o.addDataSource! as api.AddDataSourceRequest);
+    checkAddDimensionGroupRequest(
+        o.addDimensionGroup! as api.AddDimensionGroupRequest);
+    checkAddFilterViewRequest(o.addFilterView! as api.AddFilterViewRequest);
+    checkAddNamedRangeRequest(o.addNamedRange! as api.AddNamedRangeRequest);
+    checkAddProtectedRangeRequest(
+        o.addProtectedRange! as api.AddProtectedRangeRequest);
+    checkAddSheetRequest(o.addSheet! as api.AddSheetRequest);
+    checkAddSlicerRequest(o.addSlicer! as api.AddSlicerRequest);
+    checkAppendCellsRequest(o.appendCells! as api.AppendCellsRequest);
+    checkAppendDimensionRequest(
+        o.appendDimension! as api.AppendDimensionRequest);
+    checkAutoFillRequest(o.autoFill! as api.AutoFillRequest);
+    checkAutoResizeDimensionsRequest(
+        o.autoResizeDimensions! as api.AutoResizeDimensionsRequest);
+    checkClearBasicFilterRequest(
+        o.clearBasicFilter! as api.ClearBasicFilterRequest);
+    checkCopyPasteRequest(o.copyPaste! as api.CopyPasteRequest);
+    checkCreateDeveloperMetadataRequest(
+        o.createDeveloperMetadata! as api.CreateDeveloperMetadataRequest);
+    checkCutPasteRequest(o.cutPaste! as api.CutPasteRequest);
+    checkDeleteBandingRequest(o.deleteBanding! as api.DeleteBandingRequest);
+    checkDeleteConditionalFormatRuleRequest(o.deleteConditionalFormatRule!
+        as api.DeleteConditionalFormatRuleRequest);
+    checkDeleteDataSourceRequest(
+        o.deleteDataSource! as api.DeleteDataSourceRequest);
+    checkDeleteDeveloperMetadataRequest(
+        o.deleteDeveloperMetadata! as api.DeleteDeveloperMetadataRequest);
+    checkDeleteDimensionRequest(
+        o.deleteDimension! as api.DeleteDimensionRequest);
+    checkDeleteDimensionGroupRequest(
+        o.deleteDimensionGroup! as api.DeleteDimensionGroupRequest);
+    checkDeleteDuplicatesRequest(
+        o.deleteDuplicates! as api.DeleteDuplicatesRequest);
+    checkDeleteEmbeddedObjectRequest(
+        o.deleteEmbeddedObject! as api.DeleteEmbeddedObjectRequest);
+    checkDeleteFilterViewRequest(
+        o.deleteFilterView! as api.DeleteFilterViewRequest);
+    checkDeleteNamedRangeRequest(
+        o.deleteNamedRange! as api.DeleteNamedRangeRequest);
+    checkDeleteProtectedRangeRequest(
+        o.deleteProtectedRange! as api.DeleteProtectedRangeRequest);
+    checkDeleteRangeRequest(o.deleteRange! as api.DeleteRangeRequest);
+    checkDeleteSheetRequest(o.deleteSheet! as api.DeleteSheetRequest);
+    checkDuplicateFilterViewRequest(
+        o.duplicateFilterView! as api.DuplicateFilterViewRequest);
+    checkDuplicateSheetRequest(o.duplicateSheet! as api.DuplicateSheetRequest);
+    checkFindReplaceRequest(o.findReplace! as api.FindReplaceRequest);
+    checkInsertDimensionRequest(
+        o.insertDimension! as api.InsertDimensionRequest);
+    checkInsertRangeRequest(o.insertRange! as api.InsertRangeRequest);
+    checkMergeCellsRequest(o.mergeCells! as api.MergeCellsRequest);
+    checkMoveDimensionRequest(o.moveDimension! as api.MoveDimensionRequest);
+    checkPasteDataRequest(o.pasteData! as api.PasteDataRequest);
+    checkRandomizeRangeRequest(o.randomizeRange! as api.RandomizeRangeRequest);
+    checkRefreshDataSourceRequest(
+        o.refreshDataSource! as api.RefreshDataSourceRequest);
+    checkRepeatCellRequest(o.repeatCell! as api.RepeatCellRequest);
+    checkSetBasicFilterRequest(o.setBasicFilter! as api.SetBasicFilterRequest);
+    checkSetDataValidationRequest(
+        o.setDataValidation! as api.SetDataValidationRequest);
+    checkSortRangeRequest(o.sortRange! as api.SortRangeRequest);
+    checkTextToColumnsRequest(o.textToColumns! as api.TextToColumnsRequest);
+    checkTrimWhitespaceRequest(o.trimWhitespace! as api.TrimWhitespaceRequest);
+    checkUnmergeCellsRequest(o.unmergeCells! as api.UnmergeCellsRequest);
+    checkUpdateBandingRequest(o.updateBanding! as api.UpdateBandingRequest);
+    checkUpdateBordersRequest(o.updateBorders! as api.UpdateBordersRequest);
+    checkUpdateCellsRequest(o.updateCells! as api.UpdateCellsRequest);
+    checkUpdateChartSpecRequest(
+        o.updateChartSpec! as api.UpdateChartSpecRequest);
+    checkUpdateConditionalFormatRuleRequest(o.updateConditionalFormatRule!
+        as api.UpdateConditionalFormatRuleRequest);
+    checkUpdateDataSourceRequest(
+        o.updateDataSource! as api.UpdateDataSourceRequest);
+    checkUpdateDeveloperMetadataRequest(
+        o.updateDeveloperMetadata! as api.UpdateDeveloperMetadataRequest);
+    checkUpdateDimensionGroupRequest(
+        o.updateDimensionGroup! as api.UpdateDimensionGroupRequest);
+    checkUpdateDimensionPropertiesRequest(
+        o.updateDimensionProperties! as api.UpdateDimensionPropertiesRequest);
+    checkUpdateEmbeddedObjectBorderRequest(
+        o.updateEmbeddedObjectBorder! as api.UpdateEmbeddedObjectBorderRequest);
+    checkUpdateEmbeddedObjectPositionRequest(o.updateEmbeddedObjectPosition!
+        as api.UpdateEmbeddedObjectPositionRequest);
+    checkUpdateFilterViewRequest(
+        o.updateFilterView! as api.UpdateFilterViewRequest);
+    checkUpdateNamedRangeRequest(
+        o.updateNamedRange! as api.UpdateNamedRangeRequest);
+    checkUpdateProtectedRangeRequest(
+        o.updateProtectedRange! as api.UpdateProtectedRangeRequest);
+    checkUpdateSheetPropertiesRequest(
+        o.updateSheetProperties! as api.UpdateSheetPropertiesRequest);
+    checkUpdateSlicerSpecRequest(
+        o.updateSlicerSpec! as api.UpdateSlicerSpecRequest);
+    checkUpdateSpreadsheetPropertiesRequest(o.updateSpreadsheetProperties!
+        as api.UpdateSpreadsheetPropertiesRequest);
   }
   buildCounterRequest--;
 }
 
 core.int buildCounterResponse = 0;
-buildResponse() {
-  var o = new api.Response();
+api.Response buildResponse() {
+  var o = api.Response();
   buildCounterResponse++;
   if (buildCounterResponse < 3) {
     o.addBanding = buildAddBandingResponse();
     o.addChart = buildAddChartResponse();
+    o.addDataSource = buildAddDataSourceResponse();
     o.addDimensionGroup = buildAddDimensionGroupResponse();
     o.addFilterView = buildAddFilterViewResponse();
     o.addNamedRange = buildAddNamedRangeResponse();
     o.addProtectedRange = buildAddProtectedRangeResponse();
     o.addSheet = buildAddSheetResponse();
+    o.addSlicer = buildAddSlicerResponse();
     o.createDeveloperMetadata = buildCreateDeveloperMetadataResponse();
     o.deleteConditionalFormatRule = buildDeleteConditionalFormatRuleResponse();
     o.deleteDeveloperMetadata = buildDeleteDeveloperMetadataResponse();
     o.deleteDimensionGroup = buildDeleteDimensionGroupResponse();
+    o.deleteDuplicates = buildDeleteDuplicatesResponse();
     o.duplicateFilterView = buildDuplicateFilterViewResponse();
     o.duplicateSheet = buildDuplicateSheetResponse();
     o.findReplace = buildFindReplaceResponse();
+    o.refreshDataSource = buildRefreshDataSourceResponse();
+    o.trimWhitespace = buildTrimWhitespaceResponse();
     o.updateConditionalFormatRule = buildUpdateConditionalFormatRuleResponse();
+    o.updateDataSource = buildUpdateDataSourceResponse();
     o.updateDeveloperMetadata = buildUpdateDeveloperMetadataResponse();
     o.updateEmbeddedObjectPosition =
         buildUpdateEmbeddedObjectPositionResponse();
@@ -4133,129 +6357,194 @@ buildResponse() {
   return o;
 }
 
-checkResponse(api.Response o) {
+void checkResponse(api.Response o) {
   buildCounterResponse++;
   if (buildCounterResponse < 3) {
-    checkAddBandingResponse(o.addBanding);
-    checkAddChartResponse(o.addChart);
-    checkAddDimensionGroupResponse(o.addDimensionGroup);
-    checkAddFilterViewResponse(o.addFilterView);
-    checkAddNamedRangeResponse(o.addNamedRange);
-    checkAddProtectedRangeResponse(o.addProtectedRange);
-    checkAddSheetResponse(o.addSheet);
-    checkCreateDeveloperMetadataResponse(o.createDeveloperMetadata);
-    checkDeleteConditionalFormatRuleResponse(o.deleteConditionalFormatRule);
-    checkDeleteDeveloperMetadataResponse(o.deleteDeveloperMetadata);
-    checkDeleteDimensionGroupResponse(o.deleteDimensionGroup);
-    checkDuplicateFilterViewResponse(o.duplicateFilterView);
-    checkDuplicateSheetResponse(o.duplicateSheet);
-    checkFindReplaceResponse(o.findReplace);
-    checkUpdateConditionalFormatRuleResponse(o.updateConditionalFormatRule);
-    checkUpdateDeveloperMetadataResponse(o.updateDeveloperMetadata);
-    checkUpdateEmbeddedObjectPositionResponse(o.updateEmbeddedObjectPosition);
+    checkAddBandingResponse(o.addBanding! as api.AddBandingResponse);
+    checkAddChartResponse(o.addChart! as api.AddChartResponse);
+    checkAddDataSourceResponse(o.addDataSource! as api.AddDataSourceResponse);
+    checkAddDimensionGroupResponse(
+        o.addDimensionGroup! as api.AddDimensionGroupResponse);
+    checkAddFilterViewResponse(o.addFilterView! as api.AddFilterViewResponse);
+    checkAddNamedRangeResponse(o.addNamedRange! as api.AddNamedRangeResponse);
+    checkAddProtectedRangeResponse(
+        o.addProtectedRange! as api.AddProtectedRangeResponse);
+    checkAddSheetResponse(o.addSheet! as api.AddSheetResponse);
+    checkAddSlicerResponse(o.addSlicer! as api.AddSlicerResponse);
+    checkCreateDeveloperMetadataResponse(
+        o.createDeveloperMetadata! as api.CreateDeveloperMetadataResponse);
+    checkDeleteConditionalFormatRuleResponse(o.deleteConditionalFormatRule!
+        as api.DeleteConditionalFormatRuleResponse);
+    checkDeleteDeveloperMetadataResponse(
+        o.deleteDeveloperMetadata! as api.DeleteDeveloperMetadataResponse);
+    checkDeleteDimensionGroupResponse(
+        o.deleteDimensionGroup! as api.DeleteDimensionGroupResponse);
+    checkDeleteDuplicatesResponse(
+        o.deleteDuplicates! as api.DeleteDuplicatesResponse);
+    checkDuplicateFilterViewResponse(
+        o.duplicateFilterView! as api.DuplicateFilterViewResponse);
+    checkDuplicateSheetResponse(
+        o.duplicateSheet! as api.DuplicateSheetResponse);
+    checkFindReplaceResponse(o.findReplace! as api.FindReplaceResponse);
+    checkRefreshDataSourceResponse(
+        o.refreshDataSource! as api.RefreshDataSourceResponse);
+    checkTrimWhitespaceResponse(
+        o.trimWhitespace! as api.TrimWhitespaceResponse);
+    checkUpdateConditionalFormatRuleResponse(o.updateConditionalFormatRule!
+        as api.UpdateConditionalFormatRuleResponse);
+    checkUpdateDataSourceResponse(
+        o.updateDataSource! as api.UpdateDataSourceResponse);
+    checkUpdateDeveloperMetadataResponse(
+        o.updateDeveloperMetadata! as api.UpdateDeveloperMetadataResponse);
+    checkUpdateEmbeddedObjectPositionResponse(o.updateEmbeddedObjectPosition!
+        as api.UpdateEmbeddedObjectPositionResponse);
   }
   buildCounterResponse--;
 }
 
-buildUnnamed3653() {
-  var o = new core.List<api.CellData>();
+core.List<api.CellData> buildUnnamed5356() {
+  var o = <api.CellData>[];
   o.add(buildCellData());
   o.add(buildCellData());
   return o;
 }
 
-checkUnnamed3653(core.List<api.CellData> o) {
+void checkUnnamed5356(core.List<api.CellData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCellData(o[0]);
-  checkCellData(o[1]);
+  checkCellData(o[0] as api.CellData);
+  checkCellData(o[1] as api.CellData);
 }
 
 core.int buildCounterRowData = 0;
-buildRowData() {
-  var o = new api.RowData();
+api.RowData buildRowData() {
+  var o = api.RowData();
   buildCounterRowData++;
   if (buildCounterRowData < 3) {
-    o.values = buildUnnamed3653();
+    o.values = buildUnnamed5356();
   }
   buildCounterRowData--;
   return o;
 }
 
-checkRowData(api.RowData o) {
+void checkRowData(api.RowData o) {
   buildCounterRowData++;
   if (buildCounterRowData < 3) {
-    checkUnnamed3653(o.values);
+    checkUnnamed5356(o.values!);
   }
   buildCounterRowData--;
 }
 
-buildUnnamed3654() {
-  var o = new core.List<api.DataFilter>();
+core.int buildCounterScorecardChartSpec = 0;
+api.ScorecardChartSpec buildScorecardChartSpec() {
+  var o = api.ScorecardChartSpec();
+  buildCounterScorecardChartSpec++;
+  if (buildCounterScorecardChartSpec < 3) {
+    o.aggregateType = 'foo';
+    o.baselineValueData = buildChartData();
+    o.baselineValueFormat = buildBaselineValueFormat();
+    o.customFormatOptions = buildChartCustomNumberFormatOptions();
+    o.keyValueData = buildChartData();
+    o.keyValueFormat = buildKeyValueFormat();
+    o.numberFormatSource = 'foo';
+    o.scaleFactor = 42.0;
+  }
+  buildCounterScorecardChartSpec--;
+  return o;
+}
+
+void checkScorecardChartSpec(api.ScorecardChartSpec o) {
+  buildCounterScorecardChartSpec++;
+  if (buildCounterScorecardChartSpec < 3) {
+    unittest.expect(
+      o.aggregateType!,
+      unittest.equals('foo'),
+    );
+    checkChartData(o.baselineValueData! as api.ChartData);
+    checkBaselineValueFormat(o.baselineValueFormat! as api.BaselineValueFormat);
+    checkChartCustomNumberFormatOptions(
+        o.customFormatOptions! as api.ChartCustomNumberFormatOptions);
+    checkChartData(o.keyValueData! as api.ChartData);
+    checkKeyValueFormat(o.keyValueFormat! as api.KeyValueFormat);
+    unittest.expect(
+      o.numberFormatSource!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.scaleFactor!,
+      unittest.equals(42.0),
+    );
+  }
+  buildCounterScorecardChartSpec--;
+}
+
+core.List<api.DataFilter> buildUnnamed5357() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3654(core.List<api.DataFilter> o) {
+void checkUnnamed5357(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterSearchDeveloperMetadataRequest = 0;
-buildSearchDeveloperMetadataRequest() {
-  var o = new api.SearchDeveloperMetadataRequest();
+api.SearchDeveloperMetadataRequest buildSearchDeveloperMetadataRequest() {
+  var o = api.SearchDeveloperMetadataRequest();
   buildCounterSearchDeveloperMetadataRequest++;
   if (buildCounterSearchDeveloperMetadataRequest < 3) {
-    o.dataFilters = buildUnnamed3654();
+    o.dataFilters = buildUnnamed5357();
   }
   buildCounterSearchDeveloperMetadataRequest--;
   return o;
 }
 
-checkSearchDeveloperMetadataRequest(api.SearchDeveloperMetadataRequest o) {
+void checkSearchDeveloperMetadataRequest(api.SearchDeveloperMetadataRequest o) {
   buildCounterSearchDeveloperMetadataRequest++;
   if (buildCounterSearchDeveloperMetadataRequest < 3) {
-    checkUnnamed3654(o.dataFilters);
+    checkUnnamed5357(o.dataFilters!);
   }
   buildCounterSearchDeveloperMetadataRequest--;
 }
 
-buildUnnamed3655() {
-  var o = new core.List<api.MatchedDeveloperMetadata>();
+core.List<api.MatchedDeveloperMetadata> buildUnnamed5358() {
+  var o = <api.MatchedDeveloperMetadata>[];
   o.add(buildMatchedDeveloperMetadata());
   o.add(buildMatchedDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3655(core.List<api.MatchedDeveloperMetadata> o) {
+void checkUnnamed5358(core.List<api.MatchedDeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMatchedDeveloperMetadata(o[0]);
-  checkMatchedDeveloperMetadata(o[1]);
+  checkMatchedDeveloperMetadata(o[0] as api.MatchedDeveloperMetadata);
+  checkMatchedDeveloperMetadata(o[1] as api.MatchedDeveloperMetadata);
 }
 
 core.int buildCounterSearchDeveloperMetadataResponse = 0;
-buildSearchDeveloperMetadataResponse() {
-  var o = new api.SearchDeveloperMetadataResponse();
+api.SearchDeveloperMetadataResponse buildSearchDeveloperMetadataResponse() {
+  var o = api.SearchDeveloperMetadataResponse();
   buildCounterSearchDeveloperMetadataResponse++;
   if (buildCounterSearchDeveloperMetadataResponse < 3) {
-    o.matchedDeveloperMetadata = buildUnnamed3655();
+    o.matchedDeveloperMetadata = buildUnnamed5358();
   }
   buildCounterSearchDeveloperMetadataResponse--;
   return o;
 }
 
-checkSearchDeveloperMetadataResponse(api.SearchDeveloperMetadataResponse o) {
+void checkSearchDeveloperMetadataResponse(
+    api.SearchDeveloperMetadataResponse o) {
   buildCounterSearchDeveloperMetadataResponse++;
   if (buildCounterSearchDeveloperMetadataResponse < 3) {
-    checkUnnamed3655(o.matchedDeveloperMetadata);
+    checkUnnamed5358(o.matchedDeveloperMetadata!);
   }
   buildCounterSearchDeveloperMetadataResponse--;
 }
 
 core.int buildCounterSetBasicFilterRequest = 0;
-buildSetBasicFilterRequest() {
-  var o = new api.SetBasicFilterRequest();
+api.SetBasicFilterRequest buildSetBasicFilterRequest() {
+  var o = api.SetBasicFilterRequest();
   buildCounterSetBasicFilterRequest++;
   if (buildCounterSetBasicFilterRequest < 3) {
     o.filter = buildBasicFilter();
@@ -4264,17 +6553,17 @@ buildSetBasicFilterRequest() {
   return o;
 }
 
-checkSetBasicFilterRequest(api.SetBasicFilterRequest o) {
+void checkSetBasicFilterRequest(api.SetBasicFilterRequest o) {
   buildCounterSetBasicFilterRequest++;
   if (buildCounterSetBasicFilterRequest < 3) {
-    checkBasicFilter(o.filter);
+    checkBasicFilter(o.filter! as api.BasicFilter);
   }
   buildCounterSetBasicFilterRequest--;
 }
 
 core.int buildCounterSetDataValidationRequest = 0;
-buildSetDataValidationRequest() {
-  var o = new api.SetDataValidationRequest();
+api.SetDataValidationRequest buildSetDataValidationRequest() {
+  var o = api.SetDataValidationRequest();
   buildCounterSetDataValidationRequest++;
   if (buildCounterSetDataValidationRequest < 3) {
     o.range = buildGridRange();
@@ -4284,280 +6573,399 @@ buildSetDataValidationRequest() {
   return o;
 }
 
-checkSetDataValidationRequest(api.SetDataValidationRequest o) {
+void checkSetDataValidationRequest(api.SetDataValidationRequest o) {
   buildCounterSetDataValidationRequest++;
   if (buildCounterSetDataValidationRequest < 3) {
-    checkGridRange(o.range);
-    checkDataValidationRule(o.rule);
+    checkGridRange(o.range! as api.GridRange);
+    checkDataValidationRule(o.rule! as api.DataValidationRule);
   }
   buildCounterSetDataValidationRequest--;
 }
 
-buildUnnamed3656() {
-  var o = new core.List<api.BandedRange>();
+core.List<api.BandedRange> buildUnnamed5359() {
+  var o = <api.BandedRange>[];
   o.add(buildBandedRange());
   o.add(buildBandedRange());
   return o;
 }
 
-checkUnnamed3656(core.List<api.BandedRange> o) {
+void checkUnnamed5359(core.List<api.BandedRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBandedRange(o[0]);
-  checkBandedRange(o[1]);
+  checkBandedRange(o[0] as api.BandedRange);
+  checkBandedRange(o[1] as api.BandedRange);
 }
 
-buildUnnamed3657() {
-  var o = new core.List<api.EmbeddedChart>();
+core.List<api.EmbeddedChart> buildUnnamed5360() {
+  var o = <api.EmbeddedChart>[];
   o.add(buildEmbeddedChart());
   o.add(buildEmbeddedChart());
   return o;
 }
 
-checkUnnamed3657(core.List<api.EmbeddedChart> o) {
+void checkUnnamed5360(core.List<api.EmbeddedChart> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEmbeddedChart(o[0]);
-  checkEmbeddedChart(o[1]);
+  checkEmbeddedChart(o[0] as api.EmbeddedChart);
+  checkEmbeddedChart(o[1] as api.EmbeddedChart);
 }
 
-buildUnnamed3658() {
-  var o = new core.List<api.DimensionGroup>();
+core.List<api.DimensionGroup> buildUnnamed5361() {
+  var o = <api.DimensionGroup>[];
   o.add(buildDimensionGroup());
   o.add(buildDimensionGroup());
   return o;
 }
 
-checkUnnamed3658(core.List<api.DimensionGroup> o) {
+void checkUnnamed5361(core.List<api.DimensionGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionGroup(o[0]);
-  checkDimensionGroup(o[1]);
+  checkDimensionGroup(o[0] as api.DimensionGroup);
+  checkDimensionGroup(o[1] as api.DimensionGroup);
 }
 
-buildUnnamed3659() {
-  var o = new core.List<api.ConditionalFormatRule>();
+core.List<api.ConditionalFormatRule> buildUnnamed5362() {
+  var o = <api.ConditionalFormatRule>[];
   o.add(buildConditionalFormatRule());
   o.add(buildConditionalFormatRule());
   return o;
 }
 
-checkUnnamed3659(core.List<api.ConditionalFormatRule> o) {
+void checkUnnamed5362(core.List<api.ConditionalFormatRule> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkConditionalFormatRule(o[0]);
-  checkConditionalFormatRule(o[1]);
+  checkConditionalFormatRule(o[0] as api.ConditionalFormatRule);
+  checkConditionalFormatRule(o[1] as api.ConditionalFormatRule);
 }
 
-buildUnnamed3660() {
-  var o = new core.List<api.GridData>();
+core.List<api.GridData> buildUnnamed5363() {
+  var o = <api.GridData>[];
   o.add(buildGridData());
   o.add(buildGridData());
   return o;
 }
 
-checkUnnamed3660(core.List<api.GridData> o) {
+void checkUnnamed5363(core.List<api.GridData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGridData(o[0]);
-  checkGridData(o[1]);
+  checkGridData(o[0] as api.GridData);
+  checkGridData(o[1] as api.GridData);
 }
 
-buildUnnamed3661() {
-  var o = new core.List<api.DeveloperMetadata>();
+core.List<api.DeveloperMetadata> buildUnnamed5364() {
+  var o = <api.DeveloperMetadata>[];
   o.add(buildDeveloperMetadata());
   o.add(buildDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3661(core.List<api.DeveloperMetadata> o) {
+void checkUnnamed5364(core.List<api.DeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDeveloperMetadata(o[0]);
-  checkDeveloperMetadata(o[1]);
+  checkDeveloperMetadata(o[0] as api.DeveloperMetadata);
+  checkDeveloperMetadata(o[1] as api.DeveloperMetadata);
 }
 
-buildUnnamed3662() {
-  var o = new core.List<api.FilterView>();
+core.List<api.FilterView> buildUnnamed5365() {
+  var o = <api.FilterView>[];
   o.add(buildFilterView());
   o.add(buildFilterView());
   return o;
 }
 
-checkUnnamed3662(core.List<api.FilterView> o) {
+void checkUnnamed5365(core.List<api.FilterView> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFilterView(o[0]);
-  checkFilterView(o[1]);
+  checkFilterView(o[0] as api.FilterView);
+  checkFilterView(o[1] as api.FilterView);
 }
 
-buildUnnamed3663() {
-  var o = new core.List<api.GridRange>();
+core.List<api.GridRange> buildUnnamed5366() {
+  var o = <api.GridRange>[];
   o.add(buildGridRange());
   o.add(buildGridRange());
   return o;
 }
 
-checkUnnamed3663(core.List<api.GridRange> o) {
+void checkUnnamed5366(core.List<api.GridRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGridRange(o[0]);
-  checkGridRange(o[1]);
+  checkGridRange(o[0] as api.GridRange);
+  checkGridRange(o[1] as api.GridRange);
 }
 
-buildUnnamed3664() {
-  var o = new core.List<api.ProtectedRange>();
+core.List<api.ProtectedRange> buildUnnamed5367() {
+  var o = <api.ProtectedRange>[];
   o.add(buildProtectedRange());
   o.add(buildProtectedRange());
   return o;
 }
 
-checkUnnamed3664(core.List<api.ProtectedRange> o) {
+void checkUnnamed5367(core.List<api.ProtectedRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkProtectedRange(o[0]);
-  checkProtectedRange(o[1]);
+  checkProtectedRange(o[0] as api.ProtectedRange);
+  checkProtectedRange(o[1] as api.ProtectedRange);
 }
 
-buildUnnamed3665() {
-  var o = new core.List<api.DimensionGroup>();
+core.List<api.DimensionGroup> buildUnnamed5368() {
+  var o = <api.DimensionGroup>[];
   o.add(buildDimensionGroup());
   o.add(buildDimensionGroup());
   return o;
 }
 
-checkUnnamed3665(core.List<api.DimensionGroup> o) {
+void checkUnnamed5368(core.List<api.DimensionGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDimensionGroup(o[0]);
-  checkDimensionGroup(o[1]);
+  checkDimensionGroup(o[0] as api.DimensionGroup);
+  checkDimensionGroup(o[1] as api.DimensionGroup);
+}
+
+core.List<api.Slicer> buildUnnamed5369() {
+  var o = <api.Slicer>[];
+  o.add(buildSlicer());
+  o.add(buildSlicer());
+  return o;
+}
+
+void checkUnnamed5369(core.List<api.Slicer> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkSlicer(o[0] as api.Slicer);
+  checkSlicer(o[1] as api.Slicer);
 }
 
 core.int buildCounterSheet = 0;
-buildSheet() {
-  var o = new api.Sheet();
+api.Sheet buildSheet() {
+  var o = api.Sheet();
   buildCounterSheet++;
   if (buildCounterSheet < 3) {
-    o.bandedRanges = buildUnnamed3656();
+    o.bandedRanges = buildUnnamed5359();
     o.basicFilter = buildBasicFilter();
-    o.charts = buildUnnamed3657();
-    o.columnGroups = buildUnnamed3658();
-    o.conditionalFormats = buildUnnamed3659();
-    o.data = buildUnnamed3660();
-    o.developerMetadata = buildUnnamed3661();
-    o.filterViews = buildUnnamed3662();
-    o.merges = buildUnnamed3663();
+    o.charts = buildUnnamed5360();
+    o.columnGroups = buildUnnamed5361();
+    o.conditionalFormats = buildUnnamed5362();
+    o.data = buildUnnamed5363();
+    o.developerMetadata = buildUnnamed5364();
+    o.filterViews = buildUnnamed5365();
+    o.merges = buildUnnamed5366();
     o.properties = buildSheetProperties();
-    o.protectedRanges = buildUnnamed3664();
-    o.rowGroups = buildUnnamed3665();
+    o.protectedRanges = buildUnnamed5367();
+    o.rowGroups = buildUnnamed5368();
+    o.slicers = buildUnnamed5369();
   }
   buildCounterSheet--;
   return o;
 }
 
-checkSheet(api.Sheet o) {
+void checkSheet(api.Sheet o) {
   buildCounterSheet++;
   if (buildCounterSheet < 3) {
-    checkUnnamed3656(o.bandedRanges);
-    checkBasicFilter(o.basicFilter);
-    checkUnnamed3657(o.charts);
-    checkUnnamed3658(o.columnGroups);
-    checkUnnamed3659(o.conditionalFormats);
-    checkUnnamed3660(o.data);
-    checkUnnamed3661(o.developerMetadata);
-    checkUnnamed3662(o.filterViews);
-    checkUnnamed3663(o.merges);
-    checkSheetProperties(o.properties);
-    checkUnnamed3664(o.protectedRanges);
-    checkUnnamed3665(o.rowGroups);
+    checkUnnamed5359(o.bandedRanges!);
+    checkBasicFilter(o.basicFilter! as api.BasicFilter);
+    checkUnnamed5360(o.charts!);
+    checkUnnamed5361(o.columnGroups!);
+    checkUnnamed5362(o.conditionalFormats!);
+    checkUnnamed5363(o.data!);
+    checkUnnamed5364(o.developerMetadata!);
+    checkUnnamed5365(o.filterViews!);
+    checkUnnamed5366(o.merges!);
+    checkSheetProperties(o.properties! as api.SheetProperties);
+    checkUnnamed5367(o.protectedRanges!);
+    checkUnnamed5368(o.rowGroups!);
+    checkUnnamed5369(o.slicers!);
   }
   buildCounterSheet--;
 }
 
 core.int buildCounterSheetProperties = 0;
-buildSheetProperties() {
-  var o = new api.SheetProperties();
+api.SheetProperties buildSheetProperties() {
+  var o = api.SheetProperties();
   buildCounterSheetProperties++;
   if (buildCounterSheetProperties < 3) {
+    o.dataSourceSheetProperties = buildDataSourceSheetProperties();
     o.gridProperties = buildGridProperties();
     o.hidden = true;
     o.index = 42;
     o.rightToLeft = true;
     o.sheetId = 42;
-    o.sheetType = "foo";
+    o.sheetType = 'foo';
     o.tabColor = buildColor();
-    o.title = "foo";
+    o.tabColorStyle = buildColorStyle();
+    o.title = 'foo';
   }
   buildCounterSheetProperties--;
   return o;
 }
 
-checkSheetProperties(api.SheetProperties o) {
+void checkSheetProperties(api.SheetProperties o) {
   buildCounterSheetProperties++;
   if (buildCounterSheetProperties < 3) {
-    checkGridProperties(o.gridProperties);
-    unittest.expect(o.hidden, unittest.isTrue);
-    unittest.expect(o.index, unittest.equals(42));
-    unittest.expect(o.rightToLeft, unittest.isTrue);
-    unittest.expect(o.sheetId, unittest.equals(42));
-    unittest.expect(o.sheetType, unittest.equals('foo'));
-    checkColor(o.tabColor);
-    unittest.expect(o.title, unittest.equals('foo'));
+    checkDataSourceSheetProperties(
+        o.dataSourceSheetProperties! as api.DataSourceSheetProperties);
+    checkGridProperties(o.gridProperties! as api.GridProperties);
+    unittest.expect(o.hidden!, unittest.isTrue);
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.rightToLeft!, unittest.isTrue);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.sheetType!,
+      unittest.equals('foo'),
+    );
+    checkColor(o.tabColor! as api.Color);
+    checkColorStyle(o.tabColorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSheetProperties--;
 }
 
-buildUnnamed3666() {
-  var o = new core.List<api.SortSpec>();
+core.int buildCounterSlicer = 0;
+api.Slicer buildSlicer() {
+  var o = api.Slicer();
+  buildCounterSlicer++;
+  if (buildCounterSlicer < 3) {
+    o.position = buildEmbeddedObjectPosition();
+    o.slicerId = 42;
+    o.spec = buildSlicerSpec();
+  }
+  buildCounterSlicer--;
+  return o;
+}
+
+void checkSlicer(api.Slicer o) {
+  buildCounterSlicer++;
+  if (buildCounterSlicer < 3) {
+    checkEmbeddedObjectPosition(o.position! as api.EmbeddedObjectPosition);
+    unittest.expect(
+      o.slicerId!,
+      unittest.equals(42),
+    );
+    checkSlicerSpec(o.spec! as api.SlicerSpec);
+  }
+  buildCounterSlicer--;
+}
+
+core.int buildCounterSlicerSpec = 0;
+api.SlicerSpec buildSlicerSpec() {
+  var o = api.SlicerSpec();
+  buildCounterSlicerSpec++;
+  if (buildCounterSlicerSpec < 3) {
+    o.applyToPivotTables = true;
+    o.backgroundColor = buildColor();
+    o.backgroundColorStyle = buildColorStyle();
+    o.columnIndex = 42;
+    o.dataRange = buildGridRange();
+    o.filterCriteria = buildFilterCriteria();
+    o.horizontalAlignment = 'foo';
+    o.textFormat = buildTextFormat();
+    o.title = 'foo';
+  }
+  buildCounterSlicerSpec--;
+  return o;
+}
+
+void checkSlicerSpec(api.SlicerSpec o) {
+  buildCounterSlicerSpec++;
+  if (buildCounterSlicerSpec < 3) {
+    unittest.expect(o.applyToPivotTables!, unittest.isTrue);
+    checkColor(o.backgroundColor! as api.Color);
+    checkColorStyle(o.backgroundColorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.columnIndex!,
+      unittest.equals(42),
+    );
+    checkGridRange(o.dataRange! as api.GridRange);
+    checkFilterCriteria(o.filterCriteria! as api.FilterCriteria);
+    unittest.expect(
+      o.horizontalAlignment!,
+      unittest.equals('foo'),
+    );
+    checkTextFormat(o.textFormat! as api.TextFormat);
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterSlicerSpec--;
+}
+
+core.List<api.SortSpec> buildUnnamed5370() {
+  var o = <api.SortSpec>[];
   o.add(buildSortSpec());
   o.add(buildSortSpec());
   return o;
 }
 
-checkUnnamed3666(core.List<api.SortSpec> o) {
+void checkUnnamed5370(core.List<api.SortSpec> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSortSpec(o[0]);
-  checkSortSpec(o[1]);
+  checkSortSpec(o[0] as api.SortSpec);
+  checkSortSpec(o[1] as api.SortSpec);
 }
 
 core.int buildCounterSortRangeRequest = 0;
-buildSortRangeRequest() {
-  var o = new api.SortRangeRequest();
+api.SortRangeRequest buildSortRangeRequest() {
+  var o = api.SortRangeRequest();
   buildCounterSortRangeRequest++;
   if (buildCounterSortRangeRequest < 3) {
     o.range = buildGridRange();
-    o.sortSpecs = buildUnnamed3666();
+    o.sortSpecs = buildUnnamed5370();
   }
   buildCounterSortRangeRequest--;
   return o;
 }
 
-checkSortRangeRequest(api.SortRangeRequest o) {
+void checkSortRangeRequest(api.SortRangeRequest o) {
   buildCounterSortRangeRequest++;
   if (buildCounterSortRangeRequest < 3) {
-    checkGridRange(o.range);
-    checkUnnamed3666(o.sortSpecs);
+    checkGridRange(o.range! as api.GridRange);
+    checkUnnamed5370(o.sortSpecs!);
   }
   buildCounterSortRangeRequest--;
 }
 
 core.int buildCounterSortSpec = 0;
-buildSortSpec() {
-  var o = new api.SortSpec();
+api.SortSpec buildSortSpec() {
+  var o = api.SortSpec();
   buildCounterSortSpec++;
   if (buildCounterSortSpec < 3) {
+    o.backgroundColor = buildColor();
+    o.backgroundColorStyle = buildColorStyle();
+    o.dataSourceColumnReference = buildDataSourceColumnReference();
     o.dimensionIndex = 42;
-    o.sortOrder = "foo";
+    o.foregroundColor = buildColor();
+    o.foregroundColorStyle = buildColorStyle();
+    o.sortOrder = 'foo';
   }
   buildCounterSortSpec--;
   return o;
 }
 
-checkSortSpec(api.SortSpec o) {
+void checkSortSpec(api.SortSpec o) {
   buildCounterSortSpec++;
   if (buildCounterSortSpec < 3) {
-    unittest.expect(o.dimensionIndex, unittest.equals(42));
-    unittest.expect(o.sortOrder, unittest.equals('foo'));
+    checkColor(o.backgroundColor! as api.Color);
+    checkColorStyle(o.backgroundColorStyle! as api.ColorStyle);
+    checkDataSourceColumnReference(
+        o.dataSourceColumnReference! as api.DataSourceColumnReference);
+    unittest.expect(
+      o.dimensionIndex!,
+      unittest.equals(42),
+    );
+    checkColor(o.foregroundColor! as api.Color);
+    checkColorStyle(o.foregroundColorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.sortOrder!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSortSpec--;
 }
 
 core.int buildCounterSourceAndDestination = 0;
-buildSourceAndDestination() {
-  var o = new api.SourceAndDestination();
+api.SourceAndDestination buildSourceAndDestination() {
+  var o = api.SourceAndDestination();
   buildCounterSourceAndDestination++;
   if (buildCounterSourceAndDestination < 3) {
-    o.dimension = "foo";
+    o.dimension = 'foo';
     o.fillLength = 42;
     o.source = buildGridRange();
   }
@@ -4565,122 +6973,217 @@ buildSourceAndDestination() {
   return o;
 }
 
-checkSourceAndDestination(api.SourceAndDestination o) {
+void checkSourceAndDestination(api.SourceAndDestination o) {
   buildCounterSourceAndDestination++;
   if (buildCounterSourceAndDestination < 3) {
-    unittest.expect(o.dimension, unittest.equals('foo'));
-    unittest.expect(o.fillLength, unittest.equals(42));
-    checkGridRange(o.source);
+    unittest.expect(
+      o.dimension!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.fillLength!,
+      unittest.equals(42),
+    );
+    checkGridRange(o.source! as api.GridRange);
   }
   buildCounterSourceAndDestination--;
 }
 
-buildUnnamed3667() {
-  var o = new core.List<api.DeveloperMetadata>();
+core.List<api.DataSourceRefreshSchedule> buildUnnamed5371() {
+  var o = <api.DataSourceRefreshSchedule>[];
+  o.add(buildDataSourceRefreshSchedule());
+  o.add(buildDataSourceRefreshSchedule());
+  return o;
+}
+
+void checkUnnamed5371(core.List<api.DataSourceRefreshSchedule> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSourceRefreshSchedule(o[0] as api.DataSourceRefreshSchedule);
+  checkDataSourceRefreshSchedule(o[1] as api.DataSourceRefreshSchedule);
+}
+
+core.List<api.DataSource> buildUnnamed5372() {
+  var o = <api.DataSource>[];
+  o.add(buildDataSource());
+  o.add(buildDataSource());
+  return o;
+}
+
+void checkUnnamed5372(core.List<api.DataSource> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkDataSource(o[0] as api.DataSource);
+  checkDataSource(o[1] as api.DataSource);
+}
+
+core.List<api.DeveloperMetadata> buildUnnamed5373() {
+  var o = <api.DeveloperMetadata>[];
   o.add(buildDeveloperMetadata());
   o.add(buildDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3667(core.List<api.DeveloperMetadata> o) {
+void checkUnnamed5373(core.List<api.DeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDeveloperMetadata(o[0]);
-  checkDeveloperMetadata(o[1]);
+  checkDeveloperMetadata(o[0] as api.DeveloperMetadata);
+  checkDeveloperMetadata(o[1] as api.DeveloperMetadata);
 }
 
-buildUnnamed3668() {
-  var o = new core.List<api.NamedRange>();
+core.List<api.NamedRange> buildUnnamed5374() {
+  var o = <api.NamedRange>[];
   o.add(buildNamedRange());
   o.add(buildNamedRange());
   return o;
 }
 
-checkUnnamed3668(core.List<api.NamedRange> o) {
+void checkUnnamed5374(core.List<api.NamedRange> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkNamedRange(o[0]);
-  checkNamedRange(o[1]);
+  checkNamedRange(o[0] as api.NamedRange);
+  checkNamedRange(o[1] as api.NamedRange);
 }
 
-buildUnnamed3669() {
-  var o = new core.List<api.Sheet>();
+core.List<api.Sheet> buildUnnamed5375() {
+  var o = <api.Sheet>[];
   o.add(buildSheet());
   o.add(buildSheet());
   return o;
 }
 
-checkUnnamed3669(core.List<api.Sheet> o) {
+void checkUnnamed5375(core.List<api.Sheet> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSheet(o[0]);
-  checkSheet(o[1]);
+  checkSheet(o[0] as api.Sheet);
+  checkSheet(o[1] as api.Sheet);
 }
 
 core.int buildCounterSpreadsheet = 0;
-buildSpreadsheet() {
-  var o = new api.Spreadsheet();
+api.Spreadsheet buildSpreadsheet() {
+  var o = api.Spreadsheet();
   buildCounterSpreadsheet++;
   if (buildCounterSpreadsheet < 3) {
-    o.developerMetadata = buildUnnamed3667();
-    o.namedRanges = buildUnnamed3668();
+    o.dataSourceSchedules = buildUnnamed5371();
+    o.dataSources = buildUnnamed5372();
+    o.developerMetadata = buildUnnamed5373();
+    o.namedRanges = buildUnnamed5374();
     o.properties = buildSpreadsheetProperties();
-    o.sheets = buildUnnamed3669();
-    o.spreadsheetId = "foo";
-    o.spreadsheetUrl = "foo";
+    o.sheets = buildUnnamed5375();
+    o.spreadsheetId = 'foo';
+    o.spreadsheetUrl = 'foo';
   }
   buildCounterSpreadsheet--;
   return o;
 }
 
-checkSpreadsheet(api.Spreadsheet o) {
+void checkSpreadsheet(api.Spreadsheet o) {
   buildCounterSpreadsheet++;
   if (buildCounterSpreadsheet < 3) {
-    checkUnnamed3667(o.developerMetadata);
-    checkUnnamed3668(o.namedRanges);
-    checkSpreadsheetProperties(o.properties);
-    checkUnnamed3669(o.sheets);
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    unittest.expect(o.spreadsheetUrl, unittest.equals('foo'));
+    checkUnnamed5371(o.dataSourceSchedules!);
+    checkUnnamed5372(o.dataSources!);
+    checkUnnamed5373(o.developerMetadata!);
+    checkUnnamed5374(o.namedRanges!);
+    checkSpreadsheetProperties(o.properties! as api.SpreadsheetProperties);
+    checkUnnamed5375(o.sheets!);
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.spreadsheetUrl!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSpreadsheet--;
 }
 
 core.int buildCounterSpreadsheetProperties = 0;
-buildSpreadsheetProperties() {
-  var o = new api.SpreadsheetProperties();
+api.SpreadsheetProperties buildSpreadsheetProperties() {
+  var o = api.SpreadsheetProperties();
   buildCounterSpreadsheetProperties++;
   if (buildCounterSpreadsheetProperties < 3) {
-    o.autoRecalc = "foo";
+    o.autoRecalc = 'foo';
     o.defaultFormat = buildCellFormat();
     o.iterativeCalculationSettings = buildIterativeCalculationSettings();
-    o.locale = "foo";
-    o.timeZone = "foo";
-    o.title = "foo";
+    o.locale = 'foo';
+    o.spreadsheetTheme = buildSpreadsheetTheme();
+    o.timeZone = 'foo';
+    o.title = 'foo';
   }
   buildCounterSpreadsheetProperties--;
   return o;
 }
 
-checkSpreadsheetProperties(api.SpreadsheetProperties o) {
+void checkSpreadsheetProperties(api.SpreadsheetProperties o) {
   buildCounterSpreadsheetProperties++;
   if (buildCounterSpreadsheetProperties < 3) {
-    unittest.expect(o.autoRecalc, unittest.equals('foo'));
-    checkCellFormat(o.defaultFormat);
-    checkIterativeCalculationSettings(o.iterativeCalculationSettings);
-    unittest.expect(o.locale, unittest.equals('foo'));
-    unittest.expect(o.timeZone, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(
+      o.autoRecalc!,
+      unittest.equals('foo'),
+    );
+    checkCellFormat(o.defaultFormat! as api.CellFormat);
+    checkIterativeCalculationSettings(
+        o.iterativeCalculationSettings! as api.IterativeCalculationSettings);
+    unittest.expect(
+      o.locale!,
+      unittest.equals('foo'),
+    );
+    checkSpreadsheetTheme(o.spreadsheetTheme! as api.SpreadsheetTheme);
+    unittest.expect(
+      o.timeZone!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSpreadsheetProperties--;
 }
 
+core.List<api.ThemeColorPair> buildUnnamed5376() {
+  var o = <api.ThemeColorPair>[];
+  o.add(buildThemeColorPair());
+  o.add(buildThemeColorPair());
+  return o;
+}
+
+void checkUnnamed5376(core.List<api.ThemeColorPair> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkThemeColorPair(o[0] as api.ThemeColorPair);
+  checkThemeColorPair(o[1] as api.ThemeColorPair);
+}
+
+core.int buildCounterSpreadsheetTheme = 0;
+api.SpreadsheetTheme buildSpreadsheetTheme() {
+  var o = api.SpreadsheetTheme();
+  buildCounterSpreadsheetTheme++;
+  if (buildCounterSpreadsheetTheme < 3) {
+    o.primaryFontFamily = 'foo';
+    o.themeColors = buildUnnamed5376();
+  }
+  buildCounterSpreadsheetTheme--;
+  return o;
+}
+
+void checkSpreadsheetTheme(api.SpreadsheetTheme o) {
+  buildCounterSpreadsheetTheme++;
+  if (buildCounterSpreadsheetTheme < 3) {
+    unittest.expect(
+      o.primaryFontFamily!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5376(o.themeColors!);
+  }
+  buildCounterSpreadsheetTheme--;
+}
+
 core.int buildCounterTextFormat = 0;
-buildTextFormat() {
-  var o = new api.TextFormat();
+api.TextFormat buildTextFormat() {
+  var o = api.TextFormat();
   buildCounterTextFormat++;
   if (buildCounterTextFormat < 3) {
     o.bold = true;
-    o.fontFamily = "foo";
+    o.fontFamily = 'foo';
     o.fontSize = 42;
     o.foregroundColor = buildColor();
+    o.foregroundColorStyle = buildColorStyle();
     o.italic = true;
     o.strikethrough = true;
     o.underline = true;
@@ -4689,23 +7192,30 @@ buildTextFormat() {
   return o;
 }
 
-checkTextFormat(api.TextFormat o) {
+void checkTextFormat(api.TextFormat o) {
   buildCounterTextFormat++;
   if (buildCounterTextFormat < 3) {
-    unittest.expect(o.bold, unittest.isTrue);
-    unittest.expect(o.fontFamily, unittest.equals('foo'));
-    unittest.expect(o.fontSize, unittest.equals(42));
-    checkColor(o.foregroundColor);
-    unittest.expect(o.italic, unittest.isTrue);
-    unittest.expect(o.strikethrough, unittest.isTrue);
-    unittest.expect(o.underline, unittest.isTrue);
+    unittest.expect(o.bold!, unittest.isTrue);
+    unittest.expect(
+      o.fontFamily!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.fontSize!,
+      unittest.equals(42),
+    );
+    checkColor(o.foregroundColor! as api.Color);
+    checkColorStyle(o.foregroundColorStyle! as api.ColorStyle);
+    unittest.expect(o.italic!, unittest.isTrue);
+    unittest.expect(o.strikethrough!, unittest.isTrue);
+    unittest.expect(o.underline!, unittest.isTrue);
   }
   buildCounterTextFormat--;
 }
 
 core.int buildCounterTextFormatRun = 0;
-buildTextFormatRun() {
-  var o = new api.TextFormatRun();
+api.TextFormatRun buildTextFormatRun() {
+  var o = api.TextFormatRun();
   buildCounterTextFormatRun++;
   if (buildCounterTextFormatRun < 3) {
     o.format = buildTextFormat();
@@ -4715,37 +7225,43 @@ buildTextFormatRun() {
   return o;
 }
 
-checkTextFormatRun(api.TextFormatRun o) {
+void checkTextFormatRun(api.TextFormatRun o) {
   buildCounterTextFormatRun++;
   if (buildCounterTextFormatRun < 3) {
-    checkTextFormat(o.format);
-    unittest.expect(o.startIndex, unittest.equals(42));
+    checkTextFormat(o.format! as api.TextFormat);
+    unittest.expect(
+      o.startIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterTextFormatRun--;
 }
 
 core.int buildCounterTextPosition = 0;
-buildTextPosition() {
-  var o = new api.TextPosition();
+api.TextPosition buildTextPosition() {
+  var o = api.TextPosition();
   buildCounterTextPosition++;
   if (buildCounterTextPosition < 3) {
-    o.horizontalAlignment = "foo";
+    o.horizontalAlignment = 'foo';
   }
   buildCounterTextPosition--;
   return o;
 }
 
-checkTextPosition(api.TextPosition o) {
+void checkTextPosition(api.TextPosition o) {
   buildCounterTextPosition++;
   if (buildCounterTextPosition < 3) {
-    unittest.expect(o.horizontalAlignment, unittest.equals('foo'));
+    unittest.expect(
+      o.horizontalAlignment!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterTextPosition--;
 }
 
 core.int buildCounterTextRotation = 0;
-buildTextRotation() {
-  var o = new api.TextRotation();
+api.TextRotation buildTextRotation() {
+  var o = api.TextRotation();
   buildCounterTextRotation++;
   if (buildCounterTextRotation < 3) {
     o.angle = 42;
@@ -4755,71 +7271,150 @@ buildTextRotation() {
   return o;
 }
 
-checkTextRotation(api.TextRotation o) {
+void checkTextRotation(api.TextRotation o) {
   buildCounterTextRotation++;
   if (buildCounterTextRotation < 3) {
-    unittest.expect(o.angle, unittest.equals(42));
-    unittest.expect(o.vertical, unittest.isTrue);
+    unittest.expect(
+      o.angle!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.vertical!, unittest.isTrue);
   }
   buildCounterTextRotation--;
 }
 
 core.int buildCounterTextToColumnsRequest = 0;
-buildTextToColumnsRequest() {
-  var o = new api.TextToColumnsRequest();
+api.TextToColumnsRequest buildTextToColumnsRequest() {
+  var o = api.TextToColumnsRequest();
   buildCounterTextToColumnsRequest++;
   if (buildCounterTextToColumnsRequest < 3) {
-    o.delimiter = "foo";
-    o.delimiterType = "foo";
+    o.delimiter = 'foo';
+    o.delimiterType = 'foo';
     o.source = buildGridRange();
   }
   buildCounterTextToColumnsRequest--;
   return o;
 }
 
-checkTextToColumnsRequest(api.TextToColumnsRequest o) {
+void checkTextToColumnsRequest(api.TextToColumnsRequest o) {
   buildCounterTextToColumnsRequest++;
   if (buildCounterTextToColumnsRequest < 3) {
-    unittest.expect(o.delimiter, unittest.equals('foo'));
-    unittest.expect(o.delimiterType, unittest.equals('foo'));
-    checkGridRange(o.source);
+    unittest.expect(
+      o.delimiter!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.delimiterType!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.source! as api.GridRange);
   }
   buildCounterTextToColumnsRequest--;
 }
 
+core.int buildCounterThemeColorPair = 0;
+api.ThemeColorPair buildThemeColorPair() {
+  var o = api.ThemeColorPair();
+  buildCounterThemeColorPair++;
+  if (buildCounterThemeColorPair < 3) {
+    o.color = buildColorStyle();
+    o.colorType = 'foo';
+  }
+  buildCounterThemeColorPair--;
+  return o;
+}
+
+void checkThemeColorPair(api.ThemeColorPair o) {
+  buildCounterThemeColorPair++;
+  if (buildCounterThemeColorPair < 3) {
+    checkColorStyle(o.color! as api.ColorStyle);
+    unittest.expect(
+      o.colorType!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterThemeColorPair--;
+}
+
+core.int buildCounterTimeOfDay = 0;
+api.TimeOfDay buildTimeOfDay() {
+  var o = api.TimeOfDay();
+  buildCounterTimeOfDay++;
+  if (buildCounterTimeOfDay < 3) {
+    o.hours = 42;
+    o.minutes = 42;
+    o.nanos = 42;
+    o.seconds = 42;
+  }
+  buildCounterTimeOfDay--;
+  return o;
+}
+
+void checkTimeOfDay(api.TimeOfDay o) {
+  buildCounterTimeOfDay++;
+  if (buildCounterTimeOfDay < 3) {
+    unittest.expect(
+      o.hours!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.minutes!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.nanos!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.seconds!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterTimeOfDay--;
+}
+
 core.int buildCounterTreemapChartColorScale = 0;
-buildTreemapChartColorScale() {
-  var o = new api.TreemapChartColorScale();
+api.TreemapChartColorScale buildTreemapChartColorScale() {
+  var o = api.TreemapChartColorScale();
   buildCounterTreemapChartColorScale++;
   if (buildCounterTreemapChartColorScale < 3) {
     o.maxValueColor = buildColor();
+    o.maxValueColorStyle = buildColorStyle();
     o.midValueColor = buildColor();
+    o.midValueColorStyle = buildColorStyle();
     o.minValueColor = buildColor();
+    o.minValueColorStyle = buildColorStyle();
     o.noDataColor = buildColor();
+    o.noDataColorStyle = buildColorStyle();
   }
   buildCounterTreemapChartColorScale--;
   return o;
 }
 
-checkTreemapChartColorScale(api.TreemapChartColorScale o) {
+void checkTreemapChartColorScale(api.TreemapChartColorScale o) {
   buildCounterTreemapChartColorScale++;
   if (buildCounterTreemapChartColorScale < 3) {
-    checkColor(o.maxValueColor);
-    checkColor(o.midValueColor);
-    checkColor(o.minValueColor);
-    checkColor(o.noDataColor);
+    checkColor(o.maxValueColor! as api.Color);
+    checkColorStyle(o.maxValueColorStyle! as api.ColorStyle);
+    checkColor(o.midValueColor! as api.Color);
+    checkColorStyle(o.midValueColorStyle! as api.ColorStyle);
+    checkColor(o.minValueColor! as api.Color);
+    checkColorStyle(o.minValueColorStyle! as api.ColorStyle);
+    checkColor(o.noDataColor! as api.Color);
+    checkColorStyle(o.noDataColorStyle! as api.ColorStyle);
   }
   buildCounterTreemapChartColorScale--;
 }
 
 core.int buildCounterTreemapChartSpec = 0;
-buildTreemapChartSpec() {
-  var o = new api.TreemapChartSpec();
+api.TreemapChartSpec buildTreemapChartSpec() {
+  var o = api.TreemapChartSpec();
   buildCounterTreemapChartSpec++;
   if (buildCounterTreemapChartSpec < 3) {
     o.colorData = buildChartData();
     o.colorScale = buildTreemapChartColorScale();
     o.headerColor = buildColor();
+    o.headerColorStyle = buildColorStyle();
     o.hideTooltips = true;
     o.hintedLevels = 42;
     o.labels = buildChartData();
@@ -4834,28 +7429,82 @@ buildTreemapChartSpec() {
   return o;
 }
 
-checkTreemapChartSpec(api.TreemapChartSpec o) {
+void checkTreemapChartSpec(api.TreemapChartSpec o) {
   buildCounterTreemapChartSpec++;
   if (buildCounterTreemapChartSpec < 3) {
-    checkChartData(o.colorData);
-    checkTreemapChartColorScale(o.colorScale);
-    checkColor(o.headerColor);
-    unittest.expect(o.hideTooltips, unittest.isTrue);
-    unittest.expect(o.hintedLevels, unittest.equals(42));
-    checkChartData(o.labels);
-    unittest.expect(o.levels, unittest.equals(42));
-    unittest.expect(o.maxValue, unittest.equals(42.0));
-    unittest.expect(o.minValue, unittest.equals(42.0));
-    checkChartData(o.parentLabels);
-    checkChartData(o.sizeData);
-    checkTextFormat(o.textFormat);
+    checkChartData(o.colorData! as api.ChartData);
+    checkTreemapChartColorScale(o.colorScale! as api.TreemapChartColorScale);
+    checkColor(o.headerColor! as api.Color);
+    checkColorStyle(o.headerColorStyle! as api.ColorStyle);
+    unittest.expect(o.hideTooltips!, unittest.isTrue);
+    unittest.expect(
+      o.hintedLevels!,
+      unittest.equals(42),
+    );
+    checkChartData(o.labels! as api.ChartData);
+    unittest.expect(
+      o.levels!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.maxValue!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.minValue!,
+      unittest.equals(42.0),
+    );
+    checkChartData(o.parentLabels! as api.ChartData);
+    checkChartData(o.sizeData! as api.ChartData);
+    checkTextFormat(o.textFormat! as api.TextFormat);
   }
   buildCounterTreemapChartSpec--;
 }
 
+core.int buildCounterTrimWhitespaceRequest = 0;
+api.TrimWhitespaceRequest buildTrimWhitespaceRequest() {
+  var o = api.TrimWhitespaceRequest();
+  buildCounterTrimWhitespaceRequest++;
+  if (buildCounterTrimWhitespaceRequest < 3) {
+    o.range = buildGridRange();
+  }
+  buildCounterTrimWhitespaceRequest--;
+  return o;
+}
+
+void checkTrimWhitespaceRequest(api.TrimWhitespaceRequest o) {
+  buildCounterTrimWhitespaceRequest++;
+  if (buildCounterTrimWhitespaceRequest < 3) {
+    checkGridRange(o.range! as api.GridRange);
+  }
+  buildCounterTrimWhitespaceRequest--;
+}
+
+core.int buildCounterTrimWhitespaceResponse = 0;
+api.TrimWhitespaceResponse buildTrimWhitespaceResponse() {
+  var o = api.TrimWhitespaceResponse();
+  buildCounterTrimWhitespaceResponse++;
+  if (buildCounterTrimWhitespaceResponse < 3) {
+    o.cellsChangedCount = 42;
+  }
+  buildCounterTrimWhitespaceResponse--;
+  return o;
+}
+
+void checkTrimWhitespaceResponse(api.TrimWhitespaceResponse o) {
+  buildCounterTrimWhitespaceResponse++;
+  if (buildCounterTrimWhitespaceResponse < 3) {
+    unittest.expect(
+      o.cellsChangedCount!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterTrimWhitespaceResponse--;
+}
+
 core.int buildCounterUnmergeCellsRequest = 0;
-buildUnmergeCellsRequest() {
-  var o = new api.UnmergeCellsRequest();
+api.UnmergeCellsRequest buildUnmergeCellsRequest() {
+  var o = api.UnmergeCellsRequest();
   buildCounterUnmergeCellsRequest++;
   if (buildCounterUnmergeCellsRequest < 3) {
     o.range = buildGridRange();
@@ -4864,38 +7513,41 @@ buildUnmergeCellsRequest() {
   return o;
 }
 
-checkUnmergeCellsRequest(api.UnmergeCellsRequest o) {
+void checkUnmergeCellsRequest(api.UnmergeCellsRequest o) {
   buildCounterUnmergeCellsRequest++;
   if (buildCounterUnmergeCellsRequest < 3) {
-    checkGridRange(o.range);
+    checkGridRange(o.range! as api.GridRange);
   }
   buildCounterUnmergeCellsRequest--;
 }
 
 core.int buildCounterUpdateBandingRequest = 0;
-buildUpdateBandingRequest() {
-  var o = new api.UpdateBandingRequest();
+api.UpdateBandingRequest buildUpdateBandingRequest() {
+  var o = api.UpdateBandingRequest();
   buildCounterUpdateBandingRequest++;
   if (buildCounterUpdateBandingRequest < 3) {
     o.bandedRange = buildBandedRange();
-    o.fields = "foo";
+    o.fields = 'foo';
   }
   buildCounterUpdateBandingRequest--;
   return o;
 }
 
-checkUpdateBandingRequest(api.UpdateBandingRequest o) {
+void checkUpdateBandingRequest(api.UpdateBandingRequest o) {
   buildCounterUpdateBandingRequest++;
   if (buildCounterUpdateBandingRequest < 3) {
-    checkBandedRange(o.bandedRange);
-    unittest.expect(o.fields, unittest.equals('foo'));
+    checkBandedRange(o.bandedRange! as api.BandedRange);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUpdateBandingRequest--;
 }
 
 core.int buildCounterUpdateBordersRequest = 0;
-buildUpdateBordersRequest() {
-  var o = new api.UpdateBordersRequest();
+api.UpdateBordersRequest buildUpdateBordersRequest() {
+  var o = api.UpdateBordersRequest();
   buildCounterUpdateBordersRequest++;
   if (buildCounterUpdateBordersRequest < 3) {
     o.bottom = buildBorder();
@@ -4910,61 +7562,64 @@ buildUpdateBordersRequest() {
   return o;
 }
 
-checkUpdateBordersRequest(api.UpdateBordersRequest o) {
+void checkUpdateBordersRequest(api.UpdateBordersRequest o) {
   buildCounterUpdateBordersRequest++;
   if (buildCounterUpdateBordersRequest < 3) {
-    checkBorder(o.bottom);
-    checkBorder(o.innerHorizontal);
-    checkBorder(o.innerVertical);
-    checkBorder(o.left);
-    checkGridRange(o.range);
-    checkBorder(o.right);
-    checkBorder(o.top);
+    checkBorder(o.bottom! as api.Border);
+    checkBorder(o.innerHorizontal! as api.Border);
+    checkBorder(o.innerVertical! as api.Border);
+    checkBorder(o.left! as api.Border);
+    checkGridRange(o.range! as api.GridRange);
+    checkBorder(o.right! as api.Border);
+    checkBorder(o.top! as api.Border);
   }
   buildCounterUpdateBordersRequest--;
 }
 
-buildUnnamed3670() {
-  var o = new core.List<api.RowData>();
+core.List<api.RowData> buildUnnamed5377() {
+  var o = <api.RowData>[];
   o.add(buildRowData());
   o.add(buildRowData());
   return o;
 }
 
-checkUnnamed3670(core.List<api.RowData> o) {
+void checkUnnamed5377(core.List<api.RowData> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRowData(o[0]);
-  checkRowData(o[1]);
+  checkRowData(o[0] as api.RowData);
+  checkRowData(o[1] as api.RowData);
 }
 
 core.int buildCounterUpdateCellsRequest = 0;
-buildUpdateCellsRequest() {
-  var o = new api.UpdateCellsRequest();
+api.UpdateCellsRequest buildUpdateCellsRequest() {
+  var o = api.UpdateCellsRequest();
   buildCounterUpdateCellsRequest++;
   if (buildCounterUpdateCellsRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.range = buildGridRange();
-    o.rows = buildUnnamed3670();
+    o.rows = buildUnnamed5377();
     o.start = buildGridCoordinate();
   }
   buildCounterUpdateCellsRequest--;
   return o;
 }
 
-checkUpdateCellsRequest(api.UpdateCellsRequest o) {
+void checkUpdateCellsRequest(api.UpdateCellsRequest o) {
   buildCounterUpdateCellsRequest++;
   if (buildCounterUpdateCellsRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkGridRange(o.range);
-    checkUnnamed3670(o.rows);
-    checkGridCoordinate(o.start);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkGridRange(o.range! as api.GridRange);
+    checkUnnamed5377(o.rows!);
+    checkGridCoordinate(o.start! as api.GridCoordinate);
   }
   buildCounterUpdateCellsRequest--;
 }
 
 core.int buildCounterUpdateChartSpecRequest = 0;
-buildUpdateChartSpecRequest() {
-  var o = new api.UpdateChartSpecRequest();
+api.UpdateChartSpecRequest buildUpdateChartSpecRequest() {
+  var o = api.UpdateChartSpecRequest();
   buildCounterUpdateChartSpecRequest++;
   if (buildCounterUpdateChartSpecRequest < 3) {
     o.chartId = 42;
@@ -4974,18 +7629,22 @@ buildUpdateChartSpecRequest() {
   return o;
 }
 
-checkUpdateChartSpecRequest(api.UpdateChartSpecRequest o) {
+void checkUpdateChartSpecRequest(api.UpdateChartSpecRequest o) {
   buildCounterUpdateChartSpecRequest++;
   if (buildCounterUpdateChartSpecRequest < 3) {
-    unittest.expect(o.chartId, unittest.equals(42));
-    checkChartSpec(o.spec);
+    unittest.expect(
+      o.chartId!,
+      unittest.equals(42),
+    );
+    checkChartSpec(o.spec! as api.ChartSpec);
   }
   buildCounterUpdateChartSpecRequest--;
 }
 
 core.int buildCounterUpdateConditionalFormatRuleRequest = 0;
-buildUpdateConditionalFormatRuleRequest() {
-  var o = new api.UpdateConditionalFormatRuleRequest();
+api.UpdateConditionalFormatRuleRequest
+    buildUpdateConditionalFormatRuleRequest() {
+  var o = api.UpdateConditionalFormatRuleRequest();
   buildCounterUpdateConditionalFormatRuleRequest++;
   if (buildCounterUpdateConditionalFormatRuleRequest < 3) {
     o.index = 42;
@@ -4997,21 +7656,31 @@ buildUpdateConditionalFormatRuleRequest() {
   return o;
 }
 
-checkUpdateConditionalFormatRuleRequest(
+void checkUpdateConditionalFormatRuleRequest(
     api.UpdateConditionalFormatRuleRequest o) {
   buildCounterUpdateConditionalFormatRuleRequest++;
   if (buildCounterUpdateConditionalFormatRuleRequest < 3) {
-    unittest.expect(o.index, unittest.equals(42));
-    unittest.expect(o.newIndex, unittest.equals(42));
-    checkConditionalFormatRule(o.rule);
-    unittest.expect(o.sheetId, unittest.equals(42));
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.newIndex!,
+      unittest.equals(42),
+    );
+    checkConditionalFormatRule(o.rule! as api.ConditionalFormatRule);
+    unittest.expect(
+      o.sheetId!,
+      unittest.equals(42),
+    );
   }
   buildCounterUpdateConditionalFormatRuleRequest--;
 }
 
 core.int buildCounterUpdateConditionalFormatRuleResponse = 0;
-buildUpdateConditionalFormatRuleResponse() {
-  var o = new api.UpdateConditionalFormatRuleResponse();
+api.UpdateConditionalFormatRuleResponse
+    buildUpdateConditionalFormatRuleResponse() {
+  var o = api.UpdateConditionalFormatRuleResponse();
   buildCounterUpdateConditionalFormatRuleResponse++;
   if (buildCounterUpdateConditionalFormatRuleResponse < 3) {
     o.newIndex = 42;
@@ -5023,113 +7692,172 @@ buildUpdateConditionalFormatRuleResponse() {
   return o;
 }
 
-checkUpdateConditionalFormatRuleResponse(
+void checkUpdateConditionalFormatRuleResponse(
     api.UpdateConditionalFormatRuleResponse o) {
   buildCounterUpdateConditionalFormatRuleResponse++;
   if (buildCounterUpdateConditionalFormatRuleResponse < 3) {
-    unittest.expect(o.newIndex, unittest.equals(42));
-    checkConditionalFormatRule(o.newRule);
-    unittest.expect(o.oldIndex, unittest.equals(42));
-    checkConditionalFormatRule(o.oldRule);
+    unittest.expect(
+      o.newIndex!,
+      unittest.equals(42),
+    );
+    checkConditionalFormatRule(o.newRule! as api.ConditionalFormatRule);
+    unittest.expect(
+      o.oldIndex!,
+      unittest.equals(42),
+    );
+    checkConditionalFormatRule(o.oldRule! as api.ConditionalFormatRule);
   }
   buildCounterUpdateConditionalFormatRuleResponse--;
 }
 
-buildUnnamed3671() {
-  var o = new core.List<api.DataFilter>();
+core.int buildCounterUpdateDataSourceRequest = 0;
+api.UpdateDataSourceRequest buildUpdateDataSourceRequest() {
+  var o = api.UpdateDataSourceRequest();
+  buildCounterUpdateDataSourceRequest++;
+  if (buildCounterUpdateDataSourceRequest < 3) {
+    o.dataSource = buildDataSource();
+    o.fields = 'foo';
+  }
+  buildCounterUpdateDataSourceRequest--;
+  return o;
+}
+
+void checkUpdateDataSourceRequest(api.UpdateDataSourceRequest o) {
+  buildCounterUpdateDataSourceRequest++;
+  if (buildCounterUpdateDataSourceRequest < 3) {
+    checkDataSource(o.dataSource! as api.DataSource);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterUpdateDataSourceRequest--;
+}
+
+core.int buildCounterUpdateDataSourceResponse = 0;
+api.UpdateDataSourceResponse buildUpdateDataSourceResponse() {
+  var o = api.UpdateDataSourceResponse();
+  buildCounterUpdateDataSourceResponse++;
+  if (buildCounterUpdateDataSourceResponse < 3) {
+    o.dataExecutionStatus = buildDataExecutionStatus();
+    o.dataSource = buildDataSource();
+  }
+  buildCounterUpdateDataSourceResponse--;
+  return o;
+}
+
+void checkUpdateDataSourceResponse(api.UpdateDataSourceResponse o) {
+  buildCounterUpdateDataSourceResponse++;
+  if (buildCounterUpdateDataSourceResponse < 3) {
+    checkDataExecutionStatus(o.dataExecutionStatus! as api.DataExecutionStatus);
+    checkDataSource(o.dataSource! as api.DataSource);
+  }
+  buildCounterUpdateDataSourceResponse--;
+}
+
+core.List<api.DataFilter> buildUnnamed5378() {
+  var o = <api.DataFilter>[];
   o.add(buildDataFilter());
   o.add(buildDataFilter());
   return o;
 }
 
-checkUnnamed3671(core.List<api.DataFilter> o) {
+void checkUnnamed5378(core.List<api.DataFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDataFilter(o[0]);
-  checkDataFilter(o[1]);
+  checkDataFilter(o[0] as api.DataFilter);
+  checkDataFilter(o[1] as api.DataFilter);
 }
 
 core.int buildCounterUpdateDeveloperMetadataRequest = 0;
-buildUpdateDeveloperMetadataRequest() {
-  var o = new api.UpdateDeveloperMetadataRequest();
+api.UpdateDeveloperMetadataRequest buildUpdateDeveloperMetadataRequest() {
+  var o = api.UpdateDeveloperMetadataRequest();
   buildCounterUpdateDeveloperMetadataRequest++;
   if (buildCounterUpdateDeveloperMetadataRequest < 3) {
-    o.dataFilters = buildUnnamed3671();
+    o.dataFilters = buildUnnamed5378();
     o.developerMetadata = buildDeveloperMetadata();
-    o.fields = "foo";
+    o.fields = 'foo';
   }
   buildCounterUpdateDeveloperMetadataRequest--;
   return o;
 }
 
-checkUpdateDeveloperMetadataRequest(api.UpdateDeveloperMetadataRequest o) {
+void checkUpdateDeveloperMetadataRequest(api.UpdateDeveloperMetadataRequest o) {
   buildCounterUpdateDeveloperMetadataRequest++;
   if (buildCounterUpdateDeveloperMetadataRequest < 3) {
-    checkUnnamed3671(o.dataFilters);
-    checkDeveloperMetadata(o.developerMetadata);
-    unittest.expect(o.fields, unittest.equals('foo'));
+    checkUnnamed5378(o.dataFilters!);
+    checkDeveloperMetadata(o.developerMetadata! as api.DeveloperMetadata);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUpdateDeveloperMetadataRequest--;
 }
 
-buildUnnamed3672() {
-  var o = new core.List<api.DeveloperMetadata>();
+core.List<api.DeveloperMetadata> buildUnnamed5379() {
+  var o = <api.DeveloperMetadata>[];
   o.add(buildDeveloperMetadata());
   o.add(buildDeveloperMetadata());
   return o;
 }
 
-checkUnnamed3672(core.List<api.DeveloperMetadata> o) {
+void checkUnnamed5379(core.List<api.DeveloperMetadata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDeveloperMetadata(o[0]);
-  checkDeveloperMetadata(o[1]);
+  checkDeveloperMetadata(o[0] as api.DeveloperMetadata);
+  checkDeveloperMetadata(o[1] as api.DeveloperMetadata);
 }
 
 core.int buildCounterUpdateDeveloperMetadataResponse = 0;
-buildUpdateDeveloperMetadataResponse() {
-  var o = new api.UpdateDeveloperMetadataResponse();
+api.UpdateDeveloperMetadataResponse buildUpdateDeveloperMetadataResponse() {
+  var o = api.UpdateDeveloperMetadataResponse();
   buildCounterUpdateDeveloperMetadataResponse++;
   if (buildCounterUpdateDeveloperMetadataResponse < 3) {
-    o.developerMetadata = buildUnnamed3672();
+    o.developerMetadata = buildUnnamed5379();
   }
   buildCounterUpdateDeveloperMetadataResponse--;
   return o;
 }
 
-checkUpdateDeveloperMetadataResponse(api.UpdateDeveloperMetadataResponse o) {
+void checkUpdateDeveloperMetadataResponse(
+    api.UpdateDeveloperMetadataResponse o) {
   buildCounterUpdateDeveloperMetadataResponse++;
   if (buildCounterUpdateDeveloperMetadataResponse < 3) {
-    checkUnnamed3672(o.developerMetadata);
+    checkUnnamed5379(o.developerMetadata!);
   }
   buildCounterUpdateDeveloperMetadataResponse--;
 }
 
 core.int buildCounterUpdateDimensionGroupRequest = 0;
-buildUpdateDimensionGroupRequest() {
-  var o = new api.UpdateDimensionGroupRequest();
+api.UpdateDimensionGroupRequest buildUpdateDimensionGroupRequest() {
+  var o = api.UpdateDimensionGroupRequest();
   buildCounterUpdateDimensionGroupRequest++;
   if (buildCounterUpdateDimensionGroupRequest < 3) {
     o.dimensionGroup = buildDimensionGroup();
-    o.fields = "foo";
+    o.fields = 'foo';
   }
   buildCounterUpdateDimensionGroupRequest--;
   return o;
 }
 
-checkUpdateDimensionGroupRequest(api.UpdateDimensionGroupRequest o) {
+void checkUpdateDimensionGroupRequest(api.UpdateDimensionGroupRequest o) {
   buildCounterUpdateDimensionGroupRequest++;
   if (buildCounterUpdateDimensionGroupRequest < 3) {
-    checkDimensionGroup(o.dimensionGroup);
-    unittest.expect(o.fields, unittest.equals('foo'));
+    checkDimensionGroup(o.dimensionGroup! as api.DimensionGroup);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUpdateDimensionGroupRequest--;
 }
 
 core.int buildCounterUpdateDimensionPropertiesRequest = 0;
-buildUpdateDimensionPropertiesRequest() {
-  var o = new api.UpdateDimensionPropertiesRequest();
+api.UpdateDimensionPropertiesRequest buildUpdateDimensionPropertiesRequest() {
+  var o = api.UpdateDimensionPropertiesRequest();
   buildCounterUpdateDimensionPropertiesRequest++;
   if (buildCounterUpdateDimensionPropertiesRequest < 3) {
-    o.fields = "foo";
+    o.dataSourceSheetRange = buildDataSourceSheetDimensionRange();
+    o.fields = 'foo';
     o.properties = buildDimensionProperties();
     o.range = buildDimensionRange();
   }
@@ -5137,22 +7865,59 @@ buildUpdateDimensionPropertiesRequest() {
   return o;
 }
 
-checkUpdateDimensionPropertiesRequest(api.UpdateDimensionPropertiesRequest o) {
+void checkUpdateDimensionPropertiesRequest(
+    api.UpdateDimensionPropertiesRequest o) {
   buildCounterUpdateDimensionPropertiesRequest++;
   if (buildCounterUpdateDimensionPropertiesRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkDimensionProperties(o.properties);
-    checkDimensionRange(o.range);
+    checkDataSourceSheetDimensionRange(
+        o.dataSourceSheetRange! as api.DataSourceSheetDimensionRange);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkDimensionProperties(o.properties! as api.DimensionProperties);
+    checkDimensionRange(o.range! as api.DimensionRange);
   }
   buildCounterUpdateDimensionPropertiesRequest--;
 }
 
+core.int buildCounterUpdateEmbeddedObjectBorderRequest = 0;
+api.UpdateEmbeddedObjectBorderRequest buildUpdateEmbeddedObjectBorderRequest() {
+  var o = api.UpdateEmbeddedObjectBorderRequest();
+  buildCounterUpdateEmbeddedObjectBorderRequest++;
+  if (buildCounterUpdateEmbeddedObjectBorderRequest < 3) {
+    o.border = buildEmbeddedObjectBorder();
+    o.fields = 'foo';
+    o.objectId = 42;
+  }
+  buildCounterUpdateEmbeddedObjectBorderRequest--;
+  return o;
+}
+
+void checkUpdateEmbeddedObjectBorderRequest(
+    api.UpdateEmbeddedObjectBorderRequest o) {
+  buildCounterUpdateEmbeddedObjectBorderRequest++;
+  if (buildCounterUpdateEmbeddedObjectBorderRequest < 3) {
+    checkEmbeddedObjectBorder(o.border! as api.EmbeddedObjectBorder);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.objectId!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterUpdateEmbeddedObjectBorderRequest--;
+}
+
 core.int buildCounterUpdateEmbeddedObjectPositionRequest = 0;
-buildUpdateEmbeddedObjectPositionRequest() {
-  var o = new api.UpdateEmbeddedObjectPositionRequest();
+api.UpdateEmbeddedObjectPositionRequest
+    buildUpdateEmbeddedObjectPositionRequest() {
+  var o = api.UpdateEmbeddedObjectPositionRequest();
   buildCounterUpdateEmbeddedObjectPositionRequest++;
   if (buildCounterUpdateEmbeddedObjectPositionRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.newPosition = buildEmbeddedObjectPosition();
     o.objectId = 42;
   }
@@ -5160,20 +7925,27 @@ buildUpdateEmbeddedObjectPositionRequest() {
   return o;
 }
 
-checkUpdateEmbeddedObjectPositionRequest(
+void checkUpdateEmbeddedObjectPositionRequest(
     api.UpdateEmbeddedObjectPositionRequest o) {
   buildCounterUpdateEmbeddedObjectPositionRequest++;
   if (buildCounterUpdateEmbeddedObjectPositionRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkEmbeddedObjectPosition(o.newPosition);
-    unittest.expect(o.objectId, unittest.equals(42));
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkEmbeddedObjectPosition(o.newPosition! as api.EmbeddedObjectPosition);
+    unittest.expect(
+      o.objectId!,
+      unittest.equals(42),
+    );
   }
   buildCounterUpdateEmbeddedObjectPositionRequest--;
 }
 
 core.int buildCounterUpdateEmbeddedObjectPositionResponse = 0;
-buildUpdateEmbeddedObjectPositionResponse() {
-  var o = new api.UpdateEmbeddedObjectPositionResponse();
+api.UpdateEmbeddedObjectPositionResponse
+    buildUpdateEmbeddedObjectPositionResponse() {
+  var o = api.UpdateEmbeddedObjectPositionResponse();
   buildCounterUpdateEmbeddedObjectPositionResponse++;
   if (buildCounterUpdateEmbeddedObjectPositionResponse < 3) {
     o.position = buildEmbeddedObjectPosition();
@@ -5182,181 +7954,254 @@ buildUpdateEmbeddedObjectPositionResponse() {
   return o;
 }
 
-checkUpdateEmbeddedObjectPositionResponse(
+void checkUpdateEmbeddedObjectPositionResponse(
     api.UpdateEmbeddedObjectPositionResponse o) {
   buildCounterUpdateEmbeddedObjectPositionResponse++;
   if (buildCounterUpdateEmbeddedObjectPositionResponse < 3) {
-    checkEmbeddedObjectPosition(o.position);
+    checkEmbeddedObjectPosition(o.position! as api.EmbeddedObjectPosition);
   }
   buildCounterUpdateEmbeddedObjectPositionResponse--;
 }
 
 core.int buildCounterUpdateFilterViewRequest = 0;
-buildUpdateFilterViewRequest() {
-  var o = new api.UpdateFilterViewRequest();
+api.UpdateFilterViewRequest buildUpdateFilterViewRequest() {
+  var o = api.UpdateFilterViewRequest();
   buildCounterUpdateFilterViewRequest++;
   if (buildCounterUpdateFilterViewRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.filter = buildFilterView();
   }
   buildCounterUpdateFilterViewRequest--;
   return o;
 }
 
-checkUpdateFilterViewRequest(api.UpdateFilterViewRequest o) {
+void checkUpdateFilterViewRequest(api.UpdateFilterViewRequest o) {
   buildCounterUpdateFilterViewRequest++;
   if (buildCounterUpdateFilterViewRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkFilterView(o.filter);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkFilterView(o.filter! as api.FilterView);
   }
   buildCounterUpdateFilterViewRequest--;
 }
 
 core.int buildCounterUpdateNamedRangeRequest = 0;
-buildUpdateNamedRangeRequest() {
-  var o = new api.UpdateNamedRangeRequest();
+api.UpdateNamedRangeRequest buildUpdateNamedRangeRequest() {
+  var o = api.UpdateNamedRangeRequest();
   buildCounterUpdateNamedRangeRequest++;
   if (buildCounterUpdateNamedRangeRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.namedRange = buildNamedRange();
   }
   buildCounterUpdateNamedRangeRequest--;
   return o;
 }
 
-checkUpdateNamedRangeRequest(api.UpdateNamedRangeRequest o) {
+void checkUpdateNamedRangeRequest(api.UpdateNamedRangeRequest o) {
   buildCounterUpdateNamedRangeRequest++;
   if (buildCounterUpdateNamedRangeRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkNamedRange(o.namedRange);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkNamedRange(o.namedRange! as api.NamedRange);
   }
   buildCounterUpdateNamedRangeRequest--;
 }
 
 core.int buildCounterUpdateProtectedRangeRequest = 0;
-buildUpdateProtectedRangeRequest() {
-  var o = new api.UpdateProtectedRangeRequest();
+api.UpdateProtectedRangeRequest buildUpdateProtectedRangeRequest() {
+  var o = api.UpdateProtectedRangeRequest();
   buildCounterUpdateProtectedRangeRequest++;
   if (buildCounterUpdateProtectedRangeRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.protectedRange = buildProtectedRange();
   }
   buildCounterUpdateProtectedRangeRequest--;
   return o;
 }
 
-checkUpdateProtectedRangeRequest(api.UpdateProtectedRangeRequest o) {
+void checkUpdateProtectedRangeRequest(api.UpdateProtectedRangeRequest o) {
   buildCounterUpdateProtectedRangeRequest++;
   if (buildCounterUpdateProtectedRangeRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkProtectedRange(o.protectedRange);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkProtectedRange(o.protectedRange! as api.ProtectedRange);
   }
   buildCounterUpdateProtectedRangeRequest--;
 }
 
 core.int buildCounterUpdateSheetPropertiesRequest = 0;
-buildUpdateSheetPropertiesRequest() {
-  var o = new api.UpdateSheetPropertiesRequest();
+api.UpdateSheetPropertiesRequest buildUpdateSheetPropertiesRequest() {
+  var o = api.UpdateSheetPropertiesRequest();
   buildCounterUpdateSheetPropertiesRequest++;
   if (buildCounterUpdateSheetPropertiesRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.properties = buildSheetProperties();
   }
   buildCounterUpdateSheetPropertiesRequest--;
   return o;
 }
 
-checkUpdateSheetPropertiesRequest(api.UpdateSheetPropertiesRequest o) {
+void checkUpdateSheetPropertiesRequest(api.UpdateSheetPropertiesRequest o) {
   buildCounterUpdateSheetPropertiesRequest++;
   if (buildCounterUpdateSheetPropertiesRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkSheetProperties(o.properties);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkSheetProperties(o.properties! as api.SheetProperties);
   }
   buildCounterUpdateSheetPropertiesRequest--;
 }
 
+core.int buildCounterUpdateSlicerSpecRequest = 0;
+api.UpdateSlicerSpecRequest buildUpdateSlicerSpecRequest() {
+  var o = api.UpdateSlicerSpecRequest();
+  buildCounterUpdateSlicerSpecRequest++;
+  if (buildCounterUpdateSlicerSpecRequest < 3) {
+    o.fields = 'foo';
+    o.slicerId = 42;
+    o.spec = buildSlicerSpec();
+  }
+  buildCounterUpdateSlicerSpecRequest--;
+  return o;
+}
+
+void checkUpdateSlicerSpecRequest(api.UpdateSlicerSpecRequest o) {
+  buildCounterUpdateSlicerSpecRequest++;
+  if (buildCounterUpdateSlicerSpecRequest < 3) {
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.slicerId!,
+      unittest.equals(42),
+    );
+    checkSlicerSpec(o.spec! as api.SlicerSpec);
+  }
+  buildCounterUpdateSlicerSpecRequest--;
+}
+
 core.int buildCounterUpdateSpreadsheetPropertiesRequest = 0;
-buildUpdateSpreadsheetPropertiesRequest() {
-  var o = new api.UpdateSpreadsheetPropertiesRequest();
+api.UpdateSpreadsheetPropertiesRequest
+    buildUpdateSpreadsheetPropertiesRequest() {
+  var o = api.UpdateSpreadsheetPropertiesRequest();
   buildCounterUpdateSpreadsheetPropertiesRequest++;
   if (buildCounterUpdateSpreadsheetPropertiesRequest < 3) {
-    o.fields = "foo";
+    o.fields = 'foo';
     o.properties = buildSpreadsheetProperties();
   }
   buildCounterUpdateSpreadsheetPropertiesRequest--;
   return o;
 }
 
-checkUpdateSpreadsheetPropertiesRequest(
+void checkUpdateSpreadsheetPropertiesRequest(
     api.UpdateSpreadsheetPropertiesRequest o) {
   buildCounterUpdateSpreadsheetPropertiesRequest++;
   if (buildCounterUpdateSpreadsheetPropertiesRequest < 3) {
-    unittest.expect(o.fields, unittest.equals('foo'));
-    checkSpreadsheetProperties(o.properties);
+    unittest.expect(
+      o.fields!,
+      unittest.equals('foo'),
+    );
+    checkSpreadsheetProperties(o.properties! as api.SpreadsheetProperties);
   }
   buildCounterUpdateSpreadsheetPropertiesRequest--;
 }
 
 core.int buildCounterUpdateValuesByDataFilterResponse = 0;
-buildUpdateValuesByDataFilterResponse() {
-  var o = new api.UpdateValuesByDataFilterResponse();
+api.UpdateValuesByDataFilterResponse buildUpdateValuesByDataFilterResponse() {
+  var o = api.UpdateValuesByDataFilterResponse();
   buildCounterUpdateValuesByDataFilterResponse++;
   if (buildCounterUpdateValuesByDataFilterResponse < 3) {
     o.dataFilter = buildDataFilter();
     o.updatedCells = 42;
     o.updatedColumns = 42;
     o.updatedData = buildValueRange();
-    o.updatedRange = "foo";
+    o.updatedRange = 'foo';
     o.updatedRows = 42;
   }
   buildCounterUpdateValuesByDataFilterResponse--;
   return o;
 }
 
-checkUpdateValuesByDataFilterResponse(api.UpdateValuesByDataFilterResponse o) {
+void checkUpdateValuesByDataFilterResponse(
+    api.UpdateValuesByDataFilterResponse o) {
   buildCounterUpdateValuesByDataFilterResponse++;
   if (buildCounterUpdateValuesByDataFilterResponse < 3) {
-    checkDataFilter(o.dataFilter);
-    unittest.expect(o.updatedCells, unittest.equals(42));
-    unittest.expect(o.updatedColumns, unittest.equals(42));
-    checkValueRange(o.updatedData);
-    unittest.expect(o.updatedRange, unittest.equals('foo'));
-    unittest.expect(o.updatedRows, unittest.equals(42));
+    checkDataFilter(o.dataFilter! as api.DataFilter);
+    unittest.expect(
+      o.updatedCells!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.updatedColumns!,
+      unittest.equals(42),
+    );
+    checkValueRange(o.updatedData! as api.ValueRange);
+    unittest.expect(
+      o.updatedRange!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updatedRows!,
+      unittest.equals(42),
+    );
   }
   buildCounterUpdateValuesByDataFilterResponse--;
 }
 
 core.int buildCounterUpdateValuesResponse = 0;
-buildUpdateValuesResponse() {
-  var o = new api.UpdateValuesResponse();
+api.UpdateValuesResponse buildUpdateValuesResponse() {
+  var o = api.UpdateValuesResponse();
   buildCounterUpdateValuesResponse++;
   if (buildCounterUpdateValuesResponse < 3) {
-    o.spreadsheetId = "foo";
+    o.spreadsheetId = 'foo';
     o.updatedCells = 42;
     o.updatedColumns = 42;
     o.updatedData = buildValueRange();
-    o.updatedRange = "foo";
+    o.updatedRange = 'foo';
     o.updatedRows = 42;
   }
   buildCounterUpdateValuesResponse--;
   return o;
 }
 
-checkUpdateValuesResponse(api.UpdateValuesResponse o) {
+void checkUpdateValuesResponse(api.UpdateValuesResponse o) {
   buildCounterUpdateValuesResponse++;
   if (buildCounterUpdateValuesResponse < 3) {
-    unittest.expect(o.spreadsheetId, unittest.equals('foo'));
-    unittest.expect(o.updatedCells, unittest.equals(42));
-    unittest.expect(o.updatedColumns, unittest.equals(42));
-    checkValueRange(o.updatedData);
-    unittest.expect(o.updatedRange, unittest.equals('foo'));
-    unittest.expect(o.updatedRows, unittest.equals(42));
+    unittest.expect(
+      o.spreadsheetId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updatedCells!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.updatedColumns!,
+      unittest.equals(42),
+    );
+    checkValueRange(o.updatedData! as api.ValueRange);
+    unittest.expect(
+      o.updatedRange!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updatedRows!,
+      unittest.equals(42),
+    );
   }
   buildCounterUpdateValuesResponse--;
 }
 
-buildUnnamed3673() {
-  var o = new core.List<core.Object>();
+core.List<core.Object> buildUnnamed5380() {
+  var o = <core.Object>[];
   o.add({
     'list': [1, 2, 3],
     'bool': true,
@@ -5370,103 +8215,138 @@ buildUnnamed3673() {
   return o;
 }
 
-checkUnnamed3673(core.List<core.Object> o) {
+void checkUnnamed5380(core.List<core.Object> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted3 = (o[0]) as core.Map;
   unittest.expect(casted3, unittest.hasLength(3));
-  unittest.expect(casted3["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted3["bool"], unittest.equals(true));
-  unittest.expect(casted3["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted3['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted3['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted3['string'],
+    unittest.equals('foo'),
+  );
   var casted4 = (o[1]) as core.Map;
   unittest.expect(casted4, unittest.hasLength(3));
-  unittest.expect(casted4["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted4["bool"], unittest.equals(true));
-  unittest.expect(casted4["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted4['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted4['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted4['string'],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3674() {
-  var o = new core.List<core.List<core.Object>>();
-  o.add(buildUnnamed3673());
-  o.add(buildUnnamed3673());
+core.List<core.List<core.Object>> buildUnnamed5381() {
+  var o = <core.List<core.Object>>[];
+  o.add(buildUnnamed5380());
+  o.add(buildUnnamed5380());
   return o;
 }
 
-checkUnnamed3674(core.List<core.List<core.Object>> o) {
+void checkUnnamed5381(core.List<core.List<core.Object>> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed3673(o[0]);
-  checkUnnamed3673(o[1]);
+  checkUnnamed5380(o[0]);
+  checkUnnamed5380(o[1]);
 }
 
 core.int buildCounterValueRange = 0;
-buildValueRange() {
-  var o = new api.ValueRange();
+api.ValueRange buildValueRange() {
+  var o = api.ValueRange();
   buildCounterValueRange++;
   if (buildCounterValueRange < 3) {
-    o.majorDimension = "foo";
-    o.range = "foo";
-    o.values = buildUnnamed3674();
+    o.majorDimension = 'foo';
+    o.range = 'foo';
+    o.values = buildUnnamed5381();
   }
   buildCounterValueRange--;
   return o;
 }
 
-checkValueRange(api.ValueRange o) {
+void checkValueRange(api.ValueRange o) {
   buildCounterValueRange++;
   if (buildCounterValueRange < 3) {
-    unittest.expect(o.majorDimension, unittest.equals('foo'));
-    unittest.expect(o.range, unittest.equals('foo'));
-    checkUnnamed3674(o.values);
+    unittest.expect(
+      o.majorDimension!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.range!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed5381(o.values!);
   }
   buildCounterValueRange--;
 }
 
 core.int buildCounterWaterfallChartColumnStyle = 0;
-buildWaterfallChartColumnStyle() {
-  var o = new api.WaterfallChartColumnStyle();
+api.WaterfallChartColumnStyle buildWaterfallChartColumnStyle() {
+  var o = api.WaterfallChartColumnStyle();
   buildCounterWaterfallChartColumnStyle++;
   if (buildCounterWaterfallChartColumnStyle < 3) {
     o.color = buildColor();
-    o.label = "foo";
+    o.colorStyle = buildColorStyle();
+    o.label = 'foo';
   }
   buildCounterWaterfallChartColumnStyle--;
   return o;
 }
 
-checkWaterfallChartColumnStyle(api.WaterfallChartColumnStyle o) {
+void checkWaterfallChartColumnStyle(api.WaterfallChartColumnStyle o) {
   buildCounterWaterfallChartColumnStyle++;
   if (buildCounterWaterfallChartColumnStyle < 3) {
-    checkColor(o.color);
-    unittest.expect(o.label, unittest.equals('foo'));
+    checkColor(o.color! as api.Color);
+    checkColorStyle(o.colorStyle! as api.ColorStyle);
+    unittest.expect(
+      o.label!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterWaterfallChartColumnStyle--;
 }
 
 core.int buildCounterWaterfallChartCustomSubtotal = 0;
-buildWaterfallChartCustomSubtotal() {
-  var o = new api.WaterfallChartCustomSubtotal();
+api.WaterfallChartCustomSubtotal buildWaterfallChartCustomSubtotal() {
+  var o = api.WaterfallChartCustomSubtotal();
   buildCounterWaterfallChartCustomSubtotal++;
   if (buildCounterWaterfallChartCustomSubtotal < 3) {
     o.dataIsSubtotal = true;
-    o.label = "foo";
+    o.label = 'foo';
     o.subtotalIndex = 42;
   }
   buildCounterWaterfallChartCustomSubtotal--;
   return o;
 }
 
-checkWaterfallChartCustomSubtotal(api.WaterfallChartCustomSubtotal o) {
+void checkWaterfallChartCustomSubtotal(api.WaterfallChartCustomSubtotal o) {
   buildCounterWaterfallChartCustomSubtotal++;
   if (buildCounterWaterfallChartCustomSubtotal < 3) {
-    unittest.expect(o.dataIsSubtotal, unittest.isTrue);
-    unittest.expect(o.label, unittest.equals('foo'));
-    unittest.expect(o.subtotalIndex, unittest.equals(42));
+    unittest.expect(o.dataIsSubtotal!, unittest.isTrue);
+    unittest.expect(
+      o.label!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.subtotalIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterWaterfallChartCustomSubtotal--;
 }
 
 core.int buildCounterWaterfallChartDomain = 0;
-buildWaterfallChartDomain() {
-  var o = new api.WaterfallChartDomain();
+api.WaterfallChartDomain buildWaterfallChartDomain() {
+  var o = api.WaterfallChartDomain();
   buildCounterWaterfallChartDomain++;
   if (buildCounterWaterfallChartDomain < 3) {
     o.data = buildChartData();
@@ -5476,35 +8356,36 @@ buildWaterfallChartDomain() {
   return o;
 }
 
-checkWaterfallChartDomain(api.WaterfallChartDomain o) {
+void checkWaterfallChartDomain(api.WaterfallChartDomain o) {
   buildCounterWaterfallChartDomain++;
   if (buildCounterWaterfallChartDomain < 3) {
-    checkChartData(o.data);
-    unittest.expect(o.reversed, unittest.isTrue);
+    checkChartData(o.data! as api.ChartData);
+    unittest.expect(o.reversed!, unittest.isTrue);
   }
   buildCounterWaterfallChartDomain--;
 }
 
-buildUnnamed3675() {
-  var o = new core.List<api.WaterfallChartCustomSubtotal>();
+core.List<api.WaterfallChartCustomSubtotal> buildUnnamed5382() {
+  var o = <api.WaterfallChartCustomSubtotal>[];
   o.add(buildWaterfallChartCustomSubtotal());
   o.add(buildWaterfallChartCustomSubtotal());
   return o;
 }
 
-checkUnnamed3675(core.List<api.WaterfallChartCustomSubtotal> o) {
+void checkUnnamed5382(core.List<api.WaterfallChartCustomSubtotal> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkWaterfallChartCustomSubtotal(o[0]);
-  checkWaterfallChartCustomSubtotal(o[1]);
+  checkWaterfallChartCustomSubtotal(o[0] as api.WaterfallChartCustomSubtotal);
+  checkWaterfallChartCustomSubtotal(o[1] as api.WaterfallChartCustomSubtotal);
 }
 
 core.int buildCounterWaterfallChartSeries = 0;
-buildWaterfallChartSeries() {
-  var o = new api.WaterfallChartSeries();
+api.WaterfallChartSeries buildWaterfallChartSeries() {
+  var o = api.WaterfallChartSeries();
   buildCounterWaterfallChartSeries++;
   if (buildCounterWaterfallChartSeries < 3) {
-    o.customSubtotals = buildUnnamed3675();
+    o.customSubtotals = buildUnnamed5382();
     o.data = buildChartData();
+    o.dataLabel = buildDataLabel();
     o.hideTrailingSubtotal = true;
     o.negativeColumnsStyle = buildWaterfallChartColumnStyle();
     o.positiveColumnsStyle = buildWaterfallChartColumnStyle();
@@ -5514,2763 +8395,3947 @@ buildWaterfallChartSeries() {
   return o;
 }
 
-checkWaterfallChartSeries(api.WaterfallChartSeries o) {
+void checkWaterfallChartSeries(api.WaterfallChartSeries o) {
   buildCounterWaterfallChartSeries++;
   if (buildCounterWaterfallChartSeries < 3) {
-    checkUnnamed3675(o.customSubtotals);
-    checkChartData(o.data);
-    unittest.expect(o.hideTrailingSubtotal, unittest.isTrue);
-    checkWaterfallChartColumnStyle(o.negativeColumnsStyle);
-    checkWaterfallChartColumnStyle(o.positiveColumnsStyle);
-    checkWaterfallChartColumnStyle(o.subtotalColumnsStyle);
+    checkUnnamed5382(o.customSubtotals!);
+    checkChartData(o.data! as api.ChartData);
+    checkDataLabel(o.dataLabel! as api.DataLabel);
+    unittest.expect(o.hideTrailingSubtotal!, unittest.isTrue);
+    checkWaterfallChartColumnStyle(
+        o.negativeColumnsStyle! as api.WaterfallChartColumnStyle);
+    checkWaterfallChartColumnStyle(
+        o.positiveColumnsStyle! as api.WaterfallChartColumnStyle);
+    checkWaterfallChartColumnStyle(
+        o.subtotalColumnsStyle! as api.WaterfallChartColumnStyle);
   }
   buildCounterWaterfallChartSeries--;
 }
 
-buildUnnamed3676() {
-  var o = new core.List<api.WaterfallChartSeries>();
+core.List<api.WaterfallChartSeries> buildUnnamed5383() {
+  var o = <api.WaterfallChartSeries>[];
   o.add(buildWaterfallChartSeries());
   o.add(buildWaterfallChartSeries());
   return o;
 }
 
-checkUnnamed3676(core.List<api.WaterfallChartSeries> o) {
+void checkUnnamed5383(core.List<api.WaterfallChartSeries> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkWaterfallChartSeries(o[0]);
-  checkWaterfallChartSeries(o[1]);
+  checkWaterfallChartSeries(o[0] as api.WaterfallChartSeries);
+  checkWaterfallChartSeries(o[1] as api.WaterfallChartSeries);
 }
 
 core.int buildCounterWaterfallChartSpec = 0;
-buildWaterfallChartSpec() {
-  var o = new api.WaterfallChartSpec();
+api.WaterfallChartSpec buildWaterfallChartSpec() {
+  var o = api.WaterfallChartSpec();
   buildCounterWaterfallChartSpec++;
   if (buildCounterWaterfallChartSpec < 3) {
     o.connectorLineStyle = buildLineStyle();
     o.domain = buildWaterfallChartDomain();
     o.firstValueIsTotal = true;
     o.hideConnectorLines = true;
-    o.series = buildUnnamed3676();
-    o.stackedType = "foo";
+    o.series = buildUnnamed5383();
+    o.stackedType = 'foo';
+    o.totalDataLabel = buildDataLabel();
   }
   buildCounterWaterfallChartSpec--;
   return o;
 }
 
-checkWaterfallChartSpec(api.WaterfallChartSpec o) {
+void checkWaterfallChartSpec(api.WaterfallChartSpec o) {
   buildCounterWaterfallChartSpec++;
   if (buildCounterWaterfallChartSpec < 3) {
-    checkLineStyle(o.connectorLineStyle);
-    checkWaterfallChartDomain(o.domain);
-    unittest.expect(o.firstValueIsTotal, unittest.isTrue);
-    unittest.expect(o.hideConnectorLines, unittest.isTrue);
-    checkUnnamed3676(o.series);
-    unittest.expect(o.stackedType, unittest.equals('foo'));
+    checkLineStyle(o.connectorLineStyle! as api.LineStyle);
+    checkWaterfallChartDomain(o.domain! as api.WaterfallChartDomain);
+    unittest.expect(o.firstValueIsTotal!, unittest.isTrue);
+    unittest.expect(o.hideConnectorLines!, unittest.isTrue);
+    checkUnnamed5383(o.series!);
+    unittest.expect(
+      o.stackedType!,
+      unittest.equals('foo'),
+    );
+    checkDataLabel(o.totalDataLabel! as api.DataLabel);
   }
   buildCounterWaterfallChartSpec--;
 }
 
-buildUnnamed3677() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5384() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3677(core.List<core.String> o) {
+void checkUnnamed5384(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3678() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed5385() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3678(core.List<core.String> o) {
+void checkUnnamed5385(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-main() {
-  unittest.group("obj-schema-AddBandingRequest", () {
-    unittest.test("to-json--from-json", () {
+void main() {
+  unittest.group('obj-schema-AddBandingRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddBandingRequest();
-      var od = new api.AddBandingRequest.fromJson(o.toJson());
-      checkAddBandingRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddBandingRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddBandingRequest(od as api.AddBandingRequest);
     });
   });
 
-  unittest.group("obj-schema-AddBandingResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddBandingResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddBandingResponse();
-      var od = new api.AddBandingResponse.fromJson(o.toJson());
-      checkAddBandingResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddBandingResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddBandingResponse(od as api.AddBandingResponse);
     });
   });
 
-  unittest.group("obj-schema-AddChartRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddChartRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddChartRequest();
-      var od = new api.AddChartRequest.fromJson(o.toJson());
-      checkAddChartRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddChartRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddChartRequest(od as api.AddChartRequest);
     });
   });
 
-  unittest.group("obj-schema-AddChartResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddChartResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddChartResponse();
-      var od = new api.AddChartResponse.fromJson(o.toJson());
-      checkAddChartResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddChartResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddChartResponse(od as api.AddChartResponse);
     });
   });
 
-  unittest.group("obj-schema-AddConditionalFormatRuleRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddConditionalFormatRuleRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddConditionalFormatRuleRequest();
-      var od = new api.AddConditionalFormatRuleRequest.fromJson(o.toJson());
-      checkAddConditionalFormatRuleRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddConditionalFormatRuleRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddConditionalFormatRuleRequest(
+          od as api.AddConditionalFormatRuleRequest);
     });
   });
 
-  unittest.group("obj-schema-AddDimensionGroupRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddDataSourceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildAddDataSourceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddDataSourceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddDataSourceRequest(od as api.AddDataSourceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-AddDataSourceResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildAddDataSourceResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddDataSourceResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddDataSourceResponse(od as api.AddDataSourceResponse);
+    });
+  });
+
+  unittest.group('obj-schema-AddDimensionGroupRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddDimensionGroupRequest();
-      var od = new api.AddDimensionGroupRequest.fromJson(o.toJson());
-      checkAddDimensionGroupRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddDimensionGroupRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddDimensionGroupRequest(od as api.AddDimensionGroupRequest);
     });
   });
 
-  unittest.group("obj-schema-AddDimensionGroupResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddDimensionGroupResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddDimensionGroupResponse();
-      var od = new api.AddDimensionGroupResponse.fromJson(o.toJson());
-      checkAddDimensionGroupResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddDimensionGroupResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddDimensionGroupResponse(od as api.AddDimensionGroupResponse);
     });
   });
 
-  unittest.group("obj-schema-AddFilterViewRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddFilterViewRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddFilterViewRequest();
-      var od = new api.AddFilterViewRequest.fromJson(o.toJson());
-      checkAddFilterViewRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddFilterViewRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddFilterViewRequest(od as api.AddFilterViewRequest);
     });
   });
 
-  unittest.group("obj-schema-AddFilterViewResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddFilterViewResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddFilterViewResponse();
-      var od = new api.AddFilterViewResponse.fromJson(o.toJson());
-      checkAddFilterViewResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddFilterViewResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddFilterViewResponse(od as api.AddFilterViewResponse);
     });
   });
 
-  unittest.group("obj-schema-AddNamedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddNamedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddNamedRangeRequest();
-      var od = new api.AddNamedRangeRequest.fromJson(o.toJson());
-      checkAddNamedRangeRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddNamedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddNamedRangeRequest(od as api.AddNamedRangeRequest);
     });
   });
 
-  unittest.group("obj-schema-AddNamedRangeResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddNamedRangeResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddNamedRangeResponse();
-      var od = new api.AddNamedRangeResponse.fromJson(o.toJson());
-      checkAddNamedRangeResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddNamedRangeResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddNamedRangeResponse(od as api.AddNamedRangeResponse);
     });
   });
 
-  unittest.group("obj-schema-AddProtectedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddProtectedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddProtectedRangeRequest();
-      var od = new api.AddProtectedRangeRequest.fromJson(o.toJson());
-      checkAddProtectedRangeRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddProtectedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddProtectedRangeRequest(od as api.AddProtectedRangeRequest);
     });
   });
 
-  unittest.group("obj-schema-AddProtectedRangeResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddProtectedRangeResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddProtectedRangeResponse();
-      var od = new api.AddProtectedRangeResponse.fromJson(o.toJson());
-      checkAddProtectedRangeResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddProtectedRangeResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddProtectedRangeResponse(od as api.AddProtectedRangeResponse);
     });
   });
 
-  unittest.group("obj-schema-AddSheetRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddSheetRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddSheetRequest();
-      var od = new api.AddSheetRequest.fromJson(o.toJson());
-      checkAddSheetRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddSheetRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddSheetRequest(od as api.AddSheetRequest);
     });
   });
 
-  unittest.group("obj-schema-AddSheetResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddSheetResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAddSheetResponse();
-      var od = new api.AddSheetResponse.fromJson(o.toJson());
-      checkAddSheetResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddSheetResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddSheetResponse(od as api.AddSheetResponse);
     });
   });
 
-  unittest.group("obj-schema-AppendCellsRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AddSlicerRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildAddSlicerRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddSlicerRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddSlicerRequest(od as api.AddSlicerRequest);
+    });
+  });
+
+  unittest.group('obj-schema-AddSlicerResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildAddSlicerResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AddSlicerResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAddSlicerResponse(od as api.AddSlicerResponse);
+    });
+  });
+
+  unittest.group('obj-schema-AppendCellsRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAppendCellsRequest();
-      var od = new api.AppendCellsRequest.fromJson(o.toJson());
-      checkAppendCellsRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AppendCellsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAppendCellsRequest(od as api.AppendCellsRequest);
     });
   });
 
-  unittest.group("obj-schema-AppendDimensionRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AppendDimensionRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAppendDimensionRequest();
-      var od = new api.AppendDimensionRequest.fromJson(o.toJson());
-      checkAppendDimensionRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AppendDimensionRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAppendDimensionRequest(od as api.AppendDimensionRequest);
     });
   });
 
-  unittest.group("obj-schema-AppendValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AppendValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAppendValuesResponse();
-      var od = new api.AppendValuesResponse.fromJson(o.toJson());
-      checkAppendValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AppendValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAppendValuesResponse(od as api.AppendValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-AutoFillRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AutoFillRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAutoFillRequest();
-      var od = new api.AutoFillRequest.fromJson(o.toJson());
-      checkAutoFillRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AutoFillRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAutoFillRequest(od as api.AutoFillRequest);
     });
   });
 
-  unittest.group("obj-schema-AutoResizeDimensionsRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AutoResizeDimensionsRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAutoResizeDimensionsRequest();
-      var od = new api.AutoResizeDimensionsRequest.fromJson(o.toJson());
-      checkAutoResizeDimensionsRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AutoResizeDimensionsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAutoResizeDimensionsRequest(od as api.AutoResizeDimensionsRequest);
     });
   });
 
-  unittest.group("obj-schema-BandedRange", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BandedRange', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBandedRange();
-      var od = new api.BandedRange.fromJson(o.toJson());
-      checkBandedRange(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BandedRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBandedRange(od as api.BandedRange);
     });
   });
 
-  unittest.group("obj-schema-BandingProperties", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BandingProperties', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBandingProperties();
-      var od = new api.BandingProperties.fromJson(o.toJson());
-      checkBandingProperties(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BandingProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBandingProperties(od as api.BandingProperties);
     });
   });
 
-  unittest.group("obj-schema-BasicChartAxis", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BaselineValueFormat', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildBaselineValueFormat();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BaselineValueFormat.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBaselineValueFormat(od as api.BaselineValueFormat);
+    });
+  });
+
+  unittest.group('obj-schema-BasicChartAxis', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBasicChartAxis();
-      var od = new api.BasicChartAxis.fromJson(o.toJson());
-      checkBasicChartAxis(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicChartAxis.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicChartAxis(od as api.BasicChartAxis);
     });
   });
 
-  unittest.group("obj-schema-BasicChartDomain", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BasicChartDomain', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBasicChartDomain();
-      var od = new api.BasicChartDomain.fromJson(o.toJson());
-      checkBasicChartDomain(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicChartDomain.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicChartDomain(od as api.BasicChartDomain);
     });
   });
 
-  unittest.group("obj-schema-BasicChartSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BasicChartSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBasicChartSeries();
-      var od = new api.BasicChartSeries.fromJson(o.toJson());
-      checkBasicChartSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicChartSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicChartSeries(od as api.BasicChartSeries);
     });
   });
 
-  unittest.group("obj-schema-BasicChartSpec", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BasicChartSpec', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBasicChartSpec();
-      var od = new api.BasicChartSpec.fromJson(o.toJson());
-      checkBasicChartSpec(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicChartSpec(od as api.BasicChartSpec);
     });
   });
 
-  unittest.group("obj-schema-BasicFilter", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BasicFilter', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBasicFilter();
-      var od = new api.BasicFilter.fromJson(o.toJson());
-      checkBasicFilter(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicFilter.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicFilter(od as api.BasicFilter);
     });
   });
 
-  unittest.group("obj-schema-BatchClearValuesByDataFilterRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BasicSeriesDataPointStyleOverride', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildBasicSeriesDataPointStyleOverride();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BasicSeriesDataPointStyleOverride.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBasicSeriesDataPointStyleOverride(
+          od as api.BasicSeriesDataPointStyleOverride);
+    });
+  });
+
+  unittest.group('obj-schema-BatchClearValuesByDataFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchClearValuesByDataFilterRequest();
-      var od = new api.BatchClearValuesByDataFilterRequest.fromJson(o.toJson());
-      checkBatchClearValuesByDataFilterRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchClearValuesByDataFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchClearValuesByDataFilterRequest(
+          od as api.BatchClearValuesByDataFilterRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchClearValuesByDataFilterResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchClearValuesByDataFilterResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchClearValuesByDataFilterResponse();
-      var od =
-          new api.BatchClearValuesByDataFilterResponse.fromJson(o.toJson());
-      checkBatchClearValuesByDataFilterResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchClearValuesByDataFilterResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchClearValuesByDataFilterResponse(
+          od as api.BatchClearValuesByDataFilterResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchClearValuesRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchClearValuesRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchClearValuesRequest();
-      var od = new api.BatchClearValuesRequest.fromJson(o.toJson());
-      checkBatchClearValuesRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchClearValuesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchClearValuesRequest(od as api.BatchClearValuesRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchClearValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchClearValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchClearValuesResponse();
-      var od = new api.BatchClearValuesResponse.fromJson(o.toJson());
-      checkBatchClearValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchClearValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchClearValuesResponse(od as api.BatchClearValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchGetValuesByDataFilterRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchGetValuesByDataFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchGetValuesByDataFilterRequest();
-      var od = new api.BatchGetValuesByDataFilterRequest.fromJson(o.toJson());
-      checkBatchGetValuesByDataFilterRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchGetValuesByDataFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchGetValuesByDataFilterRequest(
+          od as api.BatchGetValuesByDataFilterRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchGetValuesByDataFilterResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchGetValuesByDataFilterResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchGetValuesByDataFilterResponse();
-      var od = new api.BatchGetValuesByDataFilterResponse.fromJson(o.toJson());
-      checkBatchGetValuesByDataFilterResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchGetValuesByDataFilterResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchGetValuesByDataFilterResponse(
+          od as api.BatchGetValuesByDataFilterResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchGetValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchGetValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchGetValuesResponse();
-      var od = new api.BatchGetValuesResponse.fromJson(o.toJson());
-      checkBatchGetValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchGetValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchGetValuesResponse(od as api.BatchGetValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateSpreadsheetRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateSpreadsheetRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateSpreadsheetRequest();
-      var od = new api.BatchUpdateSpreadsheetRequest.fromJson(o.toJson());
-      checkBatchUpdateSpreadsheetRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateSpreadsheetRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateSpreadsheetRequest(
+          od as api.BatchUpdateSpreadsheetRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateSpreadsheetResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateSpreadsheetResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateSpreadsheetResponse();
-      var od = new api.BatchUpdateSpreadsheetResponse.fromJson(o.toJson());
-      checkBatchUpdateSpreadsheetResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateSpreadsheetResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateSpreadsheetResponse(
+          od as api.BatchUpdateSpreadsheetResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateValuesByDataFilterRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateValuesByDataFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateValuesByDataFilterRequest();
-      var od =
-          new api.BatchUpdateValuesByDataFilterRequest.fromJson(o.toJson());
-      checkBatchUpdateValuesByDataFilterRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateValuesByDataFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateValuesByDataFilterRequest(
+          od as api.BatchUpdateValuesByDataFilterRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateValuesByDataFilterResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateValuesByDataFilterResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateValuesByDataFilterResponse();
-      var od =
-          new api.BatchUpdateValuesByDataFilterResponse.fromJson(o.toJson());
-      checkBatchUpdateValuesByDataFilterResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateValuesByDataFilterResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateValuesByDataFilterResponse(
+          od as api.BatchUpdateValuesByDataFilterResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateValuesRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateValuesRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateValuesRequest();
-      var od = new api.BatchUpdateValuesRequest.fromJson(o.toJson());
-      checkBatchUpdateValuesRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateValuesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateValuesRequest(od as api.BatchUpdateValuesRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdateValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdateValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdateValuesResponse();
-      var od = new api.BatchUpdateValuesResponse.fromJson(o.toJson());
-      checkBatchUpdateValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdateValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdateValuesResponse(od as api.BatchUpdateValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-BooleanCondition", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BigQueryDataSourceSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildBigQueryDataSourceSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BigQueryDataSourceSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBigQueryDataSourceSpec(od as api.BigQueryDataSourceSpec);
+    });
+  });
+
+  unittest.group('obj-schema-BigQueryQuerySpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildBigQueryQuerySpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BigQueryQuerySpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBigQueryQuerySpec(od as api.BigQueryQuerySpec);
+    });
+  });
+
+  unittest.group('obj-schema-BigQueryTableSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildBigQueryTableSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BigQueryTableSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBigQueryTableSpec(od as api.BigQueryTableSpec);
+    });
+  });
+
+  unittest.group('obj-schema-BooleanCondition', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBooleanCondition();
-      var od = new api.BooleanCondition.fromJson(o.toJson());
-      checkBooleanCondition(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BooleanCondition.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBooleanCondition(od as api.BooleanCondition);
     });
   });
 
-  unittest.group("obj-schema-BooleanRule", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BooleanRule', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBooleanRule();
-      var od = new api.BooleanRule.fromJson(o.toJson());
-      checkBooleanRule(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BooleanRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBooleanRule(od as api.BooleanRule);
     });
   });
 
-  unittest.group("obj-schema-Border", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Border', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBorder();
-      var od = new api.Border.fromJson(o.toJson());
-      checkBorder(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Border.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkBorder(od as api.Border);
     });
   });
 
-  unittest.group("obj-schema-Borders", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Borders', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBorders();
-      var od = new api.Borders.fromJson(o.toJson());
-      checkBorders(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Borders.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkBorders(od as api.Borders);
     });
   });
 
-  unittest.group("obj-schema-BubbleChartSpec", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BubbleChartSpec', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBubbleChartSpec();
-      var od = new api.BubbleChartSpec.fromJson(o.toJson());
-      checkBubbleChartSpec(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BubbleChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBubbleChartSpec(od as api.BubbleChartSpec);
     });
   });
 
-  unittest.group("obj-schema-CandlestickChartSpec", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CandlestickChartSpec', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCandlestickChartSpec();
-      var od = new api.CandlestickChartSpec.fromJson(o.toJson());
-      checkCandlestickChartSpec(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CandlestickChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCandlestickChartSpec(od as api.CandlestickChartSpec);
     });
   });
 
-  unittest.group("obj-schema-CandlestickData", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CandlestickData', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCandlestickData();
-      var od = new api.CandlestickData.fromJson(o.toJson());
-      checkCandlestickData(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CandlestickData.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCandlestickData(od as api.CandlestickData);
     });
   });
 
-  unittest.group("obj-schema-CandlestickDomain", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CandlestickDomain', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCandlestickDomain();
-      var od = new api.CandlestickDomain.fromJson(o.toJson());
-      checkCandlestickDomain(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CandlestickDomain.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCandlestickDomain(od as api.CandlestickDomain);
     });
   });
 
-  unittest.group("obj-schema-CandlestickSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CandlestickSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCandlestickSeries();
-      var od = new api.CandlestickSeries.fromJson(o.toJson());
-      checkCandlestickSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CandlestickSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCandlestickSeries(od as api.CandlestickSeries);
     });
   });
 
-  unittest.group("obj-schema-CellData", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CellData', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCellData();
-      var od = new api.CellData.fromJson(o.toJson());
-      checkCellData(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.CellData.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkCellData(od as api.CellData);
     });
   });
 
-  unittest.group("obj-schema-CellFormat", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CellFormat', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCellFormat();
-      var od = new api.CellFormat.fromJson(o.toJson());
-      checkCellFormat(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.CellFormat.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkCellFormat(od as api.CellFormat);
     });
   });
 
-  unittest.group("obj-schema-ChartData", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ChartAxisViewWindowOptions', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildChartAxisViewWindowOptions();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartAxisViewWindowOptions.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartAxisViewWindowOptions(od as api.ChartAxisViewWindowOptions);
+    });
+  });
+
+  unittest.group('obj-schema-ChartCustomNumberFormatOptions', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildChartCustomNumberFormatOptions();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartCustomNumberFormatOptions.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartCustomNumberFormatOptions(
+          od as api.ChartCustomNumberFormatOptions);
+    });
+  });
+
+  unittest.group('obj-schema-ChartData', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildChartData();
-      var od = new api.ChartData.fromJson(o.toJson());
-      checkChartData(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ChartData.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkChartData(od as api.ChartData);
     });
   });
 
-  unittest.group("obj-schema-ChartSourceRange", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ChartDateTimeRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildChartDateTimeRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartDateTimeRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartDateTimeRule(od as api.ChartDateTimeRule);
+    });
+  });
+
+  unittest.group('obj-schema-ChartGroupRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildChartGroupRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartGroupRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartGroupRule(od as api.ChartGroupRule);
+    });
+  });
+
+  unittest.group('obj-schema-ChartHistogramRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildChartHistogramRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartHistogramRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartHistogramRule(od as api.ChartHistogramRule);
+    });
+  });
+
+  unittest.group('obj-schema-ChartSourceRange', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildChartSourceRange();
-      var od = new api.ChartSourceRange.fromJson(o.toJson());
-      checkChartSourceRange(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ChartSourceRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkChartSourceRange(od as api.ChartSourceRange);
     });
   });
 
-  unittest.group("obj-schema-ChartSpec", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ChartSpec', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildChartSpec();
-      var od = new api.ChartSpec.fromJson(o.toJson());
-      checkChartSpec(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ChartSpec.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkChartSpec(od as api.ChartSpec);
     });
   });
 
-  unittest.group("obj-schema-ClearBasicFilterRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ClearBasicFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildClearBasicFilterRequest();
-      var od = new api.ClearBasicFilterRequest.fromJson(o.toJson());
-      checkClearBasicFilterRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ClearBasicFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkClearBasicFilterRequest(od as api.ClearBasicFilterRequest);
     });
   });
 
-  unittest.group("obj-schema-ClearValuesRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ClearValuesRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildClearValuesRequest();
-      var od = new api.ClearValuesRequest.fromJson(o.toJson());
-      checkClearValuesRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ClearValuesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkClearValuesRequest(od as api.ClearValuesRequest);
     });
   });
 
-  unittest.group("obj-schema-ClearValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ClearValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildClearValuesResponse();
-      var od = new api.ClearValuesResponse.fromJson(o.toJson());
-      checkClearValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ClearValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkClearValuesResponse(od as api.ClearValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-Color", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Color', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildColor();
-      var od = new api.Color.fromJson(o.toJson());
-      checkColor(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Color.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkColor(od as api.Color);
     });
   });
 
-  unittest.group("obj-schema-ConditionValue", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ColorStyle', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildColorStyle();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ColorStyle.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkColorStyle(od as api.ColorStyle);
+    });
+  });
+
+  unittest.group('obj-schema-ConditionValue', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildConditionValue();
-      var od = new api.ConditionValue.fromJson(o.toJson());
-      checkConditionValue(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ConditionValue.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConditionValue(od as api.ConditionValue);
     });
   });
 
-  unittest.group("obj-schema-ConditionalFormatRule", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ConditionalFormatRule', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildConditionalFormatRule();
-      var od = new api.ConditionalFormatRule.fromJson(o.toJson());
-      checkConditionalFormatRule(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ConditionalFormatRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConditionalFormatRule(od as api.ConditionalFormatRule);
     });
   });
 
-  unittest.group("obj-schema-CopyPasteRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CopyPasteRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCopyPasteRequest();
-      var od = new api.CopyPasteRequest.fromJson(o.toJson());
-      checkCopyPasteRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CopyPasteRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCopyPasteRequest(od as api.CopyPasteRequest);
     });
   });
 
-  unittest.group("obj-schema-CopySheetToAnotherSpreadsheetRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CopySheetToAnotherSpreadsheetRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCopySheetToAnotherSpreadsheetRequest();
-      var od =
-          new api.CopySheetToAnotherSpreadsheetRequest.fromJson(o.toJson());
-      checkCopySheetToAnotherSpreadsheetRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CopySheetToAnotherSpreadsheetRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCopySheetToAnotherSpreadsheetRequest(
+          od as api.CopySheetToAnotherSpreadsheetRequest);
     });
   });
 
-  unittest.group("obj-schema-CreateDeveloperMetadataRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CreateDeveloperMetadataRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCreateDeveloperMetadataRequest();
-      var od = new api.CreateDeveloperMetadataRequest.fromJson(o.toJson());
-      checkCreateDeveloperMetadataRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CreateDeveloperMetadataRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCreateDeveloperMetadataRequest(
+          od as api.CreateDeveloperMetadataRequest);
     });
   });
 
-  unittest.group("obj-schema-CreateDeveloperMetadataResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CreateDeveloperMetadataResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCreateDeveloperMetadataResponse();
-      var od = new api.CreateDeveloperMetadataResponse.fromJson(o.toJson());
-      checkCreateDeveloperMetadataResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CreateDeveloperMetadataResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCreateDeveloperMetadataResponse(
+          od as api.CreateDeveloperMetadataResponse);
     });
   });
 
-  unittest.group("obj-schema-CutPasteRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CutPasteRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCutPasteRequest();
-      var od = new api.CutPasteRequest.fromJson(o.toJson());
-      checkCutPasteRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CutPasteRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCutPasteRequest(od as api.CutPasteRequest);
     });
   });
 
-  unittest.group("obj-schema-DataFilter", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DataExecutionStatus', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataExecutionStatus();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataExecutionStatus.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataExecutionStatus(od as api.DataExecutionStatus);
+    });
+  });
+
+  unittest.group('obj-schema-DataFilter', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDataFilter();
-      var od = new api.DataFilter.fromJson(o.toJson());
-      checkDataFilter(od);
-    });
-  });
-
-  unittest.group("obj-schema-DataFilterValueRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDataFilterValueRange();
-      var od = new api.DataFilterValueRange.fromJson(o.toJson());
-      checkDataFilterValueRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-DataValidationRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDataValidationRule();
-      var od = new api.DataValidationRule.fromJson(o.toJson());
-      checkDataValidationRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-DateTimeRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDateTimeRule();
-      var od = new api.DateTimeRule.fromJson(o.toJson());
-      checkDateTimeRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteBandingRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteBandingRequest();
-      var od = new api.DeleteBandingRequest.fromJson(o.toJson());
-      checkDeleteBandingRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteConditionalFormatRuleRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteConditionalFormatRuleRequest();
-      var od = new api.DeleteConditionalFormatRuleRequest.fromJson(o.toJson());
-      checkDeleteConditionalFormatRuleRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteConditionalFormatRuleResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteConditionalFormatRuleResponse();
-      var od = new api.DeleteConditionalFormatRuleResponse.fromJson(o.toJson());
-      checkDeleteConditionalFormatRuleResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteDeveloperMetadataRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteDeveloperMetadataRequest();
-      var od = new api.DeleteDeveloperMetadataRequest.fromJson(o.toJson());
-      checkDeleteDeveloperMetadataRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteDeveloperMetadataResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteDeveloperMetadataResponse();
-      var od = new api.DeleteDeveloperMetadataResponse.fromJson(o.toJson());
-      checkDeleteDeveloperMetadataResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteDimensionGroupRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteDimensionGroupRequest();
-      var od = new api.DeleteDimensionGroupRequest.fromJson(o.toJson());
-      checkDeleteDimensionGroupRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteDimensionGroupResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteDimensionGroupResponse();
-      var od = new api.DeleteDimensionGroupResponse.fromJson(o.toJson());
-      checkDeleteDimensionGroupResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteDimensionRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteDimensionRequest();
-      var od = new api.DeleteDimensionRequest.fromJson(o.toJson());
-      checkDeleteDimensionRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteEmbeddedObjectRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteEmbeddedObjectRequest();
-      var od = new api.DeleteEmbeddedObjectRequest.fromJson(o.toJson());
-      checkDeleteEmbeddedObjectRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteFilterViewRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteFilterViewRequest();
-      var od = new api.DeleteFilterViewRequest.fromJson(o.toJson());
-      checkDeleteFilterViewRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteNamedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteNamedRangeRequest();
-      var od = new api.DeleteNamedRangeRequest.fromJson(o.toJson());
-      checkDeleteNamedRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteProtectedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteProtectedRangeRequest();
-      var od = new api.DeleteProtectedRangeRequest.fromJson(o.toJson());
-      checkDeleteProtectedRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteRangeRequest();
-      var od = new api.DeleteRangeRequest.fromJson(o.toJson());
-      checkDeleteRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeleteSheetRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeleteSheetRequest();
-      var od = new api.DeleteSheetRequest.fromJson(o.toJson());
-      checkDeleteSheetRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeveloperMetadata", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeveloperMetadata();
-      var od = new api.DeveloperMetadata.fromJson(o.toJson());
-      checkDeveloperMetadata(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeveloperMetadataLocation", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeveloperMetadataLocation();
-      var od = new api.DeveloperMetadataLocation.fromJson(o.toJson());
-      checkDeveloperMetadataLocation(od);
-    });
-  });
-
-  unittest.group("obj-schema-DeveloperMetadataLookup", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDeveloperMetadataLookup();
-      var od = new api.DeveloperMetadataLookup.fromJson(o.toJson());
-      checkDeveloperMetadataLookup(od);
-    });
-  });
-
-  unittest.group("obj-schema-DimensionGroup", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDimensionGroup();
-      var od = new api.DimensionGroup.fromJson(o.toJson());
-      checkDimensionGroup(od);
-    });
-  });
-
-  unittest.group("obj-schema-DimensionProperties", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDimensionProperties();
-      var od = new api.DimensionProperties.fromJson(o.toJson());
-      checkDimensionProperties(od);
-    });
-  });
-
-  unittest.group("obj-schema-DimensionRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDimensionRange();
-      var od = new api.DimensionRange.fromJson(o.toJson());
-      checkDimensionRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-DuplicateFilterViewRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDuplicateFilterViewRequest();
-      var od = new api.DuplicateFilterViewRequest.fromJson(o.toJson());
-      checkDuplicateFilterViewRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DuplicateFilterViewResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDuplicateFilterViewResponse();
-      var od = new api.DuplicateFilterViewResponse.fromJson(o.toJson());
-      checkDuplicateFilterViewResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-DuplicateSheetRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDuplicateSheetRequest();
-      var od = new api.DuplicateSheetRequest.fromJson(o.toJson());
-      checkDuplicateSheetRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-DuplicateSheetResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildDuplicateSheetResponse();
-      var od = new api.DuplicateSheetResponse.fromJson(o.toJson());
-      checkDuplicateSheetResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-Editors", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildEditors();
-      var od = new api.Editors.fromJson(o.toJson());
-      checkEditors(od);
-    });
-  });
-
-  unittest.group("obj-schema-EmbeddedChart", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildEmbeddedChart();
-      var od = new api.EmbeddedChart.fromJson(o.toJson());
-      checkEmbeddedChart(od);
-    });
-  });
-
-  unittest.group("obj-schema-EmbeddedObjectPosition", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildEmbeddedObjectPosition();
-      var od = new api.EmbeddedObjectPosition.fromJson(o.toJson());
-      checkEmbeddedObjectPosition(od);
-    });
-  });
-
-  unittest.group("obj-schema-ErrorValue", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildErrorValue();
-      var od = new api.ErrorValue.fromJson(o.toJson());
-      checkErrorValue(od);
-    });
-  });
-
-  unittest.group("obj-schema-ExtendedValue", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildExtendedValue();
-      var od = new api.ExtendedValue.fromJson(o.toJson());
-      checkExtendedValue(od);
-    });
-  });
-
-  unittest.group("obj-schema-FilterCriteria", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFilterCriteria();
-      var od = new api.FilterCriteria.fromJson(o.toJson());
-      checkFilterCriteria(od);
-    });
-  });
-
-  unittest.group("obj-schema-FilterView", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFilterView();
-      var od = new api.FilterView.fromJson(o.toJson());
-      checkFilterView(od);
-    });
-  });
-
-  unittest.group("obj-schema-FindReplaceRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindReplaceRequest();
-      var od = new api.FindReplaceRequest.fromJson(o.toJson());
-      checkFindReplaceRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-FindReplaceResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildFindReplaceResponse();
-      var od = new api.FindReplaceResponse.fromJson(o.toJson());
-      checkFindReplaceResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-GetSpreadsheetByDataFilterRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGetSpreadsheetByDataFilterRequest();
-      var od = new api.GetSpreadsheetByDataFilterRequest.fromJson(o.toJson());
-      checkGetSpreadsheetByDataFilterRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-GradientRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGradientRule();
-      var od = new api.GradientRule.fromJson(o.toJson());
-      checkGradientRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-GridCoordinate", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGridCoordinate();
-      var od = new api.GridCoordinate.fromJson(o.toJson());
-      checkGridCoordinate(od);
-    });
-  });
-
-  unittest.group("obj-schema-GridData", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGridData();
-      var od = new api.GridData.fromJson(o.toJson());
-      checkGridData(od);
-    });
-  });
-
-  unittest.group("obj-schema-GridProperties", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGridProperties();
-      var od = new api.GridProperties.fromJson(o.toJson());
-      checkGridProperties(od);
-    });
-  });
-
-  unittest.group("obj-schema-GridRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGridRange();
-      var od = new api.GridRange.fromJson(o.toJson());
-      checkGridRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-HistogramChartSpec", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildHistogramChartSpec();
-      var od = new api.HistogramChartSpec.fromJson(o.toJson());
-      checkHistogramChartSpec(od);
-    });
-  });
-
-  unittest.group("obj-schema-HistogramRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildHistogramRule();
-      var od = new api.HistogramRule.fromJson(o.toJson());
-      checkHistogramRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-HistogramSeries", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildHistogramSeries();
-      var od = new api.HistogramSeries.fromJson(o.toJson());
-      checkHistogramSeries(od);
-    });
-  });
-
-  unittest.group("obj-schema-InsertDimensionRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildInsertDimensionRequest();
-      var od = new api.InsertDimensionRequest.fromJson(o.toJson());
-      checkInsertDimensionRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-InsertRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildInsertRangeRequest();
-      var od = new api.InsertRangeRequest.fromJson(o.toJson());
-      checkInsertRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-InterpolationPoint", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildInterpolationPoint();
-      var od = new api.InterpolationPoint.fromJson(o.toJson());
-      checkInterpolationPoint(od);
-    });
-  });
-
-  unittest.group("obj-schema-IterativeCalculationSettings", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildIterativeCalculationSettings();
-      var od = new api.IterativeCalculationSettings.fromJson(o.toJson());
-      checkIterativeCalculationSettings(od);
-    });
-  });
-
-  unittest.group("obj-schema-LineStyle", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildLineStyle();
-      var od = new api.LineStyle.fromJson(o.toJson());
-      checkLineStyle(od);
-    });
-  });
-
-  unittest.group("obj-schema-ManualRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildManualRule();
-      var od = new api.ManualRule.fromJson(o.toJson());
-      checkManualRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-ManualRuleGroup", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildManualRuleGroup();
-      var od = new api.ManualRuleGroup.fromJson(o.toJson());
-      checkManualRuleGroup(od);
-    });
-  });
-
-  unittest.group("obj-schema-MatchedDeveloperMetadata", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildMatchedDeveloperMetadata();
-      var od = new api.MatchedDeveloperMetadata.fromJson(o.toJson());
-      checkMatchedDeveloperMetadata(od);
-    });
-  });
-
-  unittest.group("obj-schema-MatchedValueRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildMatchedValueRange();
-      var od = new api.MatchedValueRange.fromJson(o.toJson());
-      checkMatchedValueRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-MergeCellsRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildMergeCellsRequest();
-      var od = new api.MergeCellsRequest.fromJson(o.toJson());
-      checkMergeCellsRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-MoveDimensionRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildMoveDimensionRequest();
-      var od = new api.MoveDimensionRequest.fromJson(o.toJson());
-      checkMoveDimensionRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-NamedRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildNamedRange();
-      var od = new api.NamedRange.fromJson(o.toJson());
-      checkNamedRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-NumberFormat", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildNumberFormat();
-      var od = new api.NumberFormat.fromJson(o.toJson());
-      checkNumberFormat(od);
-    });
-  });
-
-  unittest.group("obj-schema-OrgChartSpec", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildOrgChartSpec();
-      var od = new api.OrgChartSpec.fromJson(o.toJson());
-      checkOrgChartSpec(od);
-    });
-  });
-
-  unittest.group("obj-schema-OverlayPosition", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildOverlayPosition();
-      var od = new api.OverlayPosition.fromJson(o.toJson());
-      checkOverlayPosition(od);
-    });
-  });
-
-  unittest.group("obj-schema-Padding", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPadding();
-      var od = new api.Padding.fromJson(o.toJson());
-      checkPadding(od);
-    });
-  });
-
-  unittest.group("obj-schema-PasteDataRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPasteDataRequest();
-      var od = new api.PasteDataRequest.fromJson(o.toJson());
-      checkPasteDataRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-PieChartSpec", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPieChartSpec();
-      var od = new api.PieChartSpec.fromJson(o.toJson());
-      checkPieChartSpec(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotFilterCriteria", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotFilterCriteria();
-      var od = new api.PivotFilterCriteria.fromJson(o.toJson());
-      checkPivotFilterCriteria(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotGroup", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotGroup();
-      var od = new api.PivotGroup.fromJson(o.toJson());
-      checkPivotGroup(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotGroupRule", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotGroupRule();
-      var od = new api.PivotGroupRule.fromJson(o.toJson());
-      checkPivotGroupRule(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotGroupSortValueBucket", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotGroupSortValueBucket();
-      var od = new api.PivotGroupSortValueBucket.fromJson(o.toJson());
-      checkPivotGroupSortValueBucket(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotGroupValueMetadata", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotGroupValueMetadata();
-      var od = new api.PivotGroupValueMetadata.fromJson(o.toJson());
-      checkPivotGroupValueMetadata(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotTable", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotTable();
-      var od = new api.PivotTable.fromJson(o.toJson());
-      checkPivotTable(od);
-    });
-  });
-
-  unittest.group("obj-schema-PivotValue", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildPivotValue();
-      var od = new api.PivotValue.fromJson(o.toJson());
-      checkPivotValue(od);
-    });
-  });
-
-  unittest.group("obj-schema-ProtectedRange", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildProtectedRange();
-      var od = new api.ProtectedRange.fromJson(o.toJson());
-      checkProtectedRange(od);
-    });
-  });
-
-  unittest.group("obj-schema-RandomizeRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRandomizeRangeRequest();
-      var od = new api.RandomizeRangeRequest.fromJson(o.toJson());
-      checkRandomizeRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-RepeatCellRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRepeatCellRequest();
-      var od = new api.RepeatCellRequest.fromJson(o.toJson());
-      checkRepeatCellRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-Request", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRequest();
-      var od = new api.Request.fromJson(o.toJson());
-      checkRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-Response", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildResponse();
-      var od = new api.Response.fromJson(o.toJson());
-      checkResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-RowData", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRowData();
-      var od = new api.RowData.fromJson(o.toJson());
-      checkRowData(od);
-    });
-  });
-
-  unittest.group("obj-schema-SearchDeveloperMetadataRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSearchDeveloperMetadataRequest();
-      var od = new api.SearchDeveloperMetadataRequest.fromJson(o.toJson());
-      checkSearchDeveloperMetadataRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-SearchDeveloperMetadataResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSearchDeveloperMetadataResponse();
-      var od = new api.SearchDeveloperMetadataResponse.fromJson(o.toJson());
-      checkSearchDeveloperMetadataResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-SetBasicFilterRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSetBasicFilterRequest();
-      var od = new api.SetBasicFilterRequest.fromJson(o.toJson());
-      checkSetBasicFilterRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-SetDataValidationRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSetDataValidationRequest();
-      var od = new api.SetDataValidationRequest.fromJson(o.toJson());
-      checkSetDataValidationRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-Sheet", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSheet();
-      var od = new api.Sheet.fromJson(o.toJson());
-      checkSheet(od);
-    });
-  });
-
-  unittest.group("obj-schema-SheetProperties", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSheetProperties();
-      var od = new api.SheetProperties.fromJson(o.toJson());
-      checkSheetProperties(od);
-    });
-  });
-
-  unittest.group("obj-schema-SortRangeRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSortRangeRequest();
-      var od = new api.SortRangeRequest.fromJson(o.toJson());
-      checkSortRangeRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-SortSpec", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSortSpec();
-      var od = new api.SortSpec.fromJson(o.toJson());
-      checkSortSpec(od);
-    });
-  });
-
-  unittest.group("obj-schema-SourceAndDestination", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSourceAndDestination();
-      var od = new api.SourceAndDestination.fromJson(o.toJson());
-      checkSourceAndDestination(od);
-    });
-  });
-
-  unittest.group("obj-schema-Spreadsheet", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSpreadsheet();
-      var od = new api.Spreadsheet.fromJson(o.toJson());
-      checkSpreadsheet(od);
-    });
-  });
-
-  unittest.group("obj-schema-SpreadsheetProperties", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildSpreadsheetProperties();
-      var od = new api.SpreadsheetProperties.fromJson(o.toJson());
-      checkSpreadsheetProperties(od);
-    });
-  });
-
-  unittest.group("obj-schema-TextFormat", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTextFormat();
-      var od = new api.TextFormat.fromJson(o.toJson());
-      checkTextFormat(od);
-    });
-  });
-
-  unittest.group("obj-schema-TextFormatRun", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTextFormatRun();
-      var od = new api.TextFormatRun.fromJson(o.toJson());
-      checkTextFormatRun(od);
-    });
-  });
-
-  unittest.group("obj-schema-TextPosition", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTextPosition();
-      var od = new api.TextPosition.fromJson(o.toJson());
-      checkTextPosition(od);
-    });
-  });
-
-  unittest.group("obj-schema-TextRotation", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTextRotation();
-      var od = new api.TextRotation.fromJson(o.toJson());
-      checkTextRotation(od);
-    });
-  });
-
-  unittest.group("obj-schema-TextToColumnsRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTextToColumnsRequest();
-      var od = new api.TextToColumnsRequest.fromJson(o.toJson());
-      checkTextToColumnsRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-TreemapChartColorScale", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTreemapChartColorScale();
-      var od = new api.TreemapChartColorScale.fromJson(o.toJson());
-      checkTreemapChartColorScale(od);
-    });
-  });
-
-  unittest.group("obj-schema-TreemapChartSpec", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildTreemapChartSpec();
-      var od = new api.TreemapChartSpec.fromJson(o.toJson());
-      checkTreemapChartSpec(od);
-    });
-  });
-
-  unittest.group("obj-schema-UnmergeCellsRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUnmergeCellsRequest();
-      var od = new api.UnmergeCellsRequest.fromJson(o.toJson());
-      checkUnmergeCellsRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateBandingRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateBandingRequest();
-      var od = new api.UpdateBandingRequest.fromJson(o.toJson());
-      checkUpdateBandingRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateBordersRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateBordersRequest();
-      var od = new api.UpdateBordersRequest.fromJson(o.toJson());
-      checkUpdateBordersRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateCellsRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateCellsRequest();
-      var od = new api.UpdateCellsRequest.fromJson(o.toJson());
-      checkUpdateCellsRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateChartSpecRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateChartSpecRequest();
-      var od = new api.UpdateChartSpecRequest.fromJson(o.toJson());
-      checkUpdateChartSpecRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateConditionalFormatRuleRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateConditionalFormatRuleRequest();
-      var od = new api.UpdateConditionalFormatRuleRequest.fromJson(o.toJson());
-      checkUpdateConditionalFormatRuleRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateConditionalFormatRuleResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateConditionalFormatRuleResponse();
-      var od = new api.UpdateConditionalFormatRuleResponse.fromJson(o.toJson());
-      checkUpdateConditionalFormatRuleResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateDeveloperMetadataRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateDeveloperMetadataRequest();
-      var od = new api.UpdateDeveloperMetadataRequest.fromJson(o.toJson());
-      checkUpdateDeveloperMetadataRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateDeveloperMetadataResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateDeveloperMetadataResponse();
-      var od = new api.UpdateDeveloperMetadataResponse.fromJson(o.toJson());
-      checkUpdateDeveloperMetadataResponse(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateDimensionGroupRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateDimensionGroupRequest();
-      var od = new api.UpdateDimensionGroupRequest.fromJson(o.toJson());
-      checkUpdateDimensionGroupRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateDimensionPropertiesRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateDimensionPropertiesRequest();
-      var od = new api.UpdateDimensionPropertiesRequest.fromJson(o.toJson());
-      checkUpdateDimensionPropertiesRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateEmbeddedObjectPositionRequest", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateEmbeddedObjectPositionRequest();
-      var od = new api.UpdateEmbeddedObjectPositionRequest.fromJson(o.toJson());
-      checkUpdateEmbeddedObjectPositionRequest(od);
-    });
-  });
-
-  unittest.group("obj-schema-UpdateEmbeddedObjectPositionResponse", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildUpdateEmbeddedObjectPositionResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
       var od =
-          new api.UpdateEmbeddedObjectPositionResponse.fromJson(o.toJson());
-      checkUpdateEmbeddedObjectPositionResponse(od);
+          api.DataFilter.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDataFilter(od as api.DataFilter);
     });
   });
 
-  unittest.group("obj-schema-UpdateFilterViewRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DataFilterValueRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataFilterValueRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataFilterValueRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataFilterValueRange(od as api.DataFilterValueRange);
+    });
+  });
+
+  unittest.group('obj-schema-DataLabel', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataLabel();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.DataLabel.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDataLabel(od as api.DataLabel);
+    });
+  });
+
+  unittest.group('obj-schema-DataSource', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSource();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.DataSource.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDataSource(od as api.DataSource);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceChartProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceChartProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceChartProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceChartProperties(od as api.DataSourceChartProperties);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceColumn', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceColumn();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceColumn.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceColumn(od as api.DataSourceColumn);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceColumnReference', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceColumnReference();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceColumnReference.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceColumnReference(od as api.DataSourceColumnReference);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceFormula', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceFormula();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceFormula.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceFormula(od as api.DataSourceFormula);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceObjectReference', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceObjectReference();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceObjectReference.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceObjectReference(od as api.DataSourceObjectReference);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceObjectReferences', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceObjectReferences();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceObjectReferences.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceObjectReferences(od as api.DataSourceObjectReferences);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceParameter', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceParameter();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceParameter.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceParameter(od as api.DataSourceParameter);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceRefreshDailySchedule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceRefreshDailySchedule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceRefreshDailySchedule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceRefreshDailySchedule(
+          od as api.DataSourceRefreshDailySchedule);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceRefreshMonthlySchedule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceRefreshMonthlySchedule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceRefreshMonthlySchedule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceRefreshMonthlySchedule(
+          od as api.DataSourceRefreshMonthlySchedule);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceRefreshSchedule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceRefreshSchedule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceRefreshSchedule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceRefreshSchedule(od as api.DataSourceRefreshSchedule);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceRefreshWeeklySchedule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceRefreshWeeklySchedule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceRefreshWeeklySchedule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceRefreshWeeklySchedule(
+          od as api.DataSourceRefreshWeeklySchedule);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceSheetDimensionRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceSheetDimensionRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceSheetDimensionRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceSheetDimensionRange(
+          od as api.DataSourceSheetDimensionRange);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceSheetProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceSheetProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceSheetProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceSheetProperties(od as api.DataSourceSheetProperties);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceSpec(od as api.DataSourceSpec);
+    });
+  });
+
+  unittest.group('obj-schema-DataSourceTable', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataSourceTable();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataSourceTable.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataSourceTable(od as api.DataSourceTable);
+    });
+  });
+
+  unittest.group('obj-schema-DataValidationRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDataValidationRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DataValidationRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataValidationRule(od as api.DataValidationRule);
+    });
+  });
+
+  unittest.group('obj-schema-DateTimeRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDateTimeRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DateTimeRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDateTimeRule(od as api.DateTimeRule);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteBandingRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteBandingRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteBandingRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteBandingRequest(od as api.DeleteBandingRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteConditionalFormatRuleRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteConditionalFormatRuleRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteConditionalFormatRuleRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteConditionalFormatRuleRequest(
+          od as api.DeleteConditionalFormatRuleRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteConditionalFormatRuleResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteConditionalFormatRuleResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteConditionalFormatRuleResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteConditionalFormatRuleResponse(
+          od as api.DeleteConditionalFormatRuleResponse);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDataSourceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDataSourceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDataSourceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDataSourceRequest(od as api.DeleteDataSourceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDeveloperMetadataRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDeveloperMetadataRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDeveloperMetadataRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDeveloperMetadataRequest(
+          od as api.DeleteDeveloperMetadataRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDeveloperMetadataResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDeveloperMetadataResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDeveloperMetadataResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDeveloperMetadataResponse(
+          od as api.DeleteDeveloperMetadataResponse);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDimensionGroupRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDimensionGroupRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDimensionGroupRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDimensionGroupRequest(od as api.DeleteDimensionGroupRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDimensionGroupResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDimensionGroupResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDimensionGroupResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDimensionGroupResponse(od as api.DeleteDimensionGroupResponse);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDimensionRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDimensionRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDimensionRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDimensionRequest(od as api.DeleteDimensionRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDuplicatesRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDuplicatesRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDuplicatesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDuplicatesRequest(od as api.DeleteDuplicatesRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteDuplicatesResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteDuplicatesResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteDuplicatesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteDuplicatesResponse(od as api.DeleteDuplicatesResponse);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteEmbeddedObjectRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteEmbeddedObjectRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteEmbeddedObjectRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteEmbeddedObjectRequest(od as api.DeleteEmbeddedObjectRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteFilterViewRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteFilterViewRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteFilterViewRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteFilterViewRequest(od as api.DeleteFilterViewRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteNamedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteNamedRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteNamedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteNamedRangeRequest(od as api.DeleteNamedRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteProtectedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteProtectedRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteProtectedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteProtectedRangeRequest(od as api.DeleteProtectedRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteRangeRequest(od as api.DeleteRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeleteSheetRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeleteSheetRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeleteSheetRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeleteSheetRequest(od as api.DeleteSheetRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DeveloperMetadata', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeveloperMetadata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeveloperMetadata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeveloperMetadata(od as api.DeveloperMetadata);
+    });
+  });
+
+  unittest.group('obj-schema-DeveloperMetadataLocation', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeveloperMetadataLocation();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeveloperMetadataLocation.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeveloperMetadataLocation(od as api.DeveloperMetadataLocation);
+    });
+  });
+
+  unittest.group('obj-schema-DeveloperMetadataLookup', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDeveloperMetadataLookup();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DeveloperMetadataLookup.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDeveloperMetadataLookup(od as api.DeveloperMetadataLookup);
+    });
+  });
+
+  unittest.group('obj-schema-DimensionGroup', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDimensionGroup();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DimensionGroup.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDimensionGroup(od as api.DimensionGroup);
+    });
+  });
+
+  unittest.group('obj-schema-DimensionProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDimensionProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DimensionProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDimensionProperties(od as api.DimensionProperties);
+    });
+  });
+
+  unittest.group('obj-schema-DimensionRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDimensionRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DimensionRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDimensionRange(od as api.DimensionRange);
+    });
+  });
+
+  unittest.group('obj-schema-DuplicateFilterViewRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDuplicateFilterViewRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DuplicateFilterViewRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDuplicateFilterViewRequest(od as api.DuplicateFilterViewRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DuplicateFilterViewResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDuplicateFilterViewResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DuplicateFilterViewResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDuplicateFilterViewResponse(od as api.DuplicateFilterViewResponse);
+    });
+  });
+
+  unittest.group('obj-schema-DuplicateSheetRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDuplicateSheetRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DuplicateSheetRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDuplicateSheetRequest(od as api.DuplicateSheetRequest);
+    });
+  });
+
+  unittest.group('obj-schema-DuplicateSheetResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDuplicateSheetResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DuplicateSheetResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDuplicateSheetResponse(od as api.DuplicateSheetResponse);
+    });
+  });
+
+  unittest.group('obj-schema-Editors', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildEditors();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Editors.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEditors(od as api.Editors);
+    });
+  });
+
+  unittest.group('obj-schema-EmbeddedChart', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildEmbeddedChart();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.EmbeddedChart.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkEmbeddedChart(od as api.EmbeddedChart);
+    });
+  });
+
+  unittest.group('obj-schema-EmbeddedObjectBorder', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildEmbeddedObjectBorder();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.EmbeddedObjectBorder.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkEmbeddedObjectBorder(od as api.EmbeddedObjectBorder);
+    });
+  });
+
+  unittest.group('obj-schema-EmbeddedObjectPosition', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildEmbeddedObjectPosition();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.EmbeddedObjectPosition.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkEmbeddedObjectPosition(od as api.EmbeddedObjectPosition);
+    });
+  });
+
+  unittest.group('obj-schema-ErrorValue', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildErrorValue();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ErrorValue.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkErrorValue(od as api.ErrorValue);
+    });
+  });
+
+  unittest.group('obj-schema-ExtendedValue', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildExtendedValue();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ExtendedValue.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkExtendedValue(od as api.ExtendedValue);
+    });
+  });
+
+  unittest.group('obj-schema-FilterCriteria', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildFilterCriteria();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.FilterCriteria.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkFilterCriteria(od as api.FilterCriteria);
+    });
+  });
+
+  unittest.group('obj-schema-FilterSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildFilterSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.FilterSpec.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkFilterSpec(od as api.FilterSpec);
+    });
+  });
+
+  unittest.group('obj-schema-FilterView', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildFilterView();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.FilterView.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkFilterView(od as api.FilterView);
+    });
+  });
+
+  unittest.group('obj-schema-FindReplaceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildFindReplaceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.FindReplaceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkFindReplaceRequest(od as api.FindReplaceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-FindReplaceResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildFindReplaceResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.FindReplaceResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkFindReplaceResponse(od as api.FindReplaceResponse);
+    });
+  });
+
+  unittest.group('obj-schema-GetSpreadsheetByDataFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGetSpreadsheetByDataFilterRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GetSpreadsheetByDataFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGetSpreadsheetByDataFilterRequest(
+          od as api.GetSpreadsheetByDataFilterRequest);
+    });
+  });
+
+  unittest.group('obj-schema-GradientRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGradientRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GradientRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGradientRule(od as api.GradientRule);
+    });
+  });
+
+  unittest.group('obj-schema-GridCoordinate', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGridCoordinate();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GridCoordinate.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGridCoordinate(od as api.GridCoordinate);
+    });
+  });
+
+  unittest.group('obj-schema-GridData', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGridData();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GridData.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGridData(od as api.GridData);
+    });
+  });
+
+  unittest.group('obj-schema-GridProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGridProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GridProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGridProperties(od as api.GridProperties);
+    });
+  });
+
+  unittest.group('obj-schema-GridRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGridRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.GridRange.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGridRange(od as api.GridRange);
+    });
+  });
+
+  unittest.group('obj-schema-HistogramChartSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildHistogramChartSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.HistogramChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkHistogramChartSpec(od as api.HistogramChartSpec);
+    });
+  });
+
+  unittest.group('obj-schema-HistogramRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildHistogramRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.HistogramRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkHistogramRule(od as api.HistogramRule);
+    });
+  });
+
+  unittest.group('obj-schema-HistogramSeries', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildHistogramSeries();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.HistogramSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkHistogramSeries(od as api.HistogramSeries);
+    });
+  });
+
+  unittest.group('obj-schema-InsertDimensionRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildInsertDimensionRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.InsertDimensionRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkInsertDimensionRequest(od as api.InsertDimensionRequest);
+    });
+  });
+
+  unittest.group('obj-schema-InsertRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildInsertRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.InsertRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkInsertRangeRequest(od as api.InsertRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-InterpolationPoint', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildInterpolationPoint();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.InterpolationPoint.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkInterpolationPoint(od as api.InterpolationPoint);
+    });
+  });
+
+  unittest.group('obj-schema-Interval', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildInterval();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Interval.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkInterval(od as api.Interval);
+    });
+  });
+
+  unittest.group('obj-schema-IterativeCalculationSettings', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildIterativeCalculationSettings();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.IterativeCalculationSettings.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkIterativeCalculationSettings(od as api.IterativeCalculationSettings);
+    });
+  });
+
+  unittest.group('obj-schema-KeyValueFormat', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildKeyValueFormat();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.KeyValueFormat.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkKeyValueFormat(od as api.KeyValueFormat);
+    });
+  });
+
+  unittest.group('obj-schema-LineStyle', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildLineStyle();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.LineStyle.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLineStyle(od as api.LineStyle);
+    });
+  });
+
+  unittest.group('obj-schema-ManualRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildManualRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ManualRule.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkManualRule(od as api.ManualRule);
+    });
+  });
+
+  unittest.group('obj-schema-ManualRuleGroup', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildManualRuleGroup();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ManualRuleGroup.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkManualRuleGroup(od as api.ManualRuleGroup);
+    });
+  });
+
+  unittest.group('obj-schema-MatchedDeveloperMetadata', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildMatchedDeveloperMetadata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.MatchedDeveloperMetadata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkMatchedDeveloperMetadata(od as api.MatchedDeveloperMetadata);
+    });
+  });
+
+  unittest.group('obj-schema-MatchedValueRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildMatchedValueRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.MatchedValueRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkMatchedValueRange(od as api.MatchedValueRange);
+    });
+  });
+
+  unittest.group('obj-schema-MergeCellsRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildMergeCellsRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.MergeCellsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkMergeCellsRequest(od as api.MergeCellsRequest);
+    });
+  });
+
+  unittest.group('obj-schema-MoveDimensionRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildMoveDimensionRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.MoveDimensionRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkMoveDimensionRequest(od as api.MoveDimensionRequest);
+    });
+  });
+
+  unittest.group('obj-schema-NamedRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildNamedRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.NamedRange.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkNamedRange(od as api.NamedRange);
+    });
+  });
+
+  unittest.group('obj-schema-NumberFormat', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildNumberFormat();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.NumberFormat.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkNumberFormat(od as api.NumberFormat);
+    });
+  });
+
+  unittest.group('obj-schema-OrgChartSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildOrgChartSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.OrgChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkOrgChartSpec(od as api.OrgChartSpec);
+    });
+  });
+
+  unittest.group('obj-schema-OverlayPosition', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildOverlayPosition();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.OverlayPosition.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkOverlayPosition(od as api.OverlayPosition);
+    });
+  });
+
+  unittest.group('obj-schema-Padding', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPadding();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Padding.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPadding(od as api.Padding);
+    });
+  });
+
+  unittest.group('obj-schema-PasteDataRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPasteDataRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PasteDataRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPasteDataRequest(od as api.PasteDataRequest);
+    });
+  });
+
+  unittest.group('obj-schema-PieChartSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPieChartSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PieChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPieChartSpec(od as api.PieChartSpec);
+    });
+  });
+
+  unittest.group('obj-schema-PivotFilterCriteria', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotFilterCriteria();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotFilterCriteria.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotFilterCriteria(od as api.PivotFilterCriteria);
+    });
+  });
+
+  unittest.group('obj-schema-PivotFilterSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotFilterSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotFilterSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotFilterSpec(od as api.PivotFilterSpec);
+    });
+  });
+
+  unittest.group('obj-schema-PivotGroup', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotGroup();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.PivotGroup.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPivotGroup(od as api.PivotGroup);
+    });
+  });
+
+  unittest.group('obj-schema-PivotGroupLimit', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotGroupLimit();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotGroupLimit.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotGroupLimit(od as api.PivotGroupLimit);
+    });
+  });
+
+  unittest.group('obj-schema-PivotGroupRule', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotGroupRule();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotGroupRule.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotGroupRule(od as api.PivotGroupRule);
+    });
+  });
+
+  unittest.group('obj-schema-PivotGroupSortValueBucket', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotGroupSortValueBucket();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotGroupSortValueBucket.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotGroupSortValueBucket(od as api.PivotGroupSortValueBucket);
+    });
+  });
+
+  unittest.group('obj-schema-PivotGroupValueMetadata', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotGroupValueMetadata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PivotGroupValueMetadata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPivotGroupValueMetadata(od as api.PivotGroupValueMetadata);
+    });
+  });
+
+  unittest.group('obj-schema-PivotTable', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotTable();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.PivotTable.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPivotTable(od as api.PivotTable);
+    });
+  });
+
+  unittest.group('obj-schema-PivotValue', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPivotValue();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.PivotValue.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPivotValue(od as api.PivotValue);
+    });
+  });
+
+  unittest.group('obj-schema-PointStyle', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildPointStyle();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.PointStyle.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPointStyle(od as api.PointStyle);
+    });
+  });
+
+  unittest.group('obj-schema-ProtectedRange', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildProtectedRange();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ProtectedRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkProtectedRange(od as api.ProtectedRange);
+    });
+  });
+
+  unittest.group('obj-schema-RandomizeRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRandomizeRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RandomizeRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRandomizeRangeRequest(od as api.RandomizeRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-RefreshDataSourceObjectExecutionStatus', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRefreshDataSourceObjectExecutionStatus();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RefreshDataSourceObjectExecutionStatus.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRefreshDataSourceObjectExecutionStatus(
+          od as api.RefreshDataSourceObjectExecutionStatus);
+    });
+  });
+
+  unittest.group('obj-schema-RefreshDataSourceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRefreshDataSourceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RefreshDataSourceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRefreshDataSourceRequest(od as api.RefreshDataSourceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-RefreshDataSourceResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRefreshDataSourceResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RefreshDataSourceResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRefreshDataSourceResponse(od as api.RefreshDataSourceResponse);
+    });
+  });
+
+  unittest.group('obj-schema-RepeatCellRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRepeatCellRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RepeatCellRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRepeatCellRequest(od as api.RepeatCellRequest);
+    });
+  });
+
+  unittest.group('obj-schema-Request', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Request.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkRequest(od as api.Request);
+    });
+  });
+
+  unittest.group('obj-schema-Response', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Response.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkResponse(od as api.Response);
+    });
+  });
+
+  unittest.group('obj-schema-RowData', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRowData();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.RowData.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkRowData(od as api.RowData);
+    });
+  });
+
+  unittest.group('obj-schema-ScorecardChartSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildScorecardChartSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ScorecardChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkScorecardChartSpec(od as api.ScorecardChartSpec);
+    });
+  });
+
+  unittest.group('obj-schema-SearchDeveloperMetadataRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSearchDeveloperMetadataRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SearchDeveloperMetadataRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSearchDeveloperMetadataRequest(
+          od as api.SearchDeveloperMetadataRequest);
+    });
+  });
+
+  unittest.group('obj-schema-SearchDeveloperMetadataResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSearchDeveloperMetadataResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SearchDeveloperMetadataResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSearchDeveloperMetadataResponse(
+          od as api.SearchDeveloperMetadataResponse);
+    });
+  });
+
+  unittest.group('obj-schema-SetBasicFilterRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSetBasicFilterRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SetBasicFilterRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSetBasicFilterRequest(od as api.SetBasicFilterRequest);
+    });
+  });
+
+  unittest.group('obj-schema-SetDataValidationRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSetDataValidationRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SetDataValidationRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSetDataValidationRequest(od as api.SetDataValidationRequest);
+    });
+  });
+
+  unittest.group('obj-schema-Sheet', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSheet();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Sheet.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSheet(od as api.Sheet);
+    });
+  });
+
+  unittest.group('obj-schema-SheetProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSheetProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SheetProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSheetProperties(od as api.SheetProperties);
+    });
+  });
+
+  unittest.group('obj-schema-Slicer', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSlicer();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Slicer.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSlicer(od as api.Slicer);
+    });
+  });
+
+  unittest.group('obj-schema-SlicerSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSlicerSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.SlicerSpec.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSlicerSpec(od as api.SlicerSpec);
+    });
+  });
+
+  unittest.group('obj-schema-SortRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSortRangeRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SortRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSortRangeRequest(od as api.SortRangeRequest);
+    });
+  });
+
+  unittest.group('obj-schema-SortSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSortSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.SortSpec.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSortSpec(od as api.SortSpec);
+    });
+  });
+
+  unittest.group('obj-schema-SourceAndDestination', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSourceAndDestination();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SourceAndDestination.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSourceAndDestination(od as api.SourceAndDestination);
+    });
+  });
+
+  unittest.group('obj-schema-Spreadsheet', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSpreadsheet();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Spreadsheet.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSpreadsheet(od as api.Spreadsheet);
+    });
+  });
+
+  unittest.group('obj-schema-SpreadsheetProperties', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSpreadsheetProperties();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SpreadsheetProperties.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSpreadsheetProperties(od as api.SpreadsheetProperties);
+    });
+  });
+
+  unittest.group('obj-schema-SpreadsheetTheme', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSpreadsheetTheme();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SpreadsheetTheme.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSpreadsheetTheme(od as api.SpreadsheetTheme);
+    });
+  });
+
+  unittest.group('obj-schema-TextFormat', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTextFormat();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.TextFormat.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkTextFormat(od as api.TextFormat);
+    });
+  });
+
+  unittest.group('obj-schema-TextFormatRun', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTextFormatRun();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TextFormatRun.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTextFormatRun(od as api.TextFormatRun);
+    });
+  });
+
+  unittest.group('obj-schema-TextPosition', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTextPosition();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TextPosition.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTextPosition(od as api.TextPosition);
+    });
+  });
+
+  unittest.group('obj-schema-TextRotation', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTextRotation();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TextRotation.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTextRotation(od as api.TextRotation);
+    });
+  });
+
+  unittest.group('obj-schema-TextToColumnsRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTextToColumnsRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TextToColumnsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTextToColumnsRequest(od as api.TextToColumnsRequest);
+    });
+  });
+
+  unittest.group('obj-schema-ThemeColorPair', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildThemeColorPair();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ThemeColorPair.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkThemeColorPair(od as api.ThemeColorPair);
+    });
+  });
+
+  unittest.group('obj-schema-TimeOfDay', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTimeOfDay();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.TimeOfDay.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkTimeOfDay(od as api.TimeOfDay);
+    });
+  });
+
+  unittest.group('obj-schema-TreemapChartColorScale', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTreemapChartColorScale();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TreemapChartColorScale.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTreemapChartColorScale(od as api.TreemapChartColorScale);
+    });
+  });
+
+  unittest.group('obj-schema-TreemapChartSpec', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTreemapChartSpec();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TreemapChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTreemapChartSpec(od as api.TreemapChartSpec);
+    });
+  });
+
+  unittest.group('obj-schema-TrimWhitespaceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTrimWhitespaceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TrimWhitespaceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTrimWhitespaceRequest(od as api.TrimWhitespaceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-TrimWhitespaceResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildTrimWhitespaceResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.TrimWhitespaceResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTrimWhitespaceResponse(od as api.TrimWhitespaceResponse);
+    });
+  });
+
+  unittest.group('obj-schema-UnmergeCellsRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUnmergeCellsRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UnmergeCellsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUnmergeCellsRequest(od as api.UnmergeCellsRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateBandingRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateBandingRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateBandingRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateBandingRequest(od as api.UpdateBandingRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateBordersRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateBordersRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateBordersRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateBordersRequest(od as api.UpdateBordersRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateCellsRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateCellsRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateCellsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateCellsRequest(od as api.UpdateCellsRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateChartSpecRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateChartSpecRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateChartSpecRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateChartSpecRequest(od as api.UpdateChartSpecRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateConditionalFormatRuleRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateConditionalFormatRuleRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateConditionalFormatRuleRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateConditionalFormatRuleRequest(
+          od as api.UpdateConditionalFormatRuleRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateConditionalFormatRuleResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateConditionalFormatRuleResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateConditionalFormatRuleResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateConditionalFormatRuleResponse(
+          od as api.UpdateConditionalFormatRuleResponse);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDataSourceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDataSourceRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDataSourceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDataSourceRequest(od as api.UpdateDataSourceRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDataSourceResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDataSourceResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDataSourceResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDataSourceResponse(od as api.UpdateDataSourceResponse);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDeveloperMetadataRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDeveloperMetadataRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDeveloperMetadataRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDeveloperMetadataRequest(
+          od as api.UpdateDeveloperMetadataRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDeveloperMetadataResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDeveloperMetadataResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDeveloperMetadataResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDeveloperMetadataResponse(
+          od as api.UpdateDeveloperMetadataResponse);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDimensionGroupRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDimensionGroupRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDimensionGroupRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDimensionGroupRequest(od as api.UpdateDimensionGroupRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateDimensionPropertiesRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateDimensionPropertiesRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateDimensionPropertiesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateDimensionPropertiesRequest(
+          od as api.UpdateDimensionPropertiesRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateEmbeddedObjectBorderRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateEmbeddedObjectBorderRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateEmbeddedObjectBorderRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateEmbeddedObjectBorderRequest(
+          od as api.UpdateEmbeddedObjectBorderRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateEmbeddedObjectPositionRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateEmbeddedObjectPositionRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateEmbeddedObjectPositionRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateEmbeddedObjectPositionRequest(
+          od as api.UpdateEmbeddedObjectPositionRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateEmbeddedObjectPositionResponse', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateEmbeddedObjectPositionResponse();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateEmbeddedObjectPositionResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateEmbeddedObjectPositionResponse(
+          od as api.UpdateEmbeddedObjectPositionResponse);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateFilterViewRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateFilterViewRequest();
-      var od = new api.UpdateFilterViewRequest.fromJson(o.toJson());
-      checkUpdateFilterViewRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateFilterViewRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateFilterViewRequest(od as api.UpdateFilterViewRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateNamedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateNamedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateNamedRangeRequest();
-      var od = new api.UpdateNamedRangeRequest.fromJson(o.toJson());
-      checkUpdateNamedRangeRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateNamedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateNamedRangeRequest(od as api.UpdateNamedRangeRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateProtectedRangeRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateProtectedRangeRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateProtectedRangeRequest();
-      var od = new api.UpdateProtectedRangeRequest.fromJson(o.toJson());
-      checkUpdateProtectedRangeRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateProtectedRangeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateProtectedRangeRequest(od as api.UpdateProtectedRangeRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateSheetPropertiesRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateSheetPropertiesRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateSheetPropertiesRequest();
-      var od = new api.UpdateSheetPropertiesRequest.fromJson(o.toJson());
-      checkUpdateSheetPropertiesRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateSheetPropertiesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateSheetPropertiesRequest(od as api.UpdateSheetPropertiesRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateSpreadsheetPropertiesRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateSlicerSpecRequest', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildUpdateSlicerSpecRequest();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateSlicerSpecRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateSlicerSpecRequest(od as api.UpdateSlicerSpecRequest);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateSpreadsheetPropertiesRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateSpreadsheetPropertiesRequest();
-      var od = new api.UpdateSpreadsheetPropertiesRequest.fromJson(o.toJson());
-      checkUpdateSpreadsheetPropertiesRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateSpreadsheetPropertiesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateSpreadsheetPropertiesRequest(
+          od as api.UpdateSpreadsheetPropertiesRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateValuesByDataFilterResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateValuesByDataFilterResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateValuesByDataFilterResponse();
-      var od = new api.UpdateValuesByDataFilterResponse.fromJson(o.toJson());
-      checkUpdateValuesByDataFilterResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateValuesByDataFilterResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateValuesByDataFilterResponse(
+          od as api.UpdateValuesByDataFilterResponse);
     });
   });
 
-  unittest.group("obj-schema-UpdateValuesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateValuesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateValuesResponse();
-      var od = new api.UpdateValuesResponse.fromJson(o.toJson());
-      checkUpdateValuesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateValuesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateValuesResponse(od as api.UpdateValuesResponse);
     });
   });
 
-  unittest.group("obj-schema-ValueRange", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ValueRange', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildValueRange();
-      var od = new api.ValueRange.fromJson(o.toJson());
-      checkValueRange(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.ValueRange.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkValueRange(od as api.ValueRange);
     });
   });
 
-  unittest.group("obj-schema-WaterfallChartColumnStyle", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WaterfallChartColumnStyle', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWaterfallChartColumnStyle();
-      var od = new api.WaterfallChartColumnStyle.fromJson(o.toJson());
-      checkWaterfallChartColumnStyle(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WaterfallChartColumnStyle.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWaterfallChartColumnStyle(od as api.WaterfallChartColumnStyle);
     });
   });
 
-  unittest.group("obj-schema-WaterfallChartCustomSubtotal", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WaterfallChartCustomSubtotal', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWaterfallChartCustomSubtotal();
-      var od = new api.WaterfallChartCustomSubtotal.fromJson(o.toJson());
-      checkWaterfallChartCustomSubtotal(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WaterfallChartCustomSubtotal.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWaterfallChartCustomSubtotal(od as api.WaterfallChartCustomSubtotal);
     });
   });
 
-  unittest.group("obj-schema-WaterfallChartDomain", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WaterfallChartDomain', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWaterfallChartDomain();
-      var od = new api.WaterfallChartDomain.fromJson(o.toJson());
-      checkWaterfallChartDomain(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WaterfallChartDomain.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWaterfallChartDomain(od as api.WaterfallChartDomain);
     });
   });
 
-  unittest.group("obj-schema-WaterfallChartSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WaterfallChartSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWaterfallChartSeries();
-      var od = new api.WaterfallChartSeries.fromJson(o.toJson());
-      checkWaterfallChartSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WaterfallChartSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWaterfallChartSeries(od as api.WaterfallChartSeries);
     });
   });
 
-  unittest.group("obj-schema-WaterfallChartSpec", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WaterfallChartSpec', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWaterfallChartSpec();
-      var od = new api.WaterfallChartSpec.fromJson(o.toJson());
-      checkWaterfallChartSpec(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WaterfallChartSpec.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWaterfallChartSpec(od as api.WaterfallChartSpec);
     });
   });
 
-  unittest.group("resource-SpreadsheetsResourceApi", () {
-    unittest.test("method--batchUpdate", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsResourceApi res = new api.SheetsApi(mock).spreadsheets;
+  unittest.group('resource-SpreadsheetsResource', () {
+    unittest.test('method--batchUpdate', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets;
       var arg_request = buildBatchUpdateSpreadsheetRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchUpdateSpreadsheetRequest.fromJson(json);
-        checkBatchUpdateSpreadsheetRequest(obj);
+        var obj = api.BatchUpdateSpreadsheetRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchUpdateSpreadsheetRequest(
+            obj as api.BatchUpdateSpreadsheetRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf(":batchUpdate", pathOffset);
+        index = path.indexOf(':batchUpdate', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals(":batchUpdate"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 12),
+          unittest.equals(":batchUpdate"),
+        );
         pathOffset += 12;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchUpdateSpreadsheetResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchUpdate(arg_request, arg_spreadsheetId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchUpdateSpreadsheetResponse(response);
-      })));
+      final response = await res.batchUpdate(arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchUpdateSpreadsheetResponse(
+          response as api.BatchUpdateSpreadsheetResponse);
     });
 
-    unittest.test("method--create", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsResourceApi res = new api.SheetsApi(mock).spreadsheets;
+    unittest.test('method--create', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets;
       var arg_request = buildSpreadsheet();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Spreadsheet.fromJson(json);
-        checkSpreadsheet(obj);
+        var obj = api.Spreadsheet.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkSpreadsheet(obj as api.Spreadsheet);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 15),
-            unittest.equals("v4/spreadsheets"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals("v4/spreadsheets"),
+        );
         pathOffset += 15;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSpreadsheet());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .create(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSpreadsheet(response);
-      })));
+      final response = await res.create(arg_request, $fields: arg_$fields);
+      checkSpreadsheet(response as api.Spreadsheet);
     });
 
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsResourceApi res = new api.SheetsApi(mock).spreadsheets;
-      var arg_spreadsheetId = "foo";
-      var arg_ranges = buildUnnamed3677();
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets;
+      var arg_spreadsheetId = 'foo';
       var arg_includeGridData = true;
-      var arg_$fields = "foo";
+      var arg_ranges = buildUnnamed5384();
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["ranges"], unittest.equals(arg_ranges));
-        unittest.expect(queryMap["includeGridData"].first,
-            unittest.equals("$arg_includeGridData"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["includeGridData"]!.first,
+          unittest.equals("$arg_includeGridData"),
+        );
+        unittest.expect(
+          queryMap["ranges"]!,
+          unittest.equals(arg_ranges),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSpreadsheet());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_spreadsheetId,
-              ranges: arg_ranges,
-              includeGridData: arg_includeGridData,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSpreadsheet(response);
-      })));
+      final response = await res.get(arg_spreadsheetId,
+          includeGridData: arg_includeGridData,
+          ranges: arg_ranges,
+          $fields: arg_$fields);
+      checkSpreadsheet(response as api.Spreadsheet);
     });
 
-    unittest.test("method--getByDataFilter", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsResourceApi res = new api.SheetsApi(mock).spreadsheets;
+    unittest.test('method--getByDataFilter', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets;
       var arg_request = buildGetSpreadsheetByDataFilterRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.GetSpreadsheetByDataFilterRequest.fromJson(json);
-        checkGetSpreadsheetByDataFilterRequest(obj);
+        var obj = api.GetSpreadsheetByDataFilterRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkGetSpreadsheetByDataFilterRequest(
+            obj as api.GetSpreadsheetByDataFilterRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf(":getByDataFilter", pathOffset);
+        index = path.indexOf(':getByDataFilter', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals(":getByDataFilter"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals(":getByDataFilter"),
+        );
         pathOffset += 16;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSpreadsheet());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .getByDataFilter(arg_request, arg_spreadsheetId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSpreadsheet(response);
-      })));
+      final response = await res.getByDataFilter(arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkSpreadsheet(response as api.Spreadsheet);
     });
   });
 
-  unittest.group("resource-SpreadsheetsDeveloperMetadataResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsDeveloperMetadataResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.developerMetadata;
-      var arg_spreadsheetId = "foo";
+  unittest.group('resource-SpreadsheetsDeveloperMetadataResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.developerMetadata;
+      var arg_spreadsheetId = 'foo';
       var arg_metadataId = 42;
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/developerMetadata/", pathOffset);
+        index = path.indexOf('/developerMetadata/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 19),
-            unittest.equals("/developerMetadata/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 19),
+          unittest.equals("/developerMetadata/"),
+        );
         pathOffset += 19;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_metadataId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_metadataId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildDeveloperMetadata());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_spreadsheetId, arg_metadataId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkDeveloperMetadata(response);
-      })));
+      final response = await res.get(arg_spreadsheetId, arg_metadataId,
+          $fields: arg_$fields);
+      checkDeveloperMetadata(response as api.DeveloperMetadata);
     });
 
-    unittest.test("method--search", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsDeveloperMetadataResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.developerMetadata;
+    unittest.test('method--search', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.developerMetadata;
       var arg_request = buildSearchDeveloperMetadataRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.SearchDeveloperMetadataRequest.fromJson(json);
-        checkSearchDeveloperMetadataRequest(obj);
+        var obj = api.SearchDeveloperMetadataRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkSearchDeveloperMetadataRequest(
+            obj as api.SearchDeveloperMetadataRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/developerMetadata:search", pathOffset);
+        index = path.indexOf('/developerMetadata:search', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 25),
-            unittest.equals("/developerMetadata:search"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 25),
+          unittest.equals("/developerMetadata:search"),
+        );
         pathOffset += 25;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSearchDeveloperMetadataResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .search(arg_request, arg_spreadsheetId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSearchDeveloperMetadataResponse(response);
-      })));
+      final response = await res.search(arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkSearchDeveloperMetadataResponse(
+          response as api.SearchDeveloperMetadataResponse);
     });
   });
 
-  unittest.group("resource-SpreadsheetsSheetsResourceApi", () {
-    unittest.test("method--copyTo", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsSheetsResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.sheets;
+  unittest.group('resource-SpreadsheetsSheetsResource', () {
+    unittest.test('method--copyTo', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.sheets;
       var arg_request = buildCopySheetToAnotherSpreadsheetRequest();
-      var arg_spreadsheetId = "foo";
+      var arg_spreadsheetId = 'foo';
       var arg_sheetId = 42;
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.CopySheetToAnotherSpreadsheetRequest.fromJson(json);
-        checkCopySheetToAnotherSpreadsheetRequest(obj);
+        var obj = api.CopySheetToAnotherSpreadsheetRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkCopySheetToAnotherSpreadsheetRequest(
+            obj as api.CopySheetToAnotherSpreadsheetRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/sheets/", pathOffset);
+        index = path.indexOf('/sheets/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/sheets/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/sheets/"),
+        );
         pathOffset += 8;
-        index = path.indexOf(":copyTo", pathOffset);
+        index = path.indexOf(':copyTo', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_sheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 7),
-            unittest.equals(":copyTo"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_sheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 7),
+          unittest.equals(":copyTo"),
+        );
         pathOffset += 7;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSheetProperties());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .copyTo(arg_request, arg_spreadsheetId, arg_sheetId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSheetProperties(response);
-      })));
+      final response = await res.copyTo(
+          arg_request, arg_spreadsheetId, arg_sheetId,
+          $fields: arg_$fields);
+      checkSheetProperties(response as api.SheetProperties);
     });
   });
 
-  unittest.group("resource-SpreadsheetsValuesResourceApi", () {
-    unittest.test("method--append", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+  unittest.group('resource-SpreadsheetsValuesResource', () {
+    unittest.test('method--append', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildValueRange();
-      var arg_spreadsheetId = "foo";
-      var arg_range = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_range = 'foo';
       var arg_includeValuesInResponse = true;
-      var arg_responseValueRenderOption = "foo";
-      var arg_insertDataOption = "foo";
-      var arg_valueInputOption = "foo";
-      var arg_responseDateTimeRenderOption = "foo";
-      var arg_$fields = "foo";
+      var arg_insertDataOption = 'foo';
+      var arg_responseDateTimeRenderOption = 'foo';
+      var arg_responseValueRenderOption = 'foo';
+      var arg_valueInputOption = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.ValueRange.fromJson(json);
-        checkValueRange(obj);
+        var obj = api.ValueRange.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkValueRange(obj as api.ValueRange);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values/", pathOffset);
+        index = path.indexOf('/values/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/values/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/values/"),
+        );
         pathOffset += 8;
-        index = path.indexOf(":append", pathOffset);
+        index = path.indexOf(':append', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_range"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 7),
-            unittest.equals(":append"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_range'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 7),
+          unittest.equals(":append"),
+        );
         pathOffset += 7;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["includeValuesInResponse"].first,
-            unittest.equals("$arg_includeValuesInResponse"));
-        unittest.expect(queryMap["responseValueRenderOption"].first,
-            unittest.equals(arg_responseValueRenderOption));
-        unittest.expect(queryMap["insertDataOption"].first,
-            unittest.equals(arg_insertDataOption));
-        unittest.expect(queryMap["valueInputOption"].first,
-            unittest.equals(arg_valueInputOption));
-        unittest.expect(queryMap["responseDateTimeRenderOption"].first,
-            unittest.equals(arg_responseDateTimeRenderOption));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["includeValuesInResponse"]!.first,
+          unittest.equals("$arg_includeValuesInResponse"),
+        );
+        unittest.expect(
+          queryMap["insertDataOption"]!.first,
+          unittest.equals(arg_insertDataOption),
+        );
+        unittest.expect(
+          queryMap["responseDateTimeRenderOption"]!.first,
+          unittest.equals(arg_responseDateTimeRenderOption),
+        );
+        unittest.expect(
+          queryMap["responseValueRenderOption"]!.first,
+          unittest.equals(arg_responseValueRenderOption),
+        );
+        unittest.expect(
+          queryMap["valueInputOption"]!.first,
+          unittest.equals(arg_valueInputOption),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildAppendValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .append(arg_request, arg_spreadsheetId, arg_range,
-              includeValuesInResponse: arg_includeValuesInResponse,
-              responseValueRenderOption: arg_responseValueRenderOption,
-              insertDataOption: arg_insertDataOption,
-              valueInputOption: arg_valueInputOption,
-              responseDateTimeRenderOption: arg_responseDateTimeRenderOption,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAppendValuesResponse(response);
-      })));
+      final response = await res.append(
+          arg_request, arg_spreadsheetId, arg_range,
+          includeValuesInResponse: arg_includeValuesInResponse,
+          insertDataOption: arg_insertDataOption,
+          responseDateTimeRenderOption: arg_responseDateTimeRenderOption,
+          responseValueRenderOption: arg_responseValueRenderOption,
+          valueInputOption: arg_valueInputOption,
+          $fields: arg_$fields);
+      checkAppendValuesResponse(response as api.AppendValuesResponse);
     });
 
-    unittest.test("method--batchClear", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--batchClear', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildBatchClearValuesRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchClearValuesRequest.fromJson(json);
-        checkBatchClearValuesRequest(obj);
+        var obj = api.BatchClearValuesRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchClearValuesRequest(obj as api.BatchClearValuesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchClear", pathOffset);
+        index = path.indexOf('/values:batchClear', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 18),
-            unittest.equals("/values:batchClear"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 18),
+          unittest.equals("/values:batchClear"),
+        );
         pathOffset += 18;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchClearValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchClear(arg_request, arg_spreadsheetId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchClearValuesResponse(response);
-      })));
+      final response = await res.batchClear(arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchClearValuesResponse(response as api.BatchClearValuesResponse);
     });
 
-    unittest.test("method--batchClearByDataFilter", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--batchClearByDataFilter', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildBatchClearValuesByDataFilterRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchClearValuesByDataFilterRequest.fromJson(json);
-        checkBatchClearValuesByDataFilterRequest(obj);
+        var obj = api.BatchClearValuesByDataFilterRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchClearValuesByDataFilterRequest(
+            obj as api.BatchClearValuesByDataFilterRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchClearByDataFilter", pathOffset);
+        index = path.indexOf('/values:batchClearByDataFilter', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 30),
-            unittest.equals("/values:batchClearByDataFilter"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("/values:batchClearByDataFilter"),
+        );
         pathOffset += 30;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp =
             convert.json.encode(buildBatchClearValuesByDataFilterResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchClearByDataFilter(arg_request, arg_spreadsheetId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchClearValuesByDataFilterResponse(response);
-      })));
+      final response = await res.batchClearByDataFilter(
+          arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchClearValuesByDataFilterResponse(
+          response as api.BatchClearValuesByDataFilterResponse);
     });
 
-    unittest.test("method--batchGet", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
-      var arg_spreadsheetId = "foo";
-      var arg_ranges = buildUnnamed3678();
-      var arg_majorDimension = "foo";
-      var arg_valueRenderOption = "foo";
-      var arg_dateTimeRenderOption = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--batchGet', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
+      var arg_spreadsheetId = 'foo';
+      var arg_dateTimeRenderOption = 'foo';
+      var arg_majorDimension = 'foo';
+      var arg_ranges = buildUnnamed5385();
+      var arg_valueRenderOption = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchGet", pathOffset);
+        index = path.indexOf('/values:batchGet', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("/values:batchGet"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("/values:batchGet"),
+        );
         pathOffset += 16;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["ranges"], unittest.equals(arg_ranges));
-        unittest.expect(queryMap["majorDimension"].first,
-            unittest.equals(arg_majorDimension));
-        unittest.expect(queryMap["valueRenderOption"].first,
-            unittest.equals(arg_valueRenderOption));
-        unittest.expect(queryMap["dateTimeRenderOption"].first,
-            unittest.equals(arg_dateTimeRenderOption));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["dateTimeRenderOption"]!.first,
+          unittest.equals(arg_dateTimeRenderOption),
+        );
+        unittest.expect(
+          queryMap["majorDimension"]!.first,
+          unittest.equals(arg_majorDimension),
+        );
+        unittest.expect(
+          queryMap["ranges"]!,
+          unittest.equals(arg_ranges),
+        );
+        unittest.expect(
+          queryMap["valueRenderOption"]!.first,
+          unittest.equals(arg_valueRenderOption),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchGetValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchGet(arg_spreadsheetId,
-              ranges: arg_ranges,
-              majorDimension: arg_majorDimension,
-              valueRenderOption: arg_valueRenderOption,
-              dateTimeRenderOption: arg_dateTimeRenderOption,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchGetValuesResponse(response);
-      })));
+      final response = await res.batchGet(arg_spreadsheetId,
+          dateTimeRenderOption: arg_dateTimeRenderOption,
+          majorDimension: arg_majorDimension,
+          ranges: arg_ranges,
+          valueRenderOption: arg_valueRenderOption,
+          $fields: arg_$fields);
+      checkBatchGetValuesResponse(response as api.BatchGetValuesResponse);
     });
 
-    unittest.test("method--batchGetByDataFilter", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--batchGetByDataFilter', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildBatchGetValuesByDataFilterRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchGetValuesByDataFilterRequest.fromJson(json);
-        checkBatchGetValuesByDataFilterRequest(obj);
+        var obj = api.BatchGetValuesByDataFilterRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchGetValuesByDataFilterRequest(
+            obj as api.BatchGetValuesByDataFilterRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchGetByDataFilter", pathOffset);
+        index = path.indexOf('/values:batchGetByDataFilter', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 28),
-            unittest.equals("/values:batchGetByDataFilter"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 28),
+          unittest.equals("/values:batchGetByDataFilter"),
+        );
         pathOffset += 28;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp =
             convert.json.encode(buildBatchGetValuesByDataFilterResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchGetByDataFilter(arg_request, arg_spreadsheetId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchGetValuesByDataFilterResponse(response);
-      })));
+      final response = await res.batchGetByDataFilter(
+          arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchGetValuesByDataFilterResponse(
+          response as api.BatchGetValuesByDataFilterResponse);
     });
 
-    unittest.test("method--batchUpdate", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--batchUpdate', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildBatchUpdateValuesRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchUpdateValuesRequest.fromJson(json);
-        checkBatchUpdateValuesRequest(obj);
+        var obj = api.BatchUpdateValuesRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchUpdateValuesRequest(obj as api.BatchUpdateValuesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchUpdate", pathOffset);
+        index = path.indexOf('/values:batchUpdate', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 19),
-            unittest.equals("/values:batchUpdate"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 19),
+          unittest.equals("/values:batchUpdate"),
+        );
         pathOffset += 19;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchUpdateValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchUpdate(arg_request, arg_spreadsheetId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchUpdateValuesResponse(response);
-      })));
+      final response = await res.batchUpdate(arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchUpdateValuesResponse(response as api.BatchUpdateValuesResponse);
     });
 
-    unittest.test("method--batchUpdateByDataFilter", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--batchUpdateByDataFilter', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildBatchUpdateValuesByDataFilterRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchUpdateValuesByDataFilterRequest.fromJson(json);
-        checkBatchUpdateValuesByDataFilterRequest(obj);
+        var obj = api.BatchUpdateValuesByDataFilterRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchUpdateValuesByDataFilterRequest(
+            obj as api.BatchUpdateValuesByDataFilterRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values:batchUpdateByDataFilter", pathOffset);
+        index = path.indexOf('/values:batchUpdateByDataFilter', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 31),
-            unittest.equals("/values:batchUpdateByDataFilter"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("/values:batchUpdateByDataFilter"),
+        );
         pathOffset += 31;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp =
             convert.json.encode(buildBatchUpdateValuesByDataFilterResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchUpdateByDataFilter(arg_request, arg_spreadsheetId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchUpdateValuesByDataFilterResponse(response);
-      })));
+      final response = await res.batchUpdateByDataFilter(
+          arg_request, arg_spreadsheetId,
+          $fields: arg_$fields);
+      checkBatchUpdateValuesByDataFilterResponse(
+          response as api.BatchUpdateValuesByDataFilterResponse);
     });
 
-    unittest.test("method--clear", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--clear', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildClearValuesRequest();
-      var arg_spreadsheetId = "foo";
-      var arg_range = "foo";
-      var arg_$fields = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_range = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.ClearValuesRequest.fromJson(json);
-        checkClearValuesRequest(obj);
+        var obj = api.ClearValuesRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkClearValuesRequest(obj as api.ClearValuesRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values/", pathOffset);
+        index = path.indexOf('/values/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/values/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/values/"),
+        );
         pathOffset += 8;
-        index = path.indexOf(":clear", pathOffset);
+        index = path.indexOf(':clear', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_range"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 6),
-            unittest.equals(":clear"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_range'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 6),
+          unittest.equals(":clear"),
+        );
         pathOffset += 6;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildClearValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .clear(arg_request, arg_spreadsheetId, arg_range,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkClearValuesResponse(response);
-      })));
+      final response = await res.clear(
+          arg_request, arg_spreadsheetId, arg_range,
+          $fields: arg_$fields);
+      checkClearValuesResponse(response as api.ClearValuesResponse);
     });
 
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
-      var arg_spreadsheetId = "foo";
-      var arg_range = "foo";
-      var arg_valueRenderOption = "foo";
-      var arg_dateTimeRenderOption = "foo";
-      var arg_majorDimension = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
+      var arg_spreadsheetId = 'foo';
+      var arg_range = 'foo';
+      var arg_dateTimeRenderOption = 'foo';
+      var arg_majorDimension = 'foo';
+      var arg_valueRenderOption = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values/", pathOffset);
+        index = path.indexOf('/values/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/values/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/values/"),
+        );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_range"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_range'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["valueRenderOption"].first,
-            unittest.equals(arg_valueRenderOption));
-        unittest.expect(queryMap["dateTimeRenderOption"].first,
-            unittest.equals(arg_dateTimeRenderOption));
-        unittest.expect(queryMap["majorDimension"].first,
-            unittest.equals(arg_majorDimension));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["dateTimeRenderOption"]!.first,
+          unittest.equals(arg_dateTimeRenderOption),
+        );
+        unittest.expect(
+          queryMap["majorDimension"]!.first,
+          unittest.equals(arg_majorDimension),
+        );
+        unittest.expect(
+          queryMap["valueRenderOption"]!.first,
+          unittest.equals(arg_valueRenderOption),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildValueRange());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_spreadsheetId, arg_range,
-              valueRenderOption: arg_valueRenderOption,
-              dateTimeRenderOption: arg_dateTimeRenderOption,
-              majorDimension: arg_majorDimension,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkValueRange(response);
-      })));
+      final response = await res.get(arg_spreadsheetId, arg_range,
+          dateTimeRenderOption: arg_dateTimeRenderOption,
+          majorDimension: arg_majorDimension,
+          valueRenderOption: arg_valueRenderOption,
+          $fields: arg_$fields);
+      checkValueRange(response as api.ValueRange);
     });
 
-    unittest.test("method--update", () {
-      var mock = new HttpServerMock();
-      api.SpreadsheetsValuesResourceApi res =
-          new api.SheetsApi(mock).spreadsheets.values;
+    unittest.test('method--update', () async {
+      var mock = HttpServerMock();
+      var res = api.SheetsApi(mock).spreadsheets.values;
       var arg_request = buildValueRange();
-      var arg_spreadsheetId = "foo";
-      var arg_range = "foo";
-      var arg_responseValueRenderOption = "foo";
-      var arg_valueInputOption = "foo";
-      var arg_responseDateTimeRenderOption = "foo";
+      var arg_spreadsheetId = 'foo';
+      var arg_range = 'foo';
       var arg_includeValuesInResponse = true;
-      var arg_$fields = "foo";
+      var arg_responseDateTimeRenderOption = 'foo';
+      var arg_responseValueRenderOption = 'foo';
+      var arg_valueInputOption = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.ValueRange.fromJson(json);
-        checkValueRange(obj);
+        var obj = api.ValueRange.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkValueRange(obj as api.ValueRange);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("v4/spreadsheets/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("v4/spreadsheets/"),
+        );
         pathOffset += 16;
-        index = path.indexOf("/values/", pathOffset);
+        index = path.indexOf('/values/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_spreadsheetId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/values/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_spreadsheetId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/values/"),
+        );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_range"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_range'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["responseValueRenderOption"].first,
-            unittest.equals(arg_responseValueRenderOption));
-        unittest.expect(queryMap["valueInputOption"].first,
-            unittest.equals(arg_valueInputOption));
-        unittest.expect(queryMap["responseDateTimeRenderOption"].first,
-            unittest.equals(arg_responseDateTimeRenderOption));
-        unittest.expect(queryMap["includeValuesInResponse"].first,
-            unittest.equals("$arg_includeValuesInResponse"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["includeValuesInResponse"]!.first,
+          unittest.equals("$arg_includeValuesInResponse"),
+        );
+        unittest.expect(
+          queryMap["responseDateTimeRenderOption"]!.first,
+          unittest.equals(arg_responseDateTimeRenderOption),
+        );
+        unittest.expect(
+          queryMap["responseValueRenderOption"]!.first,
+          unittest.equals(arg_responseValueRenderOption),
+        );
+        unittest.expect(
+          queryMap["valueInputOption"]!.first,
+          unittest.equals(arg_valueInputOption),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildUpdateValuesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .update(arg_request, arg_spreadsheetId, arg_range,
-              responseValueRenderOption: arg_responseValueRenderOption,
-              valueInputOption: arg_valueInputOption,
-              responseDateTimeRenderOption: arg_responseDateTimeRenderOption,
-              includeValuesInResponse: arg_includeValuesInResponse,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkUpdateValuesResponse(response);
-      })));
+      final response = await res.update(
+          arg_request, arg_spreadsheetId, arg_range,
+          includeValuesInResponse: arg_includeValuesInResponse,
+          responseDateTimeRenderOption: arg_responseDateTimeRenderOption,
+          responseValueRenderOption: arg_responseValueRenderOption,
+          valueInputOption: arg_valueInputOption,
+          $fields: arg_$fields);
+      checkUpdateValuesResponse(response as api.UpdateValuesResponse);
     });
   });
 }

@@ -151,7 +151,7 @@ class GooglePhotoService{
 //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
 
-      var gphoto = new PhotoslibraryApi(clientARC);
+    final gphoto = new PhotosLibraryApi(clientARC);
       var albumsRes = await gphoto.albums.list();
       var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == albumName,orElse: ()=> null);
       if (slideShowAlbum != null){

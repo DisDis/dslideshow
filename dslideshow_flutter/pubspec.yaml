@@ -3,7 +3,7 @@ description: Flutter SlideShow
 version: 1.1.0
 
 environment:
-  sdk: ">=2.10.0 <3.0.0"
+  sdk: ">=2.11.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -11,17 +11,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  injector: ^1.0.9  #injector: ^1.0.10-nullsafety.0
-  path_provider: ^1.1.0
-  path: ^1.6.4
-  permission_handler: ^5.0.0
+  injector: ^1.0.10-nullsafety.0
+  path_provider: ^2.0.1
+  path: ^1.8.0
+  permission_handler: ^5.1.0+2
   qr_flutter: ^3.2.0
   isolate: ^2.0.3
-  logging: ^0.11.2
-  flutter_redux: ^0.6.0
-  built_value: ^7.1.0
-  omxplayer_video_player: ^1.2.0
-  video_player: ^0.10.11
+  logging: ^1.0.0
+  flutter_redux: ^0.7.0
+  built_value: ^8.0.0
+#  omxplayer_video_player: ^1.2.0
+  video_player: ^2.0.0
   duration: ^2.0.2
   dslideshow_backend: 
     path: ../backend
@@ -38,8 +38,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  built_value_generator: ^7.1.0
-  build_runner: ^1.10.2
+#  built_value_generator: ^8.0.0
+  build_runner: ^1.11.5
 
 flutter:
   uses-material-design: true

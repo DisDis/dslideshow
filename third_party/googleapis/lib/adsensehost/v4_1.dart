@@ -1,57 +1,82 @@
 // This is a generated file (see the discoveryapis_generator project).
 
-// ignore_for_file: unnecessary_cast
+// ignore_for_file: camel_case_types
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_string_interpolations
 
-library googleapis.adsensehost.v4_1;
+/// AdSense Host API - v4.1
+///
+/// Generates performance reports, generates ad codes, and provides publisher
+/// management capabilities for AdSense Hosts.
+///
+/// For more information, see <https://developers.google.com/adsense/host/>
+///
+/// Create an instance of [AdSenseHostApi] to access these resources:
+///
+/// - [AccountsResource]
+///   - [AccountsAdclientsResource]
+///   - [AccountsAdunitsResource]
+///   - [AccountsReportsResource]
+/// - [AdclientsResource]
+/// - [AssociationsessionsResource]
+/// - [CustomchannelsResource]
+/// - [ReportsResource]
+/// - [UrlchannelsResource]
+library adsensehost.v4_1;
 
-import 'dart:core' as core;
 import 'dart:async' as async;
 import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+import '../src/user_agent.dart';
+
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
-const core.String USER_AGENT = 'dart-api-client adsensehost/v4.1';
-
 /// Generates performance reports, generates ad codes, and provides publisher
 /// management capabilities for AdSense Hosts.
-class AdsensehostApi {
+class AdSenseHostApi {
   /// View and manage your AdSense host data and associated accounts
-  static const AdsensehostScope = "https://www.googleapis.com/auth/adsensehost";
+  static const adsensehostScope = 'https://www.googleapis.com/auth/adsensehost';
 
   final commons.ApiRequester _requester;
 
-  AccountsResourceApi get accounts => new AccountsResourceApi(_requester);
-  AdclientsResourceApi get adclients => new AdclientsResourceApi(_requester);
-  AssociationsessionsResourceApi get associationsessions =>
-      new AssociationsessionsResourceApi(_requester);
-  CustomchannelsResourceApi get customchannels =>
-      new CustomchannelsResourceApi(_requester);
-  ReportsResourceApi get reports => new ReportsResourceApi(_requester);
-  UrlchannelsResourceApi get urlchannels =>
-      new UrlchannelsResourceApi(_requester);
+  AccountsResource get accounts => AccountsResource(_requester);
+  AdclientsResource get adclients => AdclientsResource(_requester);
+  AssociationsessionsResource get associationsessions =>
+      AssociationsessionsResource(_requester);
+  CustomchannelsResource get customchannels =>
+      CustomchannelsResource(_requester);
+  ReportsResource get reports => ReportsResource(_requester);
+  UrlchannelsResource get urlchannels => UrlchannelsResource(_requester);
 
-  AdsensehostApi(http.Client client,
-      {core.String rootUrl: "https://www.googleapis.com/",
-      core.String servicePath: "adsensehost/v4.1/"})
+  AdSenseHostApi(http.Client client,
+      {core.String rootUrl = 'https://www.googleapis.com/',
+      core.String servicePath = 'adsensehost/v4.1/'})
       : _requester =
-            new commons.ApiRequester(client, rootUrl, servicePath, USER_AGENT);
+            commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
 }
 
-class AccountsResourceApi {
+class AccountsResource {
   final commons.ApiRequester _requester;
 
-  AccountsAdclientsResourceApi get adclients =>
-      new AccountsAdclientsResourceApi(_requester);
-  AccountsAdunitsResourceApi get adunits =>
-      new AccountsAdunitsResourceApi(_requester);
-  AccountsReportsResourceApi get reports =>
-      new AccountsReportsResourceApi(_requester);
+  AccountsAdclientsResource get adclients =>
+      AccountsAdclientsResource(_requester);
+  AccountsAdunitsResource get adunits => AccountsAdunitsResource(_requester);
+  AccountsReportsResource get reports => AccountsReportsResource(_requester);
 
-  AccountsResourceApi(commons.ApiRequester client) : _requester = client;
+  AccountsResource(commons.ApiRequester client) : _requester = client;
 
   /// Get information about the selected associated AdSense account.
   ///
@@ -69,30 +94,22 @@ class AccountsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<Account> get(core.String accountId, {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<Account> get(
+    core.String accountId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url = 'accounts/' + commons.escapeVariable('$accountId');
 
-    _url = 'accounts/' + commons.Escaper.ecapeVariable('$accountId');
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Account.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Account.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// List hosted accounts associated with this AdSense account by ad client id.
@@ -111,40 +128,33 @@ class AccountsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<Accounts> list(core.List<core.String> filterAdClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
-
-    if (filterAdClientId == null || filterAdClientId.isEmpty) {
-      throw new core.ArgumentError("Parameter filterAdClientId is required.");
+  async.Future<Accounts> list(
+    core.List<core.String> filterAdClientId, {
+    core.String? $fields,
+  }) async {
+    if (filterAdClientId.isEmpty) {
+      throw core.ArgumentError('Parameter filterAdClientId cannot be empty.');
     }
-    _queryParams["filterAdClientId"] = filterAdClientId;
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _queryParams = <core.String, core.List<core.String>>{
+      'filterAdClientId': filterAdClientId,
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    _url = 'accounts';
+    const _url = 'accounts';
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Accounts.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Accounts.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class AccountsAdclientsResourceApi {
+class AccountsAdclientsResource {
   final commons.ApiRequester _requester;
 
-  AccountsAdclientsResourceApi(commons.ApiRequester client)
-      : _requester = client;
+  AccountsAdclientsResource(commons.ApiRequester client) : _requester = client;
 
   /// Get information about one of the ad clients in the specified publisher's
   /// AdSense account.
@@ -165,37 +175,26 @@ class AccountsAdclientsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdClient> get(core.String accountId, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdClient> get(
+    core.String accountId,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId');
+        commons.escapeVariable('$adClientId');
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdClient.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdClient.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// List all hosted ad clients in the specified hosted account.
@@ -222,46 +221,34 @@ class AccountsAdclientsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdClients> list(core.String accountId,
-      {core.int maxResults, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdClients> list(
+    core.String accountId, {
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url =
+        'accounts/' + commons.escapeVariable('$accountId') + '/adclients';
 
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
-        '/adclients';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdClients.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdClients.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class AccountsAdunitsResourceApi {
+class AccountsAdunitsResource {
   final commons.ApiRequester _requester;
 
-  AccountsAdunitsResourceApi(commons.ApiRequester client) : _requester = client;
+  AccountsAdunitsResource(commons.ApiRequester client) : _requester = client;
 
   /// Delete the specified ad unit from the specified publisher AdSense account.
   ///
@@ -284,42 +271,28 @@ class AccountsAdunitsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AdUnit> delete(
-      core.String accountId, core.String adClientId, core.String adUnitId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String accountId,
+    core.String adClientId,
+    core.String adUnitId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (adUnitId == null) {
-      throw new core.ArgumentError("Parameter adUnitId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits/' +
-        commons.Escaper.ecapeVariable('$adUnitId');
+        commons.escapeVariable('$adUnitId');
 
-    var _response = _requester.request(_url, "DELETE",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnit.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return AdUnit.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Get the specified host ad unit in this AdSense account.
@@ -343,42 +316,28 @@ class AccountsAdunitsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AdUnit> get(
-      core.String accountId, core.String adClientId, core.String adUnitId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String accountId,
+    core.String adClientId,
+    core.String adUnitId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (adUnitId == null) {
-      throw new core.ArgumentError("Parameter adUnitId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits/' +
-        commons.Escaper.ecapeVariable('$adUnitId');
+        commons.escapeVariable('$adUnitId');
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnit.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdUnit.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Get ad code for the specified ad unit, attaching the specified host custom
@@ -405,46 +364,32 @@ class AccountsAdunitsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AdCode> getAdCode(
-      core.String accountId, core.String adClientId, core.String adUnitId,
-      {core.List<core.String> hostCustomChannelId, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String accountId,
+    core.String adClientId,
+    core.String adUnitId, {
+    core.List<core.String>? hostCustomChannelId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (hostCustomChannelId != null)
+        'hostCustomChannelId': hostCustomChannelId,
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (adUnitId == null) {
-      throw new core.ArgumentError("Parameter adUnitId is required.");
-    }
-    if (hostCustomChannelId != null) {
-      _queryParams["hostCustomChannelId"] = hostCustomChannelId;
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits/' +
-        commons.Escaper.ecapeVariable('$adUnitId') +
+        commons.escapeVariable('$adUnitId') +
         '/adcode';
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdCode.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdCode.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Insert the supplied ad unit into the specified publisher AdSense account.
@@ -468,41 +413,29 @@ class AccountsAdunitsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AdUnit> insert(
-      AdUnit request, core.String accountId, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    AdUnit request,
+    core.String accountId,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits';
 
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnit.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AdUnit.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// List all ad units in the specified publisher's AdSense account.
@@ -533,53 +466,37 @@ class AccountsAdunitsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdUnits> list(core.String accountId, core.String adClientId,
-      {core.bool includeInactive,
-      core.int maxResults,
-      core.String pageToken,
-      core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdUnits> list(
+    core.String accountId,
+    core.String adClientId, {
+    core.bool? includeInactive,
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (includeInactive != null) 'includeInactive': ['${includeInactive}'],
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (includeInactive != null) {
-      _queryParams["includeInactive"] = ["${includeInactive}"];
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits';
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnits.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdUnits.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Update the supplied ad unit in the specified publisher AdSense account.
+  ///
   /// This method supports patch semantics.
   ///
   /// [request] - The metadata request object.
@@ -602,46 +519,32 @@ class AccountsAdunitsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdUnit> patch(AdUnit request, core.String accountId,
-      core.String adClientId, core.String adUnitId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdUnit> patch(
+    AdUnit request,
+    core.String accountId,
+    core.String adClientId,
+    core.String adUnitId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      'adUnitId': [adUnitId],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (adUnitId == null) {
-      throw new core.ArgumentError("Parameter adUnitId is required.");
-    }
-    _queryParams["adUnitId"] = [adUnitId];
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits';
 
-    var _response = _requester.request(_url, "PATCH",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnit.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AdUnit.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Update the supplied ad unit in the specified publisher AdSense account.
@@ -665,52 +568,42 @@ class AccountsAdunitsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AdUnit> update(
-      AdUnit request, core.String accountId, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    AdUnit request,
+    core.String accountId,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'accounts/' +
-        commons.Escaper.ecapeVariable('$accountId') +
+    final _url = 'accounts/' +
+        commons.escapeVariable('$accountId') +
         '/adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+        commons.escapeVariable('$adClientId') +
         '/adunits';
 
-    var _response = _requester.request(_url, "PUT",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdUnit.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'PUT',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AdUnit.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class AccountsReportsResourceApi {
+class AccountsReportsResource {
   final commons.ApiRequester _requester;
 
-  AccountsReportsResourceApi(commons.ApiRequester client) : _requester = client;
+  AccountsReportsResource(commons.ApiRequester client) : _requester = client;
 
   /// Generate an AdSense report based on the report request sent in the query
-  /// parameters. Returns the result as JSON; to retrieve output in CSV format
-  /// specify "alt=csv" as a query parameter.
+  /// parameters.
+  ///
+  /// Returns the result as JSON; to retrieve output in CSV format specify
+  /// "alt=csv" as a query parameter.
   ///
   /// Request parameters:
   ///
@@ -719,33 +612,33 @@ class AccountsReportsResourceApi {
   /// [startDate] - Start of the date range to report on in "YYYY-MM-DD" format,
   /// inclusive.
   /// Value must have pattern
-  /// "\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)(([\-\+]\d+[dwmy]){0,3}?)".
+  /// `\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)((\[\-\+\]\d+\[dwmy\]){0,3}?)`.
   ///
   /// [endDate] - End of the date range to report on in "YYYY-MM-DD" format,
   /// inclusive.
   /// Value must have pattern
-  /// "\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)(([\-\+]\d+[dwmy]){0,3}?)".
+  /// `\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)((\[\-\+\]\d+\[dwmy\]){0,3}?)`.
   ///
   /// [dimension] - Dimensions to base the report on.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [filter] - Filters to be run on the report.
-  /// Value must have pattern "[a-zA-Z_]+(==|=@).+".
+  /// Value must have pattern `\[a-zA-Z_\]+(==|=@).+`.
   ///
   /// [locale] - Optional locale to use for translating report output to a local
   /// language. Defaults to "en_US" if not specified.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [maxResults] - The maximum number of rows of report data to return.
   /// Value must be between "0" and "50000".
   ///
   /// [metric] - Numeric columns to include in the report.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [sort] - The name of a dimension or metric to sort the resulting report
   /// on, optionally prefixed with "+" to sort ascending or "-" to sort
   /// descending. If no prefix is specified, the column is sorted ascending.
-  /// Value must have pattern "(\+|-)?[a-zA-Z_]+".
+  /// Value must have pattern `(\+|-)?\[a-zA-Z_\]+`.
   ///
   /// [startIndex] - Index of the first row of report data to return.
   /// Value must be between "0" and "5000".
@@ -761,75 +654,47 @@ class AccountsReportsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<Report> generate(
-      core.String accountId, core.String startDate, core.String endDate,
-      {core.List<core.String> dimension,
-      core.List<core.String> filter,
-      core.String locale,
-      core.int maxResults,
-      core.List<core.String> metric,
-      core.List<core.String> sort,
-      core.int startIndex,
-      core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String accountId,
+    core.String startDate,
+    core.String endDate, {
+    core.List<core.String>? dimension,
+    core.List<core.String>? filter,
+    core.String? locale,
+    core.int? maxResults,
+    core.List<core.String>? metric,
+    core.List<core.String>? sort,
+    core.int? startIndex,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      'startDate': [startDate],
+      'endDate': [endDate],
+      if (dimension != null) 'dimension': dimension,
+      if (filter != null) 'filter': filter,
+      if (locale != null) 'locale': [locale],
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (metric != null) 'metric': metric,
+      if (sort != null) 'sort': sort,
+      if (startIndex != null) 'startIndex': ['${startIndex}'],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (accountId == null) {
-      throw new core.ArgumentError("Parameter accountId is required.");
-    }
-    if (startDate == null) {
-      throw new core.ArgumentError("Parameter startDate is required.");
-    }
-    _queryParams["startDate"] = [startDate];
-    if (endDate == null) {
-      throw new core.ArgumentError("Parameter endDate is required.");
-    }
-    _queryParams["endDate"] = [endDate];
-    if (dimension != null) {
-      _queryParams["dimension"] = dimension;
-    }
-    if (filter != null) {
-      _queryParams["filter"] = filter;
-    }
-    if (locale != null) {
-      _queryParams["locale"] = [locale];
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (metric != null) {
-      _queryParams["metric"] = metric;
-    }
-    if (sort != null) {
-      _queryParams["sort"] = sort;
-    }
-    if (startIndex != null) {
-      _queryParams["startIndex"] = ["${startIndex}"];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url =
+        'accounts/' + commons.escapeVariable('$accountId') + '/reports';
 
-    _url =
-        'accounts/' + commons.Escaper.ecapeVariable('$accountId') + '/reports';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Report.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Report.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class AdclientsResourceApi {
+class AdclientsResource {
   final commons.ApiRequester _requester;
 
-  AdclientsResourceApi(commons.ApiRequester client) : _requester = client;
+  AdclientsResource(commons.ApiRequester client) : _requester = client;
 
   /// Get information about one of the ad clients in the Host AdSense account.
   ///
@@ -847,30 +712,22 @@ class AdclientsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdClient> get(core.String adClientId, {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdClient> get(
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url = 'adclients/' + commons.escapeVariable('$adClientId');
 
-    _url = 'adclients/' + commons.Escaper.ecapeVariable('$adClientId');
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdClient.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdClient.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// List all host ad clients in this AdSense account.
@@ -895,41 +752,32 @@ class AdclientsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AdClients> list(
-      {core.int maxResults, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AdClients> list({
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'adclients';
 
-    _url = 'adclients';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AdClients.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AdClients.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class AssociationsessionsResourceApi {
+class AssociationsessionsResource {
   final commons.ApiRequester _requester;
 
-  AssociationsessionsResourceApi(commons.ApiRequester client)
+  AssociationsessionsResource(commons.ApiRequester client)
       : _requester = client;
 
   /// Create an association session for initiating an association with an
@@ -940,6 +788,10 @@ class AssociationsessionsResourceApi {
   /// [productCode] - Products to associate with the user.
   ///
   /// [websiteUrl] - The URL of the user's hosted website.
+  ///
+  /// [callbackUrl] - The URL to redirect the user to once association is
+  /// completed. It receives a token parameter that can then be used to retrieve
+  /// the associated account.
   ///
   /// [userLocale] - The preferred locale of the user.
   ///
@@ -956,44 +808,34 @@ class AssociationsessionsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AssociationSession> start(
-      core.List<core.String> productCode, core.String websiteUrl,
-      {core.String userLocale,
-      core.String websiteLocale,
-      core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.List<core.String> productCode,
+    core.String websiteUrl, {
+    core.String? callbackUrl,
+    core.String? userLocale,
+    core.String? websiteLocale,
+    core.String? $fields,
+  }) async {
+    if (productCode.isEmpty) {
+      throw core.ArgumentError('Parameter productCode cannot be empty.');
+    }
+    final _queryParams = <core.String, core.List<core.String>>{
+      'productCode': productCode,
+      'websiteUrl': [websiteUrl],
+      if (callbackUrl != null) 'callbackUrl': [callbackUrl],
+      if (userLocale != null) 'userLocale': [userLocale],
+      if (websiteLocale != null) 'websiteLocale': [websiteLocale],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (productCode == null || productCode.isEmpty) {
-      throw new core.ArgumentError("Parameter productCode is required.");
-    }
-    _queryParams["productCode"] = productCode;
-    if (websiteUrl == null) {
-      throw new core.ArgumentError("Parameter websiteUrl is required.");
-    }
-    _queryParams["websiteUrl"] = [websiteUrl];
-    if (userLocale != null) {
-      _queryParams["userLocale"] = [userLocale];
-    }
-    if (websiteLocale != null) {
-      _queryParams["websiteLocale"] = [websiteLocale];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'associationsessions/start';
 
-    _url = 'associationsessions/start';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AssociationSession.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AssociationSession.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Verify an association session after the association callback returns from
@@ -1013,39 +855,31 @@ class AssociationsessionsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<AssociationSession> verify(core.String token,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<AssociationSession> verify(
+    core.String token, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      'token': [token],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (token == null) {
-      throw new core.ArgumentError("Parameter token is required.");
-    }
-    _queryParams["token"] = [token];
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'associationsessions/verify';
 
-    _url = 'associationsessions/verify';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new AssociationSession.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AssociationSession.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class CustomchannelsResourceApi {
+class CustomchannelsResource {
   final commons.ApiRequester _requester;
 
-  CustomchannelsResourceApi(commons.ApiRequester client) : _requester = client;
+  CustomchannelsResource(commons.ApiRequester client) : _requester = client;
 
   /// Delete a specific custom channel from the host AdSense account.
   ///
@@ -1066,37 +900,26 @@ class CustomchannelsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<CustomChannel> delete(
-      core.String adClientId, core.String customChannelId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String adClientId,
+    core.String customChannelId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (customChannelId == null) {
-      throw new core.ArgumentError("Parameter customChannelId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels/' +
-        commons.Escaper.ecapeVariable('$customChannelId');
+        commons.escapeVariable('$customChannelId');
 
-    var _response = _requester.request(_url, "DELETE",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return CustomChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Get a specific custom channel from the host AdSense account.
@@ -1118,37 +941,26 @@ class CustomchannelsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<CustomChannel> get(
-      core.String adClientId, core.String customChannelId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String adClientId,
+    core.String customChannelId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (customChannelId == null) {
-      throw new core.ArgumentError("Parameter customChannelId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels/' +
-        commons.Escaper.ecapeVariable('$customChannelId');
+        commons.escapeVariable('$customChannelId');
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return CustomChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Add a new custom channel to the host AdSense account.
@@ -1170,36 +982,27 @@ class CustomchannelsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<CustomChannel> insert(
-      CustomChannel request, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    CustomChannel request,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels';
 
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CustomChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// List all host custom channels in this AdSense account.
@@ -1226,43 +1029,34 @@ class CustomchannelsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<CustomChannels> list(core.String adClientId,
-      {core.int maxResults, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<CustomChannels> list(
+    core.String adClientId, {
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels';
 
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannels.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return CustomChannels.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a custom channel in the host AdSense account. This method supports
-  /// patch semantics.
+  /// Update a custom channel in the host AdSense account.
+  ///
+  /// This method supports patch semantics.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1282,41 +1076,30 @@ class CustomchannelsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<CustomChannel> patch(CustomChannel request,
-      core.String adClientId, core.String customChannelId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<CustomChannel> patch(
+    CustomChannel request,
+    core.String adClientId,
+    core.String customChannelId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      'customChannelId': [customChannelId],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (customChannelId == null) {
-      throw new core.ArgumentError("Parameter customChannelId is required.");
-    }
-    _queryParams["customChannelId"] = [customChannelId];
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels';
 
-    var _response = _requester.request(_url, "PATCH",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CustomChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Update a custom channel in the host AdSense account.
@@ -1338,80 +1121,73 @@ class CustomchannelsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<CustomChannel> update(
-      CustomChannel request, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    CustomChannel request,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/customchannels';
 
-    var _response = _requester.request(_url, "PUT",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'PUT',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CustomChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class ReportsResourceApi {
+class ReportsResource {
   final commons.ApiRequester _requester;
 
-  ReportsResourceApi(commons.ApiRequester client) : _requester = client;
+  ReportsResource(commons.ApiRequester client) : _requester = client;
 
   /// Generate an AdSense report based on the report request sent in the query
-  /// parameters. Returns the result as JSON; to retrieve output in CSV format
-  /// specify "alt=csv" as a query parameter.
+  /// parameters.
+  ///
+  /// Returns the result as JSON; to retrieve output in CSV format specify
+  /// "alt=csv" as a query parameter.
   ///
   /// Request parameters:
   ///
   /// [startDate] - Start of the date range to report on in "YYYY-MM-DD" format,
   /// inclusive.
   /// Value must have pattern
-  /// "\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)(([\-\+]\d+[dwmy]){0,3}?)".
+  /// `\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)((\[\-\+\]\d+\[dwmy\]){0,3}?)`.
   ///
   /// [endDate] - End of the date range to report on in "YYYY-MM-DD" format,
   /// inclusive.
   /// Value must have pattern
-  /// "\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)(([\-\+]\d+[dwmy]){0,3}?)".
+  /// `\d{4}-\d{2}-\d{2}|(today|startOfMonth|startOfYear)((\[\-\+\]\d+\[dwmy\]){0,3}?)`.
   ///
   /// [dimension] - Dimensions to base the report on.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [filter] - Filters to be run on the report.
-  /// Value must have pattern "[a-zA-Z_]+(==|=@).+".
+  /// Value must have pattern `\[a-zA-Z_\]+(==|=@).+`.
   ///
   /// [locale] - Optional locale to use for translating report output to a local
   /// language. Defaults to "en_US" if not specified.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [maxResults] - The maximum number of rows of report data to return.
   /// Value must be between "0" and "50000".
   ///
   /// [metric] - Numeric columns to include in the report.
-  /// Value must have pattern "[a-zA-Z_]+".
+  /// Value must have pattern `\[a-zA-Z_\]+`.
   ///
   /// [sort] - The name of a dimension or metric to sort the resulting report
   /// on, optionally prefixed with "+" to sort ascending or "-" to sort
   /// descending. If no prefix is specified, the column is sorted ascending.
-  /// Value must have pattern "(\+|-)?[a-zA-Z_]+".
+  /// Value must have pattern `(\+|-)?\[a-zA-Z_\]+`.
   ///
   /// [startIndex] - Index of the first row of report data to return.
   /// Value must be between "0" and "5000".
@@ -1426,71 +1202,46 @@ class ReportsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<Report> generate(core.String startDate, core.String endDate,
-      {core.List<core.String> dimension,
-      core.List<core.String> filter,
-      core.String locale,
-      core.int maxResults,
-      core.List<core.String> metric,
-      core.List<core.String> sort,
-      core.int startIndex,
-      core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<Report> generate(
+    core.String startDate,
+    core.String endDate, {
+    core.List<core.String>? dimension,
+    core.List<core.String>? filter,
+    core.String? locale,
+    core.int? maxResults,
+    core.List<core.String>? metric,
+    core.List<core.String>? sort,
+    core.int? startIndex,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      'startDate': [startDate],
+      'endDate': [endDate],
+      if (dimension != null) 'dimension': dimension,
+      if (filter != null) 'filter': filter,
+      if (locale != null) 'locale': [locale],
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (metric != null) 'metric': metric,
+      if (sort != null) 'sort': sort,
+      if (startIndex != null) 'startIndex': ['${startIndex}'],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (startDate == null) {
-      throw new core.ArgumentError("Parameter startDate is required.");
-    }
-    _queryParams["startDate"] = [startDate];
-    if (endDate == null) {
-      throw new core.ArgumentError("Parameter endDate is required.");
-    }
-    _queryParams["endDate"] = [endDate];
-    if (dimension != null) {
-      _queryParams["dimension"] = dimension;
-    }
-    if (filter != null) {
-      _queryParams["filter"] = filter;
-    }
-    if (locale != null) {
-      _queryParams["locale"] = [locale];
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (metric != null) {
-      _queryParams["metric"] = metric;
-    }
-    if (sort != null) {
-      _queryParams["sort"] = sort;
-    }
-    if (startIndex != null) {
-      _queryParams["startIndex"] = ["${startIndex}"];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'reports';
 
-    _url = 'reports';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Report.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Report.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class UrlchannelsResourceApi {
+class UrlchannelsResource {
   final commons.ApiRequester _requester;
 
-  UrlchannelsResourceApi(commons.ApiRequester client) : _requester = client;
+  UrlchannelsResource(commons.ApiRequester client) : _requester = client;
 
   /// Delete a URL channel from the host AdSense account.
   ///
@@ -1511,37 +1262,26 @@ class UrlchannelsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<UrlChannel> delete(
-      core.String adClientId, core.String urlChannelId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    core.String adClientId,
+    core.String urlChannelId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (urlChannelId == null) {
-      throw new core.ArgumentError("Parameter urlChannelId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
+    final _url = 'adclients/' +
+        commons.escapeVariable('$adClientId') +
         '/urlchannels/' +
-        commons.Escaper.ecapeVariable('$urlChannelId');
+        commons.escapeVariable('$urlChannelId');
 
-    var _response = _requester.request(_url, "DELETE",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new UrlChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return UrlChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Add a new URL channel to the host AdSense account.
@@ -1562,36 +1302,27 @@ class UrlchannelsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<UrlChannel> insert(UrlChannel request, core.String adClientId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<UrlChannel> insert(
+    UrlChannel request,
+    core.String adClientId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url =
+        'adclients/' + commons.escapeVariable('$adClientId') + '/urlchannels';
 
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
-        '/urlchannels';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new UrlChannel.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return UrlChannel.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// List all host URL channels in the host AdSense account.
@@ -1618,581 +1349,487 @@ class UrlchannelsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<UrlChannels> list(core.String adClientId,
-      {core.int maxResults, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<UrlChannels> list(
+    core.String adClientId, {
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (adClientId == null) {
-      throw new core.ArgumentError("Parameter adClientId is required.");
-    }
-    if (maxResults != null) {
-      _queryParams["maxResults"] = ["${maxResults}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url =
+        'adclients/' + commons.escapeVariable('$adClientId') + '/urlchannels';
 
-    _url = 'adclients/' +
-        commons.Escaper.ecapeVariable('$adClientId') +
-        '/urlchannels';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new UrlChannels.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return UrlChannels.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
 class Account {
   /// Unique identifier of this account.
-  core.String id;
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#account.
-  core.String kind;
+  core.String? kind;
 
   /// Name of this account.
-  core.String name;
+  core.String? name;
 
-  /// Approval status of this account. One of: PENDING, APPROVED, DISABLED.
-  core.String status;
+  /// Approval status of this account.
+  ///
+  /// One of: PENDING, APPROVED, DISABLED.
+  core.String? status;
 
   Account();
 
   Account.fromJson(core.Map _json) {
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("name")) {
-      name = _json["name"];
+    if (_json.containsKey('name')) {
+      name = _json['name'] as core.String;
     }
-    if (_json.containsKey("status")) {
-      status = _json["status"];
+    if (_json.containsKey('status')) {
+      status = _json['status'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (name != null) {
-      _json["name"] = name;
-    }
-    if (status != null) {
-      _json["status"] = status;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (name != null) 'name': name!,
+        if (status != null) 'status': status!,
+      };
 }
 
 class Accounts {
   /// ETag of this response for caching purposes.
-  core.String etag;
+  core.String? etag;
 
   /// The accounts returned in this list response.
-  core.List<Account> items;
+  core.List<Account>? items;
 
   /// Kind of list this is, in this case adsensehost#accounts.
-  core.String kind;
+  core.String? kind;
 
   Accounts();
 
   Accounts.fromJson(core.Map _json) {
-    if (_json.containsKey("etag")) {
-      etag = _json["etag"];
+    if (_json.containsKey('etag')) {
+      etag = _json['etag'] as core.String;
     }
-    if (_json.containsKey("items")) {
-      items = (_json["items"] as core.List)
-          .map<Account>((value) => new Account.fromJson(value))
+    if (_json.containsKey('items')) {
+      items = (_json['items'] as core.List)
+          .map<Account>((value) =>
+              Account.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (etag != null) {
-      _json["etag"] = etag;
-    }
-    if (items != null) {
-      _json["items"] = items.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (etag != null) 'etag': etag!,
+        if (items != null)
+          'items': items!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+      };
 }
 
 class AdClient {
   /// Whether this ad client is opted in to ARC.
-  core.bool arcOptIn;
+  core.bool? arcOptIn;
 
   /// Unique identifier of this ad client.
-  core.String id;
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#adClient.
-  core.String kind;
+  core.String? kind;
 
   /// This ad client's product code, which corresponds to the PRODUCT_CODE
   /// report dimension.
-  core.String productCode;
+  core.String? productCode;
 
   /// Whether this ad client supports being reported on.
-  core.bool supportsReporting;
+  core.bool? supportsReporting;
 
   AdClient();
 
   AdClient.fromJson(core.Map _json) {
-    if (_json.containsKey("arcOptIn")) {
-      arcOptIn = _json["arcOptIn"];
+    if (_json.containsKey('arcOptIn')) {
+      arcOptIn = _json['arcOptIn'] as core.bool;
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("productCode")) {
-      productCode = _json["productCode"];
+    if (_json.containsKey('productCode')) {
+      productCode = _json['productCode'] as core.String;
     }
-    if (_json.containsKey("supportsReporting")) {
-      supportsReporting = _json["supportsReporting"];
+    if (_json.containsKey('supportsReporting')) {
+      supportsReporting = _json['supportsReporting'] as core.bool;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (arcOptIn != null) {
-      _json["arcOptIn"] = arcOptIn;
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (productCode != null) {
-      _json["productCode"] = productCode;
-    }
-    if (supportsReporting != null) {
-      _json["supportsReporting"] = supportsReporting;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (arcOptIn != null) 'arcOptIn': arcOptIn!,
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (productCode != null) 'productCode': productCode!,
+        if (supportsReporting != null) 'supportsReporting': supportsReporting!,
+      };
 }
 
 class AdClients {
   /// ETag of this response for caching purposes.
-  core.String etag;
+  core.String? etag;
 
   /// The ad clients returned in this list response.
-  core.List<AdClient> items;
+  core.List<AdClient>? items;
 
   /// Kind of list this is, in this case adsensehost#adClients.
-  core.String kind;
+  core.String? kind;
 
-  /// Continuation token used to page through ad clients. To retrieve the next
-  /// page of results, set the next request's "pageToken" value to this.
-  core.String nextPageToken;
+  /// Continuation token used to page through ad clients.
+  ///
+  /// To retrieve the next page of results, set the next request's "pageToken"
+  /// value to this.
+  core.String? nextPageToken;
 
   AdClients();
 
   AdClients.fromJson(core.Map _json) {
-    if (_json.containsKey("etag")) {
-      etag = _json["etag"];
+    if (_json.containsKey('etag')) {
+      etag = _json['etag'] as core.String;
     }
-    if (_json.containsKey("items")) {
-      items = (_json["items"] as core.List)
-          .map<AdClient>((value) => new AdClient.fromJson(value))
+    if (_json.containsKey('items')) {
+      items = (_json['items'] as core.List)
+          .map<AdClient>((value) =>
+              AdClient.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (etag != null) {
-      _json["etag"] = etag;
-    }
-    if (items != null) {
-      _json["items"] = items.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (etag != null) 'etag': etag!,
+        if (items != null)
+          'items': items!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }
 
 class AdCode {
   /// The ad code snippet.
-  core.String adCode;
+  core.String? adCode;
 
   /// Kind this is, in this case adsensehost#adCode.
-  core.String kind;
+  core.String? kind;
 
   AdCode();
 
   AdCode.fromJson(core.Map _json) {
-    if (_json.containsKey("adCode")) {
-      adCode = _json["adCode"];
+    if (_json.containsKey('adCode')) {
+      adCode = _json['adCode'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (adCode != null) {
-      _json["adCode"] = adCode;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (adCode != null) 'adCode': adCode!,
+        if (kind != null) 'kind': kind!,
+      };
 }
 
-/// The colors included in the style. These are represented as six hexadecimal
-/// characters, similar to HTML color codes, but without the leading hash.
+/// The colors included in the style.
+///
+/// These are represented as six hexadecimal characters, similar to HTML color
+/// codes, but without the leading hash.
 class AdStyleColors {
   /// The color of the ad background.
-  core.String background;
+  core.String? background;
 
   /// The color of the ad border.
-  core.String border;
+  core.String? border;
 
   /// The color of the ad text.
-  core.String text;
+  core.String? text;
 
   /// The color of the ad title.
-  core.String title;
+  core.String? title;
 
   /// The color of the ad url.
-  core.String url;
+  core.String? url;
 
   AdStyleColors();
 
   AdStyleColors.fromJson(core.Map _json) {
-    if (_json.containsKey("background")) {
-      background = _json["background"];
+    if (_json.containsKey('background')) {
+      background = _json['background'] as core.String;
     }
-    if (_json.containsKey("border")) {
-      border = _json["border"];
+    if (_json.containsKey('border')) {
+      border = _json['border'] as core.String;
     }
-    if (_json.containsKey("text")) {
-      text = _json["text"];
+    if (_json.containsKey('text')) {
+      text = _json['text'] as core.String;
     }
-    if (_json.containsKey("title")) {
-      title = _json["title"];
+    if (_json.containsKey('title')) {
+      title = _json['title'] as core.String;
     }
-    if (_json.containsKey("url")) {
-      url = _json["url"];
+    if (_json.containsKey('url')) {
+      url = _json['url'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (background != null) {
-      _json["background"] = background;
-    }
-    if (border != null) {
-      _json["border"] = border;
-    }
-    if (text != null) {
-      _json["text"] = text;
-    }
-    if (title != null) {
-      _json["title"] = title;
-    }
-    if (url != null) {
-      _json["url"] = url;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (background != null) 'background': background!,
+        if (border != null) 'border': border!,
+        if (text != null) 'text': text!,
+        if (title != null) 'title': title!,
+        if (url != null) 'url': url!,
+      };
 }
 
 /// The font which is included in the style.
 class AdStyleFont {
-  /// The family of the font. Possible values are: ACCOUNT_DEFAULT_FAMILY,
-  /// ADSENSE_DEFAULT_FAMILY, ARIAL, TIMES and VERDANA.
-  core.String family;
+  /// The family of the font.
+  ///
+  /// Possible values are: ACCOUNT_DEFAULT_FAMILY, ADSENSE_DEFAULT_FAMILY,
+  /// ARIAL, TIMES and VERDANA.
+  core.String? family;
 
-  /// The size of the font. Possible values are: ACCOUNT_DEFAULT_SIZE,
-  /// ADSENSE_DEFAULT_SIZE, SMALL, MEDIUM and LARGE.
-  core.String size;
+  /// The size of the font.
+  ///
+  /// Possible values are: ACCOUNT_DEFAULT_SIZE, ADSENSE_DEFAULT_SIZE, SMALL,
+  /// MEDIUM and LARGE.
+  core.String? size;
 
   AdStyleFont();
 
   AdStyleFont.fromJson(core.Map _json) {
-    if (_json.containsKey("family")) {
-      family = _json["family"];
+    if (_json.containsKey('family')) {
+      family = _json['family'] as core.String;
     }
-    if (_json.containsKey("size")) {
-      size = _json["size"];
+    if (_json.containsKey('size')) {
+      size = _json['size'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (family != null) {
-      _json["family"] = family;
-    }
-    if (size != null) {
-      _json["size"] = size;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (family != null) 'family': family!,
+        if (size != null) 'size': size!,
+      };
 }
 
 class AdStyle {
-  /// The colors included in the style. These are represented as six hexadecimal
-  /// characters, similar to HTML color codes, but without the leading hash.
-  AdStyleColors colors;
+  /// The colors included in the style.
+  ///
+  /// These are represented as six hexadecimal characters, similar to HTML color
+  /// codes, but without the leading hash.
+  AdStyleColors? colors;
 
   /// The style of the corners in the ad (deprecated: never populated, ignored).
-  core.String corners;
+  core.String? corners;
 
   /// The font which is included in the style.
-  AdStyleFont font;
+  AdStyleFont? font;
 
   /// Kind this is, in this case adsensehost#adStyle.
-  core.String kind;
+  core.String? kind;
 
   AdStyle();
 
   AdStyle.fromJson(core.Map _json) {
-    if (_json.containsKey("colors")) {
-      colors = new AdStyleColors.fromJson(_json["colors"]);
+    if (_json.containsKey('colors')) {
+      colors = AdStyleColors.fromJson(
+          _json['colors'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("corners")) {
-      corners = _json["corners"];
+    if (_json.containsKey('corners')) {
+      corners = _json['corners'] as core.String;
     }
-    if (_json.containsKey("font")) {
-      font = new AdStyleFont.fromJson(_json["font"]);
+    if (_json.containsKey('font')) {
+      font = AdStyleFont.fromJson(
+          _json['font'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (colors != null) {
-      _json["colors"] = (colors).toJson();
-    }
-    if (corners != null) {
-      _json["corners"] = corners;
-    }
-    if (font != null) {
-      _json["font"] = (font).toJson();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (colors != null) 'colors': colors!.toJson(),
+        if (corners != null) 'corners': corners!,
+        if (font != null) 'font': font!.toJson(),
+        if (kind != null) 'kind': kind!,
+      };
 }
 
 /// The backup option to be used in instances where no ad is available.
 class AdUnitContentAdsSettingsBackupOption {
-  /// Color to use when type is set to COLOR. These are represented as six
-  /// hexadecimal characters, similar to HTML color codes, but without the
-  /// leading hash.
-  core.String color;
+  /// Color to use when type is set to COLOR.
+  ///
+  /// These are represented as six hexadecimal characters, similar to HTML color
+  /// codes, but without the leading hash.
+  core.String? color;
 
-  /// Type of the backup option. Possible values are BLANK, COLOR and URL.
-  core.String type;
+  /// Type of the backup option.
+  ///
+  /// Possible values are BLANK, COLOR and URL.
+  core.String? type;
 
   /// URL to use when type is set to URL.
-  core.String url;
+  core.String? url;
 
   AdUnitContentAdsSettingsBackupOption();
 
   AdUnitContentAdsSettingsBackupOption.fromJson(core.Map _json) {
-    if (_json.containsKey("color")) {
-      color = _json["color"];
+    if (_json.containsKey('color')) {
+      color = _json['color'] as core.String;
     }
-    if (_json.containsKey("type")) {
-      type = _json["type"];
+    if (_json.containsKey('type')) {
+      type = _json['type'] as core.String;
     }
-    if (_json.containsKey("url")) {
-      url = _json["url"];
+    if (_json.containsKey('url')) {
+      url = _json['url'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (color != null) {
-      _json["color"] = color;
-    }
-    if (type != null) {
-      _json["type"] = type;
-    }
-    if (url != null) {
-      _json["url"] = url;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (color != null) 'color': color!,
+        if (type != null) 'type': type!,
+        if (url != null) 'url': url!,
+      };
 }
 
 /// Settings specific to content ads (AFC) and highend mobile content ads (AFMC
 /// - deprecated).
 class AdUnitContentAdsSettings {
   /// The backup option to be used in instances where no ad is available.
-  AdUnitContentAdsSettingsBackupOption backupOption;
+  AdUnitContentAdsSettingsBackupOption? backupOption;
 
-  /// Size of this ad unit. Size values are in the form SIZE_{width}_{height}.
-  core.String size;
+  /// Size of this ad unit.
+  ///
+  /// Size values are in the form SIZE_{width}_{height}.
+  core.String? size;
 
-  /// Type of this ad unit. Possible values are TEXT, TEXT_IMAGE, IMAGE and
-  /// LINK.
-  core.String type;
+  /// Type of this ad unit.
+  ///
+  /// Possible values are TEXT, TEXT_IMAGE, IMAGE and LINK.
+  core.String? type;
 
   AdUnitContentAdsSettings();
 
   AdUnitContentAdsSettings.fromJson(core.Map _json) {
-    if (_json.containsKey("backupOption")) {
-      backupOption = new AdUnitContentAdsSettingsBackupOption.fromJson(
-          _json["backupOption"]);
+    if (_json.containsKey('backupOption')) {
+      backupOption = AdUnitContentAdsSettingsBackupOption.fromJson(
+          _json['backupOption'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("size")) {
-      size = _json["size"];
+    if (_json.containsKey('size')) {
+      size = _json['size'] as core.String;
     }
-    if (_json.containsKey("type")) {
-      type = _json["type"];
+    if (_json.containsKey('type')) {
+      type = _json['type'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (backupOption != null) {
-      _json["backupOption"] = (backupOption).toJson();
-    }
-    if (size != null) {
-      _json["size"] = size;
-    }
-    if (type != null) {
-      _json["type"] = type;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (backupOption != null) 'backupOption': backupOption!.toJson(),
+        if (size != null) 'size': size!,
+        if (type != null) 'type': type!,
+      };
 }
 
 /// Settings specific to WAP mobile content ads (AFMC - deprecated).
 class AdUnitMobileContentAdsSettings {
   /// The markup language to use for this ad unit.
-  core.String markupLanguage;
+  core.String? markupLanguage;
 
   /// The scripting language to use for this ad unit.
-  core.String scriptingLanguage;
+  core.String? scriptingLanguage;
 
   /// Size of this ad unit.
-  core.String size;
+  core.String? size;
 
   /// Type of this ad unit.
-  core.String type;
+  core.String? type;
 
   AdUnitMobileContentAdsSettings();
 
   AdUnitMobileContentAdsSettings.fromJson(core.Map _json) {
-    if (_json.containsKey("markupLanguage")) {
-      markupLanguage = _json["markupLanguage"];
+    if (_json.containsKey('markupLanguage')) {
+      markupLanguage = _json['markupLanguage'] as core.String;
     }
-    if (_json.containsKey("scriptingLanguage")) {
-      scriptingLanguage = _json["scriptingLanguage"];
+    if (_json.containsKey('scriptingLanguage')) {
+      scriptingLanguage = _json['scriptingLanguage'] as core.String;
     }
-    if (_json.containsKey("size")) {
-      size = _json["size"];
+    if (_json.containsKey('size')) {
+      size = _json['size'] as core.String;
     }
-    if (_json.containsKey("type")) {
-      type = _json["type"];
+    if (_json.containsKey('type')) {
+      type = _json['type'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (markupLanguage != null) {
-      _json["markupLanguage"] = markupLanguage;
-    }
-    if (scriptingLanguage != null) {
-      _json["scriptingLanguage"] = scriptingLanguage;
-    }
-    if (size != null) {
-      _json["size"] = size;
-    }
-    if (type != null) {
-      _json["type"] = type;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (markupLanguage != null) 'markupLanguage': markupLanguage!,
+        if (scriptingLanguage != null) 'scriptingLanguage': scriptingLanguage!,
+        if (size != null) 'size': size!,
+        if (type != null) 'type': type!,
+      };
 }
 
 class AdUnit {
   /// Identity code of this ad unit, not necessarily unique across ad clients.
-  core.String code;
+  core.String? code;
 
   /// Settings specific to content ads (AFC) and highend mobile content ads
   /// (AFMC - deprecated).
-  AdUnitContentAdsSettings contentAdsSettings;
+  AdUnitContentAdsSettings? contentAdsSettings;
 
   /// Custom style information specific to this ad unit.
-  AdStyle customStyle;
+  AdStyle? customStyle;
 
-  /// Unique identifier of this ad unit. This should be considered an opaque
-  /// identifier; it is not safe to rely on it being in any particular format.
-  core.String id;
+  /// Unique identifier of this ad unit.
+  ///
+  /// This should be considered an opaque identifier; it is not safe to rely on
+  /// it being in any particular format.
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#adUnit.
-  core.String kind;
+  core.String? kind;
 
   /// Settings specific to WAP mobile content ads (AFMC - deprecated).
-  AdUnitMobileContentAdsSettings mobileContentAdsSettings;
+  AdUnitMobileContentAdsSettings? mobileContentAdsSettings;
 
   /// Name of this ad unit.
-  core.String name;
+  core.String? name;
 
-  /// Status of this ad unit. Possible values are:
+  /// Status of this ad unit.
+  ///
+  /// Possible values are:
   /// NEW: Indicates that the ad unit was created within the last seven days and
   /// does not yet have any activity associated with it.
   ///
@@ -2201,545 +1838,471 @@ class AdUnit {
   ///
   /// INACTIVE: Indicates that there has been no activity on this ad unit in the
   /// last seven days.
-  core.String status;
+  core.String? status;
 
   AdUnit();
 
   AdUnit.fromJson(core.Map _json) {
-    if (_json.containsKey("code")) {
-      code = _json["code"];
+    if (_json.containsKey('code')) {
+      code = _json['code'] as core.String;
     }
-    if (_json.containsKey("contentAdsSettings")) {
-      contentAdsSettings =
-          new AdUnitContentAdsSettings.fromJson(_json["contentAdsSettings"]);
+    if (_json.containsKey('contentAdsSettings')) {
+      contentAdsSettings = AdUnitContentAdsSettings.fromJson(
+          _json['contentAdsSettings'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("customStyle")) {
-      customStyle = new AdStyle.fromJson(_json["customStyle"]);
+    if (_json.containsKey('customStyle')) {
+      customStyle = AdStyle.fromJson(
+          _json['customStyle'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("mobileContentAdsSettings")) {
-      mobileContentAdsSettings = new AdUnitMobileContentAdsSettings.fromJson(
-          _json["mobileContentAdsSettings"]);
+    if (_json.containsKey('mobileContentAdsSettings')) {
+      mobileContentAdsSettings = AdUnitMobileContentAdsSettings.fromJson(
+          _json['mobileContentAdsSettings']
+              as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("name")) {
-      name = _json["name"];
+    if (_json.containsKey('name')) {
+      name = _json['name'] as core.String;
     }
-    if (_json.containsKey("status")) {
-      status = _json["status"];
+    if (_json.containsKey('status')) {
+      status = _json['status'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (code != null) {
-      _json["code"] = code;
-    }
-    if (contentAdsSettings != null) {
-      _json["contentAdsSettings"] = (contentAdsSettings).toJson();
-    }
-    if (customStyle != null) {
-      _json["customStyle"] = (customStyle).toJson();
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (mobileContentAdsSettings != null) {
-      _json["mobileContentAdsSettings"] = (mobileContentAdsSettings).toJson();
-    }
-    if (name != null) {
-      _json["name"] = name;
-    }
-    if (status != null) {
-      _json["status"] = status;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (code != null) 'code': code!,
+        if (contentAdsSettings != null)
+          'contentAdsSettings': contentAdsSettings!.toJson(),
+        if (customStyle != null) 'customStyle': customStyle!.toJson(),
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (mobileContentAdsSettings != null)
+          'mobileContentAdsSettings': mobileContentAdsSettings!.toJson(),
+        if (name != null) 'name': name!,
+        if (status != null) 'status': status!,
+      };
 }
 
 class AdUnits {
   /// ETag of this response for caching purposes.
-  core.String etag;
+  core.String? etag;
 
   /// The ad units returned in this list response.
-  core.List<AdUnit> items;
+  core.List<AdUnit>? items;
 
   /// Kind of list this is, in this case adsensehost#adUnits.
-  core.String kind;
+  core.String? kind;
 
-  /// Continuation token used to page through ad units. To retrieve the next
-  /// page of results, set the next request's "pageToken" value to this.
-  core.String nextPageToken;
+  /// Continuation token used to page through ad units.
+  ///
+  /// To retrieve the next page of results, set the next request's "pageToken"
+  /// value to this.
+  core.String? nextPageToken;
 
   AdUnits();
 
   AdUnits.fromJson(core.Map _json) {
-    if (_json.containsKey("etag")) {
-      etag = _json["etag"];
+    if (_json.containsKey('etag')) {
+      etag = _json['etag'] as core.String;
     }
-    if (_json.containsKey("items")) {
-      items = (_json["items"] as core.List)
-          .map<AdUnit>((value) => new AdUnit.fromJson(value))
+    if (_json.containsKey('items')) {
+      items = (_json['items'] as core.List)
+          .map<AdUnit>((value) =>
+              AdUnit.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (etag != null) {
-      _json["etag"] = etag;
-    }
-    if (items != null) {
-      _json["items"] = items.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (etag != null) 'etag': etag!,
+        if (items != null)
+          'items': items!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }
 
 class AssociationSession {
-  /// Hosted account id of the associated publisher after association. Present
-  /// if status is ACCEPTED.
-  core.String accountId;
+  /// Hosted account id of the associated publisher after association.
+  ///
+  /// Present if status is ACCEPTED.
+  core.String? accountId;
 
   /// Unique identifier of this association session.
-  core.String id;
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#associationSession.
-  core.String kind;
+  core.String? kind;
 
-  /// The products to associate with the user. Options: AFC, AFG, AFV, AFS
-  /// (deprecated), AFMC (deprecated)
-  core.List<core.String> productCodes;
+  /// The products to associate with the user.
+  ///
+  /// Options: AFC, AFG, AFV, AFS (deprecated), AFMC (deprecated)
+  core.List<core.String>? productCodes;
 
-  /// Redirect URL of this association session. Used to redirect users into the
-  /// AdSense association flow.
-  core.String redirectUrl;
+  /// Redirect URL of this association session.
+  ///
+  /// Used to redirect users into the AdSense association flow.
+  core.String? redirectUrl;
 
   /// Status of the completed association, available once the association
-  /// callback token has been verified. One of ACCEPTED, REJECTED, or ERROR.
-  core.String status;
+  /// callback token has been verified.
+  ///
+  /// One of ACCEPTED, REJECTED, or ERROR.
+  core.String? status;
 
   /// The preferred locale of the user themselves when going through the AdSense
   /// association flow.
-  core.String userLocale;
+  core.String? userLocale;
 
   /// The locale of the user's hosted website.
-  core.String websiteLocale;
+  core.String? websiteLocale;
 
   /// The URL of the user's hosted website.
-  core.String websiteUrl;
+  core.String? websiteUrl;
 
   AssociationSession();
 
   AssociationSession.fromJson(core.Map _json) {
-    if (_json.containsKey("accountId")) {
-      accountId = _json["accountId"];
+    if (_json.containsKey('accountId')) {
+      accountId = _json['accountId'] as core.String;
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("productCodes")) {
-      productCodes = (_json["productCodes"] as core.List).cast<core.String>();
+    if (_json.containsKey('productCodes')) {
+      productCodes = (_json['productCodes'] as core.List)
+          .map<core.String>((value) => value as core.String)
+          .toList();
     }
-    if (_json.containsKey("redirectUrl")) {
-      redirectUrl = _json["redirectUrl"];
+    if (_json.containsKey('redirectUrl')) {
+      redirectUrl = _json['redirectUrl'] as core.String;
     }
-    if (_json.containsKey("status")) {
-      status = _json["status"];
+    if (_json.containsKey('status')) {
+      status = _json['status'] as core.String;
     }
-    if (_json.containsKey("userLocale")) {
-      userLocale = _json["userLocale"];
+    if (_json.containsKey('userLocale')) {
+      userLocale = _json['userLocale'] as core.String;
     }
-    if (_json.containsKey("websiteLocale")) {
-      websiteLocale = _json["websiteLocale"];
+    if (_json.containsKey('websiteLocale')) {
+      websiteLocale = _json['websiteLocale'] as core.String;
     }
-    if (_json.containsKey("websiteUrl")) {
-      websiteUrl = _json["websiteUrl"];
+    if (_json.containsKey('websiteUrl')) {
+      websiteUrl = _json['websiteUrl'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (accountId != null) {
-      _json["accountId"] = accountId;
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (productCodes != null) {
-      _json["productCodes"] = productCodes;
-    }
-    if (redirectUrl != null) {
-      _json["redirectUrl"] = redirectUrl;
-    }
-    if (status != null) {
-      _json["status"] = status;
-    }
-    if (userLocale != null) {
-      _json["userLocale"] = userLocale;
-    }
-    if (websiteLocale != null) {
-      _json["websiteLocale"] = websiteLocale;
-    }
-    if (websiteUrl != null) {
-      _json["websiteUrl"] = websiteUrl;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (accountId != null) 'accountId': accountId!,
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (productCodes != null) 'productCodes': productCodes!,
+        if (redirectUrl != null) 'redirectUrl': redirectUrl!,
+        if (status != null) 'status': status!,
+        if (userLocale != null) 'userLocale': userLocale!,
+        if (websiteLocale != null) 'websiteLocale': websiteLocale!,
+        if (websiteUrl != null) 'websiteUrl': websiteUrl!,
+      };
 }
 
 class CustomChannel {
   /// Code of this custom channel, not necessarily unique across ad clients.
-  core.String code;
+  core.String? code;
 
-  /// Unique identifier of this custom channel. This should be considered an
-  /// opaque identifier; it is not safe to rely on it being in any particular
-  /// format.
-  core.String id;
+  /// Unique identifier of this custom channel.
+  ///
+  /// This should be considered an opaque identifier; it is not safe to rely on
+  /// it being in any particular format.
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#customChannel.
-  core.String kind;
+  core.String? kind;
 
   /// Name of this custom channel.
-  core.String name;
+  core.String? name;
 
   CustomChannel();
 
   CustomChannel.fromJson(core.Map _json) {
-    if (_json.containsKey("code")) {
-      code = _json["code"];
+    if (_json.containsKey('code')) {
+      code = _json['code'] as core.String;
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("name")) {
-      name = _json["name"];
+    if (_json.containsKey('name')) {
+      name = _json['name'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (code != null) {
-      _json["code"] = code;
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (name != null) {
-      _json["name"] = name;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (code != null) 'code': code!,
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (name != null) 'name': name!,
+      };
 }
 
 class CustomChannels {
   /// ETag of this response for caching purposes.
-  core.String etag;
+  core.String? etag;
 
   /// The custom channels returned in this list response.
-  core.List<CustomChannel> items;
+  core.List<CustomChannel>? items;
 
   /// Kind of list this is, in this case adsensehost#customChannels.
-  core.String kind;
+  core.String? kind;
 
-  /// Continuation token used to page through custom channels. To retrieve the
-  /// next page of results, set the next request's "pageToken" value to this.
-  core.String nextPageToken;
+  /// Continuation token used to page through custom channels.
+  ///
+  /// To retrieve the next page of results, set the next request's "pageToken"
+  /// value to this.
+  core.String? nextPageToken;
 
   CustomChannels();
 
   CustomChannels.fromJson(core.Map _json) {
-    if (_json.containsKey("etag")) {
-      etag = _json["etag"];
+    if (_json.containsKey('etag')) {
+      etag = _json['etag'] as core.String;
     }
-    if (_json.containsKey("items")) {
-      items = (_json["items"] as core.List)
-          .map<CustomChannel>((value) => new CustomChannel.fromJson(value))
+    if (_json.containsKey('items')) {
+      items = (_json['items'] as core.List)
+          .map<CustomChannel>((value) => CustomChannel.fromJson(
+              value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (etag != null) {
-      _json["etag"] = etag;
-    }
-    if (items != null) {
-      _json["items"] = items.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (etag != null) 'etag': etag!,
+        if (items != null)
+          'items': items!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }
 
 class ReportHeaders {
-  /// The currency of this column. Only present if the header type is
-  /// METRIC_CURRENCY.
-  core.String currency;
+  /// The currency of this column.
+  ///
+  /// Only present if the header type is METRIC_CURRENCY.
+  core.String? currency;
 
   /// The name of the header.
-  core.String name;
+  core.String? name;
 
   /// The type of the header; one of DIMENSION, METRIC_TALLY, METRIC_RATIO, or
   /// METRIC_CURRENCY.
-  core.String type;
+  core.String? type;
 
   ReportHeaders();
 
   ReportHeaders.fromJson(core.Map _json) {
-    if (_json.containsKey("currency")) {
-      currency = _json["currency"];
+    if (_json.containsKey('currency')) {
+      currency = _json['currency'] as core.String;
     }
-    if (_json.containsKey("name")) {
-      name = _json["name"];
+    if (_json.containsKey('name')) {
+      name = _json['name'] as core.String;
     }
-    if (_json.containsKey("type")) {
-      type = _json["type"];
+    if (_json.containsKey('type')) {
+      type = _json['type'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (currency != null) {
-      _json["currency"] = currency;
-    }
-    if (name != null) {
-      _json["name"] = name;
-    }
-    if (type != null) {
-      _json["type"] = type;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (currency != null) 'currency': currency!,
+        if (name != null) 'name': name!,
+        if (type != null) 'type': type!,
+      };
 }
 
 class Report {
-  /// The averages of the report. This is the same length as any other row in
-  /// the report; cells corresponding to dimension columns are empty.
-  core.List<core.String> averages;
+  /// The averages of the report.
+  ///
+  /// This is the same length as any other row in the report; cells
+  /// corresponding to dimension columns are empty.
+  core.List<core.String>? averages;
 
-  /// The header information of the columns requested in the report. This is a
-  /// list of headers; one for each dimension in the request, followed by one
-  /// for each metric in the request.
-  core.List<ReportHeaders> headers;
+  /// The header information of the columns requested in the report.
+  ///
+  /// This is a list of headers; one for each dimension in the request, followed
+  /// by one for each metric in the request.
+  core.List<ReportHeaders>? headers;
 
   /// Kind this is, in this case adsensehost#report.
-  core.String kind;
+  core.String? kind;
 
-  /// The output rows of the report. Each row is a list of cells; one for each
-  /// dimension in the request, followed by one for each metric in the request.
-  /// The dimension cells contain strings, and the metric cells contain numbers.
-  core.List<core.List<core.String>> rows;
+  /// The output rows of the report.
+  ///
+  /// Each row is a list of cells; one for each dimension in the request,
+  /// followed by one for each metric in the request. The dimension cells
+  /// contain strings, and the metric cells contain numbers.
+  core.List<core.List<core.String>>? rows;
 
-  /// The total number of rows matched by the report request. Fewer rows may be
-  /// returned in the response due to being limited by the row count requested
-  /// or the report row limit.
-  core.String totalMatchedRows;
+  /// The total number of rows matched by the report request.
+  ///
+  /// Fewer rows may be returned in the response due to being limited by the row
+  /// count requested or the report row limit.
+  core.String? totalMatchedRows;
 
-  /// The totals of the report. This is the same length as any other row in the
-  /// report; cells corresponding to dimension columns are empty.
-  core.List<core.String> totals;
+  /// The totals of the report.
+  ///
+  /// This is the same length as any other row in the report; cells
+  /// corresponding to dimension columns are empty.
+  core.List<core.String>? totals;
 
   /// Any warnings associated with generation of the report.
-  core.List<core.String> warnings;
+  core.List<core.String>? warnings;
 
   Report();
 
   Report.fromJson(core.Map _json) {
-    if (_json.containsKey("averages")) {
-      averages = (_json["averages"] as core.List).cast<core.String>();
-    }
-    if (_json.containsKey("headers")) {
-      headers = (_json["headers"] as core.List)
-          .map<ReportHeaders>((value) => new ReportHeaders.fromJson(value))
+    if (_json.containsKey('averages')) {
+      averages = (_json['averages'] as core.List)
+          .map<core.String>((value) => value as core.String)
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
-    }
-    if (_json.containsKey("rows")) {
-      rows = (_json["rows"] as core.List)
-          .map<core.List<core.String>>(
-              (value) => (value as core.List).cast<core.String>())
+    if (_json.containsKey('headers')) {
+      headers = (_json['headers'] as core.List)
+          .map<ReportHeaders>((value) => ReportHeaders.fromJson(
+              value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("totalMatchedRows")) {
-      totalMatchedRows = _json["totalMatchedRows"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("totals")) {
-      totals = (_json["totals"] as core.List).cast<core.String>();
+    if (_json.containsKey('rows')) {
+      rows = (_json['rows'] as core.List)
+          .map<core.List<core.String>>((value) => (value as core.List)
+              .map<core.String>((value) => value as core.String)
+              .toList())
+          .toList();
     }
-    if (_json.containsKey("warnings")) {
-      warnings = (_json["warnings"] as core.List).cast<core.String>();
+    if (_json.containsKey('totalMatchedRows')) {
+      totalMatchedRows = _json['totalMatchedRows'] as core.String;
+    }
+    if (_json.containsKey('totals')) {
+      totals = (_json['totals'] as core.List)
+          .map<core.String>((value) => value as core.String)
+          .toList();
+    }
+    if (_json.containsKey('warnings')) {
+      warnings = (_json['warnings'] as core.List)
+          .map<core.String>((value) => value as core.String)
+          .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (averages != null) {
-      _json["averages"] = averages;
-    }
-    if (headers != null) {
-      _json["headers"] = headers.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (rows != null) {
-      _json["rows"] = rows;
-    }
-    if (totalMatchedRows != null) {
-      _json["totalMatchedRows"] = totalMatchedRows;
-    }
-    if (totals != null) {
-      _json["totals"] = totals;
-    }
-    if (warnings != null) {
-      _json["warnings"] = warnings;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (averages != null) 'averages': averages!,
+        if (headers != null)
+          'headers': headers!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+        if (rows != null) 'rows': rows!,
+        if (totalMatchedRows != null) 'totalMatchedRows': totalMatchedRows!,
+        if (totals != null) 'totals': totals!,
+        if (warnings != null) 'warnings': warnings!,
+      };
 }
 
 class UrlChannel {
-  /// Unique identifier of this URL channel. This should be considered an opaque
-  /// identifier; it is not safe to rely on it being in any particular format.
-  core.String id;
+  /// Unique identifier of this URL channel.
+  ///
+  /// This should be considered an opaque identifier; it is not safe to rely on
+  /// it being in any particular format.
+  core.String? id;
 
   /// Kind of resource this is, in this case adsensehost#urlChannel.
-  core.String kind;
+  core.String? kind;
 
-  /// URL Pattern of this URL channel. Does not include "http://" or "https://".
-  /// Example: www.example.com/home
-  core.String urlPattern;
+  /// URL Pattern of this URL channel.
+  ///
+  /// Does not include "http://" or "https://". Example: www.example.com/home
+  core.String? urlPattern;
 
   UrlChannel();
 
   UrlChannel.fromJson(core.Map _json) {
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("urlPattern")) {
-      urlPattern = _json["urlPattern"];
+    if (_json.containsKey('urlPattern')) {
+      urlPattern = _json['urlPattern'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (urlPattern != null) {
-      _json["urlPattern"] = urlPattern;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (urlPattern != null) 'urlPattern': urlPattern!,
+      };
 }
 
 class UrlChannels {
   /// ETag of this response for caching purposes.
-  core.String etag;
+  core.String? etag;
 
   /// The URL channels returned in this list response.
-  core.List<UrlChannel> items;
+  core.List<UrlChannel>? items;
 
   /// Kind of list this is, in this case adsensehost#urlChannels.
-  core.String kind;
+  core.String? kind;
 
-  /// Continuation token used to page through URL channels. To retrieve the next
-  /// page of results, set the next request's "pageToken" value to this.
-  core.String nextPageToken;
+  /// Continuation token used to page through URL channels.
+  ///
+  /// To retrieve the next page of results, set the next request's "pageToken"
+  /// value to this.
+  core.String? nextPageToken;
 
   UrlChannels();
 
   UrlChannels.fromJson(core.Map _json) {
-    if (_json.containsKey("etag")) {
-      etag = _json["etag"];
+    if (_json.containsKey('etag')) {
+      etag = _json['etag'] as core.String;
     }
-    if (_json.containsKey("items")) {
-      items = (_json["items"] as core.List)
-          .map<UrlChannel>((value) => new UrlChannel.fromJson(value))
+    if (_json.containsKey('items')) {
+      items = (_json['items'] as core.List)
+          .map<UrlChannel>((value) =>
+              UrlChannel.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("kind")) {
-      kind = _json["kind"];
+    if (_json.containsKey('kind')) {
+      kind = _json['kind'] as core.String;
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (etag != null) {
-      _json["etag"] = etag;
-    }
-    if (items != null) {
-      _json["items"] = items.map((value) => (value).toJson()).toList();
-    }
-    if (kind != null) {
-      _json["kind"] = kind;
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (etag != null) 'etag': etag!,
+        if (items != null)
+          'items': items!.map((value) => value.toJson()).toList(),
+        if (kind != null) 'kind': kind!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }

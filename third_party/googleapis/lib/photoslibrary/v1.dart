@@ -1,65 +1,86 @@
 // This is a generated file (see the discoveryapis_generator project).
 
-// ignore_for_file: unnecessary_cast
+// ignore_for_file: camel_case_types
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_string_interpolations
 
-library googleapis.photoslibrary.v1;
+/// Photos Library API - v1
+///
+/// Manage photos, videos, and albums in Google Photos
+///
+///
+/// For more information, see <https://developers.google.com/photos/>
+///
+/// Create an instance of [PhotosLibraryApi] to access these resources:
+///
+/// - [AlbumsResource]
+/// - [MediaItemsResource]
+/// - [SharedAlbumsResource]
+library photoslibrary.v1;
 
-import 'dart:core' as core;
 import 'dart:async' as async;
 import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+import '../src/user_agent.dart';
+
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
-const core.String USER_AGENT = 'dart-api-client photoslibrary/v1';
-
 /// Manage photos, videos, and albums in Google Photos
-class PhotoslibraryApi {
+class PhotosLibraryApi {
   /// View the photos, videos and albums in your Google Photos
-  static const DrivePhotosReadonlyScope =
-      "https://www.googleapis.com/auth/drive.photos.readonly";
+  static const drivePhotosReadonlyScope =
+      'https://www.googleapis.com/auth/drive.photos.readonly';
 
   /// View and manage your Google Photos library
-  static const PhotoslibraryScope =
-      "https://www.googleapis.com/auth/photoslibrary";
+  static const photoslibraryScope =
+      'https://www.googleapis.com/auth/photoslibrary';
 
   /// Add to your Google Photos library
-  static const PhotoslibraryAppendonlyScope =
-      "https://www.googleapis.com/auth/photoslibrary.appendonly";
+  static const photoslibraryAppendonlyScope =
+      'https://www.googleapis.com/auth/photoslibrary.appendonly';
 
   /// View your Google Photos library
-  static const PhotoslibraryReadonlyScope =
-      "https://www.googleapis.com/auth/photoslibrary.readonly";
+  static const photoslibraryReadonlyScope =
+      'https://www.googleapis.com/auth/photoslibrary.readonly';
 
   /// Manage photos added by this app
-  static const PhotoslibraryReadonlyAppcreateddataScope =
-      "https://www.googleapis.com/auth/photoslibrary.readonly.appcreateddata";
+  static const photoslibraryReadonlyAppcreateddataScope =
+      'https://www.googleapis.com/auth/photoslibrary.readonly.appcreateddata';
 
   /// Manage and add to shared albums on your behalf
-  static const PhotoslibrarySharingScope =
-      "https://www.googleapis.com/auth/photoslibrary.sharing";
+  static const photoslibrarySharingScope =
+      'https://www.googleapis.com/auth/photoslibrary.sharing';
 
   final commons.ApiRequester _requester;
 
-  AlbumsResourceApi get albums => new AlbumsResourceApi(_requester);
-  MediaItemsResourceApi get mediaItems => new MediaItemsResourceApi(_requester);
-  SharedAlbumsResourceApi get sharedAlbums =>
-      new SharedAlbumsResourceApi(_requester);
+  AlbumsResource get albums => AlbumsResource(_requester);
+  MediaItemsResource get mediaItems => MediaItemsResource(_requester);
+  SharedAlbumsResource get sharedAlbums => SharedAlbumsResource(_requester);
 
-  PhotoslibraryApi(http.Client client,
-      {core.String rootUrl: "https://photoslibrary.googleapis.com/",
-      core.String servicePath: ""})
+  PhotosLibraryApi(http.Client client,
+      {core.String rootUrl = 'https://photoslibrary.googleapis.com/',
+      core.String servicePath = ''})
       : _requester =
-            new commons.ApiRequester(client, rootUrl, servicePath, USER_AGENT);
+            commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
 }
 
-class AlbumsResourceApi {
+class AlbumsResource {
   final commons.ApiRequester _requester;
 
-  AlbumsResourceApi(commons.ApiRequester client) : _requester = client;
+  AlbumsResource(commons.ApiRequester client) : _requester = client;
 
   /// Adds an enrichment to a specified position in a defined album.
   ///
@@ -68,7 +89,7 @@ class AlbumsResourceApi {
   /// Request parameters:
   ///
   /// [albumId] - Identifier of the album where the enrichment will be added.
-  /// Value must have pattern "^[^/]+$".
+  /// Value must have pattern `^\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -81,37 +102,26 @@ class AlbumsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<AddEnrichmentToAlbumResponse> addEnrichment(
-      AddEnrichmentToAlbumRequest request, core.String albumId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    AddEnrichmentToAlbumRequest request,
+    core.String albumId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (albumId == null) {
-      throw new core.ArgumentError("Parameter albumId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url =
+        'v1/albums/' + core.Uri.encodeFull('$albumId') + ':addEnrichment';
 
-    _url = 'v1/albums/' +
-        commons.Escaper.ecapeVariableReserved('$albumId') +
-        ':addEnrichment';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response
-        .then((data) => new AddEnrichmentToAlbumResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AddEnrichmentToAlbumResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Creates an album in a user's Google Photos library.
@@ -130,31 +140,24 @@ class AlbumsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<Album> create(CreateAlbumRequest request,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<Album> create(
+    CreateAlbumRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/albums';
 
-    _url = 'v1/albums';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Album.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Album.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Returns the album specified by the given album id.
@@ -162,7 +165,7 @@ class AlbumsResourceApi {
   /// Request parameters:
   ///
   /// [albumId] - Identifier of the album to be requested.
-  /// Value must have pattern "^[^/]+$".
+  /// Value must have pattern `^\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -174,30 +177,22 @@ class AlbumsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<Album> get(core.String albumId, {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<Album> get(
+    core.String albumId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (albumId == null) {
-      throw new core.ArgumentError("Parameter albumId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url = 'v1/albums/' + core.Uri.encodeFull('$albumId');
 
-    _url = 'v1/albums/' + commons.Escaper.ecapeVariableReserved('$albumId');
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new Album.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Album.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Lists all albums shown to a user in the 'Albums' tab of the Google
@@ -226,37 +221,31 @@ class AlbumsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<ListAlbumsResponse> list(
-      {core.int pageSize, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<ListAlbumsResponse> list({
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (pageSize != null) {
-      _queryParams["pageSize"] = ["${pageSize}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/albums';
 
-    _url = 'v1/albums';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new ListAlbumsResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListAlbumsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Marks an album as 'shared' and accessible to other users. This action can
+  /// Marks an album as 'shared' and accessible to other users.
+  ///
+  /// This action can
   /// only be performed on albums which were created by the developer via the
   /// API.
   ///
@@ -268,7 +257,7 @@ class AlbumsResourceApi {
   /// belong to an album
   /// created by the developer.
   /// .
-  /// Value must have pattern "^[^/]+$".
+  /// Value must have pattern `^\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -281,43 +270,32 @@ class AlbumsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<ShareAlbumResponse> share(
-      ShareAlbumRequest request, core.String albumId,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    ShareAlbumRequest request,
+    core.String albumId, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (albumId == null) {
-      throw new core.ArgumentError("Parameter albumId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url = 'v1/albums/' + core.Uri.encodeFull('$albumId') + ':share';
 
-    _url = 'v1/albums/' +
-        commons.Escaper.ecapeVariableReserved('$albumId') +
-        ':share';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new ShareAlbumResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ShareAlbumResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class MediaItemsResourceApi {
+class MediaItemsResource {
   final commons.ApiRequester _requester;
 
-  MediaItemsResourceApi(commons.ApiRequester client) : _requester = client;
+  MediaItemsResource(commons.ApiRequester client) : _requester = client;
 
   /// Creates one or more media items in a user's Google Photos library.
   /// If an album id is specified, the media item(s) are also added to the
@@ -346,32 +324,24 @@ class MediaItemsResourceApi {
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
   async.Future<BatchCreateMediaItemsResponse> batchCreate(
-      BatchCreateMediaItemsRequest request,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+    BatchCreateMediaItemsRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/mediaItems:batchCreate';
 
-    _url = 'v1/mediaItems:batchCreate';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response
-        .then((data) => new BatchCreateMediaItemsResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return BatchCreateMediaItemsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Returns the media item specified based on a given media item id.
@@ -379,7 +349,7 @@ class MediaItemsResourceApi {
   /// Request parameters:
   ///
   /// [mediaItemId] - Identifier of media item to be requested.
-  /// Value must have pattern "^[^/]+$".
+  /// Value must have pattern `^\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -391,31 +361,22 @@ class MediaItemsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<MediaItem> get(core.String mediaItemId, {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<MediaItem> get(
+    core.String mediaItemId, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (mediaItemId == null) {
-      throw new core.ArgumentError("Parameter mediaItemId is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    final _url = 'v1/mediaItems/' + core.Uri.encodeFull('$mediaItemId');
 
-    _url = 'v1/mediaItems/' +
-        commons.Escaper.ecapeVariableReserved('$mediaItemId');
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new MediaItem.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return MediaItem.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Searches for media items in a user's Google Photos library.
@@ -445,39 +406,32 @@ class MediaItemsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<SearchMediaItemsResponse> search(SearchMediaItemsRequest request,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<SearchMediaItemsResponse> search(
+    SearchMediaItemsRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/mediaItems:search';
 
-    _url = 'v1/mediaItems:search';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response
-        .then((data) => new SearchMediaItemsResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return SearchMediaItemsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
-class SharedAlbumsResourceApi {
+class SharedAlbumsResource {
   final commons.ApiRequester _requester;
 
-  SharedAlbumsResourceApi(commons.ApiRequester client) : _requester = client;
+  SharedAlbumsResource(commons.ApiRequester client) : _requester = client;
 
   /// Joins a shared album on behalf of the Google Photos user.
   ///
@@ -495,31 +449,25 @@ class SharedAlbumsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<JoinSharedAlbumResponse> join(JoinSharedAlbumRequest request,
-      {core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<JoinSharedAlbumResponse> join(
+    JoinSharedAlbumRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/sharedAlbums:join';
 
-    _url = 'v1/sharedAlbums:join';
-
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new JoinSharedAlbumResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return JoinSharedAlbumResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 
   /// Lists all shared albums shown to a user in the 'Sharing' tab of the
@@ -548,183 +496,170 @@ class SharedAlbumsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<ListSharedAlbumsResponse> list(
-      {core.int pageSize, core.String pageToken, core.String $fields}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<ListSharedAlbumsResponse> list({
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (pageSize != null) {
-      _queryParams["pageSize"] = ["${pageSize}"];
-    }
-    if (pageToken != null) {
-      _queryParams["pageToken"] = [pageToken];
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
+    const _url = 'v1/sharedAlbums';
 
-    _url = 'v1/sharedAlbums';
-
-    var _response = _requester.request(_url, "GET",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response
-        .then((data) => new ListSharedAlbumsResponse.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListSharedAlbumsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
 /// Request to add an enrichment to a specific album at a specific position.
 class AddEnrichmentToAlbumRequest {
   /// The position where the enrichment will be inserted.
-  AlbumPosition albumPosition;
+  AlbumPosition? albumPosition;
 
   /// The enrichment to be added.
-  NewEnrichmentItem newEnrichmentItem;
+  NewEnrichmentItem? newEnrichmentItem;
 
   AddEnrichmentToAlbumRequest();
 
   AddEnrichmentToAlbumRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("albumPosition")) {
-      albumPosition = new AlbumPosition.fromJson(_json["albumPosition"]);
+    if (_json.containsKey('albumPosition')) {
+      albumPosition = AlbumPosition.fromJson(
+          _json['albumPosition'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("newEnrichmentItem")) {
-      newEnrichmentItem =
-          new NewEnrichmentItem.fromJson(_json["newEnrichmentItem"]);
+    if (_json.containsKey('newEnrichmentItem')) {
+      newEnrichmentItem = NewEnrichmentItem.fromJson(
+          _json['newEnrichmentItem'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (albumPosition != null) {
-      _json["albumPosition"] = (albumPosition).toJson();
-    }
-    if (newEnrichmentItem != null) {
-      _json["newEnrichmentItem"] = (newEnrichmentItem).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (albumPosition != null) 'albumPosition': albumPosition!.toJson(),
+        if (newEnrichmentItem != null)
+          'newEnrichmentItem': newEnrichmentItem!.toJson(),
+      };
 }
 
 class AddEnrichmentToAlbumResponse {
-  /// [Output only] Enrichment which was added.
-  EnrichmentItem enrichmentItem;
+  /// Enrichment which was added.
+  ///
+  /// Output only.
+  EnrichmentItem? enrichmentItem;
 
   AddEnrichmentToAlbumResponse();
 
   AddEnrichmentToAlbumResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("enrichmentItem")) {
-      enrichmentItem = new EnrichmentItem.fromJson(_json["enrichmentItem"]);
+    if (_json.containsKey('enrichmentItem')) {
+      enrichmentItem = EnrichmentItem.fromJson(
+          _json['enrichmentItem'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (enrichmentItem != null) {
-      _json["enrichmentItem"] = (enrichmentItem).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (enrichmentItem != null) 'enrichmentItem': enrichmentItem!.toJson(),
+      };
 }
 
 /// Representation of an album in Google Photos.
-/// Albums are a container for media items. They contain an additional
+/// Albums are a container for media items.
+///
+/// They contain an additional
 /// shareInfo property if they have been shared by the application.
 class Album {
-  /// [Output only] A URL to the cover photo's bytes. This should not be used as
+  /// A URL to the cover photo's bytes.
+  ///
+  /// This should not be used as
   /// is. Parameters should be appended to this URL before use. For example,
   /// '=w2048-h1024' will set the dimensions of the cover photo to have a width
   /// of 2048 px and height of 1024 px.
-  core.String coverPhotoBaseUrl;
+  ///
+  /// Output only.
+  core.String? coverPhotoBaseUrl;
 
-  /// [Ouput only] Identifier for the album. This is a persistent identifier
-  /// that
+  /// \[Ouput only\] Identifier for the album.
+  ///
+  /// This is a persistent identifier that
   /// can be used between sessions to identify this album.
-  core.String id;
+  core.String? id;
 
-  /// [Output only] True if media items can be created in the album.
-  /// This field is based on the scopes granted and permissions of the album. If
+  /// True if media items can be created in the album.
+  /// This field is based on the scopes granted and permissions of the album.
+  ///
+  /// If
   /// the scopes are changed or permissions of the album are changed, this field
   /// will be updated.
-  core.bool isWriteable;
+  ///
+  /// Output only.
+  core.bool? isWriteable;
 
-  /// [Output only] Google Photos URL for the album. The user needs to be signed
+  /// Google Photos URL for the album.
+  ///
+  /// The user needs to be signed
   /// in to their Google Photos account to access this link.
-  core.String productUrl;
+  ///
+  /// Output only.
+  core.String? productUrl;
 
-  /// [Output only] Information related to shared albums.
+  /// Information related to shared albums.
   /// This field is only populated if the album is a shared album, the
   /// developer created the album and the user has granted photoslibrary.sharing
   /// scope.
-  ShareInfo shareInfo;
+  ///
+  /// Output only.
+  ShareInfo? shareInfo;
 
   /// Name of the album displayed to the user in their Google Photos account.
   /// This string should not be more than 500 characters.
-  core.String title;
+  core.String? title;
 
-  /// [Output only] The number of media items in the album
-  core.String totalMediaItems;
+  /// The number of media items in the album
+  ///
+  /// Output only.
+  core.String? totalMediaItems;
 
   Album();
 
   Album.fromJson(core.Map _json) {
-    if (_json.containsKey("coverPhotoBaseUrl")) {
-      coverPhotoBaseUrl = _json["coverPhotoBaseUrl"];
+    if (_json.containsKey('coverPhotoBaseUrl')) {
+      coverPhotoBaseUrl = _json['coverPhotoBaseUrl'] as core.String;
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("isWriteable")) {
-      isWriteable = _json["isWriteable"];
+    if (_json.containsKey('isWriteable')) {
+      isWriteable = _json['isWriteable'] as core.bool;
     }
-    if (_json.containsKey("productUrl")) {
-      productUrl = _json["productUrl"];
+    if (_json.containsKey('productUrl')) {
+      productUrl = _json['productUrl'] as core.String;
     }
-    if (_json.containsKey("shareInfo")) {
-      shareInfo = new ShareInfo.fromJson(_json["shareInfo"]);
+    if (_json.containsKey('shareInfo')) {
+      shareInfo = ShareInfo.fromJson(
+          _json['shareInfo'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("title")) {
-      title = _json["title"];
+    if (_json.containsKey('title')) {
+      title = _json['title'] as core.String;
     }
-    if (_json.containsKey("totalMediaItems")) {
-      totalMediaItems = _json["totalMediaItems"];
+    if (_json.containsKey('totalMediaItems')) {
+      totalMediaItems = _json['totalMediaItems'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (coverPhotoBaseUrl != null) {
-      _json["coverPhotoBaseUrl"] = coverPhotoBaseUrl;
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (isWriteable != null) {
-      _json["isWriteable"] = isWriteable;
-    }
-    if (productUrl != null) {
-      _json["productUrl"] = productUrl;
-    }
-    if (shareInfo != null) {
-      _json["shareInfo"] = (shareInfo).toJson();
-    }
-    if (title != null) {
-      _json["title"] = title;
-    }
-    if (totalMediaItems != null) {
-      _json["totalMediaItems"] = totalMediaItems;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (coverPhotoBaseUrl != null) 'coverPhotoBaseUrl': coverPhotoBaseUrl!,
+        if (id != null) 'id': id!,
+        if (isWriteable != null) 'isWriteable': isWriteable!,
+        if (productUrl != null) 'productUrl': productUrl!,
+        if (shareInfo != null) 'shareInfo': shareInfo!.toJson(),
+        if (title != null) 'title': title!,
+        if (totalMediaItems != null) 'totalMediaItems': totalMediaItems!,
+      };
 }
 
 /// Specifies a position in an album.
@@ -736,145 +671,139 @@ class AlbumPosition {
   /// - "LAST_IN_ALBUM" : At the end of the album.
   /// - "AFTER_MEDIA_ITEM" : After a media item.
   /// - "AFTER_ENRICHMENT_ITEM" : After an enrichment item.
-  core.String position;
+  core.String? position;
 
   /// The enrichment item to which the position is relative to.
   /// Only used when position type is AFTER_ENRICHMENT_ITEM.
-  core.String relativeEnrichmentItemId;
+  core.String? relativeEnrichmentItemId;
 
   /// The media item to which the position is relative to.
   /// Only used when position type is AFTER_MEDIA_ITEM.
-  core.String relativeMediaItemId;
+  core.String? relativeMediaItemId;
 
   AlbumPosition();
 
   AlbumPosition.fromJson(core.Map _json) {
-    if (_json.containsKey("position")) {
-      position = _json["position"];
+    if (_json.containsKey('position')) {
+      position = _json['position'] as core.String;
     }
-    if (_json.containsKey("relativeEnrichmentItemId")) {
-      relativeEnrichmentItemId = _json["relativeEnrichmentItemId"];
+    if (_json.containsKey('relativeEnrichmentItemId')) {
+      relativeEnrichmentItemId =
+          _json['relativeEnrichmentItemId'] as core.String;
     }
-    if (_json.containsKey("relativeMediaItemId")) {
-      relativeMediaItemId = _json["relativeMediaItemId"];
+    if (_json.containsKey('relativeMediaItemId')) {
+      relativeMediaItemId = _json['relativeMediaItemId'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (position != null) {
-      _json["position"] = position;
-    }
-    if (relativeEnrichmentItemId != null) {
-      _json["relativeEnrichmentItemId"] = relativeEnrichmentItemId;
-    }
-    if (relativeMediaItemId != null) {
-      _json["relativeMediaItemId"] = relativeMediaItemId;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (position != null) 'position': position!,
+        if (relativeEnrichmentItemId != null)
+          'relativeEnrichmentItemId': relativeEnrichmentItemId!,
+        if (relativeMediaItemId != null)
+          'relativeMediaItemId': relativeMediaItemId!,
+      };
 }
 
 /// Request to create one or more media items in a user's Google Photos library.
 /// If an <code>albumid</code> is specified, the media items are also added to
-/// that album. <code>albumPosition</code> is optional and can only be specified
+/// that album.
+///
+/// <code>albumPosition</code> is optional and can only be specified
 /// if an <code>albumId</code> is set.
 class BatchCreateMediaItemsRequest {
-  /// Identifier of the album where the media item(s) will be added. They will
+  /// Identifier of the album where the media item(s) will be added.
+  ///
+  /// They will
   /// also be added to the user's library. This is an optional field.
-  core.String albumId;
+  core.String? albumId;
 
-  /// Position in the album where the media item(s) will be added. If not
+  /// Position in the album where the media item(s) will be added.
+  ///
+  /// If not
   /// specified, the media item(s) will be added to the end of the album (as per
   /// the default value which is LAST_IN_ALBUM).
   /// The request will fail if this field is present but no album_id is
   /// specified.
-  AlbumPosition albumPosition;
+  AlbumPosition? albumPosition;
 
   /// List of media items to be created.
-  core.List<NewMediaItem> newMediaItems;
+  core.List<NewMediaItem>? newMediaItems;
 
   BatchCreateMediaItemsRequest();
 
   BatchCreateMediaItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("albumId")) {
-      albumId = _json["albumId"];
+    if (_json.containsKey('albumId')) {
+      albumId = _json['albumId'] as core.String;
     }
-    if (_json.containsKey("albumPosition")) {
-      albumPosition = new AlbumPosition.fromJson(_json["albumPosition"]);
+    if (_json.containsKey('albumPosition')) {
+      albumPosition = AlbumPosition.fromJson(
+          _json['albumPosition'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("newMediaItems")) {
-      newMediaItems = (_json["newMediaItems"] as core.List)
-          .map<NewMediaItem>((value) => new NewMediaItem.fromJson(value))
+    if (_json.containsKey('newMediaItems')) {
+      newMediaItems = (_json['newMediaItems'] as core.List)
+          .map<NewMediaItem>((value) => NewMediaItem.fromJson(
+              value as core.Map<core.String, core.dynamic>))
           .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (albumId != null) {
-      _json["albumId"] = albumId;
-    }
-    if (albumPosition != null) {
-      _json["albumPosition"] = (albumPosition).toJson();
-    }
-    if (newMediaItems != null) {
-      _json["newMediaItems"] =
-          newMediaItems.map((value) => (value).toJson()).toList();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (albumId != null) 'albumId': albumId!,
+        if (albumPosition != null) 'albumPosition': albumPosition!.toJson(),
+        if (newMediaItems != null)
+          'newMediaItems':
+              newMediaItems!.map((value) => value.toJson()).toList(),
+      };
 }
 
 class BatchCreateMediaItemsResponse {
-  /// [Output only] List of media items which were created.
-  core.List<NewMediaItemResult> newMediaItemResults;
+  /// List of media items which were created.
+  ///
+  /// Output only.
+  core.List<NewMediaItemResult>? newMediaItemResults;
 
   BatchCreateMediaItemsResponse();
 
   BatchCreateMediaItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("newMediaItemResults")) {
-      newMediaItemResults = (_json["newMediaItemResults"] as core.List)
-          .map<NewMediaItemResult>(
-              (value) => new NewMediaItemResult.fromJson(value))
+    if (_json.containsKey('newMediaItemResults')) {
+      newMediaItemResults = (_json['newMediaItemResults'] as core.List)
+          .map<NewMediaItemResult>((value) => NewMediaItemResult.fromJson(
+              value as core.Map<core.String, core.dynamic>))
           .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (newMediaItemResults != null) {
-      _json["newMediaItemResults"] =
-          newMediaItemResults.map((value) => (value).toJson()).toList();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (newMediaItemResults != null)
+          'newMediaItemResults':
+              newMediaItemResults!.map((value) => value.toJson()).toList(),
+      };
 }
 
 /// This filter is used to define which results to return based on the contents
 /// of the media item.
 ///
 /// It is possible to specify a list of categories to include, and/or a list of
-/// categories to exclude. Within each list, the categories are combined with an
+/// categories to exclude.
+///
+/// Within each list, the categories are combined with an
 /// OR. For example, if the content filter looks like:
 ///
-///     included_content_categories: [c1, c2, c3]
+///     included_content_categories: \[c1, c2, c3\]
 ///
 /// It would get media items that contain (c1 OR c2 OR c3).
 ///
 /// And if the content filter looks like:
 ///
-///     excluded_content_categories: [c1, c2, c3]
+///     excluded_content_categories: \[c1, c2, c3\]
 ///
 /// It would get media items that contain NOT (c1 OR c2 OR c3).
 /// You can also include some categories while excluding others, as in this
 /// proto:
 ///
-///     included_content_categories: [c1, c2],
-///     excluded_content_category: [c3, c4]
+///     included_content_categories: \[c1, c2\],
+///     excluded_content_category: \[c3, c4\]
 ///
 /// It would get media items that contain (c1 OR c2) AND NOT (c3 OR c4).
 ///
@@ -882,242 +811,229 @@ class BatchCreateMediaItemsResponse {
 /// appear in <code>excludedContentCategories</code>.
 class ContentFilter {
   /// The set of categories that must NOT be present in the media items in the
-  /// result. The items in the set are ORed. There is a maximum of 10
+  /// result.
+  ///
+  /// The items in the set are ORed. There is a maximum of 10
   /// excludedContentCategories per request.
-  core.List<core.String> excludedContentCategories;
+  core.List<core.String>? excludedContentCategories;
 
   /// The set of categories that must be present in the media items in the
-  /// result. The items in the set are ORed. There is a maximum of 10
+  /// result.
+  ///
+  /// The items in the set are ORed. There is a maximum of 10
   /// includedContentCategories per request.
-  core.List<core.String> includedContentCategories;
+  core.List<core.String>? includedContentCategories;
 
   ContentFilter();
 
   ContentFilter.fromJson(core.Map _json) {
-    if (_json.containsKey("excludedContentCategories")) {
+    if (_json.containsKey('excludedContentCategories')) {
       excludedContentCategories =
-          (_json["excludedContentCategories"] as core.List).cast<core.String>();
+          (_json['excludedContentCategories'] as core.List)
+              .map<core.String>((value) => value as core.String)
+              .toList();
     }
-    if (_json.containsKey("includedContentCategories")) {
+    if (_json.containsKey('includedContentCategories')) {
       includedContentCategories =
-          (_json["includedContentCategories"] as core.List).cast<core.String>();
+          (_json['includedContentCategories'] as core.List)
+              .map<core.String>((value) => value as core.String)
+              .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (excludedContentCategories != null) {
-      _json["excludedContentCategories"] = excludedContentCategories;
-    }
-    if (includedContentCategories != null) {
-      _json["includedContentCategories"] = includedContentCategories;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (excludedContentCategories != null)
+          'excludedContentCategories': excludedContentCategories!,
+        if (includedContentCategories != null)
+          'includedContentCategories': includedContentCategories!,
+      };
 }
 
-/// Information about a user who contributed the media item. Note that this
+/// Information about a user who contributed the media item.
+///
+/// Note that this
 /// information is only included if the album containing the media item is
 /// shared, was created by you and you have the sharing scope.
 class ContributorInfo {
   /// Display name of the contributor.
-  core.String displayName;
+  core.String? displayName;
 
   /// URL to the profile picture of the contributor.
-  core.String profilePictureBaseUrl;
+  core.String? profilePictureBaseUrl;
 
   ContributorInfo();
 
   ContributorInfo.fromJson(core.Map _json) {
-    if (_json.containsKey("displayName")) {
-      displayName = _json["displayName"];
+    if (_json.containsKey('displayName')) {
+      displayName = _json['displayName'] as core.String;
     }
-    if (_json.containsKey("profilePictureBaseUrl")) {
-      profilePictureBaseUrl = _json["profilePictureBaseUrl"];
+    if (_json.containsKey('profilePictureBaseUrl')) {
+      profilePictureBaseUrl = _json['profilePictureBaseUrl'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (displayName != null) {
-      _json["displayName"] = displayName;
-    }
-    if (profilePictureBaseUrl != null) {
-      _json["profilePictureBaseUrl"] = profilePictureBaseUrl;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (displayName != null) 'displayName': displayName!,
+        if (profilePictureBaseUrl != null)
+          'profilePictureBaseUrl': profilePictureBaseUrl!,
+      };
 }
 
 /// Request to create an album in Google Photos.
 class CreateAlbumRequest {
   /// The album to be created.
-  Album album;
+  Album? album;
 
   CreateAlbumRequest();
 
   CreateAlbumRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("album")) {
-      album = new Album.fromJson(_json["album"]);
+    if (_json.containsKey('album')) {
+      album =
+          Album.fromJson(_json['album'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (album != null) {
-      _json["album"] = (album).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (album != null) 'album': album!.toJson(),
+      };
 }
 
-/// Represents a whole calendar date. The day may be 0 to represent a year and
-/// month where the day is not significant, e.g. a whole calendar month. The
-/// month may be 0 to represent a a day and a year where the month is not
-/// signficant, e.g. when you want to specify the same day in every month of a
-/// year or a specific year. The year may be 0 to represent a month and day
-/// independent of year, e.g. anniversary date.
+/// Represents a whole calendar date.
+///
+/// The day may be 0 to represent a year and month where the day is not
+/// significant, e.g. a whole calendar month. The month may be 0 to represent a
+/// a day and a year where the month is not signficant, e.g. when you want to
+/// specify the same day in every month of a year or a specific year. The year
+/// may be 0 to represent a month and day independent of year, e.g. anniversary
+/// date.
 class Date {
-  /// Day of month. Must be from 1 to 31 and valid for the year and month, or 0
+  /// Day of month.
+  ///
+  /// Must be from 1 to 31 and valid for the year and month, or 0
   /// if specifying a year/month where the day is not significant.
-  core.int day;
+  core.int? day;
 
-  /// Month of year. Must be from 1 to 12, or 0 if specifying a date without a
+  /// Month of year.
+  ///
+  /// Must be from 1 to 12, or 0 if specifying a date without a
   /// month.
-  core.int month;
+  core.int? month;
 
-  /// Year of date. Must be from 1 to 9999, or 0 if specifying a date without
+  /// Year of date.
+  ///
+  /// Must be from 1 to 9999, or 0 if specifying a date without
   /// a year.
-  core.int year;
+  core.int? year;
 
   Date();
 
   Date.fromJson(core.Map _json) {
-    if (_json.containsKey("day")) {
-      day = _json["day"];
+    if (_json.containsKey('day')) {
+      day = _json['day'] as core.int;
     }
-    if (_json.containsKey("month")) {
-      month = _json["month"];
+    if (_json.containsKey('month')) {
+      month = _json['month'] as core.int;
     }
-    if (_json.containsKey("year")) {
-      year = _json["year"];
+    if (_json.containsKey('year')) {
+      year = _json['year'] as core.int;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (day != null) {
-      _json["day"] = day;
-    }
-    if (month != null) {
-      _json["month"] = month;
-    }
-    if (year != null) {
-      _json["year"] = year;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (day != null) 'day': day!,
+        if (month != null) 'month': month!,
+        if (year != null) 'year': year!,
+      };
 }
 
 /// This filter defines the allowed dates or date ranges for the media returned.
 /// It is possible to pick a set of specific dates and a set of date ranges.
 class DateFilter {
-  /// List of dates that the media items must have been created on. There is a
+  /// List of dates that the media items must have been created on.
+  ///
+  /// There is a
   /// maximum of 5 dates that can be included per request.
-  core.List<Date> dates;
+  core.List<Date>? dates;
 
-  /// List of dates ranges that the media items must have been created in. There
+  /// List of dates ranges that the media items must have been created in.
+  ///
+  /// There
   /// is a maximum of 5 dates ranges that can be included per request.
-  core.List<DateRange> ranges;
+  core.List<DateRange>? ranges;
 
   DateFilter();
 
   DateFilter.fromJson(core.Map _json) {
-    if (_json.containsKey("dates")) {
-      dates = (_json["dates"] as core.List)
-          .map<Date>((value) => new Date.fromJson(value))
+    if (_json.containsKey('dates')) {
+      dates = (_json['dates'] as core.List)
+          .map<Date>((value) =>
+              Date.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("ranges")) {
-      ranges = (_json["ranges"] as core.List)
-          .map<DateRange>((value) => new DateRange.fromJson(value))
+    if (_json.containsKey('ranges')) {
+      ranges = (_json['ranges'] as core.List)
+          .map<DateRange>((value) =>
+              DateRange.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (dates != null) {
-      _json["dates"] = dates.map((value) => (value).toJson()).toList();
-    }
-    if (ranges != null) {
-      _json["ranges"] = ranges.map((value) => (value).toJson()).toList();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (dates != null)
+          'dates': dates!.map((value) => value.toJson()).toList(),
+        if (ranges != null)
+          'ranges': ranges!.map((value) => value.toJson()).toList(),
+      };
 }
 
-/// Defines a range of dates. Both dates must be of the same format (see Date
+/// Defines a range of dates.
+///
+/// Both dates must be of the same format (see Date
 /// definition for more).
 class DateRange {
   /// The end date (included as part of the range) in the same format as the
   /// start date.
-  Date endDate;
+  Date? endDate;
 
   /// The start date (included as part of the range) in one of the formats
   /// described.
-  Date startDate;
+  Date? startDate;
 
   DateRange();
 
   DateRange.fromJson(core.Map _json) {
-    if (_json.containsKey("endDate")) {
-      endDate = new Date.fromJson(_json["endDate"]);
+    if (_json.containsKey('endDate')) {
+      endDate = Date.fromJson(
+          _json['endDate'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("startDate")) {
-      startDate = new Date.fromJson(_json["startDate"]);
+    if (_json.containsKey('startDate')) {
+      startDate = Date.fromJson(
+          _json['startDate'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (endDate != null) {
-      _json["endDate"] = (endDate).toJson();
-    }
-    if (startDate != null) {
-      _json["startDate"] = (startDate).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (endDate != null) 'endDate': endDate!.toJson(),
+        if (startDate != null) 'startDate': startDate!.toJson(),
+      };
 }
 
 /// An enrichment item.
 class EnrichmentItem {
   /// Identifier of the enrichment item.
-  core.String id;
+  core.String? id;
 
   EnrichmentItem();
 
   EnrichmentItem.fromJson(core.Map _json) {
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (id != null) {
-      _json["id"] = id;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (id != null) 'id': id!,
+      };
 }
 
 /// Filters that can be applied to a media item search.
@@ -1125,651 +1041,584 @@ class EnrichmentItem {
 /// other.
 class Filters {
   /// Filters the media items based on their content.
-  ContentFilter contentFilter;
+  ContentFilter? contentFilter;
 
   /// Filters the media items based on their creation date.
-  DateFilter dateFilter;
+  DateFilter? dateFilter;
 
   /// If set, the results will include media items that the user has archived.
   /// Defaults to false (archived media items are not included).
-  core.bool includeArchivedMedia;
+  core.bool? includeArchivedMedia;
 
   /// Filters the media items based on the type of media.
-  MediaTypeFilter mediaTypeFilter;
+  MediaTypeFilter? mediaTypeFilter;
 
   Filters();
 
   Filters.fromJson(core.Map _json) {
-    if (_json.containsKey("contentFilter")) {
-      contentFilter = new ContentFilter.fromJson(_json["contentFilter"]);
+    if (_json.containsKey('contentFilter')) {
+      contentFilter = ContentFilter.fromJson(
+          _json['contentFilter'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("dateFilter")) {
-      dateFilter = new DateFilter.fromJson(_json["dateFilter"]);
+    if (_json.containsKey('dateFilter')) {
+      dateFilter = DateFilter.fromJson(
+          _json['dateFilter'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("includeArchivedMedia")) {
-      includeArchivedMedia = _json["includeArchivedMedia"];
+    if (_json.containsKey('includeArchivedMedia')) {
+      includeArchivedMedia = _json['includeArchivedMedia'] as core.bool;
     }
-    if (_json.containsKey("mediaTypeFilter")) {
-      mediaTypeFilter = new MediaTypeFilter.fromJson(_json["mediaTypeFilter"]);
+    if (_json.containsKey('mediaTypeFilter')) {
+      mediaTypeFilter = MediaTypeFilter.fromJson(
+          _json['mediaTypeFilter'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (contentFilter != null) {
-      _json["contentFilter"] = (contentFilter).toJson();
-    }
-    if (dateFilter != null) {
-      _json["dateFilter"] = (dateFilter).toJson();
-    }
-    if (includeArchivedMedia != null) {
-      _json["includeArchivedMedia"] = includeArchivedMedia;
-    }
-    if (mediaTypeFilter != null) {
-      _json["mediaTypeFilter"] = (mediaTypeFilter).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (contentFilter != null) 'contentFilter': contentFilter!.toJson(),
+        if (dateFilter != null) 'dateFilter': dateFilter!.toJson(),
+        if (includeArchivedMedia != null)
+          'includeArchivedMedia': includeArchivedMedia!,
+        if (mediaTypeFilter != null)
+          'mediaTypeFilter': mediaTypeFilter!.toJson(),
+      };
 }
 
-/// Request to join a shared album on behalf of the user. This uses a shareToken
+/// Request to join a shared album on behalf of the user.
+///
+/// This uses a shareToken
 /// which can be acquired via the shareAlbum or listSharedAlbums calls.
 class JoinSharedAlbumRequest {
   /// Token indicating the shared album to join on behalf of the user.
-  core.String shareToken;
+  core.String? shareToken;
 
   JoinSharedAlbumRequest();
 
   JoinSharedAlbumRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("shareToken")) {
-      shareToken = _json["shareToken"];
+    if (_json.containsKey('shareToken')) {
+      shareToken = _json['shareToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (shareToken != null) {
-      _json["shareToken"] = shareToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (shareToken != null) 'shareToken': shareToken!,
+      };
 }
 
 /// Response to successfully joining the shared album on behalf of the user.
 class JoinSharedAlbumResponse {
   JoinSharedAlbumResponse();
 
-  JoinSharedAlbumResponse.fromJson(core.Map _json) {}
+  JoinSharedAlbumResponse.fromJson(
+      // ignore: avoid_unused_constructor_parameters
+      core.Map _json);
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {};
 }
 
-/// An object representing a latitude/longitude pair. This is expressed as a
-/// pair
+/// An object representing a latitude/longitude pair.
+///
+/// This is expressed as a pair
 /// of doubles representing degrees latitude and degrees longitude. Unless
 /// specified otherwise, this must conform to the
 /// <a href="http://www.unoosa.org/pdf/icg/2012/template/WGS_84.pdf">WGS84
 /// standard</a>. Values must be within normalized ranges.
 class LatLng {
-  /// The latitude in degrees. It must be in the range [-90.0, +90.0].
-  core.double latitude;
+  /// The latitude in degrees.
+  ///
+  /// It must be in the range \[-90.0, +90.0\].
+  core.double? latitude;
 
-  /// The longitude in degrees. It must be in the range [-180.0, +180.0].
-  core.double longitude;
+  /// The longitude in degrees.
+  ///
+  /// It must be in the range \[-180.0, +180.0\].
+  core.double? longitude;
 
   LatLng();
 
   LatLng.fromJson(core.Map _json) {
-    if (_json.containsKey("latitude")) {
-      latitude = _json["latitude"].toDouble();
+    if (_json.containsKey('latitude')) {
+      latitude = (_json['latitude'] as core.num).toDouble();
     }
-    if (_json.containsKey("longitude")) {
-      longitude = _json["longitude"].toDouble();
+    if (_json.containsKey('longitude')) {
+      longitude = (_json['longitude'] as core.num).toDouble();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (latitude != null) {
-      _json["latitude"] = latitude;
-    }
-    if (longitude != null) {
-      _json["longitude"] = longitude;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (latitude != null) 'latitude': latitude!,
+        if (longitude != null) 'longitude': longitude!,
+      };
 }
 
 class ListAlbumsResponse {
-  /// [Output only] List of albums that were created by the user.
-  core.List<Album> albums;
+  /// List of albums that were created by the user.
+  ///
+  /// Output only.
+  core.List<Album>? albums;
 
-  /// [Output only] Token to use to get the next set of albums. Populated if
+  /// Token to use to get the next set of albums.
+  ///
+  /// Populated if
   /// there are more albums to retrieve for this request.
-  core.String nextPageToken;
+  ///
+  /// Output only.
+  core.String? nextPageToken;
 
   ListAlbumsResponse();
 
   ListAlbumsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("albums")) {
-      albums = (_json["albums"] as core.List)
-          .map<Album>((value) => new Album.fromJson(value))
+    if (_json.containsKey('albums')) {
+      albums = (_json['albums'] as core.List)
+          .map<Album>((value) =>
+              Album.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (albums != null) {
-      _json["albums"] = albums.map((value) => (value).toJson()).toList();
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (albums != null)
+          'albums': albums!.map((value) => value.toJson()).toList(),
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }
 
 class ListSharedAlbumsResponse {
-  /// [Output only] Token to use to get the next set of shared albums. Populated
+  /// Token to use to get the next set of shared albums.
+  ///
+  /// Populated
   /// if there are more shared albums to retrieve for this request.
-  core.String nextPageToken;
+  ///
+  /// Output only.
+  core.String? nextPageToken;
 
-  /// [Output only] List of shared albums that were requested.
-  core.List<Album> sharedAlbums;
+  /// List of shared albums that were requested.
+  ///
+  /// Output only.
+  core.List<Album>? sharedAlbums;
 
   ListSharedAlbumsResponse();
 
   ListSharedAlbumsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
-    if (_json.containsKey("sharedAlbums")) {
-      sharedAlbums = (_json["sharedAlbums"] as core.List)
-          .map<Album>((value) => new Album.fromJson(value))
+    if (_json.containsKey('sharedAlbums')) {
+      sharedAlbums = (_json['sharedAlbums'] as core.List)
+          .map<Album>((value) =>
+              Album.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    if (sharedAlbums != null) {
-      _json["sharedAlbums"] =
-          sharedAlbums.map((value) => (value).toJson()).toList();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (sharedAlbums != null)
+          'sharedAlbums': sharedAlbums!.map((value) => value.toJson()).toList(),
+      };
 }
 
 /// Represents a physical location.
 class Location {
   /// Position of the location on the map.
-  LatLng latlng;
+  LatLng? latlng;
 
   /// Name of the location to be displayed.
-  core.String locationName;
+  core.String? locationName;
 
   Location();
 
   Location.fromJson(core.Map _json) {
-    if (_json.containsKey("latlng")) {
-      latlng = new LatLng.fromJson(_json["latlng"]);
+    if (_json.containsKey('latlng')) {
+      latlng = LatLng.fromJson(
+          _json['latlng'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("locationName")) {
-      locationName = _json["locationName"];
+    if (_json.containsKey('locationName')) {
+      locationName = _json['locationName'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (latlng != null) {
-      _json["latlng"] = (latlng).toJson();
-    }
-    if (locationName != null) {
-      _json["locationName"] = locationName;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (latlng != null) 'latlng': latlng!.toJson(),
+        if (locationName != null) 'locationName': locationName!,
+      };
 }
 
 /// An enrichment containing a single location.
 class LocationEnrichment {
   /// Location for this enrichment item.
-  Location location;
+  Location? location;
 
   LocationEnrichment();
 
   LocationEnrichment.fromJson(core.Map _json) {
-    if (_json.containsKey("location")) {
-      location = new Location.fromJson(_json["location"]);
+    if (_json.containsKey('location')) {
+      location = Location.fromJson(
+          _json['location'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (location != null) {
-      _json["location"] = (location).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (location != null) 'location': location!.toJson(),
+      };
 }
 
 /// An enrichment containing a map, showing origin and destination locations.
 class MapEnrichment {
   /// Destination location for this enrichemt item.
-  Location destination;
+  Location? destination;
 
   /// Origin location for this enrichment item.
-  Location origin;
+  Location? origin;
 
   MapEnrichment();
 
   MapEnrichment.fromJson(core.Map _json) {
-    if (_json.containsKey("destination")) {
-      destination = new Location.fromJson(_json["destination"]);
+    if (_json.containsKey('destination')) {
+      destination = Location.fromJson(
+          _json['destination'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("origin")) {
-      origin = new Location.fromJson(_json["origin"]);
+    if (_json.containsKey('origin')) {
+      origin = Location.fromJson(
+          _json['origin'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (destination != null) {
-      _json["destination"] = (destination).toJson();
-    }
-    if (origin != null) {
-      _json["origin"] = (origin).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (destination != null) 'destination': destination!.toJson(),
+        if (origin != null) 'origin': origin!.toJson(),
+      };
 }
 
 /// Representation of a media item (e.g. photo, video etc.) in Google Photos.
 class MediaItem {
-  /// A URL to the media item's bytes. This should not be used as is.
+  /// A URL to the media item's bytes.
+  ///
+  /// This should not be used as is.
   /// For example, '=w2048-h1024' will set the dimensions of a media item of
   /// type
   /// photo to have a width of 2048 px and height of 1024 px.
-  core.String baseUrl;
+  core.String? baseUrl;
 
   /// Information about the user who created this media item.
-  ContributorInfo contributorInfo;
+  ContributorInfo? contributorInfo;
 
-  /// Description of the media item. This is shown to the user in the item's
+  /// Description of the media item.
+  ///
+  /// This is shown to the user in the item's
   /// info section in the Google Photos app.
-  core.String description;
+  core.String? description;
 
-  /// Identifier for the media item. This is a persistent identifier that can be
+  /// Identifier for the media item.
+  ///
+  /// This is a persistent identifier that can be
   /// used between sessions to identify this media item.
-  core.String id;
+  core.String? id;
 
   /// Metadata related to the media item, for example the height, width or
   /// creation time.
-  MediaMetadata mediaMetadata;
+  MediaMetadata? mediaMetadata;
 
   /// MIME type of the media item.
-  core.String mimeType;
+  core.String? mimeType;
 
-  /// Google Photos URL for the media item. This link will only be available to
+  /// Google Photos URL for the media item.
+  ///
+  /// This link will only be available to
   /// the user if they're signed in.
-  core.String productUrl;
+  core.String? productUrl;
 
   MediaItem();
 
   MediaItem.fromJson(core.Map _json) {
-    if (_json.containsKey("baseUrl")) {
-      baseUrl = _json["baseUrl"];
+    if (_json.containsKey('baseUrl')) {
+      baseUrl = _json['baseUrl'] as core.String;
     }
-    if (_json.containsKey("contributorInfo")) {
-      contributorInfo = new ContributorInfo.fromJson(_json["contributorInfo"]);
+    if (_json.containsKey('contributorInfo')) {
+      contributorInfo = ContributorInfo.fromJson(
+          _json['contributorInfo'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("description")) {
-      description = _json["description"];
+    if (_json.containsKey('description')) {
+      description = _json['description'] as core.String;
     }
-    if (_json.containsKey("id")) {
-      id = _json["id"];
+    if (_json.containsKey('id')) {
+      id = _json['id'] as core.String;
     }
-    if (_json.containsKey("mediaMetadata")) {
-      mediaMetadata = new MediaMetadata.fromJson(_json["mediaMetadata"]);
+    if (_json.containsKey('mediaMetadata')) {
+      mediaMetadata = MediaMetadata.fromJson(
+          _json['mediaMetadata'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("mimeType")) {
-      mimeType = _json["mimeType"];
+    if (_json.containsKey('mimeType')) {
+      mimeType = _json['mimeType'] as core.String;
     }
-    if (_json.containsKey("productUrl")) {
-      productUrl = _json["productUrl"];
+    if (_json.containsKey('productUrl')) {
+      productUrl = _json['productUrl'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (baseUrl != null) {
-      _json["baseUrl"] = baseUrl;
-    }
-    if (contributorInfo != null) {
-      _json["contributorInfo"] = (contributorInfo).toJson();
-    }
-    if (description != null) {
-      _json["description"] = description;
-    }
-    if (id != null) {
-      _json["id"] = id;
-    }
-    if (mediaMetadata != null) {
-      _json["mediaMetadata"] = (mediaMetadata).toJson();
-    }
-    if (mimeType != null) {
-      _json["mimeType"] = mimeType;
-    }
-    if (productUrl != null) {
-      _json["productUrl"] = productUrl;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (baseUrl != null) 'baseUrl': baseUrl!,
+        if (contributorInfo != null)
+          'contributorInfo': contributorInfo!.toJson(),
+        if (description != null) 'description': description!,
+        if (id != null) 'id': id!,
+        if (mediaMetadata != null) 'mediaMetadata': mediaMetadata!.toJson(),
+        if (mimeType != null) 'mimeType': mimeType!,
+        if (productUrl != null) 'productUrl': productUrl!,
+      };
 }
 
 /// Metadata for a media item.
 class MediaMetadata {
   /// Time when the media item was first created (not when it was uploaded to
   /// Google Photos).
-  core.String creationTime;
+  core.String? creationTime;
 
   /// Original height (in pixels) of the media item.
-  core.String height;
+  core.String? height;
 
   /// Metadata for a photo media type.
-  Photo photo;
+  Photo? photo;
 
   /// Metadata for a video media type.
-  Video video;
+  Video? video;
 
   /// Original width (in pixels) of the media item.
-  core.String width;
+  core.String? width;
 
   MediaMetadata();
 
   MediaMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey("creationTime")) {
-      creationTime = _json["creationTime"];
+    if (_json.containsKey('creationTime')) {
+      creationTime = _json['creationTime'] as core.String;
     }
-    if (_json.containsKey("height")) {
-      height = _json["height"];
+    if (_json.containsKey('height')) {
+      height = _json['height'] as core.String;
     }
-    if (_json.containsKey("photo")) {
-      photo = new Photo.fromJson(_json["photo"]);
+    if (_json.containsKey('photo')) {
+      photo =
+          Photo.fromJson(_json['photo'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("video")) {
-      video = new Video.fromJson(_json["video"]);
+    if (_json.containsKey('video')) {
+      video =
+          Video.fromJson(_json['video'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("width")) {
-      width = _json["width"];
+    if (_json.containsKey('width')) {
+      width = _json['width'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (creationTime != null) {
-      _json["creationTime"] = creationTime;
-    }
-    if (height != null) {
-      _json["height"] = height;
-    }
-    if (photo != null) {
-      _json["photo"] = (photo).toJson();
-    }
-    if (video != null) {
-      _json["video"] = (video).toJson();
-    }
-    if (width != null) {
-      _json["width"] = width;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (creationTime != null) 'creationTime': creationTime!,
+        if (height != null) 'height': height!,
+        if (photo != null) 'photo': photo!.toJson(),
+        if (video != null) 'video': video!.toJson(),
+        if (width != null) 'width': width!,
+      };
 }
 
 /// This filter defines the type of media items to be returned, for example
-/// videos or photos. All the specified media types are treated as an OR with
+/// videos or photos.
+///
+/// All the specified media types are treated as an OR with
 /// each other.
 class MediaTypeFilter {
-  /// The types of media items to be included. This field should only be
+  /// The types of media items to be included.
+  ///
+  /// This field should only be
   /// populated with one media type, multiple media types will result in an
   /// error
   /// response.
-  core.List<core.String> mediaTypes;
+  core.List<core.String>? mediaTypes;
 
   MediaTypeFilter();
 
   MediaTypeFilter.fromJson(core.Map _json) {
-    if (_json.containsKey("mediaTypes")) {
-      mediaTypes = (_json["mediaTypes"] as core.List).cast<core.String>();
+    if (_json.containsKey('mediaTypes')) {
+      mediaTypes = (_json['mediaTypes'] as core.List)
+          .map<core.String>((value) => value as core.String)
+          .toList();
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (mediaTypes != null) {
-      _json["mediaTypes"] = mediaTypes;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mediaTypes != null) 'mediaTypes': mediaTypes!,
+      };
 }
 
 /// A new enrichment item to be added to an album, used by the
 /// AddEnrichmentToAlbum call.
 class NewEnrichmentItem {
   /// Location to be added to the album.
-  LocationEnrichment locationEnrichment;
+  LocationEnrichment? locationEnrichment;
 
   /// Map to be added to the album.
-  MapEnrichment mapEnrichment;
+  MapEnrichment? mapEnrichment;
 
   /// Text to be added to the album.
-  TextEnrichment textEnrichment;
+  TextEnrichment? textEnrichment;
 
   NewEnrichmentItem();
 
   NewEnrichmentItem.fromJson(core.Map _json) {
-    if (_json.containsKey("locationEnrichment")) {
-      locationEnrichment =
-          new LocationEnrichment.fromJson(_json["locationEnrichment"]);
+    if (_json.containsKey('locationEnrichment')) {
+      locationEnrichment = LocationEnrichment.fromJson(
+          _json['locationEnrichment'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("mapEnrichment")) {
-      mapEnrichment = new MapEnrichment.fromJson(_json["mapEnrichment"]);
+    if (_json.containsKey('mapEnrichment')) {
+      mapEnrichment = MapEnrichment.fromJson(
+          _json['mapEnrichment'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("textEnrichment")) {
-      textEnrichment = new TextEnrichment.fromJson(_json["textEnrichment"]);
+    if (_json.containsKey('textEnrichment')) {
+      textEnrichment = TextEnrichment.fromJson(
+          _json['textEnrichment'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (locationEnrichment != null) {
-      _json["locationEnrichment"] = (locationEnrichment).toJson();
-    }
-    if (mapEnrichment != null) {
-      _json["mapEnrichment"] = (mapEnrichment).toJson();
-    }
-    if (textEnrichment != null) {
-      _json["textEnrichment"] = (textEnrichment).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (locationEnrichment != null)
+          'locationEnrichment': locationEnrichment!.toJson(),
+        if (mapEnrichment != null) 'mapEnrichment': mapEnrichment!.toJson(),
+        if (textEnrichment != null) 'textEnrichment': textEnrichment!.toJson(),
+      };
 }
 
 /// New media item that will be created in a user's Google Photos account.
 class NewMediaItem {
-  /// Description of the media item. This will be shown to the user in the
-  /// item's
+  /// Description of the media item.
+  ///
+  /// This will be shown to the user in the item's
   /// info section in the Google Photos app.
   /// This string should not be more than 1000 characters.
-  core.String description;
+  core.String? description;
 
   /// A new media item that has been uploaded via the included uploadToken.
-  SimpleMediaItem simpleMediaItem;
+  SimpleMediaItem? simpleMediaItem;
 
   NewMediaItem();
 
   NewMediaItem.fromJson(core.Map _json) {
-    if (_json.containsKey("description")) {
-      description = _json["description"];
+    if (_json.containsKey('description')) {
+      description = _json['description'] as core.String;
     }
-    if (_json.containsKey("simpleMediaItem")) {
-      simpleMediaItem = new SimpleMediaItem.fromJson(_json["simpleMediaItem"]);
+    if (_json.containsKey('simpleMediaItem')) {
+      simpleMediaItem = SimpleMediaItem.fromJson(
+          _json['simpleMediaItem'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (description != null) {
-      _json["description"] = description;
-    }
-    if (simpleMediaItem != null) {
-      _json["simpleMediaItem"] = (simpleMediaItem).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (description != null) 'description': description!,
+        if (simpleMediaItem != null)
+          'simpleMediaItem': simpleMediaItem!.toJson(),
+      };
 }
 
 /// Result of creating a new media item.
 class NewMediaItemResult {
-  /// Media item created with the upload token. It is populated if no errors
+  /// Media item created with the upload token.
+  ///
+  /// It is populated if no errors
   /// occurred and the media item was created successfully.
-  MediaItem mediaItem;
+  MediaItem? mediaItem;
 
   /// If an error occurred during the creation of this media item, this field
-  /// will be populated with information related to the error. Details of this
+  /// will be populated with information related to the error.
+  ///
+  /// Details of this
   /// status can be found down below.
-  Status status;
+  Status? status;
 
   /// The upload token used to create this new media item.
-  core.String uploadToken;
+  core.String? uploadToken;
 
   NewMediaItemResult();
 
   NewMediaItemResult.fromJson(core.Map _json) {
-    if (_json.containsKey("mediaItem")) {
-      mediaItem = new MediaItem.fromJson(_json["mediaItem"]);
+    if (_json.containsKey('mediaItem')) {
+      mediaItem = MediaItem.fromJson(
+          _json['mediaItem'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("status")) {
-      status = new Status.fromJson(_json["status"]);
+    if (_json.containsKey('status')) {
+      status = Status.fromJson(
+          _json['status'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("uploadToken")) {
-      uploadToken = _json["uploadToken"];
+    if (_json.containsKey('uploadToken')) {
+      uploadToken = _json['uploadToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (mediaItem != null) {
-      _json["mediaItem"] = (mediaItem).toJson();
-    }
-    if (status != null) {
-      _json["status"] = (status).toJson();
-    }
-    if (uploadToken != null) {
-      _json["uploadToken"] = uploadToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mediaItem != null) 'mediaItem': mediaItem!.toJson(),
+        if (status != null) 'status': status!.toJson(),
+        if (uploadToken != null) 'uploadToken': uploadToken!,
+      };
 }
 
 /// Metadata that is specific to a photo, for example, ISO, focal length and
-/// exposure time. Some of these fields may be null or not included.
+/// exposure time.
+///
+/// Some of these fields may be null or not included.
 class Photo {
   /// Apeture f number of the photo.
-  core.double apertureFNumber;
+  core.double? apertureFNumber;
 
   /// Brand of the camera which took the photo.
-  core.String cameraMake;
+  core.String? cameraMake;
 
   /// Model of the camera which took the photo.
-  core.String cameraModel;
+  core.String? cameraModel;
 
   /// Exposure time of the photo.
-  core.String exposureTime;
+  core.String? exposureTime;
 
   /// Focal length of the photo.
-  core.double focalLength;
+  core.double? focalLength;
 
   /// ISO of the photo.
-  core.int isoEquivalent;
+  core.int? isoEquivalent;
 
   Photo();
 
   Photo.fromJson(core.Map _json) {
-    if (_json.containsKey("apertureFNumber")) {
-      apertureFNumber = _json["apertureFNumber"].toDouble();
+    if (_json.containsKey('apertureFNumber')) {
+      apertureFNumber = (_json['apertureFNumber'] as core.num).toDouble();
     }
-    if (_json.containsKey("cameraMake")) {
-      cameraMake = _json["cameraMake"];
+    if (_json.containsKey('cameraMake')) {
+      cameraMake = _json['cameraMake'] as core.String;
     }
-    if (_json.containsKey("cameraModel")) {
-      cameraModel = _json["cameraModel"];
+    if (_json.containsKey('cameraModel')) {
+      cameraModel = _json['cameraModel'] as core.String;
     }
-    if (_json.containsKey("exposureTime")) {
-      exposureTime = _json["exposureTime"];
+    if (_json.containsKey('exposureTime')) {
+      exposureTime = _json['exposureTime'] as core.String;
     }
-    if (_json.containsKey("focalLength")) {
-      focalLength = _json["focalLength"].toDouble();
+    if (_json.containsKey('focalLength')) {
+      focalLength = (_json['focalLength'] as core.num).toDouble();
     }
-    if (_json.containsKey("isoEquivalent")) {
-      isoEquivalent = _json["isoEquivalent"];
+    if (_json.containsKey('isoEquivalent')) {
+      isoEquivalent = _json['isoEquivalent'] as core.int;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (apertureFNumber != null) {
-      _json["apertureFNumber"] = apertureFNumber;
-    }
-    if (cameraMake != null) {
-      _json["cameraMake"] = cameraMake;
-    }
-    if (cameraModel != null) {
-      _json["cameraModel"] = cameraModel;
-    }
-    if (exposureTime != null) {
-      _json["exposureTime"] = exposureTime;
-    }
-    if (focalLength != null) {
-      _json["focalLength"] = focalLength;
-    }
-    if (isoEquivalent != null) {
-      _json["isoEquivalent"] = isoEquivalent;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apertureFNumber != null) 'apertureFNumber': apertureFNumber!,
+        if (cameraMake != null) 'cameraMake': cameraMake!,
+        if (cameraModel != null) 'cameraModel': cameraModel!,
+        if (exposureTime != null) 'exposureTime': exposureTime!,
+        if (focalLength != null) 'focalLength': focalLength!,
+        if (isoEquivalent != null) 'isoEquivalent': isoEquivalent!,
+      };
 }
 
 /// Request to search for media items in a user's library.
 ///
 /// If the album id is specified, this call will return the list of media items
-/// in the album. If neither filters nor album id are
+/// in the album.
+///
+/// If neither filters nor album id are
 /// specified, this call will return all media items in a user's Google Photos
 /// library.
 ///
@@ -1779,255 +1628,232 @@ class Photo {
 /// Filters and album id must not both be set, as this will result in an
 /// invalid request.
 class SearchMediaItemsRequest {
-  /// Identifier of an album. If populated will list all media items in
+  /// Identifier of an album.
+  ///
+  /// If populated will list all media items in
   /// specified album. Cannot be set in conjunction with any filters.
-  core.String albumId;
+  core.String? albumId;
 
-  /// Filters to apply to the request. Cannot be set in conjuction with an
+  /// Filters to apply to the request.
+  ///
+  /// Cannot be set in conjuction with an
   /// albumId.
-  Filters filters;
+  Filters? filters;
 
-  /// Maximum number of media items to return in the response. The default
-  /// number
+  /// Maximum number of media items to return in the response.
+  ///
+  /// The default number
   /// of media items to return at a time is 100. The maximum page size is 500.
-  core.int pageSize;
+  core.int? pageSize;
 
-  /// A continuation token to get the next page of the results. Adding this to
+  /// A continuation token to get the next page of the results.
+  ///
+  /// Adding this to
   /// the request will return the rows after the pageToken. The pageToken should
   /// be the value returned in the nextPageToken parameter in the response to
   /// the
   /// searchMediaItems request.
-  core.String pageToken;
+  core.String? pageToken;
 
   SearchMediaItemsRequest();
 
   SearchMediaItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("albumId")) {
-      albumId = _json["albumId"];
+    if (_json.containsKey('albumId')) {
+      albumId = _json['albumId'] as core.String;
     }
-    if (_json.containsKey("filters")) {
-      filters = new Filters.fromJson(_json["filters"]);
+    if (_json.containsKey('filters')) {
+      filters = Filters.fromJson(
+          _json['filters'] as core.Map<core.String, core.dynamic>);
     }
-    if (_json.containsKey("pageSize")) {
-      pageSize = _json["pageSize"];
+    if (_json.containsKey('pageSize')) {
+      pageSize = _json['pageSize'] as core.int;
     }
-    if (_json.containsKey("pageToken")) {
-      pageToken = _json["pageToken"];
+    if (_json.containsKey('pageToken')) {
+      pageToken = _json['pageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (albumId != null) {
-      _json["albumId"] = albumId;
-    }
-    if (filters != null) {
-      _json["filters"] = (filters).toJson();
-    }
-    if (pageSize != null) {
-      _json["pageSize"] = pageSize;
-    }
-    if (pageToken != null) {
-      _json["pageToken"] = pageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (albumId != null) 'albumId': albumId!,
+        if (filters != null) 'filters': filters!.toJson(),
+        if (pageSize != null) 'pageSize': pageSize!,
+        if (pageToken != null) 'pageToken': pageToken!,
+      };
 }
 
 class SearchMediaItemsResponse {
-  /// [Output only] List of media items that match the search parameters.
-  core.List<MediaItem> mediaItems;
+  /// List of media items that match the search parameters.
+  ///
+  /// Output only.
+  core.List<MediaItem>? mediaItems;
 
-  /// [Output only] Token to use to get the next set of media items. Its
-  /// presence
+  /// Token to use to get the next set of media items.
+  ///
+  /// Its presence
   /// is the only reliable indicator of more media items being available in the
   /// next request.
-  core.String nextPageToken;
+  ///
+  /// Output only.
+  core.String? nextPageToken;
 
   SearchMediaItemsResponse();
 
   SearchMediaItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("mediaItems")) {
-      mediaItems = (_json["mediaItems"] as core.List)
-          .map<MediaItem>((value) => new MediaItem.fromJson(value))
+    if (_json.containsKey('mediaItems')) {
+      mediaItems = (_json['mediaItems'] as core.List)
+          .map<MediaItem>((value) =>
+              MediaItem.fromJson(value as core.Map<core.String, core.dynamic>))
           .toList();
     }
-    if (_json.containsKey("nextPageToken")) {
-      nextPageToken = _json["nextPageToken"];
+    if (_json.containsKey('nextPageToken')) {
+      nextPageToken = _json['nextPageToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (mediaItems != null) {
-      _json["mediaItems"] =
-          mediaItems.map((value) => (value).toJson()).toList();
-    }
-    if (nextPageToken != null) {
-      _json["nextPageToken"] = nextPageToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mediaItems != null)
+          'mediaItems': mediaItems!.map((value) => value.toJson()).toList(),
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
 }
 
 /// Request to make an album shared in Google Photos.
 class ShareAlbumRequest {
   /// Options to be set when converting the album to a shared album.
-  SharedAlbumOptions sharedAlbumOptions;
+  SharedAlbumOptions? sharedAlbumOptions;
 
   ShareAlbumRequest();
 
   ShareAlbumRequest.fromJson(core.Map _json) {
-    if (_json.containsKey("sharedAlbumOptions")) {
-      sharedAlbumOptions =
-          new SharedAlbumOptions.fromJson(_json["sharedAlbumOptions"]);
+    if (_json.containsKey('sharedAlbumOptions')) {
+      sharedAlbumOptions = SharedAlbumOptions.fromJson(
+          _json['sharedAlbumOptions'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (sharedAlbumOptions != null) {
-      _json["sharedAlbumOptions"] = (sharedAlbumOptions).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (sharedAlbumOptions != null)
+          'sharedAlbumOptions': sharedAlbumOptions!.toJson(),
+      };
 }
 
 class ShareAlbumResponse {
-  /// [Output only] Information about the shared album.
-  ShareInfo shareInfo;
+  /// Information about the shared album.
+  ///
+  /// Output only.
+  ShareInfo? shareInfo;
 
   ShareAlbumResponse();
 
   ShareAlbumResponse.fromJson(core.Map _json) {
-    if (_json.containsKey("shareInfo")) {
-      shareInfo = new ShareInfo.fromJson(_json["shareInfo"]);
+    if (_json.containsKey('shareInfo')) {
+      shareInfo = ShareInfo.fromJson(
+          _json['shareInfo'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (shareInfo != null) {
-      _json["shareInfo"] = (shareInfo).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (shareInfo != null) 'shareInfo': shareInfo!.toJson(),
+      };
 }
 
-/// Information about albums that are shared. Note that this
+/// Information about albums that are shared.
+///
+/// Note that this
 /// information is only included if the album was created by you and you have
 /// the
 /// sharing scope.
 class ShareInfo {
   /// A token which can be used to join this shared album on behalf of other
   /// users via the API.
-  core.String shareToken;
+  core.String? shareToken;
 
   /// A link to the album that's now shared on the Google Photos website and
   /// app.
   /// Anyone with the link can access this shared album and see all of the items
   /// present in the album.
-  core.String shareableUrl;
+  core.String? shareableUrl;
 
   /// Options set for the shared album.
-  SharedAlbumOptions sharedAlbumOptions;
+  SharedAlbumOptions? sharedAlbumOptions;
 
   ShareInfo();
 
   ShareInfo.fromJson(core.Map _json) {
-    if (_json.containsKey("shareToken")) {
-      shareToken = _json["shareToken"];
+    if (_json.containsKey('shareToken')) {
+      shareToken = _json['shareToken'] as core.String;
     }
-    if (_json.containsKey("shareableUrl")) {
-      shareableUrl = _json["shareableUrl"];
+    if (_json.containsKey('shareableUrl')) {
+      shareableUrl = _json['shareableUrl'] as core.String;
     }
-    if (_json.containsKey("sharedAlbumOptions")) {
-      sharedAlbumOptions =
-          new SharedAlbumOptions.fromJson(_json["sharedAlbumOptions"]);
+    if (_json.containsKey('sharedAlbumOptions')) {
+      sharedAlbumOptions = SharedAlbumOptions.fromJson(
+          _json['sharedAlbumOptions'] as core.Map<core.String, core.dynamic>);
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (shareToken != null) {
-      _json["shareToken"] = shareToken;
-    }
-    if (shareableUrl != null) {
-      _json["shareableUrl"] = shareableUrl;
-    }
-    if (sharedAlbumOptions != null) {
-      _json["sharedAlbumOptions"] = (sharedAlbumOptions).toJson();
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (shareToken != null) 'shareToken': shareToken!,
+        if (shareableUrl != null) 'shareableUrl': shareableUrl!,
+        if (sharedAlbumOptions != null)
+          'sharedAlbumOptions': sharedAlbumOptions!.toJson(),
+      };
 }
 
 /// Options that control the sharing of an album.
 class SharedAlbumOptions {
   /// True if the shared album allows collaborators (users who have joined
-  /// the album) to add media items to it. Defaults to false.
-  core.bool isCollaborative;
+  /// the album) to add media items to it.
+  ///
+  /// Defaults to false.
+  core.bool? isCollaborative;
 
   /// True if the shared album allows the owner and the collaborators (users
-  /// who have joined the album) to add comments to the album. Defaults to
-  /// false.
-  core.bool isCommentable;
+  /// who have joined the album) to add comments to the album.
+  ///
+  /// Defaults to false.
+  core.bool? isCommentable;
 
   SharedAlbumOptions();
 
   SharedAlbumOptions.fromJson(core.Map _json) {
-    if (_json.containsKey("isCollaborative")) {
-      isCollaborative = _json["isCollaborative"];
+    if (_json.containsKey('isCollaborative')) {
+      isCollaborative = _json['isCollaborative'] as core.bool;
     }
-    if (_json.containsKey("isCommentable")) {
-      isCommentable = _json["isCommentable"];
+    if (_json.containsKey('isCommentable')) {
+      isCommentable = _json['isCommentable'] as core.bool;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (isCollaborative != null) {
-      _json["isCollaborative"] = isCollaborative;
-    }
-    if (isCommentable != null) {
-      _json["isCommentable"] = isCommentable;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (isCollaborative != null) 'isCollaborative': isCollaborative!,
+        if (isCommentable != null) 'isCommentable': isCommentable!,
+      };
 }
 
 /// A simple media item to be created in Google Photos via an upload token.
 class SimpleMediaItem {
   /// Token identifying the media bytes which have been uploaded to Google.
-  core.String uploadToken;
+  core.String? uploadToken;
 
   SimpleMediaItem();
 
   SimpleMediaItem.fromJson(core.Map _json) {
-    if (_json.containsKey("uploadToken")) {
-      uploadToken = _json["uploadToken"];
+    if (_json.containsKey('uploadToken')) {
+      uploadToken = _json['uploadToken'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (uploadToken != null) {
-      _json["uploadToken"] = uploadToken;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (uploadToken != null) 'uploadToken': uploadToken!,
+      };
 }
 
 /// The `Status` type defines a logical error model that is suitable for
 /// different
-/// programming environments, including REST APIs and RPC APIs. It is used by
+/// programming environments, including REST APIs and RPC APIs.
+///
+/// It is used by
 /// [gRPC](https://github.com/grpc). The error model is designed to be:
 ///
 /// - Simple to use and understand for most users
@@ -2083,74 +1909,69 @@ class SimpleMediaItem {
 /// be used directly after any stripping needed for security/privacy reasons.
 class Status {
   /// The status code, which should be an enum value of google.rpc.Code.
-  core.int code;
+  core.int? code;
 
-  /// A list of messages that carry the error details.  There is a common set of
+  /// A list of messages that carry the error details.
+  ///
+  ///  There is a common set of
   /// message types for APIs to use.
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>> details;
+  core.List<core.Map<core.String, core.Object>>? details;
 
-  /// A developer-facing error message, which should be in English. Any
+  /// A developer-facing error message, which should be in English.
+  ///
+  /// Any
   /// user-facing error message should be localized and sent in the
   /// google.rpc.Status.details field, or localized by the client.
-  core.String message;
+  core.String? message;
 
   Status();
 
   Status.fromJson(core.Map _json) {
-    if (_json.containsKey("code")) {
-      code = _json["code"];
+    if (_json.containsKey('code')) {
+      code = _json['code'] as core.int;
     }
-    if (_json.containsKey("details")) {
-      details = (_json["details"] as core.List)
+    if (_json.containsKey('details')) {
+      details = (_json['details'] as core.List)
           .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map).cast<core.String, core.Object>())
+              (value) => (value as core.Map<core.String, core.dynamic>).map(
+                    (key, item) => core.MapEntry(
+                      key,
+                      item as core.Object,
+                    ),
+                  ))
           .toList();
     }
-    if (_json.containsKey("message")) {
-      message = _json["message"];
+    if (_json.containsKey('message')) {
+      message = _json['message'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (code != null) {
-      _json["code"] = code;
-    }
-    if (details != null) {
-      _json["details"] = details;
-    }
-    if (message != null) {
-      _json["message"] = message;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (code != null) 'code': code!,
+        if (details != null) 'details': details!,
+        if (message != null) 'message': message!,
+      };
 }
 
 /// An enrichment containing text.
 class TextEnrichment {
   /// Text for this text enrichment item.
-  core.String text;
+  core.String? text;
 
   TextEnrichment();
 
   TextEnrichment.fromJson(core.Map _json) {
-    if (_json.containsKey("text")) {
-      text = _json["text"];
+    if (_json.containsKey('text')) {
+      text = _json['text'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (text != null) {
-      _json["text"] = text;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (text != null) 'text': text!,
+      };
 }
 
 /// Metadata that is specific to a video, for example, fps and processing
@@ -2158,13 +1979,13 @@ class TextEnrichment {
 /// Some of these fields may be null or not included.
 class Video {
   /// Brand of the camera which took the video.
-  core.String cameraMake;
+  core.String? cameraMake;
 
   /// Model of the camera which took the video.
-  core.String cameraModel;
+  core.String? cameraModel;
 
   /// Frame rate of the video.
-  core.double fps;
+  core.double? fps;
 
   /// Processing status of the video.
   /// Possible string values are:
@@ -2174,40 +1995,29 @@ class Video {
   /// video in the Google Photos app, however, it will not be playable yet.
   /// - "READY" : Video is now ready for viewing.
   /// - "FAILED" : Something has gone wrong and the video has failed to process.
-  core.String status;
+  core.String? status;
 
   Video();
 
   Video.fromJson(core.Map _json) {
-    if (_json.containsKey("cameraMake")) {
-      cameraMake = _json["cameraMake"];
+    if (_json.containsKey('cameraMake')) {
+      cameraMake = _json['cameraMake'] as core.String;
     }
-    if (_json.containsKey("cameraModel")) {
-      cameraModel = _json["cameraModel"];
+    if (_json.containsKey('cameraModel')) {
+      cameraModel = _json['cameraModel'] as core.String;
     }
-    if (_json.containsKey("fps")) {
-      fps = _json["fps"].toDouble();
+    if (_json.containsKey('fps')) {
+      fps = (_json['fps'] as core.num).toDouble();
     }
-    if (_json.containsKey("status")) {
-      status = _json["status"];
+    if (_json.containsKey('status')) {
+      status = _json['status'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (cameraMake != null) {
-      _json["cameraMake"] = cameraMake;
-    }
-    if (cameraModel != null) {
-      _json["cameraModel"] = cameraModel;
-    }
-    if (fps != null) {
-      _json["fps"] = fps;
-    }
-    if (status != null) {
-      _json["status"] = status;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cameraMake != null) 'cameraMake': cameraMake!,
+        if (cameraModel != null) 'cameraModel': cameraModel!,
+        if (fps != null) 'fps': fps!,
+        if (status != null) 'status': status!,
+      };
 }

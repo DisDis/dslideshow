@@ -23,19 +23,19 @@ class DebugWidget extends StatelessWidget {
         child:
           Row(
             children: [
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => _frontendService.pushButton(ButtonType.pause),
                 child: Text('P'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => _frontendService.pushButton(ButtonType.screentoggle),
                 child: Text('S'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 onPressed: () => _frontendService.pushButton(ButtonType.menu),
                 child: Text('M'),
               ),
-              RaisedButton(
+              ElevatedButton(
                 child: Text('Config'),
                 onPressed: () {Navigator.pushReplacementNamed(context, '/config');},
              ),

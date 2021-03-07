@@ -1,62 +1,39 @@
-library googleapis.books.v1.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/books/v1.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
-
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
+import '../test_shared.dart';
 
 core.int buildCounterAnnotationClientVersionRanges = 0;
-buildAnnotationClientVersionRanges() {
-  var o = new api.AnnotationClientVersionRanges();
+api.AnnotationClientVersionRanges buildAnnotationClientVersionRanges() {
+  var o = api.AnnotationClientVersionRanges();
   buildCounterAnnotationClientVersionRanges++;
   if (buildCounterAnnotationClientVersionRanges < 3) {
     o.cfiRange = buildBooksAnnotationsRange();
-    o.contentVersion = "foo";
+    o.contentVersion = 'foo';
     o.gbImageRange = buildBooksAnnotationsRange();
     o.gbTextRange = buildBooksAnnotationsRange();
     o.imageCfiRange = buildBooksAnnotationsRange();
@@ -65,25 +42,28 @@ buildAnnotationClientVersionRanges() {
   return o;
 }
 
-checkAnnotationClientVersionRanges(api.AnnotationClientVersionRanges o) {
+void checkAnnotationClientVersionRanges(api.AnnotationClientVersionRanges o) {
   buildCounterAnnotationClientVersionRanges++;
   if (buildCounterAnnotationClientVersionRanges < 3) {
-    checkBooksAnnotationsRange(o.cfiRange);
-    unittest.expect(o.contentVersion, unittest.equals('foo'));
-    checkBooksAnnotationsRange(o.gbImageRange);
-    checkBooksAnnotationsRange(o.gbTextRange);
-    checkBooksAnnotationsRange(o.imageCfiRange);
+    checkBooksAnnotationsRange(o.cfiRange! as api.BooksAnnotationsRange);
+    unittest.expect(
+      o.contentVersion!,
+      unittest.equals('foo'),
+    );
+    checkBooksAnnotationsRange(o.gbImageRange! as api.BooksAnnotationsRange);
+    checkBooksAnnotationsRange(o.gbTextRange! as api.BooksAnnotationsRange);
+    checkBooksAnnotationsRange(o.imageCfiRange! as api.BooksAnnotationsRange);
   }
   buildCounterAnnotationClientVersionRanges--;
 }
 
 core.int buildCounterAnnotationCurrentVersionRanges = 0;
-buildAnnotationCurrentVersionRanges() {
-  var o = new api.AnnotationCurrentVersionRanges();
+api.AnnotationCurrentVersionRanges buildAnnotationCurrentVersionRanges() {
+  var o = api.AnnotationCurrentVersionRanges();
   buildCounterAnnotationCurrentVersionRanges++;
   if (buildCounterAnnotationCurrentVersionRanges < 3) {
     o.cfiRange = buildBooksAnnotationsRange();
-    o.contentVersion = "foo";
+    o.contentVersion = 'foo';
     o.gbImageRange = buildBooksAnnotationsRange();
     o.gbTextRange = buildBooksAnnotationsRange();
     o.imageCfiRange = buildBooksAnnotationsRange();
@@ -92,1348 +72,1804 @@ buildAnnotationCurrentVersionRanges() {
   return o;
 }
 
-checkAnnotationCurrentVersionRanges(api.AnnotationCurrentVersionRanges o) {
+void checkAnnotationCurrentVersionRanges(api.AnnotationCurrentVersionRanges o) {
   buildCounterAnnotationCurrentVersionRanges++;
   if (buildCounterAnnotationCurrentVersionRanges < 3) {
-    checkBooksAnnotationsRange(o.cfiRange);
-    unittest.expect(o.contentVersion, unittest.equals('foo'));
-    checkBooksAnnotationsRange(o.gbImageRange);
-    checkBooksAnnotationsRange(o.gbTextRange);
-    checkBooksAnnotationsRange(o.imageCfiRange);
+    checkBooksAnnotationsRange(o.cfiRange! as api.BooksAnnotationsRange);
+    unittest.expect(
+      o.contentVersion!,
+      unittest.equals('foo'),
+    );
+    checkBooksAnnotationsRange(o.gbImageRange! as api.BooksAnnotationsRange);
+    checkBooksAnnotationsRange(o.gbTextRange! as api.BooksAnnotationsRange);
+    checkBooksAnnotationsRange(o.imageCfiRange! as api.BooksAnnotationsRange);
   }
   buildCounterAnnotationCurrentVersionRanges--;
 }
 
 core.int buildCounterAnnotationLayerSummary = 0;
-buildAnnotationLayerSummary() {
-  var o = new api.AnnotationLayerSummary();
+api.AnnotationLayerSummary buildAnnotationLayerSummary() {
+  var o = api.AnnotationLayerSummary();
   buildCounterAnnotationLayerSummary++;
   if (buildCounterAnnotationLayerSummary < 3) {
     o.allowedCharacterCount = 42;
-    o.limitType = "foo";
+    o.limitType = 'foo';
     o.remainingCharacterCount = 42;
   }
   buildCounterAnnotationLayerSummary--;
   return o;
 }
 
-checkAnnotationLayerSummary(api.AnnotationLayerSummary o) {
+void checkAnnotationLayerSummary(api.AnnotationLayerSummary o) {
   buildCounterAnnotationLayerSummary++;
   if (buildCounterAnnotationLayerSummary < 3) {
-    unittest.expect(o.allowedCharacterCount, unittest.equals(42));
-    unittest.expect(o.limitType, unittest.equals('foo'));
-    unittest.expect(o.remainingCharacterCount, unittest.equals(42));
+    unittest.expect(
+      o.allowedCharacterCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.limitType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.remainingCharacterCount!,
+      unittest.equals(42),
+    );
   }
   buildCounterAnnotationLayerSummary--;
 }
 
-buildUnnamed238() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3230() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed238(core.List<core.String> o) {
+void checkUnnamed3230(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterAnnotation = 0;
-buildAnnotation() {
-  var o = new api.Annotation();
+api.Annotation buildAnnotation() {
+  var o = api.Annotation();
   buildCounterAnnotation++;
   if (buildCounterAnnotation < 3) {
-    o.afterSelectedText = "foo";
-    o.beforeSelectedText = "foo";
+    o.afterSelectedText = 'foo';
+    o.beforeSelectedText = 'foo';
     o.clientVersionRanges = buildAnnotationClientVersionRanges();
-    o.created = core.DateTime.parse("2002-02-27T14:01:02");
+    o.created = 'foo';
     o.currentVersionRanges = buildAnnotationCurrentVersionRanges();
-    o.data = "foo";
+    o.data = 'foo';
     o.deleted = true;
-    o.highlightStyle = "foo";
-    o.id = "foo";
-    o.kind = "foo";
-    o.layerId = "foo";
+    o.highlightStyle = 'foo';
+    o.id = 'foo';
+    o.kind = 'foo';
+    o.layerId = 'foo';
     o.layerSummary = buildAnnotationLayerSummary();
-    o.pageIds = buildUnnamed238();
-    o.selectedText = "foo";
-    o.selfLink = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
-    o.volumeId = "foo";
+    o.pageIds = buildUnnamed3230();
+    o.selectedText = 'foo';
+    o.selfLink = 'foo';
+    o.updated = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterAnnotation--;
   return o;
 }
 
-checkAnnotation(api.Annotation o) {
+void checkAnnotation(api.Annotation o) {
   buildCounterAnnotation++;
   if (buildCounterAnnotation < 3) {
-    unittest.expect(o.afterSelectedText, unittest.equals('foo'));
-    unittest.expect(o.beforeSelectedText, unittest.equals('foo'));
-    checkAnnotationClientVersionRanges(o.clientVersionRanges);
     unittest.expect(
-        o.created, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    checkAnnotationCurrentVersionRanges(o.currentVersionRanges);
-    unittest.expect(o.data, unittest.equals('foo'));
-    unittest.expect(o.deleted, unittest.isTrue);
-    unittest.expect(o.highlightStyle, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    checkAnnotationLayerSummary(o.layerSummary);
-    checkUnnamed238(o.pageIds);
-    unittest.expect(o.selectedText, unittest.equals('foo'));
-    unittest.expect(o.selfLink, unittest.equals('foo'));
+      o.afterSelectedText!,
+      unittest.equals('foo'),
+    );
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+      o.beforeSelectedText!,
+      unittest.equals('foo'),
+    );
+    checkAnnotationClientVersionRanges(
+        o.clientVersionRanges! as api.AnnotationClientVersionRanges);
+    unittest.expect(
+      o.created!,
+      unittest.equals('foo'),
+    );
+    checkAnnotationCurrentVersionRanges(
+        o.currentVersionRanges! as api.AnnotationCurrentVersionRanges);
+    unittest.expect(
+      o.data!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.deleted!, unittest.isTrue);
+    unittest.expect(
+      o.highlightStyle!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    checkAnnotationLayerSummary(o.layerSummary! as api.AnnotationLayerSummary);
+    checkUnnamed3230(o.pageIds!);
+    unittest.expect(
+      o.selectedText!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterAnnotation--;
 }
 
-core.int buildCounterAnnotationdata = 0;
-buildAnnotationdata() {
-  var o = new api.Annotationdata();
-  buildCounterAnnotationdata++;
-  if (buildCounterAnnotationdata < 3) {
-    o.annotationType = "foo";
-    o.data = {
-      'list': [1, 2, 3],
-      'bool': true,
-      'string': 'foo'
-    };
-    o.encodedData = "foo";
-    o.id = "foo";
-    o.kind = "foo";
-    o.layerId = "foo";
-    o.selfLink = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
-    o.volumeId = "foo";
-  }
-  buildCounterAnnotationdata--;
-  return o;
-}
-
-checkAnnotationdata(api.Annotationdata o) {
-  buildCounterAnnotationdata++;
-  if (buildCounterAnnotationdata < 3) {
-    unittest.expect(o.annotationType, unittest.equals('foo'));
-    var casted1 = (o.data) as core.Map;
-    unittest.expect(casted1, unittest.hasLength(3));
-    unittest.expect(casted1["list"], unittest.equals([1, 2, 3]));
-    unittest.expect(casted1["bool"], unittest.equals(true));
-    unittest.expect(casted1["string"], unittest.equals('foo'));
-    unittest.expect(o.encodedData, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    unittest.expect(o.selfLink, unittest.equals('foo'));
-    unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
-  }
-  buildCounterAnnotationdata--;
-}
-
-buildUnnamed239() {
-  var o = new core.List<api.Annotation>();
+core.List<api.Annotation> buildUnnamed3231() {
+  var o = <api.Annotation>[];
   o.add(buildAnnotation());
   o.add(buildAnnotation());
   return o;
 }
 
-checkUnnamed239(core.List<api.Annotation> o) {
+void checkUnnamed3231(core.List<api.Annotation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAnnotation(o[0]);
-  checkAnnotation(o[1]);
+  checkAnnotation(o[0] as api.Annotation);
+  checkAnnotation(o[1] as api.Annotation);
 }
 
 core.int buildCounterAnnotations = 0;
-buildAnnotations() {
-  var o = new api.Annotations();
+api.Annotations buildAnnotations() {
+  var o = api.Annotations();
   buildCounterAnnotations++;
   if (buildCounterAnnotations < 3) {
-    o.items = buildUnnamed239();
-    o.kind = "foo";
-    o.nextPageToken = "foo";
+    o.items = buildUnnamed3231();
+    o.kind = 'foo';
+    o.nextPageToken = 'foo';
     o.totalItems = 42;
   }
   buildCounterAnnotations--;
   return o;
 }
 
-checkAnnotations(api.Annotations o) {
+void checkAnnotations(api.Annotations o) {
   buildCounterAnnotations++;
   if (buildCounterAnnotations < 3) {
-    checkUnnamed239(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
-    unittest.expect(o.totalItems, unittest.equals(42));
+    checkUnnamed3231(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalItems!,
+      unittest.equals(42),
+    );
   }
   buildCounterAnnotations--;
 }
 
 core.int buildCounterAnnotationsSummaryLayers = 0;
-buildAnnotationsSummaryLayers() {
-  var o = new api.AnnotationsSummaryLayers();
+api.AnnotationsSummaryLayers buildAnnotationsSummaryLayers() {
+  var o = api.AnnotationsSummaryLayers();
   buildCounterAnnotationsSummaryLayers++;
   if (buildCounterAnnotationsSummaryLayers < 3) {
     o.allowedCharacterCount = 42;
-    o.layerId = "foo";
-    o.limitType = "foo";
+    o.layerId = 'foo';
+    o.limitType = 'foo';
     o.remainingCharacterCount = 42;
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = 'foo';
   }
   buildCounterAnnotationsSummaryLayers--;
   return o;
 }
 
-checkAnnotationsSummaryLayers(api.AnnotationsSummaryLayers o) {
+void checkAnnotationsSummaryLayers(api.AnnotationsSummaryLayers o) {
   buildCounterAnnotationsSummaryLayers++;
   if (buildCounterAnnotationsSummaryLayers < 3) {
-    unittest.expect(o.allowedCharacterCount, unittest.equals(42));
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    unittest.expect(o.limitType, unittest.equals('foo'));
-    unittest.expect(o.remainingCharacterCount, unittest.equals(42));
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
+      o.allowedCharacterCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.limitType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.remainingCharacterCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterAnnotationsSummaryLayers--;
 }
 
-buildUnnamed240() {
-  var o = new core.List<api.AnnotationsSummaryLayers>();
+core.List<api.AnnotationsSummaryLayers> buildUnnamed3232() {
+  var o = <api.AnnotationsSummaryLayers>[];
   o.add(buildAnnotationsSummaryLayers());
   o.add(buildAnnotationsSummaryLayers());
   return o;
 }
 
-checkUnnamed240(core.List<api.AnnotationsSummaryLayers> o) {
+void checkUnnamed3232(core.List<api.AnnotationsSummaryLayers> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAnnotationsSummaryLayers(o[0]);
-  checkAnnotationsSummaryLayers(o[1]);
+  checkAnnotationsSummaryLayers(o[0] as api.AnnotationsSummaryLayers);
+  checkAnnotationsSummaryLayers(o[1] as api.AnnotationsSummaryLayers);
 }
 
 core.int buildCounterAnnotationsSummary = 0;
-buildAnnotationsSummary() {
-  var o = new api.AnnotationsSummary();
+api.AnnotationsSummary buildAnnotationsSummary() {
+  var o = api.AnnotationsSummary();
   buildCounterAnnotationsSummary++;
   if (buildCounterAnnotationsSummary < 3) {
-    o.kind = "foo";
-    o.layers = buildUnnamed240();
+    o.kind = 'foo';
+    o.layers = buildUnnamed3232();
   }
   buildCounterAnnotationsSummary--;
   return o;
 }
 
-checkAnnotationsSummary(api.AnnotationsSummary o) {
+void checkAnnotationsSummary(api.AnnotationsSummary o) {
   buildCounterAnnotationsSummary++;
   if (buildCounterAnnotationsSummary < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkUnnamed240(o.layers);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3232(o.layers!);
   }
   buildCounterAnnotationsSummary--;
 }
 
-buildUnnamed241() {
-  var o = new core.List<api.Annotationdata>();
-  o.add(buildAnnotationdata());
-  o.add(buildAnnotationdata());
+core.List<api.GeoAnnotationdata> buildUnnamed3233() {
+  var o = <api.GeoAnnotationdata>[];
+  o.add(buildGeoAnnotationdata());
+  o.add(buildGeoAnnotationdata());
   return o;
 }
 
-checkUnnamed241(core.List<api.Annotationdata> o) {
+void checkUnnamed3233(core.List<api.GeoAnnotationdata> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAnnotationdata(o[0]);
-  checkAnnotationdata(o[1]);
+  checkGeoAnnotationdata(o[0] as api.GeoAnnotationdata);
+  checkGeoAnnotationdata(o[1] as api.GeoAnnotationdata);
 }
 
 core.int buildCounterAnnotationsdata = 0;
-buildAnnotationsdata() {
-  var o = new api.Annotationsdata();
+api.Annotationsdata buildAnnotationsdata() {
+  var o = api.Annotationsdata();
   buildCounterAnnotationsdata++;
   if (buildCounterAnnotationsdata < 3) {
-    o.items = buildUnnamed241();
-    o.kind = "foo";
-    o.nextPageToken = "foo";
+    o.items = buildUnnamed3233();
+    o.kind = 'foo';
+    o.nextPageToken = 'foo';
     o.totalItems = 42;
   }
   buildCounterAnnotationsdata--;
   return o;
 }
 
-checkAnnotationsdata(api.Annotationsdata o) {
+void checkAnnotationsdata(api.Annotationsdata o) {
   buildCounterAnnotationsdata++;
   if (buildCounterAnnotationsdata < 3) {
-    checkUnnamed241(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
-    unittest.expect(o.totalItems, unittest.equals(42));
+    checkUnnamed3233(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalItems!,
+      unittest.equals(42),
+    );
   }
   buildCounterAnnotationsdata--;
 }
 
 core.int buildCounterBooksAnnotationsRange = 0;
-buildBooksAnnotationsRange() {
-  var o = new api.BooksAnnotationsRange();
+api.BooksAnnotationsRange buildBooksAnnotationsRange() {
+  var o = api.BooksAnnotationsRange();
   buildCounterBooksAnnotationsRange++;
   if (buildCounterBooksAnnotationsRange < 3) {
-    o.endOffset = "foo";
-    o.endPosition = "foo";
-    o.startOffset = "foo";
-    o.startPosition = "foo";
+    o.endOffset = 'foo';
+    o.endPosition = 'foo';
+    o.startOffset = 'foo';
+    o.startPosition = 'foo';
   }
   buildCounterBooksAnnotationsRange--;
   return o;
 }
 
-checkBooksAnnotationsRange(api.BooksAnnotationsRange o) {
+void checkBooksAnnotationsRange(api.BooksAnnotationsRange o) {
   buildCounterBooksAnnotationsRange++;
   if (buildCounterBooksAnnotationsRange < 3) {
-    unittest.expect(o.endOffset, unittest.equals('foo'));
-    unittest.expect(o.endPosition, unittest.equals('foo'));
-    unittest.expect(o.startOffset, unittest.equals('foo'));
-    unittest.expect(o.startPosition, unittest.equals('foo'));
+    unittest.expect(
+      o.endOffset!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.endPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.startOffset!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.startPosition!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBooksAnnotationsRange--;
 }
 
 core.int buildCounterBooksCloudloadingResource = 0;
-buildBooksCloudloadingResource() {
-  var o = new api.BooksCloudloadingResource();
+api.BooksCloudloadingResource buildBooksCloudloadingResource() {
+  var o = api.BooksCloudloadingResource();
   buildCounterBooksCloudloadingResource++;
   if (buildCounterBooksCloudloadingResource < 3) {
-    o.author = "foo";
-    o.processingState = "foo";
-    o.title = "foo";
-    o.volumeId = "foo";
+    o.author = 'foo';
+    o.processingState = 'foo';
+    o.title = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterBooksCloudloadingResource--;
   return o;
 }
 
-checkBooksCloudloadingResource(api.BooksCloudloadingResource o) {
+void checkBooksCloudloadingResource(api.BooksCloudloadingResource o) {
   buildCounterBooksCloudloadingResource++;
   if (buildCounterBooksCloudloadingResource < 3) {
-    unittest.expect(o.author, unittest.equals('foo'));
-    unittest.expect(o.processingState, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+    unittest.expect(
+      o.author!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.processingState!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBooksCloudloadingResource--;
 }
 
 core.int buildCounterBooksVolumesRecommendedRateResponse = 0;
-buildBooksVolumesRecommendedRateResponse() {
-  var o = new api.BooksVolumesRecommendedRateResponse();
+api.BooksVolumesRecommendedRateResponse
+    buildBooksVolumesRecommendedRateResponse() {
+  var o = api.BooksVolumesRecommendedRateResponse();
   buildCounterBooksVolumesRecommendedRateResponse++;
   if (buildCounterBooksVolumesRecommendedRateResponse < 3) {
-    o.consistencyToken = "foo";
+    o.consistencyToken = 'foo';
   }
   buildCounterBooksVolumesRecommendedRateResponse--;
   return o;
 }
 
-checkBooksVolumesRecommendedRateResponse(
+void checkBooksVolumesRecommendedRateResponse(
     api.BooksVolumesRecommendedRateResponse o) {
   buildCounterBooksVolumesRecommendedRateResponse++;
   if (buildCounterBooksVolumesRecommendedRateResponse < 3) {
-    unittest.expect(o.consistencyToken, unittest.equals('foo'));
+    unittest.expect(
+      o.consistencyToken!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBooksVolumesRecommendedRateResponse--;
 }
 
 core.int buildCounterBookshelf = 0;
-buildBookshelf() {
-  var o = new api.Bookshelf();
+api.Bookshelf buildBookshelf() {
+  var o = api.Bookshelf();
   buildCounterBookshelf++;
   if (buildCounterBookshelf < 3) {
-    o.access = "foo";
-    o.created = core.DateTime.parse("2002-02-27T14:01:02");
-    o.description = "foo";
+    o.access = 'foo';
+    o.created = 'foo';
+    o.description = 'foo';
     o.id = 42;
-    o.kind = "foo";
-    o.selfLink = "foo";
-    o.title = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.kind = 'foo';
+    o.selfLink = 'foo';
+    o.title = 'foo';
+    o.updated = 'foo';
     o.volumeCount = 42;
-    o.volumesLastUpdated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.volumesLastUpdated = 'foo';
   }
   buildCounterBookshelf--;
   return o;
 }
 
-checkBookshelf(api.Bookshelf o) {
+void checkBookshelf(api.Bookshelf o) {
   buildCounterBookshelf++;
   if (buildCounterBookshelf < 3) {
-    unittest.expect(o.access, unittest.equals('foo'));
     unittest.expect(
-        o.created, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.description, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals(42));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.selfLink, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+      o.access!,
+      unittest.equals('foo'),
+    );
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeCount, unittest.equals(42));
-    unittest.expect(o.volumesLastUpdated,
-        unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
+      o.created!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.volumesLastUpdated!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBookshelf--;
 }
 
-buildUnnamed242() {
-  var o = new core.List<api.Bookshelf>();
+core.List<api.Bookshelf> buildUnnamed3234() {
+  var o = <api.Bookshelf>[];
   o.add(buildBookshelf());
   o.add(buildBookshelf());
   return o;
 }
 
-checkUnnamed242(core.List<api.Bookshelf> o) {
+void checkUnnamed3234(core.List<api.Bookshelf> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBookshelf(o[0]);
-  checkBookshelf(o[1]);
+  checkBookshelf(o[0] as api.Bookshelf);
+  checkBookshelf(o[1] as api.Bookshelf);
 }
 
 core.int buildCounterBookshelves = 0;
-buildBookshelves() {
-  var o = new api.Bookshelves();
+api.Bookshelves buildBookshelves() {
+  var o = api.Bookshelves();
   buildCounterBookshelves++;
   if (buildCounterBookshelves < 3) {
-    o.items = buildUnnamed242();
-    o.kind = "foo";
+    o.items = buildUnnamed3234();
+    o.kind = 'foo';
   }
   buildCounterBookshelves--;
   return o;
 }
 
-checkBookshelves(api.Bookshelves o) {
+void checkBookshelves(api.Bookshelves o) {
   buildCounterBookshelves++;
   if (buildCounterBookshelves < 3) {
-    checkUnnamed242(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed3234(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterBookshelves--;
 }
 
 core.int buildCounterCategoryItems = 0;
-buildCategoryItems() {
-  var o = new api.CategoryItems();
+api.CategoryItems buildCategoryItems() {
+  var o = api.CategoryItems();
   buildCounterCategoryItems++;
   if (buildCounterCategoryItems < 3) {
-    o.badgeUrl = "foo";
-    o.categoryId = "foo";
-    o.name = "foo";
+    o.badgeUrl = 'foo';
+    o.categoryId = 'foo';
+    o.name = 'foo';
   }
   buildCounterCategoryItems--;
   return o;
 }
 
-checkCategoryItems(api.CategoryItems o) {
+void checkCategoryItems(api.CategoryItems o) {
   buildCounterCategoryItems++;
   if (buildCounterCategoryItems < 3) {
-    unittest.expect(o.badgeUrl, unittest.equals('foo'));
-    unittest.expect(o.categoryId, unittest.equals('foo'));
-    unittest.expect(o.name, unittest.equals('foo'));
+    unittest.expect(
+      o.badgeUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.categoryId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterCategoryItems--;
 }
 
-buildUnnamed243() {
-  var o = new core.List<api.CategoryItems>();
+core.List<api.CategoryItems> buildUnnamed3235() {
+  var o = <api.CategoryItems>[];
   o.add(buildCategoryItems());
   o.add(buildCategoryItems());
   return o;
 }
 
-checkUnnamed243(core.List<api.CategoryItems> o) {
+void checkUnnamed3235(core.List<api.CategoryItems> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCategoryItems(o[0]);
-  checkCategoryItems(o[1]);
+  checkCategoryItems(o[0] as api.CategoryItems);
+  checkCategoryItems(o[1] as api.CategoryItems);
 }
 
 core.int buildCounterCategory = 0;
-buildCategory() {
-  var o = new api.Category();
+api.Category buildCategory() {
+  var o = api.Category();
   buildCounterCategory++;
   if (buildCounterCategory < 3) {
-    o.items = buildUnnamed243();
-    o.kind = "foo";
+    o.items = buildUnnamed3235();
+    o.kind = 'foo';
   }
   buildCounterCategory--;
   return o;
 }
 
-checkCategory(api.Category o) {
+void checkCategory(api.Category o) {
   buildCounterCategory++;
   if (buildCounterCategory < 3) {
-    checkUnnamed243(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed3235(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterCategory--;
 }
 
 core.int buildCounterConcurrentAccessRestriction = 0;
-buildConcurrentAccessRestriction() {
-  var o = new api.ConcurrentAccessRestriction();
+api.ConcurrentAccessRestriction buildConcurrentAccessRestriction() {
+  var o = api.ConcurrentAccessRestriction();
   buildCounterConcurrentAccessRestriction++;
   if (buildCounterConcurrentAccessRestriction < 3) {
     o.deviceAllowed = true;
-    o.kind = "foo";
+    o.kind = 'foo';
     o.maxConcurrentDevices = 42;
-    o.message = "foo";
-    o.nonce = "foo";
-    o.reasonCode = "foo";
+    o.message = 'foo';
+    o.nonce = 'foo';
+    o.reasonCode = 'foo';
     o.restricted = true;
-    o.signature = "foo";
-    o.source = "foo";
+    o.signature = 'foo';
+    o.source = 'foo';
     o.timeWindowSeconds = 42;
-    o.volumeId = "foo";
+    o.volumeId = 'foo';
   }
   buildCounterConcurrentAccessRestriction--;
   return o;
 }
 
-checkConcurrentAccessRestriction(api.ConcurrentAccessRestriction o) {
+void checkConcurrentAccessRestriction(api.ConcurrentAccessRestriction o) {
   buildCounterConcurrentAccessRestriction++;
   if (buildCounterConcurrentAccessRestriction < 3) {
-    unittest.expect(o.deviceAllowed, unittest.isTrue);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.maxConcurrentDevices, unittest.equals(42));
-    unittest.expect(o.message, unittest.equals('foo'));
-    unittest.expect(o.nonce, unittest.equals('foo'));
-    unittest.expect(o.reasonCode, unittest.equals('foo'));
-    unittest.expect(o.restricted, unittest.isTrue);
-    unittest.expect(o.signature, unittest.equals('foo'));
-    unittest.expect(o.source, unittest.equals('foo'));
-    unittest.expect(o.timeWindowSeconds, unittest.equals(42));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+    unittest.expect(o.deviceAllowed!, unittest.isTrue);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.maxConcurrentDevices!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.message!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nonce!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.reasonCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.restricted!, unittest.isTrue);
+    unittest.expect(
+      o.signature!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.source!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.timeWindowSeconds!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterConcurrentAccessRestriction--;
 }
 
+core.int buildCounterDictionaryAnnotationdata = 0;
+api.DictionaryAnnotationdata buildDictionaryAnnotationdata() {
+  var o = api.DictionaryAnnotationdata();
+  buildCounterDictionaryAnnotationdata++;
+  if (buildCounterDictionaryAnnotationdata < 3) {
+    o.annotationType = 'foo';
+    o.data = buildDictlayerdata();
+    o.encodedData = 'foo';
+    o.id = 'foo';
+    o.kind = 'foo';
+    o.layerId = 'foo';
+    o.selfLink = 'foo';
+    o.updated = 'foo';
+    o.volumeId = 'foo';
+  }
+  buildCounterDictionaryAnnotationdata--;
+  return o;
+}
+
+void checkDictionaryAnnotationdata(api.DictionaryAnnotationdata o) {
+  buildCounterDictionaryAnnotationdata++;
+  if (buildCounterDictionaryAnnotationdata < 3) {
+    unittest.expect(
+      o.annotationType!,
+      unittest.equals('foo'),
+    );
+    checkDictlayerdata(o.data! as api.Dictlayerdata);
+    unittest.expect(
+      o.encodedData!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDictionaryAnnotationdata--;
+}
+
 core.int buildCounterDictlayerdataCommon = 0;
-buildDictlayerdataCommon() {
-  var o = new api.DictlayerdataCommon();
+api.DictlayerdataCommon buildDictlayerdataCommon() {
+  var o = api.DictlayerdataCommon();
   buildCounterDictlayerdataCommon++;
   if (buildCounterDictlayerdataCommon < 3) {
-    o.title = "foo";
+    o.title = 'foo';
   }
   buildCounterDictlayerdataCommon--;
   return o;
 }
 
-checkDictlayerdataCommon(api.DictlayerdataCommon o) {
+void checkDictlayerdataCommon(api.DictlayerdataCommon o) {
   buildCounterDictlayerdataCommon++;
   if (buildCounterDictlayerdataCommon < 3) {
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataCommon--;
 }
 
 core.int buildCounterDictlayerdataDictSource = 0;
-buildDictlayerdataDictSource() {
-  var o = new api.DictlayerdataDictSource();
+api.DictlayerdataDictSource buildDictlayerdataDictSource() {
+  var o = api.DictlayerdataDictSource();
   buildCounterDictlayerdataDictSource++;
   if (buildCounterDictlayerdataDictSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictSource--;
   return o;
 }
 
-checkDictlayerdataDictSource(api.DictlayerdataDictSource o) {
+void checkDictlayerdataDictSource(api.DictlayerdataDictSource o) {
   buildCounterDictlayerdataDictSource++;
   if (buildCounterDictlayerdataDictSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsDerivativesSource = 0;
-buildDictlayerdataDictWordsDerivativesSource() {
-  var o = new api.DictlayerdataDictWordsDerivativesSource();
+api.DictlayerdataDictWordsDerivativesSource
+    buildDictlayerdataDictWordsDerivativesSource() {
+  var o = api.DictlayerdataDictWordsDerivativesSource();
   buildCounterDictlayerdataDictWordsDerivativesSource++;
   if (buildCounterDictlayerdataDictWordsDerivativesSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsDerivativesSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsDerivativesSource(
+void checkDictlayerdataDictWordsDerivativesSource(
     api.DictlayerdataDictWordsDerivativesSource o) {
   buildCounterDictlayerdataDictWordsDerivativesSource++;
   if (buildCounterDictlayerdataDictWordsDerivativesSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsDerivativesSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsDerivatives = 0;
-buildDictlayerdataDictWordsDerivatives() {
-  var o = new api.DictlayerdataDictWordsDerivatives();
+api.DictlayerdataDictWordsDerivatives buildDictlayerdataDictWordsDerivatives() {
+  var o = api.DictlayerdataDictWordsDerivatives();
   buildCounterDictlayerdataDictWordsDerivatives++;
   if (buildCounterDictlayerdataDictWordsDerivatives < 3) {
     o.source = buildDictlayerdataDictWordsDerivativesSource();
-    o.text = "foo";
+    o.text = 'foo';
   }
   buildCounterDictlayerdataDictWordsDerivatives--;
   return o;
 }
 
-checkDictlayerdataDictWordsDerivatives(
+void checkDictlayerdataDictWordsDerivatives(
     api.DictlayerdataDictWordsDerivatives o) {
   buildCounterDictlayerdataDictWordsDerivatives++;
   if (buildCounterDictlayerdataDictWordsDerivatives < 3) {
-    checkDictlayerdataDictWordsDerivativesSource(o.source);
-    unittest.expect(o.text, unittest.equals('foo'));
+    checkDictlayerdataDictWordsDerivativesSource(
+        o.source! as api.DictlayerdataDictWordsDerivativesSource);
+    unittest.expect(
+      o.text!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsDerivatives--;
 }
 
-buildUnnamed244() {
-  var o = new core.List<api.DictlayerdataDictWordsDerivatives>();
+core.List<api.DictlayerdataDictWordsDerivatives> buildUnnamed3236() {
+  var o = <api.DictlayerdataDictWordsDerivatives>[];
   o.add(buildDictlayerdataDictWordsDerivatives());
   o.add(buildDictlayerdataDictWordsDerivatives());
   return o;
 }
 
-checkUnnamed244(core.List<api.DictlayerdataDictWordsDerivatives> o) {
+void checkUnnamed3236(core.List<api.DictlayerdataDictWordsDerivatives> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsDerivatives(o[0]);
-  checkDictlayerdataDictWordsDerivatives(o[1]);
+  checkDictlayerdataDictWordsDerivatives(
+      o[0] as api.DictlayerdataDictWordsDerivatives);
+  checkDictlayerdataDictWordsDerivatives(
+      o[1] as api.DictlayerdataDictWordsDerivatives);
 }
 
 core.int buildCounterDictlayerdataDictWordsExamplesSource = 0;
-buildDictlayerdataDictWordsExamplesSource() {
-  var o = new api.DictlayerdataDictWordsExamplesSource();
+api.DictlayerdataDictWordsExamplesSource
+    buildDictlayerdataDictWordsExamplesSource() {
+  var o = api.DictlayerdataDictWordsExamplesSource();
   buildCounterDictlayerdataDictWordsExamplesSource++;
   if (buildCounterDictlayerdataDictWordsExamplesSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsExamplesSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsExamplesSource(
+void checkDictlayerdataDictWordsExamplesSource(
     api.DictlayerdataDictWordsExamplesSource o) {
   buildCounterDictlayerdataDictWordsExamplesSource++;
   if (buildCounterDictlayerdataDictWordsExamplesSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsExamplesSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsExamples = 0;
-buildDictlayerdataDictWordsExamples() {
-  var o = new api.DictlayerdataDictWordsExamples();
+api.DictlayerdataDictWordsExamples buildDictlayerdataDictWordsExamples() {
+  var o = api.DictlayerdataDictWordsExamples();
   buildCounterDictlayerdataDictWordsExamples++;
   if (buildCounterDictlayerdataDictWordsExamples < 3) {
     o.source = buildDictlayerdataDictWordsExamplesSource();
-    o.text = "foo";
+    o.text = 'foo';
   }
   buildCounterDictlayerdataDictWordsExamples--;
   return o;
 }
 
-checkDictlayerdataDictWordsExamples(api.DictlayerdataDictWordsExamples o) {
+void checkDictlayerdataDictWordsExamples(api.DictlayerdataDictWordsExamples o) {
   buildCounterDictlayerdataDictWordsExamples++;
   if (buildCounterDictlayerdataDictWordsExamples < 3) {
-    checkDictlayerdataDictWordsExamplesSource(o.source);
-    unittest.expect(o.text, unittest.equals('foo'));
+    checkDictlayerdataDictWordsExamplesSource(
+        o.source! as api.DictlayerdataDictWordsExamplesSource);
+    unittest.expect(
+      o.text!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsExamples--;
 }
 
-buildUnnamed245() {
-  var o = new core.List<api.DictlayerdataDictWordsExamples>();
+core.List<api.DictlayerdataDictWordsExamples> buildUnnamed3237() {
+  var o = <api.DictlayerdataDictWordsExamples>[];
   o.add(buildDictlayerdataDictWordsExamples());
   o.add(buildDictlayerdataDictWordsExamples());
   return o;
 }
 
-checkUnnamed245(core.List<api.DictlayerdataDictWordsExamples> o) {
+void checkUnnamed3237(core.List<api.DictlayerdataDictWordsExamples> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsExamples(o[0]);
-  checkDictlayerdataDictWordsExamples(o[1]);
+  checkDictlayerdataDictWordsExamples(
+      o[0] as api.DictlayerdataDictWordsExamples);
+  checkDictlayerdataDictWordsExamples(
+      o[1] as api.DictlayerdataDictWordsExamples);
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesConjugations = 0;
-buildDictlayerdataDictWordsSensesConjugations() {
-  var o = new api.DictlayerdataDictWordsSensesConjugations();
+api.DictlayerdataDictWordsSensesConjugations
+    buildDictlayerdataDictWordsSensesConjugations() {
+  var o = api.DictlayerdataDictWordsSensesConjugations();
   buildCounterDictlayerdataDictWordsSensesConjugations++;
   if (buildCounterDictlayerdataDictWordsSensesConjugations < 3) {
-    o.type = "foo";
-    o.value = "foo";
+    o.type = 'foo';
+    o.value = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesConjugations--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesConjugations(
+void checkDictlayerdataDictWordsSensesConjugations(
     api.DictlayerdataDictWordsSensesConjugations o) {
   buildCounterDictlayerdataDictWordsSensesConjugations++;
   if (buildCounterDictlayerdataDictWordsSensesConjugations < 3) {
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.value, unittest.equals('foo'));
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.value!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesConjugations--;
 }
 
-buildUnnamed246() {
-  var o = new core.List<api.DictlayerdataDictWordsSensesConjugations>();
+core.List<api.DictlayerdataDictWordsSensesConjugations> buildUnnamed3238() {
+  var o = <api.DictlayerdataDictWordsSensesConjugations>[];
   o.add(buildDictlayerdataDictWordsSensesConjugations());
   o.add(buildDictlayerdataDictWordsSensesConjugations());
   return o;
 }
 
-checkUnnamed246(core.List<api.DictlayerdataDictWordsSensesConjugations> o) {
+void checkUnnamed3238(
+    core.List<api.DictlayerdataDictWordsSensesConjugations> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsSensesConjugations(o[0]);
-  checkDictlayerdataDictWordsSensesConjugations(o[1]);
+  checkDictlayerdataDictWordsSensesConjugations(
+      o[0] as api.DictlayerdataDictWordsSensesConjugations);
+  checkDictlayerdataDictWordsSensesConjugations(
+      o[1] as api.DictlayerdataDictWordsSensesConjugations);
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource = 0;
-buildDictlayerdataDictWordsSensesDefinitionsExamplesSource() {
-  var o = new api.DictlayerdataDictWordsSensesDefinitionsExamplesSource();
+api.DictlayerdataDictWordsSensesDefinitionsExamplesSource
+    buildDictlayerdataDictWordsSensesDefinitionsExamplesSource() {
+  var o = api.DictlayerdataDictWordsSensesDefinitionsExamplesSource();
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(
+void checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(
     api.DictlayerdataDictWordsSensesDefinitionsExamplesSource o) {
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamplesSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesDefinitionsExamples = 0;
-buildDictlayerdataDictWordsSensesDefinitionsExamples() {
-  var o = new api.DictlayerdataDictWordsSensesDefinitionsExamples();
+api.DictlayerdataDictWordsSensesDefinitionsExamples
+    buildDictlayerdataDictWordsSensesDefinitionsExamples() {
+  var o = api.DictlayerdataDictWordsSensesDefinitionsExamples();
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamples++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitionsExamples < 3) {
     o.source = buildDictlayerdataDictWordsSensesDefinitionsExamplesSource();
-    o.text = "foo";
+    o.text = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamples--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesDefinitionsExamples(
+void checkDictlayerdataDictWordsSensesDefinitionsExamples(
     api.DictlayerdataDictWordsSensesDefinitionsExamples o) {
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamples++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitionsExamples < 3) {
-    checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(o.source);
-    unittest.expect(o.text, unittest.equals('foo'));
+    checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(
+        o.source! as api.DictlayerdataDictWordsSensesDefinitionsExamplesSource);
+    unittest.expect(
+      o.text!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesDefinitionsExamples--;
 }
 
-buildUnnamed247() {
-  var o = new core.List<api.DictlayerdataDictWordsSensesDefinitionsExamples>();
+core.List<api.DictlayerdataDictWordsSensesDefinitionsExamples>
+    buildUnnamed3239() {
+  var o = <api.DictlayerdataDictWordsSensesDefinitionsExamples>[];
   o.add(buildDictlayerdataDictWordsSensesDefinitionsExamples());
   o.add(buildDictlayerdataDictWordsSensesDefinitionsExamples());
   return o;
 }
 
-checkUnnamed247(
+void checkUnnamed3239(
     core.List<api.DictlayerdataDictWordsSensesDefinitionsExamples> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsSensesDefinitionsExamples(o[0]);
-  checkDictlayerdataDictWordsSensesDefinitionsExamples(o[1]);
+  checkDictlayerdataDictWordsSensesDefinitionsExamples(
+      o[0] as api.DictlayerdataDictWordsSensesDefinitionsExamples);
+  checkDictlayerdataDictWordsSensesDefinitionsExamples(
+      o[1] as api.DictlayerdataDictWordsSensesDefinitionsExamples);
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesDefinitions = 0;
-buildDictlayerdataDictWordsSensesDefinitions() {
-  var o = new api.DictlayerdataDictWordsSensesDefinitions();
+api.DictlayerdataDictWordsSensesDefinitions
+    buildDictlayerdataDictWordsSensesDefinitions() {
+  var o = api.DictlayerdataDictWordsSensesDefinitions();
   buildCounterDictlayerdataDictWordsSensesDefinitions++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitions < 3) {
-    o.definition = "foo";
-    o.examples = buildUnnamed247();
+    o.definition = 'foo';
+    o.examples = buildUnnamed3239();
   }
   buildCounterDictlayerdataDictWordsSensesDefinitions--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesDefinitions(
+void checkDictlayerdataDictWordsSensesDefinitions(
     api.DictlayerdataDictWordsSensesDefinitions o) {
   buildCounterDictlayerdataDictWordsSensesDefinitions++;
   if (buildCounterDictlayerdataDictWordsSensesDefinitions < 3) {
-    unittest.expect(o.definition, unittest.equals('foo'));
-    checkUnnamed247(o.examples);
+    unittest.expect(
+      o.definition!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3239(o.examples!);
   }
   buildCounterDictlayerdataDictWordsSensesDefinitions--;
 }
 
-buildUnnamed248() {
-  var o = new core.List<api.DictlayerdataDictWordsSensesDefinitions>();
+core.List<api.DictlayerdataDictWordsSensesDefinitions> buildUnnamed3240() {
+  var o = <api.DictlayerdataDictWordsSensesDefinitions>[];
   o.add(buildDictlayerdataDictWordsSensesDefinitions());
   o.add(buildDictlayerdataDictWordsSensesDefinitions());
   return o;
 }
 
-checkUnnamed248(core.List<api.DictlayerdataDictWordsSensesDefinitions> o) {
+void checkUnnamed3240(
+    core.List<api.DictlayerdataDictWordsSensesDefinitions> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsSensesDefinitions(o[0]);
-  checkDictlayerdataDictWordsSensesDefinitions(o[1]);
+  checkDictlayerdataDictWordsSensesDefinitions(
+      o[0] as api.DictlayerdataDictWordsSensesDefinitions);
+  checkDictlayerdataDictWordsSensesDefinitions(
+      o[1] as api.DictlayerdataDictWordsSensesDefinitions);
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesSource = 0;
-buildDictlayerdataDictWordsSensesSource() {
-  var o = new api.DictlayerdataDictWordsSensesSource();
+api.DictlayerdataDictWordsSensesSource
+    buildDictlayerdataDictWordsSensesSource() {
+  var o = api.DictlayerdataDictWordsSensesSource();
   buildCounterDictlayerdataDictWordsSensesSource++;
   if (buildCounterDictlayerdataDictWordsSensesSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesSource(
+void checkDictlayerdataDictWordsSensesSource(
     api.DictlayerdataDictWordsSensesSource o) {
   buildCounterDictlayerdataDictWordsSensesSource++;
   if (buildCounterDictlayerdataDictWordsSensesSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesSynonymsSource = 0;
-buildDictlayerdataDictWordsSensesSynonymsSource() {
-  var o = new api.DictlayerdataDictWordsSensesSynonymsSource();
+api.DictlayerdataDictWordsSensesSynonymsSource
+    buildDictlayerdataDictWordsSensesSynonymsSource() {
+  var o = api.DictlayerdataDictWordsSensesSynonymsSource();
   buildCounterDictlayerdataDictWordsSensesSynonymsSource++;
   if (buildCounterDictlayerdataDictWordsSensesSynonymsSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesSynonymsSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesSynonymsSource(
+void checkDictlayerdataDictWordsSensesSynonymsSource(
     api.DictlayerdataDictWordsSensesSynonymsSource o) {
   buildCounterDictlayerdataDictWordsSensesSynonymsSource++;
   if (buildCounterDictlayerdataDictWordsSensesSynonymsSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesSynonymsSource--;
 }
 
 core.int buildCounterDictlayerdataDictWordsSensesSynonyms = 0;
-buildDictlayerdataDictWordsSensesSynonyms() {
-  var o = new api.DictlayerdataDictWordsSensesSynonyms();
+api.DictlayerdataDictWordsSensesSynonyms
+    buildDictlayerdataDictWordsSensesSynonyms() {
+  var o = api.DictlayerdataDictWordsSensesSynonyms();
   buildCounterDictlayerdataDictWordsSensesSynonyms++;
   if (buildCounterDictlayerdataDictWordsSensesSynonyms < 3) {
     o.source = buildDictlayerdataDictWordsSensesSynonymsSource();
-    o.text = "foo";
+    o.text = 'foo';
   }
   buildCounterDictlayerdataDictWordsSensesSynonyms--;
   return o;
 }
 
-checkDictlayerdataDictWordsSensesSynonyms(
+void checkDictlayerdataDictWordsSensesSynonyms(
     api.DictlayerdataDictWordsSensesSynonyms o) {
   buildCounterDictlayerdataDictWordsSensesSynonyms++;
   if (buildCounterDictlayerdataDictWordsSensesSynonyms < 3) {
-    checkDictlayerdataDictWordsSensesSynonymsSource(o.source);
-    unittest.expect(o.text, unittest.equals('foo'));
+    checkDictlayerdataDictWordsSensesSynonymsSource(
+        o.source! as api.DictlayerdataDictWordsSensesSynonymsSource);
+    unittest.expect(
+      o.text!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSensesSynonyms--;
 }
 
-buildUnnamed249() {
-  var o = new core.List<api.DictlayerdataDictWordsSensesSynonyms>();
+core.List<api.DictlayerdataDictWordsSensesSynonyms> buildUnnamed3241() {
+  var o = <api.DictlayerdataDictWordsSensesSynonyms>[];
   o.add(buildDictlayerdataDictWordsSensesSynonyms());
   o.add(buildDictlayerdataDictWordsSensesSynonyms());
   return o;
 }
 
-checkUnnamed249(core.List<api.DictlayerdataDictWordsSensesSynonyms> o) {
+void checkUnnamed3241(core.List<api.DictlayerdataDictWordsSensesSynonyms> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsSensesSynonyms(o[0]);
-  checkDictlayerdataDictWordsSensesSynonyms(o[1]);
+  checkDictlayerdataDictWordsSensesSynonyms(
+      o[0] as api.DictlayerdataDictWordsSensesSynonyms);
+  checkDictlayerdataDictWordsSensesSynonyms(
+      o[1] as api.DictlayerdataDictWordsSensesSynonyms);
 }
 
 core.int buildCounterDictlayerdataDictWordsSenses = 0;
-buildDictlayerdataDictWordsSenses() {
-  var o = new api.DictlayerdataDictWordsSenses();
+api.DictlayerdataDictWordsSenses buildDictlayerdataDictWordsSenses() {
+  var o = api.DictlayerdataDictWordsSenses();
   buildCounterDictlayerdataDictWordsSenses++;
   if (buildCounterDictlayerdataDictWordsSenses < 3) {
-    o.conjugations = buildUnnamed246();
-    o.definitions = buildUnnamed248();
-    o.partOfSpeech = "foo";
-    o.pronunciation = "foo";
-    o.pronunciationUrl = "foo";
+    o.conjugations = buildUnnamed3238();
+    o.definitions = buildUnnamed3240();
+    o.partOfSpeech = 'foo';
+    o.pronunciation = 'foo';
+    o.pronunciationUrl = 'foo';
     o.source = buildDictlayerdataDictWordsSensesSource();
-    o.syllabification = "foo";
-    o.synonyms = buildUnnamed249();
+    o.syllabification = 'foo';
+    o.synonyms = buildUnnamed3241();
   }
   buildCounterDictlayerdataDictWordsSenses--;
   return o;
 }
 
-checkDictlayerdataDictWordsSenses(api.DictlayerdataDictWordsSenses o) {
+void checkDictlayerdataDictWordsSenses(api.DictlayerdataDictWordsSenses o) {
   buildCounterDictlayerdataDictWordsSenses++;
   if (buildCounterDictlayerdataDictWordsSenses < 3) {
-    checkUnnamed246(o.conjugations);
-    checkUnnamed248(o.definitions);
-    unittest.expect(o.partOfSpeech, unittest.equals('foo'));
-    unittest.expect(o.pronunciation, unittest.equals('foo'));
-    unittest.expect(o.pronunciationUrl, unittest.equals('foo'));
-    checkDictlayerdataDictWordsSensesSource(o.source);
-    unittest.expect(o.syllabification, unittest.equals('foo'));
-    checkUnnamed249(o.synonyms);
+    checkUnnamed3238(o.conjugations!);
+    checkUnnamed3240(o.definitions!);
+    unittest.expect(
+      o.partOfSpeech!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pronunciation!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pronunciationUrl!,
+      unittest.equals('foo'),
+    );
+    checkDictlayerdataDictWordsSensesSource(
+        o.source! as api.DictlayerdataDictWordsSensesSource);
+    unittest.expect(
+      o.syllabification!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3241(o.synonyms!);
   }
   buildCounterDictlayerdataDictWordsSenses--;
 }
 
-buildUnnamed250() {
-  var o = new core.List<api.DictlayerdataDictWordsSenses>();
+core.List<api.DictlayerdataDictWordsSenses> buildUnnamed3242() {
+  var o = <api.DictlayerdataDictWordsSenses>[];
   o.add(buildDictlayerdataDictWordsSenses());
   o.add(buildDictlayerdataDictWordsSenses());
   return o;
 }
 
-checkUnnamed250(core.List<api.DictlayerdataDictWordsSenses> o) {
+void checkUnnamed3242(core.List<api.DictlayerdataDictWordsSenses> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWordsSenses(o[0]);
-  checkDictlayerdataDictWordsSenses(o[1]);
+  checkDictlayerdataDictWordsSenses(o[0] as api.DictlayerdataDictWordsSenses);
+  checkDictlayerdataDictWordsSenses(o[1] as api.DictlayerdataDictWordsSenses);
 }
 
 core.int buildCounterDictlayerdataDictWordsSource = 0;
-buildDictlayerdataDictWordsSource() {
-  var o = new api.DictlayerdataDictWordsSource();
+api.DictlayerdataDictWordsSource buildDictlayerdataDictWordsSource() {
+  var o = api.DictlayerdataDictWordsSource();
   buildCounterDictlayerdataDictWordsSource++;
   if (buildCounterDictlayerdataDictWordsSource < 3) {
-    o.attribution = "foo";
-    o.url = "foo";
+    o.attribution = 'foo';
+    o.url = 'foo';
   }
   buildCounterDictlayerdataDictWordsSource--;
   return o;
 }
 
-checkDictlayerdataDictWordsSource(api.DictlayerdataDictWordsSource o) {
+void checkDictlayerdataDictWordsSource(api.DictlayerdataDictWordsSource o) {
   buildCounterDictlayerdataDictWordsSource++;
   if (buildCounterDictlayerdataDictWordsSource < 3) {
-    unittest.expect(o.attribution, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.attribution!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdataDictWordsSource--;
 }
 
 core.int buildCounterDictlayerdataDictWords = 0;
-buildDictlayerdataDictWords() {
-  var o = new api.DictlayerdataDictWords();
+api.DictlayerdataDictWords buildDictlayerdataDictWords() {
+  var o = api.DictlayerdataDictWords();
   buildCounterDictlayerdataDictWords++;
   if (buildCounterDictlayerdataDictWords < 3) {
-    o.derivatives = buildUnnamed244();
-    o.examples = buildUnnamed245();
-    o.senses = buildUnnamed250();
+    o.derivatives = buildUnnamed3236();
+    o.examples = buildUnnamed3237();
+    o.senses = buildUnnamed3242();
     o.source = buildDictlayerdataDictWordsSource();
   }
   buildCounterDictlayerdataDictWords--;
   return o;
 }
 
-checkDictlayerdataDictWords(api.DictlayerdataDictWords o) {
+void checkDictlayerdataDictWords(api.DictlayerdataDictWords o) {
   buildCounterDictlayerdataDictWords++;
   if (buildCounterDictlayerdataDictWords < 3) {
-    checkUnnamed244(o.derivatives);
-    checkUnnamed245(o.examples);
-    checkUnnamed250(o.senses);
-    checkDictlayerdataDictWordsSource(o.source);
+    checkUnnamed3236(o.derivatives!);
+    checkUnnamed3237(o.examples!);
+    checkUnnamed3242(o.senses!);
+    checkDictlayerdataDictWordsSource(
+        o.source! as api.DictlayerdataDictWordsSource);
   }
   buildCounterDictlayerdataDictWords--;
 }
 
-buildUnnamed251() {
-  var o = new core.List<api.DictlayerdataDictWords>();
+core.List<api.DictlayerdataDictWords> buildUnnamed3243() {
+  var o = <api.DictlayerdataDictWords>[];
   o.add(buildDictlayerdataDictWords());
   o.add(buildDictlayerdataDictWords());
   return o;
 }
 
-checkUnnamed251(core.List<api.DictlayerdataDictWords> o) {
+void checkUnnamed3243(core.List<api.DictlayerdataDictWords> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDictlayerdataDictWords(o[0]);
-  checkDictlayerdataDictWords(o[1]);
+  checkDictlayerdataDictWords(o[0] as api.DictlayerdataDictWords);
+  checkDictlayerdataDictWords(o[1] as api.DictlayerdataDictWords);
 }
 
 core.int buildCounterDictlayerdataDict = 0;
-buildDictlayerdataDict() {
-  var o = new api.DictlayerdataDict();
+api.DictlayerdataDict buildDictlayerdataDict() {
+  var o = api.DictlayerdataDict();
   buildCounterDictlayerdataDict++;
   if (buildCounterDictlayerdataDict < 3) {
     o.source = buildDictlayerdataDictSource();
-    o.words = buildUnnamed251();
+    o.words = buildUnnamed3243();
   }
   buildCounterDictlayerdataDict--;
   return o;
 }
 
-checkDictlayerdataDict(api.DictlayerdataDict o) {
+void checkDictlayerdataDict(api.DictlayerdataDict o) {
   buildCounterDictlayerdataDict++;
   if (buildCounterDictlayerdataDict < 3) {
-    checkDictlayerdataDictSource(o.source);
-    checkUnnamed251(o.words);
+    checkDictlayerdataDictSource(o.source! as api.DictlayerdataDictSource);
+    checkUnnamed3243(o.words!);
   }
   buildCounterDictlayerdataDict--;
 }
 
 core.int buildCounterDictlayerdata = 0;
-buildDictlayerdata() {
-  var o = new api.Dictlayerdata();
+api.Dictlayerdata buildDictlayerdata() {
+  var o = api.Dictlayerdata();
   buildCounterDictlayerdata++;
   if (buildCounterDictlayerdata < 3) {
     o.common = buildDictlayerdataCommon();
     o.dict = buildDictlayerdataDict();
-    o.kind = "foo";
+    o.kind = 'foo';
   }
   buildCounterDictlayerdata--;
   return o;
 }
 
-checkDictlayerdata(api.Dictlayerdata o) {
+void checkDictlayerdata(api.Dictlayerdata o) {
   buildCounterDictlayerdata++;
   if (buildCounterDictlayerdata < 3) {
-    checkDictlayerdataCommon(o.common);
-    checkDictlayerdataDict(o.dict);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkDictlayerdataCommon(o.common! as api.DictlayerdataCommon);
+    checkDictlayerdataDict(o.dict! as api.DictlayerdataDict);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDictlayerdata--;
 }
 
 core.int buildCounterDiscoveryclustersClustersBannerWithContentContainer = 0;
-buildDiscoveryclustersClustersBannerWithContentContainer() {
-  var o = new api.DiscoveryclustersClustersBannerWithContentContainer();
+api.DiscoveryclustersClustersBannerWithContentContainer
+    buildDiscoveryclustersClustersBannerWithContentContainer() {
+  var o = api.DiscoveryclustersClustersBannerWithContentContainer();
   buildCounterDiscoveryclustersClustersBannerWithContentContainer++;
   if (buildCounterDiscoveryclustersClustersBannerWithContentContainer < 3) {
-    o.fillColorArgb = "foo";
-    o.imageUrl = "foo";
-    o.maskColorArgb = "foo";
-    o.moreButtonText = "foo";
-    o.moreButtonUrl = "foo";
-    o.textColorArgb = "foo";
+    o.fillColorArgb = 'foo';
+    o.imageUrl = 'foo';
+    o.maskColorArgb = 'foo';
+    o.moreButtonText = 'foo';
+    o.moreButtonUrl = 'foo';
+    o.textColorArgb = 'foo';
   }
   buildCounterDiscoveryclustersClustersBannerWithContentContainer--;
   return o;
 }
 
-checkDiscoveryclustersClustersBannerWithContentContainer(
+void checkDiscoveryclustersClustersBannerWithContentContainer(
     api.DiscoveryclustersClustersBannerWithContentContainer o) {
   buildCounterDiscoveryclustersClustersBannerWithContentContainer++;
   if (buildCounterDiscoveryclustersClustersBannerWithContentContainer < 3) {
-    unittest.expect(o.fillColorArgb, unittest.equals('foo'));
-    unittest.expect(o.imageUrl, unittest.equals('foo'));
-    unittest.expect(o.maskColorArgb, unittest.equals('foo'));
-    unittest.expect(o.moreButtonText, unittest.equals('foo'));
-    unittest.expect(o.moreButtonUrl, unittest.equals('foo'));
-    unittest.expect(o.textColorArgb, unittest.equals('foo'));
+    unittest.expect(
+      o.fillColorArgb!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.imageUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.maskColorArgb!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.moreButtonText!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.moreButtonUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.textColorArgb!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDiscoveryclustersClustersBannerWithContentContainer--;
 }
 
-buildUnnamed252() {
-  var o = new core.List<api.Volume>();
+core.List<api.Volume> buildUnnamed3244() {
+  var o = <api.Volume>[];
   o.add(buildVolume());
   o.add(buildVolume());
   return o;
 }
 
-checkUnnamed252(core.List<api.Volume> o) {
+void checkUnnamed3244(core.List<api.Volume> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolume(o[0]);
-  checkVolume(o[1]);
+  checkVolume(o[0] as api.Volume);
+  checkVolume(o[1] as api.Volume);
 }
 
 core.int buildCounterDiscoveryclustersClusters = 0;
-buildDiscoveryclustersClusters() {
-  var o = new api.DiscoveryclustersClusters();
+api.DiscoveryclustersClusters buildDiscoveryclustersClusters() {
+  var o = api.DiscoveryclustersClusters();
   buildCounterDiscoveryclustersClusters++;
   if (buildCounterDiscoveryclustersClusters < 3) {
     o.bannerWithContentContainer =
         buildDiscoveryclustersClustersBannerWithContentContainer();
-    o.subTitle = "foo";
-    o.title = "foo";
+    o.subTitle = 'foo';
+    o.title = 'foo';
     o.totalVolumes = 42;
-    o.uid = "foo";
-    o.volumes = buildUnnamed252();
+    o.uid = 'foo';
+    o.volumes = buildUnnamed3244();
   }
   buildCounterDiscoveryclustersClusters--;
   return o;
 }
 
-checkDiscoveryclustersClusters(api.DiscoveryclustersClusters o) {
+void checkDiscoveryclustersClusters(api.DiscoveryclustersClusters o) {
   buildCounterDiscoveryclustersClusters++;
   if (buildCounterDiscoveryclustersClusters < 3) {
     checkDiscoveryclustersClustersBannerWithContentContainer(
-        o.bannerWithContentContainer);
-    unittest.expect(o.subTitle, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
-    unittest.expect(o.totalVolumes, unittest.equals(42));
-    unittest.expect(o.uid, unittest.equals('foo'));
-    checkUnnamed252(o.volumes);
+        o.bannerWithContentContainer!
+            as api.DiscoveryclustersClustersBannerWithContentContainer);
+    unittest.expect(
+      o.subTitle!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalVolumes!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.uid!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3244(o.volumes!);
   }
   buildCounterDiscoveryclustersClusters--;
 }
 
-buildUnnamed253() {
-  var o = new core.List<api.DiscoveryclustersClusters>();
+core.List<api.DiscoveryclustersClusters> buildUnnamed3245() {
+  var o = <api.DiscoveryclustersClusters>[];
   o.add(buildDiscoveryclustersClusters());
   o.add(buildDiscoveryclustersClusters());
   return o;
 }
 
-checkUnnamed253(core.List<api.DiscoveryclustersClusters> o) {
+void checkUnnamed3245(core.List<api.DiscoveryclustersClusters> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDiscoveryclustersClusters(o[0]);
-  checkDiscoveryclustersClusters(o[1]);
+  checkDiscoveryclustersClusters(o[0] as api.DiscoveryclustersClusters);
+  checkDiscoveryclustersClusters(o[1] as api.DiscoveryclustersClusters);
 }
 
 core.int buildCounterDiscoveryclusters = 0;
-buildDiscoveryclusters() {
-  var o = new api.Discoveryclusters();
+api.Discoveryclusters buildDiscoveryclusters() {
+  var o = api.Discoveryclusters();
   buildCounterDiscoveryclusters++;
   if (buildCounterDiscoveryclusters < 3) {
-    o.clusters = buildUnnamed253();
-    o.kind = "foo";
+    o.clusters = buildUnnamed3245();
+    o.kind = 'foo';
     o.totalClusters = 42;
   }
   buildCounterDiscoveryclusters--;
   return o;
 }
 
-checkDiscoveryclusters(api.Discoveryclusters o) {
+void checkDiscoveryclusters(api.Discoveryclusters o) {
   buildCounterDiscoveryclusters++;
   if (buildCounterDiscoveryclusters < 3) {
-    checkUnnamed253(o.clusters);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.totalClusters, unittest.equals(42));
+    checkUnnamed3245(o.clusters!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalClusters!,
+      unittest.equals(42),
+    );
   }
   buildCounterDiscoveryclusters--;
 }
 
 core.int buildCounterDownloadAccessRestriction = 0;
-buildDownloadAccessRestriction() {
-  var o = new api.DownloadAccessRestriction();
+api.DownloadAccessRestriction buildDownloadAccessRestriction() {
+  var o = api.DownloadAccessRestriction();
   buildCounterDownloadAccessRestriction++;
   if (buildCounterDownloadAccessRestriction < 3) {
     o.deviceAllowed = true;
     o.downloadsAcquired = 42;
     o.justAcquired = true;
-    o.kind = "foo";
+    o.kind = 'foo';
     o.maxDownloadDevices = 42;
-    o.message = "foo";
-    o.nonce = "foo";
-    o.reasonCode = "foo";
+    o.message = 'foo';
+    o.nonce = 'foo';
+    o.reasonCode = 'foo';
     o.restricted = true;
-    o.signature = "foo";
-    o.source = "foo";
-    o.volumeId = "foo";
+    o.signature = 'foo';
+    o.source = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterDownloadAccessRestriction--;
   return o;
 }
 
-checkDownloadAccessRestriction(api.DownloadAccessRestriction o) {
+void checkDownloadAccessRestriction(api.DownloadAccessRestriction o) {
   buildCounterDownloadAccessRestriction++;
   if (buildCounterDownloadAccessRestriction < 3) {
-    unittest.expect(o.deviceAllowed, unittest.isTrue);
-    unittest.expect(o.downloadsAcquired, unittest.equals(42));
-    unittest.expect(o.justAcquired, unittest.isTrue);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.maxDownloadDevices, unittest.equals(42));
-    unittest.expect(o.message, unittest.equals('foo'));
-    unittest.expect(o.nonce, unittest.equals('foo'));
-    unittest.expect(o.reasonCode, unittest.equals('foo'));
-    unittest.expect(o.restricted, unittest.isTrue);
-    unittest.expect(o.signature, unittest.equals('foo'));
-    unittest.expect(o.source, unittest.equals('foo'));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+    unittest.expect(o.deviceAllowed!, unittest.isTrue);
+    unittest.expect(
+      o.downloadsAcquired!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.justAcquired!, unittest.isTrue);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.maxDownloadDevices!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.message!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nonce!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.reasonCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.restricted!, unittest.isTrue);
+    unittest.expect(
+      o.signature!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.source!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDownloadAccessRestriction--;
 }
 
-buildUnnamed254() {
-  var o = new core.List<api.DownloadAccessRestriction>();
+core.List<api.DownloadAccessRestriction> buildUnnamed3246() {
+  var o = <api.DownloadAccessRestriction>[];
   o.add(buildDownloadAccessRestriction());
   o.add(buildDownloadAccessRestriction());
   return o;
 }
 
-checkUnnamed254(core.List<api.DownloadAccessRestriction> o) {
+void checkUnnamed3246(core.List<api.DownloadAccessRestriction> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDownloadAccessRestriction(o[0]);
-  checkDownloadAccessRestriction(o[1]);
+  checkDownloadAccessRestriction(o[0] as api.DownloadAccessRestriction);
+  checkDownloadAccessRestriction(o[1] as api.DownloadAccessRestriction);
 }
 
 core.int buildCounterDownloadAccesses = 0;
-buildDownloadAccesses() {
-  var o = new api.DownloadAccesses();
+api.DownloadAccesses buildDownloadAccesses() {
+  var o = api.DownloadAccesses();
   buildCounterDownloadAccesses++;
   if (buildCounterDownloadAccesses < 3) {
-    o.downloadAccessList = buildUnnamed254();
-    o.kind = "foo";
+    o.downloadAccessList = buildUnnamed3246();
+    o.kind = 'foo';
   }
   buildCounterDownloadAccesses--;
   return o;
 }
 
-checkDownloadAccesses(api.DownloadAccesses o) {
+void checkDownloadAccesses(api.DownloadAccesses o) {
   buildCounterDownloadAccesses++;
   if (buildCounterDownloadAccesses < 3) {
-    checkUnnamed254(o.downloadAccessList);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed3246(o.downloadAccessList!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDownloadAccesses--;
 }
 
+core.int buildCounterEmpty = 0;
+api.Empty buildEmpty() {
+  var o = api.Empty();
+  buildCounterEmpty++;
+  if (buildCounterEmpty < 3) {}
+  buildCounterEmpty--;
+  return o;
+}
+
+void checkEmpty(api.Empty o) {
+  buildCounterEmpty++;
+  if (buildCounterEmpty < 3) {}
+  buildCounterEmpty--;
+}
+
 core.int buildCounterFamilyInfoMembership = 0;
-buildFamilyInfoMembership() {
-  var o = new api.FamilyInfoMembership();
+api.FamilyInfoMembership buildFamilyInfoMembership() {
+  var o = api.FamilyInfoMembership();
   buildCounterFamilyInfoMembership++;
   if (buildCounterFamilyInfoMembership < 3) {
-    o.acquirePermission = "foo";
-    o.ageGroup = "foo";
-    o.allowedMaturityRating = "foo";
+    o.acquirePermission = 'foo';
+    o.ageGroup = 'foo';
+    o.allowedMaturityRating = 'foo';
     o.isInFamily = true;
-    o.role = "foo";
+    o.role = 'foo';
   }
   buildCounterFamilyInfoMembership--;
   return o;
 }
 
-checkFamilyInfoMembership(api.FamilyInfoMembership o) {
+void checkFamilyInfoMembership(api.FamilyInfoMembership o) {
   buildCounterFamilyInfoMembership++;
   if (buildCounterFamilyInfoMembership < 3) {
-    unittest.expect(o.acquirePermission, unittest.equals('foo'));
-    unittest.expect(o.ageGroup, unittest.equals('foo'));
-    unittest.expect(o.allowedMaturityRating, unittest.equals('foo'));
-    unittest.expect(o.isInFamily, unittest.isTrue);
-    unittest.expect(o.role, unittest.equals('foo'));
+    unittest.expect(
+      o.acquirePermission!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.ageGroup!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.allowedMaturityRating!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isInFamily!, unittest.isTrue);
+    unittest.expect(
+      o.role!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterFamilyInfoMembership--;
 }
 
 core.int buildCounterFamilyInfo = 0;
-buildFamilyInfo() {
-  var o = new api.FamilyInfo();
+api.FamilyInfo buildFamilyInfo() {
+  var o = api.FamilyInfo();
   buildCounterFamilyInfo++;
   if (buildCounterFamilyInfo < 3) {
-    o.kind = "foo";
+    o.kind = 'foo';
     o.membership = buildFamilyInfoMembership();
   }
   buildCounterFamilyInfo--;
   return o;
 }
 
-checkFamilyInfo(api.FamilyInfo o) {
+void checkFamilyInfo(api.FamilyInfo o) {
   buildCounterFamilyInfo++;
   if (buildCounterFamilyInfo < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkFamilyInfoMembership(o.membership);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkFamilyInfoMembership(o.membership! as api.FamilyInfoMembership);
   }
   buildCounterFamilyInfo--;
 }
 
+core.int buildCounterGeoAnnotationdata = 0;
+api.GeoAnnotationdata buildGeoAnnotationdata() {
+  var o = api.GeoAnnotationdata();
+  buildCounterGeoAnnotationdata++;
+  if (buildCounterGeoAnnotationdata < 3) {
+    o.annotationType = 'foo';
+    o.data = buildGeolayerdata();
+    o.encodedData = 'foo';
+    o.id = 'foo';
+    o.kind = 'foo';
+    o.layerId = 'foo';
+    o.selfLink = 'foo';
+    o.updated = 'foo';
+    o.volumeId = 'foo';
+  }
+  buildCounterGeoAnnotationdata--;
+  return o;
+}
+
+void checkGeoAnnotationdata(api.GeoAnnotationdata o) {
+  buildCounterGeoAnnotationdata++;
+  if (buildCounterGeoAnnotationdata < 3) {
+    unittest.expect(
+      o.annotationType!,
+      unittest.equals('foo'),
+    );
+    checkGeolayerdata(o.data! as api.Geolayerdata);
+    unittest.expect(
+      o.encodedData!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGeoAnnotationdata--;
+}
+
 core.int buildCounterGeolayerdataCommon = 0;
-buildGeolayerdataCommon() {
-  var o = new api.GeolayerdataCommon();
+api.GeolayerdataCommon buildGeolayerdataCommon() {
+  var o = api.GeolayerdataCommon();
   buildCounterGeolayerdataCommon++;
   if (buildCounterGeolayerdataCommon < 3) {
-    o.lang = "foo";
-    o.previewImageUrl = "foo";
-    o.snippet = "foo";
-    o.snippetUrl = "foo";
-    o.title = "foo";
+    o.lang = 'foo';
+    o.previewImageUrl = 'foo';
+    o.snippet = 'foo';
+    o.snippetUrl = 'foo';
+    o.title = 'foo';
   }
   buildCounterGeolayerdataCommon--;
   return o;
 }
 
-checkGeolayerdataCommon(api.GeolayerdataCommon o) {
+void checkGeolayerdataCommon(api.GeolayerdataCommon o) {
   buildCounterGeolayerdataCommon++;
   if (buildCounterGeolayerdataCommon < 3) {
-    unittest.expect(o.lang, unittest.equals('foo'));
-    unittest.expect(o.previewImageUrl, unittest.equals('foo'));
-    unittest.expect(o.snippet, unittest.equals('foo'));
-    unittest.expect(o.snippetUrl, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(
+      o.lang!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.previewImageUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.snippet!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.snippetUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterGeolayerdataCommon--;
 }
 
-core.int buildCounterGeolayerdataGeoBoundary = 0;
-buildGeolayerdataGeoBoundary() {
-  var o = new api.GeolayerdataGeoBoundary();
-  buildCounterGeolayerdataGeoBoundary++;
-  if (buildCounterGeolayerdataGeoBoundary < 3) {
-    o.latitude = 42;
-    o.longitude = 42;
-  }
-  buildCounterGeolayerdataGeoBoundary--;
+core.List<core.String> buildUnnamed3247() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkGeolayerdataGeoBoundary(api.GeolayerdataGeoBoundary o) {
-  buildCounterGeolayerdataGeoBoundary++;
-  if (buildCounterGeolayerdataGeoBoundary < 3) {
-    unittest.expect(o.latitude, unittest.equals(42));
-    unittest.expect(o.longitude, unittest.equals(42));
-  }
-  buildCounterGeolayerdataGeoBoundary--;
-}
-
-buildUnnamed255() {
-  var o = new core.List<api.GeolayerdataGeoBoundary>();
-  o.add(buildGeolayerdataGeoBoundary());
-  o.add(buildGeolayerdataGeoBoundary());
-  return o;
-}
-
-checkUnnamed255(core.List<api.GeolayerdataGeoBoundary> o) {
+void checkUnnamed3247(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGeolayerdataGeoBoundary(o[0]);
-  checkGeolayerdataGeoBoundary(o[1]);
-}
-
-buildUnnamed256() {
-  var o = new core.List<core.List<api.GeolayerdataGeoBoundary>>();
-  o.add(buildUnnamed255());
-  o.add(buildUnnamed255());
-  return o;
-}
-
-checkUnnamed256(core.List<core.List<api.GeolayerdataGeoBoundary>> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed255(o[0]);
-  checkUnnamed255(o[1]);
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterGeolayerdataGeoViewportHi = 0;
-buildGeolayerdataGeoViewportHi() {
-  var o = new api.GeolayerdataGeoViewportHi();
+api.GeolayerdataGeoViewportHi buildGeolayerdataGeoViewportHi() {
+  var o = api.GeolayerdataGeoViewportHi();
   buildCounterGeolayerdataGeoViewportHi++;
   if (buildCounterGeolayerdataGeoViewportHi < 3) {
     o.latitude = 42.0;
@@ -1443,18 +1879,24 @@ buildGeolayerdataGeoViewportHi() {
   return o;
 }
 
-checkGeolayerdataGeoViewportHi(api.GeolayerdataGeoViewportHi o) {
+void checkGeolayerdataGeoViewportHi(api.GeolayerdataGeoViewportHi o) {
   buildCounterGeolayerdataGeoViewportHi++;
   if (buildCounterGeolayerdataGeoViewportHi < 3) {
-    unittest.expect(o.latitude, unittest.equals(42.0));
-    unittest.expect(o.longitude, unittest.equals(42.0));
+    unittest.expect(
+      o.latitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.longitude!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterGeolayerdataGeoViewportHi--;
 }
 
 core.int buildCounterGeolayerdataGeoViewportLo = 0;
-buildGeolayerdataGeoViewportLo() {
-  var o = new api.GeolayerdataGeoViewportLo();
+api.GeolayerdataGeoViewportLo buildGeolayerdataGeoViewportLo() {
+  var o = api.GeolayerdataGeoViewportLo();
   buildCounterGeolayerdataGeoViewportLo++;
   if (buildCounterGeolayerdataGeoViewportLo < 3) {
     o.latitude = 42.0;
@@ -1464,18 +1906,24 @@ buildGeolayerdataGeoViewportLo() {
   return o;
 }
 
-checkGeolayerdataGeoViewportLo(api.GeolayerdataGeoViewportLo o) {
+void checkGeolayerdataGeoViewportLo(api.GeolayerdataGeoViewportLo o) {
   buildCounterGeolayerdataGeoViewportLo++;
   if (buildCounterGeolayerdataGeoViewportLo < 3) {
-    unittest.expect(o.latitude, unittest.equals(42.0));
-    unittest.expect(o.longitude, unittest.equals(42.0));
+    unittest.expect(
+      o.latitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.longitude!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterGeolayerdataGeoViewportLo--;
 }
 
 core.int buildCounterGeolayerdataGeoViewport = 0;
-buildGeolayerdataGeoViewport() {
-  var o = new api.GeolayerdataGeoViewport();
+api.GeolayerdataGeoViewport buildGeolayerdataGeoViewport() {
+  var o = api.GeolayerdataGeoViewport();
   buildCounterGeolayerdataGeoViewport++;
   if (buildCounterGeolayerdataGeoViewport < 3) {
     o.hi = buildGeolayerdataGeoViewportHi();
@@ -1485,26 +1933,26 @@ buildGeolayerdataGeoViewport() {
   return o;
 }
 
-checkGeolayerdataGeoViewport(api.GeolayerdataGeoViewport o) {
+void checkGeolayerdataGeoViewport(api.GeolayerdataGeoViewport o) {
   buildCounterGeolayerdataGeoViewport++;
   if (buildCounterGeolayerdataGeoViewport < 3) {
-    checkGeolayerdataGeoViewportHi(o.hi);
-    checkGeolayerdataGeoViewportLo(o.lo);
+    checkGeolayerdataGeoViewportHi(o.hi! as api.GeolayerdataGeoViewportHi);
+    checkGeolayerdataGeoViewportLo(o.lo! as api.GeolayerdataGeoViewportLo);
   }
   buildCounterGeolayerdataGeoViewport--;
 }
 
 core.int buildCounterGeolayerdataGeo = 0;
-buildGeolayerdataGeo() {
-  var o = new api.GeolayerdataGeo();
+api.GeolayerdataGeo buildGeolayerdataGeo() {
+  var o = api.GeolayerdataGeo();
   buildCounterGeolayerdataGeo++;
   if (buildCounterGeolayerdataGeo < 3) {
-    o.boundary = buildUnnamed256();
-    o.cachePolicy = "foo";
-    o.countryCode = "foo";
+    o.boundary = buildUnnamed3247();
+    o.cachePolicy = 'foo';
+    o.countryCode = 'foo';
     o.latitude = 42.0;
     o.longitude = 42.0;
-    o.mapType = "foo";
+    o.mapType = 'foo';
     o.viewport = buildGeolayerdataGeoViewport();
     o.zoom = 42;
   }
@@ -1512,714 +1960,1123 @@ buildGeolayerdataGeo() {
   return o;
 }
 
-checkGeolayerdataGeo(api.GeolayerdataGeo o) {
+void checkGeolayerdataGeo(api.GeolayerdataGeo o) {
   buildCounterGeolayerdataGeo++;
   if (buildCounterGeolayerdataGeo < 3) {
-    checkUnnamed256(o.boundary);
-    unittest.expect(o.cachePolicy, unittest.equals('foo'));
-    unittest.expect(o.countryCode, unittest.equals('foo'));
-    unittest.expect(o.latitude, unittest.equals(42.0));
-    unittest.expect(o.longitude, unittest.equals(42.0));
-    unittest.expect(o.mapType, unittest.equals('foo'));
-    checkGeolayerdataGeoViewport(o.viewport);
-    unittest.expect(o.zoom, unittest.equals(42));
+    checkUnnamed3247(o.boundary!);
+    unittest.expect(
+      o.cachePolicy!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.countryCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.latitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.longitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.mapType!,
+      unittest.equals('foo'),
+    );
+    checkGeolayerdataGeoViewport(o.viewport! as api.GeolayerdataGeoViewport);
+    unittest.expect(
+      o.zoom!,
+      unittest.equals(42),
+    );
   }
   buildCounterGeolayerdataGeo--;
 }
 
 core.int buildCounterGeolayerdata = 0;
-buildGeolayerdata() {
-  var o = new api.Geolayerdata();
+api.Geolayerdata buildGeolayerdata() {
+  var o = api.Geolayerdata();
   buildCounterGeolayerdata++;
   if (buildCounterGeolayerdata < 3) {
     o.common = buildGeolayerdataCommon();
     o.geo = buildGeolayerdataGeo();
-    o.kind = "foo";
+    o.kind = 'foo';
   }
   buildCounterGeolayerdata--;
   return o;
 }
 
-checkGeolayerdata(api.Geolayerdata o) {
+void checkGeolayerdata(api.Geolayerdata o) {
   buildCounterGeolayerdata++;
   if (buildCounterGeolayerdata < 3) {
-    checkGeolayerdataCommon(o.common);
-    checkGeolayerdataGeo(o.geo);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkGeolayerdataCommon(o.common! as api.GeolayerdataCommon);
+    checkGeolayerdataGeo(o.geo! as api.GeolayerdataGeo);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterGeolayerdata--;
 }
 
-buildUnnamed257() {
-  var o = new core.List<api.Layersummary>();
+core.List<api.Layersummary> buildUnnamed3248() {
+  var o = <api.Layersummary>[];
   o.add(buildLayersummary());
   o.add(buildLayersummary());
   return o;
 }
 
-checkUnnamed257(core.List<api.Layersummary> o) {
+void checkUnnamed3248(core.List<api.Layersummary> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLayersummary(o[0]);
-  checkLayersummary(o[1]);
+  checkLayersummary(o[0] as api.Layersummary);
+  checkLayersummary(o[1] as api.Layersummary);
 }
 
 core.int buildCounterLayersummaries = 0;
-buildLayersummaries() {
-  var o = new api.Layersummaries();
+api.Layersummaries buildLayersummaries() {
+  var o = api.Layersummaries();
   buildCounterLayersummaries++;
   if (buildCounterLayersummaries < 3) {
-    o.items = buildUnnamed257();
-    o.kind = "foo";
+    o.items = buildUnnamed3248();
+    o.kind = 'foo';
     o.totalItems = 42;
   }
   buildCounterLayersummaries--;
   return o;
 }
 
-checkLayersummaries(api.Layersummaries o) {
+void checkLayersummaries(api.Layersummaries o) {
   buildCounterLayersummaries++;
   if (buildCounterLayersummaries < 3) {
-    checkUnnamed257(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.totalItems, unittest.equals(42));
+    checkUnnamed3248(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalItems!,
+      unittest.equals(42),
+    );
   }
   buildCounterLayersummaries--;
 }
 
-buildUnnamed258() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3249() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed258(core.List<core.String> o) {
+void checkUnnamed3249(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterLayersummary = 0;
-buildLayersummary() {
-  var o = new api.Layersummary();
+api.Layersummary buildLayersummary() {
+  var o = api.Layersummary();
   buildCounterLayersummary++;
   if (buildCounterLayersummary < 3) {
     o.annotationCount = 42;
-    o.annotationTypes = buildUnnamed258();
-    o.annotationsDataLink = "foo";
-    o.annotationsLink = "foo";
-    o.contentVersion = "foo";
+    o.annotationTypes = buildUnnamed3249();
+    o.annotationsDataLink = 'foo';
+    o.annotationsLink = 'foo';
+    o.contentVersion = 'foo';
     o.dataCount = 42;
-    o.id = "foo";
-    o.kind = "foo";
-    o.layerId = "foo";
-    o.selfLink = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
-    o.volumeAnnotationsVersion = "foo";
-    o.volumeId = "foo";
+    o.id = 'foo';
+    o.kind = 'foo';
+    o.layerId = 'foo';
+    o.selfLink = 'foo';
+    o.updated = 'foo';
+    o.volumeAnnotationsVersion = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterLayersummary--;
   return o;
 }
 
-checkLayersummary(api.Layersummary o) {
+void checkLayersummary(api.Layersummary o) {
   buildCounterLayersummary++;
   if (buildCounterLayersummary < 3) {
-    unittest.expect(o.annotationCount, unittest.equals(42));
-    checkUnnamed258(o.annotationTypes);
-    unittest.expect(o.annotationsDataLink, unittest.equals('foo'));
-    unittest.expect(o.annotationsLink, unittest.equals('foo'));
-    unittest.expect(o.contentVersion, unittest.equals('foo'));
-    unittest.expect(o.dataCount, unittest.equals(42));
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    unittest.expect(o.selfLink, unittest.equals('foo'));
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeAnnotationsVersion, unittest.equals('foo'));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+      o.annotationCount!,
+      unittest.equals(42),
+    );
+    checkUnnamed3249(o.annotationTypes!);
+    unittest.expect(
+      o.annotationsDataLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.annotationsLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.contentVersion!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.dataCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeAnnotationsVersion!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterLayersummary--;
 }
 
 core.int buildCounterMetadataItems = 0;
-buildMetadataItems() {
-  var o = new api.MetadataItems();
+api.MetadataItems buildMetadataItems() {
+  var o = api.MetadataItems();
   buildCounterMetadataItems++;
   if (buildCounterMetadataItems < 3) {
-    o.downloadUrl = "foo";
-    o.encryptedKey = "foo";
-    o.language = "foo";
-    o.size = "foo";
-    o.version = "foo";
+    o.downloadUrl = 'foo';
+    o.encryptedKey = 'foo';
+    o.language = 'foo';
+    o.size = 'foo';
+    o.version = 'foo';
   }
   buildCounterMetadataItems--;
   return o;
 }
 
-checkMetadataItems(api.MetadataItems o) {
+void checkMetadataItems(api.MetadataItems o) {
   buildCounterMetadataItems++;
   if (buildCounterMetadataItems < 3) {
-    unittest.expect(o.downloadUrl, unittest.equals('foo'));
-    unittest.expect(o.encryptedKey, unittest.equals('foo'));
-    unittest.expect(o.language, unittest.equals('foo'));
-    unittest.expect(o.size, unittest.equals('foo'));
-    unittest.expect(o.version, unittest.equals('foo'));
+    unittest.expect(
+      o.downloadUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.encryptedKey!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.language!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.size!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.version!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterMetadataItems--;
 }
 
-buildUnnamed259() {
-  var o = new core.List<api.MetadataItems>();
+core.List<api.MetadataItems> buildUnnamed3250() {
+  var o = <api.MetadataItems>[];
   o.add(buildMetadataItems());
   o.add(buildMetadataItems());
   return o;
 }
 
-checkUnnamed259(core.List<api.MetadataItems> o) {
+void checkUnnamed3250(core.List<api.MetadataItems> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMetadataItems(o[0]);
-  checkMetadataItems(o[1]);
+  checkMetadataItems(o[0] as api.MetadataItems);
+  checkMetadataItems(o[1] as api.MetadataItems);
 }
 
 core.int buildCounterMetadata = 0;
-buildMetadata() {
-  var o = new api.Metadata();
+api.Metadata buildMetadata() {
+  var o = api.Metadata();
   buildCounterMetadata++;
   if (buildCounterMetadata < 3) {
-    o.items = buildUnnamed259();
-    o.kind = "foo";
+    o.items = buildUnnamed3250();
+    o.kind = 'foo';
   }
   buildCounterMetadata--;
   return o;
 }
 
-checkMetadata(api.Metadata o) {
+void checkMetadata(api.Metadata o) {
   buildCounterMetadata++;
   if (buildCounterMetadata < 3) {
-    checkUnnamed259(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed3250(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterMetadata--;
 }
 
-buildUnnamed260() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3251() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed260(core.List<core.String> o) {
+void checkUnnamed3251(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterNotification = 0;
-buildNotification() {
-  var o = new api.Notification();
+api.Notification buildNotification() {
+  var o = api.Notification();
   buildCounterNotification++;
   if (buildCounterNotification < 3) {
-    o.body = "foo";
-    o.crmExperimentIds = buildUnnamed260();
-    o.docId = "foo";
-    o.docType = "foo";
+    o.body = 'foo';
+    o.crmExperimentIds = buildUnnamed3251();
+    o.docId = 'foo';
+    o.docType = 'foo';
     o.dontShowNotification = true;
-    o.iconUrl = "foo";
+    o.iconUrl = 'foo';
     o.isDocumentMature = true;
-    o.kind = "foo";
-    o.notificationGroup = "foo";
-    o.notificationType = "foo";
-    o.pcampaignId = "foo";
-    o.reason = "foo";
+    o.kind = 'foo';
+    o.notificationGroup = 'foo';
+    o.notificationType = 'foo';
+    o.pcampaignId = 'foo';
+    o.reason = 'foo';
     o.showNotificationSettingsAction = true;
-    o.targetUrl = "foo";
-    o.title = "foo";
+    o.targetUrl = 'foo';
+    o.timeToExpireMs = 'foo';
+    o.title = 'foo';
   }
   buildCounterNotification--;
   return o;
 }
 
-checkNotification(api.Notification o) {
+void checkNotification(api.Notification o) {
   buildCounterNotification++;
   if (buildCounterNotification < 3) {
-    unittest.expect(o.body, unittest.equals('foo'));
-    checkUnnamed260(o.crmExperimentIds);
-    unittest.expect(o.docId, unittest.equals('foo'));
-    unittest.expect(o.docType, unittest.equals('foo'));
-    unittest.expect(o.dontShowNotification, unittest.isTrue);
-    unittest.expect(o.iconUrl, unittest.equals('foo'));
-    unittest.expect(o.isDocumentMature, unittest.isTrue);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.notificationGroup, unittest.equals('foo'));
-    unittest.expect(o.notificationType, unittest.equals('foo'));
-    unittest.expect(o.pcampaignId, unittest.equals('foo'));
-    unittest.expect(o.reason, unittest.equals('foo'));
-    unittest.expect(o.showNotificationSettingsAction, unittest.isTrue);
-    unittest.expect(o.targetUrl, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(
+      o.body!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3251(o.crmExperimentIds!);
+    unittest.expect(
+      o.docId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.docType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.dontShowNotification!, unittest.isTrue);
+    unittest.expect(
+      o.iconUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isDocumentMature!, unittest.isTrue);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.notificationGroup!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.notificationType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pcampaignId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.reason!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.showNotificationSettingsAction!, unittest.isTrue);
+    unittest.expect(
+      o.targetUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.timeToExpireMs!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterNotification--;
 }
 
 core.int buildCounterOffersItemsItems = 0;
-buildOffersItemsItems() {
-  var o = new api.OffersItemsItems();
+api.OffersItemsItems buildOffersItemsItems() {
+  var o = api.OffersItemsItems();
   buildCounterOffersItemsItems++;
   if (buildCounterOffersItemsItems < 3) {
-    o.author = "foo";
-    o.canonicalVolumeLink = "foo";
-    o.coverUrl = "foo";
-    o.description = "foo";
-    o.title = "foo";
-    o.volumeId = "foo";
+    o.author = 'foo';
+    o.canonicalVolumeLink = 'foo';
+    o.coverUrl = 'foo';
+    o.description = 'foo';
+    o.title = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterOffersItemsItems--;
   return o;
 }
 
-checkOffersItemsItems(api.OffersItemsItems o) {
+void checkOffersItemsItems(api.OffersItemsItems o) {
   buildCounterOffersItemsItems++;
   if (buildCounterOffersItemsItems < 3) {
-    unittest.expect(o.author, unittest.equals('foo'));
-    unittest.expect(o.canonicalVolumeLink, unittest.equals('foo'));
-    unittest.expect(o.coverUrl, unittest.equals('foo'));
-    unittest.expect(o.description, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+    unittest.expect(
+      o.author!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.canonicalVolumeLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.coverUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterOffersItemsItems--;
 }
 
-buildUnnamed261() {
-  var o = new core.List<api.OffersItemsItems>();
+core.List<api.OffersItemsItems> buildUnnamed3252() {
+  var o = <api.OffersItemsItems>[];
   o.add(buildOffersItemsItems());
   o.add(buildOffersItemsItems());
   return o;
 }
 
-checkUnnamed261(core.List<api.OffersItemsItems> o) {
+void checkUnnamed3252(core.List<api.OffersItemsItems> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkOffersItemsItems(o[0]);
-  checkOffersItemsItems(o[1]);
+  checkOffersItemsItems(o[0] as api.OffersItemsItems);
+  checkOffersItemsItems(o[1] as api.OffersItemsItems);
 }
 
 core.int buildCounterOffersItems = 0;
-buildOffersItems() {
-  var o = new api.OffersItems();
+api.OffersItems buildOffersItems() {
+  var o = api.OffersItems();
   buildCounterOffersItems++;
   if (buildCounterOffersItems < 3) {
-    o.artUrl = "foo";
-    o.gservicesKey = "foo";
-    o.id = "foo";
-    o.items = buildUnnamed261();
+    o.artUrl = 'foo';
+    o.gservicesKey = 'foo';
+    o.id = 'foo';
+    o.items = buildUnnamed3252();
   }
   buildCounterOffersItems--;
   return o;
 }
 
-checkOffersItems(api.OffersItems o) {
+void checkOffersItems(api.OffersItems o) {
   buildCounterOffersItems++;
   if (buildCounterOffersItems < 3) {
-    unittest.expect(o.artUrl, unittest.equals('foo'));
-    unittest.expect(o.gservicesKey, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals('foo'));
-    checkUnnamed261(o.items);
+    unittest.expect(
+      o.artUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.gservicesKey!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3252(o.items!);
   }
   buildCounterOffersItems--;
 }
 
-buildUnnamed262() {
-  var o = new core.List<api.OffersItems>();
+core.List<api.OffersItems> buildUnnamed3253() {
+  var o = <api.OffersItems>[];
   o.add(buildOffersItems());
   o.add(buildOffersItems());
   return o;
 }
 
-checkUnnamed262(core.List<api.OffersItems> o) {
+void checkUnnamed3253(core.List<api.OffersItems> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkOffersItems(o[0]);
-  checkOffersItems(o[1]);
+  checkOffersItems(o[0] as api.OffersItems);
+  checkOffersItems(o[1] as api.OffersItems);
 }
 
 core.int buildCounterOffers = 0;
-buildOffers() {
-  var o = new api.Offers();
+api.Offers buildOffers() {
+  var o = api.Offers();
   buildCounterOffers++;
   if (buildCounterOffers < 3) {
-    o.items = buildUnnamed262();
-    o.kind = "foo";
+    o.items = buildUnnamed3253();
+    o.kind = 'foo';
   }
   buildCounterOffers--;
   return o;
 }
 
-checkOffers(api.Offers o) {
+void checkOffers(api.Offers o) {
   buildCounterOffers++;
   if (buildCounterOffers < 3) {
-    checkUnnamed262(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed3253(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterOffers--;
 }
 
 core.int buildCounterReadingPosition = 0;
-buildReadingPosition() {
-  var o = new api.ReadingPosition();
+api.ReadingPosition buildReadingPosition() {
+  var o = api.ReadingPosition();
   buildCounterReadingPosition++;
   if (buildCounterReadingPosition < 3) {
-    o.epubCfiPosition = "foo";
-    o.gbImagePosition = "foo";
-    o.gbTextPosition = "foo";
-    o.kind = "foo";
-    o.pdfPosition = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
-    o.volumeId = "foo";
+    o.epubCfiPosition = 'foo';
+    o.gbImagePosition = 'foo';
+    o.gbTextPosition = 'foo';
+    o.kind = 'foo';
+    o.pdfPosition = 'foo';
+    o.updated = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterReadingPosition--;
   return o;
 }
 
-checkReadingPosition(api.ReadingPosition o) {
+void checkReadingPosition(api.ReadingPosition o) {
   buildCounterReadingPosition++;
   if (buildCounterReadingPosition < 3) {
-    unittest.expect(o.epubCfiPosition, unittest.equals('foo'));
-    unittest.expect(o.gbImagePosition, unittest.equals('foo'));
-    unittest.expect(o.gbTextPosition, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.pdfPosition, unittest.equals('foo'));
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+      o.epubCfiPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.gbImagePosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.gbTextPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pdfPosition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterReadingPosition--;
 }
 
-core.int buildCounterRequestAccess = 0;
-buildRequestAccess() {
-  var o = new api.RequestAccess();
-  buildCounterRequestAccess++;
-  if (buildCounterRequestAccess < 3) {
+core.int buildCounterRequestAccessData = 0;
+api.RequestAccessData buildRequestAccessData() {
+  var o = api.RequestAccessData();
+  buildCounterRequestAccessData++;
+  if (buildCounterRequestAccessData < 3) {
     o.concurrentAccess = buildConcurrentAccessRestriction();
     o.downloadAccess = buildDownloadAccessRestriction();
-    o.kind = "foo";
+    o.kind = 'foo';
   }
-  buildCounterRequestAccess--;
+  buildCounterRequestAccessData--;
   return o;
 }
 
-checkRequestAccess(api.RequestAccess o) {
-  buildCounterRequestAccess++;
-  if (buildCounterRequestAccess < 3) {
-    checkConcurrentAccessRestriction(o.concurrentAccess);
-    checkDownloadAccessRestriction(o.downloadAccess);
-    unittest.expect(o.kind, unittest.equals('foo'));
+void checkRequestAccessData(api.RequestAccessData o) {
+  buildCounterRequestAccessData++;
+  if (buildCounterRequestAccessData < 3) {
+    checkConcurrentAccessRestriction(
+        o.concurrentAccess! as api.ConcurrentAccessRestriction);
+    checkDownloadAccessRestriction(
+        o.downloadAccess! as api.DownloadAccessRestriction);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
-  buildCounterRequestAccess--;
+  buildCounterRequestAccessData--;
 }
 
 core.int buildCounterReviewAuthor = 0;
-buildReviewAuthor() {
-  var o = new api.ReviewAuthor();
+api.ReviewAuthor buildReviewAuthor() {
+  var o = api.ReviewAuthor();
   buildCounterReviewAuthor++;
   if (buildCounterReviewAuthor < 3) {
-    o.displayName = "foo";
+    o.displayName = 'foo';
   }
   buildCounterReviewAuthor--;
   return o;
 }
 
-checkReviewAuthor(api.ReviewAuthor o) {
+void checkReviewAuthor(api.ReviewAuthor o) {
   buildCounterReviewAuthor++;
   if (buildCounterReviewAuthor < 3) {
-    unittest.expect(o.displayName, unittest.equals('foo'));
+    unittest.expect(
+      o.displayName!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterReviewAuthor--;
 }
 
 core.int buildCounterReviewSource = 0;
-buildReviewSource() {
-  var o = new api.ReviewSource();
+api.ReviewSource buildReviewSource() {
+  var o = api.ReviewSource();
   buildCounterReviewSource++;
   if (buildCounterReviewSource < 3) {
-    o.description = "foo";
-    o.extraDescription = "foo";
-    o.url = "foo";
+    o.description = 'foo';
+    o.extraDescription = 'foo';
+    o.url = 'foo';
   }
   buildCounterReviewSource--;
   return o;
 }
 
-checkReviewSource(api.ReviewSource o) {
+void checkReviewSource(api.ReviewSource o) {
   buildCounterReviewSource++;
   if (buildCounterReviewSource < 3) {
-    unittest.expect(o.description, unittest.equals('foo'));
-    unittest.expect(o.extraDescription, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.extraDescription!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterReviewSource--;
 }
 
 core.int buildCounterReview = 0;
-buildReview() {
-  var o = new api.Review();
+api.Review buildReview() {
+  var o = api.Review();
   buildCounterReview++;
   if (buildCounterReview < 3) {
     o.author = buildReviewAuthor();
-    o.content = "foo";
-    o.date = "foo";
-    o.fullTextUrl = "foo";
-    o.kind = "foo";
-    o.rating = "foo";
+    o.content = 'foo';
+    o.date = 'foo';
+    o.fullTextUrl = 'foo';
+    o.kind = 'foo';
+    o.rating = 'foo';
     o.source = buildReviewSource();
-    o.title = "foo";
-    o.type = "foo";
-    o.volumeId = "foo";
+    o.title = 'foo';
+    o.type = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterReview--;
   return o;
 }
 
-checkReview(api.Review o) {
+void checkReview(api.Review o) {
   buildCounterReview++;
   if (buildCounterReview < 3) {
-    checkReviewAuthor(o.author);
-    unittest.expect(o.content, unittest.equals('foo'));
-    unittest.expect(o.date, unittest.equals('foo'));
-    unittest.expect(o.fullTextUrl, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.rating, unittest.equals('foo'));
-    checkReviewSource(o.source);
-    unittest.expect(o.title, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+    checkReviewAuthor(o.author! as api.ReviewAuthor);
+    unittest.expect(
+      o.content!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.date!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.fullTextUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.rating!,
+      unittest.equals('foo'),
+    );
+    checkReviewSource(o.source! as api.ReviewSource);
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterReview--;
+}
+
+core.int
+    buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo = 0;
+api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo
+    buildSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo() {
+  var o = api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo();
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo <
+      3) {
+    o.amountInMicros = 42.0;
+    o.currencyCode = 'foo';
+    o.releaseNumber = 'foo';
+    o.releaseTime = 'foo';
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo--;
+  return o;
+}
+
+void checkSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo(
+    api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo o) {
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo <
+      3) {
+    unittest.expect(
+      o.amountInMicros!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.releaseNumber!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.releaseTime!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo--;
+}
+
+core.int buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo =
+    0;
+api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo
+    buildSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo() {
+  var o = api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo();
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo <
+      3) {
+    o.amountInMicros = 42.0;
+    o.currencyCode = 'foo';
+    o.releaseNumber = 'foo';
+    o.releaseTime = 'foo';
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo--;
+  return o;
+}
+
+void checkSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo(
+    api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo o) {
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo <
+      3) {
+    unittest.expect(
+      o.amountInMicros!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.releaseNumber!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.releaseTime!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo--;
+}
+
+core.int buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo = 0;
+api.SeriesSeriesSeriesSubscriptionReleaseInfo
+    buildSeriesSeriesSeriesSubscriptionReleaseInfo() {
+  var o = api.SeriesSeriesSeriesSubscriptionReleaseInfo();
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo < 3) {
+    o.cancelTime = 'foo';
+    o.currentReleaseInfo =
+        buildSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo();
+    o.nextReleaseInfo =
+        buildSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo();
+    o.seriesSubscriptionType = 'foo';
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo--;
+  return o;
+}
+
+void checkSeriesSeriesSeriesSubscriptionReleaseInfo(
+    api.SeriesSeriesSeriesSubscriptionReleaseInfo o) {
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo++;
+  if (buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo < 3) {
+    unittest.expect(
+      o.cancelTime!,
+      unittest.equals('foo'),
+    );
+    checkSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo(
+        o.currentReleaseInfo!
+            as api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo);
+    checkSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo(
+        o.nextReleaseInfo!
+            as api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo);
+    unittest.expect(
+      o.seriesSubscriptionType!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterSeriesSeriesSeriesSubscriptionReleaseInfo--;
 }
 
 core.int buildCounterSeriesSeries = 0;
-buildSeriesSeries() {
-  var o = new api.SeriesSeries();
+api.SeriesSeries buildSeriesSeries() {
+  var o = api.SeriesSeries();
   buildCounterSeriesSeries++;
   if (buildCounterSeriesSeries < 3) {
-    o.bannerImageUrl = "foo";
-    o.imageUrl = "foo";
-    o.seriesId = "foo";
-    o.seriesType = "foo";
-    o.title = "foo";
+    o.bannerImageUrl = 'foo';
+    o.eligibleForSubscription = true;
+    o.imageUrl = 'foo';
+    o.isComplete = true;
+    o.seriesFormatType = 'foo';
+    o.seriesId = 'foo';
+    o.seriesSubscriptionReleaseInfo =
+        buildSeriesSeriesSeriesSubscriptionReleaseInfo();
+    o.seriesType = 'foo';
+    o.subscriptionId = 'foo';
+    o.title = 'foo';
   }
   buildCounterSeriesSeries--;
   return o;
 }
 
-checkSeriesSeries(api.SeriesSeries o) {
+void checkSeriesSeries(api.SeriesSeries o) {
   buildCounterSeriesSeries++;
   if (buildCounterSeriesSeries < 3) {
-    unittest.expect(o.bannerImageUrl, unittest.equals('foo'));
-    unittest.expect(o.imageUrl, unittest.equals('foo'));
-    unittest.expect(o.seriesId, unittest.equals('foo'));
-    unittest.expect(o.seriesType, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(
+      o.bannerImageUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.eligibleForSubscription!, unittest.isTrue);
+    unittest.expect(
+      o.imageUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isComplete!, unittest.isTrue);
+    unittest.expect(
+      o.seriesFormatType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.seriesId!,
+      unittest.equals('foo'),
+    );
+    checkSeriesSeriesSeriesSubscriptionReleaseInfo(
+        o.seriesSubscriptionReleaseInfo!
+            as api.SeriesSeriesSeriesSubscriptionReleaseInfo);
+    unittest.expect(
+      o.seriesType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.subscriptionId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSeriesSeries--;
 }
 
-buildUnnamed263() {
-  var o = new core.List<api.SeriesSeries>();
+core.List<api.SeriesSeries> buildUnnamed3254() {
+  var o = <api.SeriesSeries>[];
   o.add(buildSeriesSeries());
   o.add(buildSeriesSeries());
   return o;
 }
 
-checkUnnamed263(core.List<api.SeriesSeries> o) {
+void checkUnnamed3254(core.List<api.SeriesSeries> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSeriesSeries(o[0]);
-  checkSeriesSeries(o[1]);
+  checkSeriesSeries(o[0] as api.SeriesSeries);
+  checkSeriesSeries(o[1] as api.SeriesSeries);
 }
 
 core.int buildCounterSeries = 0;
-buildSeries() {
-  var o = new api.Series();
+api.Series buildSeries() {
+  var o = api.Series();
   buildCounterSeries++;
   if (buildCounterSeries < 3) {
-    o.kind = "foo";
-    o.series = buildUnnamed263();
+    o.kind = 'foo';
+    o.series = buildUnnamed3254();
   }
   buildCounterSeries--;
   return o;
 }
 
-checkSeries(api.Series o) {
+void checkSeries(api.Series o) {
   buildCounterSeries++;
   if (buildCounterSeries < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkUnnamed263(o.series);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3254(o.series!);
   }
   buildCounterSeries--;
 }
 
-buildUnnamed264() {
-  var o = new core.List<api.Volume>();
+core.List<api.Volume> buildUnnamed3255() {
+  var o = <api.Volume>[];
   o.add(buildVolume());
   o.add(buildVolume());
   return o;
 }
 
-checkUnnamed264(core.List<api.Volume> o) {
+void checkUnnamed3255(core.List<api.Volume> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolume(o[0]);
-  checkVolume(o[1]);
+  checkVolume(o[0] as api.Volume);
+  checkVolume(o[1] as api.Volume);
 }
 
 core.int buildCounterSeriesmembership = 0;
-buildSeriesmembership() {
-  var o = new api.Seriesmembership();
+api.Seriesmembership buildSeriesmembership() {
+  var o = api.Seriesmembership();
   buildCounterSeriesmembership++;
   if (buildCounterSeriesmembership < 3) {
-    o.kind = "foo";
-    o.member = buildUnnamed264();
-    o.nextPageToken = "foo";
+    o.kind = 'foo';
+    o.member = buildUnnamed3255();
+    o.nextPageToken = 'foo';
   }
   buildCounterSeriesmembership--;
   return o;
 }
 
-checkSeriesmembership(api.Seriesmembership o) {
+void checkSeriesmembership(api.Seriesmembership o) {
   buildCounterSeriesmembership++;
   if (buildCounterSeriesmembership < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkUnnamed264(o.member);
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3255(o.member!);
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSeriesmembership--;
 }
 
 core.int buildCounterUsersettingsNotesExport = 0;
-buildUsersettingsNotesExport() {
-  var o = new api.UsersettingsNotesExport();
+api.UsersettingsNotesExport buildUsersettingsNotesExport() {
+  var o = api.UsersettingsNotesExport();
   buildCounterUsersettingsNotesExport++;
   if (buildCounterUsersettingsNotesExport < 3) {
-    o.folderName = "foo";
+    o.folderName = 'foo';
     o.isEnabled = true;
   }
   buildCounterUsersettingsNotesExport--;
   return o;
 }
 
-checkUsersettingsNotesExport(api.UsersettingsNotesExport o) {
+void checkUsersettingsNotesExport(api.UsersettingsNotesExport o) {
   buildCounterUsersettingsNotesExport++;
   if (buildCounterUsersettingsNotesExport < 3) {
-    unittest.expect(o.folderName, unittest.equals('foo'));
-    unittest.expect(o.isEnabled, unittest.isTrue);
+    unittest.expect(
+      o.folderName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isEnabled!, unittest.isTrue);
   }
   buildCounterUsersettingsNotesExport--;
 }
 
 core.int buildCounterUsersettingsNotificationMatchMyInterests = 0;
-buildUsersettingsNotificationMatchMyInterests() {
-  var o = new api.UsersettingsNotificationMatchMyInterests();
+api.UsersettingsNotificationMatchMyInterests
+    buildUsersettingsNotificationMatchMyInterests() {
+  var o = api.UsersettingsNotificationMatchMyInterests();
   buildCounterUsersettingsNotificationMatchMyInterests++;
   if (buildCounterUsersettingsNotificationMatchMyInterests < 3) {
-    o.optedState = "foo";
+    o.optedState = 'foo';
   }
   buildCounterUsersettingsNotificationMatchMyInterests--;
   return o;
 }
 
-checkUsersettingsNotificationMatchMyInterests(
+void checkUsersettingsNotificationMatchMyInterests(
     api.UsersettingsNotificationMatchMyInterests o) {
   buildCounterUsersettingsNotificationMatchMyInterests++;
   if (buildCounterUsersettingsNotificationMatchMyInterests < 3) {
-    unittest.expect(o.optedState, unittest.equals('foo'));
+    unittest.expect(
+      o.optedState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUsersettingsNotificationMatchMyInterests--;
 }
 
 core.int buildCounterUsersettingsNotificationMoreFromAuthors = 0;
-buildUsersettingsNotificationMoreFromAuthors() {
-  var o = new api.UsersettingsNotificationMoreFromAuthors();
+api.UsersettingsNotificationMoreFromAuthors
+    buildUsersettingsNotificationMoreFromAuthors() {
+  var o = api.UsersettingsNotificationMoreFromAuthors();
   buildCounterUsersettingsNotificationMoreFromAuthors++;
   if (buildCounterUsersettingsNotificationMoreFromAuthors < 3) {
-    o.optedState = "foo";
+    o.optedState = 'foo';
   }
   buildCounterUsersettingsNotificationMoreFromAuthors--;
   return o;
 }
 
-checkUsersettingsNotificationMoreFromAuthors(
+void checkUsersettingsNotificationMoreFromAuthors(
     api.UsersettingsNotificationMoreFromAuthors o) {
   buildCounterUsersettingsNotificationMoreFromAuthors++;
   if (buildCounterUsersettingsNotificationMoreFromAuthors < 3) {
-    unittest.expect(o.optedState, unittest.equals('foo'));
+    unittest.expect(
+      o.optedState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUsersettingsNotificationMoreFromAuthors--;
 }
 
 core.int buildCounterUsersettingsNotificationMoreFromSeries = 0;
-buildUsersettingsNotificationMoreFromSeries() {
-  var o = new api.UsersettingsNotificationMoreFromSeries();
+api.UsersettingsNotificationMoreFromSeries
+    buildUsersettingsNotificationMoreFromSeries() {
+  var o = api.UsersettingsNotificationMoreFromSeries();
   buildCounterUsersettingsNotificationMoreFromSeries++;
   if (buildCounterUsersettingsNotificationMoreFromSeries < 3) {
-    o.optedState = "foo";
+    o.optedState = 'foo';
   }
   buildCounterUsersettingsNotificationMoreFromSeries--;
   return o;
 }
 
-checkUsersettingsNotificationMoreFromSeries(
+void checkUsersettingsNotificationMoreFromSeries(
     api.UsersettingsNotificationMoreFromSeries o) {
   buildCounterUsersettingsNotificationMoreFromSeries++;
   if (buildCounterUsersettingsNotificationMoreFromSeries < 3) {
-    unittest.expect(o.optedState, unittest.equals('foo'));
+    unittest.expect(
+      o.optedState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUsersettingsNotificationMoreFromSeries--;
 }
 
 core.int buildCounterUsersettingsNotificationPriceDrop = 0;
-buildUsersettingsNotificationPriceDrop() {
-  var o = new api.UsersettingsNotificationPriceDrop();
+api.UsersettingsNotificationPriceDrop buildUsersettingsNotificationPriceDrop() {
+  var o = api.UsersettingsNotificationPriceDrop();
   buildCounterUsersettingsNotificationPriceDrop++;
   if (buildCounterUsersettingsNotificationPriceDrop < 3) {
-    o.optedState = "foo";
+    o.optedState = 'foo';
   }
   buildCounterUsersettingsNotificationPriceDrop--;
   return o;
 }
 
-checkUsersettingsNotificationPriceDrop(
+void checkUsersettingsNotificationPriceDrop(
     api.UsersettingsNotificationPriceDrop o) {
   buildCounterUsersettingsNotificationPriceDrop++;
   if (buildCounterUsersettingsNotificationPriceDrop < 3) {
-    unittest.expect(o.optedState, unittest.equals('foo'));
+    unittest.expect(
+      o.optedState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUsersettingsNotificationPriceDrop--;
 }
 
 core.int buildCounterUsersettingsNotificationRewardExpirations = 0;
-buildUsersettingsNotificationRewardExpirations() {
-  var o = new api.UsersettingsNotificationRewardExpirations();
+api.UsersettingsNotificationRewardExpirations
+    buildUsersettingsNotificationRewardExpirations() {
+  var o = api.UsersettingsNotificationRewardExpirations();
   buildCounterUsersettingsNotificationRewardExpirations++;
   if (buildCounterUsersettingsNotificationRewardExpirations < 3) {
-    o.optedState = "foo";
+    o.optedState = 'foo';
   }
   buildCounterUsersettingsNotificationRewardExpirations--;
   return o;
 }
 
-checkUsersettingsNotificationRewardExpirations(
+void checkUsersettingsNotificationRewardExpirations(
     api.UsersettingsNotificationRewardExpirations o) {
   buildCounterUsersettingsNotificationRewardExpirations++;
   if (buildCounterUsersettingsNotificationRewardExpirations < 3) {
-    unittest.expect(o.optedState, unittest.equals('foo'));
+    unittest.expect(
+      o.optedState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUsersettingsNotificationRewardExpirations--;
 }
 
 core.int buildCounterUsersettingsNotification = 0;
-buildUsersettingsNotification() {
-  var o = new api.UsersettingsNotification();
+api.UsersettingsNotification buildUsersettingsNotification() {
+  var o = api.UsersettingsNotification();
   buildCounterUsersettingsNotification++;
   if (buildCounterUsersettingsNotification < 3) {
     o.matchMyInterests = buildUsersettingsNotificationMatchMyInterests();
@@ -2232,24 +3089,29 @@ buildUsersettingsNotification() {
   return o;
 }
 
-checkUsersettingsNotification(api.UsersettingsNotification o) {
+void checkUsersettingsNotification(api.UsersettingsNotification o) {
   buildCounterUsersettingsNotification++;
   if (buildCounterUsersettingsNotification < 3) {
-    checkUsersettingsNotificationMatchMyInterests(o.matchMyInterests);
-    checkUsersettingsNotificationMoreFromAuthors(o.moreFromAuthors);
-    checkUsersettingsNotificationMoreFromSeries(o.moreFromSeries);
-    checkUsersettingsNotificationPriceDrop(o.priceDrop);
-    checkUsersettingsNotificationRewardExpirations(o.rewardExpirations);
+    checkUsersettingsNotificationMatchMyInterests(
+        o.matchMyInterests! as api.UsersettingsNotificationMatchMyInterests);
+    checkUsersettingsNotificationMoreFromAuthors(
+        o.moreFromAuthors! as api.UsersettingsNotificationMoreFromAuthors);
+    checkUsersettingsNotificationMoreFromSeries(
+        o.moreFromSeries! as api.UsersettingsNotificationMoreFromSeries);
+    checkUsersettingsNotificationPriceDrop(
+        o.priceDrop! as api.UsersettingsNotificationPriceDrop);
+    checkUsersettingsNotificationRewardExpirations(
+        o.rewardExpirations! as api.UsersettingsNotificationRewardExpirations);
   }
   buildCounterUsersettingsNotification--;
 }
 
 core.int buildCounterUsersettings = 0;
-buildUsersettings() {
-  var o = new api.Usersettings();
+api.Usersettings buildUsersettings() {
+  var o = api.Usersettings();
   buildCounterUsersettings++;
   if (buildCounterUsersettings < 3) {
-    o.kind = "foo";
+    o.kind = 'foo';
     o.notesExport = buildUsersettingsNotesExport();
     o.notification = buildUsersettingsNotification();
   }
@@ -2257,267 +3119,340 @@ buildUsersettings() {
   return o;
 }
 
-checkUsersettings(api.Usersettings o) {
+void checkUsersettings(api.Usersettings o) {
   buildCounterUsersettings++;
   if (buildCounterUsersettings < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkUsersettingsNotesExport(o.notesExport);
-    checkUsersettingsNotification(o.notification);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkUsersettingsNotesExport(o.notesExport! as api.UsersettingsNotesExport);
+    checkUsersettingsNotification(
+        o.notification! as api.UsersettingsNotification);
   }
   buildCounterUsersettings--;
 }
 
 core.int buildCounterVolumeAccessInfoEpub = 0;
-buildVolumeAccessInfoEpub() {
-  var o = new api.VolumeAccessInfoEpub();
+api.VolumeAccessInfoEpub buildVolumeAccessInfoEpub() {
+  var o = api.VolumeAccessInfoEpub();
   buildCounterVolumeAccessInfoEpub++;
   if (buildCounterVolumeAccessInfoEpub < 3) {
-    o.acsTokenLink = "foo";
-    o.downloadLink = "foo";
+    o.acsTokenLink = 'foo';
+    o.downloadLink = 'foo';
     o.isAvailable = true;
   }
   buildCounterVolumeAccessInfoEpub--;
   return o;
 }
 
-checkVolumeAccessInfoEpub(api.VolumeAccessInfoEpub o) {
+void checkVolumeAccessInfoEpub(api.VolumeAccessInfoEpub o) {
   buildCounterVolumeAccessInfoEpub++;
   if (buildCounterVolumeAccessInfoEpub < 3) {
-    unittest.expect(o.acsTokenLink, unittest.equals('foo'));
-    unittest.expect(o.downloadLink, unittest.equals('foo'));
-    unittest.expect(o.isAvailable, unittest.isTrue);
+    unittest.expect(
+      o.acsTokenLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.downloadLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isAvailable!, unittest.isTrue);
   }
   buildCounterVolumeAccessInfoEpub--;
 }
 
 core.int buildCounterVolumeAccessInfoPdf = 0;
-buildVolumeAccessInfoPdf() {
-  var o = new api.VolumeAccessInfoPdf();
+api.VolumeAccessInfoPdf buildVolumeAccessInfoPdf() {
+  var o = api.VolumeAccessInfoPdf();
   buildCounterVolumeAccessInfoPdf++;
   if (buildCounterVolumeAccessInfoPdf < 3) {
-    o.acsTokenLink = "foo";
-    o.downloadLink = "foo";
+    o.acsTokenLink = 'foo';
+    o.downloadLink = 'foo';
     o.isAvailable = true;
   }
   buildCounterVolumeAccessInfoPdf--;
   return o;
 }
 
-checkVolumeAccessInfoPdf(api.VolumeAccessInfoPdf o) {
+void checkVolumeAccessInfoPdf(api.VolumeAccessInfoPdf o) {
   buildCounterVolumeAccessInfoPdf++;
   if (buildCounterVolumeAccessInfoPdf < 3) {
-    unittest.expect(o.acsTokenLink, unittest.equals('foo'));
-    unittest.expect(o.downloadLink, unittest.equals('foo'));
-    unittest.expect(o.isAvailable, unittest.isTrue);
+    unittest.expect(
+      o.acsTokenLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.downloadLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isAvailable!, unittest.isTrue);
   }
   buildCounterVolumeAccessInfoPdf--;
 }
 
 core.int buildCounterVolumeAccessInfo = 0;
-buildVolumeAccessInfo() {
-  var o = new api.VolumeAccessInfo();
+api.VolumeAccessInfo buildVolumeAccessInfo() {
+  var o = api.VolumeAccessInfo();
   buildCounterVolumeAccessInfo++;
   if (buildCounterVolumeAccessInfo < 3) {
-    o.accessViewStatus = "foo";
-    o.country = "foo";
+    o.accessViewStatus = 'foo';
+    o.country = 'foo';
     o.downloadAccess = buildDownloadAccessRestriction();
-    o.driveImportedContentLink = "foo";
+    o.driveImportedContentLink = 'foo';
     o.embeddable = true;
     o.epub = buildVolumeAccessInfoEpub();
     o.explicitOfflineLicenseManagement = true;
     o.pdf = buildVolumeAccessInfoPdf();
     o.publicDomain = true;
     o.quoteSharingAllowed = true;
-    o.textToSpeechPermission = "foo";
-    o.viewOrderUrl = "foo";
-    o.viewability = "foo";
-    o.webReaderLink = "foo";
+    o.textToSpeechPermission = 'foo';
+    o.viewOrderUrl = 'foo';
+    o.viewability = 'foo';
+    o.webReaderLink = 'foo';
   }
   buildCounterVolumeAccessInfo--;
   return o;
 }
 
-checkVolumeAccessInfo(api.VolumeAccessInfo o) {
+void checkVolumeAccessInfo(api.VolumeAccessInfo o) {
   buildCounterVolumeAccessInfo++;
   if (buildCounterVolumeAccessInfo < 3) {
-    unittest.expect(o.accessViewStatus, unittest.equals('foo'));
-    unittest.expect(o.country, unittest.equals('foo'));
-    checkDownloadAccessRestriction(o.downloadAccess);
-    unittest.expect(o.driveImportedContentLink, unittest.equals('foo'));
-    unittest.expect(o.embeddable, unittest.isTrue);
-    checkVolumeAccessInfoEpub(o.epub);
-    unittest.expect(o.explicitOfflineLicenseManagement, unittest.isTrue);
-    checkVolumeAccessInfoPdf(o.pdf);
-    unittest.expect(o.publicDomain, unittest.isTrue);
-    unittest.expect(o.quoteSharingAllowed, unittest.isTrue);
-    unittest.expect(o.textToSpeechPermission, unittest.equals('foo'));
-    unittest.expect(o.viewOrderUrl, unittest.equals('foo'));
-    unittest.expect(o.viewability, unittest.equals('foo'));
-    unittest.expect(o.webReaderLink, unittest.equals('foo'));
+    unittest.expect(
+      o.accessViewStatus!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.country!,
+      unittest.equals('foo'),
+    );
+    checkDownloadAccessRestriction(
+        o.downloadAccess! as api.DownloadAccessRestriction);
+    unittest.expect(
+      o.driveImportedContentLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.embeddable!, unittest.isTrue);
+    checkVolumeAccessInfoEpub(o.epub! as api.VolumeAccessInfoEpub);
+    unittest.expect(o.explicitOfflineLicenseManagement!, unittest.isTrue);
+    checkVolumeAccessInfoPdf(o.pdf! as api.VolumeAccessInfoPdf);
+    unittest.expect(o.publicDomain!, unittest.isTrue);
+    unittest.expect(o.quoteSharingAllowed!, unittest.isTrue);
+    unittest.expect(
+      o.textToSpeechPermission!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.viewOrderUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.viewability!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.webReaderLink!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeAccessInfo--;
 }
 
 core.int buildCounterVolumeLayerInfoLayers = 0;
-buildVolumeLayerInfoLayers() {
-  var o = new api.VolumeLayerInfoLayers();
+api.VolumeLayerInfoLayers buildVolumeLayerInfoLayers() {
+  var o = api.VolumeLayerInfoLayers();
   buildCounterVolumeLayerInfoLayers++;
   if (buildCounterVolumeLayerInfoLayers < 3) {
-    o.layerId = "foo";
-    o.volumeAnnotationsVersion = "foo";
+    o.layerId = 'foo';
+    o.volumeAnnotationsVersion = 'foo';
   }
   buildCounterVolumeLayerInfoLayers--;
   return o;
 }
 
-checkVolumeLayerInfoLayers(api.VolumeLayerInfoLayers o) {
+void checkVolumeLayerInfoLayers(api.VolumeLayerInfoLayers o) {
   buildCounterVolumeLayerInfoLayers++;
   if (buildCounterVolumeLayerInfoLayers < 3) {
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    unittest.expect(o.volumeAnnotationsVersion, unittest.equals('foo'));
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeAnnotationsVersion!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeLayerInfoLayers--;
 }
 
-buildUnnamed265() {
-  var o = new core.List<api.VolumeLayerInfoLayers>();
+core.List<api.VolumeLayerInfoLayers> buildUnnamed3256() {
+  var o = <api.VolumeLayerInfoLayers>[];
   o.add(buildVolumeLayerInfoLayers());
   o.add(buildVolumeLayerInfoLayers());
   return o;
 }
 
-checkUnnamed265(core.List<api.VolumeLayerInfoLayers> o) {
+void checkUnnamed3256(core.List<api.VolumeLayerInfoLayers> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeLayerInfoLayers(o[0]);
-  checkVolumeLayerInfoLayers(o[1]);
+  checkVolumeLayerInfoLayers(o[0] as api.VolumeLayerInfoLayers);
+  checkVolumeLayerInfoLayers(o[1] as api.VolumeLayerInfoLayers);
 }
 
 core.int buildCounterVolumeLayerInfo = 0;
-buildVolumeLayerInfo() {
-  var o = new api.VolumeLayerInfo();
+api.VolumeLayerInfo buildVolumeLayerInfo() {
+  var o = api.VolumeLayerInfo();
   buildCounterVolumeLayerInfo++;
   if (buildCounterVolumeLayerInfo < 3) {
-    o.layers = buildUnnamed265();
+    o.layers = buildUnnamed3256();
   }
   buildCounterVolumeLayerInfo--;
   return o;
 }
 
-checkVolumeLayerInfo(api.VolumeLayerInfo o) {
+void checkVolumeLayerInfo(api.VolumeLayerInfo o) {
   buildCounterVolumeLayerInfo++;
   if (buildCounterVolumeLayerInfo < 3) {
-    checkUnnamed265(o.layers);
+    checkUnnamed3256(o.layers!);
   }
   buildCounterVolumeLayerInfo--;
 }
 
 core.int buildCounterVolumeRecommendedInfo = 0;
-buildVolumeRecommendedInfo() {
-  var o = new api.VolumeRecommendedInfo();
+api.VolumeRecommendedInfo buildVolumeRecommendedInfo() {
+  var o = api.VolumeRecommendedInfo();
   buildCounterVolumeRecommendedInfo++;
   if (buildCounterVolumeRecommendedInfo < 3) {
-    o.explanation = "foo";
+    o.explanation = 'foo';
   }
   buildCounterVolumeRecommendedInfo--;
   return o;
 }
 
-checkVolumeRecommendedInfo(api.VolumeRecommendedInfo o) {
+void checkVolumeRecommendedInfo(api.VolumeRecommendedInfo o) {
   buildCounterVolumeRecommendedInfo++;
   if (buildCounterVolumeRecommendedInfo < 3) {
-    unittest.expect(o.explanation, unittest.equals('foo'));
+    unittest.expect(
+      o.explanation!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeRecommendedInfo--;
 }
 
 core.int buildCounterVolumeSaleInfoListPrice = 0;
-buildVolumeSaleInfoListPrice() {
-  var o = new api.VolumeSaleInfoListPrice();
+api.VolumeSaleInfoListPrice buildVolumeSaleInfoListPrice() {
+  var o = api.VolumeSaleInfoListPrice();
   buildCounterVolumeSaleInfoListPrice++;
   if (buildCounterVolumeSaleInfoListPrice < 3) {
     o.amount = 42.0;
-    o.currencyCode = "foo";
+    o.currencyCode = 'foo';
   }
   buildCounterVolumeSaleInfoListPrice--;
   return o;
 }
 
-checkVolumeSaleInfoListPrice(api.VolumeSaleInfoListPrice o) {
+void checkVolumeSaleInfoListPrice(api.VolumeSaleInfoListPrice o) {
   buildCounterVolumeSaleInfoListPrice++;
   if (buildCounterVolumeSaleInfoListPrice < 3) {
-    unittest.expect(o.amount, unittest.equals(42.0));
-    unittest.expect(o.currencyCode, unittest.equals('foo'));
+    unittest.expect(
+      o.amount!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfoListPrice--;
 }
 
 core.int buildCounterVolumeSaleInfoOffersListPrice = 0;
-buildVolumeSaleInfoOffersListPrice() {
-  var o = new api.VolumeSaleInfoOffersListPrice();
+api.VolumeSaleInfoOffersListPrice buildVolumeSaleInfoOffersListPrice() {
+  var o = api.VolumeSaleInfoOffersListPrice();
   buildCounterVolumeSaleInfoOffersListPrice++;
   if (buildCounterVolumeSaleInfoOffersListPrice < 3) {
     o.amountInMicros = 42.0;
-    o.currencyCode = "foo";
+    o.currencyCode = 'foo';
   }
   buildCounterVolumeSaleInfoOffersListPrice--;
   return o;
 }
 
-checkVolumeSaleInfoOffersListPrice(api.VolumeSaleInfoOffersListPrice o) {
+void checkVolumeSaleInfoOffersListPrice(api.VolumeSaleInfoOffersListPrice o) {
   buildCounterVolumeSaleInfoOffersListPrice++;
   if (buildCounterVolumeSaleInfoOffersListPrice < 3) {
-    unittest.expect(o.amountInMicros, unittest.equals(42.0));
-    unittest.expect(o.currencyCode, unittest.equals('foo'));
+    unittest.expect(
+      o.amountInMicros!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfoOffersListPrice--;
 }
 
 core.int buildCounterVolumeSaleInfoOffersRentalDuration = 0;
-buildVolumeSaleInfoOffersRentalDuration() {
-  var o = new api.VolumeSaleInfoOffersRentalDuration();
+api.VolumeSaleInfoOffersRentalDuration
+    buildVolumeSaleInfoOffersRentalDuration() {
+  var o = api.VolumeSaleInfoOffersRentalDuration();
   buildCounterVolumeSaleInfoOffersRentalDuration++;
   if (buildCounterVolumeSaleInfoOffersRentalDuration < 3) {
     o.count = 42.0;
-    o.unit = "foo";
+    o.unit = 'foo';
   }
   buildCounterVolumeSaleInfoOffersRentalDuration--;
   return o;
 }
 
-checkVolumeSaleInfoOffersRentalDuration(
+void checkVolumeSaleInfoOffersRentalDuration(
     api.VolumeSaleInfoOffersRentalDuration o) {
   buildCounterVolumeSaleInfoOffersRentalDuration++;
   if (buildCounterVolumeSaleInfoOffersRentalDuration < 3) {
-    unittest.expect(o.count, unittest.equals(42.0));
-    unittest.expect(o.unit, unittest.equals('foo'));
+    unittest.expect(
+      o.count!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.unit!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfoOffersRentalDuration--;
 }
 
 core.int buildCounterVolumeSaleInfoOffersRetailPrice = 0;
-buildVolumeSaleInfoOffersRetailPrice() {
-  var o = new api.VolumeSaleInfoOffersRetailPrice();
+api.VolumeSaleInfoOffersRetailPrice buildVolumeSaleInfoOffersRetailPrice() {
+  var o = api.VolumeSaleInfoOffersRetailPrice();
   buildCounterVolumeSaleInfoOffersRetailPrice++;
   if (buildCounterVolumeSaleInfoOffersRetailPrice < 3) {
     o.amountInMicros = 42.0;
-    o.currencyCode = "foo";
+    o.currencyCode = 'foo';
   }
   buildCounterVolumeSaleInfoOffersRetailPrice--;
   return o;
 }
 
-checkVolumeSaleInfoOffersRetailPrice(api.VolumeSaleInfoOffersRetailPrice o) {
+void checkVolumeSaleInfoOffersRetailPrice(
+    api.VolumeSaleInfoOffersRetailPrice o) {
   buildCounterVolumeSaleInfoOffersRetailPrice++;
   if (buildCounterVolumeSaleInfoOffersRetailPrice < 3) {
-    unittest.expect(o.amountInMicros, unittest.equals(42.0));
-    unittest.expect(o.currencyCode, unittest.equals('foo'));
+    unittest.expect(
+      o.amountInMicros!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfoOffersRetailPrice--;
 }
 
 core.int buildCounterVolumeSaleInfoOffers = 0;
-buildVolumeSaleInfoOffers() {
-  var o = new api.VolumeSaleInfoOffers();
+api.VolumeSaleInfoOffers buildVolumeSaleInfoOffers() {
+  var o = api.VolumeSaleInfoOffers();
   buildCounterVolumeSaleInfoOffers++;
   if (buildCounterVolumeSaleInfoOffers < 3) {
     o.finskyOfferType = 42;
@@ -2530,137 +3465,175 @@ buildVolumeSaleInfoOffers() {
   return o;
 }
 
-checkVolumeSaleInfoOffers(api.VolumeSaleInfoOffers o) {
+void checkVolumeSaleInfoOffers(api.VolumeSaleInfoOffers o) {
   buildCounterVolumeSaleInfoOffers++;
   if (buildCounterVolumeSaleInfoOffers < 3) {
-    unittest.expect(o.finskyOfferType, unittest.equals(42));
-    unittest.expect(o.giftable, unittest.isTrue);
-    checkVolumeSaleInfoOffersListPrice(o.listPrice);
-    checkVolumeSaleInfoOffersRentalDuration(o.rentalDuration);
-    checkVolumeSaleInfoOffersRetailPrice(o.retailPrice);
+    unittest.expect(
+      o.finskyOfferType!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.giftable!, unittest.isTrue);
+    checkVolumeSaleInfoOffersListPrice(
+        o.listPrice! as api.VolumeSaleInfoOffersListPrice);
+    checkVolumeSaleInfoOffersRentalDuration(
+        o.rentalDuration! as api.VolumeSaleInfoOffersRentalDuration);
+    checkVolumeSaleInfoOffersRetailPrice(
+        o.retailPrice! as api.VolumeSaleInfoOffersRetailPrice);
   }
   buildCounterVolumeSaleInfoOffers--;
 }
 
-buildUnnamed266() {
-  var o = new core.List<api.VolumeSaleInfoOffers>();
+core.List<api.VolumeSaleInfoOffers> buildUnnamed3257() {
+  var o = <api.VolumeSaleInfoOffers>[];
   o.add(buildVolumeSaleInfoOffers());
   o.add(buildVolumeSaleInfoOffers());
   return o;
 }
 
-checkUnnamed266(core.List<api.VolumeSaleInfoOffers> o) {
+void checkUnnamed3257(core.List<api.VolumeSaleInfoOffers> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeSaleInfoOffers(o[0]);
-  checkVolumeSaleInfoOffers(o[1]);
+  checkVolumeSaleInfoOffers(o[0] as api.VolumeSaleInfoOffers);
+  checkVolumeSaleInfoOffers(o[1] as api.VolumeSaleInfoOffers);
 }
 
 core.int buildCounterVolumeSaleInfoRetailPrice = 0;
-buildVolumeSaleInfoRetailPrice() {
-  var o = new api.VolumeSaleInfoRetailPrice();
+api.VolumeSaleInfoRetailPrice buildVolumeSaleInfoRetailPrice() {
+  var o = api.VolumeSaleInfoRetailPrice();
   buildCounterVolumeSaleInfoRetailPrice++;
   if (buildCounterVolumeSaleInfoRetailPrice < 3) {
     o.amount = 42.0;
-    o.currencyCode = "foo";
+    o.currencyCode = 'foo';
   }
   buildCounterVolumeSaleInfoRetailPrice--;
   return o;
 }
 
-checkVolumeSaleInfoRetailPrice(api.VolumeSaleInfoRetailPrice o) {
+void checkVolumeSaleInfoRetailPrice(api.VolumeSaleInfoRetailPrice o) {
   buildCounterVolumeSaleInfoRetailPrice++;
   if (buildCounterVolumeSaleInfoRetailPrice < 3) {
-    unittest.expect(o.amount, unittest.equals(42.0));
-    unittest.expect(o.currencyCode, unittest.equals('foo'));
+    unittest.expect(
+      o.amount!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfoRetailPrice--;
 }
 
 core.int buildCounterVolumeSaleInfo = 0;
-buildVolumeSaleInfo() {
-  var o = new api.VolumeSaleInfo();
+api.VolumeSaleInfo buildVolumeSaleInfo() {
+  var o = api.VolumeSaleInfo();
   buildCounterVolumeSaleInfo++;
   if (buildCounterVolumeSaleInfo < 3) {
-    o.buyLink = "foo";
-    o.country = "foo";
+    o.buyLink = 'foo';
+    o.country = 'foo';
     o.isEbook = true;
     o.listPrice = buildVolumeSaleInfoListPrice();
-    o.offers = buildUnnamed266();
-    o.onSaleDate = core.DateTime.parse("2002-02-27T14:01:02");
+    o.offers = buildUnnamed3257();
+    o.onSaleDate = 'foo';
     o.retailPrice = buildVolumeSaleInfoRetailPrice();
-    o.saleability = "foo";
+    o.saleability = 'foo';
   }
   buildCounterVolumeSaleInfo--;
   return o;
 }
 
-checkVolumeSaleInfo(api.VolumeSaleInfo o) {
+void checkVolumeSaleInfo(api.VolumeSaleInfo o) {
   buildCounterVolumeSaleInfo++;
   if (buildCounterVolumeSaleInfo < 3) {
-    unittest.expect(o.buyLink, unittest.equals('foo'));
-    unittest.expect(o.country, unittest.equals('foo'));
-    unittest.expect(o.isEbook, unittest.isTrue);
-    checkVolumeSaleInfoListPrice(o.listPrice);
-    checkUnnamed266(o.offers);
-    unittest.expect(o.onSaleDate,
-        unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    checkVolumeSaleInfoRetailPrice(o.retailPrice);
-    unittest.expect(o.saleability, unittest.equals('foo'));
+    unittest.expect(
+      o.buyLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.country!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isEbook!, unittest.isTrue);
+    checkVolumeSaleInfoListPrice(o.listPrice! as api.VolumeSaleInfoListPrice);
+    checkUnnamed3257(o.offers!);
+    unittest.expect(
+      o.onSaleDate!,
+      unittest.equals('foo'),
+    );
+    checkVolumeSaleInfoRetailPrice(
+        o.retailPrice! as api.VolumeSaleInfoRetailPrice);
+    unittest.expect(
+      o.saleability!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSaleInfo--;
 }
 
 core.int buildCounterVolumeSearchInfo = 0;
-buildVolumeSearchInfo() {
-  var o = new api.VolumeSearchInfo();
+api.VolumeSearchInfo buildVolumeSearchInfo() {
+  var o = api.VolumeSearchInfo();
   buildCounterVolumeSearchInfo++;
   if (buildCounterVolumeSearchInfo < 3) {
-    o.textSnippet = "foo";
+    o.textSnippet = 'foo';
   }
   buildCounterVolumeSearchInfo--;
   return o;
 }
 
-checkVolumeSearchInfo(api.VolumeSearchInfo o) {
+void checkVolumeSearchInfo(api.VolumeSearchInfo o) {
   buildCounterVolumeSearchInfo++;
   if (buildCounterVolumeSearchInfo < 3) {
-    unittest.expect(o.textSnippet, unittest.equals('foo'));
+    unittest.expect(
+      o.textSnippet!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeSearchInfo--;
 }
 
 core.int buildCounterVolumeUserInfoCopy = 0;
-buildVolumeUserInfoCopy() {
-  var o = new api.VolumeUserInfoCopy();
+api.VolumeUserInfoCopy buildVolumeUserInfoCopy() {
+  var o = api.VolumeUserInfoCopy();
   buildCounterVolumeUserInfoCopy++;
   if (buildCounterVolumeUserInfoCopy < 3) {
     o.allowedCharacterCount = 42;
-    o.limitType = "foo";
+    o.limitType = 'foo';
     o.remainingCharacterCount = 42;
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = 'foo';
   }
   buildCounterVolumeUserInfoCopy--;
   return o;
 }
 
-checkVolumeUserInfoCopy(api.VolumeUserInfoCopy o) {
+void checkVolumeUserInfoCopy(api.VolumeUserInfoCopy o) {
   buildCounterVolumeUserInfoCopy++;
   if (buildCounterVolumeUserInfoCopy < 3) {
-    unittest.expect(o.allowedCharacterCount, unittest.equals(42));
-    unittest.expect(o.limitType, unittest.equals('foo'));
-    unittest.expect(o.remainingCharacterCount, unittest.equals(42));
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
+      o.allowedCharacterCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.limitType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.remainingCharacterCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeUserInfoCopy--;
 }
 
 core.int buildCounterVolumeUserInfoFamilySharing = 0;
-buildVolumeUserInfoFamilySharing() {
-  var o = new api.VolumeUserInfoFamilySharing();
+api.VolumeUserInfoFamilySharing buildVolumeUserInfoFamilySharing() {
+  var o = api.VolumeUserInfoFamilySharing();
   buildCounterVolumeUserInfoFamilySharing++;
   if (buildCounterVolumeUserInfoFamilySharing < 3) {
-    o.familyRole = "foo";
+    o.familyRole = 'foo';
     o.isSharingAllowed = true;
     o.isSharingDisabledByFop = true;
   }
@@ -2668,63 +3641,76 @@ buildVolumeUserInfoFamilySharing() {
   return o;
 }
 
-checkVolumeUserInfoFamilySharing(api.VolumeUserInfoFamilySharing o) {
+void checkVolumeUserInfoFamilySharing(api.VolumeUserInfoFamilySharing o) {
   buildCounterVolumeUserInfoFamilySharing++;
   if (buildCounterVolumeUserInfoFamilySharing < 3) {
-    unittest.expect(o.familyRole, unittest.equals('foo'));
-    unittest.expect(o.isSharingAllowed, unittest.isTrue);
-    unittest.expect(o.isSharingDisabledByFop, unittest.isTrue);
+    unittest.expect(
+      o.familyRole!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isSharingAllowed!, unittest.isTrue);
+    unittest.expect(o.isSharingDisabledByFop!, unittest.isTrue);
   }
   buildCounterVolumeUserInfoFamilySharing--;
 }
 
 core.int buildCounterVolumeUserInfoRentalPeriod = 0;
-buildVolumeUserInfoRentalPeriod() {
-  var o = new api.VolumeUserInfoRentalPeriod();
+api.VolumeUserInfoRentalPeriod buildVolumeUserInfoRentalPeriod() {
+  var o = api.VolumeUserInfoRentalPeriod();
   buildCounterVolumeUserInfoRentalPeriod++;
   if (buildCounterVolumeUserInfoRentalPeriod < 3) {
-    o.endUtcSec = "foo";
-    o.startUtcSec = "foo";
+    o.endUtcSec = 'foo';
+    o.startUtcSec = 'foo';
   }
   buildCounterVolumeUserInfoRentalPeriod--;
   return o;
 }
 
-checkVolumeUserInfoRentalPeriod(api.VolumeUserInfoRentalPeriod o) {
+void checkVolumeUserInfoRentalPeriod(api.VolumeUserInfoRentalPeriod o) {
   buildCounterVolumeUserInfoRentalPeriod++;
   if (buildCounterVolumeUserInfoRentalPeriod < 3) {
-    unittest.expect(o.endUtcSec, unittest.equals('foo'));
-    unittest.expect(o.startUtcSec, unittest.equals('foo'));
+    unittest.expect(
+      o.endUtcSec!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.startUtcSec!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeUserInfoRentalPeriod--;
 }
 
 core.int buildCounterVolumeUserInfoUserUploadedVolumeInfo = 0;
-buildVolumeUserInfoUserUploadedVolumeInfo() {
-  var o = new api.VolumeUserInfoUserUploadedVolumeInfo();
+api.VolumeUserInfoUserUploadedVolumeInfo
+    buildVolumeUserInfoUserUploadedVolumeInfo() {
+  var o = api.VolumeUserInfoUserUploadedVolumeInfo();
   buildCounterVolumeUserInfoUserUploadedVolumeInfo++;
   if (buildCounterVolumeUserInfoUserUploadedVolumeInfo < 3) {
-    o.processingState = "foo";
+    o.processingState = 'foo';
   }
   buildCounterVolumeUserInfoUserUploadedVolumeInfo--;
   return o;
 }
 
-checkVolumeUserInfoUserUploadedVolumeInfo(
+void checkVolumeUserInfoUserUploadedVolumeInfo(
     api.VolumeUserInfoUserUploadedVolumeInfo o) {
   buildCounterVolumeUserInfoUserUploadedVolumeInfo++;
   if (buildCounterVolumeUserInfoUserUploadedVolumeInfo < 3) {
-    unittest.expect(o.processingState, unittest.equals('foo'));
+    unittest.expect(
+      o.processingState!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeUserInfoUserUploadedVolumeInfo--;
 }
 
 core.int buildCounterVolumeUserInfo = 0;
-buildVolumeUserInfo() {
-  var o = new api.VolumeUserInfo();
+api.VolumeUserInfo buildVolumeUserInfo() {
+  var o = api.VolumeUserInfo();
   buildCounterVolumeUserInfo++;
   if (buildCounterVolumeUserInfo < 3) {
-    o.acquiredTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.acquiredTime = 'foo';
     o.acquisitionType = 42;
     o.copy = buildVolumeUserInfoCopy();
     o.entitlementType = 42;
@@ -2739,277 +3725,419 @@ buildVolumeUserInfo() {
     o.isUploaded = true;
     o.readingPosition = buildReadingPosition();
     o.rentalPeriod = buildVolumeUserInfoRentalPeriod();
-    o.rentalState = "foo";
+    o.rentalState = 'foo';
     o.review = buildReview();
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = 'foo';
     o.userUploadedVolumeInfo = buildVolumeUserInfoUserUploadedVolumeInfo();
   }
   buildCounterVolumeUserInfo--;
   return o;
 }
 
-checkVolumeUserInfo(api.VolumeUserInfo o) {
+void checkVolumeUserInfo(api.VolumeUserInfo o) {
   buildCounterVolumeUserInfo++;
   if (buildCounterVolumeUserInfo < 3) {
-    unittest.expect(o.acquiredTime,
-        unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.acquisitionType, unittest.equals(42));
-    checkVolumeUserInfoCopy(o.copy);
-    unittest.expect(o.entitlementType, unittest.equals(42));
-    checkVolumeUserInfoFamilySharing(o.familySharing);
-    unittest.expect(o.isFamilySharedFromUser, unittest.isTrue);
-    unittest.expect(o.isFamilySharedToUser, unittest.isTrue);
-    unittest.expect(o.isFamilySharingAllowed, unittest.isTrue);
-    unittest.expect(o.isFamilySharingDisabledByFop, unittest.isTrue);
-    unittest.expect(o.isInMyBooks, unittest.isTrue);
-    unittest.expect(o.isPreordered, unittest.isTrue);
-    unittest.expect(o.isPurchased, unittest.isTrue);
-    unittest.expect(o.isUploaded, unittest.isTrue);
-    checkReadingPosition(o.readingPosition);
-    checkVolumeUserInfoRentalPeriod(o.rentalPeriod);
-    unittest.expect(o.rentalState, unittest.equals('foo'));
-    checkReview(o.review);
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    checkVolumeUserInfoUserUploadedVolumeInfo(o.userUploadedVolumeInfo);
+      o.acquiredTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.acquisitionType!,
+      unittest.equals(42),
+    );
+    checkVolumeUserInfoCopy(o.copy! as api.VolumeUserInfoCopy);
+    unittest.expect(
+      o.entitlementType!,
+      unittest.equals(42),
+    );
+    checkVolumeUserInfoFamilySharing(
+        o.familySharing! as api.VolumeUserInfoFamilySharing);
+    unittest.expect(o.isFamilySharedFromUser!, unittest.isTrue);
+    unittest.expect(o.isFamilySharedToUser!, unittest.isTrue);
+    unittest.expect(o.isFamilySharingAllowed!, unittest.isTrue);
+    unittest.expect(o.isFamilySharingDisabledByFop!, unittest.isTrue);
+    unittest.expect(o.isInMyBooks!, unittest.isTrue);
+    unittest.expect(o.isPreordered!, unittest.isTrue);
+    unittest.expect(o.isPurchased!, unittest.isTrue);
+    unittest.expect(o.isUploaded!, unittest.isTrue);
+    checkReadingPosition(o.readingPosition! as api.ReadingPosition);
+    checkVolumeUserInfoRentalPeriod(
+        o.rentalPeriod! as api.VolumeUserInfoRentalPeriod);
+    unittest.expect(
+      o.rentalState!,
+      unittest.equals('foo'),
+    );
+    checkReview(o.review! as api.Review);
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    checkVolumeUserInfoUserUploadedVolumeInfo(
+        o.userUploadedVolumeInfo! as api.VolumeUserInfoUserUploadedVolumeInfo);
   }
   buildCounterVolumeUserInfo--;
 }
 
-buildUnnamed267() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3258() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed267(core.List<core.String> o) {
+void checkUnnamed3258(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed268() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3259() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed268(core.List<core.String> o) {
+void checkUnnamed3259(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterVolumeVolumeInfoDimensions = 0;
-buildVolumeVolumeInfoDimensions() {
-  var o = new api.VolumeVolumeInfoDimensions();
+api.VolumeVolumeInfoDimensions buildVolumeVolumeInfoDimensions() {
+  var o = api.VolumeVolumeInfoDimensions();
   buildCounterVolumeVolumeInfoDimensions++;
   if (buildCounterVolumeVolumeInfoDimensions < 3) {
-    o.height = "foo";
-    o.thickness = "foo";
-    o.width = "foo";
+    o.height = 'foo';
+    o.thickness = 'foo';
+    o.width = 'foo';
   }
   buildCounterVolumeVolumeInfoDimensions--;
   return o;
 }
 
-checkVolumeVolumeInfoDimensions(api.VolumeVolumeInfoDimensions o) {
+void checkVolumeVolumeInfoDimensions(api.VolumeVolumeInfoDimensions o) {
   buildCounterVolumeVolumeInfoDimensions++;
   if (buildCounterVolumeVolumeInfoDimensions < 3) {
-    unittest.expect(o.height, unittest.equals('foo'));
-    unittest.expect(o.thickness, unittest.equals('foo'));
-    unittest.expect(o.width, unittest.equals('foo'));
+    unittest.expect(
+      o.height!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.thickness!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.width!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeVolumeInfoDimensions--;
 }
 
 core.int buildCounterVolumeVolumeInfoImageLinks = 0;
-buildVolumeVolumeInfoImageLinks() {
-  var o = new api.VolumeVolumeInfoImageLinks();
+api.VolumeVolumeInfoImageLinks buildVolumeVolumeInfoImageLinks() {
+  var o = api.VolumeVolumeInfoImageLinks();
   buildCounterVolumeVolumeInfoImageLinks++;
   if (buildCounterVolumeVolumeInfoImageLinks < 3) {
-    o.extraLarge = "foo";
-    o.large = "foo";
-    o.medium = "foo";
-    o.small = "foo";
-    o.smallThumbnail = "foo";
-    o.thumbnail = "foo";
+    o.extraLarge = 'foo';
+    o.large = 'foo';
+    o.medium = 'foo';
+    o.small = 'foo';
+    o.smallThumbnail = 'foo';
+    o.thumbnail = 'foo';
   }
   buildCounterVolumeVolumeInfoImageLinks--;
   return o;
 }
 
-checkVolumeVolumeInfoImageLinks(api.VolumeVolumeInfoImageLinks o) {
+void checkVolumeVolumeInfoImageLinks(api.VolumeVolumeInfoImageLinks o) {
   buildCounterVolumeVolumeInfoImageLinks++;
   if (buildCounterVolumeVolumeInfoImageLinks < 3) {
-    unittest.expect(o.extraLarge, unittest.equals('foo'));
-    unittest.expect(o.large, unittest.equals('foo'));
-    unittest.expect(o.medium, unittest.equals('foo'));
-    unittest.expect(o.small, unittest.equals('foo'));
-    unittest.expect(o.smallThumbnail, unittest.equals('foo'));
-    unittest.expect(o.thumbnail, unittest.equals('foo'));
+    unittest.expect(
+      o.extraLarge!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.large!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.medium!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.small!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.smallThumbnail!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.thumbnail!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeVolumeInfoImageLinks--;
 }
 
 core.int buildCounterVolumeVolumeInfoIndustryIdentifiers = 0;
-buildVolumeVolumeInfoIndustryIdentifiers() {
-  var o = new api.VolumeVolumeInfoIndustryIdentifiers();
+api.VolumeVolumeInfoIndustryIdentifiers
+    buildVolumeVolumeInfoIndustryIdentifiers() {
+  var o = api.VolumeVolumeInfoIndustryIdentifiers();
   buildCounterVolumeVolumeInfoIndustryIdentifiers++;
   if (buildCounterVolumeVolumeInfoIndustryIdentifiers < 3) {
-    o.identifier = "foo";
-    o.type = "foo";
+    o.identifier = 'foo';
+    o.type = 'foo';
   }
   buildCounterVolumeVolumeInfoIndustryIdentifiers--;
   return o;
 }
 
-checkVolumeVolumeInfoIndustryIdentifiers(
+void checkVolumeVolumeInfoIndustryIdentifiers(
     api.VolumeVolumeInfoIndustryIdentifiers o) {
   buildCounterVolumeVolumeInfoIndustryIdentifiers++;
   if (buildCounterVolumeVolumeInfoIndustryIdentifiers < 3) {
-    unittest.expect(o.identifier, unittest.equals('foo'));
-    unittest.expect(o.type, unittest.equals('foo'));
+    unittest.expect(
+      o.identifier!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeVolumeInfoIndustryIdentifiers--;
 }
 
-buildUnnamed269() {
-  var o = new core.List<api.VolumeVolumeInfoIndustryIdentifiers>();
+core.List<api.VolumeVolumeInfoIndustryIdentifiers> buildUnnamed3260() {
+  var o = <api.VolumeVolumeInfoIndustryIdentifiers>[];
   o.add(buildVolumeVolumeInfoIndustryIdentifiers());
   o.add(buildVolumeVolumeInfoIndustryIdentifiers());
   return o;
 }
 
-checkUnnamed269(core.List<api.VolumeVolumeInfoIndustryIdentifiers> o) {
+void checkUnnamed3260(core.List<api.VolumeVolumeInfoIndustryIdentifiers> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeVolumeInfoIndustryIdentifiers(o[0]);
-  checkVolumeVolumeInfoIndustryIdentifiers(o[1]);
+  checkVolumeVolumeInfoIndustryIdentifiers(
+      o[0] as api.VolumeVolumeInfoIndustryIdentifiers);
+  checkVolumeVolumeInfoIndustryIdentifiers(
+      o[1] as api.VolumeVolumeInfoIndustryIdentifiers);
 }
 
 core.int buildCounterVolumeVolumeInfoPanelizationSummary = 0;
-buildVolumeVolumeInfoPanelizationSummary() {
-  var o = new api.VolumeVolumeInfoPanelizationSummary();
+api.VolumeVolumeInfoPanelizationSummary
+    buildVolumeVolumeInfoPanelizationSummary() {
+  var o = api.VolumeVolumeInfoPanelizationSummary();
   buildCounterVolumeVolumeInfoPanelizationSummary++;
   if (buildCounterVolumeVolumeInfoPanelizationSummary < 3) {
     o.containsEpubBubbles = true;
     o.containsImageBubbles = true;
-    o.epubBubbleVersion = "foo";
-    o.imageBubbleVersion = "foo";
+    o.epubBubbleVersion = 'foo';
+    o.imageBubbleVersion = 'foo';
   }
   buildCounterVolumeVolumeInfoPanelizationSummary--;
   return o;
 }
 
-checkVolumeVolumeInfoPanelizationSummary(
+void checkVolumeVolumeInfoPanelizationSummary(
     api.VolumeVolumeInfoPanelizationSummary o) {
   buildCounterVolumeVolumeInfoPanelizationSummary++;
   if (buildCounterVolumeVolumeInfoPanelizationSummary < 3) {
-    unittest.expect(o.containsEpubBubbles, unittest.isTrue);
-    unittest.expect(o.containsImageBubbles, unittest.isTrue);
-    unittest.expect(o.epubBubbleVersion, unittest.equals('foo'));
-    unittest.expect(o.imageBubbleVersion, unittest.equals('foo'));
+    unittest.expect(o.containsEpubBubbles!, unittest.isTrue);
+    unittest.expect(o.containsImageBubbles!, unittest.isTrue);
+    unittest.expect(
+      o.epubBubbleVersion!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.imageBubbleVersion!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeVolumeInfoPanelizationSummary--;
 }
 
+core.int buildCounterVolumeVolumeInfoReadingModes = 0;
+api.VolumeVolumeInfoReadingModes buildVolumeVolumeInfoReadingModes() {
+  var o = api.VolumeVolumeInfoReadingModes();
+  buildCounterVolumeVolumeInfoReadingModes++;
+  if (buildCounterVolumeVolumeInfoReadingModes < 3) {
+    o.image = true;
+    o.text = true;
+  }
+  buildCounterVolumeVolumeInfoReadingModes--;
+  return o;
+}
+
+void checkVolumeVolumeInfoReadingModes(api.VolumeVolumeInfoReadingModes o) {
+  buildCounterVolumeVolumeInfoReadingModes++;
+  if (buildCounterVolumeVolumeInfoReadingModes < 3) {
+    unittest.expect(o.image!, unittest.isTrue);
+    unittest.expect(o.text!, unittest.isTrue);
+  }
+  buildCounterVolumeVolumeInfoReadingModes--;
+}
+
 core.int buildCounterVolumeVolumeInfo = 0;
-buildVolumeVolumeInfo() {
-  var o = new api.VolumeVolumeInfo();
+api.VolumeVolumeInfo buildVolumeVolumeInfo() {
+  var o = api.VolumeVolumeInfo();
   buildCounterVolumeVolumeInfo++;
   if (buildCounterVolumeVolumeInfo < 3) {
     o.allowAnonLogging = true;
-    o.authors = buildUnnamed267();
+    o.authors = buildUnnamed3258();
     o.averageRating = 42.0;
-    o.canonicalVolumeLink = "foo";
-    o.categories = buildUnnamed268();
+    o.canonicalVolumeLink = 'foo';
+    o.categories = buildUnnamed3259();
     o.comicsContent = true;
-    o.contentVersion = "foo";
-    o.description = "foo";
+    o.contentVersion = 'foo';
+    o.description = 'foo';
     o.dimensions = buildVolumeVolumeInfoDimensions();
     o.imageLinks = buildVolumeVolumeInfoImageLinks();
-    o.industryIdentifiers = buildUnnamed269();
-    o.infoLink = "foo";
-    o.language = "foo";
-    o.mainCategory = "foo";
-    o.maturityRating = "foo";
+    o.industryIdentifiers = buildUnnamed3260();
+    o.infoLink = 'foo';
+    o.language = 'foo';
+    o.mainCategory = 'foo';
+    o.maturityRating = 'foo';
     o.pageCount = 42;
     o.panelizationSummary = buildVolumeVolumeInfoPanelizationSummary();
-    o.previewLink = "foo";
-    o.printType = "foo";
+    o.previewLink = 'foo';
+    o.printType = 'foo';
     o.printedPageCount = 42;
-    o.publishedDate = "foo";
-    o.publisher = "foo";
+    o.publishedDate = 'foo';
+    o.publisher = 'foo';
     o.ratingsCount = 42;
-    o.readingModes = {
-      'list': [1, 2, 3],
-      'bool': true,
-      'string': 'foo'
-    };
+    o.readingModes = buildVolumeVolumeInfoReadingModes();
     o.samplePageCount = 42;
     o.seriesInfo = buildVolumeseriesinfo();
-    o.subtitle = "foo";
-    o.title = "foo";
+    o.subtitle = 'foo';
+    o.title = 'foo';
   }
   buildCounterVolumeVolumeInfo--;
   return o;
 }
 
-checkVolumeVolumeInfo(api.VolumeVolumeInfo o) {
+void checkVolumeVolumeInfo(api.VolumeVolumeInfo o) {
   buildCounterVolumeVolumeInfo++;
   if (buildCounterVolumeVolumeInfo < 3) {
-    unittest.expect(o.allowAnonLogging, unittest.isTrue);
-    checkUnnamed267(o.authors);
-    unittest.expect(o.averageRating, unittest.equals(42.0));
-    unittest.expect(o.canonicalVolumeLink, unittest.equals('foo'));
-    checkUnnamed268(o.categories);
-    unittest.expect(o.comicsContent, unittest.isTrue);
-    unittest.expect(o.contentVersion, unittest.equals('foo'));
-    unittest.expect(o.description, unittest.equals('foo'));
-    checkVolumeVolumeInfoDimensions(o.dimensions);
-    checkVolumeVolumeInfoImageLinks(o.imageLinks);
-    checkUnnamed269(o.industryIdentifiers);
-    unittest.expect(o.infoLink, unittest.equals('foo'));
-    unittest.expect(o.language, unittest.equals('foo'));
-    unittest.expect(o.mainCategory, unittest.equals('foo'));
-    unittest.expect(o.maturityRating, unittest.equals('foo'));
-    unittest.expect(o.pageCount, unittest.equals(42));
-    checkVolumeVolumeInfoPanelizationSummary(o.panelizationSummary);
-    unittest.expect(o.previewLink, unittest.equals('foo'));
-    unittest.expect(o.printType, unittest.equals('foo'));
-    unittest.expect(o.printedPageCount, unittest.equals(42));
-    unittest.expect(o.publishedDate, unittest.equals('foo'));
-    unittest.expect(o.publisher, unittest.equals('foo'));
-    unittest.expect(o.ratingsCount, unittest.equals(42));
-    var casted2 = (o.readingModes) as core.Map;
-    unittest.expect(casted2, unittest.hasLength(3));
-    unittest.expect(casted2["list"], unittest.equals([1, 2, 3]));
-    unittest.expect(casted2["bool"], unittest.equals(true));
-    unittest.expect(casted2["string"], unittest.equals('foo'));
-    unittest.expect(o.samplePageCount, unittest.equals(42));
-    checkVolumeseriesinfo(o.seriesInfo);
-    unittest.expect(o.subtitle, unittest.equals('foo'));
-    unittest.expect(o.title, unittest.equals('foo'));
+    unittest.expect(o.allowAnonLogging!, unittest.isTrue);
+    checkUnnamed3258(o.authors!);
+    unittest.expect(
+      o.averageRating!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.canonicalVolumeLink!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3259(o.categories!);
+    unittest.expect(o.comicsContent!, unittest.isTrue);
+    unittest.expect(
+      o.contentVersion!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    checkVolumeVolumeInfoDimensions(
+        o.dimensions! as api.VolumeVolumeInfoDimensions);
+    checkVolumeVolumeInfoImageLinks(
+        o.imageLinks! as api.VolumeVolumeInfoImageLinks);
+    checkUnnamed3260(o.industryIdentifiers!);
+    unittest.expect(
+      o.infoLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.language!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.mainCategory!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.maturityRating!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.pageCount!,
+      unittest.equals(42),
+    );
+    checkVolumeVolumeInfoPanelizationSummary(
+        o.panelizationSummary! as api.VolumeVolumeInfoPanelizationSummary);
+    unittest.expect(
+      o.previewLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.printType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.printedPageCount!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.publishedDate!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.publisher!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.ratingsCount!,
+      unittest.equals(42),
+    );
+    checkVolumeVolumeInfoReadingModes(
+        o.readingModes! as api.VolumeVolumeInfoReadingModes);
+    unittest.expect(
+      o.samplePageCount!,
+      unittest.equals(42),
+    );
+    checkVolumeseriesinfo(o.seriesInfo! as api.Volumeseriesinfo);
+    unittest.expect(
+      o.subtitle!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.title!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeVolumeInfo--;
 }
 
 core.int buildCounterVolume = 0;
-buildVolume() {
-  var o = new api.Volume();
+api.Volume buildVolume() {
+  var o = api.Volume();
   buildCounterVolume++;
   if (buildCounterVolume < 3) {
     o.accessInfo = buildVolumeAccessInfo();
-    o.etag = "foo";
-    o.id = "foo";
-    o.kind = "foo";
+    o.etag = 'foo';
+    o.id = 'foo';
+    o.kind = 'foo';
     o.layerInfo = buildVolumeLayerInfo();
     o.recommendedInfo = buildVolumeRecommendedInfo();
     o.saleInfo = buildVolumeSaleInfo();
     o.searchInfo = buildVolumeSearchInfo();
-    o.selfLink = "foo";
+    o.selfLink = 'foo';
     o.userInfo = buildVolumeUserInfo();
     o.volumeInfo = buildVolumeVolumeInfo();
   }
@@ -3017,67 +4145,85 @@ buildVolume() {
   return o;
 }
 
-checkVolume(api.Volume o) {
+void checkVolume(api.Volume o) {
   buildCounterVolume++;
   if (buildCounterVolume < 3) {
-    checkVolumeAccessInfo(o.accessInfo);
-    unittest.expect(o.etag, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    checkVolumeLayerInfo(o.layerInfo);
-    checkVolumeRecommendedInfo(o.recommendedInfo);
-    checkVolumeSaleInfo(o.saleInfo);
-    checkVolumeSearchInfo(o.searchInfo);
-    unittest.expect(o.selfLink, unittest.equals('foo'));
-    checkVolumeUserInfo(o.userInfo);
-    checkVolumeVolumeInfo(o.volumeInfo);
+    checkVolumeAccessInfo(o.accessInfo! as api.VolumeAccessInfo);
+    unittest.expect(
+      o.etag!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkVolumeLayerInfo(o.layerInfo! as api.VolumeLayerInfo);
+    checkVolumeRecommendedInfo(o.recommendedInfo! as api.VolumeRecommendedInfo);
+    checkVolumeSaleInfo(o.saleInfo! as api.VolumeSaleInfo);
+    checkVolumeSearchInfo(o.searchInfo! as api.VolumeSearchInfo);
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    checkVolumeUserInfo(o.userInfo! as api.VolumeUserInfo);
+    checkVolumeVolumeInfo(o.volumeInfo! as api.VolumeVolumeInfo);
   }
   buildCounterVolume--;
 }
 
-buildUnnamed270() {
-  var o = new core.List<api.Volume>();
+core.List<api.Volume> buildUnnamed3261() {
+  var o = <api.Volume>[];
   o.add(buildVolume());
   o.add(buildVolume());
   return o;
 }
 
-checkUnnamed270(core.List<api.Volume> o) {
+void checkUnnamed3261(core.List<api.Volume> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolume(o[0]);
-  checkVolume(o[1]);
+  checkVolume(o[0] as api.Volume);
+  checkVolume(o[1] as api.Volume);
 }
 
 core.int buildCounterVolume2 = 0;
-buildVolume2() {
-  var o = new api.Volume2();
+api.Volume2 buildVolume2() {
+  var o = api.Volume2();
   buildCounterVolume2++;
   if (buildCounterVolume2 < 3) {
-    o.items = buildUnnamed270();
-    o.kind = "foo";
-    o.nextPageToken = "foo";
+    o.items = buildUnnamed3261();
+    o.kind = 'foo';
+    o.nextPageToken = 'foo';
   }
   buildCounterVolume2--;
   return o;
 }
 
-checkVolume2(api.Volume2 o) {
+void checkVolume2(api.Volume2 o) {
   buildCounterVolume2++;
   if (buildCounterVolume2 < 3) {
-    checkUnnamed270(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
+    checkUnnamed3261(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolume2--;
 }
 
 core.int buildCounterVolumeannotationContentRanges = 0;
-buildVolumeannotationContentRanges() {
-  var o = new api.VolumeannotationContentRanges();
+api.VolumeannotationContentRanges buildVolumeannotationContentRanges() {
+  var o = api.VolumeannotationContentRanges();
   buildCounterVolumeannotationContentRanges++;
   if (buildCounterVolumeannotationContentRanges < 3) {
     o.cfiRange = buildBooksAnnotationsRange();
-    o.contentVersion = "foo";
+    o.contentVersion = 'foo';
     o.gbImageRange = buildBooksAnnotationsRange();
     o.gbTextRange = buildBooksAnnotationsRange();
   }
@@ -3085,4946 +4231,5925 @@ buildVolumeannotationContentRanges() {
   return o;
 }
 
-checkVolumeannotationContentRanges(api.VolumeannotationContentRanges o) {
+void checkVolumeannotationContentRanges(api.VolumeannotationContentRanges o) {
   buildCounterVolumeannotationContentRanges++;
   if (buildCounterVolumeannotationContentRanges < 3) {
-    checkBooksAnnotationsRange(o.cfiRange);
-    unittest.expect(o.contentVersion, unittest.equals('foo'));
-    checkBooksAnnotationsRange(o.gbImageRange);
-    checkBooksAnnotationsRange(o.gbTextRange);
+    checkBooksAnnotationsRange(o.cfiRange! as api.BooksAnnotationsRange);
+    unittest.expect(
+      o.contentVersion!,
+      unittest.equals('foo'),
+    );
+    checkBooksAnnotationsRange(o.gbImageRange! as api.BooksAnnotationsRange);
+    checkBooksAnnotationsRange(o.gbTextRange! as api.BooksAnnotationsRange);
   }
   buildCounterVolumeannotationContentRanges--;
 }
 
-buildUnnamed271() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3262() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed271(core.List<core.String> o) {
+void checkUnnamed3262(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterVolumeannotation = 0;
-buildVolumeannotation() {
-  var o = new api.Volumeannotation();
+api.Volumeannotation buildVolumeannotation() {
+  var o = api.Volumeannotation();
   buildCounterVolumeannotation++;
   if (buildCounterVolumeannotation < 3) {
-    o.annotationDataId = "foo";
-    o.annotationDataLink = "foo";
-    o.annotationType = "foo";
+    o.annotationDataId = 'foo';
+    o.annotationDataLink = 'foo';
+    o.annotationType = 'foo';
     o.contentRanges = buildVolumeannotationContentRanges();
-    o.data = "foo";
+    o.data = 'foo';
     o.deleted = true;
-    o.id = "foo";
-    o.kind = "foo";
-    o.layerId = "foo";
-    o.pageIds = buildUnnamed271();
-    o.selectedText = "foo";
-    o.selfLink = "foo";
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
-    o.volumeId = "foo";
+    o.id = 'foo';
+    o.kind = 'foo';
+    o.layerId = 'foo';
+    o.pageIds = buildUnnamed3262();
+    o.selectedText = 'foo';
+    o.selfLink = 'foo';
+    o.updated = 'foo';
+    o.volumeId = 'foo';
   }
   buildCounterVolumeannotation--;
   return o;
 }
 
-checkVolumeannotation(api.Volumeannotation o) {
+void checkVolumeannotation(api.Volumeannotation o) {
   buildCounterVolumeannotation++;
   if (buildCounterVolumeannotation < 3) {
-    unittest.expect(o.annotationDataId, unittest.equals('foo'));
-    unittest.expect(o.annotationDataLink, unittest.equals('foo'));
-    unittest.expect(o.annotationType, unittest.equals('foo'));
-    checkVolumeannotationContentRanges(o.contentRanges);
-    unittest.expect(o.data, unittest.equals('foo'));
-    unittest.expect(o.deleted, unittest.isTrue);
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.layerId, unittest.equals('foo'));
-    checkUnnamed271(o.pageIds);
-    unittest.expect(o.selectedText, unittest.equals('foo'));
-    unittest.expect(o.selfLink, unittest.equals('foo'));
     unittest.expect(
-        o.updated, unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")));
-    unittest.expect(o.volumeId, unittest.equals('foo'));
+      o.annotationDataId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.annotationDataLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.annotationType!,
+      unittest.equals('foo'),
+    );
+    checkVolumeannotationContentRanges(
+        o.contentRanges! as api.VolumeannotationContentRanges);
+    unittest.expect(
+      o.data!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.deleted!, unittest.isTrue);
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.layerId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3262(o.pageIds!);
+    unittest.expect(
+      o.selectedText!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.selfLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updated!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.volumeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeannotation--;
 }
 
-buildUnnamed272() {
-  var o = new core.List<api.Volumeannotation>();
+core.List<api.Volumeannotation> buildUnnamed3263() {
+  var o = <api.Volumeannotation>[];
   o.add(buildVolumeannotation());
   o.add(buildVolumeannotation());
   return o;
 }
 
-checkUnnamed272(core.List<api.Volumeannotation> o) {
+void checkUnnamed3263(core.List<api.Volumeannotation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeannotation(o[0]);
-  checkVolumeannotation(o[1]);
+  checkVolumeannotation(o[0] as api.Volumeannotation);
+  checkVolumeannotation(o[1] as api.Volumeannotation);
 }
 
 core.int buildCounterVolumeannotations = 0;
-buildVolumeannotations() {
-  var o = new api.Volumeannotations();
+api.Volumeannotations buildVolumeannotations() {
+  var o = api.Volumeannotations();
   buildCounterVolumeannotations++;
   if (buildCounterVolumeannotations < 3) {
-    o.items = buildUnnamed272();
-    o.kind = "foo";
-    o.nextPageToken = "foo";
+    o.items = buildUnnamed3263();
+    o.kind = 'foo';
+    o.nextPageToken = 'foo';
     o.totalItems = 42;
-    o.version = "foo";
+    o.version = 'foo';
   }
   buildCounterVolumeannotations--;
   return o;
 }
 
-checkVolumeannotations(api.Volumeannotations o) {
+void checkVolumeannotations(api.Volumeannotations o) {
   buildCounterVolumeannotations++;
   if (buildCounterVolumeannotations < 3) {
-    checkUnnamed272(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
-    unittest.expect(o.totalItems, unittest.equals(42));
-    unittest.expect(o.version, unittest.equals('foo'));
+    checkUnnamed3263(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalItems!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.version!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeannotations--;
 }
 
-buildUnnamed273() {
-  var o = new core.List<api.Volume>();
+core.List<api.Volume> buildUnnamed3264() {
+  var o = <api.Volume>[];
   o.add(buildVolume());
   o.add(buildVolume());
   return o;
 }
 
-checkUnnamed273(core.List<api.Volume> o) {
+void checkUnnamed3264(core.List<api.Volume> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolume(o[0]);
-  checkVolume(o[1]);
+  checkVolume(o[0] as api.Volume);
+  checkVolume(o[1] as api.Volume);
 }
 
 core.int buildCounterVolumes = 0;
-buildVolumes() {
-  var o = new api.Volumes();
+api.Volumes buildVolumes() {
+  var o = api.Volumes();
   buildCounterVolumes++;
   if (buildCounterVolumes < 3) {
-    o.items = buildUnnamed273();
-    o.kind = "foo";
+    o.items = buildUnnamed3264();
+    o.kind = 'foo';
     o.totalItems = 42;
   }
   buildCounterVolumes--;
   return o;
 }
 
-checkVolumes(api.Volumes o) {
+void checkVolumes(api.Volumes o) {
   buildCounterVolumes++;
   if (buildCounterVolumes < 3) {
-    checkUnnamed273(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.totalItems, unittest.equals(42));
+    checkUnnamed3264(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.totalItems!,
+      unittest.equals(42),
+    );
   }
   buildCounterVolumes--;
 }
 
 core.int buildCounterVolumeseriesinfoVolumeSeriesIssue = 0;
-buildVolumeseriesinfoVolumeSeriesIssue() {
-  var o = new api.VolumeseriesinfoVolumeSeriesIssue();
+api.VolumeseriesinfoVolumeSeriesIssue buildVolumeseriesinfoVolumeSeriesIssue() {
+  var o = api.VolumeseriesinfoVolumeSeriesIssue();
   buildCounterVolumeseriesinfoVolumeSeriesIssue++;
   if (buildCounterVolumeseriesinfoVolumeSeriesIssue < 3) {
-    o.issueDisplayNumber = "foo";
+    o.issueDisplayNumber = 'foo';
     o.issueOrderNumber = 42;
   }
   buildCounterVolumeseriesinfoVolumeSeriesIssue--;
   return o;
 }
 
-checkVolumeseriesinfoVolumeSeriesIssue(
+void checkVolumeseriesinfoVolumeSeriesIssue(
     api.VolumeseriesinfoVolumeSeriesIssue o) {
   buildCounterVolumeseriesinfoVolumeSeriesIssue++;
   if (buildCounterVolumeseriesinfoVolumeSeriesIssue < 3) {
-    unittest.expect(o.issueDisplayNumber, unittest.equals('foo'));
-    unittest.expect(o.issueOrderNumber, unittest.equals(42));
+    unittest.expect(
+      o.issueDisplayNumber!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.issueOrderNumber!,
+      unittest.equals(42),
+    );
   }
   buildCounterVolumeseriesinfoVolumeSeriesIssue--;
 }
 
-buildUnnamed274() {
-  var o = new core.List<api.VolumeseriesinfoVolumeSeriesIssue>();
+core.List<api.VolumeseriesinfoVolumeSeriesIssue> buildUnnamed3265() {
+  var o = <api.VolumeseriesinfoVolumeSeriesIssue>[];
   o.add(buildVolumeseriesinfoVolumeSeriesIssue());
   o.add(buildVolumeseriesinfoVolumeSeriesIssue());
   return o;
 }
 
-checkUnnamed274(core.List<api.VolumeseriesinfoVolumeSeriesIssue> o) {
+void checkUnnamed3265(core.List<api.VolumeseriesinfoVolumeSeriesIssue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeseriesinfoVolumeSeriesIssue(o[0]);
-  checkVolumeseriesinfoVolumeSeriesIssue(o[1]);
+  checkVolumeseriesinfoVolumeSeriesIssue(
+      o[0] as api.VolumeseriesinfoVolumeSeriesIssue);
+  checkVolumeseriesinfoVolumeSeriesIssue(
+      o[1] as api.VolumeseriesinfoVolumeSeriesIssue);
 }
 
 core.int buildCounterVolumeseriesinfoVolumeSeries = 0;
-buildVolumeseriesinfoVolumeSeries() {
-  var o = new api.VolumeseriesinfoVolumeSeries();
+api.VolumeseriesinfoVolumeSeries buildVolumeseriesinfoVolumeSeries() {
+  var o = api.VolumeseriesinfoVolumeSeries();
   buildCounterVolumeseriesinfoVolumeSeries++;
   if (buildCounterVolumeseriesinfoVolumeSeries < 3) {
-    o.issue = buildUnnamed274();
+    o.issue = buildUnnamed3265();
     o.orderNumber = 42;
-    o.seriesBookType = "foo";
-    o.seriesId = "foo";
+    o.seriesBookType = 'foo';
+    o.seriesId = 'foo';
   }
   buildCounterVolumeseriesinfoVolumeSeries--;
   return o;
 }
 
-checkVolumeseriesinfoVolumeSeries(api.VolumeseriesinfoVolumeSeries o) {
+void checkVolumeseriesinfoVolumeSeries(api.VolumeseriesinfoVolumeSeries o) {
   buildCounterVolumeseriesinfoVolumeSeries++;
   if (buildCounterVolumeseriesinfoVolumeSeries < 3) {
-    checkUnnamed274(o.issue);
-    unittest.expect(o.orderNumber, unittest.equals(42));
-    unittest.expect(o.seriesBookType, unittest.equals('foo'));
-    unittest.expect(o.seriesId, unittest.equals('foo'));
+    checkUnnamed3265(o.issue!);
+    unittest.expect(
+      o.orderNumber!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.seriesBookType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.seriesId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterVolumeseriesinfoVolumeSeries--;
 }
 
-buildUnnamed275() {
-  var o = new core.List<api.VolumeseriesinfoVolumeSeries>();
+core.List<api.VolumeseriesinfoVolumeSeries> buildUnnamed3266() {
+  var o = <api.VolumeseriesinfoVolumeSeries>[];
   o.add(buildVolumeseriesinfoVolumeSeries());
   o.add(buildVolumeseriesinfoVolumeSeries());
   return o;
 }
 
-checkUnnamed275(core.List<api.VolumeseriesinfoVolumeSeries> o) {
+void checkUnnamed3266(core.List<api.VolumeseriesinfoVolumeSeries> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVolumeseriesinfoVolumeSeries(o[0]);
-  checkVolumeseriesinfoVolumeSeries(o[1]);
+  checkVolumeseriesinfoVolumeSeries(o[0] as api.VolumeseriesinfoVolumeSeries);
+  checkVolumeseriesinfoVolumeSeries(o[1] as api.VolumeseriesinfoVolumeSeries);
 }
 
 core.int buildCounterVolumeseriesinfo = 0;
-buildVolumeseriesinfo() {
-  var o = new api.Volumeseriesinfo();
+api.Volumeseriesinfo buildVolumeseriesinfo() {
+  var o = api.Volumeseriesinfo();
   buildCounterVolumeseriesinfo++;
   if (buildCounterVolumeseriesinfo < 3) {
-    o.bookDisplayNumber = "foo";
-    o.kind = "foo";
-    o.shortSeriesBookTitle = "foo";
-    o.volumeSeries = buildUnnamed275();
+    o.bookDisplayNumber = 'foo';
+    o.kind = 'foo';
+    o.shortSeriesBookTitle = 'foo';
+    o.volumeSeries = buildUnnamed3266();
   }
   buildCounterVolumeseriesinfo--;
   return o;
 }
 
-checkVolumeseriesinfo(api.Volumeseriesinfo o) {
+void checkVolumeseriesinfo(api.Volumeseriesinfo o) {
   buildCounterVolumeseriesinfo++;
   if (buildCounterVolumeseriesinfo < 3) {
-    unittest.expect(o.bookDisplayNumber, unittest.equals('foo'));
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.shortSeriesBookTitle, unittest.equals('foo'));
-    checkUnnamed275(o.volumeSeries);
+    unittest.expect(
+      o.bookDisplayNumber!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.shortSeriesBookTitle!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed3266(o.volumeSeries!);
   }
   buildCounterVolumeseriesinfo--;
 }
 
-buildUnnamed276() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3267() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed276(core.List<core.String> o) {
+void checkUnnamed3267(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed277() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3268() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed277(core.List<core.String> o) {
+void checkUnnamed3268(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed278() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3269() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed278(core.List<core.String> o) {
+void checkUnnamed3269(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed279() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3270() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed279(core.List<core.String> o) {
+void checkUnnamed3270(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed280() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3271() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed280(core.List<core.String> o) {
+void checkUnnamed3271(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed281() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3272() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed281(core.List<core.String> o) {
+void checkUnnamed3272(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed282() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3273() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed282(core.List<core.String> o) {
+void checkUnnamed3273(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed283() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3274() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed283(core.List<core.String> o) {
+void checkUnnamed3274(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed284() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3275() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed284(core.List<core.String> o) {
+void checkUnnamed3275(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed285() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3276() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed285(core.List<core.String> o) {
+void checkUnnamed3276(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed286() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3277() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed286(core.List<core.String> o) {
+void checkUnnamed3277(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed287() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed3278() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed287(core.List<core.String> o) {
+void checkUnnamed3278(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-main() {
-  unittest.group("obj-schema-AnnotationClientVersionRanges", () {
-    unittest.test("to-json--from-json", () {
+void main() {
+  unittest.group('obj-schema-AnnotationClientVersionRanges', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationClientVersionRanges();
-      var od = new api.AnnotationClientVersionRanges.fromJson(o.toJson());
-      checkAnnotationClientVersionRanges(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AnnotationClientVersionRanges.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationClientVersionRanges(
+          od as api.AnnotationClientVersionRanges);
     });
   });
 
-  unittest.group("obj-schema-AnnotationCurrentVersionRanges", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AnnotationCurrentVersionRanges', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationCurrentVersionRanges();
-      var od = new api.AnnotationCurrentVersionRanges.fromJson(o.toJson());
-      checkAnnotationCurrentVersionRanges(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AnnotationCurrentVersionRanges.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationCurrentVersionRanges(
+          od as api.AnnotationCurrentVersionRanges);
     });
   });
 
-  unittest.group("obj-schema-AnnotationLayerSummary", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AnnotationLayerSummary', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationLayerSummary();
-      var od = new api.AnnotationLayerSummary.fromJson(o.toJson());
-      checkAnnotationLayerSummary(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AnnotationLayerSummary.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationLayerSummary(od as api.AnnotationLayerSummary);
     });
   });
 
-  unittest.group("obj-schema-Annotation", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Annotation', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotation();
-      var od = new api.Annotation.fromJson(o.toJson());
-      checkAnnotation(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Annotation.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotation(od as api.Annotation);
     });
   });
 
-  unittest.group("obj-schema-Annotationdata", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildAnnotationdata();
-      var od = new api.Annotationdata.fromJson(o.toJson());
-      checkAnnotationdata(od);
-    });
-  });
-
-  unittest.group("obj-schema-Annotations", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Annotations', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotations();
-      var od = new api.Annotations.fromJson(o.toJson());
-      checkAnnotations(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Annotations.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotations(od as api.Annotations);
     });
   });
 
-  unittest.group("obj-schema-AnnotationsSummaryLayers", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AnnotationsSummaryLayers', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationsSummaryLayers();
-      var od = new api.AnnotationsSummaryLayers.fromJson(o.toJson());
-      checkAnnotationsSummaryLayers(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AnnotationsSummaryLayers.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationsSummaryLayers(od as api.AnnotationsSummaryLayers);
     });
   });
 
-  unittest.group("obj-schema-AnnotationsSummary", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-AnnotationsSummary', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationsSummary();
-      var od = new api.AnnotationsSummary.fromJson(o.toJson());
-      checkAnnotationsSummary(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AnnotationsSummary.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationsSummary(od as api.AnnotationsSummary);
     });
   });
 
-  unittest.group("obj-schema-Annotationsdata", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Annotationsdata', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAnnotationsdata();
-      var od = new api.Annotationsdata.fromJson(o.toJson());
-      checkAnnotationsdata(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Annotationsdata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAnnotationsdata(od as api.Annotationsdata);
     });
   });
 
-  unittest.group("obj-schema-BooksAnnotationsRange", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BooksAnnotationsRange', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBooksAnnotationsRange();
-      var od = new api.BooksAnnotationsRange.fromJson(o.toJson());
-      checkBooksAnnotationsRange(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BooksAnnotationsRange.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBooksAnnotationsRange(od as api.BooksAnnotationsRange);
     });
   });
 
-  unittest.group("obj-schema-BooksCloudloadingResource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BooksCloudloadingResource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBooksCloudloadingResource();
-      var od = new api.BooksCloudloadingResource.fromJson(o.toJson());
-      checkBooksCloudloadingResource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BooksCloudloadingResource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBooksCloudloadingResource(od as api.BooksCloudloadingResource);
     });
   });
 
-  unittest.group("obj-schema-BooksVolumesRecommendedRateResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BooksVolumesRecommendedRateResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBooksVolumesRecommendedRateResponse();
-      var od = new api.BooksVolumesRecommendedRateResponse.fromJson(o.toJson());
-      checkBooksVolumesRecommendedRateResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BooksVolumesRecommendedRateResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBooksVolumesRecommendedRateResponse(
+          od as api.BooksVolumesRecommendedRateResponse);
     });
   });
 
-  unittest.group("obj-schema-Bookshelf", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Bookshelf', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBookshelf();
-      var od = new api.Bookshelf.fromJson(o.toJson());
-      checkBookshelf(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Bookshelf.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkBookshelf(od as api.Bookshelf);
     });
   });
 
-  unittest.group("obj-schema-Bookshelves", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Bookshelves', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBookshelves();
-      var od = new api.Bookshelves.fromJson(o.toJson());
-      checkBookshelves(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Bookshelves.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBookshelves(od as api.Bookshelves);
     });
   });
 
-  unittest.group("obj-schema-CategoryItems", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CategoryItems', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCategoryItems();
-      var od = new api.CategoryItems.fromJson(o.toJson());
-      checkCategoryItems(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CategoryItems.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCategoryItems(od as api.CategoryItems);
     });
   });
 
-  unittest.group("obj-schema-Category", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Category', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCategory();
-      var od = new api.Category.fromJson(o.toJson());
-      checkCategory(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Category.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkCategory(od as api.Category);
     });
   });
 
-  unittest.group("obj-schema-ConcurrentAccessRestriction", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ConcurrentAccessRestriction', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildConcurrentAccessRestriction();
-      var od = new api.ConcurrentAccessRestriction.fromJson(o.toJson());
-      checkConcurrentAccessRestriction(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ConcurrentAccessRestriction.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConcurrentAccessRestriction(od as api.ConcurrentAccessRestriction);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataCommon", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictionaryAnnotationdata', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildDictionaryAnnotationdata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictionaryAnnotationdata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictionaryAnnotationdata(od as api.DictionaryAnnotationdata);
+    });
+  });
+
+  unittest.group('obj-schema-DictlayerdataCommon', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataCommon();
-      var od = new api.DictlayerdataCommon.fromJson(o.toJson());
-      checkDictlayerdataCommon(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataCommon.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataCommon(od as api.DictlayerdataCommon);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictSource();
-      var od = new api.DictlayerdataDictSource.fromJson(o.toJson());
-      checkDictlayerdataDictSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictSource(od as api.DictlayerdataDictSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsDerivativesSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsDerivativesSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsDerivativesSource();
-      var od =
-          new api.DictlayerdataDictWordsDerivativesSource.fromJson(o.toJson());
-      checkDictlayerdataDictWordsDerivativesSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsDerivativesSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsDerivativesSource(
+          od as api.DictlayerdataDictWordsDerivativesSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsDerivatives", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsDerivatives', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsDerivatives();
-      var od = new api.DictlayerdataDictWordsDerivatives.fromJson(o.toJson());
-      checkDictlayerdataDictWordsDerivatives(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsDerivatives.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsDerivatives(
+          od as api.DictlayerdataDictWordsDerivatives);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsExamplesSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsExamplesSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsExamplesSource();
-      var od =
-          new api.DictlayerdataDictWordsExamplesSource.fromJson(o.toJson());
-      checkDictlayerdataDictWordsExamplesSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsExamplesSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsExamplesSource(
+          od as api.DictlayerdataDictWordsExamplesSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsExamples", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsExamples', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsExamples();
-      var od = new api.DictlayerdataDictWordsExamples.fromJson(o.toJson());
-      checkDictlayerdataDictWordsExamples(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsExamples.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsExamples(
+          od as api.DictlayerdataDictWordsExamples);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesConjugations", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesConjugations', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesConjugations();
-      var od =
-          new api.DictlayerdataDictWordsSensesConjugations.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSensesConjugations(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesConjugations.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesConjugations(
+          od as api.DictlayerdataDictWordsSensesConjugations);
     });
   });
 
   unittest.group(
-      "obj-schema-DictlayerdataDictWordsSensesDefinitionsExamplesSource", () {
-    unittest.test("to-json--from-json", () {
+      'obj-schema-DictlayerdataDictWordsSensesDefinitionsExamplesSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesDefinitionsExamplesSource();
-      var od = new api
-              .DictlayerdataDictWordsSensesDefinitionsExamplesSource.fromJson(
-          o.toJson());
-      checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.DictlayerdataDictWordsSensesDefinitionsExamplesSource.fromJson(
+              oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesDefinitionsExamplesSource(
+          od as api.DictlayerdataDictWordsSensesDefinitionsExamplesSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesDefinitionsExamples",
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesDefinitionsExamples',
       () {
-    unittest.test("to-json--from-json", () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesDefinitionsExamples();
-      var od = new api.DictlayerdataDictWordsSensesDefinitionsExamples.fromJson(
-          o.toJson());
-      checkDictlayerdataDictWordsSensesDefinitionsExamples(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesDefinitionsExamples.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesDefinitionsExamples(
+          od as api.DictlayerdataDictWordsSensesDefinitionsExamples);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesDefinitions", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesDefinitions', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesDefinitions();
-      var od =
-          new api.DictlayerdataDictWordsSensesDefinitions.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSensesDefinitions(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesDefinitions.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesDefinitions(
+          od as api.DictlayerdataDictWordsSensesDefinitions);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesSource();
-      var od = new api.DictlayerdataDictWordsSensesSource.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSensesSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesSource(
+          od as api.DictlayerdataDictWordsSensesSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesSynonymsSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesSynonymsSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesSynonymsSource();
-      var od = new api.DictlayerdataDictWordsSensesSynonymsSource.fromJson(
-          o.toJson());
-      checkDictlayerdataDictWordsSensesSynonymsSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesSynonymsSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesSynonymsSource(
+          od as api.DictlayerdataDictWordsSensesSynonymsSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSensesSynonyms", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSensesSynonyms', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSensesSynonyms();
-      var od =
-          new api.DictlayerdataDictWordsSensesSynonyms.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSensesSynonyms(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSensesSynonyms.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSensesSynonyms(
+          od as api.DictlayerdataDictWordsSensesSynonyms);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSenses", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSenses', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSenses();
-      var od = new api.DictlayerdataDictWordsSenses.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSenses(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSenses.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSenses(od as api.DictlayerdataDictWordsSenses);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWordsSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWordsSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWordsSource();
-      var od = new api.DictlayerdataDictWordsSource.fromJson(o.toJson());
-      checkDictlayerdataDictWordsSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWordsSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWordsSource(od as api.DictlayerdataDictWordsSource);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDictWords", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDictWords', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDictWords();
-      var od = new api.DictlayerdataDictWords.fromJson(o.toJson());
-      checkDictlayerdataDictWords(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDictWords.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDictWords(od as api.DictlayerdataDictWords);
     });
   });
 
-  unittest.group("obj-schema-DictlayerdataDict", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DictlayerdataDict', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdataDict();
-      var od = new api.DictlayerdataDict.fromJson(o.toJson());
-      checkDictlayerdataDict(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DictlayerdataDict.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdataDict(od as api.DictlayerdataDict);
     });
   });
 
-  unittest.group("obj-schema-Dictlayerdata", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Dictlayerdata', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDictlayerdata();
-      var od = new api.Dictlayerdata.fromJson(o.toJson());
-      checkDictlayerdata(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Dictlayerdata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDictlayerdata(od as api.Dictlayerdata);
     });
   });
 
   unittest.group(
-      "obj-schema-DiscoveryclustersClustersBannerWithContentContainer", () {
-    unittest.test("to-json--from-json", () {
+      'obj-schema-DiscoveryclustersClustersBannerWithContentContainer', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDiscoveryclustersClustersBannerWithContentContainer();
-      var od =
-          new api.DiscoveryclustersClustersBannerWithContentContainer.fromJson(
-              o.toJson());
-      checkDiscoveryclustersClustersBannerWithContentContainer(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DiscoveryclustersClustersBannerWithContentContainer.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDiscoveryclustersClustersBannerWithContentContainer(
+          od as api.DiscoveryclustersClustersBannerWithContentContainer);
     });
   });
 
-  unittest.group("obj-schema-DiscoveryclustersClusters", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DiscoveryclustersClusters', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDiscoveryclustersClusters();
-      var od = new api.DiscoveryclustersClusters.fromJson(o.toJson());
-      checkDiscoveryclustersClusters(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DiscoveryclustersClusters.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDiscoveryclustersClusters(od as api.DiscoveryclustersClusters);
     });
   });
 
-  unittest.group("obj-schema-Discoveryclusters", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Discoveryclusters', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDiscoveryclusters();
-      var od = new api.Discoveryclusters.fromJson(o.toJson());
-      checkDiscoveryclusters(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Discoveryclusters.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDiscoveryclusters(od as api.Discoveryclusters);
     });
   });
 
-  unittest.group("obj-schema-DownloadAccessRestriction", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DownloadAccessRestriction', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDownloadAccessRestriction();
-      var od = new api.DownloadAccessRestriction.fromJson(o.toJson());
-      checkDownloadAccessRestriction(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DownloadAccessRestriction.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDownloadAccessRestriction(od as api.DownloadAccessRestriction);
     });
   });
 
-  unittest.group("obj-schema-DownloadAccesses", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-DownloadAccesses', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDownloadAccesses();
-      var od = new api.DownloadAccesses.fromJson(o.toJson());
-      checkDownloadAccesses(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.DownloadAccesses.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDownloadAccesses(od as api.DownloadAccesses);
     });
   });
 
-  unittest.group("obj-schema-FamilyInfoMembership", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Empty', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildEmpty();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od as api.Empty);
+    });
+  });
+
+  unittest.group('obj-schema-FamilyInfoMembership', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildFamilyInfoMembership();
-      var od = new api.FamilyInfoMembership.fromJson(o.toJson());
-      checkFamilyInfoMembership(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.FamilyInfoMembership.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkFamilyInfoMembership(od as api.FamilyInfoMembership);
     });
   });
 
-  unittest.group("obj-schema-FamilyInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-FamilyInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildFamilyInfo();
-      var od = new api.FamilyInfo.fromJson(o.toJson());
-      checkFamilyInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.FamilyInfo.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkFamilyInfo(od as api.FamilyInfo);
     });
   });
 
-  unittest.group("obj-schema-GeolayerdataCommon", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GeoAnnotationdata', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildGeoAnnotationdata();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeoAnnotationdata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeoAnnotationdata(od as api.GeoAnnotationdata);
+    });
+  });
+
+  unittest.group('obj-schema-GeolayerdataCommon', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdataCommon();
-      var od = new api.GeolayerdataCommon.fromJson(o.toJson());
-      checkGeolayerdataCommon(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeolayerdataCommon.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdataCommon(od as api.GeolayerdataCommon);
     });
   });
 
-  unittest.group("obj-schema-GeolayerdataGeoBoundary", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildGeolayerdataGeoBoundary();
-      var od = new api.GeolayerdataGeoBoundary.fromJson(o.toJson());
-      checkGeolayerdataGeoBoundary(od);
-    });
-  });
-
-  unittest.group("obj-schema-GeolayerdataGeoViewportHi", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GeolayerdataGeoViewportHi', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdataGeoViewportHi();
-      var od = new api.GeolayerdataGeoViewportHi.fromJson(o.toJson());
-      checkGeolayerdataGeoViewportHi(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeolayerdataGeoViewportHi.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdataGeoViewportHi(od as api.GeolayerdataGeoViewportHi);
     });
   });
 
-  unittest.group("obj-schema-GeolayerdataGeoViewportLo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GeolayerdataGeoViewportLo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdataGeoViewportLo();
-      var od = new api.GeolayerdataGeoViewportLo.fromJson(o.toJson());
-      checkGeolayerdataGeoViewportLo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeolayerdataGeoViewportLo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdataGeoViewportLo(od as api.GeolayerdataGeoViewportLo);
     });
   });
 
-  unittest.group("obj-schema-GeolayerdataGeoViewport", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GeolayerdataGeoViewport', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdataGeoViewport();
-      var od = new api.GeolayerdataGeoViewport.fromJson(o.toJson());
-      checkGeolayerdataGeoViewport(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeolayerdataGeoViewport.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdataGeoViewport(od as api.GeolayerdataGeoViewport);
     });
   });
 
-  unittest.group("obj-schema-GeolayerdataGeo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GeolayerdataGeo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdataGeo();
-      var od = new api.GeolayerdataGeo.fromJson(o.toJson());
-      checkGeolayerdataGeo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GeolayerdataGeo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdataGeo(od as api.GeolayerdataGeo);
     });
   });
 
-  unittest.group("obj-schema-Geolayerdata", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Geolayerdata', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGeolayerdata();
-      var od = new api.Geolayerdata.fromJson(o.toJson());
-      checkGeolayerdata(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Geolayerdata.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeolayerdata(od as api.Geolayerdata);
     });
   });
 
-  unittest.group("obj-schema-Layersummaries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Layersummaries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildLayersummaries();
-      var od = new api.Layersummaries.fromJson(o.toJson());
-      checkLayersummaries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Layersummaries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkLayersummaries(od as api.Layersummaries);
     });
   });
 
-  unittest.group("obj-schema-Layersummary", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Layersummary', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildLayersummary();
-      var od = new api.Layersummary.fromJson(o.toJson());
-      checkLayersummary(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Layersummary.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkLayersummary(od as api.Layersummary);
     });
   });
 
-  unittest.group("obj-schema-MetadataItems", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-MetadataItems', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildMetadataItems();
-      var od = new api.MetadataItems.fromJson(o.toJson());
-      checkMetadataItems(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.MetadataItems.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkMetadataItems(od as api.MetadataItems);
     });
   });
 
-  unittest.group("obj-schema-Metadata", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Metadata', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildMetadata();
-      var od = new api.Metadata.fromJson(o.toJson());
-      checkMetadata(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Metadata.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkMetadata(od as api.Metadata);
     });
   });
 
-  unittest.group("obj-schema-Notification", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Notification', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildNotification();
-      var od = new api.Notification.fromJson(o.toJson());
-      checkNotification(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Notification.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkNotification(od as api.Notification);
     });
   });
 
-  unittest.group("obj-schema-OffersItemsItems", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-OffersItemsItems', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildOffersItemsItems();
-      var od = new api.OffersItemsItems.fromJson(o.toJson());
-      checkOffersItemsItems(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.OffersItemsItems.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkOffersItemsItems(od as api.OffersItemsItems);
     });
   });
 
-  unittest.group("obj-schema-OffersItems", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-OffersItems', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildOffersItems();
-      var od = new api.OffersItems.fromJson(o.toJson());
-      checkOffersItems(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.OffersItems.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkOffersItems(od as api.OffersItems);
     });
   });
 
-  unittest.group("obj-schema-Offers", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Offers', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildOffers();
-      var od = new api.Offers.fromJson(o.toJson());
-      checkOffers(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Offers.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkOffers(od as api.Offers);
     });
   });
 
-  unittest.group("obj-schema-ReadingPosition", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ReadingPosition', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildReadingPosition();
-      var od = new api.ReadingPosition.fromJson(o.toJson());
-      checkReadingPosition(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ReadingPosition.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkReadingPosition(od as api.ReadingPosition);
     });
   });
 
-  unittest.group("obj-schema-RequestAccess", () {
-    unittest.test("to-json--from-json", () {
-      var o = buildRequestAccess();
-      var od = new api.RequestAccess.fromJson(o.toJson());
-      checkRequestAccess(od);
+  unittest.group('obj-schema-RequestAccessData', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildRequestAccessData();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RequestAccessData.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRequestAccessData(od as api.RequestAccessData);
     });
   });
 
-  unittest.group("obj-schema-ReviewAuthor", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ReviewAuthor', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildReviewAuthor();
-      var od = new api.ReviewAuthor.fromJson(o.toJson());
-      checkReviewAuthor(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ReviewAuthor.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkReviewAuthor(od as api.ReviewAuthor);
     });
   });
 
-  unittest.group("obj-schema-ReviewSource", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ReviewSource', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildReviewSource();
-      var od = new api.ReviewSource.fromJson(o.toJson());
-      checkReviewSource(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ReviewSource.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkReviewSource(od as api.ReviewSource);
     });
   });
 
-  unittest.group("obj-schema-Review", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Review', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildReview();
-      var od = new api.Review.fromJson(o.toJson());
-      checkReview(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Review.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkReview(od as api.Review);
     });
   });
 
-  unittest.group("obj-schema-SeriesSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group(
+      'obj-schema-SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o =
+          buildSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo
+          .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo(od
+          as api.SeriesSeriesSeriesSubscriptionReleaseInfoCurrentReleaseInfo);
+    });
+  });
+
+  unittest.group(
+      'obj-schema-SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo',
+      () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo.fromJson(
+              oJson as core.Map<core.String, core.dynamic>);
+      checkSeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo(
+          od as api.SeriesSeriesSeriesSubscriptionReleaseInfoNextReleaseInfo);
+    });
+  });
+
+  unittest.group('obj-schema-SeriesSeriesSeriesSubscriptionReleaseInfo', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildSeriesSeriesSeriesSubscriptionReleaseInfo();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SeriesSeriesSeriesSubscriptionReleaseInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSeriesSeriesSeriesSubscriptionReleaseInfo(
+          od as api.SeriesSeriesSeriesSubscriptionReleaseInfo);
+    });
+  });
+
+  unittest.group('obj-schema-SeriesSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSeriesSeries();
-      var od = new api.SeriesSeries.fromJson(o.toJson());
-      checkSeriesSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SeriesSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSeriesSeries(od as api.SeriesSeries);
     });
   });
 
-  unittest.group("obj-schema-Series", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Series', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSeries();
-      var od = new api.Series.fromJson(o.toJson());
-      checkSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Series.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkSeries(od as api.Series);
     });
   });
 
-  unittest.group("obj-schema-Seriesmembership", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Seriesmembership', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSeriesmembership();
-      var od = new api.Seriesmembership.fromJson(o.toJson());
-      checkSeriesmembership(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Seriesmembership.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSeriesmembership(od as api.Seriesmembership);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotesExport", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotesExport', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotesExport();
-      var od = new api.UsersettingsNotesExport.fromJson(o.toJson());
-      checkUsersettingsNotesExport(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotesExport.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotesExport(od as api.UsersettingsNotesExport);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotificationMatchMyInterests", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotificationMatchMyInterests', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotificationMatchMyInterests();
-      var od =
-          new api.UsersettingsNotificationMatchMyInterests.fromJson(o.toJson());
-      checkUsersettingsNotificationMatchMyInterests(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotificationMatchMyInterests.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotificationMatchMyInterests(
+          od as api.UsersettingsNotificationMatchMyInterests);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotificationMoreFromAuthors", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotificationMoreFromAuthors', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotificationMoreFromAuthors();
-      var od =
-          new api.UsersettingsNotificationMoreFromAuthors.fromJson(o.toJson());
-      checkUsersettingsNotificationMoreFromAuthors(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotificationMoreFromAuthors.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotificationMoreFromAuthors(
+          od as api.UsersettingsNotificationMoreFromAuthors);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotificationMoreFromSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotificationMoreFromSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotificationMoreFromSeries();
-      var od =
-          new api.UsersettingsNotificationMoreFromSeries.fromJson(o.toJson());
-      checkUsersettingsNotificationMoreFromSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotificationMoreFromSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotificationMoreFromSeries(
+          od as api.UsersettingsNotificationMoreFromSeries);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotificationPriceDrop", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotificationPriceDrop', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotificationPriceDrop();
-      var od = new api.UsersettingsNotificationPriceDrop.fromJson(o.toJson());
-      checkUsersettingsNotificationPriceDrop(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotificationPriceDrop.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotificationPriceDrop(
+          od as api.UsersettingsNotificationPriceDrop);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotificationRewardExpirations", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotificationRewardExpirations', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotificationRewardExpirations();
-      var od = new api.UsersettingsNotificationRewardExpirations.fromJson(
-          o.toJson());
-      checkUsersettingsNotificationRewardExpirations(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotificationRewardExpirations.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotificationRewardExpirations(
+          od as api.UsersettingsNotificationRewardExpirations);
     });
   });
 
-  unittest.group("obj-schema-UsersettingsNotification", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UsersettingsNotification', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettingsNotification();
-      var od = new api.UsersettingsNotification.fromJson(o.toJson());
-      checkUsersettingsNotification(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UsersettingsNotification.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettingsNotification(od as api.UsersettingsNotification);
     });
   });
 
-  unittest.group("obj-schema-Usersettings", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Usersettings', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUsersettings();
-      var od = new api.Usersettings.fromJson(o.toJson());
-      checkUsersettings(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Usersettings.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUsersettings(od as api.Usersettings);
     });
   });
 
-  unittest.group("obj-schema-VolumeAccessInfoEpub", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeAccessInfoEpub', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeAccessInfoEpub();
-      var od = new api.VolumeAccessInfoEpub.fromJson(o.toJson());
-      checkVolumeAccessInfoEpub(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeAccessInfoEpub.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeAccessInfoEpub(od as api.VolumeAccessInfoEpub);
     });
   });
 
-  unittest.group("obj-schema-VolumeAccessInfoPdf", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeAccessInfoPdf', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeAccessInfoPdf();
-      var od = new api.VolumeAccessInfoPdf.fromJson(o.toJson());
-      checkVolumeAccessInfoPdf(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeAccessInfoPdf.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeAccessInfoPdf(od as api.VolumeAccessInfoPdf);
     });
   });
 
-  unittest.group("obj-schema-VolumeAccessInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeAccessInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeAccessInfo();
-      var od = new api.VolumeAccessInfo.fromJson(o.toJson());
-      checkVolumeAccessInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeAccessInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeAccessInfo(od as api.VolumeAccessInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeLayerInfoLayers", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeLayerInfoLayers', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeLayerInfoLayers();
-      var od = new api.VolumeLayerInfoLayers.fromJson(o.toJson());
-      checkVolumeLayerInfoLayers(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeLayerInfoLayers.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeLayerInfoLayers(od as api.VolumeLayerInfoLayers);
     });
   });
 
-  unittest.group("obj-schema-VolumeLayerInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeLayerInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeLayerInfo();
-      var od = new api.VolumeLayerInfo.fromJson(o.toJson());
-      checkVolumeLayerInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeLayerInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeLayerInfo(od as api.VolumeLayerInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeRecommendedInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeRecommendedInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeRecommendedInfo();
-      var od = new api.VolumeRecommendedInfo.fromJson(o.toJson());
-      checkVolumeRecommendedInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeRecommendedInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeRecommendedInfo(od as api.VolumeRecommendedInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoListPrice", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoListPrice', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoListPrice();
-      var od = new api.VolumeSaleInfoListPrice.fromJson(o.toJson());
-      checkVolumeSaleInfoListPrice(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoListPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoListPrice(od as api.VolumeSaleInfoListPrice);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoOffersListPrice", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoOffersListPrice', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoOffersListPrice();
-      var od = new api.VolumeSaleInfoOffersListPrice.fromJson(o.toJson());
-      checkVolumeSaleInfoOffersListPrice(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoOffersListPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoOffersListPrice(
+          od as api.VolumeSaleInfoOffersListPrice);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoOffersRentalDuration", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoOffersRentalDuration', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoOffersRentalDuration();
-      var od = new api.VolumeSaleInfoOffersRentalDuration.fromJson(o.toJson());
-      checkVolumeSaleInfoOffersRentalDuration(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoOffersRentalDuration.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoOffersRentalDuration(
+          od as api.VolumeSaleInfoOffersRentalDuration);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoOffersRetailPrice", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoOffersRetailPrice', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoOffersRetailPrice();
-      var od = new api.VolumeSaleInfoOffersRetailPrice.fromJson(o.toJson());
-      checkVolumeSaleInfoOffersRetailPrice(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoOffersRetailPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoOffersRetailPrice(
+          od as api.VolumeSaleInfoOffersRetailPrice);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoOffers", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoOffers', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoOffers();
-      var od = new api.VolumeSaleInfoOffers.fromJson(o.toJson());
-      checkVolumeSaleInfoOffers(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoOffers.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoOffers(od as api.VolumeSaleInfoOffers);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfoRetailPrice", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfoRetailPrice', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfoRetailPrice();
-      var od = new api.VolumeSaleInfoRetailPrice.fromJson(o.toJson());
-      checkVolumeSaleInfoRetailPrice(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfoRetailPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfoRetailPrice(od as api.VolumeSaleInfoRetailPrice);
     });
   });
 
-  unittest.group("obj-schema-VolumeSaleInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSaleInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSaleInfo();
-      var od = new api.VolumeSaleInfo.fromJson(o.toJson());
-      checkVolumeSaleInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSaleInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSaleInfo(od as api.VolumeSaleInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeSearchInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeSearchInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeSearchInfo();
-      var od = new api.VolumeSearchInfo.fromJson(o.toJson());
-      checkVolumeSearchInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeSearchInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeSearchInfo(od as api.VolumeSearchInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeUserInfoCopy", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeUserInfoCopy', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeUserInfoCopy();
-      var od = new api.VolumeUserInfoCopy.fromJson(o.toJson());
-      checkVolumeUserInfoCopy(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeUserInfoCopy.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeUserInfoCopy(od as api.VolumeUserInfoCopy);
     });
   });
 
-  unittest.group("obj-schema-VolumeUserInfoFamilySharing", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeUserInfoFamilySharing', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeUserInfoFamilySharing();
-      var od = new api.VolumeUserInfoFamilySharing.fromJson(o.toJson());
-      checkVolumeUserInfoFamilySharing(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeUserInfoFamilySharing.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeUserInfoFamilySharing(od as api.VolumeUserInfoFamilySharing);
     });
   });
 
-  unittest.group("obj-schema-VolumeUserInfoRentalPeriod", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeUserInfoRentalPeriod', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeUserInfoRentalPeriod();
-      var od = new api.VolumeUserInfoRentalPeriod.fromJson(o.toJson());
-      checkVolumeUserInfoRentalPeriod(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeUserInfoRentalPeriod.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeUserInfoRentalPeriod(od as api.VolumeUserInfoRentalPeriod);
     });
   });
 
-  unittest.group("obj-schema-VolumeUserInfoUserUploadedVolumeInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeUserInfoUserUploadedVolumeInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeUserInfoUserUploadedVolumeInfo();
-      var od =
-          new api.VolumeUserInfoUserUploadedVolumeInfo.fromJson(o.toJson());
-      checkVolumeUserInfoUserUploadedVolumeInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeUserInfoUserUploadedVolumeInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeUserInfoUserUploadedVolumeInfo(
+          od as api.VolumeUserInfoUserUploadedVolumeInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeUserInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeUserInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeUserInfo();
-      var od = new api.VolumeUserInfo.fromJson(o.toJson());
-      checkVolumeUserInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeUserInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeUserInfo(od as api.VolumeUserInfo);
     });
   });
 
-  unittest.group("obj-schema-VolumeVolumeInfoDimensions", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeVolumeInfoDimensions', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeVolumeInfoDimensions();
-      var od = new api.VolumeVolumeInfoDimensions.fromJson(o.toJson());
-      checkVolumeVolumeInfoDimensions(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfoDimensions.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfoDimensions(od as api.VolumeVolumeInfoDimensions);
     });
   });
 
-  unittest.group("obj-schema-VolumeVolumeInfoImageLinks", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeVolumeInfoImageLinks', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeVolumeInfoImageLinks();
-      var od = new api.VolumeVolumeInfoImageLinks.fromJson(o.toJson());
-      checkVolumeVolumeInfoImageLinks(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfoImageLinks.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfoImageLinks(od as api.VolumeVolumeInfoImageLinks);
     });
   });
 
-  unittest.group("obj-schema-VolumeVolumeInfoIndustryIdentifiers", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeVolumeInfoIndustryIdentifiers', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeVolumeInfoIndustryIdentifiers();
-      var od = new api.VolumeVolumeInfoIndustryIdentifiers.fromJson(o.toJson());
-      checkVolumeVolumeInfoIndustryIdentifiers(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfoIndustryIdentifiers.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfoIndustryIdentifiers(
+          od as api.VolumeVolumeInfoIndustryIdentifiers);
     });
   });
 
-  unittest.group("obj-schema-VolumeVolumeInfoPanelizationSummary", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeVolumeInfoPanelizationSummary', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeVolumeInfoPanelizationSummary();
-      var od = new api.VolumeVolumeInfoPanelizationSummary.fromJson(o.toJson());
-      checkVolumeVolumeInfoPanelizationSummary(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfoPanelizationSummary.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfoPanelizationSummary(
+          od as api.VolumeVolumeInfoPanelizationSummary);
     });
   });
 
-  unittest.group("obj-schema-VolumeVolumeInfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeVolumeInfoReadingModes', () {
+    unittest.test('to-json--from-json', () async {
+      var o = buildVolumeVolumeInfoReadingModes();
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfoReadingModes.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfoReadingModes(od as api.VolumeVolumeInfoReadingModes);
+    });
+  });
+
+  unittest.group('obj-schema-VolumeVolumeInfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeVolumeInfo();
-      var od = new api.VolumeVolumeInfo.fromJson(o.toJson());
-      checkVolumeVolumeInfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeVolumeInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeVolumeInfo(od as api.VolumeVolumeInfo);
     });
   });
 
-  unittest.group("obj-schema-Volume", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volume', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolume();
-      var od = new api.Volume.fromJson(o.toJson());
-      checkVolume(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Volume.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkVolume(od as api.Volume);
     });
   });
 
-  unittest.group("obj-schema-Volume2", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volume2', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolume2();
-      var od = new api.Volume2.fromJson(o.toJson());
-      checkVolume2(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Volume2.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkVolume2(od as api.Volume2);
     });
   });
 
-  unittest.group("obj-schema-VolumeannotationContentRanges", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeannotationContentRanges', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeannotationContentRanges();
-      var od = new api.VolumeannotationContentRanges.fromJson(o.toJson());
-      checkVolumeannotationContentRanges(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeannotationContentRanges.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeannotationContentRanges(
+          od as api.VolumeannotationContentRanges);
     });
   });
 
-  unittest.group("obj-schema-Volumeannotation", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volumeannotation', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeannotation();
-      var od = new api.Volumeannotation.fromJson(o.toJson());
-      checkVolumeannotation(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Volumeannotation.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeannotation(od as api.Volumeannotation);
     });
   });
 
-  unittest.group("obj-schema-Volumeannotations", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volumeannotations', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeannotations();
-      var od = new api.Volumeannotations.fromJson(o.toJson());
-      checkVolumeannotations(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Volumeannotations.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeannotations(od as api.Volumeannotations);
     });
   });
 
-  unittest.group("obj-schema-Volumes", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volumes', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumes();
-      var od = new api.Volumes.fromJson(o.toJson());
-      checkVolumes(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Volumes.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkVolumes(od as api.Volumes);
     });
   });
 
-  unittest.group("obj-schema-VolumeseriesinfoVolumeSeriesIssue", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeseriesinfoVolumeSeriesIssue', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeseriesinfoVolumeSeriesIssue();
-      var od = new api.VolumeseriesinfoVolumeSeriesIssue.fromJson(o.toJson());
-      checkVolumeseriesinfoVolumeSeriesIssue(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeseriesinfoVolumeSeriesIssue.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeseriesinfoVolumeSeriesIssue(
+          od as api.VolumeseriesinfoVolumeSeriesIssue);
     });
   });
 
-  unittest.group("obj-schema-VolumeseriesinfoVolumeSeries", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-VolumeseriesinfoVolumeSeries', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeseriesinfoVolumeSeries();
-      var od = new api.VolumeseriesinfoVolumeSeries.fromJson(o.toJson());
-      checkVolumeseriesinfoVolumeSeries(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.VolumeseriesinfoVolumeSeries.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeseriesinfoVolumeSeries(od as api.VolumeseriesinfoVolumeSeries);
     });
   });
 
-  unittest.group("obj-schema-Volumeseriesinfo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Volumeseriesinfo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVolumeseriesinfo();
-      var od = new api.Volumeseriesinfo.fromJson(o.toJson());
-      checkVolumeseriesinfo(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Volumeseriesinfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVolumeseriesinfo(od as api.Volumeseriesinfo);
     });
   });
 
-  unittest.group("resource-BookshelvesResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.BookshelvesResourceApi res = new api.BooksApi(mock).bookshelves;
-      var arg_userId = "foo";
-      var arg_shelf = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-BookshelvesResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).bookshelves;
+      var arg_userId = 'foo';
+      var arg_shelf = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 6),
-            unittest.equals("users/"));
-        pathOffset += 6;
-        index = path.indexOf("/bookshelves/", pathOffset);
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals("books/v1/users/"),
+        );
+        pathOffset += 15;
+        index = path.indexOf('/bookshelves/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_userId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/bookshelves/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_userId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/bookshelves/"),
+        );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBookshelf());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_userId, arg_shelf, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBookshelf(response);
-      })));
+      final response = await res.get(arg_userId, arg_shelf,
+          source: arg_source, $fields: arg_$fields);
+      checkBookshelf(response as api.Bookshelf);
     });
 
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.BookshelvesResourceApi res = new api.BooksApi(mock).bookshelves;
-      var arg_userId = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).bookshelves;
+      var arg_userId = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 6),
-            unittest.equals("users/"));
-        pathOffset += 6;
-        index = path.indexOf("/bookshelves", pathOffset);
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals("books/v1/users/"),
+        );
+        pathOffset += 15;
+        index = path.indexOf('/bookshelves', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_userId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals("/bookshelves"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_userId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 12),
+          unittest.equals("/bookshelves"),
+        );
         pathOffset += 12;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBookshelves());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_userId, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBookshelves(response);
-      })));
+      final response =
+          await res.list(arg_userId, source: arg_source, $fields: arg_$fields);
+      checkBookshelves(response as api.Bookshelves);
     });
   });
 
-  unittest.group("resource-BookshelvesVolumesResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.BookshelvesVolumesResourceApi res =
-          new api.BooksApi(mock).bookshelves.volumes;
-      var arg_userId = "foo";
-      var arg_shelf = "foo";
+  unittest.group('resource-BookshelvesVolumesResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).bookshelves.volumes;
+      var arg_userId = 'foo';
+      var arg_shelf = 'foo';
       var arg_maxResults = 42;
       var arg_showPreorders = true;
-      var arg_source = "foo";
+      var arg_source = 'foo';
       var arg_startIndex = 42;
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 6),
-            unittest.equals("users/"));
-        pathOffset += 6;
-        index = path.indexOf("/bookshelves/", pathOffset);
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals("books/v1/users/"),
+        );
+        pathOffset += 15;
+        index = path.indexOf('/bookshelves/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_userId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/bookshelves/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_userId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/bookshelves/"),
+        );
         pathOffset += 13;
-        index = path.indexOf("/volumes", pathOffset);
+        index = path.indexOf('/volumes', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/volumes"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/volumes"),
+        );
         pathOffset += 8;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(queryMap["showPreorders"].first,
-            unittest.equals("$arg_showPreorders"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(core.int.parse(queryMap["startIndex"].first),
-            unittest.equals(arg_startIndex));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["showPreorders"]!.first,
+          unittest.equals("$arg_showPreorders"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["startIndex"]!.first),
+          unittest.equals(arg_startIndex),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_userId, arg_shelf,
-              maxResults: arg_maxResults,
-              showPreorders: arg_showPreorders,
-              source: arg_source,
-              startIndex: arg_startIndex,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response = await res.list(arg_userId, arg_shelf,
+          maxResults: arg_maxResults,
+          showPreorders: arg_showPreorders,
+          source: arg_source,
+          startIndex: arg_startIndex,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
     });
   });
 
-  unittest.group("resource-CloudloadingResourceApi", () {
-    unittest.test("method--addBook", () {
-      var mock = new HttpServerMock();
-      api.CloudloadingResourceApi res = new api.BooksApi(mock).cloudloading;
-      var arg_driveDocumentId = "foo";
-      var arg_mimeType = "foo";
-      var arg_name = "foo";
-      var arg_uploadClientToken = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-CloudloadingResource', () {
+    unittest.test('method--addBook', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).cloudloading;
+      var arg_driveDocumentId = 'foo';
+      var arg_mimeType = 'foo';
+      var arg_name = 'foo';
+      var arg_uploadClientToken = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 20),
-            unittest.equals("cloudloading/addBook"));
-        pathOffset += 20;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["drive_document_id"].first,
-            unittest.equals(arg_driveDocumentId));
         unittest.expect(
-            queryMap["mime_type"].first, unittest.equals(arg_mimeType));
-        unittest.expect(queryMap["name"].first, unittest.equals(arg_name));
-        unittest.expect(queryMap["upload_client_token"].first,
-            unittest.equals(arg_uploadClientToken));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildBooksCloudloadingResource());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .addBook(
-              driveDocumentId: arg_driveDocumentId,
-              mimeType: arg_mimeType,
-              name: arg_name,
-              uploadClientToken: arg_uploadClientToken,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBooksCloudloadingResource(response);
-      })));
-    });
-
-    unittest.test("method--deleteBook", () {
-      var mock = new HttpServerMock();
-      api.CloudloadingResourceApi res = new api.BooksApi(mock).cloudloading;
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 23),
-            unittest.equals("cloudloading/deleteBook"));
-        pathOffset += 23;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .deleteBook(arg_volumeId, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--updateBook", () {
-      var mock = new HttpServerMock();
-      api.CloudloadingResourceApi res = new api.BooksApi(mock).cloudloading;
-      var arg_request = buildBooksCloudloadingResource();
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BooksCloudloadingResource.fromJson(json);
-        checkBooksCloudloadingResource(obj);
-
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 23),
-            unittest.equals("cloudloading/updateBook"));
-        pathOffset += 23;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildBooksCloudloadingResource());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .updateBook(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBooksCloudloadingResource(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-DictionaryResourceApi", () {
-    unittest.test("method--listOfflineMetadata", () {
-      var mock = new HttpServerMock();
-      api.DictionaryResourceApi res = new api.BooksApi(mock).dictionary;
-      var arg_cpksver = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 30),
-            unittest.equals("dictionary/listOfflineMetadata"));
-        pathOffset += 30;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["cpksver"].first, unittest.equals(arg_cpksver));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildMetadata());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .listOfflineMetadata(arg_cpksver, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkMetadata(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-FamilysharingResourceApi", () {
-    unittest.test("method--getFamilyInfo", () {
-      var mock = new HttpServerMock();
-      api.FamilysharingResourceApi res = new api.BooksApi(mock).familysharing;
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 27),
-            unittest.equals("familysharing/getFamilyInfo"));
-        pathOffset += 27;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildFamilyInfo());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .getFamilyInfo(source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkFamilyInfo(response);
-      })));
-    });
-
-    unittest.test("method--share", () {
-      var mock = new HttpServerMock();
-      api.FamilysharingResourceApi res = new api.BooksApi(mock).familysharing;
-      var arg_docId = "foo";
-      var arg_source = "foo";
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 19),
-            unittest.equals("familysharing/share"));
-        pathOffset += 19;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["docId"].first, unittest.equals(arg_docId));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .share(
-              docId: arg_docId,
-              source: arg_source,
-              volumeId: arg_volumeId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--unshare", () {
-      var mock = new HttpServerMock();
-      api.FamilysharingResourceApi res = new api.BooksApi(mock).familysharing;
-      var arg_docId = "foo";
-      var arg_source = "foo";
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("familysharing/unshare"));
-        pathOffset += 21;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["docId"].first, unittest.equals(arg_docId));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .unshare(
-              docId: arg_docId,
-              source: arg_source,
-              volumeId: arg_volumeId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-  });
-
-  unittest.group("resource-LayersResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.LayersResourceApi res = new api.BooksApi(mock).layers;
-      var arg_volumeId = "foo";
-      var arg_summaryId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layersummary/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 14),
-            unittest.equals("/layersummary/"));
-        pathOffset += 14;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_summaryId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildLayersummary());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_volumeId, arg_summaryId,
-              contentVersion: arg_contentVersion,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkLayersummary(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.LayersResourceApi res = new api.BooksApi(mock).layers;
-      var arg_volumeId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_maxResults = 42;
-      var arg_pageToken = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layersummary", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/layersummary"));
-        pathOffset += 13;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildLayersummaries());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(arg_volumeId,
-              contentVersion: arg_contentVersion,
-              maxResults: arg_maxResults,
-              pageToken: arg_pageToken,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkLayersummaries(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-LayersAnnotationDataResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.LayersAnnotationDataResourceApi res =
-          new api.BooksApi(mock).layers.annotationData;
-      var arg_volumeId = "foo";
-      var arg_layerId = "foo";
-      var arg_annotationDataId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_allowWebDefinitions = true;
-      var arg_h = 42;
-      var arg_locale = "foo";
-      var arg_scale = 42;
-      var arg_source = "foo";
-      var arg_w = 42;
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layers/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/layers/"));
-        pathOffset += 8;
-        index = path.indexOf("/data/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_layerId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 6),
-            unittest.equals("/data/"));
-        pathOffset += 6;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_annotationDataId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(queryMap["allowWebDefinitions"].first,
-            unittest.equals("$arg_allowWebDefinitions"));
-        unittest.expect(
-            core.int.parse(queryMap["h"].first), unittest.equals(arg_h));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(core.int.parse(queryMap["scale"].first),
-            unittest.equals(arg_scale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            core.int.parse(queryMap["w"].first), unittest.equals(arg_w));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildAnnotationdata());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_volumeId, arg_layerId, arg_annotationDataId,
-              arg_contentVersion,
-              allowWebDefinitions: arg_allowWebDefinitions,
-              h: arg_h,
-              locale: arg_locale,
-              scale: arg_scale,
-              source: arg_source,
-              w: arg_w,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotationdata(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.LayersAnnotationDataResourceApi res =
-          new api.BooksApi(mock).layers.annotationData;
-      var arg_volumeId = "foo";
-      var arg_layerId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_annotationDataId = buildUnnamed276();
-      var arg_h = 42;
-      var arg_locale = "foo";
-      var arg_maxResults = 42;
-      var arg_pageToken = "foo";
-      var arg_scale = 42;
-      var arg_source = "foo";
-      var arg_updatedMax = "foo";
-      var arg_updatedMin = "foo";
-      var arg_w = 42;
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layers/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/layers/"));
-        pathOffset += 8;
-        index = path.indexOf("/data", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_layerId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 5),
-            unittest.equals("/data"));
-        pathOffset += 5;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(queryMap["annotationDataId"],
-            unittest.equals(arg_annotationDataId));
-        unittest.expect(
-            core.int.parse(queryMap["h"].first), unittest.equals(arg_h));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(core.int.parse(queryMap["scale"].first),
-            unittest.equals(arg_scale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["updatedMax"].first, unittest.equals(arg_updatedMax));
-        unittest.expect(
-            queryMap["updatedMin"].first, unittest.equals(arg_updatedMin));
-        unittest.expect(
-            core.int.parse(queryMap["w"].first), unittest.equals(arg_w));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildAnnotationsdata());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(arg_volumeId, arg_layerId, arg_contentVersion,
-              annotationDataId: arg_annotationDataId,
-              h: arg_h,
-              locale: arg_locale,
-              maxResults: arg_maxResults,
-              pageToken: arg_pageToken,
-              scale: arg_scale,
-              source: arg_source,
-              updatedMax: arg_updatedMax,
-              updatedMin: arg_updatedMin,
-              w: arg_w,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotationsdata(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-LayersVolumeAnnotationsResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.LayersVolumeAnnotationsResourceApi res =
-          new api.BooksApi(mock).layers.volumeAnnotations;
-      var arg_volumeId = "foo";
-      var arg_layerId = "foo";
-      var arg_annotationId = "foo";
-      var arg_locale = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layers/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/layers/"));
-        pathOffset += 8;
-        index = path.indexOf("/annotations/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_layerId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/annotations/"));
-        pathOffset += 13;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_annotationId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildVolumeannotation());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_volumeId, arg_layerId, arg_annotationId,
-              locale: arg_locale, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumeannotation(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.LayersVolumeAnnotationsResourceApi res =
-          new api.BooksApi(mock).layers.volumeAnnotations;
-      var arg_volumeId = "foo";
-      var arg_layerId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_endOffset = "foo";
-      var arg_endPosition = "foo";
-      var arg_locale = "foo";
-      var arg_maxResults = 42;
-      var arg_pageToken = "foo";
-      var arg_showDeleted = true;
-      var arg_source = "foo";
-      var arg_startOffset = "foo";
-      var arg_startPosition = "foo";
-      var arg_updatedMax = "foo";
-      var arg_updatedMin = "foo";
-      var arg_volumeAnnotationsVersion = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/layers/", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/layers/"));
-        pathOffset += 8;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_layerId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(
-            queryMap["endOffset"].first, unittest.equals(arg_endOffset));
-        unittest.expect(
-            queryMap["endPosition"].first, unittest.equals(arg_endPosition));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(
-            queryMap["showDeleted"].first, unittest.equals("$arg_showDeleted"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["startOffset"].first, unittest.equals(arg_startOffset));
-        unittest.expect(queryMap["startPosition"].first,
-            unittest.equals(arg_startPosition));
-        unittest.expect(
-            queryMap["updatedMax"].first, unittest.equals(arg_updatedMax));
-        unittest.expect(
-            queryMap["updatedMin"].first, unittest.equals(arg_updatedMin));
-        unittest.expect(queryMap["volumeAnnotationsVersion"].first,
-            unittest.equals(arg_volumeAnnotationsVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildVolumeannotations());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(arg_volumeId, arg_layerId, arg_contentVersion,
-              endOffset: arg_endOffset,
-              endPosition: arg_endPosition,
-              locale: arg_locale,
-              maxResults: arg_maxResults,
-              pageToken: arg_pageToken,
-              showDeleted: arg_showDeleted,
-              source: arg_source,
-              startOffset: arg_startOffset,
-              startPosition: arg_startPosition,
-              updatedMax: arg_updatedMax,
-              updatedMin: arg_updatedMin,
-              volumeAnnotationsVersion: arg_volumeAnnotationsVersion,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumeannotations(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-MyconfigResourceApi", () {
-    unittest.test("method--getUserSettings", () {
-      var mock = new HttpServerMock();
-      api.MyconfigResourceApi res = new api.BooksApi(mock).myconfig;
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 24),
-            unittest.equals("myconfig/getUserSettings"));
-        pathOffset += 24;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildUsersettings());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .getUserSettings($fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkUsersettings(response);
-      })));
-    });
-
-    unittest.test("method--releaseDownloadAccess", () {
-      var mock = new HttpServerMock();
-      api.MyconfigResourceApi res = new api.BooksApi(mock).myconfig;
-      var arg_volumeIds = buildUnnamed277();
-      var arg_cpksver = "foo";
-      var arg_locale = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 30),
-            unittest.equals("myconfig/releaseDownloadAccess"));
-        pathOffset += 30;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["volumeIds"], unittest.equals(arg_volumeIds));
-        unittest.expect(
-            queryMap["cpksver"].first, unittest.equals(arg_cpksver));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildDownloadAccesses());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .releaseDownloadAccess(arg_volumeIds, arg_cpksver,
-              locale: arg_locale, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkDownloadAccesses(response);
-      })));
-    });
-
-    unittest.test("method--requestAccess", () {
-      var mock = new HttpServerMock();
-      api.MyconfigResourceApi res = new api.BooksApi(mock).myconfig;
-      var arg_source = "foo";
-      var arg_volumeId = "foo";
-      var arg_nonce = "foo";
-      var arg_cpksver = "foo";
-      var arg_licenseTypes = "foo";
-      var arg_locale = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("myconfig/requestAccess"));
-        pathOffset += 22;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["nonce"].first, unittest.equals(arg_nonce));
-        unittest.expect(
-            queryMap["cpksver"].first, unittest.equals(arg_cpksver));
-        unittest.expect(
-            queryMap["licenseTypes"].first, unittest.equals(arg_licenseTypes));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildRequestAccess());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .requestAccess(arg_source, arg_volumeId, arg_nonce, arg_cpksver,
-              licenseTypes: arg_licenseTypes,
-              locale: arg_locale,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkRequestAccess(response);
-      })));
-    });
-
-    unittest.test("method--syncVolumeLicenses", () {
-      var mock = new HttpServerMock();
-      api.MyconfigResourceApi res = new api.BooksApi(mock).myconfig;
-      var arg_source = "foo";
-      var arg_nonce = "foo";
-      var arg_cpksver = "foo";
-      var arg_features = buildUnnamed278();
-      var arg_includeNonComicsSeries = true;
-      var arg_locale = "foo";
-      var arg_showPreorders = true;
-      var arg_volumeIds = buildUnnamed279();
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 27),
-            unittest.equals("myconfig/syncVolumeLicenses"));
-        pathOffset += 27;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["nonce"].first, unittest.equals(arg_nonce));
-        unittest.expect(
-            queryMap["cpksver"].first, unittest.equals(arg_cpksver));
-        unittest.expect(queryMap["features"], unittest.equals(arg_features));
-        unittest.expect(queryMap["includeNonComicsSeries"].first,
-            unittest.equals("$arg_includeNonComicsSeries"));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["showPreorders"].first,
-            unittest.equals("$arg_showPreorders"));
-        unittest.expect(queryMap["volumeIds"], unittest.equals(arg_volumeIds));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .syncVolumeLicenses(arg_source, arg_nonce, arg_cpksver,
-              features: arg_features,
-              includeNonComicsSeries: arg_includeNonComicsSeries,
-              locale: arg_locale,
-              showPreorders: arg_showPreorders,
-              volumeIds: arg_volumeIds,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
-    });
-
-    unittest.test("method--updateUserSettings", () {
-      var mock = new HttpServerMock();
-      api.MyconfigResourceApi res = new api.BooksApi(mock).myconfig;
-      var arg_request = buildUsersettings();
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Usersettings.fromJson(json);
-        checkUsersettings(obj);
-
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 27),
-            unittest.equals("myconfig/updateUserSettings"));
-        pathOffset += 27;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildUsersettings());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .updateUserSettings(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkUsersettings(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-MylibraryAnnotationsResourceApi", () {
-    unittest.test("method--delete", () {
-      var mock = new HttpServerMock();
-      api.MylibraryAnnotationsResourceApi res =
-          new api.BooksApi(mock).mylibrary.annotations;
-      var arg_annotationId = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/annotations/"));
-        pathOffset += 22;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_annotationId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .delete(arg_annotationId, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--insert", () {
-      var mock = new HttpServerMock();
-      api.MylibraryAnnotationsResourceApi res =
-          new api.BooksApi(mock).mylibrary.annotations;
-      var arg_request = buildAnnotation();
-      var arg_annotationId = "foo";
-      var arg_country = "foo";
-      var arg_showOnlySummaryInResponse = true;
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Annotation.fromJson(json);
-        checkAnnotation(obj);
-
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("mylibrary/annotations"));
-        pathOffset += 21;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["annotationId"].first, unittest.equals(arg_annotationId));
-        unittest.expect(
-            queryMap["country"].first, unittest.equals(arg_country));
-        unittest.expect(queryMap["showOnlySummaryInResponse"].first,
-            unittest.equals("$arg_showOnlySummaryInResponse"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildAnnotation());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .insert(arg_request,
-              annotationId: arg_annotationId,
-              country: arg_country,
-              showOnlySummaryInResponse: arg_showOnlySummaryInResponse,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotation(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.MylibraryAnnotationsResourceApi res =
-          new api.BooksApi(mock).mylibrary.annotations;
-      var arg_contentVersion = "foo";
-      var arg_layerId = "foo";
-      var arg_layerIds = buildUnnamed280();
-      var arg_maxResults = 42;
-      var arg_pageToken = "foo";
-      var arg_showDeleted = true;
-      var arg_source = "foo";
-      var arg_updatedMax = "foo";
-      var arg_updatedMin = "foo";
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("mylibrary/annotations"));
-        pathOffset += 21;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(
-            queryMap["layerId"].first, unittest.equals(arg_layerId));
-        unittest.expect(queryMap["layerIds"], unittest.equals(arg_layerIds));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(
-            queryMap["showDeleted"].first, unittest.equals("$arg_showDeleted"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(
-            queryMap["updatedMax"].first, unittest.equals(arg_updatedMax));
-        unittest.expect(
-            queryMap["updatedMin"].first, unittest.equals(arg_updatedMin));
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildAnnotations());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(
-              contentVersion: arg_contentVersion,
-              layerId: arg_layerId,
-              layerIds: arg_layerIds,
-              maxResults: arg_maxResults,
-              pageToken: arg_pageToken,
-              showDeleted: arg_showDeleted,
-              source: arg_source,
-              updatedMax: arg_updatedMax,
-              updatedMin: arg_updatedMin,
-              volumeId: arg_volumeId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotations(response);
-      })));
-    });
-
-    unittest.test("method--summary", () {
-      var mock = new HttpServerMock();
-      api.MylibraryAnnotationsResourceApi res =
-          new api.BooksApi(mock).mylibrary.annotations;
-      var arg_layerIds = buildUnnamed281();
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 29),
-            unittest.equals("mylibrary/annotations/summary"));
+          path.substring(pathOffset, pathOffset + 29),
+          unittest.equals("books/v1/cloudloading/addBook"),
+        );
         pathOffset += 29;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["layerIds"], unittest.equals(arg_layerIds));
         unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["drive_document_id"]!.first,
+          unittest.equals(arg_driveDocumentId),
+        );
+        unittest.expect(
+          queryMap["mime_type"]!.first,
+          unittest.equals(arg_mimeType),
+        );
+        unittest.expect(
+          queryMap["name"]!.first,
+          unittest.equals(arg_name),
+        );
+        unittest.expect(
+          queryMap["upload_client_token"]!.first,
+          unittest.equals(arg_uploadClientToken),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnotationsSummary());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildBooksCloudloadingResource());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .summary(arg_layerIds, arg_volumeId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotationsSummary(response);
-      })));
+      final response = await res.addBook(
+          driveDocumentId: arg_driveDocumentId,
+          mimeType: arg_mimeType,
+          name: arg_name,
+          uploadClientToken: arg_uploadClientToken,
+          $fields: arg_$fields);
+      checkBooksCloudloadingResource(response as api.BooksCloudloadingResource);
     });
 
-    unittest.test("method--update", () {
-      var mock = new HttpServerMock();
-      api.MylibraryAnnotationsResourceApi res =
-          new api.BooksApi(mock).mylibrary.annotations;
-      var arg_request = buildAnnotation();
-      var arg_annotationId = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--deleteBook', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).cloudloading;
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Annotation.fromJson(json);
-        checkAnnotation(obj);
-
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/annotations/"));
-        pathOffset += 22;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_annotationId"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 32),
+          unittest.equals("books/v1/cloudloading/deleteBook"),
+        );
+        pathOffset += 32;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnotation());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .update(arg_request, arg_annotationId,
-              source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkAnnotation(response);
-      })));
+      final response = await res.deleteBook(arg_volumeId, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+
+    unittest.test('method--updateBook', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).cloudloading;
+      var arg_request = buildBooksCloudloadingResource();
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var obj = api.BooksCloudloadingResource.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBooksCloudloadingResource(obj as api.BooksCloudloadingResource);
+
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 32),
+          unittest.equals("books/v1/cloudloading/updateBook"),
+        );
+        pathOffset += 32;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildBooksCloudloadingResource());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.updateBook(arg_request, $fields: arg_$fields);
+      checkBooksCloudloadingResource(response as api.BooksCloudloadingResource);
     });
   });
 
-  unittest.group("resource-MylibraryBookshelvesResourceApi", () {
-    unittest.test("method--addVolume", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_shelf = "foo";
-      var arg_volumeId = "foo";
-      var arg_reason = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-DictionaryResource', () {
+    unittest.test('method--listOfflineMetadata', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).dictionary;
+      var arg_cpksver = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        index = path.indexOf("/addVolume", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 10),
-            unittest.equals("/addVolume"));
-        pathOffset += 10;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 39),
+          unittest.equals("books/v1/dictionary/listOfflineMetadata"),
+        );
+        pathOffset += 39;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["reason"].first, unittest.equals(arg_reason));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["cpksver"]!.first,
+          unittest.equals(arg_cpksver),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildMetadata());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .addVolume(arg_shelf, arg_volumeId,
-              reason: arg_reason, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--clearVolumes", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_shelf = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        index = path.indexOf("/clearVolumes", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/clearVolumes"));
-        pathOffset += 13;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .clearVolumes(arg_shelf, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_shelf = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildBookshelf());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_shelf, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBookshelf(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("mylibrary/bookshelves"));
-        pathOffset += 21;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildBookshelves());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBookshelves(response);
-      })));
-    });
-
-    unittest.test("method--moveVolume", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_shelf = "foo";
-      var arg_volumeId = "foo";
-      var arg_volumePosition = 42;
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        index = path.indexOf("/moveVolume", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 11),
-            unittest.equals("/moveVolume"));
-        pathOffset += 11;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(core.int.parse(queryMap["volumePosition"].first),
-            unittest.equals(arg_volumePosition));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .moveVolume(arg_shelf, arg_volumeId, arg_volumePosition,
-              source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--removeVolume", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves;
-      var arg_shelf = "foo";
-      var arg_volumeId = "foo";
-      var arg_reason = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        index = path.indexOf("/removeVolume", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/removeVolume"));
-        pathOffset += 13;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["reason"].first, unittest.equals(arg_reason));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .removeVolume(arg_shelf, arg_volumeId,
-              reason: arg_reason, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
+      final response =
+          await res.listOfflineMetadata(arg_cpksver, $fields: arg_$fields);
+      checkMetadata(response as api.Metadata);
     });
   });
 
-  unittest.group("resource-MylibraryBookshelvesVolumesResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.MylibraryBookshelvesVolumesResourceApi res =
-          new api.BooksApi(mock).mylibrary.bookshelves.volumes;
-      var arg_shelf = "foo";
-      var arg_country = "foo";
-      var arg_maxResults = 42;
-      var arg_projection = "foo";
-      var arg_q = "foo";
-      var arg_showPreorders = true;
-      var arg_source = "foo";
-      var arg_startIndex = 42;
-      var arg_$fields = "foo";
+  unittest.group('resource-FamilysharingResource', () {
+    unittest.test('method--getFamilyInfo', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).familysharing;
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("mylibrary/bookshelves/"));
-        pathOffset += 22;
-        index = path.indexOf("/volumes", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_shelf"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("/volumes"));
-        pathOffset += 8;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 36),
+          unittest.equals("books/v1/familysharing/getFamilyInfo"),
+        );
+        pathOffset += 36;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["country"].first, unittest.equals(arg_country));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
         unittest.expect(
-            queryMap["projection"].first, unittest.equals(arg_projection));
-        unittest.expect(queryMap["q"].first, unittest.equals(arg_q));
-        unittest.expect(queryMap["showPreorders"].first,
-            unittest.equals("$arg_showPreorders"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(core.int.parse(queryMap["startIndex"].first),
-            unittest.equals(arg_startIndex));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildFamilyInfo());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_shelf,
-              country: arg_country,
-              maxResults: arg_maxResults,
-              projection: arg_projection,
-              q: arg_q,
-              showPreorders: arg_showPreorders,
-              source: arg_source,
-              startIndex: arg_startIndex,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response =
+          await res.getFamilyInfo(source: arg_source, $fields: arg_$fields);
+      checkFamilyInfo(response as api.FamilyInfo);
     });
-  });
 
-  unittest.group("resource-MylibraryReadingpositionsResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.MylibraryReadingpositionsResourceApi res =
-          new api.BooksApi(mock).mylibrary.readingpositions;
-      var arg_volumeId = "foo";
-      var arg_contentVersion = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--share', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).familysharing;
+      var arg_docId = 'foo';
+      var arg_source = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 27),
-            unittest.equals("mylibrary/readingpositions/"));
-        pathOffset += 27;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 28),
+          unittest.equals("books/v1/familysharing/share"),
+        );
+        pathOffset += 28;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildReadingPosition());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_volumeId,
-              contentVersion: arg_contentVersion,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkReadingPosition(response);
-      })));
-    });
-
-    unittest.test("method--setPosition", () {
-      var mock = new HttpServerMock();
-      api.MylibraryReadingpositionsResourceApi res =
-          new api.BooksApi(mock).mylibrary.readingpositions;
-      var arg_volumeId = "foo";
-      var arg_timestamp = "foo";
-      var arg_position = "foo";
-      var arg_action = "foo";
-      var arg_contentVersion = "foo";
-      var arg_deviceCookie = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 27),
-            unittest.equals("mylibrary/readingpositions/"));
-        pathOffset += 27;
-        index = path.indexOf("/setPosition", pathOffset);
-        unittest.expect(index >= 0, unittest.isTrue);
-        subPart =
-            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
-        pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals("/setPosition"));
-        pathOffset += 12;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["timestamp"].first, unittest.equals(arg_timestamp));
+          queryMap["docId"]!.first,
+          unittest.equals(arg_docId),
+        );
         unittest.expect(
-            queryMap["position"].first, unittest.equals(arg_position));
-        unittest.expect(queryMap["action"].first, unittest.equals(arg_action));
-        unittest.expect(queryMap["contentVersion"].first,
-            unittest.equals(arg_contentVersion));
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
         unittest.expect(
-            queryMap["deviceCookie"].first, unittest.equals(arg_deviceCookie));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .setPosition(arg_volumeId, arg_timestamp, arg_position,
-              action: arg_action,
-              contentVersion: arg_contentVersion,
-              deviceCookie: arg_deviceCookie,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
+      final response = await res.share(
+          docId: arg_docId,
+          source: arg_source,
+          volumeId: arg_volumeId,
+          $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
-  });
 
-  unittest.group("resource-NotificationResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.NotificationResourceApi res = new api.BooksApi(mock).notification;
-      var arg_notificationId = "foo";
-      var arg_locale = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--unshare', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).familysharing;
+      var arg_docId = 'foo';
+      var arg_source = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("notification/get"));
-        pathOffset += 16;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["notification_id"].first,
-            unittest.equals(arg_notificationId));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildNotification());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_notificationId,
-              locale: arg_locale, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkNotification(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-OnboardingResourceApi", () {
-    unittest.test("method--listCategories", () {
-      var mock = new HttpServerMock();
-      api.OnboardingResourceApi res = new api.BooksApi(mock).onboarding;
-      var arg_locale = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 25),
-            unittest.equals("onboarding/listCategories"));
-        pathOffset += 25;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildCategory());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .listCategories(locale: arg_locale, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkCategory(response);
-      })));
-    });
-
-    unittest.test("method--listCategoryVolumes", () {
-      var mock = new HttpServerMock();
-      api.OnboardingResourceApi res = new api.BooksApi(mock).onboarding;
-      var arg_categoryId = buildUnnamed282();
-      var arg_locale = "foo";
-      var arg_maxAllowedMaturityRating = "foo";
-      var arg_pageSize = 42;
-      var arg_pageToken = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 30),
-            unittest.equals("onboarding/listCategoryVolumes"));
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("books/v1/familysharing/unshare"),
+        );
         pathOffset += 30;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["categoryId"], unittest.equals(arg_categoryId));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["maxAllowedMaturityRating"].first,
-            unittest.equals(arg_maxAllowedMaturityRating));
-        unittest.expect(core.int.parse(queryMap["pageSize"].first),
-            unittest.equals(arg_pageSize));
+          queryMap["docId"]!.first,
+          unittest.equals(arg_docId),
+        );
         unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVolume2());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .listCategoryVolumes(
-              categoryId: arg_categoryId,
-              locale: arg_locale,
-              maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
-              pageSize: arg_pageSize,
-              pageToken: arg_pageToken,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolume2(response);
-      })));
+      final response = await res.unshare(
+          docId: arg_docId,
+          source: arg_source,
+          volumeId: arg_volumeId,
+          $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
   });
 
-  unittest.group("resource-PersonalizedstreamResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.PersonalizedstreamResourceApi res =
-          new api.BooksApi(mock).personalizedstream;
-      var arg_locale = "foo";
-      var arg_maxAllowedMaturityRating = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-LayersResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers;
+      var arg_volumeId = 'foo';
+      var arg_summaryId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("personalizedstream/get"));
-        pathOffset += 22;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["maxAllowedMaturityRating"].first,
-            unittest.equals(arg_maxAllowedMaturityRating));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildDiscoveryclusters());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(
-              locale: arg_locale,
-              maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkDiscoveryclusters(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-PromoofferResourceApi", () {
-    unittest.test("method--accept", () {
-      var mock = new HttpServerMock();
-      api.PromoofferResourceApi res = new api.BooksApi(mock).promooffer;
-      var arg_androidId = "foo";
-      var arg_device = "foo";
-      var arg_manufacturer = "foo";
-      var arg_model = "foo";
-      var arg_offerId = "foo";
-      var arg_product = "foo";
-      var arg_serial = "foo";
-      var arg_volumeId = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 17),
-            unittest.equals("promooffer/accept"));
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
         pathOffset += 17;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
+        index = path.indexOf('/layersummary/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
         unittest.expect(
-            queryMap["androidId"].first, unittest.equals(arg_androidId));
-        unittest.expect(queryMap["device"].first, unittest.equals(arg_device));
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
         unittest.expect(
-            queryMap["manufacturer"].first, unittest.equals(arg_manufacturer));
-        unittest.expect(queryMap["model"].first, unittest.equals(arg_model));
-        unittest.expect(
-            queryMap["offerId"].first, unittest.equals(arg_offerId));
-        unittest.expect(
-            queryMap["product"].first, unittest.equals(arg_product));
-        unittest.expect(queryMap["serial"].first, unittest.equals(arg_serial));
-        unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .accept(
-              androidId: arg_androidId,
-              device: arg_device,
-              manufacturer: arg_manufacturer,
-              model: arg_model,
-              offerId: arg_offerId,
-              product: arg_product,
-              serial: arg_serial,
-              volumeId: arg_volumeId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--dismiss", () {
-      var mock = new HttpServerMock();
-      api.PromoofferResourceApi res = new api.BooksApi(mock).promooffer;
-      var arg_androidId = "foo";
-      var arg_device = "foo";
-      var arg_manufacturer = "foo";
-      var arg_model = "foo";
-      var arg_offerId = "foo";
-      var arg_product = "foo";
-      var arg_serial = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 18),
-            unittest.equals("promooffer/dismiss"));
-        pathOffset += 18;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(
-            queryMap["androidId"].first, unittest.equals(arg_androidId));
-        unittest.expect(queryMap["device"].first, unittest.equals(arg_device));
-        unittest.expect(
-            queryMap["manufacturer"].first, unittest.equals(arg_manufacturer));
-        unittest.expect(queryMap["model"].first, unittest.equals(arg_model));
-        unittest.expect(
-            queryMap["offerId"].first, unittest.equals(arg_offerId));
-        unittest.expect(
-            queryMap["product"].first, unittest.equals(arg_product));
-        unittest.expect(queryMap["serial"].first, unittest.equals(arg_serial));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = "";
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .dismiss(
-              androidId: arg_androidId,
-              device: arg_device,
-              manufacturer: arg_manufacturer,
-              model: arg_model,
-              offerId: arg_offerId,
-              product: arg_product,
-              serial: arg_serial,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1((_) {}));
-    });
-
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.PromoofferResourceApi res = new api.BooksApi(mock).promooffer;
-      var arg_androidId = "foo";
-      var arg_device = "foo";
-      var arg_manufacturer = "foo";
-      var arg_model = "foo";
-      var arg_product = "foo";
-      var arg_serial = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 14),
-            unittest.equals("promooffer/get"));
+          path.substring(pathOffset, pathOffset + 14),
+          unittest.equals("/layersummary/"),
+        );
         pathOffset += 14;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_summaryId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["androidId"].first, unittest.equals(arg_androidId));
-        unittest.expect(queryMap["device"].first, unittest.equals(arg_device));
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
         unittest.expect(
-            queryMap["manufacturer"].first, unittest.equals(arg_manufacturer));
-        unittest.expect(queryMap["model"].first, unittest.equals(arg_model));
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
         unittest.expect(
-            queryMap["product"].first, unittest.equals(arg_product));
-        unittest.expect(queryMap["serial"].first, unittest.equals(arg_serial));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOffers());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildLayersummary());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(
-              androidId: arg_androidId,
-              device: arg_device,
-              manufacturer: arg_manufacturer,
-              model: arg_model,
-              product: arg_product,
-              serial: arg_serial,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkOffers(response);
-      })));
+      final response = await res.get(arg_volumeId, arg_summaryId,
+          contentVersion: arg_contentVersion,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkLayersummary(response as api.Layersummary);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers;
+      var arg_volumeId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_maxResults = 42;
+      var arg_pageToken = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/layersummary', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/layersummary"),
+        );
+        pathOffset += 13;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildLayersummaries());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_volumeId,
+          contentVersion: arg_contentVersion,
+          maxResults: arg_maxResults,
+          pageToken: arg_pageToken,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkLayersummaries(response as api.Layersummaries);
     });
   });
 
-  unittest.group("resource-SeriesResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.SeriesResourceApi res = new api.BooksApi(mock).series;
-      var arg_seriesId = buildUnnamed283();
-      var arg_$fields = "foo";
+  unittest.group('resource-LayersAnnotationDataResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers.annotationData;
+      var arg_volumeId = 'foo';
+      var arg_layerId = 'foo';
+      var arg_annotationDataId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_allowWebDefinitions = true;
+      var arg_h = 42;
+      var arg_locale = 'foo';
+      var arg_scale = 42;
+      var arg_source = 'foo';
+      var arg_w = 42;
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 10),
-            unittest.equals("series/get"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/layers/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/layers/"),
+        );
+        pathOffset += 8;
+        index = path.indexOf('/data/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_layerId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 6),
+          unittest.equals("/data/"),
+        );
+        pathOffset += 6;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_annotationDataId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["allowWebDefinitions"]!.first,
+          unittest.equals("$arg_allowWebDefinitions"),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["h"]!.first),
+          unittest.equals(arg_h),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["scale"]!.first),
+          unittest.equals(arg_scale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["w"]!.first),
+          unittest.equals(arg_w),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildDictionaryAnnotationdata());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(
+          arg_volumeId, arg_layerId, arg_annotationDataId, arg_contentVersion,
+          allowWebDefinitions: arg_allowWebDefinitions,
+          h: arg_h,
+          locale: arg_locale,
+          scale: arg_scale,
+          source: arg_source,
+          w: arg_w,
+          $fields: arg_$fields);
+      checkDictionaryAnnotationdata(response as api.DictionaryAnnotationdata);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers.annotationData;
+      var arg_volumeId = 'foo';
+      var arg_layerId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_annotationDataId = buildUnnamed3267();
+      var arg_h = 42;
+      var arg_locale = 'foo';
+      var arg_maxResults = 42;
+      var arg_pageToken = 'foo';
+      var arg_scale = 42;
+      var arg_source = 'foo';
+      var arg_updatedMax = 'foo';
+      var arg_updatedMin = 'foo';
+      var arg_w = 42;
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/layers/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/layers/"),
+        );
+        pathOffset += 8;
+        index = path.indexOf('/data', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_layerId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 5),
+          unittest.equals("/data"),
+        );
+        pathOffset += 5;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["annotationDataId"]!,
+          unittest.equals(arg_annotationDataId),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["h"]!.first),
+          unittest.equals(arg_h),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["scale"]!.first),
+          unittest.equals(arg_scale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["updatedMax"]!.first,
+          unittest.equals(arg_updatedMax),
+        );
+        unittest.expect(
+          queryMap["updatedMin"]!.first,
+          unittest.equals(arg_updatedMin),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["w"]!.first),
+          unittest.equals(arg_w),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildAnnotationsdata());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(
+          arg_volumeId, arg_layerId, arg_contentVersion,
+          annotationDataId: arg_annotationDataId,
+          h: arg_h,
+          locale: arg_locale,
+          maxResults: arg_maxResults,
+          pageToken: arg_pageToken,
+          scale: arg_scale,
+          source: arg_source,
+          updatedMax: arg_updatedMax,
+          updatedMin: arg_updatedMin,
+          w: arg_w,
+          $fields: arg_$fields);
+      checkAnnotationsdata(response as api.Annotationsdata);
+    });
+  });
+
+  unittest.group('resource-LayersVolumeAnnotationsResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers.volumeAnnotations;
+      var arg_volumeId = 'foo';
+      var arg_layerId = 'foo';
+      var arg_annotationId = 'foo';
+      var arg_locale = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/layers/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/layers/"),
+        );
+        pathOffset += 8;
+        index = path.indexOf('/annotations/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_layerId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/annotations/"),
+        );
+        pathOffset += 13;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_annotationId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumeannotation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(
+          arg_volumeId, arg_layerId, arg_annotationId,
+          locale: arg_locale, source: arg_source, $fields: arg_$fields);
+      checkVolumeannotation(response as api.Volumeannotation);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).layers.volumeAnnotations;
+      var arg_volumeId = 'foo';
+      var arg_layerId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_endOffset = 'foo';
+      var arg_endPosition = 'foo';
+      var arg_locale = 'foo';
+      var arg_maxResults = 42;
+      var arg_pageToken = 'foo';
+      var arg_showDeleted = true;
+      var arg_source = 'foo';
+      var arg_startOffset = 'foo';
+      var arg_startPosition = 'foo';
+      var arg_updatedMax = 'foo';
+      var arg_updatedMin = 'foo';
+      var arg_volumeAnnotationsVersion = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/layers/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/layers/"),
+        );
+        pathOffset += 8;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_layerId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["endOffset"]!.first,
+          unittest.equals(arg_endOffset),
+        );
+        unittest.expect(
+          queryMap["endPosition"]!.first,
+          unittest.equals(arg_endPosition),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["showDeleted"]!.first,
+          unittest.equals("$arg_showDeleted"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["startOffset"]!.first,
+          unittest.equals(arg_startOffset),
+        );
+        unittest.expect(
+          queryMap["startPosition"]!.first,
+          unittest.equals(arg_startPosition),
+        );
+        unittest.expect(
+          queryMap["updatedMax"]!.first,
+          unittest.equals(arg_updatedMax),
+        );
+        unittest.expect(
+          queryMap["updatedMin"]!.first,
+          unittest.equals(arg_updatedMin),
+        );
+        unittest.expect(
+          queryMap["volumeAnnotationsVersion"]!.first,
+          unittest.equals(arg_volumeAnnotationsVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumeannotations());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(
+          arg_volumeId, arg_layerId, arg_contentVersion,
+          endOffset: arg_endOffset,
+          endPosition: arg_endPosition,
+          locale: arg_locale,
+          maxResults: arg_maxResults,
+          pageToken: arg_pageToken,
+          showDeleted: arg_showDeleted,
+          source: arg_source,
+          startOffset: arg_startOffset,
+          startPosition: arg_startPosition,
+          updatedMax: arg_updatedMax,
+          updatedMin: arg_updatedMin,
+          volumeAnnotationsVersion: arg_volumeAnnotationsVersion,
+          $fields: arg_$fields);
+      checkVolumeannotations(response as api.Volumeannotations);
+    });
+  });
+
+  unittest.group('resource-MyconfigResource', () {
+    unittest.test('method--getUserSettings', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).myconfig;
+      var arg_country = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals("books/v1/myconfig/getUserSettings"),
+        );
+        pathOffset += 33;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["country"]!.first,
+          unittest.equals(arg_country),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildUsersettings());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.getUserSettings(country: arg_country, $fields: arg_$fields);
+      checkUsersettings(response as api.Usersettings);
+    });
+
+    unittest.test('method--releaseDownloadAccess', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).myconfig;
+      var arg_cpksver = 'foo';
+      var arg_volumeIds = buildUnnamed3268();
+      var arg_locale = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 39),
+          unittest.equals("books/v1/myconfig/releaseDownloadAccess"),
+        );
+        pathOffset += 39;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["cpksver"]!.first,
+          unittest.equals(arg_cpksver),
+        );
+        unittest.expect(
+          queryMap["volumeIds"]!,
+          unittest.equals(arg_volumeIds),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildDownloadAccesses());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.releaseDownloadAccess(
+          arg_cpksver, arg_volumeIds,
+          locale: arg_locale, source: arg_source, $fields: arg_$fields);
+      checkDownloadAccesses(response as api.DownloadAccesses);
+    });
+
+    unittest.test('method--requestAccess', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).myconfig;
+      var arg_cpksver = 'foo';
+      var arg_nonce = 'foo';
+      var arg_source = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_licenseTypes = 'foo';
+      var arg_locale = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/myconfig/requestAccess"),
+        );
+        pathOffset += 31;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["cpksver"]!.first,
+          unittest.equals(arg_cpksver),
+        );
+        unittest.expect(
+          queryMap["nonce"]!.first,
+          unittest.equals(arg_nonce),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["licenseTypes"]!.first,
+          unittest.equals(arg_licenseTypes),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildRequestAccessData());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.requestAccess(
+          arg_cpksver, arg_nonce, arg_source, arg_volumeId,
+          licenseTypes: arg_licenseTypes,
+          locale: arg_locale,
+          $fields: arg_$fields);
+      checkRequestAccessData(response as api.RequestAccessData);
+    });
+
+    unittest.test('method--syncVolumeLicenses', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).myconfig;
+      var arg_cpksver = 'foo';
+      var arg_nonce = 'foo';
+      var arg_source = 'foo';
+      var arg_features = buildUnnamed3269();
+      var arg_includeNonComicsSeries = true;
+      var arg_locale = 'foo';
+      var arg_showPreorders = true;
+      var arg_volumeIds = buildUnnamed3270();
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 36),
+          unittest.equals("books/v1/myconfig/syncVolumeLicenses"),
+        );
+        pathOffset += 36;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["cpksver"]!.first,
+          unittest.equals(arg_cpksver),
+        );
+        unittest.expect(
+          queryMap["nonce"]!.first,
+          unittest.equals(arg_nonce),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["features"]!,
+          unittest.equals(arg_features),
+        );
+        unittest.expect(
+          queryMap["includeNonComicsSeries"]!.first,
+          unittest.equals("$arg_includeNonComicsSeries"),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["showPreorders"]!.first,
+          unittest.equals("$arg_showPreorders"),
+        );
+        unittest.expect(
+          queryMap["volumeIds"]!,
+          unittest.equals(arg_volumeIds),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.syncVolumeLicenses(
+          arg_cpksver, arg_nonce, arg_source,
+          features: arg_features,
+          includeNonComicsSeries: arg_includeNonComicsSeries,
+          locale: arg_locale,
+          showPreorders: arg_showPreorders,
+          volumeIds: arg_volumeIds,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
+    });
+
+    unittest.test('method--updateUserSettings', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).myconfig;
+      var arg_request = buildUsersettings();
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var obj = api.Usersettings.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkUsersettings(obj as api.Usersettings);
+
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 36),
+          unittest.equals("books/v1/myconfig/updateUserSettings"),
+        );
+        pathOffset += 36;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildUsersettings());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.updateUserSettings(arg_request, $fields: arg_$fields);
+      checkUsersettings(response as api.Usersettings);
+    });
+  });
+
+  unittest.group('resource-MylibraryAnnotationsResource', () {
+    unittest.test('method--delete', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.annotations;
+      var arg_annotationId = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/annotations/"),
+        );
+        pathOffset += 31;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_annotationId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.delete(arg_annotationId,
+          source: arg_source, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+
+    unittest.test('method--insert', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.annotations;
+      var arg_request = buildAnnotation();
+      var arg_annotationId = 'foo';
+      var arg_country = 'foo';
+      var arg_showOnlySummaryInResponse = true;
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var obj = api.Annotation.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkAnnotation(obj as api.Annotation);
+
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("books/v1/mylibrary/annotations"),
+        );
+        pathOffset += 30;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["annotationId"]!.first,
+          unittest.equals(arg_annotationId),
+        );
+        unittest.expect(
+          queryMap["country"]!.first,
+          unittest.equals(arg_country),
+        );
+        unittest.expect(
+          queryMap["showOnlySummaryInResponse"]!.first,
+          unittest.equals("$arg_showOnlySummaryInResponse"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildAnnotation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.insert(arg_request,
+          annotationId: arg_annotationId,
+          country: arg_country,
+          showOnlySummaryInResponse: arg_showOnlySummaryInResponse,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkAnnotation(response as api.Annotation);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.annotations;
+      var arg_contentVersion = 'foo';
+      var arg_layerId = 'foo';
+      var arg_layerIds = buildUnnamed3271();
+      var arg_maxResults = 42;
+      var arg_pageToken = 'foo';
+      var arg_showDeleted = true;
+      var arg_source = 'foo';
+      var arg_updatedMax = 'foo';
+      var arg_updatedMin = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("books/v1/mylibrary/annotations"),
+        );
+        pathOffset += 30;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["layerId"]!.first,
+          unittest.equals(arg_layerId),
+        );
+        unittest.expect(
+          queryMap["layerIds"]!,
+          unittest.equals(arg_layerIds),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["showDeleted"]!.first,
+          unittest.equals("$arg_showDeleted"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["updatedMax"]!.first,
+          unittest.equals(arg_updatedMax),
+        );
+        unittest.expect(
+          queryMap["updatedMin"]!.first,
+          unittest.equals(arg_updatedMin),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildAnnotations());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(
+          contentVersion: arg_contentVersion,
+          layerId: arg_layerId,
+          layerIds: arg_layerIds,
+          maxResults: arg_maxResults,
+          pageToken: arg_pageToken,
+          showDeleted: arg_showDeleted,
+          source: arg_source,
+          updatedMax: arg_updatedMax,
+          updatedMin: arg_updatedMin,
+          volumeId: arg_volumeId,
+          $fields: arg_$fields);
+      checkAnnotations(response as api.Annotations);
+    });
+
+    unittest.test('method--summary', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.annotations;
+      var arg_layerIds = buildUnnamed3272();
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 38),
+          unittest.equals("books/v1/mylibrary/annotations/summary"),
+        );
+        pathOffset += 38;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["layerIds"]!,
+          unittest.equals(arg_layerIds),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildAnnotationsSummary());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.summary(arg_layerIds, arg_volumeId, $fields: arg_$fields);
+      checkAnnotationsSummary(response as api.AnnotationsSummary);
+    });
+
+    unittest.test('method--update', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.annotations;
+      var arg_request = buildAnnotation();
+      var arg_annotationId = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var obj = api.Annotation.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkAnnotation(obj as api.Annotation);
+
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/annotations/"),
+        );
+        pathOffset += 31;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_annotationId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildAnnotation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.update(arg_request, arg_annotationId,
+          source: arg_source, $fields: arg_$fields);
+      checkAnnotation(response as api.Annotation);
+    });
+  });
+
+  unittest.group('resource-MylibraryBookshelvesResource', () {
+    unittest.test('method--addVolume', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_shelf = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_reason = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        index = path.indexOf('/addVolume', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 10),
+          unittest.equals("/addVolume"),
+        );
         pathOffset += 10;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["series_id"], unittest.equals(arg_seriesId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildSeries());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_seriesId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSeries(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-SeriesMembershipResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.SeriesMembershipResourceApi res =
-          new api.BooksApi(mock).series.membership;
-      var arg_seriesId = "foo";
-      var arg_pageSize = 42;
-      var arg_pageToken = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("series/membership/get"));
-        pathOffset += 21;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["series_id"].first, unittest.equals(arg_seriesId));
-        unittest.expect(core.int.parse(queryMap["page_size"].first),
-            unittest.equals(arg_pageSize));
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
         unittest.expect(
-            queryMap["page_token"].first, unittest.equals(arg_pageToken));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["reason"]!.first,
+          unittest.equals(arg_reason),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSeriesmembership());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_seriesId,
-              pageSize: arg_pageSize,
-              pageToken: arg_pageToken,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSeriesmembership(response);
-      })));
+      final response = await res.addVolume(arg_shelf, arg_volumeId,
+          reason: arg_reason, source: arg_source, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
-  });
 
-  unittest.group("resource-VolumesResourceApi", () {
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.VolumesResourceApi res = new api.BooksApi(mock).volumes;
-      var arg_volumeId = "foo";
-      var arg_country = "foo";
-      var arg_includeNonComicsSeries = true;
-      var arg_partner = "foo";
-      var arg_projection = "foo";
-      var arg_source = "foo";
-      var arg_userLibraryConsistentRead = true;
-      var arg_$fields = "foo";
+    unittest.test('method--clearVolumes', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_shelf = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
-        pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
         unittest.expect(
-            queryMap["country"].first, unittest.equals(arg_country));
-        unittest.expect(queryMap["includeNonComicsSeries"].first,
-            unittest.equals("$arg_includeNonComicsSeries"));
-        unittest.expect(
-            queryMap["partner"].first, unittest.equals(arg_partner));
-        unittest.expect(
-            queryMap["projection"].first, unittest.equals(arg_projection));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["user_library_consistent_read"].first,
-            unittest.equals("$arg_userLibraryConsistentRead"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildVolume());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .get(arg_volumeId,
-              country: arg_country,
-              includeNonComicsSeries: arg_includeNonComicsSeries,
-              partner: arg_partner,
-              projection: arg_projection,
-              source: arg_source,
-              userLibraryConsistentRead: arg_userLibraryConsistentRead,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolume(response);
-      })));
-    });
-
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.VolumesResourceApi res = new api.BooksApi(mock).volumes;
-      var arg_q = "foo";
-      var arg_download = "foo";
-      var arg_filter = "foo";
-      var arg_langRestrict = "foo";
-      var arg_libraryRestrict = "foo";
-      var arg_maxAllowedMaturityRating = "foo";
-      var arg_maxResults = 42;
-      var arg_orderBy = "foo";
-      var arg_partner = "foo";
-      var arg_printType = "foo";
-      var arg_projection = "foo";
-      var arg_showPreorders = true;
-      var arg_source = "foo";
-      var arg_startIndex = 42;
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 7),
-            unittest.equals("volumes"));
-        pathOffset += 7;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
-
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
-          }
-        }
-        unittest.expect(queryMap["q"].first, unittest.equals(arg_q));
-        unittest.expect(
-            queryMap["download"].first, unittest.equals(arg_download));
-        unittest.expect(queryMap["filter"].first, unittest.equals(arg_filter));
-        unittest.expect(
-            queryMap["langRestrict"].first, unittest.equals(arg_langRestrict));
-        unittest.expect(queryMap["libraryRestrict"].first,
-            unittest.equals(arg_libraryRestrict));
-        unittest.expect(queryMap["maxAllowedMaturityRating"].first,
-            unittest.equals(arg_maxAllowedMaturityRating));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
-        unittest.expect(
-            queryMap["orderBy"].first, unittest.equals(arg_orderBy));
-        unittest.expect(
-            queryMap["partner"].first, unittest.equals(arg_partner));
-        unittest.expect(
-            queryMap["printType"].first, unittest.equals(arg_printType));
-        unittest.expect(
-            queryMap["projection"].first, unittest.equals(arg_projection));
-        unittest.expect(queryMap["showPreorders"].first,
-            unittest.equals("$arg_showPreorders"));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(core.int.parse(queryMap["startIndex"].first),
-            unittest.equals(arg_startIndex));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
-
-        var h = {
-          "content-type": "application/json; charset=utf-8",
-        };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      res
-          .list(arg_q,
-              download: arg_download,
-              filter: arg_filter,
-              langRestrict: arg_langRestrict,
-              libraryRestrict: arg_libraryRestrict,
-              maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
-              maxResults: arg_maxResults,
-              orderBy: arg_orderBy,
-              partner: arg_partner,
-              printType: arg_printType,
-              projection: arg_projection,
-              showPreorders: arg_showPreorders,
-              source: arg_source,
-              startIndex: arg_startIndex,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
-    });
-  });
-
-  unittest.group("resource-VolumesAssociatedResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.VolumesAssociatedResourceApi res =
-          new api.BooksApi(mock).volumes.associated;
-      var arg_volumeId = "foo";
-      var arg_association = "foo";
-      var arg_locale = "foo";
-      var arg_maxAllowedMaturityRating = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
-        var pathOffset = 0;
-        var index;
-        var subPart;
-        unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
-        pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("volumes/"));
-        pathOffset += 8;
-        index = path.indexOf("/associated", pathOffset);
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        index = path.indexOf('/clearVolumes', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_volumeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 11),
-            unittest.equals("/associated"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/clearVolumes"),
+        );
+        pathOffset += 13;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.clearVolumes(arg_shelf,
+          source: arg_source, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_shelf = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildBookshelf());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.get(arg_shelf, source: arg_source, $fields: arg_$fields);
+      checkBookshelf(response as api.Bookshelf);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("books/v1/mylibrary/bookshelves"),
+        );
+        pathOffset += 30;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildBookshelves());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(source: arg_source, $fields: arg_$fields);
+      checkBookshelves(response as api.Bookshelves);
+    });
+
+    unittest.test('method--moveVolume', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_shelf = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_volumePosition = 42;
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        index = path.indexOf('/moveVolume', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 11),
+          unittest.equals("/moveVolume"),
+        );
         pathOffset += 11;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["association"].first, unittest.equals(arg_association));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["maxAllowedMaturityRating"].first,
-            unittest.equals(arg_maxAllowedMaturityRating));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["volumePosition"]!.first),
+          unittest.equals(arg_volumePosition),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_volumeId,
-              association: arg_association,
-              locale: arg_locale,
-              maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response = await res.moveVolume(
+          arg_shelf, arg_volumeId, arg_volumePosition,
+          source: arg_source, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
-  });
 
-  unittest.group("resource-VolumesMybooksResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.VolumesMybooksResourceApi res =
-          new api.BooksApi(mock).volumes.mybooks;
-      var arg_acquireMethod = buildUnnamed284();
-      var arg_country = "foo";
-      var arg_locale = "foo";
-      var arg_maxResults = 42;
-      var arg_processingState = buildUnnamed285();
-      var arg_source = "foo";
-      var arg_startIndex = 42;
-      var arg_$fields = "foo";
+    unittest.test('method--removeVolume', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves;
+      var arg_shelf = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_reason = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 15),
-            unittest.equals("volumes/mybooks"));
-        pathOffset += 15;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        index = path.indexOf('/removeVolume', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/removeVolume"),
+        );
+        pathOffset += 13;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["acquireMethod"], unittest.equals(arg_acquireMethod));
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
         unittest.expect(
-            queryMap["country"].first, unittest.equals(arg_country));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
+          queryMap["reason"]!.first,
+          unittest.equals(arg_reason),
+        );
         unittest.expect(
-            queryMap["processingState"], unittest.equals(arg_processingState));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(core.int.parse(queryMap["startIndex"].first),
-            unittest.equals(arg_startIndex));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(
-              acquireMethod: arg_acquireMethod,
-              country: arg_country,
-              locale: arg_locale,
-              maxResults: arg_maxResults,
-              processingState: arg_processingState,
-              source: arg_source,
-              startIndex: arg_startIndex,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response = await res.removeVolume(arg_shelf, arg_volumeId,
+          reason: arg_reason, source: arg_source, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
   });
 
-  unittest.group("resource-VolumesRecommendedResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.VolumesRecommendedResourceApi res =
-          new api.BooksApi(mock).volumes.recommended;
-      var arg_locale = "foo";
-      var arg_maxAllowedMaturityRating = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-MylibraryBookshelvesVolumesResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.bookshelves.volumes;
+      var arg_shelf = 'foo';
+      var arg_country = 'foo';
+      var arg_maxResults = 42;
+      var arg_projection = 'foo';
+      var arg_q = 'foo';
+      var arg_showPreorders = true;
+      var arg_source = 'foo';
+      var arg_startIndex = 42;
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 19),
-            unittest.equals("volumes/recommended"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/mylibrary/bookshelves/"),
+        );
+        pathOffset += 31;
+        index = path.indexOf('/volumes', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_shelf'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("/volumes"),
+        );
+        pathOffset += 8;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["country"]!.first,
+          unittest.equals(arg_country),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["projection"]!.first,
+          unittest.equals(arg_projection),
+        );
+        unittest.expect(
+          queryMap["q"]!.first,
+          unittest.equals(arg_q),
+        );
+        unittest.expect(
+          queryMap["showPreorders"]!.first,
+          unittest.equals("$arg_showPreorders"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["startIndex"]!.first),
+          unittest.equals(arg_startIndex),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_shelf,
+          country: arg_country,
+          maxResults: arg_maxResults,
+          projection: arg_projection,
+          q: arg_q,
+          showPreorders: arg_showPreorders,
+          source: arg_source,
+          startIndex: arg_startIndex,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
+    });
+  });
+
+  unittest.group('resource-MylibraryReadingpositionsResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.readingpositions;
+      var arg_volumeId = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 36),
+          unittest.equals("books/v1/mylibrary/readingpositions/"),
+        );
+        pathOffset += 36;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildReadingPosition());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_volumeId,
+          contentVersion: arg_contentVersion,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkReadingPosition(response as api.ReadingPosition);
+    });
+
+    unittest.test('method--setPosition', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).mylibrary.readingpositions;
+      var arg_volumeId = 'foo';
+      var arg_position = 'foo';
+      var arg_timestamp = 'foo';
+      var arg_action = 'foo';
+      var arg_contentVersion = 'foo';
+      var arg_deviceCookie = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 36),
+          unittest.equals("books/v1/mylibrary/readingpositions/"),
+        );
+        pathOffset += 36;
+        index = path.indexOf('/setPosition', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 12),
+          unittest.equals("/setPosition"),
+        );
+        pathOffset += 12;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["position"]!.first,
+          unittest.equals(arg_position),
+        );
+        unittest.expect(
+          queryMap["timestamp"]!.first,
+          unittest.equals(arg_timestamp),
+        );
+        unittest.expect(
+          queryMap["action"]!.first,
+          unittest.equals(arg_action),
+        );
+        unittest.expect(
+          queryMap["contentVersion"]!.first,
+          unittest.equals(arg_contentVersion),
+        );
+        unittest.expect(
+          queryMap["deviceCookie"]!.first,
+          unittest.equals(arg_deviceCookie),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.setPosition(
+          arg_volumeId, arg_position, arg_timestamp,
+          action: arg_action,
+          contentVersion: arg_contentVersion,
+          deviceCookie: arg_deviceCookie,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+  });
+
+  unittest.group('resource-NotificationResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).notification;
+      var arg_notificationId = 'foo';
+      var arg_locale = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 25),
+          unittest.equals("books/v1/notification/get"),
+        );
+        pathOffset += 25;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["notification_id"]!.first,
+          unittest.equals(arg_notificationId),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildNotification());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_notificationId,
+          locale: arg_locale, source: arg_source, $fields: arg_$fields);
+      checkNotification(response as api.Notification);
+    });
+  });
+
+  unittest.group('resource-OnboardingResource', () {
+    unittest.test('method--listCategories', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).onboarding;
+      var arg_locale = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 34),
+          unittest.equals("books/v1/onboarding/listCategories"),
+        );
+        pathOffset += 34;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildCategory());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.listCategories(locale: arg_locale, $fields: arg_$fields);
+      checkCategory(response as api.Category);
+    });
+
+    unittest.test('method--listCategoryVolumes', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).onboarding;
+      var arg_categoryId = buildUnnamed3273();
+      var arg_locale = 'foo';
+      var arg_maxAllowedMaturityRating = 'foo';
+      var arg_pageSize = 42;
+      var arg_pageToken = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 39),
+          unittest.equals("books/v1/onboarding/listCategoryVolumes"),
+        );
+        pathOffset += 39;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["categoryId"]!,
+          unittest.equals(arg_categoryId),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["maxAllowedMaturityRating"]!.first,
+          unittest.equals(arg_maxAllowedMaturityRating),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["pageSize"]!.first),
+          unittest.equals(arg_pageSize),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolume2());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.listCategoryVolumes(
+          categoryId: arg_categoryId,
+          locale: arg_locale,
+          maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
+          pageSize: arg_pageSize,
+          pageToken: arg_pageToken,
+          $fields: arg_$fields);
+      checkVolume2(response as api.Volume2);
+    });
+  });
+
+  unittest.group('resource-PersonalizedstreamResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).personalizedstream;
+      var arg_locale = 'foo';
+      var arg_maxAllowedMaturityRating = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 31),
+          unittest.equals("books/v1/personalizedstream/get"),
+        );
+        pathOffset += 31;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["maxAllowedMaturityRating"]!.first,
+          unittest.equals(arg_maxAllowedMaturityRating),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildDiscoveryclusters());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(
+          locale: arg_locale,
+          maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkDiscoveryclusters(response as api.Discoveryclusters);
+    });
+  });
+
+  unittest.group('resource-PromoofferResource', () {
+    unittest.test('method--accept', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).promooffer;
+      var arg_androidId = 'foo';
+      var arg_device = 'foo';
+      var arg_manufacturer = 'foo';
+      var arg_model = 'foo';
+      var arg_offerId = 'foo';
+      var arg_product = 'foo';
+      var arg_serial = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 26),
+          unittest.equals("books/v1/promooffer/accept"),
+        );
+        pathOffset += 26;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["androidId"]!.first,
+          unittest.equals(arg_androidId),
+        );
+        unittest.expect(
+          queryMap["device"]!.first,
+          unittest.equals(arg_device),
+        );
+        unittest.expect(
+          queryMap["manufacturer"]!.first,
+          unittest.equals(arg_manufacturer),
+        );
+        unittest.expect(
+          queryMap["model"]!.first,
+          unittest.equals(arg_model),
+        );
+        unittest.expect(
+          queryMap["offerId"]!.first,
+          unittest.equals(arg_offerId),
+        );
+        unittest.expect(
+          queryMap["product"]!.first,
+          unittest.equals(arg_product),
+        );
+        unittest.expect(
+          queryMap["serial"]!.first,
+          unittest.equals(arg_serial),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.accept(
+          androidId: arg_androidId,
+          device: arg_device,
+          manufacturer: arg_manufacturer,
+          model: arg_model,
+          offerId: arg_offerId,
+          product: arg_product,
+          serial: arg_serial,
+          volumeId: arg_volumeId,
+          $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+
+    unittest.test('method--dismiss', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).promooffer;
+      var arg_androidId = 'foo';
+      var arg_device = 'foo';
+      var arg_manufacturer = 'foo';
+      var arg_model = 'foo';
+      var arg_offerId = 'foo';
+      var arg_product = 'foo';
+      var arg_serial = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 27),
+          unittest.equals("books/v1/promooffer/dismiss"),
+        );
+        pathOffset += 27;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["androidId"]!.first,
+          unittest.equals(arg_androidId),
+        );
+        unittest.expect(
+          queryMap["device"]!.first,
+          unittest.equals(arg_device),
+        );
+        unittest.expect(
+          queryMap["manufacturer"]!.first,
+          unittest.equals(arg_manufacturer),
+        );
+        unittest.expect(
+          queryMap["model"]!.first,
+          unittest.equals(arg_model),
+        );
+        unittest.expect(
+          queryMap["offerId"]!.first,
+          unittest.equals(arg_offerId),
+        );
+        unittest.expect(
+          queryMap["product"]!.first,
+          unittest.equals(arg_product),
+        );
+        unittest.expect(
+          queryMap["serial"]!.first,
+          unittest.equals(arg_serial),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildEmpty());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.dismiss(
+          androidId: arg_androidId,
+          device: arg_device,
+          manufacturer: arg_manufacturer,
+          model: arg_model,
+          offerId: arg_offerId,
+          product: arg_product,
+          serial: arg_serial,
+          $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
+    });
+
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).promooffer;
+      var arg_androidId = 'foo';
+      var arg_device = 'foo';
+      var arg_manufacturer = 'foo';
+      var arg_model = 'foo';
+      var arg_product = 'foo';
+      var arg_serial = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 23),
+          unittest.equals("books/v1/promooffer/get"),
+        );
+        pathOffset += 23;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["androidId"]!.first,
+          unittest.equals(arg_androidId),
+        );
+        unittest.expect(
+          queryMap["device"]!.first,
+          unittest.equals(arg_device),
+        );
+        unittest.expect(
+          queryMap["manufacturer"]!.first,
+          unittest.equals(arg_manufacturer),
+        );
+        unittest.expect(
+          queryMap["model"]!.first,
+          unittest.equals(arg_model),
+        );
+        unittest.expect(
+          queryMap["product"]!.first,
+          unittest.equals(arg_product),
+        );
+        unittest.expect(
+          queryMap["serial"]!.first,
+          unittest.equals(arg_serial),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildOffers());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(
+          androidId: arg_androidId,
+          device: arg_device,
+          manufacturer: arg_manufacturer,
+          model: arg_model,
+          product: arg_product,
+          serial: arg_serial,
+          $fields: arg_$fields);
+      checkOffers(response as api.Offers);
+    });
+  });
+
+  unittest.group('resource-SeriesResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).series;
+      var arg_seriesId = buildUnnamed3274();
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 19),
+          unittest.equals("books/v1/series/get"),
+        );
         pathOffset += 19;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["maxAllowedMaturityRating"].first,
-            unittest.equals(arg_maxAllowedMaturityRating));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["series_id"]!,
+          unittest.equals(arg_seriesId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildSeries());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(
-              locale: arg_locale,
-              maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
-              source: arg_source,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response = await res.get(arg_seriesId, $fields: arg_$fields);
+      checkSeries(response as api.Series);
     });
+  });
 
-    unittest.test("method--rate", () {
-      var mock = new HttpServerMock();
-      api.VolumesRecommendedResourceApi res =
-          new api.BooksApi(mock).volumes.recommended;
-      var arg_rating = "foo";
-      var arg_volumeId = "foo";
-      var arg_locale = "foo";
-      var arg_source = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-SeriesMembershipResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).series.membership;
+      var arg_seriesId = 'foo';
+      var arg_pageSize = 42;
+      var arg_pageToken = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 24),
-            unittest.equals("volumes/recommended/rate"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 30),
+          unittest.equals("books/v1/series/membership/get"),
+        );
+        pathOffset += 30;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["series_id"]!.first,
+          unittest.equals(arg_seriesId),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["page_size"]!.first),
+          unittest.equals(arg_pageSize),
+        );
+        unittest.expect(
+          queryMap["page_token"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildSeriesmembership());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_seriesId,
+          pageSize: arg_pageSize,
+          pageToken: arg_pageToken,
+          $fields: arg_$fields);
+      checkSeriesmembership(response as api.Seriesmembership);
+    });
+  });
+
+  unittest.group('resource-VolumesResource', () {
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes;
+      var arg_volumeId = 'foo';
+      var arg_country = 'foo';
+      var arg_includeNonComicsSeries = true;
+      var arg_partner = 'foo';
+      var arg_projection = 'foo';
+      var arg_source = 'foo';
+      var arg_userLibraryConsistentRead = true;
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["country"]!.first,
+          unittest.equals(arg_country),
+        );
+        unittest.expect(
+          queryMap["includeNonComicsSeries"]!.first,
+          unittest.equals("$arg_includeNonComicsSeries"),
+        );
+        unittest.expect(
+          queryMap["partner"]!.first,
+          unittest.equals(arg_partner),
+        );
+        unittest.expect(
+          queryMap["projection"]!.first,
+          unittest.equals(arg_projection),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["user_library_consistent_read"]!.first,
+          unittest.equals("$arg_userLibraryConsistentRead"),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolume());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_volumeId,
+          country: arg_country,
+          includeNonComicsSeries: arg_includeNonComicsSeries,
+          partner: arg_partner,
+          projection: arg_projection,
+          source: arg_source,
+          userLibraryConsistentRead: arg_userLibraryConsistentRead,
+          $fields: arg_$fields);
+      checkVolume(response as api.Volume);
+    });
+
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes;
+      var arg_q = 'foo';
+      var arg_download = 'foo';
+      var arg_filter = 'foo';
+      var arg_langRestrict = 'foo';
+      var arg_libraryRestrict = 'foo';
+      var arg_maxAllowedMaturityRating = 'foo';
+      var arg_maxResults = 42;
+      var arg_orderBy = 'foo';
+      var arg_partner = 'foo';
+      var arg_printType = 'foo';
+      var arg_projection = 'foo';
+      var arg_showPreorders = true;
+      var arg_source = 'foo';
+      var arg_startIndex = 42;
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("books/v1/volumes"),
+        );
+        pathOffset += 16;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["q"]!.first,
+          unittest.equals(arg_q),
+        );
+        unittest.expect(
+          queryMap["download"]!.first,
+          unittest.equals(arg_download),
+        );
+        unittest.expect(
+          queryMap["filter"]!.first,
+          unittest.equals(arg_filter),
+        );
+        unittest.expect(
+          queryMap["langRestrict"]!.first,
+          unittest.equals(arg_langRestrict),
+        );
+        unittest.expect(
+          queryMap["libraryRestrict"]!.first,
+          unittest.equals(arg_libraryRestrict),
+        );
+        unittest.expect(
+          queryMap["maxAllowedMaturityRating"]!.first,
+          unittest.equals(arg_maxAllowedMaturityRating),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["orderBy"]!.first,
+          unittest.equals(arg_orderBy),
+        );
+        unittest.expect(
+          queryMap["partner"]!.first,
+          unittest.equals(arg_partner),
+        );
+        unittest.expect(
+          queryMap["printType"]!.first,
+          unittest.equals(arg_printType),
+        );
+        unittest.expect(
+          queryMap["projection"]!.first,
+          unittest.equals(arg_projection),
+        );
+        unittest.expect(
+          queryMap["showPreorders"]!.first,
+          unittest.equals("$arg_showPreorders"),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["startIndex"]!.first),
+          unittest.equals(arg_startIndex),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_q,
+          download: arg_download,
+          filter: arg_filter,
+          langRestrict: arg_langRestrict,
+          libraryRestrict: arg_libraryRestrict,
+          maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
+          maxResults: arg_maxResults,
+          orderBy: arg_orderBy,
+          partner: arg_partner,
+          printType: arg_printType,
+          projection: arg_projection,
+          showPreorders: arg_showPreorders,
+          source: arg_source,
+          startIndex: arg_startIndex,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
+    });
+  });
+
+  unittest.group('resource-VolumesAssociatedResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes.associated;
+      var arg_volumeId = 'foo';
+      var arg_association = 'foo';
+      var arg_locale = 'foo';
+      var arg_maxAllowedMaturityRating = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 17),
+          unittest.equals("books/v1/volumes/"),
+        );
+        pathOffset += 17;
+        index = path.indexOf('/associated', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_volumeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 11),
+          unittest.equals("/associated"),
+        );
+        pathOffset += 11;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["association"]!.first,
+          unittest.equals(arg_association),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["maxAllowedMaturityRating"]!.first,
+          unittest.equals(arg_maxAllowedMaturityRating),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_volumeId,
+          association: arg_association,
+          locale: arg_locale,
+          maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
+    });
+  });
+
+  unittest.group('resource-VolumesMybooksResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes.mybooks;
+      var arg_acquireMethod = buildUnnamed3275();
+      var arg_country = 'foo';
+      var arg_locale = 'foo';
+      var arg_maxResults = 42;
+      var arg_processingState = buildUnnamed3276();
+      var arg_source = 'foo';
+      var arg_startIndex = 42;
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 24),
+          unittest.equals("books/v1/volumes/mybooks"),
+        );
         pathOffset += 24;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["rating"].first, unittest.equals(arg_rating));
         unittest.expect(
-            queryMap["volumeId"].first, unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["acquireMethod"]!,
+          unittest.equals(arg_acquireMethod),
+        );
+        unittest.expect(
+          queryMap["country"]!.first,
+          unittest.equals(arg_country),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["processingState"]!,
+          unittest.equals(arg_processingState),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["startIndex"]!.first),
+          unittest.equals(arg_startIndex),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
-        var resp =
-            convert.json.encode(buildBooksVolumesRecommendedRateResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .rate(arg_rating, arg_volumeId,
-              locale: arg_locale, source: arg_source, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBooksVolumesRecommendedRateResponse(response);
-      })));
+      final response = await res.list(
+          acquireMethod: arg_acquireMethod,
+          country: arg_country,
+          locale: arg_locale,
+          maxResults: arg_maxResults,
+          processingState: arg_processingState,
+          source: arg_source,
+          startIndex: arg_startIndex,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
     });
   });
 
-  unittest.group("resource-VolumesUseruploadedResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.VolumesUseruploadedResourceApi res =
-          new api.BooksApi(mock).volumes.useruploaded;
-      var arg_locale = "foo";
-      var arg_maxResults = 42;
-      var arg_processingState = buildUnnamed286();
-      var arg_source = "foo";
-      var arg_startIndex = 42;
-      var arg_volumeId = buildUnnamed287();
-      var arg_$fields = "foo";
+  unittest.group('resource-VolumesRecommendedResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes.recommended;
+      var arg_locale = 'foo';
+      var arg_maxAllowedMaturityRating = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("books/v1/"));
-        pathOffset += 9;
-        unittest.expect(path.substring(pathOffset, pathOffset + 20),
-            unittest.equals("volumes/useruploaded"));
-        pathOffset += 20;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 28),
+          unittest.equals("books/v1/volumes/recommended"),
+        );
+        pathOffset += 28;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["locale"].first, unittest.equals(arg_locale));
-        unittest.expect(core.int.parse(queryMap["maxResults"].first),
-            unittest.equals(arg_maxResults));
         unittest.expect(
-            queryMap["processingState"], unittest.equals(arg_processingState));
-        unittest.expect(queryMap["source"].first, unittest.equals(arg_source));
-        unittest.expect(core.int.parse(queryMap["startIndex"].first),
-            unittest.equals(arg_startIndex));
-        unittest.expect(queryMap["volumeId"], unittest.equals(arg_volumeId));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["maxAllowedMaturityRating"]!.first,
+          unittest.equals(arg_maxAllowedMaturityRating),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildVolumes());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(
-              locale: arg_locale,
-              maxResults: arg_maxResults,
-              processingState: arg_processingState,
-              source: arg_source,
-              startIndex: arg_startIndex,
-              volumeId: arg_volumeId,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkVolumes(response);
-      })));
+      final response = await res.list(
+          locale: arg_locale,
+          maxAllowedMaturityRating: arg_maxAllowedMaturityRating,
+          source: arg_source,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
+    });
+
+    unittest.test('method--rate', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes.recommended;
+      var arg_rating = 'foo';
+      var arg_volumeId = 'foo';
+      var arg_locale = 'foo';
+      var arg_source = 'foo';
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals("books/v1/volumes/recommended/rate"),
+        );
+        pathOffset += 33;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["rating"]!.first,
+          unittest.equals(arg_rating),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!.first,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp =
+            convert.json.encode(buildBooksVolumesRecommendedRateResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.rate(arg_rating, arg_volumeId,
+          locale: arg_locale, source: arg_source, $fields: arg_$fields);
+      checkBooksVolumesRecommendedRateResponse(
+          response as api.BooksVolumesRecommendedRateResponse);
+    });
+  });
+
+  unittest.group('resource-VolumesUseruploadedResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.BooksApi(mock).volumes.useruploaded;
+      var arg_locale = 'foo';
+      var arg_maxResults = 42;
+      var arg_processingState = buildUnnamed3277();
+      var arg_source = 'foo';
+      var arg_startIndex = 42;
+      var arg_volumeId = buildUnnamed3278();
+      var arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        var path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 29),
+          unittest.equals("books/v1/volumes/useruploaded"),
+        );
+        pathOffset += 29;
+
+        var query = (req.url).query;
+        var queryOffset = 0;
+        var queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap["locale"]!.first,
+          unittest.equals(arg_locale),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["maxResults"]!.first),
+          unittest.equals(arg_maxResults),
+        );
+        unittest.expect(
+          queryMap["processingState"]!,
+          unittest.equals(arg_processingState),
+        );
+        unittest.expect(
+          queryMap["source"]!.first,
+          unittest.equals(arg_source),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["startIndex"]!.first),
+          unittest.equals(arg_startIndex),
+        );
+        unittest.expect(
+          queryMap["volumeId"]!,
+          unittest.equals(arg_volumeId),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        var h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        var resp = convert.json.encode(buildVolumes());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(
+          locale: arg_locale,
+          maxResults: arg_maxResults,
+          processingState: arg_processingState,
+          source: arg_source,
+          startIndex: arg_startIndex,
+          volumeId: arg_volumeId,
+          $fields: arg_$fields);
+      checkVolumes(response as api.Volumes);
     });
   });
 }

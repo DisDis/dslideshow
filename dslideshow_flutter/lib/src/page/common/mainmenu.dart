@@ -78,6 +78,12 @@ class _MenuOptionsScreenState extends State<MainMenuWidget> {
     _demoTimer = Timer.periodic(const Duration(seconds: 3), _changeSelect);
   }
 
+  @override
+  void dispose() {
+    _demoTimer.cancel();
+    super.dispose();
+  }
+
   void _changeSelect(Timer _) {
     if (mounted) {
       setState(() {

@@ -6,10 +6,17 @@ import 'package:logging/logging.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf/shelf.dart';
-import 'package:shelf_router/shelf_router.dart';
+// import 'package:shelf_router/shelf_router.dart';
 
-part 'web_service.g.dart';
+// part 'web_service.g.dart';
 
+//TODO: Remove stub class
+class WebService{
+  bool enabled = false;
+  final WebServerConfig _config;
+  WebService(this._config);
+}
+/*
 class WebService{
   static final Logger _log = new Logger('WebService');
   final WebServerConfig _config;
@@ -79,4 +86,4 @@ class WebService{
   shelf.Response _echoRequest(shelf.Request request) {
     return shelf.Response.ok('Request for "${request.url}"');
   }
-}
+}*/

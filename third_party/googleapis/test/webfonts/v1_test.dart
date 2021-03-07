@@ -1,232 +1,249 @@
-library googleapis.webfonts.v1.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/webfonts/v1.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
+import '../test_shared.dart';
 
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
-
-buildUnnamed3713() {
-  var o = new core.Map<core.String, core.String>();
-  o["x"] = "foo";
-  o["y"] = "foo";
+core.Map<core.String, core.String> buildUnnamed2974() {
+  var o = <core.String, core.String>{};
+  o['x'] = 'foo';
+  o['y'] = 'foo';
   return o;
 }
 
-checkUnnamed3713(core.Map<core.String, core.String> o) {
+void checkUnnamed2974(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o["x"], unittest.equals('foo'));
-  unittest.expect(o["y"], unittest.equals('foo'));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3714() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed2975() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3714(core.List<core.String> o) {
+void checkUnnamed2975(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed3715() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed2976() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed3715(core.List<core.String> o) {
+void checkUnnamed2976(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterWebfont = 0;
-buildWebfont() {
-  var o = new api.Webfont();
+api.Webfont buildWebfont() {
+  var o = api.Webfont();
   buildCounterWebfont++;
   if (buildCounterWebfont < 3) {
-    o.category = "foo";
-    o.family = "foo";
-    o.files = buildUnnamed3713();
-    o.kind = "foo";
-    o.lastModified = core.DateTime.parse("2002-02-27T14:01:02Z");
-    o.subsets = buildUnnamed3714();
-    o.variants = buildUnnamed3715();
-    o.version = "foo";
+    o.category = 'foo';
+    o.family = 'foo';
+    o.files = buildUnnamed2974();
+    o.kind = 'foo';
+    o.lastModified = 'foo';
+    o.subsets = buildUnnamed2975();
+    o.variants = buildUnnamed2976();
+    o.version = 'foo';
   }
   buildCounterWebfont--;
   return o;
 }
 
-checkWebfont(api.Webfont o) {
+void checkWebfont(api.Webfont o) {
   buildCounterWebfont++;
   if (buildCounterWebfont < 3) {
-    unittest.expect(o.category, unittest.equals('foo'));
-    unittest.expect(o.family, unittest.equals('foo'));
-    checkUnnamed3713(o.files);
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.lastModified,
-        unittest.equals(core.DateTime.parse("2002-02-27T00:00:00")));
-    checkUnnamed3714(o.subsets);
-    checkUnnamed3715(o.variants);
-    unittest.expect(o.version, unittest.equals('foo'));
+    unittest.expect(
+      o.category!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.family!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed2974(o.files!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.lastModified!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed2975(o.subsets!);
+    checkUnnamed2976(o.variants!);
+    unittest.expect(
+      o.version!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterWebfont--;
 }
 
-buildUnnamed3716() {
-  var o = new core.List<api.Webfont>();
+core.List<api.Webfont> buildUnnamed2977() {
+  var o = <api.Webfont>[];
   o.add(buildWebfont());
   o.add(buildWebfont());
   return o;
 }
 
-checkUnnamed3716(core.List<api.Webfont> o) {
+void checkUnnamed2977(core.List<api.Webfont> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkWebfont(o[0]);
-  checkWebfont(o[1]);
+  checkWebfont(o[0] as api.Webfont);
+  checkWebfont(o[1] as api.Webfont);
 }
 
 core.int buildCounterWebfontList = 0;
-buildWebfontList() {
-  var o = new api.WebfontList();
+api.WebfontList buildWebfontList() {
+  var o = api.WebfontList();
   buildCounterWebfontList++;
   if (buildCounterWebfontList < 3) {
-    o.items = buildUnnamed3716();
-    o.kind = "foo";
+    o.items = buildUnnamed2977();
+    o.kind = 'foo';
   }
   buildCounterWebfontList--;
   return o;
 }
 
-checkWebfontList(api.WebfontList o) {
+void checkWebfontList(api.WebfontList o) {
   buildCounterWebfontList++;
   if (buildCounterWebfontList < 3) {
-    checkUnnamed3716(o.items);
-    unittest.expect(o.kind, unittest.equals('foo'));
+    checkUnnamed2977(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterWebfontList--;
 }
 
-main() {
-  unittest.group("obj-schema-Webfont", () {
-    unittest.test("to-json--from-json", () {
+void main() {
+  unittest.group('obj-schema-Webfont', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWebfont();
-      var od = new api.Webfont.fromJson(o.toJson());
-      checkWebfont(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Webfont.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkWebfont(od as api.Webfont);
     });
   });
 
-  unittest.group("obj-schema-WebfontList", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-WebfontList', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildWebfontList();
-      var od = new api.WebfontList.fromJson(o.toJson());
-      checkWebfontList(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.WebfontList.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkWebfontList(od as api.WebfontList);
     });
   });
 
-  unittest.group("resource-WebfontsResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.WebfontsResourceApi res = new api.WebfontsApi(mock).webfonts;
-      var arg_sort = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-WebfontsResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.WebfontsApi(mock).webfonts;
+      var arg_sort = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals("webfonts/v1/"));
-        pathOffset += 12;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("webfonts"));
-        pathOffset += 8;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 11),
+          unittest.equals("v1/webfonts"),
+        );
+        pathOffset += 11;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["sort"].first, unittest.equals(arg_sort));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["sort"]!.first,
+          unittest.equals(arg_sort),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildWebfontList());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(sort: arg_sort, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkWebfontList(response);
-      })));
+      final response = await res.list(sort: arg_sort, $fields: arg_$fields);
+      checkWebfontList(response as api.WebfontList);
     });
   });
 }

@@ -9,7 +9,6 @@ import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
-import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
