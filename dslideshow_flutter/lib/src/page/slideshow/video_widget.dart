@@ -12,7 +12,7 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
   final File mediaFile;
   final MediaItem item;
 
-  VideoWidget(this.item) : this.mediaFile = new File(item.uri.toFilePath());
+  VideoWidget(this.item) : this.mediaFile = new File(item.uri!.toFilePath());
 
   @override
   _VideoWidgetState createState() => _VideoWidgetState(mediaFile);
@@ -20,13 +20,13 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
-  static final bool isVideoSupport = !(Platform.isLinux || Platform.isWindows);
+  static final bool isVideoSupport = true;//!(Platform.isLinux || Platform.isWindows);
 
   static final Logger _log = Logger('_VideoWidgetState');
 
   final File videoFile;
 
-  VideoPlayerController _controller;
+  VideoPlayerController? _controller;
 
   _VideoWidgetState(this.videoFile);
 
@@ -36,10 +36,10 @@ class _VideoWidgetState extends State<VideoWidget> {
       return Container();
     }
 
-    return _controller.value.initialized
+    return _controller!.value.isInitialized
         ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
+            aspectRatio: _controller!.value.aspectRatio,
+            child: VideoPlayer(_controller!),
           )
         : Container();
   }
@@ -47,7 +47,7 @@ class _VideoWidgetState extends State<VideoWidget> {
   @override
   void dispose() {
     if (_controller != null) {
-      _controller.dispose();
+      _controller!.dispose();
     }
     super.dispose();
   }
@@ -63,7 +63,7 @@ class _VideoWidgetState extends State<VideoWidget> {
         }).catchError((dynamic message, StackTrace s){
           _log.severe(message, s);
         });
-      _controller.play().catchError((dynamic message, StackTrace s){
+      _controller!.play().catchError((dynamic message, StackTrace s){
         _log.severe(message, s);
       });
     }

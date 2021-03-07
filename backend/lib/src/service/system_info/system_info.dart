@@ -12,7 +12,7 @@ part 'system_info.g.dart';
 abstract class SystemInfo implements Built<SystemInfo, SystemInfoBuilder> {
   static Serializer<SystemInfo> get serializer => _$systemInfoSerializer;
 
-  factory SystemInfo([void updates(SystemInfoBuilder b)]) = _$SystemInfo;
+  factory SystemInfo([void updates(SystemInfoBuilder b)?]) = _$SystemInfo;
 
   SystemInfo._();
 
@@ -22,5 +22,5 @@ abstract class SystemInfo implements Built<SystemInfo, SystemInfoBuilder> {
 
   OSInfo get osInfo;
 
-  UpdateInfo get updateInfo;
+  UpdateInfo? get updateInfo;
 }

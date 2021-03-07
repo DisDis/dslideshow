@@ -185,7 +185,7 @@ class _$GetMediaItemCommand extends GetMediaItemCommand {
   final int id;
 
   factory _$GetMediaItemCommand(
-          [void Function(GetMediaItemCommandBuilder) updates]) =>
+          [void Function(GetMediaItemCommandBuilder)? updates]) =>
       (new GetMediaItemCommandBuilder()..update(updates)).build();
 
   _$GetMediaItemCommand._({this.isCurrent, this.id}) : super._() {
@@ -272,14 +272,14 @@ class GetMediaItemCommandBuilder
 
 class _$GetMediaItemCommandResult extends GetMediaItemCommandResult {
   @override
-  final String mediaId;
+  final String? mediaId;
   @override
-  final Uri mediaUri;
+  final Uri? mediaUri;
   @override
   final int id;
 
   factory _$GetMediaItemCommandResult(
-          [void Function(GetMediaItemCommandResultBuilder) updates]) =>
+          [void Function(GetMediaItemCommandResultBuilder)? updates]) =>
       (new GetMediaItemCommandResultBuilder()..update(updates)).build();
 
   _$GetMediaItemCommandResult._({this.mediaId, this.mediaUri, this.id})
@@ -324,13 +324,13 @@ class GetMediaItemCommandResultBuilder
         Builder<GetMediaItemCommandResult, GetMediaItemCommandResultBuilder> {
   _$GetMediaItemCommandResult _$v;
 
-  String _mediaId;
-  String get mediaId => _$this._mediaId;
-  set mediaId(String mediaId) => _$this._mediaId = mediaId;
+  String? _mediaId;
+  String? get mediaId => _$this._mediaId;
+  set mediaId(String? mediaId) => _$this._mediaId = mediaId;
 
-  Uri _mediaUri;
-  Uri get mediaUri => _$this._mediaUri;
-  set mediaUri(Uri mediaUri) => _$this._mediaUri = mediaUri;
+  Uri? _mediaUri;
+  Uri? get mediaUri => _$this._mediaUri;
+  set mediaUri(Uri? mediaUri) => _$this._mediaUri = mediaUri;
 
   int _id;
   int get id => _$this._id;
@@ -376,7 +376,7 @@ class _$StorageNextCommand extends StorageNextCommand {
   final int id;
 
   factory _$StorageNextCommand(
-          [void Function(StorageNextCommandBuilder) updates]) =>
+          [void Function(StorageNextCommandBuilder)? updates]) =>
       (new StorageNextCommandBuilder()..update(updates)).build();
 
   _$StorageNextCommand._({this.id}) : super._();

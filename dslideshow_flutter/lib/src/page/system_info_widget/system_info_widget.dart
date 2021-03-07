@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:system_metrics_widget/system_metrics_widget.dart';
 
 class SystemInfoWidget extends StatefulWidget {
-  SystemInfoWidget({Key key}) : super(key: key);
+  SystemInfoWidget({Key? key}) : super(key: key);
 
   @override
   _SystemInfoWidgetState createState() => _SystemInfoWidgetState();
@@ -17,18 +17,18 @@ class SystemInfoWidget extends StatefulWidget {
 
 class _SystemInfoWidgetState extends State<SystemInfoWidget> {
   final FrontendService _frontendService = injector.get<FrontendService>();
-  SystemInfo _systemInfo;
+  SystemInfo? _systemInfo;
 
-  StreamSubscription<SystemInfo> _streamSubscription;
+  StreamSubscription<SystemInfo>? _streamSubscription;
   @override
   Widget build(BuildContext context) {
     if (_systemInfo == null) {
       return Container(color: Colors.transparent);
     }
 
-    if (_systemInfo.cpuInfo.cores == 0) {
+    if (_systemInfo!.cpuInfo.cores == 0) {
       final cores = 4;
-      _systemInfo = _systemInfo.rebuild((builder) {
+      _systemInfo = _systemInfo!.rebuild((builder) {
         builder.cpuInfo.cores = cores;
         builder.updateInfo.cpuLoad1 = math.Random().nextDouble() * cores;
         builder.updateInfo.cpuLoad5 = math.Random().nextDouble() * cores;
@@ -36,13 +36,13 @@ class _SystemInfoWidgetState extends State<SystemInfoWidget> {
       });
     }
 
-    return SystemInfoMetrics(model: _systemInfo);
+    return SystemInfoMetrics(model: _systemInfo!);
   }
 
   @override
   void dispose() {
     if (_streamSubscription != null) {
-      _streamSubscription.cancel();
+      _streamSubscription!.cancel();
       _streamSubscription = null;
     }
     super.dispose();

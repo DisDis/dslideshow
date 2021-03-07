@@ -10,7 +10,7 @@ import 'package:redux/redux.dart';
 class DebugWidget extends StatelessWidget {
   final FrontendService _frontendService;
 
-  const DebugWidget(this._frontendService, {Key key}) : super(key: key);
+  const DebugWidget(this._frontendService, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

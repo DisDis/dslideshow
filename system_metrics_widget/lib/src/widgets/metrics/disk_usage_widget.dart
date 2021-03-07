@@ -6,10 +6,10 @@ import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/disk_u
 
 class DiskUsageWidget extends StatelessWidget {
   final int totalMemory;
-  final int usedMemory;
-  final int usagePercent;
+  final int? usedMemory;
+  final int? usagePercent;
 
-  DiskUsageWidget({@required this.totalMemory, @required this.usedMemory, @required this.usagePercent});
+  DiskUsageWidget({required this.totalMemory, required this.usedMemory, required this.usagePercent});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class DiskUsageWidget extends StatelessWidget {
       backgroundColor: Colors.indigo,
       child: DiskUsageIndicatorWidget(
         totalMemory: totalMemory,
-        usedMemory: usedMemory,
+        usedMemory: usedMemory!,
         usagePercent: usagePercent,
       ),
     );

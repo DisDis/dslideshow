@@ -119,7 +119,7 @@ class _$ScreenTurnCommand extends ScreenTurnCommand {
   final int id;
 
   factory _$ScreenTurnCommand(
-          [void Function(ScreenTurnCommandBuilder) updates]) =>
+          [void Function(ScreenTurnCommandBuilder)? updates]) =>
       (new ScreenTurnCommandBuilder()..update(updates)).build();
 
   _$ScreenTurnCommand._({this.enabled, this.id}) : super._() {
@@ -209,7 +209,7 @@ class _$ScreenLockCommand extends ScreenLockCommand {
   final int id;
 
   factory _$ScreenLockCommand(
-          [void Function(ScreenLockCommandBuilder) updates]) =>
+          [void Function(ScreenLockCommandBuilder)? updates]) =>
       (new ScreenLockCommandBuilder()..update(updates)).build();
 
   _$ScreenLockCommand._({this.isLock, this.id}) : super._() {

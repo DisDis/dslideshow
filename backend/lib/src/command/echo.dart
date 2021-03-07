@@ -8,7 +8,7 @@ abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommand
   static const String TYPE = 'echo';
   @override
   String get type => TYPE;
-  String get text;
+  String? get text;
   @override
   @nullable
   int get id;
@@ -16,12 +16,12 @@ abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommand
   static Serializer<EchoCommand> get serializer =>
       _$echoCommandSerializer;
 
-  factory EchoCommand([void updates(EchoCommandBuilder b)]) = _$EchoCommand;
+  factory EchoCommand([void updates(EchoCommandBuilder b)?]) = _$EchoCommand;
   EchoCommand._();
 }
 
 abstract class EchoCommandResult implements RpcResult, Built<EchoCommandResult, EchoCommandResultBuilder> {
-  String get resultText;
+  String? get resultText;
   @override
   @nullable
   int get id;
@@ -29,6 +29,6 @@ abstract class EchoCommandResult implements RpcResult, Built<EchoCommandResult, 
   static Serializer<EchoCommandResult> get serializer =>
       _$echoCommandResultSerializer;
 
-  factory EchoCommandResult([void updates(EchoCommandResultBuilder b)]) = _$EchoCommandResult;
+  factory EchoCommandResult([void updates(EchoCommandResultBuilder b)?]) = _$EchoCommandResult;
   EchoCommandResult._();
 }

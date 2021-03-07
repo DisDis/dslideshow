@@ -5,16 +5,16 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/memory_usage_indicator_widget.dart';
 
 class MemoryUsageWidget extends StatelessWidget {
-  final int totalMemory;
-  final int usedMemory;
-  final int totalSwapMemory;
-  final int usedSwapMemory;
+  final int? totalMemory;
+  final int? usedMemory;
+  final int? totalSwapMemory;
+  final int? usedSwapMemory;
 
   MemoryUsageWidget({
-    @required this.totalMemory,
-    @required this.usedMemory,
-    @required this.totalSwapMemory,
-    @required this.usedSwapMemory,
+    required this.totalMemory,
+    required this.usedMemory,
+    required this.totalSwapMemory,
+    required this.usedSwapMemory,
   });
 
   @override
@@ -25,13 +25,13 @@ class MemoryUsageWidget extends StatelessWidget {
       child: Column(
         children: <Widget>[
           MemoryUsageIndicatorWidget(
-            totalMemory: totalMemory,
-            usedMemory: usedMemory,
+            totalMemory: totalMemory!,
+            usedMemory: usedMemory!,
           ),
           MemoryUsageIndicatorWidget(
             title: 'Swap',
-            totalMemory: totalSwapMemory,
-            usedMemory: usedSwapMemory,
+            totalMemory: totalSwapMemory!,
+            usedMemory: usedSwapMemory!,
           )
         ],
       ),

@@ -17,7 +17,7 @@ abstract class GetSystemInfoCommand implements RpcCommand, Built<GetSystemInfoCo
   static Serializer<GetSystemInfoCommand> get serializer =>
       _$getSystemInfoCommandSerializer;
 
-  factory GetSystemInfoCommand([void updates(GetSystemInfoCommandBuilder b)]) = _$GetSystemInfoCommand;
+  factory GetSystemInfoCommand([void updates(GetSystemInfoCommandBuilder b)?]) = _$GetSystemInfoCommand;
   GetSystemInfoCommand._();
 }
 
@@ -31,7 +31,7 @@ abstract class GetSystemInfoCommandResult implements RpcResult, Built<GetSystemI
   static Serializer<GetSystemInfoCommandResult> get serializer =>
       _$getSystemInfoCommandResultSerializer;
 
-  factory GetSystemInfoCommandResult([void updates(GetSystemInfoCommandResultBuilder b)]) = _$GetSystemInfoCommandResult;
+  factory GetSystemInfoCommandResult([void updates(GetSystemInfoCommandResultBuilder b)?]) = _$GetSystemInfoCommandResult;
 
   GetSystemInfoCommandResult._();
 }

@@ -12,6 +12,6 @@ abstract class EmptyResult implements RpcResult, Built<EmptyResult, EmptyResultB
   static Serializer<EmptyResult> get serializer => _$emptyResultSerializer;
 
 
-  factory EmptyResult([void updates(EmptyResultBuilder b)]) = _$EmptyResult;
+  factory EmptyResult([void updates(EmptyResultBuilder b)?]) = _$EmptyResult;
   EmptyResult._();
 }

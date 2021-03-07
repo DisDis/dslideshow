@@ -53,7 +53,7 @@ class _$EmptyResult extends EmptyResult {
   @override
   final int id;
 
-  factory _$EmptyResult([void Function(EmptyResultBuilder) updates]) =>
+  factory _$EmptyResult([void Function(EmptyResultBuilder)? updates]) =>
       (new EmptyResultBuilder()..update(updates)).build();
 
   _$EmptyResult._({this.id}) : super._();

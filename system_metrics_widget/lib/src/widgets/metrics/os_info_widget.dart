@@ -7,9 +7,9 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class OSInfoWidget extends StatelessWidget {
-  final OSInfo _model;
+  final OSInfo? _model;
 
-  OSInfoWidget({@required OSInfo model, Key key})
+  OSInfoWidget({required OSInfo? model, Key? key})
       : _model = model,
         super(key: key);
 
@@ -20,9 +20,9 @@ class OSInfoWidget extends StatelessWidget {
       iconData: iconData,
       backgroundColor: Colors.deepPurpleAccent,
       child: Column(children: <Widget>[
-        _model.osType == OSType.unknown
-            ? MetricsDetails('os info', value:  _model.name)
-            : MetricsDetails('os info', value: '${_model.name} (${_model.osType})'),
+        _model!.osType == OSType.unknown
+            ? MetricsDetails('os info', value:  _model!.name)
+            : MetricsDetails('os info', value: '${_model!.name} (${_model!.osType})'),
         Icon(
           iconData,
           color: Colors.white,

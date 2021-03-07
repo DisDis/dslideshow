@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart' show IterableExtension;
 import "package:http/http.dart" as http;
 import "package:googleapis_auth/auth_io.dart";
 import "package:googleapis/photoslibrary/v1.dart";
@@ -9,11 +10,11 @@ import 'package:googleapis_auth/src/auth_http_utils.dart';
 
 
 class GooglePhotoItem{
-  final String id;
+  final String? id;
   final String url;
-  final String mimeType;
+  final String? mimeType;
 
-  GooglePhotoItem(String this.id, String this.url, String this.mimeType);
+  GooglePhotoItem(String? this.id, String this.url, String? this.mimeType);
 }
 
 class GooglePhotoService{
@@ -21,7 +22,7 @@ class GooglePhotoService{
   final ClientId _clientId;
   String _refreshToken;
   String _tokenAccess ;
-  DateTime _tokenAExpire;
+  DateTime? _tokenAExpire;
   GooglePhotoService(final String identifier, final String secret, this._refreshToken,[this._tokenAccess = "", this._tokenAExpire]): this._clientId = new ClientId(identifier, secret){
     if (_tokenAExpire == null){
       _tokenAExpire = new DateTime.now().toUtc();
@@ -144,7 +145,7 @@ class GooglePhotoService{
         credentials = await obtainAccessCredentialsViaCodeExchange(
             client, _clientId, code, redirectUrl: redirectUri);
       } else {
-        var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire);
+        var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire!);
         credentials = new AccessCredentials(at, _refreshToken, scopes);
       }
 
@@ -153,18 +154,18 @@ class GooglePhotoService{
 
     final gphoto = new PhotosLibraryApi(clientARC);
       var albumsRes = await gphoto.albums.list();
-      var slideShowAlbum = albumsRes.albums.firstWhere((item)=>item.title == albumName,orElse: ()=> null);
+      var slideShowAlbum = albumsRes.albums!.firstWhereOrNull((item)=>item.title == albumName);
       if (slideShowAlbum != null){
         _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
-        String nextPageToken;
+        String? nextPageToken;
         while (true) {
          final smiRequest = new SearchMediaItemsRequest()..albumId=slideShowAlbum.id..pageSize=25;
          if (nextPageToken != null){
            smiRequest.pageToken = nextPageToken;
          }
          var mediaItems = await gphoto.mediaItems.search(smiRequest);
-         mediaItems.mediaItems.forEach((item) {
-           if (item.mediaMetadata.video != null){
+         mediaItems.mediaItems!.forEach((item) {
+           if (item.mediaMetadata!.video != null){
              //TODO: https://issuetracker.google.com/issues/80149160
              /*
              * https://github.com/gilesknap/gphotos-sync

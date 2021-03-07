@@ -128,7 +128,6 @@ class HardwareService implements RpcService{
       default:
         return new Future.value(_generateErrorResult(
             new Exception("Unknown command: ${command.type}"), command));
-        break;
     }
   }
 
@@ -138,7 +137,7 @@ class HardwareService implements RpcService{
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
     return new ErrorResult((b) =>
     b
-      ..id = (command.id == null ? 0 : command.id)
+      ..id = command.id
       ..error = "$e");
   }
 
@@ -149,7 +148,6 @@ class HardwareService implements RpcService{
     return new EchoCommandResult((b) {
       b.id = command.id;
       b.resultText = "${command.text} Service ${new DateTime.now()}";
-      return b;
     });
   }
 
@@ -157,16 +155,14 @@ class HardwareService implements RpcService{
     await _storage.next();
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
   Future<RpcResult> _executeGetMediaItemCommand(GetMediaItemCommand command) async {
-    final item = await (command.isCurrent?_storage.getCurrent():_storage.getNext());
+    final item = await (command.isCurrent ? _storage.getCurrent():_storage.getNext());
     return new GetMediaItemCommandResult((b) {
       b.id = command.id;
       b.mediaId = item!=null? item.id: null;
       b.mediaUri = item!=null? item.uri: null;
-      return b;
     });
   }
 
@@ -174,8 +170,7 @@ class HardwareService implements RpcService{
     final info = await _systemInfoService.getFullInfo();
     return new GetSystemInfoCommandResult((b) {
       b.id = command.id;
-      b.systemInfo = info.toBuilder();
-      return b;
+      b.systemInfo = info!.toBuilder();
     });
   }
 
@@ -192,7 +187,6 @@ class HardwareService implements RpcService{
     }
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 
@@ -200,7 +194,6 @@ class HardwareService implements RpcService{
     _screenService.isScreenOffLock = command.isLock;
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 
@@ -212,7 +205,6 @@ class HardwareService implements RpcService{
     }
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 
@@ -227,7 +219,6 @@ class HardwareService implements RpcService{
     }
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 
@@ -236,7 +227,6 @@ class HardwareService implements RpcService{
     _pushButton(command.button);
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 }

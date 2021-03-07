@@ -22,12 +22,12 @@ class MediaShuffle{
     //TODO: add load from file
     final String jsonData = '{"$versionKey":1,"$itemsKey":{}}';
     var state = json.decode(jsonData) as Map<String, dynamic>;
-    final version = state[versionKey] as String;
+    final version = state[versionKey] as String?;
     if (version != _supportVersion) {
       _log.warning('Unsupport state version "$version" != "$_supportVersion"');
       return;
     }
-    var items = state[itemsKey] as Map<String, int>;
+    var items = state[itemsKey] as Map<String, int>?;
     if (items == null){
       _log.warning('"items" is null');
       return;

@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:media_slider_widget/media_slider_item_effect.dart';
+import 'media_slider_item_effect.dart';
 
 class TranslateEffect {
   Matrix4 translateCurrent(Matrix4 transform,double pageDelta, double screenW, double screenH){

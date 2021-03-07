@@ -7,6 +7,8 @@ import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
+import 'package:dslideshow_flutter/src/effect/effect.dart';
+import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
@@ -25,15 +27,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
-import 'package:media_slider_widget/effect.dart';
-import 'package:media_slider_widget/media_slider_item_effect.dart';
 import 'package:path/path.dart' as path;
 import 'package:redux/redux.dart';
 
 import 'fade_widget.dart';
 
 class SlideShowPage extends StatefulWidget {
-  SlideShowPage({Key key}) : super(key: key);
+  SlideShowPage({Key? key}) : super(key: key);
 
   @override
   _SlideShowPageState createState() => _SlideShowPageState();
@@ -54,8 +54,8 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
-  AnimationController _mediaItemLoopController;
-  AnimationController _effectController;
+  late AnimationController _mediaItemLoopController;
+  late AnimationController _effectController;
 
   Widget _currentWidget = _loaderWidget;
   Widget _nextWidget = _loaderWidget;
@@ -64,7 +64,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   final FrontendService _frontendService = injector.get<FrontendService>();
   final AppConfig _appConfig = injector.get<AppConfig>();
 
-  AnimationController _fadeController;
+  late AnimationController _fadeController;
   static final Random _rnd = Random();
   MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
   final List<Effect> _effectPool = [];
@@ -72,7 +72,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
-  Duration _transitionTime;
+  Duration? _transitionTime;
 
   bool _screenState = true;
   bool _isPaused = false;
@@ -97,7 +97,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           if (!isLinuxEmbedded) StoreConnector<GlobalState, Store<GlobalState>>(
               converter: (store) => store,
               builder: (context, Store<GlobalState> store) {
-                return store.state.isDebug? DebugWidget(_frontendService):  Container();
+                return store.state.isDebug!? DebugWidget(_frontendService):  Container();
               }),
           CommonHeaderWidget(),
         ],
@@ -142,7 +142,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         setState(() {
           _currentWidget = _nextWidget;
         });
-        imageCache.clear();
+        imageCache!.clear();
       }
     });
 
@@ -177,10 +177,10 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     await _frontendService.storageNext();
     var mediaItem = await _getCurrentMediaItem();
     var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
-    if (mediaItem != null) {
-      _log.info('file: "${path.basename(mediaItem.uri.toFilePath())}"');
+    if (mediaItem.uri != null) {
+      _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
-    _log.info('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
+    _log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
     if (itemWidget is ImageWidget) {
       await itemWidget.precache(context);
@@ -219,7 +219,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item;
   }
 
-  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
   void _pushButton(ButtonType event) {
     switch (event) {
@@ -237,12 +237,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _pushMenuButton() {
     final _store = _frontendService.store;
-    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
+    _store.dispatch(ChangeDebugAction(!_store.state.isDebug!));
   }
 
   void _pushPauseButton() {
     final _store = _frontendService.store;
-    var isPausedNewValue = !_store.state.isPaused;
+    var isPausedNewValue = !_store.state.isPaused!;
     _store.dispatch(ChangePauseAction(isPausedNewValue));
     if (isPausedNewValue) {
       _mediaItemLoopController.stop();
@@ -251,13 +251,13 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
       _mediaItemLoopController.forward();
     }
     setState(() {
-      _stateKey.currentState.isPaused = _isPaused = isPausedNewValue;
+      _stateKey.currentState!.isPaused = _isPaused = isPausedNewValue;
     });
   }
 
   Future _pushScreenToggleButton() async {
     final _store = _frontendService.store;
-    var isScreenLockNewValue = !_store.state.isScreenLock;
+    var isScreenLockNewValue = !_store.state.isScreenLock!;
     //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
     //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
     _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
@@ -271,7 +271,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _restorePlayPauseState() {
     final _store = _frontendService.store;
-    if (_store.state.isPaused) {
+    if (_store.state.isPaused!) {
       _mediaItemLoopController.stop();
     } else {
       _mediaItemLoopController.forward();

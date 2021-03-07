@@ -60,7 +60,7 @@ class _$SensorInfo extends SensorInfo {
   @override
   final String value;
 
-  factory _$SensorInfo([void Function(SensorInfoBuilder) updates]) =>
+  factory _$SensorInfo([void Function(SensorInfoBuilder)? updates]) =>
       (new SensorInfoBuilder()..update(updates)).build();
 
   _$SensorInfo._({this.name, this.value}) : super._() {

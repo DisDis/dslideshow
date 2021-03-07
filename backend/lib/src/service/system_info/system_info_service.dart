@@ -20,7 +20,7 @@ class SystemInfoService {
   static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
   static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
 
-  SystemInfo _lastInfo;
+  SystemInfo? _lastInfo;
 
   final Duration _networkInfoUpdatePeriod = new Duration(minutes: 1);
   static final RegExp _findFlags = new RegExp('flags=[^<]*<[^>]*>');
@@ -30,7 +30,7 @@ class SystemInfoService {
 
   SystemInfoService(this._config);
 
-  Future<SystemInfo> getFullInfo() async {
+  Future<SystemInfo?> getFullInfo() async {
     UpdateInfoBuilder updateInfo = await getUpdateInfo();
     if (_lastInfo == null) {
       final _cpuInfo = await _getCpuInfo();
@@ -44,12 +44,12 @@ class SystemInfoService {
       });
     } else {
       var delta =
-          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo.networkInfo.lastUpdate));
+          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo!.lastUpdate));
       if (delta > _networkInfoUpdatePeriod) {
         final _networkInfo = await _getNetworkInfo();
-        _lastInfo = _lastInfo.rebuild((builder) => builder.networkInfo = _networkInfo);
+        _lastInfo = _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
       }
-      _lastInfo = _lastInfo.rebuild((builder) => builder.updateInfo = updateInfo);
+      _lastInfo = _lastInfo?.rebuild((builder) => builder.updateInfo = updateInfo);
     }
     return _lastInfo;
   }
@@ -92,11 +92,11 @@ class SystemInfoService {
           var parseDiskInfo = RegExp('${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
           //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
 
-          var info = parseDiskInfo.firstMatch(diskInfo);
+          var info = parseDiskInfo.firstMatch(diskInfo)!;
           b
-            ..diskUsed = int.tryParse(info.group(2))
-            ..diskAvailable = int.tryParse(info.group(3))
-            ..diskUsedPercent = int.tryParse(info.group(4));
+            ..diskUsed = int.tryParse(info.group(2)!)?? 0
+            ..diskAvailable = int.tryParse(info.group(3)!)?? 0
+            ..diskUsedPercent = int.tryParse(info.group(4)!) ?? 0;
         }
       }
       result = await io.Process.run('uptime', ['-p']);
@@ -109,20 +109,20 @@ class SystemInfoService {
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         //              total        used        free
-        var info = _findMem.firstMatch(str);
-        b.memTotal = int.tryParse(info.group(1));
-        b.memUsed = int.tryParse(info.group(2));
-        info = _findSwap.firstMatch(str);
-        b.swapTotal = int.tryParse(info.group(1));
-        b.swapUsed = int.tryParse(info.group(2));
+        var info = _findMem.firstMatch(str)!;
+        b.memTotal = int.tryParse(info.group(1)!)??0;
+        b.memUsed = int.tryParse(info.group(2)!)??0;
+        info = _findSwap.firstMatch(str)!;
+        b.swapTotal = int.tryParse(info.group(1)!)??0;
+        b.swapUsed = int.tryParse(info.group(2)!)??0;
       }
       result = await io.Process.run('cat', ['/proc/loadavg']);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var arrData = str.split(' ');
-        b.cpuLoad1 = double.tryParse(arrData[0]);
-        b.cpuLoad5 = double.tryParse(arrData[1]);
-        b.cpuLoad15 = double.tryParse(arrData[2]);
+        b.cpuLoad1 = double.tryParse(arrData[0])??0;
+        b.cpuLoad5 = double.tryParse(arrData[1])??0;
+        b.cpuLoad15 = double.tryParse(arrData[2])??0;
       }
       //  _log.info(b.build());
     } catch (e, s) {
@@ -146,7 +146,7 @@ class SystemInfoService {
     return false;
   }
 
-  Future<SystemInfo> init() {
+  Future<SystemInfo?> init() {
     return getFullInfo();
   }
 
@@ -161,15 +161,15 @@ class SystemInfoService {
     try {
       var result = await io.Process.run('nproc', ['--all']);
       if (result.exitCode == 0) {
-        b.cores = int.tryParse(result.stdout.toString());
+        b.cores = int.tryParse(result.stdout.toString())??0;
       }
 
       result = await io.Process.run('cat', ['/proc/cpuinfo']);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
-        b.hardware = _findHardware.firstMatch(str).group(1);
-        b.model = _findModel.firstMatch(str).group(1);
-        b.revision = _findRevision.firstMatch(str).group(1);
+        b.hardware = _findHardware.firstMatch(str)!.group(1)??'Unknown';
+        b.model = _findModel.firstMatch(str)!.group(1)??'Unknown';
+        b.revision = _findRevision.firstMatch(str)!.group(1)??'Unknown';
       }
       //      _log.info(b.build());
     } catch (e, s) {
@@ -227,15 +227,15 @@ class SystemInfoService {
   }
 
   List<NetworkInterfaceInfo> _parseIfconfigOutput(List<String> output) {
-    if (output == null || output.isEmpty) {
+    if (output.isEmpty) {
       return <NetworkInterfaceInfo>[];
     }
-    output.removeWhere((element) => element == null || element.isEmpty);
+    output.removeWhere((element) => element.isEmpty);
     var result = <NetworkInterfaceInfo>[];
     output.forEach((element) {
       try {
         var interfaceName = element.substring(0, element.indexOf(':'));
-        var interfaceStatus = _findFlags.firstMatch(element).group(0).indexOf('RUNNING') != -1
+        var interfaceStatus = _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
             ? NetworkInterfaceStatus.running
             : NetworkInterfaceStatus.offline;
         var interfaceIp4 = _findIp4.firstMatch(element);
@@ -245,8 +245,8 @@ class SystemInfoService {
         result.add(new NetworkInterfaceInfo((b) {
           b.name = interfaceName;
           b.status = interfaceStatus;
-          b.ip4 = interfaceIp4Str;
-          b.ip6 = interfaceIp6Str;
+          b.ip4 = interfaceIp4Str ?? '';
+          b.ip6 = interfaceIp6Str ?? '';
         }));
       } catch (e, st) {
         _log.severe('_parseIfconfigOutput', e, st);

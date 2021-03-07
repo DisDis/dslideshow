@@ -4,17 +4,17 @@ import 'package:flutter/widgets.dart';
 
 
 class StateNotify extends StatefulWidget {
-  final bool isPaused;
+  final bool? isPaused;
 
-  const StateNotify({Key key, this.isPaused}) : super(key: key);
+  const StateNotify({Key? key, this.isPaused}) : super(key: key);
 
   @override
   StateNotifyState createState() => StateNotifyState(isPaused);
 }
 
 class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin {
-  AnimationController _controller;
-  bool _isPaused;
+  late AnimationController _controller;
+  bool? _isPaused;
 
   StateNotifyState(this._isPaused);
 
@@ -26,7 +26,7 @@ class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin
         duration: const Duration(milliseconds: 1000),
         vsync: this
     );
-    if (_isPaused) {
+    if (_isPaused!) {
       _controller
           .forward()
           .orCancel
@@ -73,8 +73,8 @@ class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin
 }
 
 class StaggerAnimation extends StatelessWidget {
-  final bool isPaused;
-  StaggerAnimation({ Key key, this.controller, this.isPaused }) :
+  final bool? isPaused;
+  StaggerAnimation({ Key? key, required this.controller, this.isPaused }) :
 
   // Each animation defined here transforms its value during the subset
   // of the controller's duration defined by the animation's interval.
@@ -131,7 +131,7 @@ class StaggerAnimation extends StatelessWidget {
   // This function is called each time the controller "ticks" a new frame.
   // When it runs, all of the animation's values will have been
   // updated to reflect the controller's current value.
-  Widget _buildAnimation(BuildContext context, Widget child) {
+  Widget _buildAnimation(BuildContext context, Widget? child) {
     return
       Opacity(
         opacity: opacity.value,
@@ -141,7 +141,7 @@ class StaggerAnimation extends StatelessWidget {
             opacity: opacityIcon.value,
               child:Center(
                 child: Icon(
-                   isPaused ? Icons.pause:Icons.play_arrow,
+                   isPaused! ? Icons.pause:Icons.play_arrow,
                   size:size.value,
                   color: Colors.white,
                 ),

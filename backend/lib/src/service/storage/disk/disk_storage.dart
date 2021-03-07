@@ -35,18 +35,18 @@ class DiskStorage extends Storage {
 
   final Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-  DiskStorage(Map<String, dynamic> config) : this._config = new DiskStorageConfig(config) {}
+  DiskStorage(Map<String, dynamic>? config) : this._config = new DiskStorageConfig(config) {}
 
-  MediaItem _current;
-  MediaItem _next;
+  MediaItem? _current;
+  MediaItem? _next;
 
   @override
-  Future<MediaItem> getCurrent() async {
+  Future<MediaItem?> getCurrent() async {
     return _current;
   }
 
   @override
-  Future<MediaItem> getNext() async {
+  Future<MediaItem?> getNext() async {
     return _next;
   }
 
@@ -55,7 +55,7 @@ class DiskStorage extends Storage {
 
   List<Uri> _cache = <Uri>[];
 
-  Future<Uri> _getRandomItem() async {
+  Future<Uri?> _getRandomItem() async {
     if (_cache.isEmpty) {
       final items = await _folder.listSync();
       if (items.length == 0) {
@@ -68,9 +68,9 @@ class DiskStorage extends Storage {
   }
 
   @override
-  Future<MediaItem> next() async {
+  Future<MediaItem?> next() async {
     _current = _next;
-    var nextUri = await _getRandomItem();
+    var nextUri = await (_getRandomItem() as FutureOr<Uri>);
     _next = new DiskMediaItem(nextUri.path, nextUri);
     return _next;
   }
@@ -83,7 +83,7 @@ class DiskStorage extends Storage {
   @override
   final StorageType type = StorageType.local;
 
-  StreamSubscription _watchSubscription;
+  StreamSubscription? _watchSubscription;
 
   @override
   Future init() async {
@@ -99,7 +99,7 @@ class DiskStorage extends Storage {
 
   Future release() async {
     if (_watchSubscription!=null){
-      _watchSubscription.cancel();
+      _watchSubscription!.cancel();
     }
   }
 

@@ -118,7 +118,7 @@ class _$GetSystemInfoCommand extends GetSystemInfoCommand {
   final int id;
 
   factory _$GetSystemInfoCommand(
-          [void Function(GetSystemInfoCommandBuilder) updates]) =>
+          [void Function(GetSystemInfoCommandBuilder)? updates]) =>
       (new GetSystemInfoCommandBuilder()..update(updates)).build();
 
   _$GetSystemInfoCommand._({this.id}) : super._();
@@ -196,7 +196,7 @@ class _$GetSystemInfoCommandResult extends GetSystemInfoCommandResult {
   final int id;
 
   factory _$GetSystemInfoCommandResult(
-          [void Function(GetSystemInfoCommandResultBuilder) updates]) =>
+          [void Function(GetSystemInfoCommandResultBuilder)? updates]) =>
       (new GetSystemInfoCommandResultBuilder()..update(updates)).build();
 
   _$GetSystemInfoCommandResult._({this.systemInfo, this.id}) : super._() {

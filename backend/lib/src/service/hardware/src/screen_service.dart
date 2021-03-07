@@ -8,7 +8,7 @@ class ScreenService{
   final HardwareConfig _config;
 
   // Property?
-  bool isScreenOffLock = false;
+  bool? isScreenOffLock = false;
 
   final _stateChangePreparation = new StreamController<bool>.broadcast();
 
@@ -16,17 +16,17 @@ class ScreenService{
   Stream<bool> get onStateChangePreparation => _stateChangePreparation.stream;
 
   ScreenService(this._config);
-  Timer _timerScreenOff;
+  Timer? _timerScreenOff;
   bool _screenOn = true;
 
   void screenOn() async{
     _log.info('screenOn');
-    if (isScreenOffLock){
+    if (isScreenOffLock!){
       _log.info('"screenOn" is canceled because the screen is lock');
       return;
     }
     if (_timerScreenOff != null){
-      _timerScreenOff.cancel();
+      _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
     try {
@@ -45,7 +45,7 @@ class ScreenService{
   void scheduleScreenOff(){
     _log.info('scheduleScreenOff');
     if (_timerScreenOff != null){
-      _timerScreenOff.cancel();
+      _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
     _timerScreenOff = new Timer(new Duration(seconds: _config.screenPowerOnTimerSec),(){
@@ -56,7 +56,7 @@ class ScreenService{
   void screenOff() async {
     _log.info('screenOff');
     if (_timerScreenOff != null){
-      _timerScreenOff.cancel();
+      _timerScreenOff!.cancel();
       _timerScreenOff = null;
     }
     try {

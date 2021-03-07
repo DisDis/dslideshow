@@ -68,7 +68,7 @@ class _$ErrorResult extends ErrorResult {
   @override
   /*late*/ final int id;
 
-  factory _$ErrorResult([void updates(ErrorResultBuilder b)/*?*/]) =>
+  factory _$ErrorResult([void updates(ErrorResultBuilder b)?]) =>
       (new ErrorResultBuilder()..update(updates)).build();
 
   _$ErrorResult._({String error, int id}) : this.error=error, this.id = id, super._() {

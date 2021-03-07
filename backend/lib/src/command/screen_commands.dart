@@ -16,7 +16,7 @@ abstract class ScreenTurnCommand implements RpcCommand, Built<ScreenTurnCommand,
   static Serializer<ScreenTurnCommand> get serializer =>
       _$screenTurnCommandSerializer;
 
-  factory ScreenTurnCommand([void updates(ScreenTurnCommandBuilder b)]) = _$ScreenTurnCommand;
+  factory ScreenTurnCommand([void updates(ScreenTurnCommandBuilder b)?]) = _$ScreenTurnCommand;
   ScreenTurnCommand._();
 }
 
@@ -32,6 +32,6 @@ abstract class ScreenLockCommand implements RpcCommand, Built<ScreenLockCommand,
   static Serializer<ScreenLockCommand> get serializer =>
       _$screenLockCommandSerializer;
 
-  factory ScreenLockCommand([void updates(ScreenLockCommandBuilder b)]) = _$ScreenLockCommand;
+  factory ScreenLockCommand([void updates(ScreenLockCommandBuilder b)?]) = _$ScreenLockCommand;
   ScreenLockCommand._();
 }

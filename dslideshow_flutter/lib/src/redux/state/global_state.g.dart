@@ -177,7 +177,7 @@ class _$GlobalState extends GlobalState {
   @override
   final StorageStatusEnum storageStatus;
 
-  factory _$GlobalState([void Function(GlobalStateBuilder) updates]) =>
+  factory _$GlobalState([void Function(GlobalStateBuilder)? updates]) =>
       (new GlobalStateBuilder()..update(updates)).build();
 
   _$GlobalState._(

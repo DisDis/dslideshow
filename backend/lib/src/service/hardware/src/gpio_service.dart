@@ -14,22 +14,22 @@ abstract class GPIOService{
   Stream<bool> get onScreenToggle;
   Future init();
   Future release();
-  set powerLED(bool value);
+  set powerLED(bool? value);
 }
 
 class GPIOServiceImpl extends GPIOService{
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;
   static final ProxyGpiod _gpio = ProxyGpiod.getInstance();
-  GpioChip _chip;
-  GpioLine _linePowerLED;
-  GpioLine _linePIR;
-  GpioLine _linePauseButton;
-  GpioLine _lineBackButton;
-  GpioLine _lineMenuButton;
-  GpioLine _lineScreenToggleButton;
+  late GpioChip _chip;
+  late GpioLine _linePowerLED;
+  late GpioLine _linePIR;
+  late GpioLine _linePauseButton;
+  late GpioLine _lineBackButton;
+  late GpioLine _lineMenuButton;
+  late GpioLine _lineScreenToggleButton;
   // Default ON
-  bool _powerLEDStatus = true;
+  bool? _powerLEDStatus = true;
   final StreamController<bool> _scMotion = new StreamController.broadcast();
   Stream<bool> get onMotion =>_scMotion.stream;
 
@@ -163,11 +163,11 @@ class GPIOServiceImpl extends GPIOService{
 
 
 
-  set powerLED(bool value){
+  set powerLED(bool? value){
     if (_powerLEDStatus == value){
       return;
     }
     _powerLEDStatus = value;
-    _linePowerLED.setValue(value);
+    _linePowerLED.setValue(value!);
   }
 }

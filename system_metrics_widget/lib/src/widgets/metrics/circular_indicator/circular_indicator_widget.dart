@@ -6,16 +6,16 @@ import 'package:system_metrics_widget/src/environment/settings.dart';
 
 class CircularArcPainter extends CustomPainter {
   final double percent;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final Color startColor;
   final Color endColor;
   final double width;
 
   const CircularArcPainter({
-    @required this.percent,
-    @required this.startColor,
-    @required this.endColor,
-    @required this.width,
+    required this.percent,
+    required this.startColor,
+    required this.endColor,
+    required this.width,
     this.backgroundColor,
   })  : assert(percent != null),
         assert(startColor != null),
@@ -34,7 +34,7 @@ class CircularArcPainter extends CustomPainter {
     );
 
     final backgroundPaint = Paint()
-      ..color = backgroundColor
+      ..color = backgroundColor!
       ..strokeCap = StrokeCap.butt // StrokeCap.round is not recommended.
       ..style = PaintingStyle.stroke
       ..strokeWidth = width + 2;
@@ -66,8 +66,8 @@ class CircularIndicatorWidget extends StatefulWidget {
   final Color _backgroundColor;
 
   CircularIndicatorWidget({
-    @required this.percent,
-    String title,
+    required this.percent,
+    String? title,
     Color backgroundColor = Colors.white70,
   })  : _backgroundColor = backgroundColor,
         _title = title ?? '${(percent * 100).round()}%';
@@ -85,7 +85,7 @@ class CircularIndicatorWidget extends StatefulWidget {
 }
 
 class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
@@ -109,9 +109,7 @@ class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _controller
-      ..addListener(() => setState(() {}))
+    _controller..addListener(() => setState(() {}))
       ..forward();
   }
 }

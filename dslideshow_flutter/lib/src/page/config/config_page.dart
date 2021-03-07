@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class ConfigPage extends StatefulWidget {
-  ConfigPage({Key key}) : super(key: key);
+  ConfigPage({Key? key}) : super(key: key);
 
   @override
   _ConfigPageState createState() => _ConfigPageState();

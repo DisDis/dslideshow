@@ -12,6 +12,6 @@ abstract class SensorInfo implements Built<SensorInfo, SensorInfoBuilder> {
   static Serializer<SensorInfo> get serializer =>
       _$sensorInfoSerializer;
 
-  factory SensorInfo([void updates(SensorInfoBuilder b)]) = _$SensorInfo;
+  factory SensorInfo([void updates(SensorInfoBuilder b)?]) = _$SensorInfo;
   SensorInfo._();
 }

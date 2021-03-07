@@ -23,13 +23,13 @@ class GPhotoStorage extends DiskStorage{
   static final Logger _log = new Logger('GPhotoStorage');
   final GPhotoStorageConfig _config;
   static const String name = 'GPhotoStorage';
-  GooglePhotoService _googlePhotoService;
-  GooglePhotoService get googlePhotoService => _googlePhotoService;
+  GooglePhotoService? _googlePhotoService;
+  GooglePhotoService? get googlePhotoService => _googlePhotoService;
 
   @override
   DateTime lastSync = new DateTime.fromMicrosecondsSinceEpoch(1);
   bool _syncInProcess = false;
-  Timer _syncTimer;
+  Timer? _syncTimer;
 
   final StreamController<DateTime> _scStartSync = new StreamController.broadcast();
   final StreamController<DateTime> _scEndSync = new StreamController.broadcast();
@@ -49,7 +49,7 @@ class GPhotoStorage extends DiskStorage{
       lastSync = DateTime.parse(lastSyncStr);
     }
     _googlePhotoService = new GooglePhotoService(_config.clientId.identifier,_config.clientId.secret,_config.refreshToken,accessTokenData, accessTokenExpiry);
-    _googlePhotoService.onUpdateCredentials.listen((event) {
+    _googlePhotoService!.onUpdateCredentials.listen((event) {
       _appStorage.setValue(GPhotoStorage_accessTokenData, event.accessToken.data);
       _appStorage.setValue(GPhotoStorage_accessTokenExpiry, event.accessToken.expiry.toIso8601String());
     });
@@ -59,7 +59,7 @@ class GPhotoStorage extends DiskStorage{
   final StorageType type = StorageType.remote;
 
   String _getFileName(GooglePhotoItem item){
-    final ext = item.mimeType.substring(item.mimeType.indexOf('/')+1);
+    final ext = item.mimeType!.substring(item.mimeType!.indexOf('/')+1);
     return '${item.id}_${_config.imageWidth}x${_config.imageHeight}.${ext}';
   }
 
@@ -82,7 +82,7 @@ class GPhotoStorage extends DiskStorage{
 
     for (String albumName in _config.albumNames) {
       _log.info('sync GPhoto Album:"${albumName}"');
-      final items = await _googlePhotoService.getMediaItemInAlbum(albumName, _config.imageWidth, _config.imageHeight);
+      final items = await _googlePhotoService!.getMediaItemInAlbum(albumName, _config.imageWidth, _config.imageHeight);
       final Map<String, GooglePhotoItem> itemMap = new Map.fromIterables(items.map((e) => _getFileName(e)), items);
       final localItems = (await folder.listSync()).map((e) => path.basename(e.path));
       localItems.forEach((element) => itemMap.remove(element));
@@ -92,7 +92,7 @@ class GPhotoStorage extends DiskStorage{
 
       var count = 0;
       await Future.forEach(itemMap.keys, (String fileName) async {
-        var googleItem = itemMap[fileName];
+        var googleItem = itemMap[fileName]!;
         _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType}');
         HttpClient client = new HttpClient();
         await client.getUrl(Uri.parse(googleItem.url))
@@ -129,7 +129,7 @@ class GPhotoStorage extends DiskStorage{
   @override
   Future release() async{
     if (_syncTimer != null){
-      _syncTimer.cancel();
+      _syncTimer!.cancel();
       _syncTimer = null;
     }
     super.release();

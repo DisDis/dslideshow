@@ -14,32 +14,29 @@ import 'package:path/path.dart' as path;
 
 class ImageWidget extends StatelessWidget implements ItemWidget{
   static final Logger _log = Logger('ImageWidget');
-  Image _image;
+  Image? _image;
   final MediaItem item;
   final SlideShowConfig _config;
 
-  // Image get image => _image;
-  // Image get imageCover => _imageCover;
+  bool get isGif => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.gif';
 
-  bool get isGif => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.gif';
-
-  ImageWidget(this.item, this._config) : super(key: Key('img:${item.uri.toFilePath()}')) {
+  ImageWidget(this.item, this._config) : super(key: Key('img:${item.uri!.toFilePath()}')) {
     if (isGif) {
       _image =
           Image.memory(
-              new File(item.uri.toFilePath()).readAsBytesSync(),
+              new File(item.uri!.toFilePath()).readAsBytesSync(),
               fit: BoxFit.contain, filterQuality: FilterQuality.high);
     }
   }
 
   @override
-  Widget build(BuildContext context) => _image!=null? _image : Container();
+  Widget build(BuildContext context) => _image!=null? _image! : Container();
 
   Future<void> precache(BuildContext context) async {
     if (isGif) {
-      return precacheImage(_image.image, context);
+      return precacheImage(_image!.image, context);
     }
-    ui.Image imageSrc = await loadImageFromFile(new File(item.uri.toFilePath()));
+    ui.Image imageSrc = await loadImageFromFile(new File(item.uri!.toFilePath()));
     final recorder = ui.PictureRecorder();
     final paintBlur = Paint();
     if (_config.isBlurredBackground && _config.backgroundBlurSigma > 0) {
@@ -69,9 +66,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
 
     final outputImage = await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
-    final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
+    final byteData = await (outputImage.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
     _image = Image.memory(byteData.buffer.asUint8List());
-    return precacheImage(_image.image, context);
+    return precacheImage(_image!.image, context);
   }
 
   /// Paints an image into the given rectangle on the canvas.
@@ -144,21 +141,21 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
   ///  * [BoxDecoration], which uses this function to paint a [DecorationImage].
   ///  decoration_image.dart
   void paintImage({
-    Canvas canvas,
-    Rect rect,
-    ui.Image image,
-    String debugImageLabel,
+    required Canvas canvas,
+    required Rect rect,
+    required ui.Image image,
+    String? debugImageLabel,
     double scale = 1.0,
-    ColorFilter colorFilter,
-    BoxFit fit,
+    ColorFilter? colorFilter,
+    BoxFit? fit,
     Alignment alignment = Alignment.center,
-    Rect centerSlice,
+    Rect? centerSlice,
     //ImageRepeat repeat = ImageRepeat.noRepeat,
     bool flipHorizontally = false,
     bool invertColors = false,
     FilterQuality filterQuality = FilterQuality.low,
     bool isAntiAlias = false,
-    Paint inputPaint = null
+    Paint? inputPaint = null
   }) {
     ImageRepeat repeat = ImageRepeat.noRepeat;
     assert(canvas != null);
@@ -171,7 +168,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       return;
     Size outputSize = rect.size;
     Size inputSize = Size(image.width.toDouble(), image.height.toDouble());
-    Offset sliceBorder;
+    late Offset sliceBorder;
     if (centerSlice != null) {
       sliceBorder = Offset(
         centerSlice.left + inputSize.width - centerSlice.right,
@@ -186,7 +183,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     final Size sourceSize = fittedSizes.source * scale;
     Size destinationSize = fittedSizes.destination;
     if (centerSlice != null) {
-      outputSize += sliceBorder/*!*/;
+      outputSize += sliceBorder!;
       destinationSize += sliceBorder;
       // We don't have the ability to draw a subset of the image at the same time
       // as we apply a nine-patch stretch.
@@ -353,7 +350,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
         ImageConfiguration config = ImageConfiguration.empty,
       }) async {
     Completer<ui.Image> completer = Completer<ui.Image>();
-    ImageStreamListener listener;
+    late ImageStreamListener listener;
     ImageStream stream = provider.resolve(config);
     listener = ImageStreamListener((ImageInfo frame, bool sync) {
       final ui.Image image = frame.image;

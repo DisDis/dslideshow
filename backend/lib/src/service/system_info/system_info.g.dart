@@ -79,7 +79,7 @@ class _$SystemInfo extends SystemInfo {
   @override
   final UpdateInfo updateInfo;
 
-  factory _$SystemInfo([void Function(SystemInfoBuilder) updates]) =>
+  factory _$SystemInfo([void Function(SystemInfoBuilder)? updates]) =>
       (new SystemInfoBuilder()..update(updates)).build();
 
   _$SystemInfo._({this.cpuInfo, this.networkInfo, this.osInfo, this.updateInfo})

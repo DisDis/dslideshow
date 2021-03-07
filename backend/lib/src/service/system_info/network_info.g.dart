@@ -189,7 +189,7 @@ class _$NetworkInfo extends NetworkInfo {
   @override
   final BuiltList<NetworkInterfaceInfo> interfaces;
 
-  factory _$NetworkInfo([void Function(NetworkInfoBuilder) updates]) =>
+  factory _$NetworkInfo([void Function(NetworkInfoBuilder)? updates]) =>
       (new NetworkInfoBuilder()..update(updates)).build();
 
   _$NetworkInfo._({this.lastUpdate, this.hasInternet, this.interfaces})
@@ -315,7 +315,7 @@ class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {
   final String ip6;
 
   factory _$NetworkInterfaceInfo(
-          [void Function(NetworkInterfaceInfoBuilder) updates]) =>
+          [void Function(NetworkInterfaceInfoBuilder)? updates]) =>
       (new NetworkInterfaceInfoBuilder()..update(updates)).build();
 
   _$NetworkInterfaceInfo._({this.name, this.status, this.ip4, this.ip6})

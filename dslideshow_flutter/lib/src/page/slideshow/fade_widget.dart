@@ -4,7 +4,7 @@ import 'package:flutter/widgets.dart';
 class FadeWidget extends AnimatedWidget {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
 
-  FadeWidget({Key key, Animation<double> animation}) : super(key: key, listenable: animation);
+  FadeWidget({Key? key, required Animation<double> animation}) : super(key: key, listenable: animation);
 
   Widget build(BuildContext context) {
     final Animation<double> animation = listenable as Animation<double>;

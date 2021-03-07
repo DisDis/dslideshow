@@ -2,7 +2,7 @@ import 'package:dslideshow_backend/config.dart';
 //import 'package:dslideshow_server/universe_service/src/universe_service.dart';
 //import 'package:dslideshow_server/world_service/src/world_service.dart';
 //import 'package:crazy_pigs_common/game/service/round_generator_service.dart';
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 
 import 'src/service/hardware/hardware.dart';
 //import 'package:dslideshow_server/result_service/src/db_service.dart';
@@ -11,9 +11,9 @@ import 'src/service/hardware/hardware.dart';
 
 void getInjectorModule() {
   // Use this static instance
-  final injector = Injector.appInstance;
-  injector..registerSingleton<AppConfig>(()=>new AppConfig())
-  ..registerSingleton<AppStorage>(() => new AppStorage());
+  final injector = GetIt.instance;
+  injector..registerSingleton<AppConfig>(new AppConfig())
+  ..registerSingleton<AppStorage>(new AppStorage());
 }
 //      ..bind(HardwareService, toFactory: (AppConfig _config) => new HardwareService(_config), inject: <dynamic>[AppConfig]);
 //      ..bind(WebServer, toFactory: (AppConfig _config, DBService _dbService) => new WebServer(_config, _dbService), inject: <dynamic>[AppConfig, DBService])

@@ -7,10 +7,10 @@ class MetricsContainerWidget extends StatelessWidget {
   final Widget child;
 
   MetricsContainerWidget({
-    @required this.iconData,
-    @required this.backgroundColor,
-    @required this.child,
-    Key key,
+    required this.iconData,
+    required this.backgroundColor,
+    required this.child,
+    Key? key,
   }) : super(key: key);
 
   @override

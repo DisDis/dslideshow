@@ -115,7 +115,7 @@ class _$EchoCommand extends EchoCommand {
   @override
   final int id;
 
-  factory _$EchoCommand([void Function(EchoCommandBuilder) updates]) =>
+  factory _$EchoCommand([void Function(EchoCommandBuilder)? updates]) =>
       (new EchoCommandBuilder()..update(updates)).build();
 
   _$EchoCommand._({this.text, this.id}) : super._() {
@@ -201,7 +201,7 @@ class _$EchoCommandResult extends EchoCommandResult {
   final int id;
 
   factory _$EchoCommandResult(
-          [void Function(EchoCommandResultBuilder) updates]) =>
+          [void Function(EchoCommandResultBuilder)? updates]) =>
       (new EchoCommandResultBuilder()..update(updates)).build();
 
   _$EchoCommandResult._({this.resultText, this.id}) : super._() {

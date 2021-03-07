@@ -26,7 +26,7 @@ class BlinkAnimation extends StatefulWidget {
   final bool hideAfterBlink;
 
   const BlinkAnimation(
-      {Key key, this.countBlink: 3, this.milliseconds: 1500, @required this.child, this.hideAfterBlink: true})
+      {Key? key, this.countBlink: 3, this.milliseconds: 1500, required this.child, this.hideAfterBlink: true})
       : super(key: key);
   @override
   _BlinkAnimationState createState() => _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
@@ -46,7 +46,7 @@ class CommonHeaderWidget extends StatelessWidget {
               top: 0,
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
+                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug!)),
                 child: Container(color: Colors.transparent, width: 30, height: 30),
               ),
             ),
@@ -79,7 +79,7 @@ class CommonHeaderWidget extends StatelessWidget {
                         size: 24.0,
                         color: Colors.white,
                       )),
-                if (store.state.hasInternet)
+                if (store.state.hasInternet!)
                   BlinkAnimation(
                       key: const Key('hasInternet'),
                       child: Icon(
@@ -108,8 +108,8 @@ class CommonHeaderWidget extends StatelessWidget {
 
 class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
-  Animation<double> animation;
-  AnimationController controller;
+  late Animation<double> animation;
+  late AnimationController controller;
   int countBlink;
   final int milliseconds;
   final Widget child;
@@ -121,7 +121,7 @@ class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProvid
   Widget build(BuildContext context) {
     return AnimatedBuilder(
         animation: animation,
-        builder: (BuildContext context, Widget child) {
+        builder: (BuildContext context, Widget? child) {
           return Opacity(
             opacity: _opacityTween.evaluate(animation),
             child: this.child,

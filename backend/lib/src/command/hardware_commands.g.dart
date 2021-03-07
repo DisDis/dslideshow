@@ -243,7 +243,7 @@ class _$AreYouReadyCommand extends AreYouReadyCommand {
   final int id;
 
   factory _$AreYouReadyCommand(
-          [void Function(AreYouReadyCommandBuilder) updates]) =>
+          [void Function(AreYouReadyCommandBuilder)? updates]) =>
       (new AreYouReadyCommandBuilder()..update(updates)).build();
 
   _$AreYouReadyCommand._({this.id}) : super._();
@@ -321,7 +321,7 @@ class _$PushButtonCommand extends PushButtonCommand {
   final int id;
 
   factory _$PushButtonCommand(
-          [void Function(PushButtonCommandBuilder) updates]) =>
+          [void Function(PushButtonCommandBuilder)? updates]) =>
       (new PushButtonCommandBuilder()..update(updates)).build();
 
   _$PushButtonCommand._({this.button, this.id}) : super._() {
@@ -413,7 +413,7 @@ class _$LEDControlCommand extends LEDControlCommand {
   final int id;
 
   factory _$LEDControlCommand(
-          [void Function(LEDControlCommandBuilder) updates]) =>
+          [void Function(LEDControlCommandBuilder)? updates]) =>
       (new LEDControlCommandBuilder()..update(updates)).build();
 
   _$LEDControlCommand._({this.led, this.value, this.id}) : super._() {

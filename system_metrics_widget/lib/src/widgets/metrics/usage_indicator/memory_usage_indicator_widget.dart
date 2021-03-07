@@ -6,7 +6,7 @@ class MemoryUsageIndicatorWidget extends UsageIndicatorWidget {
   final int usedMemory;
   final String title;
 
-  MemoryUsageIndicatorWidget({@required this.totalMemory, @required this.usedMemory, this.title = 'Mem'})
+  MemoryUsageIndicatorWidget({required this.totalMemory, required this.usedMemory, this.title = 'Mem'})
       : super(
           title: title,
           total: _formatter(totalMemory),

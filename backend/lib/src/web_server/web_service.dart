@@ -12,7 +12,7 @@ import 'package:shelf/shelf.dart';
 
 //TODO: Remove stub class
 class WebService{
-  bool enabled = false;
+  bool? enabled = false;
   final WebServerConfig _config;
   WebService(this._config);
 }

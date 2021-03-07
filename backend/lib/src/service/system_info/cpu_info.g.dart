@@ -78,7 +78,7 @@ class _$CpuInfo extends CpuInfo {
   @override
   final String revision;
 
-  factory _$CpuInfo([void Function(CpuInfoBuilder) updates]) =>
+  factory _$CpuInfo([void Function(CpuInfoBuilder)? updates]) =>
       (new CpuInfoBuilder()..update(updates)).build();
 
   _$CpuInfo._({this.cores, this.hardware, this.model, this.revision})

@@ -19,6 +19,6 @@ abstract class WebServerControlCommand implements RpcCommand, Built<WebServerCon
   static Serializer<WebServerControlCommand> get serializer =>
       _$webServerControlCommandSerializer;
 
-  factory WebServerControlCommand([void updates(WebServerControlCommandBuilder b)]) = _$WebServerControlCommand;
+  factory WebServerControlCommand([void updates(WebServerControlCommandBuilder b)?]) = _$WebServerControlCommand;
   WebServerControlCommand._();
 }

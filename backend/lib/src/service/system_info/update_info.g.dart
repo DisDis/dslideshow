@@ -162,7 +162,7 @@ class _$UpdateInfo extends UpdateInfo {
   @override
   final String uptime;
 
-  factory _$UpdateInfo([void Function(UpdateInfoBuilder) updates]) =>
+  factory _$UpdateInfo([void Function(UpdateInfoBuilder)? updates]) =>
       (new UpdateInfoBuilder()..update(updates)).build();
 
   _$UpdateInfo._(

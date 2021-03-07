@@ -11,13 +11,13 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
 
   static Serializer<GlobalState> get serializer => _$globalStateSerializer;
 
-  factory GlobalState([void updates(GlobalStateBuilder b)]) = _$GlobalState;
+  factory GlobalState([void updates(GlobalStateBuilder b)?]) = _$GlobalState;
   factory GlobalState.initial() {
     return (GlobalStateBuilder()
           ..isPaused = false
           ..storageStatus = StorageStatusEnum.done
           ..delayBetweenItems = defaultDelayBetweenItems
-          ..beginTimePowerButtonPress = null
+          ..beginTimePowerButtonPress = DateTime.now()
           ..isScreenLock = false
           ..isDebug = false
           ..hasInternet = true)
@@ -27,25 +27,25 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
   GlobalState._();
 
   @nullable
-  DateTime get beginTimePowerButtonPress;
+  DateTime? get beginTimePowerButtonPress;
 
   @nullable
-  String get currentMediaFile;
+  String? get currentMediaFile;
 
-  Duration get delayBetweenItems;
+  Duration? get delayBetweenItems;
 
-  bool get hasInternet;
+  bool? get hasInternet;
 
-  bool get isScreenLock;
+  bool? get isScreenLock;
 
-  bool get isDebug;
+  bool? get isDebug;
 
-  bool get isPaused;
+  bool? get isPaused;
 
   @nullable
-  String get nextMediaFile;
+  String? get nextMediaFile;
 
-  StorageStatusEnum get storageStatus;
+  StorageStatusEnum? get storageStatus;
 }
 
 class StorageStatusEnum extends EnumClass {

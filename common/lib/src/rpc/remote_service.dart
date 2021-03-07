@@ -9,10 +9,11 @@ import 'package:dslideshow_common/src/rpc/init_rpc.dart';
 
 class RemoteService{
   final IsolateRunner _service;
-  final RemoteServiceTransport _transport;
+  late RemoteServiceTransport _transport;
   final Serializers _serializers;
 
-  RemoteService(this._service, this._serializers,[RemoteServiceTransport/*!*/ transport]): _transport = transport == null? new DirectSpawnTransport(): transport {
+  RemoteService(this._service, this._serializers,[RemoteServiceTransport? transport]){
+    _transport = transport ?? new DirectSpawnTransport();
   }
 
   // Запрос и ответ не обрабатывается

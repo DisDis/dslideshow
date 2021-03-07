@@ -23,7 +23,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
-import 'package:omxplayer_video_player/omxplayer_video_player.dart';
+// import 'package:omxplayer_video_player/omxplayer_video_player.dart';
 
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -37,11 +37,12 @@ void main() async {
 	     DeviceOrientation.landscapeLeft,
 	  ]);
   } else {
-    OmxplayerVideoPlayer.useAsImplementation();
+    //TODO: Wait  omxplayer_video_player
+    // OmxplayerVideoPlayer.useAsImplementation();
   }
 
   try {
-    RemoteService _backendService;
+    RemoteService? _backendService;
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
 
@@ -94,14 +95,14 @@ void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
 }
 
 class FlutterReduxApp extends StatelessWidget {
-  final Store<GlobalState> store;
+  final Store<GlobalState>? store;
 
-  FlutterReduxApp({Key key, this.store}) : super(key: key);
+  FlutterReduxApp({Key? key, this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<GlobalState>(
-        store: store,
+        store: store!,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(backgroundColor: Colors.black),

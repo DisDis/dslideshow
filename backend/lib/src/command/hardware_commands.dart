@@ -16,7 +16,7 @@ abstract class AreYouReadyCommand implements RpcCommand, Built<AreYouReadyComman
   static Serializer<AreYouReadyCommand> get serializer =>
       _$areYouReadyCommandSerializer;
 
-  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)]) = _$AreYouReadyCommand;
+  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)?]) = _$AreYouReadyCommand;
   AreYouReadyCommand._();
 }
 
@@ -32,7 +32,7 @@ abstract class PushButtonCommand implements RpcCommand, Built<PushButtonCommand,
   static Serializer<PushButtonCommand> get serializer =>
       _$pushButtonCommandSerializer;
 
-  factory PushButtonCommand([void updates(PushButtonCommandBuilder b)]) = _$PushButtonCommand;
+  factory PushButtonCommand([void updates(PushButtonCommandBuilder b)?]) = _$PushButtonCommand;
   PushButtonCommand._();
 }
 
@@ -50,7 +50,7 @@ abstract class LEDControlCommand implements RpcCommand, Built<LEDControlCommand,
   static Serializer<LEDControlCommand> get serializer =>
       _$lEDControlCommandSerializer;
 
-  factory LEDControlCommand([void updates(LEDControlCommandBuilder b)]) = _$LEDControlCommand;
+  factory LEDControlCommand([void updates(LEDControlCommandBuilder b)?]) = _$LEDControlCommand;
   LEDControlCommand._();
 }
 

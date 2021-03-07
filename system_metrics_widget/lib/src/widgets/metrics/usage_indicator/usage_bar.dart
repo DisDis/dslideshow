@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class UsageBar extends StatefulWidget {
-  final int usagePercent;
+  final int? usagePercent;
 
-  UsageBar({@required this.usagePercent});
+  UsageBar({required this.usagePercent});
 
   @override
   State<StatefulWidget> createState() => _UsageBarState();
@@ -68,7 +68,7 @@ class UsageBarPainter extends CustomPainter {
 }
 
 class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
@@ -76,14 +76,13 @@ class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin
 
     return CustomPaint(
       size: Size(size.width, 8),
-      painter: UsageBarPainter((widget.usagePercent * _controller.value).toInt()),
+      painter: UsageBarPainter((widget.usagePercent! * _controller!.value).toInt()),
     );
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
     _controller
       ..addListener(() => setState(() {}))
       ..forward();

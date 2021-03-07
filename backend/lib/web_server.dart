@@ -26,10 +26,10 @@ import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 
 final Logger _log = new Logger('main');
-WebServer _webServer;
+late WebServer _webServer;
 void main(List<dynamic> args) async{
   initLog("web");
   _log.info("Run");
@@ -38,13 +38,13 @@ void main(List<dynamic> args) async{
     final RemoteService _remoteBackendService = new RemoteService(remoteBackEndService, serializers);
 
     // Use this static instance
-    final injector = Injector.appInstance;
+    final injector = GetIt.instance;
     getInjectorModule();
-    injector.registerSingleton<WebService>((){
+    injector.registerLazySingleton<WebService>((){
       final _config = injector.get<AppConfig>();
       return new WebService(_config.webServer);
     });
-    injector.registerSingleton<WebServer>((){
+    injector.registerLazySingleton<WebServer>((){
       final _config = injector.get<AppConfig>();
       return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
     });

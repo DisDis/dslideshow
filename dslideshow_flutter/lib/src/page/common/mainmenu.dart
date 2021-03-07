@@ -14,7 +14,7 @@ class MainMenuWidget extends StatefulWidget {
 class _MenuOptionsScreenState extends State<MainMenuWidget> {
   int _selectedOption = 0;
   final Random _rnd = new Random();
-  Timer _demoTimer;
+  late Timer _demoTimer;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +49,13 @@ class _MenuOptionsScreenState extends State<MainMenuWidget> {
               child: ListTile(
                 leading: options[index - 1].icon,
                 title: Text(
-                  options[index - 1].title,
+                  options[index - 1].title!,
                   style: TextStyle(
                     color: _selectedOption == index - 1 ? Colors.black : Colors.grey[600],
                   ),
                 ),
                 subtitle: Text(
-                  options[index - 1].subtitle,
+                  options[index - 1].subtitle!,
                   style: TextStyle(
                     color: _selectedOption == index - 1 ? Colors.black : Colors.grey,
                   ),

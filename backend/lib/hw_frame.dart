@@ -10,7 +10,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:isolate/isolate.dart';
@@ -22,7 +22,7 @@ import 'src/service/hardware/src/gpio_service.dart';
 import 'web_server.dart' as web_server;
 
 final Logger _log = new Logger('main');
-HardwareService _service;
+late HardwareService _service;
 
 void main(List<dynamic> args) async{
   initLog("hw_frame");
@@ -37,30 +37,30 @@ void main(List<dynamic> args) async{
     final  _remoteWebServer = new RemoteService(_webServer, serializers);
 
     // Use this static instance
-    final injector = Injector.appInstance;
+    final injector = GetIt.instance;
     getInjectorModule();
-    injector.registerSingleton<Storage>((){
+    injector.registerLazySingleton<Storage>((){
       final _config = injector.get<AppConfig>();
-      return new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>);
+      return new DiskStorage(_config.storageSection![DiskStorage.name] as Map<String, dynamic>?);
       //return new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage);
     });
-    injector.registerSingleton<GPIOService>((){
+    injector.registerLazySingleton<GPIOService>((){
       final _config = injector.get<AppConfig>();
       return new GPIOServiceImpl(_config.hardware);
     });
-    injector.registerSingleton<ScreenService>((){
+    injector.registerLazySingleton<ScreenService>((){
       final _config = injector.get<AppConfig>();
       return new ScreenService(_config.hardware);
     });
-    injector.registerSingleton<MqttService>((){
+    injector.registerLazySingleton<MqttService>((){
       final _config = injector.get<AppConfig>();
       return new MqttService(_config.mqtt);
     });
-    injector.registerSingleton<SystemInfoService>((){
+    injector.registerLazySingleton<SystemInfoService>((){
       final _config = injector.get<AppConfig>();
       return new SystemInfoService(_config.hardware);
     });
-    injector.registerSingleton<HardwareService>((){
+    injector.registerLazySingleton<HardwareService>((){
       final _config = injector.get<AppConfig>();
       return new HardwareService(_config, _remoteFrontendService, injector.get<Storage>(),
           injector.get<GPIOService>(),  injector.get<ScreenService>(), injector.get<SystemInfoService>(), _remoteWebServer, injector.get<MqttService>());

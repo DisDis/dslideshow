@@ -5,8 +5,8 @@ import 'package:dslideshow_common/src/rpc/command.dart';
 import 'package:dslideshow_common/src/rpc/service.dart';
 import 'package:logging/logging.dart';
 
-/*late*/ Serializers _serializers;
-/*late*/ RpcService _service;
+late Serializers _serializers;
+late RpcService _service;
 final Logger _log = new Logger('rpc_service');
 
 void initRpc(RpcService service, Serializers serializers){

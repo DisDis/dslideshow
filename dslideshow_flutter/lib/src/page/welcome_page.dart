@@ -14,7 +14,7 @@ class AnimatedLogo extends AnimatedWidget {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
 //  static final _sizeTween = Tween<double>(begin: 20, end: 50);
 
-  AnimatedLogo({Key key, Animation<double> animation}) : super(key: key, listenable: animation);
+  AnimatedLogo({Key? key, required Animation<double> animation}) : super(key: key, listenable: animation);
 
   String get welcomeText {
     return intl.Intl.message(
@@ -75,8 +75,8 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   static final Logger _log = Logger('_WelcomePageState');
-  Animation<double> animation;
-  AnimationController controller;
+  late Animation<double> animation;
+  late AnimationController controller;
   final FrontendService _frontendService = injector.get<FrontendService>();
 
   @override

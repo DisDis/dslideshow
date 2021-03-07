@@ -11,7 +11,7 @@ import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 import 'package:logging/logging.dart';
 import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_common/log.dart';
@@ -19,18 +19,18 @@ import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
 import 'package:isolate/isolate.dart';
 
 Logger _log = new Logger('main');
-final injector = Injector.appInstance;
+final injector = GetIt.instance;
 
 void main(List<String> args) async {
   initLog("main");
   _log.info("Run");
   try {
     getInjectorModule();
-    injector.registerSingleton<GPIOService>((){
+    injector.registerLazySingleton<GPIOService>((){
       final _config = injector.get<AppConfig>();
       return  new GPIOServiceImpl(_config.hardware);
     });
-    injector.registerSingleton<MqttService>((){
+    injector.registerLazySingleton<MqttService>((){
       final _config = injector.get<AppConfig>();
       return new MqttService(_config.mqtt);
     });
@@ -86,7 +86,7 @@ void _testSystemInfo() async{
 
 void testGPhoto() async{
   final _gphotoStorage = injector.get<Storage>() as GPhotoStorage;
-  var mediaList = await _gphotoStorage.googlePhotoService.getMediaItemInAlbum('TEST_slide', 100, 100);
+  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum('TEST_slide', 100, 100);
   mediaList.forEach((googleItem) {
     _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
   });

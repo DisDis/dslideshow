@@ -70,7 +70,7 @@ class _$WebServerControlCommand extends WebServerControlCommand {
   final int id;
 
   factory _$WebServerControlCommand(
-          [void Function(WebServerControlCommandBuilder) updates]) =>
+          [void Function(WebServerControlCommandBuilder)? updates]) =>
       (new WebServerControlCommandBuilder()..update(updates)).build();
 
   _$WebServerControlCommand._({this.enable, this.id}) : super._() {
