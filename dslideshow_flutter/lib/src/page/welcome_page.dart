@@ -12,6 +12,7 @@ import 'package:logging/logging.dart';
 class AnimatedLogo extends AnimatedWidget {
   // Make the Tweens static because they don't change.
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
+
 //  static final _sizeTween = Tween<double>(begin: 20, end: 50);
 
   AnimatedLogo({Key? key, required Animation<double> animation}) : super(key: key, listenable: animation);
@@ -30,21 +31,15 @@ class AnimatedLogo extends AnimatedWidget {
       child: Opacity(
         opacity: _opacityTween.evaluate(animation),
         child: Container(
-//          margin: EdgeInsets.symmetric(vertical: 10),
-//          height: _sizeTween.evaluate(animation),
-//          width: _sizeTween.evaluate(animation),
           child:
-//          new Directionality(
-//              textDirection: TextDirection.ltr,
-//              child:
-              Column(
+          Column(
             children: <Widget>[
               Text(
                 welcomeText,
                 style: TextStyle(color: Colors.white, fontSize: 50),
               ),
-                    Text("front: v${ApplicationInfo.frontendVersion}",
-                          style: TextStyle(color: Colors.white, fontSize: 25)),
+              Text("front: v${ApplicationInfo.frontendVersion}",
+                  style: TextStyle(color: Colors.white, fontSize: 25)),
               Text("back: v${ApplicationInfo.backendVersion}",
                   style: TextStyle(color: Colors.white, fontSize: 25))
 
@@ -59,19 +54,6 @@ class AnimatedLogo extends AnimatedWidget {
 class WelcomePage extends StatefulWidget {
   _WelcomePageState createState() => _WelcomePageState();
 }
-
-/*
- Container(
-      color: Colors.black,
-      child: new Directionality(
-          textDirection: TextDirection.ltr,
-          child: Column(
-            children: <Widget>[
-              Text('Welcome',style: TextStyle(color: Colors.white, fontSize: 50),)
-            ],
-          )
-      ));
-*/
 
 class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   static final Logger _log = Logger('_WelcomePageState');

@@ -167,9 +167,9 @@ class SystemInfoService {
       result = await io.Process.run('cat', ['/proc/cpuinfo']);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
-        b.hardware = _findHardware.firstMatch(str)!.group(1)??'Unknown';
-        b.model = _findModel.firstMatch(str)!.group(1)??'Unknown';
-        b.revision = _findRevision.firstMatch(str)!.group(1)??'Unknown';
+        b.hardware = _findHardware.firstMatch(str)?.group(1)??'Unknown';
+        b.model = _findModel.firstMatch(str)?.group(1)??'Unknown';
+        b.revision = _findRevision.firstMatch(str)?.group(1)??'Unknown';
       }
       //      _log.info(b.build());
     } catch (e, s) {

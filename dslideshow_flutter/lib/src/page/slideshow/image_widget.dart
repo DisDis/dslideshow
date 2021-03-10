@@ -39,6 +39,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       return precacheImage(_image!.image, context);
     }
     ui.Image imageSrc = await loadImageFromFile(new File(item.uri!.toFilePath()));
+
     final recorder = ui.PictureRecorder();
     final paintBlur = Paint();
     if (_config.isBlurredBackground && _config.backgroundBlurSigma > 0) {
@@ -68,8 +69,8 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
 
     final outputImage = await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
-    final byteData = await (outputImage.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
-    _image = Image.memory(byteData.buffer.asUint8List(), errorBuilder: (context,_, __)=>Container());
+    final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
+    _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context,_, __)=>Container());
     return precacheImage(_image!.image, context);
   }
 
@@ -358,6 +359,12 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       final ui.Image image = frame.image;
       completer.complete(image);
       stream.removeListener(listener);
+    }, onError:(e, st){
+      _log.warning('loadImageFromProvider', e, st);
+      completer.completeError(e, st);
+      stream.removeListener(listener);
+      // stream.completer!.reportError(exception: e, stack: st);
+      imageCache!.evict(provider);
     });
     stream.addListener(listener);
     return completer.future;

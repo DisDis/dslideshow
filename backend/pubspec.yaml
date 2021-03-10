@@ -4,7 +4,10 @@ description: A sample command-line application
 environment:
   sdk: '>=2.12.0 <3.0.0'
 dependencies:
-    isolate: ^2.0.3
+    #TODO: Fix after NNBD
+    isolate: #^2.0.3
+     git:
+       url: https://github.com/2ZeroSix/isolate
     logging: ^1.0.0
     get_it: ^6.0.0
     built_value: ^8.0.0

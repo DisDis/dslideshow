@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 class DiskMediaItem extends MediaItem {
-  DiskMediaItem(String id, Uri uri) : super(id, uri);
+  DiskMediaItem(String? id, Uri? uri) : super(id, uri);
 }
 
 class DiskStorage extends Storage {
@@ -58,7 +58,7 @@ class DiskStorage extends Storage {
   Future<Uri?> _getRandomItem() async {
     if (_cache.isEmpty) {
       final items = await _folder.listSync();
-      if (items.length == 0) {
+      if (items.isEmpty) {
         return null;
       }
       _cache = items.map((e) => e.uri).toList(growable: true);
@@ -67,11 +67,13 @@ class DiskStorage extends Storage {
     return _cache.removeAt(_rnd.nextInt(_cache.length));
   }
 
+  static final _nullMediaItem = new DiskMediaItem(null,null);
+
   @override
   Future<MediaItem?> next() async {
     _current = _next;
-    var nextUri = await (_getRandomItem() as FutureOr<Uri>);
-    _next = new DiskMediaItem(nextUri.path, nextUri);
+    final nextUri = await _getRandomItem();
+    _next = nextUri==null? _nullMediaItem : new DiskMediaItem(nextUri.path, nextUri);
     return _next;
   }
 
@@ -94,7 +96,6 @@ class DiskStorage extends Storage {
     }
     await next();
     await next();
-    return;
   }
 
   Future release() async {
@@ -103,8 +104,17 @@ class DiskStorage extends Storage {
     }
   }
 
+  Timer? _timerFolderUpdate;
   void _onFolderUpdated(FileSystemEvent event) {
-    _log.info('Storage folder changed, file cache flushed');
-    _cache = <Uri>[];
+    if (_timerFolderUpdate != null){
+      _log.info('Storage folder changed, wait...');
+      return;
+    }
+    _log.info('Storage folder changed, run timer');
+    _timerFolderUpdate = new Timer(Duration(minutes: 1),(){
+      _log.info('File cache flushed');
+      _timerFolderUpdate = null;
+      _cache = <Uri>[];
+    });
   }
 }

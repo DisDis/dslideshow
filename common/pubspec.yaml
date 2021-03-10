@@ -9,7 +9,10 @@ environment:
 dependencies:
   built_value: ^8.0.0
   logging: ^1.0.0
-  isolate: ^2.0.3
+  #TODO: Fix after NNBD
+  isolate: #^2.0.3
+    git:
+      url: https://github.com/2ZeroSix/isolate
   uuid: ^3.0.0
 
 dev_dependencies:
