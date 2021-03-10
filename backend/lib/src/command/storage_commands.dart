@@ -13,7 +13,6 @@ abstract class GetMediaItemCommand implements RpcCommand, Built<GetMediaItemComm
 
   bool get isCurrent;
   @override
-  @nullable
   int get id;
 
   static Serializer<GetMediaItemCommand> get serializer =>
@@ -24,12 +23,9 @@ abstract class GetMediaItemCommand implements RpcCommand, Built<GetMediaItemComm
 }
 
 abstract class GetMediaItemCommandResult implements RpcResult, Built<GetMediaItemCommandResult, GetMediaItemCommandResultBuilder> {
-  @nullable
   String? get mediaId;
-  @nullable
   Uri? get mediaUri;
   @override
-  @nullable
   int get id;
 
   static Serializer<GetMediaItemCommandResult> get serializer =>
@@ -46,7 +42,6 @@ abstract class StorageNextCommand implements RpcCommand, Built<StorageNextComman
   String get type => TYPE;
 
   @override
-  @nullable
   int get id;
 
   static Serializer<StorageNextCommand> get serializer =>

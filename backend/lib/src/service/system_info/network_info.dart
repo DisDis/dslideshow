@@ -17,18 +17,16 @@ abstract class NetworkInfo implements Built<NetworkInfo, NetworkInfoBuilder> {
 }
 
 abstract class NetworkInterfaceInfo implements Built<NetworkInterfaceInfo, NetworkInterfaceInfoBuilder> {
-  String? get name;
-  NetworkInterfaceStatus? get status;
+  String get name;
+  NetworkInterfaceStatus get status;
 
-  @nullable
   String? get ip4;
-  @nullable
   String? get ip6;
 
   static Serializer<NetworkInterfaceInfo> get serializer =>
       _$networkInterfaceInfoSerializer;
 
-  factory NetworkInterfaceInfo([void updates(NetworkInterfaceInfoBuilder b)?]) = _$NetworkInterfaceInfo;
+  factory NetworkInterfaceInfo([void updates(NetworkInterfaceInfoBuilder b)]) = _$NetworkInterfaceInfo;
   NetworkInterfaceInfo._();
 }
 

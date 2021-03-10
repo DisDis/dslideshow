@@ -10,7 +10,6 @@ abstract class AreYouReadyCommand implements RpcCommand, Built<AreYouReadyComman
   @override
   String get type => TYPE;
   @override
-  @nullable
   int get id;
 
   static Serializer<AreYouReadyCommand> get serializer =>
@@ -26,7 +25,6 @@ abstract class PushButtonCommand implements RpcCommand, Built<PushButtonCommand,
   String get type => TYPE;
   ButtonType get button;
   @override
-  @nullable
   int get id;
 
   static Serializer<PushButtonCommand> get serializer =>
@@ -44,7 +42,6 @@ abstract class LEDControlCommand implements RpcCommand, Built<LEDControlCommand,
   LEDType get led;
   bool get value;
   @override
-  @nullable
   int get id;
 
   static Serializer<LEDControlCommand> get serializer =>

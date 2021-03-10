@@ -1,5 +1,5 @@
-import 'package:media_slider_widget/effects/media_slider_item_effects.dart';
-import 'package:media_slider_widget/media_slider_item_effect.dart';
+import 'media_slider_item_effects.dart';
+import 'media_slider_item_effect.dart';
 
 typedef EffectImplementor = MediaSliderItemEffect Function();
 

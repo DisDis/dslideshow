@@ -1,4 +1,4 @@
-import 'package:injector/injector.dart';
+import 'package:get_it/get_it.dart';
 
 // Use this static instance
-final injector = Injector.appInstance;
+final injector = GetIt.instance;

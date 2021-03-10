@@ -12,8 +12,7 @@ abstract class OSInfo implements Built<OSInfo, OSInfoBuilder> {
 
   OSInfo._();
 
-  String? get name;
+  String get name;
 
-  @nullable
   OSType? get osType;
 }

@@ -41,26 +41,30 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
   final String wireName = 'NetworkInfo';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, NetworkInfo object,
+  Iterable<Object?> serialize(Serializers serializers, NetworkInfo object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'lastUpdate',
       serializers.serialize(object.lastUpdate,
           specifiedType: const FullType(int)),
       'hasInternet',
       serializers.serialize(object.hasInternet,
           specifiedType: const FullType(bool)),
-      'interfaces',
-      serializers.serialize(object.interfaces,
-          specifiedType: const FullType(
-              BuiltList, const [const FullType(NetworkInterfaceInfo)])),
     ];
-
+    Object? value;
+    value = object.interfaces;
+    if (value != null) {
+      result
+        ..add('interfaces')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(
+                BuiltList, const [const FullType(NetworkInterfaceInfo)])));
+    }
     return result;
   }
 
   @override
-  NetworkInfo deserialize(Serializers serializers, Iterable<Object> serialized,
+  NetworkInfo deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new NetworkInfoBuilder();
 
@@ -68,7 +72,7 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'lastUpdate':
           result.lastUpdate = serializers.deserialize(value,
@@ -81,8 +85,8 @@ class _$NetworkInfoSerializer implements StructuredSerializer<NetworkInfo> {
         case 'interfaces':
           result.interfaces.replace(serializers.deserialize(value,
                   specifiedType: const FullType(
-                      BuiltList, const [const FullType(NetworkInterfaceInfo)]))
-              as BuiltList<dynamic>);
+                      BuiltList, const [const FullType(NetworkInterfaceInfo)]))!
+              as BuiltList<Object>);
           break;
       }
     }
@@ -102,26 +106,29 @@ class _$NetworkInterfaceInfoSerializer
   final String wireName = 'NetworkInterfaceInfo';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, NetworkInterfaceInfo object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
       'status',
       serializers.serialize(object.status,
           specifiedType: const FullType(NetworkInterfaceStatus)),
     ];
-    if (object.ip4 != null) {
+    Object? value;
+    value = object.ip4;
+    if (value != null) {
       result
         ..add('ip4')
-        ..add(serializers.serialize(object.ip4,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    if (object.ip6 != null) {
+    value = object.ip6;
+    if (value != null) {
       result
         ..add('ip6')
-        ..add(serializers.serialize(object.ip6,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
     return result;
@@ -129,7 +136,7 @@ class _$NetworkInterfaceInfoSerializer
 
   @override
   NetworkInterfaceInfo deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new NetworkInterfaceInfoBuilder();
 
@@ -137,7 +144,7 @@ class _$NetworkInterfaceInfoSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'name':
           result.name = serializers.deserialize(value,
@@ -187,22 +194,18 @@ class _$NetworkInfo extends NetworkInfo {
   @override
   final bool hasInternet;
   @override
-  final BuiltList<NetworkInterfaceInfo> interfaces;
+  final BuiltList<NetworkInterfaceInfo>? interfaces;
 
   factory _$NetworkInfo([void Function(NetworkInfoBuilder)? updates]) =>
       (new NetworkInfoBuilder()..update(updates)).build();
 
-  _$NetworkInfo._({this.lastUpdate, this.hasInternet, this.interfaces})
+  _$NetworkInfo._(
+      {required this.lastUpdate, required this.hasInternet, this.interfaces})
       : super._() {
-    if (lastUpdate == null) {
-      throw new BuiltValueNullFieldError('NetworkInfo', 'lastUpdate');
-    }
-    if (hasInternet == null) {
-      throw new BuiltValueNullFieldError('NetworkInfo', 'hasInternet');
-    }
-    if (interfaces == null) {
-      throw new BuiltValueNullFieldError('NetworkInfo', 'interfaces');
-    }
+    BuiltValueNullFieldError.checkNotNull(
+        lastUpdate, 'NetworkInfo', 'lastUpdate');
+    BuiltValueNullFieldError.checkNotNull(
+        hasInternet, 'NetworkInfo', 'hasInternet');
   }
 
   @override
@@ -238,29 +241,30 @@ class _$NetworkInfo extends NetworkInfo {
 }
 
 class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
-  _$NetworkInfo _$v;
+  _$NetworkInfo? _$v;
 
-  int _lastUpdate;
-  int get lastUpdate => _$this._lastUpdate;
-  set lastUpdate(int lastUpdate) => _$this._lastUpdate = lastUpdate;
+  int? _lastUpdate;
+  int? get lastUpdate => _$this._lastUpdate;
+  set lastUpdate(int? lastUpdate) => _$this._lastUpdate = lastUpdate;
 
-  bool _hasInternet;
-  bool get hasInternet => _$this._hasInternet;
-  set hasInternet(bool hasInternet) => _$this._hasInternet = hasInternet;
+  bool? _hasInternet;
+  bool? get hasInternet => _$this._hasInternet;
+  set hasInternet(bool? hasInternet) => _$this._hasInternet = hasInternet;
 
-  ListBuilder<NetworkInterfaceInfo> _interfaces;
+  ListBuilder<NetworkInterfaceInfo>? _interfaces;
   ListBuilder<NetworkInterfaceInfo> get interfaces =>
       _$this._interfaces ??= new ListBuilder<NetworkInterfaceInfo>();
-  set interfaces(ListBuilder<NetworkInterfaceInfo> interfaces) =>
+  set interfaces(ListBuilder<NetworkInterfaceInfo>? interfaces) =>
       _$this._interfaces = interfaces;
 
   NetworkInfoBuilder();
 
   NetworkInfoBuilder get _$this {
-    if (_$v != null) {
-      _lastUpdate = _$v.lastUpdate;
-      _hasInternet = _$v.hasInternet;
-      _interfaces = _$v.interfaces?.toBuilder();
+    final $v = _$v;
+    if ($v != null) {
+      _lastUpdate = $v.lastUpdate;
+      _hasInternet = $v.hasInternet;
+      _interfaces = $v.interfaces?.toBuilder();
       _$v = null;
     }
     return this;
@@ -268,14 +272,12 @@ class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
 
   @override
   void replace(NetworkInfo other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$NetworkInfo;
   }
 
   @override
-  void update(void Function(NetworkInfoBuilder) updates) {
+  void update(void Function(NetworkInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -285,14 +287,16 @@ class NetworkInfoBuilder implements Builder<NetworkInfo, NetworkInfoBuilder> {
     try {
       _$result = _$v ??
           new _$NetworkInfo._(
-              lastUpdate: lastUpdate,
-              hasInternet: hasInternet,
-              interfaces: interfaces.build());
+              lastUpdate: BuiltValueNullFieldError.checkNotNull(
+                  lastUpdate, 'NetworkInfo', 'lastUpdate'),
+              hasInternet: BuiltValueNullFieldError.checkNotNull(
+                  hasInternet, 'NetworkInfo', 'hasInternet'),
+              interfaces: _interfaces?.build());
     } catch (_) {
-      String _$failedField;
+      late String _$failedField;
       try {
         _$failedField = 'interfaces';
-        interfaces.build();
+        _interfaces?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'NetworkInfo', _$failedField, e.toString());
@@ -310,22 +314,20 @@ class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {
   @override
   final NetworkInterfaceStatus status;
   @override
-  final String ip4;
+  final String? ip4;
   @override
-  final String ip6;
+  final String? ip6;
 
   factory _$NetworkInterfaceInfo(
           [void Function(NetworkInterfaceInfoBuilder)? updates]) =>
       (new NetworkInterfaceInfoBuilder()..update(updates)).build();
 
-  _$NetworkInterfaceInfo._({this.name, this.status, this.ip4, this.ip6})
+  _$NetworkInterfaceInfo._(
+      {required this.name, required this.status, this.ip4, this.ip6})
       : super._() {
-    if (name == null) {
-      throw new BuiltValueNullFieldError('NetworkInterfaceInfo', 'name');
-    }
-    if (status == null) {
-      throw new BuiltValueNullFieldError('NetworkInterfaceInfo', 'status');
-    }
+    BuiltValueNullFieldError.checkNotNull(name, 'NetworkInterfaceInfo', 'name');
+    BuiltValueNullFieldError.checkNotNull(
+        status, 'NetworkInterfaceInfo', 'status');
   }
 
   @override
@@ -367,32 +369,33 @@ class _$NetworkInterfaceInfo extends NetworkInterfaceInfo {
 
 class NetworkInterfaceInfoBuilder
     implements Builder<NetworkInterfaceInfo, NetworkInterfaceInfoBuilder> {
-  _$NetworkInterfaceInfo _$v;
+  _$NetworkInterfaceInfo? _$v;
 
-  String _name;
-  String get name => _$this._name;
-  set name(String name) => _$this._name = name;
+  String? _name;
+  String? get name => _$this._name;
+  set name(String? name) => _$this._name = name;
 
-  NetworkInterfaceStatus _status;
-  NetworkInterfaceStatus get status => _$this._status;
-  set status(NetworkInterfaceStatus status) => _$this._status = status;
+  NetworkInterfaceStatus? _status;
+  NetworkInterfaceStatus? get status => _$this._status;
+  set status(NetworkInterfaceStatus? status) => _$this._status = status;
 
-  String _ip4;
-  String get ip4 => _$this._ip4;
-  set ip4(String ip4) => _$this._ip4 = ip4;
+  String? _ip4;
+  String? get ip4 => _$this._ip4;
+  set ip4(String? ip4) => _$this._ip4 = ip4;
 
-  String _ip6;
-  String get ip6 => _$this._ip6;
-  set ip6(String ip6) => _$this._ip6 = ip6;
+  String? _ip6;
+  String? get ip6 => _$this._ip6;
+  set ip6(String? ip6) => _$this._ip6 = ip6;
 
   NetworkInterfaceInfoBuilder();
 
   NetworkInterfaceInfoBuilder get _$this {
-    if (_$v != null) {
-      _name = _$v.name;
-      _status = _$v.status;
-      _ip4 = _$v.ip4;
-      _ip6 = _$v.ip6;
+    final $v = _$v;
+    if ($v != null) {
+      _name = $v.name;
+      _status = $v.status;
+      _ip4 = $v.ip4;
+      _ip6 = $v.ip6;
       _$v = null;
     }
     return this;
@@ -400,14 +403,12 @@ class NetworkInterfaceInfoBuilder
 
   @override
   void replace(NetworkInterfaceInfo other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$NetworkInterfaceInfo;
   }
 
   @override
-  void update(void Function(NetworkInterfaceInfoBuilder) updates) {
+  void update(void Function(NetworkInterfaceInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -415,7 +416,12 @@ class NetworkInterfaceInfoBuilder
   _$NetworkInterfaceInfo build() {
     final _$result = _$v ??
         new _$NetworkInterfaceInfo._(
-            name: name, status: status, ip4: ip4, ip6: ip6);
+            name: BuiltValueNullFieldError.checkNotNull(
+                name, 'NetworkInterfaceInfo', 'name'),
+            status: BuiltValueNullFieldError.checkNotNull(
+                status, 'NetworkInterfaceInfo', 'status'),
+            ip4: ip4,
+            ip6: ip6);
     replace(_$result);
     return _$result;
   }

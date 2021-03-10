@@ -11,17 +11,17 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  injector: ^1.0.10-nullsafety.0
+  get_it: ^6.0.0
   path_provider: ^2.0.1
   path: ^1.8.0
-  permission_handler: ^5.1.0+2
+  permission_handler: ^6.0.0
   qr_flutter: ^3.2.0
   isolate: ^2.0.3
   logging: ^1.0.0
   flutter_redux: ^0.7.0
   built_value: ^8.0.0
 #  omxplayer_video_player: ^1.2.0
-  video_player: ^2.0.0
+  video_player: ^2.0.1
   duration: ^2.0.2
   dslideshow_backend: 
     path: ../backend
@@ -35,7 +35,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-#  built_value_generator: ^8.0.0
+  built_value_generator: ^8.0.2
   build_runner: ^1.11.5
 
 flutter:

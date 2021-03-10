@@ -46,7 +46,7 @@ class CommonHeaderWidget extends StatelessWidget {
               top: 0,
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
-                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug!)),
+                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
                 child: Container(color: Colors.transparent, width: 30, height: 30),
               ),
             ),
@@ -79,7 +79,7 @@ class CommonHeaderWidget extends StatelessWidget {
                         size: 24.0,
                         color: Colors.white,
                       )),
-                if (store.state.hasInternet!)
+                if (store.state.hasInternet)
                   BlinkAnimation(
                       key: const Key('hasInternet'),
                       child: Icon(

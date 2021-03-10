@@ -3,16 +3,8 @@
 part of rpc.error;
 
 // **************************************************************************
-// Generator: BuiltValueGenerator
+// BuiltValueGenerator
 // **************************************************************************
-
-// ignore_for_file: always_put_control_body_on_new_line
-// ignore_for_file: annotate_overrides
-// ignore_for_file: avoid_annotating_with_dynamic
-// ignore_for_file: avoid_returning_this
-// ignore_for_file: omit_local_variable_types
-// ignore_for_file: prefer_expression_function_bodies
-// ignore_for_file: sort_constructors_first
 
 Serializer<ErrorResult> _$errorResultSerializer = new _$ErrorResultSerializer();
 
@@ -23,9 +15,9 @@ class _$ErrorResultSerializer implements StructuredSerializer<ErrorResult> {
   final String wireName = 'ErrorResult';
 
   @override
-  Iterable serialize(Serializers serializers, ErrorResult object,
-      {FullType specifiedType: FullType.unspecified}) {
-    final result = <Object>[
+  Iterable<Object?> serialize(Serializers serializers, ErrorResult object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object?>[
       'error',
       serializers.serialize(object.error,
           specifiedType: const FullType(String)),
@@ -37,15 +29,15 @@ class _$ErrorResultSerializer implements StructuredSerializer<ErrorResult> {
   }
 
   @override
-  ErrorResult deserialize(Serializers serializers, Iterable serialized,
-      {FullType specifiedType: FullType.unspecified}) {
+  ErrorResult deserialize(Serializers serializers, Iterable<Object?> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
     final result = new ErrorResultBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'error':
           result.error = serializers.deserialize(value,
@@ -64,31 +56,29 @@ class _$ErrorResultSerializer implements StructuredSerializer<ErrorResult> {
 
 class _$ErrorResult extends ErrorResult {
   @override
-  /*late*/ final String error;
+  final String error;
   @override
-  /*late*/ final int id;
+  final int id;
 
-  factory _$ErrorResult([void updates(ErrorResultBuilder b)?]) =>
+  factory _$ErrorResult([void Function(ErrorResultBuilder)? updates]) =>
       (new ErrorResultBuilder()..update(updates)).build();
 
-  _$ErrorResult._({String error, int id}) : this.error=error, this.id = id, super._() {
-    // if (error == null)
-    //   throw new BuiltValueNullFieldError('ErrorResult', 'error');
-    // if (id == null) throw new BuiltValueNullFieldError('ErrorResult', 'id');
+  _$ErrorResult._({required this.error, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(error, 'ErrorResult', 'error');
+    BuiltValueNullFieldError.checkNotNull(id, 'ErrorResult', 'id');
   }
 
   @override
-  ErrorResult rebuild(void updates(ErrorResultBuilder b)) =>
+  ErrorResult rebuild(void Function(ErrorResultBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
   ErrorResultBuilder toBuilder() => new ErrorResultBuilder()..replace(this);
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    if (other is! ErrorResult) return false;
-    return error == other.error && id == other.id;
+    return other is ErrorResult && error == other.error && id == other.id;
   }
 
   @override
@@ -106,22 +96,23 @@ class _$ErrorResult extends ErrorResult {
 }
 
 class ErrorResultBuilder implements Builder<ErrorResult, ErrorResultBuilder> {
-  _$ErrorResult _$v;
+  _$ErrorResult? _$v;
 
-  String _error;
-  String get error => _$this._error;
-  set error(String error) => _$this._error = error;
+  String? _error;
+  String? get error => _$this._error;
+  set error(String? error) => _$this._error = error;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   ErrorResultBuilder();
 
   ErrorResultBuilder get _$this {
-    if (_$v != null) {
-      _error = _$v.error;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _error = $v.error;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -129,19 +120,25 @@ class ErrorResultBuilder implements Builder<ErrorResult, ErrorResultBuilder> {
 
   @override
   void replace(ErrorResult other) {
-    if (other == null) throw new ArgumentError.notNull('other');
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ErrorResult;
   }
 
   @override
-  void update(void updates(ErrorResultBuilder b)/*?*/) {
+  void update(void Function(ErrorResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$ErrorResult build() {
-    final _$result = _$v ?? new _$ErrorResult._(error: error, id: id);
+    final _$result = _$v ??
+        new _$ErrorResult._(
+            error: BuiltValueNullFieldError.checkNotNull(
+                error, 'ErrorResult', 'error'),
+            id: BuiltValueNullFieldError.checkNotNull(id, 'ErrorResult', 'id'));
     replace(_$result);
     return _$result;
   }
 }
+
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

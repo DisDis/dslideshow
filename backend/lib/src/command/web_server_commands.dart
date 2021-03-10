@@ -13,7 +13,6 @@ abstract class WebServerControlCommand implements RpcCommand, Built<WebServerCon
   String get type => TYPE;
   bool get enable;
   @override
-  @nullable
   int get id;
 
   static Serializer<WebServerControlCommand> get serializer =>

@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:injector/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:dslideshow_flutter/src/injector.dart';
 
 class ConfigPage extends StatefulWidget {
   ConfigPage({Key? key}) : super(key: key);
@@ -22,7 +22,7 @@ class _ConfigPageState extends State<ConfigPage>{
   static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
   static final Random rnd = new Random();
-  final FrontendService _frontendService = Injector.appInstance.get<FrontendService>();
+  final FrontendService _frontendService = injector.get<FrontendService>();
 
   @override
   void initState() {

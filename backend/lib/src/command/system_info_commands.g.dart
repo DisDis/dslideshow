@@ -22,22 +22,20 @@ class _$GetSystemInfoCommandSerializer
   final String wireName = 'GetSystemInfoCommand';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, GetSystemInfoCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
     return result;
   }
 
   @override
   GetSystemInfoCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new GetSystemInfoCommandBuilder();
 
@@ -45,7 +43,7 @@ class _$GetSystemInfoCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -69,26 +67,23 @@ class _$GetSystemInfoCommandResultSerializer
   final String wireName = 'GetSystemInfoCommandResult';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, GetSystemInfoCommandResult object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'systemInfo',
       serializers.serialize(object.systemInfo,
           specifiedType: const FullType(SystemInfo)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   GetSystemInfoCommandResult deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new GetSystemInfoCommandResultBuilder();
 
@@ -96,11 +91,11 @@ class _$GetSystemInfoCommandResultSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'systemInfo':
           result.systemInfo.replace(serializers.deserialize(value,
-              specifiedType: const FullType(SystemInfo)) as SystemInfo);
+              specifiedType: const FullType(SystemInfo))! as SystemInfo);
           break;
         case 'id':
           result.id = serializers.deserialize(value,
@@ -121,7 +116,9 @@ class _$GetSystemInfoCommand extends GetSystemInfoCommand {
           [void Function(GetSystemInfoCommandBuilder)? updates]) =>
       (new GetSystemInfoCommandBuilder()..update(updates)).build();
 
-  _$GetSystemInfoCommand._({this.id}) : super._();
+  _$GetSystemInfoCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'GetSystemInfoCommand', 'id');
+  }
 
   @override
   GetSystemInfoCommand rebuild(
@@ -152,17 +149,18 @@ class _$GetSystemInfoCommand extends GetSystemInfoCommand {
 
 class GetSystemInfoCommandBuilder
     implements Builder<GetSystemInfoCommand, GetSystemInfoCommandBuilder> {
-  _$GetSystemInfoCommand _$v;
+  _$GetSystemInfoCommand? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   GetSystemInfoCommandBuilder();
 
   GetSystemInfoCommandBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -170,20 +168,21 @@ class GetSystemInfoCommandBuilder
 
   @override
   void replace(GetSystemInfoCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$GetSystemInfoCommand;
   }
 
   @override
-  void update(void Function(GetSystemInfoCommandBuilder) updates) {
+  void update(void Function(GetSystemInfoCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$GetSystemInfoCommand build() {
-    final _$result = _$v ?? new _$GetSystemInfoCommand._(id: id);
+    final _$result = _$v ??
+        new _$GetSystemInfoCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'GetSystemInfoCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -199,11 +198,12 @@ class _$GetSystemInfoCommandResult extends GetSystemInfoCommandResult {
           [void Function(GetSystemInfoCommandResultBuilder)? updates]) =>
       (new GetSystemInfoCommandResultBuilder()..update(updates)).build();
 
-  _$GetSystemInfoCommandResult._({this.systemInfo, this.id}) : super._() {
-    if (systemInfo == null) {
-      throw new BuiltValueNullFieldError(
-          'GetSystemInfoCommandResult', 'systemInfo');
-    }
+  _$GetSystemInfoCommandResult._({required this.systemInfo, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        systemInfo, 'GetSystemInfoCommandResult', 'systemInfo');
+    BuiltValueNullFieldError.checkNotNull(
+        id, 'GetSystemInfoCommandResult', 'id');
   }
 
   @override
@@ -240,24 +240,25 @@ class _$GetSystemInfoCommandResult extends GetSystemInfoCommandResult {
 class GetSystemInfoCommandResultBuilder
     implements
         Builder<GetSystemInfoCommandResult, GetSystemInfoCommandResultBuilder> {
-  _$GetSystemInfoCommandResult _$v;
+  _$GetSystemInfoCommandResult? _$v;
 
-  SystemInfoBuilder _systemInfo;
+  SystemInfoBuilder? _systemInfo;
   SystemInfoBuilder get systemInfo =>
       _$this._systemInfo ??= new SystemInfoBuilder();
-  set systemInfo(SystemInfoBuilder systemInfo) =>
+  set systemInfo(SystemInfoBuilder? systemInfo) =>
       _$this._systemInfo = systemInfo;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   GetSystemInfoCommandResultBuilder();
 
   GetSystemInfoCommandResultBuilder get _$this {
-    if (_$v != null) {
-      _systemInfo = _$v.systemInfo?.toBuilder();
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _systemInfo = $v.systemInfo.toBuilder();
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -265,14 +266,12 @@ class GetSystemInfoCommandResultBuilder
 
   @override
   void replace(GetSystemInfoCommandResult other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$GetSystemInfoCommandResult;
   }
 
   @override
-  void update(void Function(GetSystemInfoCommandResultBuilder) updates) {
+  void update(void Function(GetSystemInfoCommandResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -282,9 +281,11 @@ class GetSystemInfoCommandResultBuilder
     try {
       _$result = _$v ??
           new _$GetSystemInfoCommandResult._(
-              systemInfo: systemInfo.build(), id: id);
+              systemInfo: systemInfo.build(),
+              id: BuiltValueNullFieldError.checkNotNull(
+                  id, 'GetSystemInfoCommandResult', 'id'));
     } catch (_) {
-      String _$failedField;
+      late String _$failedField;
       try {
         _$failedField = 'systemInfo';
         systemInfo.build();

@@ -12,6 +12,7 @@ import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
+@immutable
 class ImageWidget extends StatelessWidget implements ItemWidget{
   static final Logger _log = Logger('ImageWidget');
   Image? _image;
@@ -25,6 +26,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       _image =
           Image.memory(
               new File(item.uri!.toFilePath()).readAsBytesSync(),
+              errorBuilder: (context,_, __)=>Container(),
               fit: BoxFit.contain, filterQuality: FilterQuality.high);
     }
   }
@@ -67,7 +69,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
     final outputImage = await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
     final byteData = await (outputImage.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
-    _image = Image.memory(byteData.buffer.asUint8List());
+    _image = Image.memory(byteData.buffer.asUint8List(), errorBuilder: (context,_, __)=>Container());
     return precacheImage(_image!.image, context);
   }
 
@@ -183,7 +185,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     final Size sourceSize = fittedSizes.source * scale;
     Size destinationSize = fittedSizes.destination;
     if (centerSlice != null) {
-      outputSize += sliceBorder!;
+      outputSize += sliceBorder;
       destinationSize += sliceBorder;
       // We don't have the ability to draw a subset of the image at the same time
       // as we apply a nine-patch stretch.

@@ -97,7 +97,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
           if (!isLinuxEmbedded) StoreConnector<GlobalState, Store<GlobalState>>(
               converter: (store) => store,
               builder: (context, Store<GlobalState> store) {
-                return store.state.isDebug!? DebugWidget(_frontendService):  Container();
+                return store.state.isDebug? DebugWidget(_frontendService):  Container();
               }),
           CommonHeaderWidget(),
         ],
@@ -182,14 +182,18 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     }
     _log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
-    if (itemWidget is ImageWidget) {
-      await itemWidget.precache(context);
-    }
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
-    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
-
+    try {
+      if (itemWidget is ImageWidget) {
+        await itemWidget.precache(context);
+      }
+      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    }catch(e, st){
+      _log.warning('Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e , st);
+      _nextWidget = _loaderWidget;
+    }
 
     _transitionWidget = AnimatedBuilder(
         key: Key('anim'),
@@ -237,12 +241,12 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _pushMenuButton() {
     final _store = _frontendService.store;
-    _store.dispatch(ChangeDebugAction(!_store.state.isDebug!));
+    _store.dispatch(ChangeDebugAction(!_store.state.isDebug));
   }
 
   void _pushPauseButton() {
     final _store = _frontendService.store;
-    var isPausedNewValue = !_store.state.isPaused!;
+    var isPausedNewValue = !_store.state.isPaused;
     _store.dispatch(ChangePauseAction(isPausedNewValue));
     if (isPausedNewValue) {
       _mediaItemLoopController.stop();
@@ -257,7 +261,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   Future _pushScreenToggleButton() async {
     final _store = _frontendService.store;
-    var isScreenLockNewValue = !_store.state.isScreenLock!;
+    var isScreenLockNewValue = !_store.state.isScreenLock;
     //_frontendService.LEDControl(LEDType.power, !_store.state.hasInternet);
     //_store.dispatch(ChangeInternetAction(!_store.state.hasInternet));
     _store.dispatch(ChangeScreenLockAction(isScreenLockNewValue));
@@ -271,7 +275,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
 
   void _restorePlayPauseState() {
     final _store = _frontendService.store;
-    if (_store.state.isPaused!) {
+    if (_store.state.isPaused) {
       _mediaItemLoopController.stop();
     } else {
       _mediaItemLoopController.forward();

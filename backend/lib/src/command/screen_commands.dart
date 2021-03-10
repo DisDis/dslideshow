@@ -10,7 +10,6 @@ abstract class ScreenTurnCommand implements RpcCommand, Built<ScreenTurnCommand,
   String get type => TYPE;
   bool get enabled;
   @override
-  @nullable
   int get id;
 
   static Serializer<ScreenTurnCommand> get serializer =>
@@ -26,7 +25,6 @@ abstract class ScreenLockCommand implements RpcCommand, Built<ScreenLockCommand,
   String get type => TYPE;
   bool get isLock;
   @override
-  @nullable
   int get id;
 
   static Serializer<ScreenLockCommand> get serializer =>

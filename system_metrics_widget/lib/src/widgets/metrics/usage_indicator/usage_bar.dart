@@ -76,8 +76,13 @@ class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin
 
     return CustomPaint(
       size: Size(size.width, 8),
-      painter: UsageBarPainter((widget.usagePercent! * _controller!.value).toInt()),
+      painter: UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
     );
+  }
+
+  @override
+  void dispose(){
+    _controller.dispose();
   }
 
   @override

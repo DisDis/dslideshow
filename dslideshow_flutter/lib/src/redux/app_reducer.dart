@@ -9,13 +9,11 @@ import 'actions/change_internet_action.dart';
 
 /// Reducer
 final appReducer = combineReducers<GlobalState>([
-  TypedReducer<GlobalState, ChangeStorageStatusAction>(_onStorageStatusChange) as GlobalState Function(GlobalState, dynamic),
-  TypedReducer<GlobalState, ChangeDebugAction>(_onDebugChange) as GlobalState Function(GlobalState, dynamic),
-  TypedReducer<GlobalState, ChangePauseAction>(_onPauseChange) as GlobalState Function(GlobalState, dynamic),
-  TypedReducer<GlobalState, ChangeInternetAction>(_onInternetChange) as GlobalState Function(GlobalState, dynamic),
-  TypedReducer<GlobalState, ChangeScreenLockAction>(_onScreenLockChange) as GlobalState Function(GlobalState, dynamic),
-
-
+  TypedReducer<GlobalState, ChangeStorageStatusAction>(_onStorageStatusChange),
+  TypedReducer<GlobalState, ChangeDebugAction>(_onDebugChange),
+  TypedReducer<GlobalState, ChangePauseAction>(_onPauseChange),
+  TypedReducer<GlobalState, ChangeInternetAction>(_onInternetChange),
+  TypedReducer<GlobalState, ChangeScreenLockAction>(_onScreenLockChange),
 ]);
 
 GlobalState _onDebugChange(GlobalState state, ChangeDebugAction action) {

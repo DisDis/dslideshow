@@ -20,25 +20,22 @@ class _$WebServerControlCommandSerializer
   final String wireName = 'WebServerControlCommand';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, WebServerControlCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'enable',
       serializers.serialize(object.enable, specifiedType: const FullType(bool)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   WebServerControlCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new WebServerControlCommandBuilder();
 
@@ -46,7 +43,7 @@ class _$WebServerControlCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'enable':
           result.enable = serializers.deserialize(value,
@@ -73,10 +70,11 @@ class _$WebServerControlCommand extends WebServerControlCommand {
           [void Function(WebServerControlCommandBuilder)? updates]) =>
       (new WebServerControlCommandBuilder()..update(updates)).build();
 
-  _$WebServerControlCommand._({this.enable, this.id}) : super._() {
-    if (enable == null) {
-      throw new BuiltValueNullFieldError('WebServerControlCommand', 'enable');
-    }
+  _$WebServerControlCommand._({required this.enable, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        enable, 'WebServerControlCommand', 'enable');
+    BuiltValueNullFieldError.checkNotNull(id, 'WebServerControlCommand', 'id');
   }
 
   @override
@@ -113,22 +111,23 @@ class _$WebServerControlCommand extends WebServerControlCommand {
 class WebServerControlCommandBuilder
     implements
         Builder<WebServerControlCommand, WebServerControlCommandBuilder> {
-  _$WebServerControlCommand _$v;
+  _$WebServerControlCommand? _$v;
 
-  bool _enable;
-  bool get enable => _$this._enable;
-  set enable(bool enable) => _$this._enable = enable;
+  bool? _enable;
+  bool? get enable => _$this._enable;
+  set enable(bool? enable) => _$this._enable = enable;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   WebServerControlCommandBuilder();
 
   WebServerControlCommandBuilder get _$this {
-    if (_$v != null) {
-      _enable = _$v.enable;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _enable = $v.enable;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -136,21 +135,23 @@ class WebServerControlCommandBuilder
 
   @override
   void replace(WebServerControlCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$WebServerControlCommand;
   }
 
   @override
-  void update(void Function(WebServerControlCommandBuilder) updates) {
+  void update(void Function(WebServerControlCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$WebServerControlCommand build() {
-    final _$result =
-        _$v ?? new _$WebServerControlCommand._(enable: enable, id: id);
+    final _$result = _$v ??
+        new _$WebServerControlCommand._(
+            enable: BuiltValueNullFieldError.checkNotNull(
+                enable, 'WebServerControlCommand', 'enable'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WebServerControlCommand', 'id'));
     replace(_$result);
     return _$result;
   }

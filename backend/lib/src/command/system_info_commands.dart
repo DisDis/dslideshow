@@ -11,7 +11,6 @@ abstract class GetSystemInfoCommand implements RpcCommand, Built<GetSystemInfoCo
   String get type => TYPE;
 
   @override
-  @nullable
   int get id;
 
   static Serializer<GetSystemInfoCommand> get serializer =>
@@ -25,7 +24,6 @@ abstract class GetSystemInfoCommandResult implements RpcResult, Built<GetSystemI
   SystemInfo get systemInfo;
 
   @override
-  @nullable
   int get id;
 
   static Serializer<GetSystemInfoCommandResult> get serializer =>

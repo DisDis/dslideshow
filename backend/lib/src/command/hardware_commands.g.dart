@@ -62,21 +62,20 @@ class _$AreYouReadyCommandSerializer
   final String wireName = 'AreYouReadyCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, AreYouReadyCommand object,
+  Iterable<Object?> serialize(
+      Serializers serializers, AreYouReadyCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
     return result;
   }
 
   @override
   AreYouReadyCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new AreYouReadyCommandBuilder();
 
@@ -84,7 +83,7 @@ class _$AreYouReadyCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -105,25 +104,22 @@ class _$PushButtonCommandSerializer
   final String wireName = 'PushButtonCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, PushButtonCommand object,
+  Iterable<Object?> serialize(Serializers serializers, PushButtonCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'button',
       serializers.serialize(object.button,
           specifiedType: const FullType(ButtonType)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   PushButtonCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new PushButtonCommandBuilder();
 
@@ -131,7 +127,7 @@ class _$PushButtonCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'button':
           result.button = serializers.deserialize(value,
@@ -156,26 +152,23 @@ class _$LEDControlCommandSerializer
   final String wireName = 'LEDControlCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, LEDControlCommand object,
+  Iterable<Object?> serialize(Serializers serializers, LEDControlCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'led',
       serializers.serialize(object.led, specifiedType: const FullType(LEDType)),
       'value',
       serializers.serialize(object.value, specifiedType: const FullType(bool)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   LEDControlCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new LEDControlCommandBuilder();
 
@@ -183,7 +176,7 @@ class _$LEDControlCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'led':
           result.led = serializers.deserialize(value,
@@ -246,7 +239,9 @@ class _$AreYouReadyCommand extends AreYouReadyCommand {
           [void Function(AreYouReadyCommandBuilder)? updates]) =>
       (new AreYouReadyCommandBuilder()..update(updates)).build();
 
-  _$AreYouReadyCommand._({this.id}) : super._();
+  _$AreYouReadyCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'AreYouReadyCommand', 'id');
+  }
 
   @override
   AreYouReadyCommand rebuild(
@@ -277,17 +272,18 @@ class _$AreYouReadyCommand extends AreYouReadyCommand {
 
 class AreYouReadyCommandBuilder
     implements Builder<AreYouReadyCommand, AreYouReadyCommandBuilder> {
-  _$AreYouReadyCommand _$v;
+  _$AreYouReadyCommand? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   AreYouReadyCommandBuilder();
 
   AreYouReadyCommandBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -295,20 +291,21 @@ class AreYouReadyCommandBuilder
 
   @override
   void replace(AreYouReadyCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$AreYouReadyCommand;
   }
 
   @override
-  void update(void Function(AreYouReadyCommandBuilder) updates) {
+  void update(void Function(AreYouReadyCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$AreYouReadyCommand build() {
-    final _$result = _$v ?? new _$AreYouReadyCommand._(id: id);
+    final _$result = _$v ??
+        new _$AreYouReadyCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'AreYouReadyCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -324,10 +321,10 @@ class _$PushButtonCommand extends PushButtonCommand {
           [void Function(PushButtonCommandBuilder)? updates]) =>
       (new PushButtonCommandBuilder()..update(updates)).build();
 
-  _$PushButtonCommand._({this.button, this.id}) : super._() {
-    if (button == null) {
-      throw new BuiltValueNullFieldError('PushButtonCommand', 'button');
-    }
+  _$PushButtonCommand._({required this.button, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        button, 'PushButtonCommand', 'button');
+    BuiltValueNullFieldError.checkNotNull(id, 'PushButtonCommand', 'id');
   }
 
   @override
@@ -362,22 +359,23 @@ class _$PushButtonCommand extends PushButtonCommand {
 
 class PushButtonCommandBuilder
     implements Builder<PushButtonCommand, PushButtonCommandBuilder> {
-  _$PushButtonCommand _$v;
+  _$PushButtonCommand? _$v;
 
-  ButtonType _button;
-  ButtonType get button => _$this._button;
-  set button(ButtonType button) => _$this._button = button;
+  ButtonType? _button;
+  ButtonType? get button => _$this._button;
+  set button(ButtonType? button) => _$this._button = button;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   PushButtonCommandBuilder();
 
   PushButtonCommandBuilder get _$this {
-    if (_$v != null) {
-      _button = _$v.button;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _button = $v.button;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -385,20 +383,23 @@ class PushButtonCommandBuilder
 
   @override
   void replace(PushButtonCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$PushButtonCommand;
   }
 
   @override
-  void update(void Function(PushButtonCommandBuilder) updates) {
+  void update(void Function(PushButtonCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$PushButtonCommand build() {
-    final _$result = _$v ?? new _$PushButtonCommand._(button: button, id: id);
+    final _$result = _$v ??
+        new _$PushButtonCommand._(
+            button: BuiltValueNullFieldError.checkNotNull(
+                button, 'PushButtonCommand', 'button'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'PushButtonCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -416,13 +417,12 @@ class _$LEDControlCommand extends LEDControlCommand {
           [void Function(LEDControlCommandBuilder)? updates]) =>
       (new LEDControlCommandBuilder()..update(updates)).build();
 
-  _$LEDControlCommand._({this.led, this.value, this.id}) : super._() {
-    if (led == null) {
-      throw new BuiltValueNullFieldError('LEDControlCommand', 'led');
-    }
-    if (value == null) {
-      throw new BuiltValueNullFieldError('LEDControlCommand', 'value');
-    }
+  _$LEDControlCommand._(
+      {required this.led, required this.value, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(led, 'LEDControlCommand', 'led');
+    BuiltValueNullFieldError.checkNotNull(value, 'LEDControlCommand', 'value');
+    BuiltValueNullFieldError.checkNotNull(id, 'LEDControlCommand', 'id');
   }
 
   @override
@@ -459,27 +459,28 @@ class _$LEDControlCommand extends LEDControlCommand {
 
 class LEDControlCommandBuilder
     implements Builder<LEDControlCommand, LEDControlCommandBuilder> {
-  _$LEDControlCommand _$v;
+  _$LEDControlCommand? _$v;
 
-  LEDType _led;
-  LEDType get led => _$this._led;
-  set led(LEDType led) => _$this._led = led;
+  LEDType? _led;
+  LEDType? get led => _$this._led;
+  set led(LEDType? led) => _$this._led = led;
 
-  bool _value;
-  bool get value => _$this._value;
-  set value(bool value) => _$this._value = value;
+  bool? _value;
+  bool? get value => _$this._value;
+  set value(bool? value) => _$this._value = value;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   LEDControlCommandBuilder();
 
   LEDControlCommandBuilder get _$this {
-    if (_$v != null) {
-      _led = _$v.led;
-      _value = _$v.value;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _led = $v.led;
+      _value = $v.value;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -487,21 +488,25 @@ class LEDControlCommandBuilder
 
   @override
   void replace(LEDControlCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$LEDControlCommand;
   }
 
   @override
-  void update(void Function(LEDControlCommandBuilder) updates) {
+  void update(void Function(LEDControlCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$LEDControlCommand build() {
-    final _$result =
-        _$v ?? new _$LEDControlCommand._(led: led, value: value, id: id);
+    final _$result = _$v ??
+        new _$LEDControlCommand._(
+            led: BuiltValueNullFieldError.checkNotNull(
+                led, 'LEDControlCommand', 'led'),
+            value: BuiltValueNullFieldError.checkNotNull(
+                value, 'LEDControlCommand', 'value'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'LEDControlCommand', 'id'));
     replace(_$result);
     return _$result;
   }

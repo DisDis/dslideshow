@@ -44,7 +44,7 @@ class SystemInfoService {
       });
     } else {
       var delta =
-          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo!.lastUpdate));
+          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo.lastUpdate));
       if (delta > _networkInfoUpdatePeriod) {
         final _networkInfo = await _getNetworkInfo();
         _lastInfo = _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
