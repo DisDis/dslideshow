@@ -3,6 +3,9 @@ Flutter photoframe on Raspberry pi 4 with PIR, GPIO. (Google photo, local storag
 Prototype 2:
 ![Proto2_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto2_1.jpg)
 
+Video: https://youtu.be/NFGFnHmX0TY
+
+
 Backcover prototype:
 
 ![Backcover](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/animation.gif)
