@@ -16,9 +16,7 @@ dependencies:
   path: ^1.8.0
   permission_handler: ^6.0.0
 
-  #TODO: Fix after NNBD
-  qr_flutter: #^3.2.0
-      git:   https://github.com/fzyzcjy/qr.flutter
+  qr_flutter: ^4.0.0
   #TODO: Fix after NNBD
   isolate: #^2.0.3
     git:
@@ -30,7 +28,7 @@ dependencies:
       url: https://github.com/Lafannn/flutter_redux
       ref: null-safety
   built_value: ^8.0.0
-#  omxplayer_video_player: ^1.2.0
+  omxplayer_video_player: ^2.0.0
   video_player: ^2.0.1
   duration: ^2.0.2
   dslideshow_backend: 

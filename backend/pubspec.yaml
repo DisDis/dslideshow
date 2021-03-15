@@ -20,7 +20,7 @@ dependencies:
       path: ../../gpiod
     shelf: ^1.0.0
 #    shelf_router: ^0.7.4
-#    mqtt_client: ^8.2.0
+    mqtt_client: ^9.0.0
     collection: ^1.15.0-nullsafety.4
 dev_dependencies:
 #  shelf_router_generator: ^0.7.2

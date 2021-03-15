@@ -2,29 +2,13 @@ import 'dart:async';
 
 import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
-// import 'package:mqtt_client/mqtt_client.dart';
-// import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/typed_data.dart' as typed;
 
 import 'mqtt_config.dart';
 
-//TODO: Remove stub class
-class MqttService{
-  final MqttConfig _config;
-  final StreamController<bool> _scPause = new StreamController.broadcast();
-  Stream<bool> get onPause =>_scPause.stream;
-
-  final StreamController<bool> _scMenu = new StreamController.broadcast();
-  Stream<bool> get onMenu =>_scMenu.stream;
-
-  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
-  Stream<bool> get onScreenToggle =>_scScreenToggle.stream;
-
-  bool get isConnected => false;
-  MqttService(this._config);
-}
-
-/*class MqttService {
+class MqttService {
   static final Logger _log = new Logger('MqttService');
   final MqttConfig _config;
   final MqttServerClient _client;
@@ -41,7 +25,7 @@ class MqttService{
   final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
   Stream<bool> get onScreenToggle =>_scScreenToggle.stream;
 
-  bool get isConnected => _client.connectionStatus.state == MqttConnectionState.connected;
+  bool get isConnected => _client.connectionStatus?.state == MqttConnectionState.connected;
 
   MqttService(this._config)
       :_client = MqttServerClient.withPort(_config.server, _config.clientId, _config.serverPort),
@@ -85,9 +69,9 @@ class MqttService{
     /// Check we are connected
     if (isConnected) {
       _log.info('Mosquitto client connected "${_config.server}" port:${_config.serverPort}');
-      _client.updates.listen(_onUpdate);
+      _client.updates?.listen(_onUpdate);
     } else {
-      _log.warning('Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus.state}');
+      _log.warning('Mosquitto client connection failed - disconnecting, state is ${_client.connectionStatus?.state}');
       _client.disconnect();
     }
   }
@@ -95,23 +79,23 @@ class MqttService{
     msgs.forEach((element) {
       final MqttPublishMessage recMess = element.payload as MqttPublishMessage;
       final pt =
-      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      MqttPublishPayload.bytesToStringAsString(recMess.payload.message??typed.Uint8Buffer());
 
       _log.info('topic is <${element.topic}>, payload is <-- $pt -->');
       if (element.topic.startsWith(_prefixPauseTopic)) {
         _client.publishMessage(
             _prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-          ..addUTF8String(pt)).payload);
+          ..addUTF8String(pt)).payload!);
         _scPause.add(pt=='ON');
       } else if (element.topic.startsWith(_prefixScreenTopic)) {
         _client.publishMessage(
             _prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-          ..addUTF8String(pt)).payload);
+          ..addUTF8String(pt)).payload!);
         _scScreenToggle.add(pt=='ON');
       }else if (element.topic.startsWith(_prefixMenuTopic)) {
         _client.publishMessage(
             _prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-          ..addUTF8String(pt)).payload);
+          ..addUTF8String(pt)).payload!);
         _scMenu.add(pt=='ON');
       }
     });
@@ -134,7 +118,7 @@ class MqttService{
         '}';
     _client.publishMessage(
         discovery_prefix + _config.configuration_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-      ..addUTF8String(configPayload)).payload);
+      ..addUTF8String(configPayload)).payload!);
   }
 
   /// The unsolicited disconnect callback
@@ -151,16 +135,16 @@ class MqttService{
     _publishSwitchConfig(_client, 'menu', 'Menu');
 
     _client.publishMessage(_prefixPauseTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-      ..addUTF8String('ON')).payload);
+      ..addUTF8String('ON')).payload!);
     _client.publishMessage(
         _prefixScreenTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-      ..addUTF8String('ON')).payload);
+      ..addUTF8String('ON')).payload!);
     _client.publishMessage(
         _prefixMenuTopic + _config.state_topic, MqttQos.atMostOnce, (MqttClientPayloadBuilder()
-      ..addUTF8String('OFF')).payload);
+      ..addUTF8String('OFF')).payload!);
   }
 
   void _onAutoReconnected() {
     _log.info('Client onAutoReconnected');
   }
-}*/
+}

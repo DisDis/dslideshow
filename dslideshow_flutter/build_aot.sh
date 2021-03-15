@@ -29,13 +29,12 @@ echo "$CMD"
 eval $CMD
 
 CMD="$ENGINE_BINARIES/gen_snapshot_linux_x64 \
-  --causal_async_stacks \
+  --lazy-async-stacks \
   --deterministic \
   --snapshot_kind=app-aot-elf \
   --elf=$OUTPUT_SO \
   --strip \
   --sim_use_hardfp \
-  --no-use-integer-division \
   $OUTPUT_KERNEL_DILL"
 
 echo "$CMD"

@@ -23,7 +23,7 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
-// import 'package:omxplayer_video_player/omxplayer_video_player.dart';
+import 'package:omxplayer_video_player/omxplayer_video_player.dart';
 
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -37,8 +37,7 @@ void main() async {
 	     DeviceOrientation.landscapeLeft,
 	  ]);
   } else {
-    //TODO: Wait  omxplayer_video_player
-    // OmxplayerVideoPlayer.useAsImplementation();
+    OmxplayerVideoPlayer.useAsImplementation();
   }
 
   try {
@@ -107,7 +106,7 @@ class FlutterReduxApp extends StatelessWidget {
             const Locale('en'), // English
             // ... other locales the app supports
           ],
-          home: WelcomePage(),
+          home: SlideShowPage(),//WelcomePage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
             '/slideshow': (BuildContext context) => SlideShowPage(),
