@@ -16,8 +16,7 @@ dependencies:
     googleapis:
         path: ../third_party/googleapis
     googleapis_auth: any
-    gpiod: #^2.0.0
-      path: ../../gpiod
+    gpiod: ^3.0.0
     shelf: ^1.0.0
 #    shelf_router: ^0.7.4
     mqtt_client: ^9.0.0
