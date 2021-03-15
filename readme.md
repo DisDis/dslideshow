@@ -1,9 +1,11 @@
 Flutter photoframe on Raspberry pi 4 with PIR, GPIO. (Google photo, local storage)
 
-Example:
+Prototype 2:
+![Proto2_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto2_1.jpg)
 
-![Proto1_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto1_1.jpg)
-![Proto1_1](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/proto1_2.jpg)
+Backcover prototype:
+
+![Backcover](https://raw.githubusercontent.com/DisDis/dslideshow/master/doc/images/animation.gif)
 
 Hardware:
 
@@ -13,15 +15,15 @@ Hardware:
 
 1 * 100Ohm resistor
 
-3 * Button
+4 * Button
 
 1 * 10K Ohm resistor
 
 1 * PIR sensor
 
-1 * Display (TFTMD089030 + Driver)
+1 * Display (TFTMD089030 + Driver TC358870XBG)
 
-
+https://easyeda.com/igor.demyanov/dslideshow
 
 TODO:
 
