@@ -9,14 +9,14 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class CurrentTimeWidget extends StatefulWidget {
-  CurrentTimeWidget({Key key}) : super(key: key);
+  CurrentTimeWidget({Key? key}) : super(key: key);
 
   @override
   _CurrentTimeWidgetState createState() => _CurrentTimeWidgetState();
 }
 
 class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
-  Timer _timer;
+  late Timer _timer;
   DateFormat _dateFormatter = DateFormat('yMMMMEEEEd');
   DateFormat _timeFormatter = DateFormat('Hms');
 
@@ -31,10 +31,10 @@ class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
         color: Colors.black,
         child: Column(children: <Widget>[
           Row(children: [
-            MetricsDetails('${_timeFormatter.format(now)}', style: Settings.metricsClockTextDigitalStyle)
+            MetricsDetails('${_timeFormatter.format(now)}', value: null, style: Settings.metricsClockTextDigitalStyle)
           ]),
           Row(children: [
-            MetricsDetails('${_dateFormatter.format(now)}',
+            MetricsDetails('${_dateFormatter.format(now)}', value: null,
                 style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))
           ]),
         ]),

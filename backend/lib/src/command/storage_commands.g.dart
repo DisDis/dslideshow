@@ -24,26 +24,23 @@ class _$GetMediaItemCommandSerializer
   final String wireName = 'GetMediaItemCommand';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, GetMediaItemCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'isCurrent',
       serializers.serialize(object.isCurrent,
           specifiedType: const FullType(bool)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   GetMediaItemCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new GetMediaItemCommandBuilder();
 
@@ -51,7 +48,7 @@ class _$GetMediaItemCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'isCurrent':
           result.isCurrent = serializers.deserialize(value,
@@ -79,34 +76,33 @@ class _$GetMediaItemCommandResultSerializer
   final String wireName = 'GetMediaItemCommandResult';
 
   @override
-  Iterable<Object> serialize(
+  Iterable<Object?> serialize(
       Serializers serializers, GetMediaItemCommandResult object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.mediaId != null) {
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+    Object? value;
+    value = object.mediaId;
+    if (value != null) {
       result
         ..add('mediaId')
-        ..add(serializers.serialize(object.mediaId,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    if (object.mediaUri != null) {
+    value = object.mediaUri;
+    if (value != null) {
       result
         ..add('mediaUri')
-        ..add(serializers.serialize(object.mediaUri,
-            specifiedType: const FullType(Uri)));
-    }
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
+        ..add(serializers.serialize(value, specifiedType: const FullType(Uri)));
     }
     return result;
   }
 
   @override
   GetMediaItemCommandResult deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new GetMediaItemCommandResultBuilder();
 
@@ -114,7 +110,7 @@ class _$GetMediaItemCommandResultSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'mediaId':
           result.mediaId = serializers.deserialize(value,
@@ -143,21 +139,20 @@ class _$StorageNextCommandSerializer
   final String wireName = 'StorageNextCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, StorageNextCommand object,
+  Iterable<Object?> serialize(
+      Serializers serializers, StorageNextCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
     return result;
   }
 
   @override
   StorageNextCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new StorageNextCommandBuilder();
 
@@ -165,7 +160,7 @@ class _$StorageNextCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -185,13 +180,14 @@ class _$GetMediaItemCommand extends GetMediaItemCommand {
   final int id;
 
   factory _$GetMediaItemCommand(
-          [void Function(GetMediaItemCommandBuilder) updates]) =>
+          [void Function(GetMediaItemCommandBuilder)? updates]) =>
       (new GetMediaItemCommandBuilder()..update(updates)).build();
 
-  _$GetMediaItemCommand._({this.isCurrent, this.id}) : super._() {
-    if (isCurrent == null) {
-      throw new BuiltValueNullFieldError('GetMediaItemCommand', 'isCurrent');
-    }
+  _$GetMediaItemCommand._({required this.isCurrent, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        isCurrent, 'GetMediaItemCommand', 'isCurrent');
+    BuiltValueNullFieldError.checkNotNull(id, 'GetMediaItemCommand', 'id');
   }
 
   @override
@@ -227,22 +223,23 @@ class _$GetMediaItemCommand extends GetMediaItemCommand {
 
 class GetMediaItemCommandBuilder
     implements Builder<GetMediaItemCommand, GetMediaItemCommandBuilder> {
-  _$GetMediaItemCommand _$v;
+  _$GetMediaItemCommand? _$v;
 
-  bool _isCurrent;
-  bool get isCurrent => _$this._isCurrent;
-  set isCurrent(bool isCurrent) => _$this._isCurrent = isCurrent;
+  bool? _isCurrent;
+  bool? get isCurrent => _$this._isCurrent;
+  set isCurrent(bool? isCurrent) => _$this._isCurrent = isCurrent;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   GetMediaItemCommandBuilder();
 
   GetMediaItemCommandBuilder get _$this {
-    if (_$v != null) {
-      _isCurrent = _$v.isCurrent;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _isCurrent = $v.isCurrent;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -250,21 +247,23 @@ class GetMediaItemCommandBuilder
 
   @override
   void replace(GetMediaItemCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$GetMediaItemCommand;
   }
 
   @override
-  void update(void Function(GetMediaItemCommandBuilder) updates) {
+  void update(void Function(GetMediaItemCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$GetMediaItemCommand build() {
-    final _$result =
-        _$v ?? new _$GetMediaItemCommand._(isCurrent: isCurrent, id: id);
+    final _$result = _$v ??
+        new _$GetMediaItemCommand._(
+            isCurrent: BuiltValueNullFieldError.checkNotNull(
+                isCurrent, 'GetMediaItemCommand', 'isCurrent'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'GetMediaItemCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -272,18 +271,21 @@ class GetMediaItemCommandBuilder
 
 class _$GetMediaItemCommandResult extends GetMediaItemCommandResult {
   @override
-  final String mediaId;
+  final String? mediaId;
   @override
-  final Uri mediaUri;
+  final Uri? mediaUri;
   @override
   final int id;
 
   factory _$GetMediaItemCommandResult(
-          [void Function(GetMediaItemCommandResultBuilder) updates]) =>
+          [void Function(GetMediaItemCommandResultBuilder)? updates]) =>
       (new GetMediaItemCommandResultBuilder()..update(updates)).build();
 
-  _$GetMediaItemCommandResult._({this.mediaId, this.mediaUri, this.id})
-      : super._();
+  _$GetMediaItemCommandResult._({this.mediaId, this.mediaUri, required this.id})
+      : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        id, 'GetMediaItemCommandResult', 'id');
+  }
 
   @override
   GetMediaItemCommandResult rebuild(
@@ -322,27 +324,28 @@ class _$GetMediaItemCommandResult extends GetMediaItemCommandResult {
 class GetMediaItemCommandResultBuilder
     implements
         Builder<GetMediaItemCommandResult, GetMediaItemCommandResultBuilder> {
-  _$GetMediaItemCommandResult _$v;
+  _$GetMediaItemCommandResult? _$v;
 
-  String _mediaId;
-  String get mediaId => _$this._mediaId;
-  set mediaId(String mediaId) => _$this._mediaId = mediaId;
+  String? _mediaId;
+  String? get mediaId => _$this._mediaId;
+  set mediaId(String? mediaId) => _$this._mediaId = mediaId;
 
-  Uri _mediaUri;
-  Uri get mediaUri => _$this._mediaUri;
-  set mediaUri(Uri mediaUri) => _$this._mediaUri = mediaUri;
+  Uri? _mediaUri;
+  Uri? get mediaUri => _$this._mediaUri;
+  set mediaUri(Uri? mediaUri) => _$this._mediaUri = mediaUri;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   GetMediaItemCommandResultBuilder();
 
   GetMediaItemCommandResultBuilder get _$this {
-    if (_$v != null) {
-      _mediaId = _$v.mediaId;
-      _mediaUri = _$v.mediaUri;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _mediaId = $v.mediaId;
+      _mediaUri = $v.mediaUri;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -350,14 +353,12 @@ class GetMediaItemCommandResultBuilder
 
   @override
   void replace(GetMediaItemCommandResult other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$GetMediaItemCommandResult;
   }
 
   @override
-  void update(void Function(GetMediaItemCommandResultBuilder) updates) {
+  void update(void Function(GetMediaItemCommandResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -365,7 +366,10 @@ class GetMediaItemCommandResultBuilder
   _$GetMediaItemCommandResult build() {
     final _$result = _$v ??
         new _$GetMediaItemCommandResult._(
-            mediaId: mediaId, mediaUri: mediaUri, id: id);
+            mediaId: mediaId,
+            mediaUri: mediaUri,
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'GetMediaItemCommandResult', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -376,10 +380,12 @@ class _$StorageNextCommand extends StorageNextCommand {
   final int id;
 
   factory _$StorageNextCommand(
-          [void Function(StorageNextCommandBuilder) updates]) =>
+          [void Function(StorageNextCommandBuilder)? updates]) =>
       (new StorageNextCommandBuilder()..update(updates)).build();
 
-  _$StorageNextCommand._({this.id}) : super._();
+  _$StorageNextCommand._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'StorageNextCommand', 'id');
+  }
 
   @override
   StorageNextCommand rebuild(
@@ -410,17 +416,18 @@ class _$StorageNextCommand extends StorageNextCommand {
 
 class StorageNextCommandBuilder
     implements Builder<StorageNextCommand, StorageNextCommandBuilder> {
-  _$StorageNextCommand _$v;
+  _$StorageNextCommand? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   StorageNextCommandBuilder();
 
   StorageNextCommandBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -428,20 +435,21 @@ class StorageNextCommandBuilder
 
   @override
   void replace(StorageNextCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$StorageNextCommand;
   }
 
   @override
-  void update(void Function(StorageNextCommandBuilder) updates) {
+  void update(void Function(StorageNextCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$StorageNextCommand build() {
-    final _$result = _$v ?? new _$StorageNextCommand._(id: id);
+    final _$result = _$v ??
+        new _$StorageNextCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'StorageNextCommand', 'id'));
     replace(_$result);
     return _$result;
   }

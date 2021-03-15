@@ -1,3 +1,10 @@
+/*
+ *
+ * @author  Igor Demyanov
+ * @license CC-BY-NC-4.0
+ * @version 1.0
+ */
+
 function keyhole_size(big_r, small_r)=big_r * 2 + small_r;
 
 module create_keyhole_hanger(big_r = 4.5, small_r = 2, h=1){

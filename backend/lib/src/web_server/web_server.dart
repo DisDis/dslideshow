@@ -29,19 +29,17 @@ class WebServer implements RpcService{
         return _executeWebServerControlCommand(command as WebServerControlCommand);
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
-        break;
       default:
         return new Future.value(_generateErrorResult(
             new Exception("Unknown command: ${command.type}"), command));
-        break;
     }
   }
 
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
     return new ErrorResult((b) =>
     b
-      ..id = (command.id == null ? 0 : command.id)
-      ..error = "$e");
+      ..id = command.id
+      ..error = '$e');
   }
 
   RpcResult _executeEchoCommand(EchoCommand command) {
@@ -51,7 +49,6 @@ class WebServer implements RpcService{
     return new EchoCommandResult((b) {
       b.id = command.id;
       b.resultText = "${command.text} Service ${new DateTime.now()}";
-      return b;
     });
   }
 
@@ -59,7 +56,6 @@ class WebServer implements RpcService{
     _webService.enabled = command.enable;
     return new EmptyResult((b) {
       b.id = command.id;
-      return b;
     });
   }
 }

@@ -10,14 +10,14 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
   final String total;
   final String free;
   final String used;
-  final int usagePercent;
+  final int? usagePercent;
 
   UsageIndicatorWidget({
-    @required this.title,
-    @required this.total,
-    @required this.free,
-    @required this.used,
-    @required this.usagePercent,
+    required this.title,
+    required this.total,
+    required this.free,
+    required this.used,
+    required this.usagePercent,
   });
 
   @override

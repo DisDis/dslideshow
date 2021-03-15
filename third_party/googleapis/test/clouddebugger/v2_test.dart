@@ -1,448 +1,542 @@
-library googleapis.clouddebugger.v2.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/clouddebugger/v2.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
-
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
+import '../test_shared.dart';
 
 core.int buildCounterAliasContext = 0;
-buildAliasContext() {
-  var o = new api.AliasContext();
+api.AliasContext buildAliasContext() {
+  var o = api.AliasContext();
   buildCounterAliasContext++;
   if (buildCounterAliasContext < 3) {
-    o.kind = "foo";
-    o.name = "foo";
+    o.kind = 'foo';
+    o.name = 'foo';
   }
   buildCounterAliasContext--;
   return o;
 }
 
-checkAliasContext(api.AliasContext o) {
+void checkAliasContext(api.AliasContext o) {
   buildCounterAliasContext++;
   if (buildCounterAliasContext < 3) {
-    unittest.expect(o.kind, unittest.equals('foo'));
-    unittest.expect(o.name, unittest.equals('foo'));
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterAliasContext--;
 }
 
-buildUnnamed2398() {
-  var o = new core.List<api.Variable>();
+core.List<api.Variable> buildUnnamed1429() {
+  var o = <api.Variable>[];
   o.add(buildVariable());
   o.add(buildVariable());
   return o;
 }
 
-checkUnnamed2398(core.List<api.Variable> o) {
+void checkUnnamed1429(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0]);
-  checkVariable(o[1]);
+  checkVariable(o[0] as api.Variable);
+  checkVariable(o[1] as api.Variable);
 }
 
-buildUnnamed2399() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed1430() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed2399(core.List<core.String> o) {
+void checkUnnamed1430(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed2400() {
-  var o = new core.Map<core.String, core.String>();
-  o["x"] = "foo";
-  o["y"] = "foo";
+core.Map<core.String, core.String> buildUnnamed1431() {
+  var o = <core.String, core.String>{};
+  o['x'] = 'foo';
+  o['y'] = 'foo';
   return o;
 }
 
-checkUnnamed2400(core.Map<core.String, core.String> o) {
+void checkUnnamed1431(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o["x"], unittest.equals('foo'));
-  unittest.expect(o["y"], unittest.equals('foo'));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed2401() {
-  var o = new core.List<api.StackFrame>();
+core.List<api.StackFrame> buildUnnamed1432() {
+  var o = <api.StackFrame>[];
   o.add(buildStackFrame());
   o.add(buildStackFrame());
   return o;
 }
 
-checkUnnamed2401(core.List<api.StackFrame> o) {
+void checkUnnamed1432(core.List<api.StackFrame> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkStackFrame(o[0]);
-  checkStackFrame(o[1]);
+  checkStackFrame(o[0] as api.StackFrame);
+  checkStackFrame(o[1] as api.StackFrame);
 }
 
-buildUnnamed2402() {
-  var o = new core.List<api.Variable>();
+core.List<api.Variable> buildUnnamed1433() {
+  var o = <api.Variable>[];
   o.add(buildVariable());
   o.add(buildVariable());
   return o;
 }
 
-checkUnnamed2402(core.List<api.Variable> o) {
+void checkUnnamed1433(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0]);
-  checkVariable(o[1]);
+  checkVariable(o[0] as api.Variable);
+  checkVariable(o[1] as api.Variable);
 }
 
 core.int buildCounterBreakpoint = 0;
-buildBreakpoint() {
-  var o = new api.Breakpoint();
+api.Breakpoint buildBreakpoint() {
+  var o = api.Breakpoint();
   buildCounterBreakpoint++;
   if (buildCounterBreakpoint < 3) {
-    o.action = "foo";
-    o.condition = "foo";
-    o.createTime = "foo";
-    o.evaluatedExpressions = buildUnnamed2398();
-    o.expressions = buildUnnamed2399();
-    o.finalTime = "foo";
-    o.id = "foo";
+    o.action = 'foo';
+    o.canaryExpireTime = 'foo';
+    o.condition = 'foo';
+    o.createTime = 'foo';
+    o.evaluatedExpressions = buildUnnamed1429();
+    o.expressions = buildUnnamed1430();
+    o.finalTime = 'foo';
+    o.id = 'foo';
     o.isFinalState = true;
-    o.labels = buildUnnamed2400();
+    o.labels = buildUnnamed1431();
     o.location = buildSourceLocation();
-    o.logLevel = "foo";
-    o.logMessageFormat = "foo";
-    o.stackFrames = buildUnnamed2401();
+    o.logLevel = 'foo';
+    o.logMessageFormat = 'foo';
+    o.stackFrames = buildUnnamed1432();
+    o.state = 'foo';
     o.status = buildStatusMessage();
-    o.userEmail = "foo";
-    o.variableTable = buildUnnamed2402();
+    o.userEmail = 'foo';
+    o.variableTable = buildUnnamed1433();
   }
   buildCounterBreakpoint--;
   return o;
 }
 
-checkBreakpoint(api.Breakpoint o) {
+void checkBreakpoint(api.Breakpoint o) {
   buildCounterBreakpoint++;
   if (buildCounterBreakpoint < 3) {
-    unittest.expect(o.action, unittest.equals('foo'));
-    unittest.expect(o.condition, unittest.equals('foo'));
-    unittest.expect(o.createTime, unittest.equals('foo'));
-    checkUnnamed2398(o.evaluatedExpressions);
-    checkUnnamed2399(o.expressions);
-    unittest.expect(o.finalTime, unittest.equals('foo'));
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.isFinalState, unittest.isTrue);
-    checkUnnamed2400(o.labels);
-    checkSourceLocation(o.location);
-    unittest.expect(o.logLevel, unittest.equals('foo'));
-    unittest.expect(o.logMessageFormat, unittest.equals('foo'));
-    checkUnnamed2401(o.stackFrames);
-    checkStatusMessage(o.status);
-    unittest.expect(o.userEmail, unittest.equals('foo'));
-    checkUnnamed2402(o.variableTable);
+    unittest.expect(
+      o.action!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.canaryExpireTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.condition!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.createTime!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1429(o.evaluatedExpressions!);
+    checkUnnamed1430(o.expressions!);
+    unittest.expect(
+      o.finalTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isFinalState!, unittest.isTrue);
+    checkUnnamed1431(o.labels!);
+    checkSourceLocation(o.location! as api.SourceLocation);
+    unittest.expect(
+      o.logLevel!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.logMessageFormat!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1432(o.stackFrames!);
+    unittest.expect(
+      o.state!,
+      unittest.equals('foo'),
+    );
+    checkStatusMessage(o.status! as api.StatusMessage);
+    unittest.expect(
+      o.userEmail!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1433(o.variableTable!);
   }
   buildCounterBreakpoint--;
 }
 
 core.int buildCounterCloudRepoSourceContext = 0;
-buildCloudRepoSourceContext() {
-  var o = new api.CloudRepoSourceContext();
+api.CloudRepoSourceContext buildCloudRepoSourceContext() {
+  var o = api.CloudRepoSourceContext();
   buildCounterCloudRepoSourceContext++;
   if (buildCounterCloudRepoSourceContext < 3) {
     o.aliasContext = buildAliasContext();
-    o.aliasName = "foo";
+    o.aliasName = 'foo';
     o.repoId = buildRepoId();
-    o.revisionId = "foo";
+    o.revisionId = 'foo';
   }
   buildCounterCloudRepoSourceContext--;
   return o;
 }
 
-checkCloudRepoSourceContext(api.CloudRepoSourceContext o) {
+void checkCloudRepoSourceContext(api.CloudRepoSourceContext o) {
   buildCounterCloudRepoSourceContext++;
   if (buildCounterCloudRepoSourceContext < 3) {
-    checkAliasContext(o.aliasContext);
-    unittest.expect(o.aliasName, unittest.equals('foo'));
-    checkRepoId(o.repoId);
-    unittest.expect(o.revisionId, unittest.equals('foo'));
+    checkAliasContext(o.aliasContext! as api.AliasContext);
+    unittest.expect(
+      o.aliasName!,
+      unittest.equals('foo'),
+    );
+    checkRepoId(o.repoId! as api.RepoId);
+    unittest.expect(
+      o.revisionId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterCloudRepoSourceContext--;
 }
 
 core.int buildCounterCloudWorkspaceId = 0;
-buildCloudWorkspaceId() {
-  var o = new api.CloudWorkspaceId();
+api.CloudWorkspaceId buildCloudWorkspaceId() {
+  var o = api.CloudWorkspaceId();
   buildCounterCloudWorkspaceId++;
   if (buildCounterCloudWorkspaceId < 3) {
-    o.name = "foo";
+    o.name = 'foo';
     o.repoId = buildRepoId();
   }
   buildCounterCloudWorkspaceId--;
   return o;
 }
 
-checkCloudWorkspaceId(api.CloudWorkspaceId o) {
+void checkCloudWorkspaceId(api.CloudWorkspaceId o) {
   buildCounterCloudWorkspaceId++;
   if (buildCounterCloudWorkspaceId < 3) {
-    unittest.expect(o.name, unittest.equals('foo'));
-    checkRepoId(o.repoId);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    checkRepoId(o.repoId! as api.RepoId);
   }
   buildCounterCloudWorkspaceId--;
 }
 
 core.int buildCounterCloudWorkspaceSourceContext = 0;
-buildCloudWorkspaceSourceContext() {
-  var o = new api.CloudWorkspaceSourceContext();
+api.CloudWorkspaceSourceContext buildCloudWorkspaceSourceContext() {
+  var o = api.CloudWorkspaceSourceContext();
   buildCounterCloudWorkspaceSourceContext++;
   if (buildCounterCloudWorkspaceSourceContext < 3) {
-    o.snapshotId = "foo";
+    o.snapshotId = 'foo';
     o.workspaceId = buildCloudWorkspaceId();
   }
   buildCounterCloudWorkspaceSourceContext--;
   return o;
 }
 
-checkCloudWorkspaceSourceContext(api.CloudWorkspaceSourceContext o) {
+void checkCloudWorkspaceSourceContext(api.CloudWorkspaceSourceContext o) {
   buildCounterCloudWorkspaceSourceContext++;
   if (buildCounterCloudWorkspaceSourceContext < 3) {
-    unittest.expect(o.snapshotId, unittest.equals('foo'));
-    checkCloudWorkspaceId(o.workspaceId);
+    unittest.expect(
+      o.snapshotId!,
+      unittest.equals('foo'),
+    );
+    checkCloudWorkspaceId(o.workspaceId! as api.CloudWorkspaceId);
   }
   buildCounterCloudWorkspaceSourceContext--;
 }
 
-buildUnnamed2403() {
-  var o = new core.List<api.ExtendedSourceContext>();
+core.List<api.ExtendedSourceContext> buildUnnamed1434() {
+  var o = <api.ExtendedSourceContext>[];
   o.add(buildExtendedSourceContext());
   o.add(buildExtendedSourceContext());
   return o;
 }
 
-checkUnnamed2403(core.List<api.ExtendedSourceContext> o) {
+void checkUnnamed1434(core.List<api.ExtendedSourceContext> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExtendedSourceContext(o[0]);
-  checkExtendedSourceContext(o[1]);
+  checkExtendedSourceContext(o[0] as api.ExtendedSourceContext);
+  checkExtendedSourceContext(o[1] as api.ExtendedSourceContext);
 }
 
-buildUnnamed2404() {
-  var o = new core.Map<core.String, core.String>();
-  o["x"] = "foo";
-  o["y"] = "foo";
+core.Map<core.String, core.String> buildUnnamed1435() {
+  var o = <core.String, core.String>{};
+  o['x'] = 'foo';
+  o['y'] = 'foo';
   return o;
 }
 
-checkUnnamed2404(core.Map<core.String, core.String> o) {
+void checkUnnamed1435(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o["x"], unittest.equals('foo'));
-  unittest.expect(o["y"], unittest.equals('foo'));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed2405() {
-  var o = new core.List<api.SourceContext>();
+core.List<api.SourceContext> buildUnnamed1436() {
+  var o = <api.SourceContext>[];
   o.add(buildSourceContext());
   o.add(buildSourceContext());
   return o;
 }
 
-checkUnnamed2405(core.List<api.SourceContext> o) {
+void checkUnnamed1436(core.List<api.SourceContext> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSourceContext(o[0]);
-  checkSourceContext(o[1]);
+  checkSourceContext(o[0] as api.SourceContext);
+  checkSourceContext(o[1] as api.SourceContext);
 }
 
 core.int buildCounterDebuggee = 0;
-buildDebuggee() {
-  var o = new api.Debuggee();
+api.Debuggee buildDebuggee() {
+  var o = api.Debuggee();
   buildCounterDebuggee++;
   if (buildCounterDebuggee < 3) {
-    o.agentVersion = "foo";
-    o.description = "foo";
-    o.extSourceContexts = buildUnnamed2403();
-    o.id = "foo";
+    o.agentVersion = 'foo';
+    o.canaryMode = 'foo';
+    o.description = 'foo';
+    o.extSourceContexts = buildUnnamed1434();
+    o.id = 'foo';
     o.isDisabled = true;
     o.isInactive = true;
-    o.labels = buildUnnamed2404();
-    o.project = "foo";
-    o.sourceContexts = buildUnnamed2405();
+    o.labels = buildUnnamed1435();
+    o.project = 'foo';
+    o.sourceContexts = buildUnnamed1436();
     o.status = buildStatusMessage();
-    o.uniquifier = "foo";
+    o.uniquifier = 'foo';
   }
   buildCounterDebuggee--;
   return o;
 }
 
-checkDebuggee(api.Debuggee o) {
+void checkDebuggee(api.Debuggee o) {
   buildCounterDebuggee++;
   if (buildCounterDebuggee < 3) {
-    unittest.expect(o.agentVersion, unittest.equals('foo'));
-    unittest.expect(o.description, unittest.equals('foo'));
-    checkUnnamed2403(o.extSourceContexts);
-    unittest.expect(o.id, unittest.equals('foo'));
-    unittest.expect(o.isDisabled, unittest.isTrue);
-    unittest.expect(o.isInactive, unittest.isTrue);
-    checkUnnamed2404(o.labels);
-    unittest.expect(o.project, unittest.equals('foo'));
-    checkUnnamed2405(o.sourceContexts);
-    checkStatusMessage(o.status);
-    unittest.expect(o.uniquifier, unittest.equals('foo'));
+    unittest.expect(
+      o.agentVersion!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.canaryMode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1434(o.extSourceContexts!);
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.isDisabled!, unittest.isTrue);
+    unittest.expect(o.isInactive!, unittest.isTrue);
+    checkUnnamed1435(o.labels!);
+    unittest.expect(
+      o.project!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1436(o.sourceContexts!);
+    checkStatusMessage(o.status! as api.StatusMessage);
+    unittest.expect(
+      o.uniquifier!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterDebuggee--;
 }
 
 core.int buildCounterEmpty = 0;
-buildEmpty() {
-  var o = new api.Empty();
+api.Empty buildEmpty() {
+  var o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
   return o;
 }
 
-checkEmpty(api.Empty o) {
+void checkEmpty(api.Empty o) {
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
 }
 
-buildUnnamed2406() {
-  var o = new core.Map<core.String, core.String>();
-  o["x"] = "foo";
-  o["y"] = "foo";
+core.Map<core.String, core.String> buildUnnamed1437() {
+  var o = <core.String, core.String>{};
+  o['x'] = 'foo';
+  o['y'] = 'foo';
   return o;
 }
 
-checkUnnamed2406(core.Map<core.String, core.String> o) {
+void checkUnnamed1437(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o["x"], unittest.equals('foo'));
-  unittest.expect(o["y"], unittest.equals('foo'));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterExtendedSourceContext = 0;
-buildExtendedSourceContext() {
-  var o = new api.ExtendedSourceContext();
+api.ExtendedSourceContext buildExtendedSourceContext() {
+  var o = api.ExtendedSourceContext();
   buildCounterExtendedSourceContext++;
   if (buildCounterExtendedSourceContext < 3) {
     o.context = buildSourceContext();
-    o.labels = buildUnnamed2406();
+    o.labels = buildUnnamed1437();
   }
   buildCounterExtendedSourceContext--;
   return o;
 }
 
-checkExtendedSourceContext(api.ExtendedSourceContext o) {
+void checkExtendedSourceContext(api.ExtendedSourceContext o) {
   buildCounterExtendedSourceContext++;
   if (buildCounterExtendedSourceContext < 3) {
-    checkSourceContext(o.context);
-    checkUnnamed2406(o.labels);
+    checkSourceContext(o.context! as api.SourceContext);
+    checkUnnamed1437(o.labels!);
   }
   buildCounterExtendedSourceContext--;
 }
 
-buildUnnamed2407() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed1438() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed2407(core.List<core.String> o) {
+void checkUnnamed1438(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterFormatMessage = 0;
-buildFormatMessage() {
-  var o = new api.FormatMessage();
+api.FormatMessage buildFormatMessage() {
+  var o = api.FormatMessage();
   buildCounterFormatMessage++;
   if (buildCounterFormatMessage < 3) {
-    o.format = "foo";
-    o.parameters = buildUnnamed2407();
+    o.format = 'foo';
+    o.parameters = buildUnnamed1438();
   }
   buildCounterFormatMessage--;
   return o;
 }
 
-checkFormatMessage(api.FormatMessage o) {
+void checkFormatMessage(api.FormatMessage o) {
   buildCounterFormatMessage++;
   if (buildCounterFormatMessage < 3) {
-    unittest.expect(o.format, unittest.equals('foo'));
-    checkUnnamed2407(o.parameters);
+    unittest.expect(
+      o.format!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1438(o.parameters!);
   }
   buildCounterFormatMessage--;
 }
 
 core.int buildCounterGerritSourceContext = 0;
-buildGerritSourceContext() {
-  var o = new api.GerritSourceContext();
+api.GerritSourceContext buildGerritSourceContext() {
+  var o = api.GerritSourceContext();
   buildCounterGerritSourceContext++;
   if (buildCounterGerritSourceContext < 3) {
     o.aliasContext = buildAliasContext();
-    o.aliasName = "foo";
-    o.gerritProject = "foo";
-    o.hostUri = "foo";
-    o.revisionId = "foo";
+    o.aliasName = 'foo';
+    o.gerritProject = 'foo';
+    o.hostUri = 'foo';
+    o.revisionId = 'foo';
   }
   buildCounterGerritSourceContext--;
   return o;
 }
 
-checkGerritSourceContext(api.GerritSourceContext o) {
+void checkGerritSourceContext(api.GerritSourceContext o) {
   buildCounterGerritSourceContext++;
   if (buildCounterGerritSourceContext < 3) {
-    checkAliasContext(o.aliasContext);
-    unittest.expect(o.aliasName, unittest.equals('foo'));
-    unittest.expect(o.gerritProject, unittest.equals('foo'));
-    unittest.expect(o.hostUri, unittest.equals('foo'));
-    unittest.expect(o.revisionId, unittest.equals('foo'));
+    checkAliasContext(o.aliasContext! as api.AliasContext);
+    unittest.expect(
+      o.aliasName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.gerritProject!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.hostUri!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.revisionId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterGerritSourceContext--;
 }
 
 core.int buildCounterGetBreakpointResponse = 0;
-buildGetBreakpointResponse() {
-  var o = new api.GetBreakpointResponse();
+api.GetBreakpointResponse buildGetBreakpointResponse() {
+  var o = api.GetBreakpointResponse();
   buildCounterGetBreakpointResponse++;
   if (buildCounterGetBreakpointResponse < 3) {
     o.breakpoint = buildBreakpoint();
@@ -451,161 +545,179 @@ buildGetBreakpointResponse() {
   return o;
 }
 
-checkGetBreakpointResponse(api.GetBreakpointResponse o) {
+void checkGetBreakpointResponse(api.GetBreakpointResponse o) {
   buildCounterGetBreakpointResponse++;
   if (buildCounterGetBreakpointResponse < 3) {
-    checkBreakpoint(o.breakpoint);
+    checkBreakpoint(o.breakpoint! as api.Breakpoint);
   }
   buildCounterGetBreakpointResponse--;
 }
 
 core.int buildCounterGitSourceContext = 0;
-buildGitSourceContext() {
-  var o = new api.GitSourceContext();
+api.GitSourceContext buildGitSourceContext() {
+  var o = api.GitSourceContext();
   buildCounterGitSourceContext++;
   if (buildCounterGitSourceContext < 3) {
-    o.revisionId = "foo";
-    o.url = "foo";
+    o.revisionId = 'foo';
+    o.url = 'foo';
   }
   buildCounterGitSourceContext--;
   return o;
 }
 
-checkGitSourceContext(api.GitSourceContext o) {
+void checkGitSourceContext(api.GitSourceContext o) {
   buildCounterGitSourceContext++;
   if (buildCounterGitSourceContext < 3) {
-    unittest.expect(o.revisionId, unittest.equals('foo'));
-    unittest.expect(o.url, unittest.equals('foo'));
+    unittest.expect(
+      o.revisionId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.url!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterGitSourceContext--;
 }
 
-buildUnnamed2408() {
-  var o = new core.List<api.Breakpoint>();
+core.List<api.Breakpoint> buildUnnamed1439() {
+  var o = <api.Breakpoint>[];
   o.add(buildBreakpoint());
   o.add(buildBreakpoint());
   return o;
 }
 
-checkUnnamed2408(core.List<api.Breakpoint> o) {
+void checkUnnamed1439(core.List<api.Breakpoint> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBreakpoint(o[0]);
-  checkBreakpoint(o[1]);
+  checkBreakpoint(o[0] as api.Breakpoint);
+  checkBreakpoint(o[1] as api.Breakpoint);
 }
 
 core.int buildCounterListActiveBreakpointsResponse = 0;
-buildListActiveBreakpointsResponse() {
-  var o = new api.ListActiveBreakpointsResponse();
+api.ListActiveBreakpointsResponse buildListActiveBreakpointsResponse() {
+  var o = api.ListActiveBreakpointsResponse();
   buildCounterListActiveBreakpointsResponse++;
   if (buildCounterListActiveBreakpointsResponse < 3) {
-    o.breakpoints = buildUnnamed2408();
-    o.nextWaitToken = "foo";
+    o.breakpoints = buildUnnamed1439();
+    o.nextWaitToken = 'foo';
     o.waitExpired = true;
   }
   buildCounterListActiveBreakpointsResponse--;
   return o;
 }
 
-checkListActiveBreakpointsResponse(api.ListActiveBreakpointsResponse o) {
+void checkListActiveBreakpointsResponse(api.ListActiveBreakpointsResponse o) {
   buildCounterListActiveBreakpointsResponse++;
   if (buildCounterListActiveBreakpointsResponse < 3) {
-    checkUnnamed2408(o.breakpoints);
-    unittest.expect(o.nextWaitToken, unittest.equals('foo'));
-    unittest.expect(o.waitExpired, unittest.isTrue);
+    checkUnnamed1439(o.breakpoints!);
+    unittest.expect(
+      o.nextWaitToken!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.waitExpired!, unittest.isTrue);
   }
   buildCounterListActiveBreakpointsResponse--;
 }
 
-buildUnnamed2409() {
-  var o = new core.List<api.Breakpoint>();
+core.List<api.Breakpoint> buildUnnamed1440() {
+  var o = <api.Breakpoint>[];
   o.add(buildBreakpoint());
   o.add(buildBreakpoint());
   return o;
 }
 
-checkUnnamed2409(core.List<api.Breakpoint> o) {
+void checkUnnamed1440(core.List<api.Breakpoint> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBreakpoint(o[0]);
-  checkBreakpoint(o[1]);
+  checkBreakpoint(o[0] as api.Breakpoint);
+  checkBreakpoint(o[1] as api.Breakpoint);
 }
 
 core.int buildCounterListBreakpointsResponse = 0;
-buildListBreakpointsResponse() {
-  var o = new api.ListBreakpointsResponse();
+api.ListBreakpointsResponse buildListBreakpointsResponse() {
+  var o = api.ListBreakpointsResponse();
   buildCounterListBreakpointsResponse++;
   if (buildCounterListBreakpointsResponse < 3) {
-    o.breakpoints = buildUnnamed2409();
-    o.nextWaitToken = "foo";
+    o.breakpoints = buildUnnamed1440();
+    o.nextWaitToken = 'foo';
   }
   buildCounterListBreakpointsResponse--;
   return o;
 }
 
-checkListBreakpointsResponse(api.ListBreakpointsResponse o) {
+void checkListBreakpointsResponse(api.ListBreakpointsResponse o) {
   buildCounterListBreakpointsResponse++;
   if (buildCounterListBreakpointsResponse < 3) {
-    checkUnnamed2409(o.breakpoints);
-    unittest.expect(o.nextWaitToken, unittest.equals('foo'));
+    checkUnnamed1440(o.breakpoints!);
+    unittest.expect(
+      o.nextWaitToken!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterListBreakpointsResponse--;
 }
 
-buildUnnamed2410() {
-  var o = new core.List<api.Debuggee>();
+core.List<api.Debuggee> buildUnnamed1441() {
+  var o = <api.Debuggee>[];
   o.add(buildDebuggee());
   o.add(buildDebuggee());
   return o;
 }
 
-checkUnnamed2410(core.List<api.Debuggee> o) {
+void checkUnnamed1441(core.List<api.Debuggee> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDebuggee(o[0]);
-  checkDebuggee(o[1]);
+  checkDebuggee(o[0] as api.Debuggee);
+  checkDebuggee(o[1] as api.Debuggee);
 }
 
 core.int buildCounterListDebuggeesResponse = 0;
-buildListDebuggeesResponse() {
-  var o = new api.ListDebuggeesResponse();
+api.ListDebuggeesResponse buildListDebuggeesResponse() {
+  var o = api.ListDebuggeesResponse();
   buildCounterListDebuggeesResponse++;
   if (buildCounterListDebuggeesResponse < 3) {
-    o.debuggees = buildUnnamed2410();
+    o.debuggees = buildUnnamed1441();
   }
   buildCounterListDebuggeesResponse--;
   return o;
 }
 
-checkListDebuggeesResponse(api.ListDebuggeesResponse o) {
+void checkListDebuggeesResponse(api.ListDebuggeesResponse o) {
   buildCounterListDebuggeesResponse++;
   if (buildCounterListDebuggeesResponse < 3) {
-    checkUnnamed2410(o.debuggees);
+    checkUnnamed1441(o.debuggees!);
   }
   buildCounterListDebuggeesResponse--;
 }
 
 core.int buildCounterProjectRepoId = 0;
-buildProjectRepoId() {
-  var o = new api.ProjectRepoId();
+api.ProjectRepoId buildProjectRepoId() {
+  var o = api.ProjectRepoId();
   buildCounterProjectRepoId++;
   if (buildCounterProjectRepoId < 3) {
-    o.projectId = "foo";
-    o.repoName = "foo";
+    o.projectId = 'foo';
+    o.repoName = 'foo';
   }
   buildCounterProjectRepoId--;
   return o;
 }
 
-checkProjectRepoId(api.ProjectRepoId o) {
+void checkProjectRepoId(api.ProjectRepoId o) {
   buildCounterProjectRepoId++;
   if (buildCounterProjectRepoId < 3) {
-    unittest.expect(o.projectId, unittest.equals('foo'));
-    unittest.expect(o.repoName, unittest.equals('foo'));
+    unittest.expect(
+      o.projectId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.repoName!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterProjectRepoId--;
 }
 
 core.int buildCounterRegisterDebuggeeRequest = 0;
-buildRegisterDebuggeeRequest() {
-  var o = new api.RegisterDebuggeeRequest();
+api.RegisterDebuggeeRequest buildRegisterDebuggeeRequest() {
+  var o = api.RegisterDebuggeeRequest();
   buildCounterRegisterDebuggeeRequest++;
   if (buildCounterRegisterDebuggeeRequest < 3) {
     o.debuggee = buildDebuggee();
@@ -614,57 +726,65 @@ buildRegisterDebuggeeRequest() {
   return o;
 }
 
-checkRegisterDebuggeeRequest(api.RegisterDebuggeeRequest o) {
+void checkRegisterDebuggeeRequest(api.RegisterDebuggeeRequest o) {
   buildCounterRegisterDebuggeeRequest++;
   if (buildCounterRegisterDebuggeeRequest < 3) {
-    checkDebuggee(o.debuggee);
+    checkDebuggee(o.debuggee! as api.Debuggee);
   }
   buildCounterRegisterDebuggeeRequest--;
 }
 
 core.int buildCounterRegisterDebuggeeResponse = 0;
-buildRegisterDebuggeeResponse() {
-  var o = new api.RegisterDebuggeeResponse();
+api.RegisterDebuggeeResponse buildRegisterDebuggeeResponse() {
+  var o = api.RegisterDebuggeeResponse();
   buildCounterRegisterDebuggeeResponse++;
   if (buildCounterRegisterDebuggeeResponse < 3) {
+    o.agentId = 'foo';
     o.debuggee = buildDebuggee();
   }
   buildCounterRegisterDebuggeeResponse--;
   return o;
 }
 
-checkRegisterDebuggeeResponse(api.RegisterDebuggeeResponse o) {
+void checkRegisterDebuggeeResponse(api.RegisterDebuggeeResponse o) {
   buildCounterRegisterDebuggeeResponse++;
   if (buildCounterRegisterDebuggeeResponse < 3) {
-    checkDebuggee(o.debuggee);
+    unittest.expect(
+      o.agentId!,
+      unittest.equals('foo'),
+    );
+    checkDebuggee(o.debuggee! as api.Debuggee);
   }
   buildCounterRegisterDebuggeeResponse--;
 }
 
 core.int buildCounterRepoId = 0;
-buildRepoId() {
-  var o = new api.RepoId();
+api.RepoId buildRepoId() {
+  var o = api.RepoId();
   buildCounterRepoId++;
   if (buildCounterRepoId < 3) {
     o.projectRepoId = buildProjectRepoId();
-    o.uid = "foo";
+    o.uid = 'foo';
   }
   buildCounterRepoId--;
   return o;
 }
 
-checkRepoId(api.RepoId o) {
+void checkRepoId(api.RepoId o) {
   buildCounterRepoId++;
   if (buildCounterRepoId < 3) {
-    checkProjectRepoId(o.projectRepoId);
-    unittest.expect(o.uid, unittest.equals('foo'));
+    checkProjectRepoId(o.projectRepoId! as api.ProjectRepoId);
+    unittest.expect(
+      o.uid!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterRepoId--;
 }
 
 core.int buildCounterSetBreakpointResponse = 0;
-buildSetBreakpointResponse() {
-  var o = new api.SetBreakpointResponse();
+api.SetBreakpointResponse buildSetBreakpointResponse() {
+  var o = api.SetBreakpointResponse();
   buildCounterSetBreakpointResponse++;
   if (buildCounterSetBreakpointResponse < 3) {
     o.breakpoint = buildBreakpoint();
@@ -673,17 +793,17 @@ buildSetBreakpointResponse() {
   return o;
 }
 
-checkSetBreakpointResponse(api.SetBreakpointResponse o) {
+void checkSetBreakpointResponse(api.SetBreakpointResponse o) {
   buildCounterSetBreakpointResponse++;
   if (buildCounterSetBreakpointResponse < 3) {
-    checkBreakpoint(o.breakpoint);
+    checkBreakpoint(o.breakpoint! as api.Breakpoint);
   }
   buildCounterSetBreakpointResponse--;
 }
 
 core.int buildCounterSourceContext = 0;
-buildSourceContext() {
-  var o = new api.SourceContext();
+api.SourceContext buildSourceContext() {
+  var o = api.SourceContext();
   buildCounterSourceContext++;
   if (buildCounterSourceContext < 3) {
     o.cloudRepo = buildCloudRepoSourceContext();
@@ -695,117 +815,133 @@ buildSourceContext() {
   return o;
 }
 
-checkSourceContext(api.SourceContext o) {
+void checkSourceContext(api.SourceContext o) {
   buildCounterSourceContext++;
   if (buildCounterSourceContext < 3) {
-    checkCloudRepoSourceContext(o.cloudRepo);
-    checkCloudWorkspaceSourceContext(o.cloudWorkspace);
-    checkGerritSourceContext(o.gerrit);
-    checkGitSourceContext(o.git);
+    checkCloudRepoSourceContext(o.cloudRepo! as api.CloudRepoSourceContext);
+    checkCloudWorkspaceSourceContext(
+        o.cloudWorkspace! as api.CloudWorkspaceSourceContext);
+    checkGerritSourceContext(o.gerrit! as api.GerritSourceContext);
+    checkGitSourceContext(o.git! as api.GitSourceContext);
   }
   buildCounterSourceContext--;
 }
 
 core.int buildCounterSourceLocation = 0;
-buildSourceLocation() {
-  var o = new api.SourceLocation();
+api.SourceLocation buildSourceLocation() {
+  var o = api.SourceLocation();
   buildCounterSourceLocation++;
   if (buildCounterSourceLocation < 3) {
     o.column = 42;
     o.line = 42;
-    o.path = "foo";
+    o.path = 'foo';
   }
   buildCounterSourceLocation--;
   return o;
 }
 
-checkSourceLocation(api.SourceLocation o) {
+void checkSourceLocation(api.SourceLocation o) {
   buildCounterSourceLocation++;
   if (buildCounterSourceLocation < 3) {
-    unittest.expect(o.column, unittest.equals(42));
-    unittest.expect(o.line, unittest.equals(42));
-    unittest.expect(o.path, unittest.equals('foo'));
+    unittest.expect(
+      o.column!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.line!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.path!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterSourceLocation--;
 }
 
-buildUnnamed2411() {
-  var o = new core.List<api.Variable>();
+core.List<api.Variable> buildUnnamed1442() {
+  var o = <api.Variable>[];
   o.add(buildVariable());
   o.add(buildVariable());
   return o;
 }
 
-checkUnnamed2411(core.List<api.Variable> o) {
+void checkUnnamed1442(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0]);
-  checkVariable(o[1]);
+  checkVariable(o[0] as api.Variable);
+  checkVariable(o[1] as api.Variable);
 }
 
-buildUnnamed2412() {
-  var o = new core.List<api.Variable>();
+core.List<api.Variable> buildUnnamed1443() {
+  var o = <api.Variable>[];
   o.add(buildVariable());
   o.add(buildVariable());
   return o;
 }
 
-checkUnnamed2412(core.List<api.Variable> o) {
+void checkUnnamed1443(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0]);
-  checkVariable(o[1]);
+  checkVariable(o[0] as api.Variable);
+  checkVariable(o[1] as api.Variable);
 }
 
 core.int buildCounterStackFrame = 0;
-buildStackFrame() {
-  var o = new api.StackFrame();
+api.StackFrame buildStackFrame() {
+  var o = api.StackFrame();
   buildCounterStackFrame++;
   if (buildCounterStackFrame < 3) {
-    o.arguments = buildUnnamed2411();
-    o.function = "foo";
-    o.locals = buildUnnamed2412();
+    o.arguments = buildUnnamed1442();
+    o.function = 'foo';
+    o.locals = buildUnnamed1443();
     o.location = buildSourceLocation();
   }
   buildCounterStackFrame--;
   return o;
 }
 
-checkStackFrame(api.StackFrame o) {
+void checkStackFrame(api.StackFrame o) {
   buildCounterStackFrame++;
   if (buildCounterStackFrame < 3) {
-    checkUnnamed2411(o.arguments);
-    unittest.expect(o.function, unittest.equals('foo'));
-    checkUnnamed2412(o.locals);
-    checkSourceLocation(o.location);
+    checkUnnamed1442(o.arguments!);
+    unittest.expect(
+      o.function!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed1443(o.locals!);
+    checkSourceLocation(o.location! as api.SourceLocation);
   }
   buildCounterStackFrame--;
 }
 
 core.int buildCounterStatusMessage = 0;
-buildStatusMessage() {
-  var o = new api.StatusMessage();
+api.StatusMessage buildStatusMessage() {
+  var o = api.StatusMessage();
   buildCounterStatusMessage++;
   if (buildCounterStatusMessage < 3) {
     o.description = buildFormatMessage();
     o.isError = true;
-    o.refersTo = "foo";
+    o.refersTo = 'foo';
   }
   buildCounterStatusMessage--;
   return o;
 }
 
-checkStatusMessage(api.StatusMessage o) {
+void checkStatusMessage(api.StatusMessage o) {
   buildCounterStatusMessage++;
   if (buildCounterStatusMessage < 3) {
-    checkFormatMessage(o.description);
-    unittest.expect(o.isError, unittest.isTrue);
-    unittest.expect(o.refersTo, unittest.equals('foo'));
+    checkFormatMessage(o.description! as api.FormatMessage);
+    unittest.expect(o.isError!, unittest.isTrue);
+    unittest.expect(
+      o.refersTo!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterStatusMessage--;
 }
 
 core.int buildCounterUpdateActiveBreakpointRequest = 0;
-buildUpdateActiveBreakpointRequest() {
-  var o = new api.UpdateActiveBreakpointRequest();
+api.UpdateActiveBreakpointRequest buildUpdateActiveBreakpointRequest() {
+  var o = api.UpdateActiveBreakpointRequest();
   buildCounterUpdateActiveBreakpointRequest++;
   if (buildCounterUpdateActiveBreakpointRequest < 3) {
     o.breakpoint = buildBreakpoint();
@@ -814,836 +950,991 @@ buildUpdateActiveBreakpointRequest() {
   return o;
 }
 
-checkUpdateActiveBreakpointRequest(api.UpdateActiveBreakpointRequest o) {
+void checkUpdateActiveBreakpointRequest(api.UpdateActiveBreakpointRequest o) {
   buildCounterUpdateActiveBreakpointRequest++;
   if (buildCounterUpdateActiveBreakpointRequest < 3) {
-    checkBreakpoint(o.breakpoint);
+    checkBreakpoint(o.breakpoint! as api.Breakpoint);
   }
   buildCounterUpdateActiveBreakpointRequest--;
 }
 
 core.int buildCounterUpdateActiveBreakpointResponse = 0;
-buildUpdateActiveBreakpointResponse() {
-  var o = new api.UpdateActiveBreakpointResponse();
+api.UpdateActiveBreakpointResponse buildUpdateActiveBreakpointResponse() {
+  var o = api.UpdateActiveBreakpointResponse();
   buildCounterUpdateActiveBreakpointResponse++;
   if (buildCounterUpdateActiveBreakpointResponse < 3) {}
   buildCounterUpdateActiveBreakpointResponse--;
   return o;
 }
 
-checkUpdateActiveBreakpointResponse(api.UpdateActiveBreakpointResponse o) {
+void checkUpdateActiveBreakpointResponse(api.UpdateActiveBreakpointResponse o) {
   buildCounterUpdateActiveBreakpointResponse++;
   if (buildCounterUpdateActiveBreakpointResponse < 3) {}
   buildCounterUpdateActiveBreakpointResponse--;
 }
 
-buildUnnamed2413() {
-  var o = new core.List<api.Variable>();
+core.List<api.Variable> buildUnnamed1444() {
+  var o = <api.Variable>[];
   o.add(buildVariable());
   o.add(buildVariable());
   return o;
 }
 
-checkUnnamed2413(core.List<api.Variable> o) {
+void checkUnnamed1444(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0]);
-  checkVariable(o[1]);
+  checkVariable(o[0] as api.Variable);
+  checkVariable(o[1] as api.Variable);
 }
 
 core.int buildCounterVariable = 0;
-buildVariable() {
-  var o = new api.Variable();
+api.Variable buildVariable() {
+  var o = api.Variable();
   buildCounterVariable++;
   if (buildCounterVariable < 3) {
-    o.members = buildUnnamed2413();
-    o.name = "foo";
+    o.members = buildUnnamed1444();
+    o.name = 'foo';
     o.status = buildStatusMessage();
-    o.type = "foo";
-    o.value = "foo";
+    o.type = 'foo';
+    o.value = 'foo';
     o.varTableIndex = 42;
   }
   buildCounterVariable--;
   return o;
 }
 
-checkVariable(api.Variable o) {
+void checkVariable(api.Variable o) {
   buildCounterVariable++;
   if (buildCounterVariable < 3) {
-    checkUnnamed2413(o.members);
-    unittest.expect(o.name, unittest.equals('foo'));
-    checkStatusMessage(o.status);
-    unittest.expect(o.type, unittest.equals('foo'));
-    unittest.expect(o.value, unittest.equals('foo'));
-    unittest.expect(o.varTableIndex, unittest.equals(42));
+    checkUnnamed1444(o.members!);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    checkStatusMessage(o.status! as api.StatusMessage);
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.value!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.varTableIndex!,
+      unittest.equals(42),
+    );
   }
   buildCounterVariable--;
 }
 
-main() {
-  unittest.group("obj-schema-AliasContext", () {
-    unittest.test("to-json--from-json", () {
+void main() {
+  unittest.group('obj-schema-AliasContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildAliasContext();
-      var od = new api.AliasContext.fromJson(o.toJson());
-      checkAliasContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.AliasContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkAliasContext(od as api.AliasContext);
     });
   });
 
-  unittest.group("obj-schema-Breakpoint", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Breakpoint', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBreakpoint();
-      var od = new api.Breakpoint.fromJson(o.toJson());
-      checkBreakpoint(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Breakpoint.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkBreakpoint(od as api.Breakpoint);
     });
   });
 
-  unittest.group("obj-schema-CloudRepoSourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CloudRepoSourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCloudRepoSourceContext();
-      var od = new api.CloudRepoSourceContext.fromJson(o.toJson());
-      checkCloudRepoSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CloudRepoSourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCloudRepoSourceContext(od as api.CloudRepoSourceContext);
     });
   });
 
-  unittest.group("obj-schema-CloudWorkspaceId", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CloudWorkspaceId', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCloudWorkspaceId();
-      var od = new api.CloudWorkspaceId.fromJson(o.toJson());
-      checkCloudWorkspaceId(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CloudWorkspaceId.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCloudWorkspaceId(od as api.CloudWorkspaceId);
     });
   });
 
-  unittest.group("obj-schema-CloudWorkspaceSourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-CloudWorkspaceSourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildCloudWorkspaceSourceContext();
-      var od = new api.CloudWorkspaceSourceContext.fromJson(o.toJson());
-      checkCloudWorkspaceSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.CloudWorkspaceSourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkCloudWorkspaceSourceContext(od as api.CloudWorkspaceSourceContext);
     });
   });
 
-  unittest.group("obj-schema-Debuggee", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Debuggee', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildDebuggee();
-      var od = new api.Debuggee.fromJson(o.toJson());
-      checkDebuggee(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Debuggee.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDebuggee(od as api.Debuggee);
     });
   });
 
-  unittest.group("obj-schema-Empty", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Empty', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildEmpty();
-      var od = new api.Empty.fromJson(o.toJson());
-      checkEmpty(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od as api.Empty);
     });
   });
 
-  unittest.group("obj-schema-ExtendedSourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ExtendedSourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildExtendedSourceContext();
-      var od = new api.ExtendedSourceContext.fromJson(o.toJson());
-      checkExtendedSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ExtendedSourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkExtendedSourceContext(od as api.ExtendedSourceContext);
     });
   });
 
-  unittest.group("obj-schema-FormatMessage", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-FormatMessage', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildFormatMessage();
-      var od = new api.FormatMessage.fromJson(o.toJson());
-      checkFormatMessage(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.FormatMessage.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkFormatMessage(od as api.FormatMessage);
     });
   });
 
-  unittest.group("obj-schema-GerritSourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GerritSourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGerritSourceContext();
-      var od = new api.GerritSourceContext.fromJson(o.toJson());
-      checkGerritSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GerritSourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGerritSourceContext(od as api.GerritSourceContext);
     });
   });
 
-  unittest.group("obj-schema-GetBreakpointResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GetBreakpointResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGetBreakpointResponse();
-      var od = new api.GetBreakpointResponse.fromJson(o.toJson());
-      checkGetBreakpointResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GetBreakpointResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGetBreakpointResponse(od as api.GetBreakpointResponse);
     });
   });
 
-  unittest.group("obj-schema-GitSourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-GitSourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildGitSourceContext();
-      var od = new api.GitSourceContext.fromJson(o.toJson());
-      checkGitSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.GitSourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGitSourceContext(od as api.GitSourceContext);
     });
   });
 
-  unittest.group("obj-schema-ListActiveBreakpointsResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ListActiveBreakpointsResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildListActiveBreakpointsResponse();
-      var od = new api.ListActiveBreakpointsResponse.fromJson(o.toJson());
-      checkListActiveBreakpointsResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ListActiveBreakpointsResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListActiveBreakpointsResponse(
+          od as api.ListActiveBreakpointsResponse);
     });
   });
 
-  unittest.group("obj-schema-ListBreakpointsResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ListBreakpointsResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildListBreakpointsResponse();
-      var od = new api.ListBreakpointsResponse.fromJson(o.toJson());
-      checkListBreakpointsResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ListBreakpointsResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListBreakpointsResponse(od as api.ListBreakpointsResponse);
     });
   });
 
-  unittest.group("obj-schema-ListDebuggeesResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ListDebuggeesResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildListDebuggeesResponse();
-      var od = new api.ListDebuggeesResponse.fromJson(o.toJson());
-      checkListDebuggeesResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ListDebuggeesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListDebuggeesResponse(od as api.ListDebuggeesResponse);
     });
   });
 
-  unittest.group("obj-schema-ProjectRepoId", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ProjectRepoId', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildProjectRepoId();
-      var od = new api.ProjectRepoId.fromJson(o.toJson());
-      checkProjectRepoId(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ProjectRepoId.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkProjectRepoId(od as api.ProjectRepoId);
     });
   });
 
-  unittest.group("obj-schema-RegisterDebuggeeRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-RegisterDebuggeeRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildRegisterDebuggeeRequest();
-      var od = new api.RegisterDebuggeeRequest.fromJson(o.toJson());
-      checkRegisterDebuggeeRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RegisterDebuggeeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRegisterDebuggeeRequest(od as api.RegisterDebuggeeRequest);
     });
   });
 
-  unittest.group("obj-schema-RegisterDebuggeeResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-RegisterDebuggeeResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildRegisterDebuggeeResponse();
-      var od = new api.RegisterDebuggeeResponse.fromJson(o.toJson());
-      checkRegisterDebuggeeResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.RegisterDebuggeeResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRegisterDebuggeeResponse(od as api.RegisterDebuggeeResponse);
     });
   });
 
-  unittest.group("obj-schema-RepoId", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-RepoId', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildRepoId();
-      var od = new api.RepoId.fromJson(o.toJson());
-      checkRepoId(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.RepoId.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkRepoId(od as api.RepoId);
     });
   });
 
-  unittest.group("obj-schema-SetBreakpointResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-SetBreakpointResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSetBreakpointResponse();
-      var od = new api.SetBreakpointResponse.fromJson(o.toJson());
-      checkSetBreakpointResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SetBreakpointResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSetBreakpointResponse(od as api.SetBreakpointResponse);
     });
   });
 
-  unittest.group("obj-schema-SourceContext", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-SourceContext', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSourceContext();
-      var od = new api.SourceContext.fromJson(o.toJson());
-      checkSourceContext(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SourceContext.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSourceContext(od as api.SourceContext);
     });
   });
 
-  unittest.group("obj-schema-SourceLocation", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-SourceLocation', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildSourceLocation();
-      var od = new api.SourceLocation.fromJson(o.toJson());
-      checkSourceLocation(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.SourceLocation.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSourceLocation(od as api.SourceLocation);
     });
   });
 
-  unittest.group("obj-schema-StackFrame", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-StackFrame', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildStackFrame();
-      var od = new api.StackFrame.fromJson(o.toJson());
-      checkStackFrame(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.StackFrame.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkStackFrame(od as api.StackFrame);
     });
   });
 
-  unittest.group("obj-schema-StatusMessage", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-StatusMessage', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildStatusMessage();
-      var od = new api.StatusMessage.fromJson(o.toJson());
-      checkStatusMessage(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.StatusMessage.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkStatusMessage(od as api.StatusMessage);
     });
   });
 
-  unittest.group("obj-schema-UpdateActiveBreakpointRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateActiveBreakpointRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateActiveBreakpointRequest();
-      var od = new api.UpdateActiveBreakpointRequest.fromJson(o.toJson());
-      checkUpdateActiveBreakpointRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateActiveBreakpointRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateActiveBreakpointRequest(
+          od as api.UpdateActiveBreakpointRequest);
     });
   });
 
-  unittest.group("obj-schema-UpdateActiveBreakpointResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdateActiveBreakpointResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdateActiveBreakpointResponse();
-      var od = new api.UpdateActiveBreakpointResponse.fromJson(o.toJson());
-      checkUpdateActiveBreakpointResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdateActiveBreakpointResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateActiveBreakpointResponse(
+          od as api.UpdateActiveBreakpointResponse);
     });
   });
 
-  unittest.group("obj-schema-Variable", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Variable', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildVariable();
-      var od = new api.Variable.fromJson(o.toJson());
-      checkVariable(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Variable.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkVariable(od as api.Variable);
     });
   });
 
-  unittest.group("resource-ControllerDebuggeesResourceApi", () {
-    unittest.test("method--register", () {
-      var mock = new HttpServerMock();
-      api.ControllerDebuggeesResourceApi res =
-          new api.ClouddebuggerApi(mock).controller.debuggees;
+  unittest.group('resource-ControllerDebuggeesResource', () {
+    unittest.test('method--register', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).controller.debuggees;
       var arg_request = buildRegisterDebuggeeRequest();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.RegisterDebuggeeRequest.fromJson(json);
-        checkRegisterDebuggeeRequest(obj);
+        var obj = api.RegisterDebuggeeRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkRegisterDebuggeeRequest(obj as api.RegisterDebuggeeRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 32),
-            unittest.equals("v2/controller/debuggees/register"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 32),
+          unittest.equals("v2/controller/debuggees/register"),
+        );
         pathOffset += 32;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildRegisterDebuggeeResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .register(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkRegisterDebuggeeResponse(response);
-      })));
+      final response = await res.register(arg_request, $fields: arg_$fields);
+      checkRegisterDebuggeeResponse(response as api.RegisterDebuggeeResponse);
     });
   });
 
-  unittest.group("resource-ControllerDebuggeesBreakpointsResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.ControllerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).controller.debuggees.breakpoints;
-      var arg_debuggeeId = "foo";
-      var arg_waitToken = "foo";
+  unittest.group('resource-ControllerDebuggeesBreakpointsResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
+      var arg_debuggeeId = 'foo';
+      var arg_agentId = 'foo';
       var arg_successOnTimeout = true;
-      var arg_$fields = "foo";
+      var arg_waitToken = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 24),
-            unittest.equals("v2/controller/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 24),
+          unittest.equals("v2/controller/debuggees/"),
+        );
         pathOffset += 24;
-        index = path.indexOf("/breakpoints", pathOffset);
+        index = path.indexOf('/breakpoints', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals("/breakpoints"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 12),
+          unittest.equals("/breakpoints"),
+        );
         pathOffset += 12;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["waitToken"].first, unittest.equals(arg_waitToken));
-        unittest.expect(queryMap["successOnTimeout"].first,
-            unittest.equals("$arg_successOnTimeout"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["agentId"]!.first,
+          unittest.equals(arg_agentId),
+        );
+        unittest.expect(
+          queryMap["successOnTimeout"]!.first,
+          unittest.equals("$arg_successOnTimeout"),
+        );
+        unittest.expect(
+          queryMap["waitToken"]!.first,
+          unittest.equals(arg_waitToken),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildListActiveBreakpointsResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_debuggeeId,
-              waitToken: arg_waitToken,
-              successOnTimeout: arg_successOnTimeout,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkListActiveBreakpointsResponse(response);
-      })));
+      final response = await res.list(arg_debuggeeId,
+          agentId: arg_agentId,
+          successOnTimeout: arg_successOnTimeout,
+          waitToken: arg_waitToken,
+          $fields: arg_$fields);
+      checkListActiveBreakpointsResponse(
+          response as api.ListActiveBreakpointsResponse);
     });
 
-    unittest.test("method--update", () {
-      var mock = new HttpServerMock();
-      api.ControllerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).controller.debuggees.breakpoints;
+    unittest.test('method--update', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
       var arg_request = buildUpdateActiveBreakpointRequest();
-      var arg_debuggeeId = "foo";
-      var arg_id = "foo";
-      var arg_$fields = "foo";
+      var arg_debuggeeId = 'foo';
+      var arg_id = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.UpdateActiveBreakpointRequest.fromJson(json);
-        checkUpdateActiveBreakpointRequest(obj);
+        var obj = api.UpdateActiveBreakpointRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkUpdateActiveBreakpointRequest(
+            obj as api.UpdateActiveBreakpointRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 24),
-            unittest.equals("v2/controller/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 24),
+          unittest.equals("v2/controller/debuggees/"),
+        );
         pathOffset += 24;
-        index = path.indexOf("/breakpoints/", pathOffset);
+        index = path.indexOf('/breakpoints/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/breakpoints/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/breakpoints/"),
+        );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_id"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_id'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildUpdateActiveBreakpointResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .update(arg_request, arg_debuggeeId, arg_id, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkUpdateActiveBreakpointResponse(response);
-      })));
+      final response = await res.update(arg_request, arg_debuggeeId, arg_id,
+          $fields: arg_$fields);
+      checkUpdateActiveBreakpointResponse(
+          response as api.UpdateActiveBreakpointResponse);
     });
   });
 
-  unittest.group("resource-DebuggerDebuggeesResourceApi", () {
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.DebuggerDebuggeesResourceApi res =
-          new api.ClouddebuggerApi(mock).debugger.debuggees;
-      var arg_project = "foo";
-      var arg_clientVersion = "foo";
+  unittest.group('resource-DebuggerDebuggeesResource', () {
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).debugger.debuggees;
+      var arg_clientVersion = 'foo';
       var arg_includeInactive = true;
-      var arg_$fields = "foo";
+      var arg_project = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("v2/debugger/debuggees"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals("v2/debugger/debuggees"),
+        );
         pathOffset += 21;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["project"].first, unittest.equals(arg_project));
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["includeInactive"].first,
-            unittest.equals("$arg_includeInactive"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["includeInactive"]!.first,
+          unittest.equals("$arg_includeInactive"),
+        );
+        unittest.expect(
+          queryMap["project"]!.first,
+          unittest.equals(arg_project),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildListDebuggeesResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(
-              project: arg_project,
-              clientVersion: arg_clientVersion,
-              includeInactive: arg_includeInactive,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkListDebuggeesResponse(response);
-      })));
+      final response = await res.list(
+          clientVersion: arg_clientVersion,
+          includeInactive: arg_includeInactive,
+          project: arg_project,
+          $fields: arg_$fields);
+      checkListDebuggeesResponse(response as api.ListDebuggeesResponse);
     });
   });
 
-  unittest.group("resource-DebuggerDebuggeesBreakpointsResourceApi", () {
-    unittest.test("method--delete", () {
-      var mock = new HttpServerMock();
-      api.DebuggerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = "foo";
-      var arg_breakpointId = "foo";
-      var arg_clientVersion = "foo";
-      var arg_$fields = "foo";
+  unittest.group('resource-DebuggerDebuggeesBreakpointsResource', () {
+    unittest.test('method--delete', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      var arg_debuggeeId = 'foo';
+      var arg_breakpointId = 'foo';
+      var arg_clientVersion = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("v2/debugger/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 22),
+          unittest.equals("v2/debugger/debuggees/"),
+        );
         pathOffset += 22;
-        index = path.indexOf("/breakpoints/", pathOffset);
+        index = path.indexOf('/breakpoints/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/breakpoints/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/breakpoints/"),
+        );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_breakpointId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_breakpointId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildEmpty());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .delete(arg_debuggeeId, arg_breakpointId,
-              clientVersion: arg_clientVersion, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkEmpty(response);
-      })));
+      final response = await res.delete(arg_debuggeeId, arg_breakpointId,
+          clientVersion: arg_clientVersion, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
 
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.DebuggerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = "foo";
-      var arg_breakpointId = "foo";
-      var arg_clientVersion = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      var arg_debuggeeId = 'foo';
+      var arg_breakpointId = 'foo';
+      var arg_clientVersion = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("v2/debugger/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 22),
+          unittest.equals("v2/debugger/debuggees/"),
+        );
         pathOffset += 22;
-        index = path.indexOf("/breakpoints/", pathOffset);
+        index = path.indexOf('/breakpoints/', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 13),
-            unittest.equals("/breakpoints/"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 13),
+          unittest.equals("/breakpoints/"),
+        );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_breakpointId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_breakpointId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildGetBreakpointResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_debuggeeId, arg_breakpointId,
-              clientVersion: arg_clientVersion, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkGetBreakpointResponse(response);
-      })));
+      final response = await res.get(arg_debuggeeId, arg_breakpointId,
+          clientVersion: arg_clientVersion, $fields: arg_$fields);
+      checkGetBreakpointResponse(response as api.GetBreakpointResponse);
     });
 
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.DebuggerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = "foo";
-      var arg_waitToken = "foo";
-      var arg_clientVersion = "foo";
-      var arg_action_value = "foo";
-      var arg_includeInactive = true;
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      var arg_debuggeeId = 'foo';
+      var arg_action_value = 'foo';
+      var arg_clientVersion = 'foo';
       var arg_includeAllUsers = true;
+      var arg_includeInactive = true;
       var arg_stripResults = true;
-      var arg_$fields = "foo";
+      var arg_waitToken = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("v2/debugger/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 22),
+          unittest.equals("v2/debugger/debuggees/"),
+        );
         pathOffset += 22;
-        index = path.indexOf("/breakpoints", pathOffset);
+        index = path.indexOf('/breakpoints', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 12),
-            unittest.equals("/breakpoints"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 12),
+          unittest.equals("/breakpoints"),
+        );
         pathOffset += 12;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["waitToken"].first, unittest.equals(arg_waitToken));
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
+          queryMap["action.value"]!.first,
+          unittest.equals(arg_action_value),
+        );
         unittest.expect(
-            queryMap["action.value"].first, unittest.equals(arg_action_value));
-        unittest.expect(queryMap["includeInactive"].first,
-            unittest.equals("$arg_includeInactive"));
-        unittest.expect(queryMap["includeAllUsers"].first,
-            unittest.equals("$arg_includeAllUsers"));
-        unittest.expect(queryMap["stripResults"].first,
-            unittest.equals("$arg_stripResults"));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["includeAllUsers"]!.first,
+          unittest.equals("$arg_includeAllUsers"),
+        );
+        unittest.expect(
+          queryMap["includeInactive"]!.first,
+          unittest.equals("$arg_includeInactive"),
+        );
+        unittest.expect(
+          queryMap["stripResults"]!.first,
+          unittest.equals("$arg_stripResults"),
+        );
+        unittest.expect(
+          queryMap["waitToken"]!.first,
+          unittest.equals(arg_waitToken),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildListBreakpointsResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(arg_debuggeeId,
-              waitToken: arg_waitToken,
-              clientVersion: arg_clientVersion,
-              action_value: arg_action_value,
-              includeInactive: arg_includeInactive,
-              includeAllUsers: arg_includeAllUsers,
-              stripResults: arg_stripResults,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkListBreakpointsResponse(response);
-      })));
+      final response = await res.list(arg_debuggeeId,
+          action_value: arg_action_value,
+          clientVersion: arg_clientVersion,
+          includeAllUsers: arg_includeAllUsers,
+          includeInactive: arg_includeInactive,
+          stripResults: arg_stripResults,
+          waitToken: arg_waitToken,
+          $fields: arg_$fields);
+      checkListBreakpointsResponse(response as api.ListBreakpointsResponse);
     });
 
-    unittest.test("method--set", () {
-      var mock = new HttpServerMock();
-      api.DebuggerDebuggeesBreakpointsResourceApi res =
-          new api.ClouddebuggerApi(mock).debugger.debuggees.breakpoints;
+    unittest.test('method--set', () async {
+      var mock = HttpServerMock();
+      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
       var arg_request = buildBreakpoint();
-      var arg_debuggeeId = "foo";
-      var arg_clientVersion = "foo";
-      var arg_$fields = "foo";
+      var arg_debuggeeId = 'foo';
+      var arg_canaryOption = 'foo';
+      var arg_clientVersion = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Breakpoint.fromJson(json);
-        checkBreakpoint(obj);
+        var obj = api.Breakpoint.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBreakpoint(obj as api.Breakpoint);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 22),
-            unittest.equals("v2/debugger/debuggees/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 22),
+          unittest.equals("v2/debugger/debuggees/"),
+        );
         pathOffset += 22;
-        index = path.indexOf("/breakpoints/set", pathOffset);
+        index = path.indexOf('/breakpoints/set', pathOffset);
         unittest.expect(index >= 0, unittest.isTrue);
         subPart =
             core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
         pathOffset = index;
-        unittest.expect(subPart, unittest.equals("$arg_debuggeeId"));
-        unittest.expect(path.substring(pathOffset, pathOffset + 16),
-            unittest.equals("/breakpoints/set"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_debuggeeId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 16),
+          unittest.equals("/breakpoints/set"),
+        );
         pathOffset += 16;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["clientVersion"].first,
-            unittest.equals(arg_clientVersion));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["canaryOption"]!.first,
+          unittest.equals(arg_canaryOption),
+        );
+        unittest.expect(
+          queryMap["clientVersion"]!.first,
+          unittest.equals(arg_clientVersion),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildSetBreakpointResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .set(arg_request, arg_debuggeeId,
-              clientVersion: arg_clientVersion, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkSetBreakpointResponse(response);
-      })));
+      final response = await res.set(arg_request, arg_debuggeeId,
+          canaryOption: arg_canaryOption,
+          clientVersion: arg_clientVersion,
+          $fields: arg_$fields);
+      checkSetBreakpointResponse(response as api.SetBreakpointResponse);
     });
   });
 }

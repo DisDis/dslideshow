@@ -19,25 +19,22 @@ class _$ScreenTurnCommandSerializer
   final String wireName = 'ScreenTurnCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, ScreenTurnCommand object,
+  Iterable<Object?> serialize(Serializers serializers, ScreenTurnCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'enabled',
       serializers.serialize(object.enabled,
           specifiedType: const FullType(bool)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   ScreenTurnCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ScreenTurnCommandBuilder();
 
@@ -45,7 +42,7 @@ class _$ScreenTurnCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'enabled':
           result.enabled = serializers.deserialize(value,
@@ -70,24 +67,21 @@ class _$ScreenLockCommandSerializer
   final String wireName = 'ScreenLockCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, ScreenLockCommand object,
+  Iterable<Object?> serialize(Serializers serializers, ScreenLockCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'isLock',
       serializers.serialize(object.isLock, specifiedType: const FullType(bool)),
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+
     return result;
   }
 
   @override
   ScreenLockCommand deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ScreenLockCommandBuilder();
 
@@ -95,7 +89,7 @@ class _$ScreenLockCommandSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'isLock':
           result.isLock = serializers.deserialize(value,
@@ -119,13 +113,13 @@ class _$ScreenTurnCommand extends ScreenTurnCommand {
   final int id;
 
   factory _$ScreenTurnCommand(
-          [void Function(ScreenTurnCommandBuilder) updates]) =>
+          [void Function(ScreenTurnCommandBuilder)? updates]) =>
       (new ScreenTurnCommandBuilder()..update(updates)).build();
 
-  _$ScreenTurnCommand._({this.enabled, this.id}) : super._() {
-    if (enabled == null) {
-      throw new BuiltValueNullFieldError('ScreenTurnCommand', 'enabled');
-    }
+  _$ScreenTurnCommand._({required this.enabled, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        enabled, 'ScreenTurnCommand', 'enabled');
+    BuiltValueNullFieldError.checkNotNull(id, 'ScreenTurnCommand', 'id');
   }
 
   @override
@@ -160,22 +154,23 @@ class _$ScreenTurnCommand extends ScreenTurnCommand {
 
 class ScreenTurnCommandBuilder
     implements Builder<ScreenTurnCommand, ScreenTurnCommandBuilder> {
-  _$ScreenTurnCommand _$v;
+  _$ScreenTurnCommand? _$v;
 
-  bool _enabled;
-  bool get enabled => _$this._enabled;
-  set enabled(bool enabled) => _$this._enabled = enabled;
+  bool? _enabled;
+  bool? get enabled => _$this._enabled;
+  set enabled(bool? enabled) => _$this._enabled = enabled;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   ScreenTurnCommandBuilder();
 
   ScreenTurnCommandBuilder get _$this {
-    if (_$v != null) {
-      _enabled = _$v.enabled;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _enabled = $v.enabled;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -183,20 +178,23 @@ class ScreenTurnCommandBuilder
 
   @override
   void replace(ScreenTurnCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ScreenTurnCommand;
   }
 
   @override
-  void update(void Function(ScreenTurnCommandBuilder) updates) {
+  void update(void Function(ScreenTurnCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$ScreenTurnCommand build() {
-    final _$result = _$v ?? new _$ScreenTurnCommand._(enabled: enabled, id: id);
+    final _$result = _$v ??
+        new _$ScreenTurnCommand._(
+            enabled: BuiltValueNullFieldError.checkNotNull(
+                enabled, 'ScreenTurnCommand', 'enabled'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'ScreenTurnCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -209,13 +207,13 @@ class _$ScreenLockCommand extends ScreenLockCommand {
   final int id;
 
   factory _$ScreenLockCommand(
-          [void Function(ScreenLockCommandBuilder) updates]) =>
+          [void Function(ScreenLockCommandBuilder)? updates]) =>
       (new ScreenLockCommandBuilder()..update(updates)).build();
 
-  _$ScreenLockCommand._({this.isLock, this.id}) : super._() {
-    if (isLock == null) {
-      throw new BuiltValueNullFieldError('ScreenLockCommand', 'isLock');
-    }
+  _$ScreenLockCommand._({required this.isLock, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(
+        isLock, 'ScreenLockCommand', 'isLock');
+    BuiltValueNullFieldError.checkNotNull(id, 'ScreenLockCommand', 'id');
   }
 
   @override
@@ -250,22 +248,23 @@ class _$ScreenLockCommand extends ScreenLockCommand {
 
 class ScreenLockCommandBuilder
     implements Builder<ScreenLockCommand, ScreenLockCommandBuilder> {
-  _$ScreenLockCommand _$v;
+  _$ScreenLockCommand? _$v;
 
-  bool _isLock;
-  bool get isLock => _$this._isLock;
-  set isLock(bool isLock) => _$this._isLock = isLock;
+  bool? _isLock;
+  bool? get isLock => _$this._isLock;
+  set isLock(bool? isLock) => _$this._isLock = isLock;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   ScreenLockCommandBuilder();
 
   ScreenLockCommandBuilder get _$this {
-    if (_$v != null) {
-      _isLock = _$v.isLock;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _isLock = $v.isLock;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -273,20 +272,23 @@ class ScreenLockCommandBuilder
 
   @override
   void replace(ScreenLockCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$ScreenLockCommand;
   }
 
   @override
-  void update(void Function(ScreenLockCommandBuilder) updates) {
+  void update(void Function(ScreenLockCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$ScreenLockCommand build() {
-    final _$result = _$v ?? new _$ScreenLockCommand._(isLock: isLock, id: id);
+    final _$result = _$v ??
+        new _$ScreenLockCommand._(
+            isLock: BuiltValueNullFieldError.checkNotNull(
+                isLock, 'ScreenLockCommand', 'isLock'),
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'ScreenLockCommand', 'id'));
     replace(_$result);
     return _$result;
   }

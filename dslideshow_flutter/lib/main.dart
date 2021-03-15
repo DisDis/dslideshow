@@ -4,13 +4,11 @@ import 'dart:isolate' as isol;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
-import 'package:dslideshow_backend/injector_module.dart';
 import 'package:dslideshow_backend/serializers.dart';
-import 'package:dslideshow_common/injector/di.dart' as di;
+import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
-import 'package:dslideshow_flutter/src/page/system_info_widget/system_info_widget.dart';
 import 'package:dslideshow_flutter/src/page/config/config_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/slideshow_page.dart';
 import 'package:dslideshow_flutter/src/page/welcome_page.dart';
@@ -26,8 +24,6 @@ import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
 import 'package:omxplayer_video_player/omxplayer_video_player.dart';
-
-import 'src/injector.dart';
 
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -45,7 +41,7 @@ void main() async {
   }
 
   try {
-    RemoteService _backendService;
+    RemoteService? _backendService;
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
 
@@ -53,18 +49,16 @@ void main() async {
 
     final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
-    injector = di.ModuleInjector([
-      getInjectorModule(),
-      di.Module()
-        ..bind(AppConfig, toFactory: () => AppConfig(localPath.path))
-        ..bind(AppStorage, toFactory: () => AppStorage(localPath.path))
-        ..bind(FrontendService,
-            toFactory: (AppConfig _config) => FrontendService(_config, _backendService, store), inject: <dynamic>[AppConfig])
-    ]);
+    injector.registerSingleton<AppConfig>(AppConfig(localPath.path));
+    injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
+    injector.registerLazySingleton<FrontendService>((){
+      final _config = injector.get<AppConfig>();
+      return FrontendService(_config, _backendService, store);
+    });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
 
-    var config = injector.get(AppConfig) as AppConfig;
+    var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
     IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
@@ -72,7 +66,7 @@ void main() async {
     await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
     _backendService = RemoteService(_backendServiceIsolate, serializers);
 
-    final _frontendService = injector.get(FrontendService) as FrontendService;
+    final _frontendService = injector.get<FrontendService>();
     initRpc(_frontendService, serializers);
 
     _runFlutter(_frontendService, store);
@@ -96,14 +90,14 @@ void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
 }
 
 class FlutterReduxApp extends StatelessWidget {
-  final Store<GlobalState> store;
+  final Store<GlobalState>? store;
 
-  FlutterReduxApp({Key key, this.store}) : super(key: key);
+  FlutterReduxApp({Key? key, this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return StoreProvider<GlobalState>(
-        store: store,
+        store: store!,
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(backgroundColor: Colors.black),
@@ -112,7 +106,7 @@ class FlutterReduxApp extends StatelessWidget {
             const Locale('en'), // English
             // ... other locales the app supports
           ],
-          home: SlideShowPage(),
+          home: SlideShowPage(),//WelcomePage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
             '/slideshow': (BuildContext context) => SlideShowPage(),

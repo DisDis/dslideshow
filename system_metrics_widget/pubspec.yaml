@@ -6,7 +6,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -14,37 +14,34 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  path_provider: ^1.1.0
-  path: ^1.6.4
-  permission_handler: ^5.0.0
-  package_info: ^0.4.0+3
-  qr_flutter: ^3.2.0
-  isolate: ^2.0.2
-  intl: ^0.16.1
-  logging: ^0.11.0
-  flutter_redux: ^0.6.0
-  built_value: ^6.5.0
-  built_collection: ^4.3.2
-  video_player: ^0.10.11
+  intl: ^0.17.0
+  logging: ^1.0.0
+  #TODO: Fix after NNBD
+  flutter_redux: #^0.7.0
+    git:
+      url: https://github.com/Lafannn/flutter_redux
+      ref: null-safety
+  built_value: ^8.0.0
+  built_collection: ^5.0.0
   duration: ^2.0.2
-  flutter_staggered_grid_view: ^0.3.0
-  google_fonts: ^1.1.0
-  flutter_icons: ^1.1.0 # see more details on https://oblador.github.io/react-native-vector-icons/
-
+  flutter_staggered_grid_view: ^0.4.0-nullsafety.3
+  google_fonts: ^2.0.0
+  #TODO: Fix after NNBD
+  flutter_icons: #^1.1.0 # see more details on https://oblador.github.io/react-native-vector-icons/
+      git:
+          url: https://github.com/adarsh-technocrat/flutter-icons.git
+          ref: null-safety-migration
   dslideshow_backend:
     path: ../backend
 
   dslideshow_common:
     path: ../common
 
-  media_slider_widget:
-    path: ../media_slider_widget
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  built_value_generator: ^6.5.0
-  build_runner: ^1.2.1
+  built_value_generator: ^8.0.2
+  build_runner:  ^1.11.5
 
 flutter:
   uses-material-design: true

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class Option {
-  Icon icon;
-  String title;
-  String subtitle;
+  Icon? icon;
+  String? title;
+  String? subtitle;
 
   Option({this.icon, this.title, this.subtitle});
 }

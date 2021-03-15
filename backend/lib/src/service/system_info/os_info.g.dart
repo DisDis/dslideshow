@@ -15,23 +15,25 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
   final String wireName = 'OSInfo';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, OSInfo object,
+  Iterable<Object?> serialize(Serializers serializers, OSInfo object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
     ];
-    if (object.osType != null) {
+    Object? value;
+    value = object.osType;
+    if (value != null) {
       result
         ..add('osType')
-        ..add(serializers.serialize(object.osType,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(OSType)));
     }
     return result;
   }
 
   @override
-  OSInfo deserialize(Serializers serializers, Iterable<Object> serialized,
+  OSInfo deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new OSInfoBuilder();
 
@@ -39,7 +41,7 @@ class _$OSInfoSerializer implements StructuredSerializer<OSInfo> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'name':
           result.name = serializers.deserialize(value,
@@ -60,15 +62,13 @@ class _$OSInfo extends OSInfo {
   @override
   final String name;
   @override
-  final OSType osType;
+  final OSType? osType;
 
-  factory _$OSInfo([void Function(OSInfoBuilder) updates]) =>
+  factory _$OSInfo([void Function(OSInfoBuilder)? updates]) =>
       (new OSInfoBuilder()..update(updates)).build();
 
-  _$OSInfo._({this.name, this.osType}) : super._() {
-    if (name == null) {
-      throw new BuiltValueNullFieldError('OSInfo', 'name');
-    }
+  _$OSInfo._({required this.name, this.osType}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(name, 'OSInfo', 'name');
   }
 
   @override
@@ -99,22 +99,23 @@ class _$OSInfo extends OSInfo {
 }
 
 class OSInfoBuilder implements Builder<OSInfo, OSInfoBuilder> {
-  _$OSInfo _$v;
+  _$OSInfo? _$v;
 
-  String _name;
-  String get name => _$this._name;
-  set name(String name) => _$this._name = name;
+  String? _name;
+  String? get name => _$this._name;
+  set name(String? name) => _$this._name = name;
 
-  OSType _osType;
-  OSType get osType => _$this._osType;
-  set osType(OSType osType) => _$this._osType = osType;
+  OSType? _osType;
+  OSType? get osType => _$this._osType;
+  set osType(OSType? osType) => _$this._osType = osType;
 
   OSInfoBuilder();
 
   OSInfoBuilder get _$this {
-    if (_$v != null) {
-      _name = _$v.name;
-      _osType = _$v.osType;
+    final $v = _$v;
+    if ($v != null) {
+      _name = $v.name;
+      _osType = $v.osType;
       _$v = null;
     }
     return this;
@@ -122,20 +123,21 @@ class OSInfoBuilder implements Builder<OSInfo, OSInfoBuilder> {
 
   @override
   void replace(OSInfo other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$OSInfo;
   }
 
   @override
-  void update(void Function(OSInfoBuilder) updates) {
+  void update(void Function(OSInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$OSInfo build() {
-    final _$result = _$v ?? new _$OSInfo._(name: name, osType: osType);
+    final _$result = _$v ??
+        new _$OSInfo._(
+            name: BuiltValueNullFieldError.checkNotNull(name, 'OSInfo', 'name'),
+            osType: osType);
     replace(_$result);
     return _$result;
   }

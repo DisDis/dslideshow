@@ -18,33 +18,33 @@ part 'update_info.g.dart';
 abstract class UpdateInfo implements Built<UpdateInfo, UpdateInfoBuilder> {
   static Serializer<UpdateInfo> get serializer => _$updateInfoSerializer;
 
-  factory UpdateInfo([void updates(UpdateInfoBuilder b)]) = _$UpdateInfo;
+  factory UpdateInfo([void updates(UpdateInfoBuilder b)?]) = _$UpdateInfo;
 
   UpdateInfo._();
 
-  double get cpuLoad1;
+  double? get cpuLoad1;
 
-  double get cpuLoad15;
+  double? get cpuLoad15;
 
-  double get cpuLoad5;
+  double? get cpuLoad5;
 
-  int get diskAvailable;
+  int? get diskAvailable;
 
-  int get diskUsed;
+  int? get diskUsed;
 
-  int get diskUsedPercent;
+  int? get diskUsedPercent;
 
-  int get lastUpdate;
+  int? get lastUpdate;
 
-  int get memTotal;
+  int? get memTotal;
 
-  int get memUsed;
+  int? get memUsed;
 
-  BuiltList<SensorInfo> get sensors;
+  BuiltList<SensorInfo>? get sensors;
 
-  int get swapTotal;
+  int? get swapTotal;
 
-  int get swapUsed;
+  int? get swapUsed;
 
-  String get uptime;
+  String? get uptime;
 }

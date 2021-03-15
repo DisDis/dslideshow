@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/command/hardware_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/environment.dart';
+import 'package:dslideshow_flutter/src/effect/effect.dart';
+import 'package:dslideshow_flutter/src/effect/media_slider_item_effect.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
@@ -24,15 +27,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:logging/logging.dart';
-import 'package:media_slider_widget/effect.dart';
-import 'package:media_slider_widget/media_slider_item_effect.dart';
 import 'package:path/path.dart' as path;
 import 'package:redux/redux.dart';
 
 import 'fade_widget.dart';
 
 class SlideShowPage extends StatefulWidget {
-  SlideShowPage({Key key}) : super(key: key);
+  SlideShowPage({Key? key}) : super(key: key);
 
   @override
   _SlideShowPageState createState() => _SlideShowPageState();
@@ -53,24 +54,25 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
-  AnimationController _mediaItemLoopController;
-  AnimationController _effectController;
+  late AnimationController _mediaItemLoopController;
+  late AnimationController _effectController;
 
   Widget _currentWidget = _loaderWidget;
   Widget _nextWidget = _loaderWidget;
   Widget _transitionWidget = _loaderWidget;
 
-  final FrontendService _frontendService = injector.get(FrontendService) as FrontendService;
-  final AppConfig _appConfig = injector.get(AppConfig) as AppConfig;
+  final FrontendService _frontendService = injector.get<FrontendService>();
+  final AppConfig _appConfig = injector.get<AppConfig>();
 
-  AnimationController _fadeController;
+  late AnimationController _fadeController;
   static final Random _rnd = Random();
   MediaSliderItemEffect _currentEffect = Effect.cubeEffect.createEffect();
   final List<Effect> _effectPool = [];
+  final List<Effect> _allowedEffects = <Effect>[];
 
   final List<StreamSubscription> _subs = <StreamSubscription>[];
 
-  Duration _transitionTime;
+  Duration? _transitionTime;
 
   bool _screenState = true;
   bool _isPaused = false;
@@ -119,6 +121,17 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
   void initState() {
     super.initState();
 
+    final allowedETmp = _appConfig.slideshow.allowedEffects;
+    _log.info('Config effects = ${allowedETmp}');
+    if (allowedETmp.isNotEmpty) {
+      _allowedEffects.addAll(allowedETmp.map((e) => Effect.parse(e)));
+    }
+
+    if (_allowedEffects.isEmpty){
+      _allowedEffects.addAll(Effect.values);
+    }
+    _log.info('Allowed effects: ${_allowedEffects}');
+
     _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
@@ -129,12 +142,9 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
         setState(() {
           _currentWidget = _nextWidget;
         });
-        imageCache.clear();
+        imageCache!.clear();
       }
     });
-    // _effectController.addListener(() {
-    //   setState(() {});
-    // });
 
     _fadeController = AnimationController(duration: fadeTime, vsync: this);
     _fadeController.addStatusListener((status) {
@@ -157,37 +167,41 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
+    if (_currentWidget == _loaderWidget){
+      _fetchNextMediaItem();
+    }
   }
 
   void _fetchNextMediaItem() async {
     _log.info('Change image');
     await _frontendService.storageNext();
     var mediaItem = await _getCurrentMediaItem();
-    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem);
-    if (mediaItem != null) {
-      _log.info('file: "${path.basename(mediaItem.uri.toFilePath())}"');
+    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
+    if (mediaItem.uri != null) {
+      _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
-    _log.info('imageCache.liveImageCount = ${imageCache.liveImageCount}, .currentSize = ${imageCache.currentSize}');
+    _log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
-    if (itemWidget is ImageWidget) {
-      await precacheImage(itemWidget.provider, context);
-    }
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
-    _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    try {
+      if (itemWidget is ImageWidget) {
+        await itemWidget.precache(context);
+      }
+      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
+    }catch(e, st){
+      _log.warning('Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e , st);
+      _nextWidget = _loaderWidget;
+    }
 
     _transitionWidget = AnimatedBuilder(
         key: Key('anim'),
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            Transform.translate(
-                offset: Offset(-_effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _currentWidget, 0, 0, _effectController.value, 2)),
-            Transform.translate(
-                offset: Offset(screenW - _effectController.value * screenW, 0.0),
-                child: _currentEffect.transform(context, _nextWidget, 1, 0, _effectController.value, 1))
+            _currentEffect.transform(context, _currentWidget, true/*,0,0*/, _effectController.value/*, 2*/, screenW, screenH),
+            _currentEffect.transform(context, _nextWidget, false/*1, 0*/, _effectController.value/*, 1*/, screenW, screenH)
           ]);
         },
         child: _loaderWidget);
@@ -195,7 +209,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     _effectController.reset();
     _mediaItemLoopController.reset();
     if (_effectPool.isEmpty) {
-      _effectPool.addAll(Effect.values);
+      _effectPool.addAll(_allowedEffects);
       _effectPool.shuffle(_rnd);
     }
     _currentEffect = _effectPool.removeLast().createEffect();
@@ -209,7 +223,7 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     return item;
   }
 
-  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
   void _pushButton(ButtonType event) {
     switch (event) {
@@ -237,10 +251,11 @@ class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateM
     if (isPausedNewValue) {
       _mediaItemLoopController.stop();
     } else {
+      _mediaItemLoopController.reset();
       _mediaItemLoopController.forward();
     }
     setState(() {
-      _stateKey.currentState.isPaused = _isPaused = isPausedNewValue;
+      _stateKey.currentState!.isPaused = _isPaused = isPausedNewValue;
     });
   }
 

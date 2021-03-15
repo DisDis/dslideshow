@@ -7,12 +7,12 @@ part 'network_info.g.dart';
 abstract class NetworkInfo implements Built<NetworkInfo, NetworkInfoBuilder> {
   int get lastUpdate;
   bool get hasInternet;
-  BuiltList<NetworkInterfaceInfo> get interfaces;
+  BuiltList<NetworkInterfaceInfo>? get interfaces;
 
   static Serializer<NetworkInfo> get serializer =>
       _$networkInfoSerializer;
 
-  factory NetworkInfo([void updates(NetworkInfoBuilder b)]) = _$NetworkInfo;
+  factory NetworkInfo([void updates(NetworkInfoBuilder b)?]) = _$NetworkInfo;
   NetworkInfo._();
 }
 
@@ -20,10 +20,8 @@ abstract class NetworkInterfaceInfo implements Built<NetworkInterfaceInfo, Netwo
   String get name;
   NetworkInterfaceStatus get status;
 
-  @nullable
-  String get ip4;
-  @nullable
-  String get ip6;
+  String? get ip4;
+  String? get ip6;
 
   static Serializer<NetworkInterfaceInfo> get serializer =>
       _$networkInterfaceInfoSerializer;

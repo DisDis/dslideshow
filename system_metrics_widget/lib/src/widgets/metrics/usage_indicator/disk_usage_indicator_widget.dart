@@ -4,12 +4,12 @@ import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_
 class DiskUsageIndicatorWidget extends UsageIndicatorWidget {
   final int totalMemory;
   final int usedMemory;
-  final int usagePercent;
+  final int? usagePercent;
 
   DiskUsageIndicatorWidget({
-    @required this.totalMemory,
-    @required this.usedMemory,
-    @required this.usagePercent
+    required this.totalMemory,
+    required this.usedMemory,
+    required this.usagePercent
   }) : super(
           title: 'Disk',
           total: _formatter(totalMemory),

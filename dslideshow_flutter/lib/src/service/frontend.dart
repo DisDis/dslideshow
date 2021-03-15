@@ -14,7 +14,7 @@ import 'package:redux/redux.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = new Logger('FlutterService');
-  final RemoteService _backendService;
+  final RemoteService? _backendService;
   final _screenStateChangePreparation = new StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = new StreamController<SystemInfo>.broadcast();
   final _onPushButton = new StreamController<ButtonType>.broadcast();
@@ -45,16 +45,15 @@ class FrontendService implements RpcService {
   }
 
   Future<MediaItem> getStorageCurrentItem() async {
-    final result = await _backendService.send(new GetMediaItemCommand((b) => b
+    final result = await _backendService!.send(new GetMediaItemCommand((b) => b
       ..id = RpcCommand.generateId()
       ..isCurrent = true));
-//    _log.info("Message: ${result}");
     var resultMediaItem = result as GetMediaItemCommandResult;
     return new MediaItem(resultMediaItem.mediaId, resultMediaItem.mediaUri);
   }
 
   Future<MediaItem> getStorageNextItem() async {
-    final result = await _backendService.send(new GetMediaItemCommand((b) => b
+    final result = await _backendService!.send(new GetMediaItemCommand((b) => b
       ..id = RpcCommand.generateId()
       ..isCurrent = false));
 //    _log.info("Message: $result");
@@ -63,16 +62,16 @@ class FrontendService implements RpcService {
   }
 
   Future LEDControl(LEDType type, bool value) async {
-    return _backendService.send(new LEDControlCommand((b) => b..id = RpcCommand.generateId()..led = type..value = value));
+    return _backendService!.send(new LEDControlCommand((b) => b..id = RpcCommand.generateId()..led = type..value = value));
   }
 
 
   Future storageNext() async {
-    return _backendService.send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
+    return _backendService!.send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
   }
 
   void testEcho(String text) async {
-    final result = await _backendService.send(new EchoCommand((b) => b
+    final result = await _backendService!.send(new EchoCommand((b) => b
       ..id = RpcCommand.generateId()
       ..text = text));
     _log.info("Message: $result");
@@ -84,13 +83,10 @@ class FrontendService implements RpcService {
         return _executePushButtonCommand(command as PushButtonCommand);
       case ScreenTurnCommand.TYPE:
         return new Future.value(_executeScreenTurnCommand(command as ScreenTurnCommand));
-        break;
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
-        break;
       default:
         return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
-        break;
     }
   }
 
@@ -101,7 +97,6 @@ class FrontendService implements RpcService {
     return new EchoCommandResult((b) {
       b.id = command.id;
       b.resultText = "${command.text} Service ${new DateTime.now()}";
-      return b;
     });
   }
 
@@ -112,12 +107,12 @@ class FrontendService implements RpcService {
 
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
     return new ErrorResult((b) => b
-      ..id = (command.id == null ? 0 : command.id)
+      ..id = command.id
       ..error = "$e");
   }
 
   Future<SystemInfo> getSystemInfo() async {
-    final resultRaw = await _backendService.send(new GetSystemInfoCommand((b) => b
+    final resultRaw = await _backendService!.send(new GetSystemInfoCommand((b) => b
       ..id = RpcCommand.generateId()
       ));
     var result = resultRaw as GetSystemInfoCommandResult;
@@ -138,41 +133,41 @@ class FrontendService implements RpcService {
   }
 
   Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async{
-    return _backendService.send(new ScreenLockCommand((b) => b
+    return _backendService!.send(new ScreenLockCommand((b) => b
       ..isLock = isScreenLockNewValue
       ..id = RpcCommand.generateId()
     ));
   }
 
   Future pushButton(ButtonType buttonType) async{
-    return _backendService.send(new PushButtonCommand((b) => b
+    return _backendService!.send(new PushButtonCommand((b) => b
       ..button = buttonType
       ..id = RpcCommand.generateId()
     ));
   }
 
   Future screenTurn(bool value) async {
-    return _backendService.send(new ScreenTurnCommand((b) => b
+    return _backendService!.send(new ScreenTurnCommand((b) => b
       ..enabled = value
       ..id = RpcCommand.generateId()
     ));
   }
 
   Future backendIsReady() async{
-    return _backendService.send(new AreYouReadyCommand((b) => b
+    return _backendService!.send(new AreYouReadyCommand((b) => b
       ..id = RpcCommand.generateId()
     ));
   }
 
   Future stopWebServer() async{
-    return _backendService.send(new WebServerControlCommand((b) => b
+    return _backendService!.send(new WebServerControlCommand((b) => b
       ..enable = false
       ..id = RpcCommand.generateId()
     ));
   }
 
   Future startWebServer() async{
-    return _backendService.send(new WebServerControlCommand((b) => b
+    return _backendService!.send(new WebServerControlCommand((b) => b
       ..enable = true
       ..id = RpcCommand.generateId()
     ));

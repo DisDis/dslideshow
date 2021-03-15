@@ -10,10 +10,6 @@ Future<Directory> getApplicationDocumentsDirectory() async{
 }
 
 Future<bool> checkPermissionReadExternalStorage() async{
-  var status = await Permission.storage.status;
-  if (status.isUndetermined) {
-    // We didn't ask for permission yet.
-    status = await Permission.storage.request();
-  }
+  var status = await Permission.storage.request();
   return status == PermissionStatus.granted;
 }

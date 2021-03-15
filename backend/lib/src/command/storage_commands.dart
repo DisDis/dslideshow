@@ -13,29 +13,25 @@ abstract class GetMediaItemCommand implements RpcCommand, Built<GetMediaItemComm
 
   bool get isCurrent;
   @override
-  @nullable
   int get id;
 
   static Serializer<GetMediaItemCommand> get serializer =>
       _$getMediaItemCommandSerializer;
 
-  factory GetMediaItemCommand([void updates(GetMediaItemCommandBuilder b)]) = _$GetMediaItemCommand;
+  factory GetMediaItemCommand([void updates(GetMediaItemCommandBuilder b)?]) = _$GetMediaItemCommand;
   GetMediaItemCommand._();
 }
 
 abstract class GetMediaItemCommandResult implements RpcResult, Built<GetMediaItemCommandResult, GetMediaItemCommandResultBuilder> {
-  @nullable
-  String get mediaId;
-  @nullable
-  Uri get mediaUri;
+  String? get mediaId;
+  Uri? get mediaUri;
   @override
-  @nullable
   int get id;
 
   static Serializer<GetMediaItemCommandResult> get serializer =>
       _$getMediaItemCommandResultSerializer;
 
-  factory GetMediaItemCommandResult([void updates(GetMediaItemCommandResultBuilder b)]) = _$GetMediaItemCommandResult;
+  factory GetMediaItemCommandResult([void updates(GetMediaItemCommandResultBuilder b)?]) = _$GetMediaItemCommandResult;
   GetMediaItemCommandResult._();
 }
 
@@ -46,12 +42,11 @@ abstract class StorageNextCommand implements RpcCommand, Built<StorageNextComman
   String get type => TYPE;
 
   @override
-  @nullable
   int get id;
 
   static Serializer<StorageNextCommand> get serializer =>
       _$storageNextCommandSerializer;
 
-  factory StorageNextCommand([void updates(StorageNextCommandBuilder b)]) = _$StorageNextCommand;
+  factory StorageNextCommand([void updates(StorageNextCommandBuilder b)?]) = _$StorageNextCommand;
   StorageNextCommand._();
 }

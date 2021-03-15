@@ -14,8 +14,6 @@ final appReducer = combineReducers<GlobalState>([
   TypedReducer<GlobalState, ChangePauseAction>(_onPauseChange),
   TypedReducer<GlobalState, ChangeInternetAction>(_onInternetChange),
   TypedReducer<GlobalState, ChangeScreenLockAction>(_onScreenLockChange),
-
-
 ]);
 
 GlobalState _onDebugChange(GlobalState state, ChangeDebugAction action) {

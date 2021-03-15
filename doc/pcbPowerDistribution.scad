@@ -1,10 +1,7 @@
 /*
- * Genera el modelo a usar para realizar diseños relacionados con las Raspberry Pi.
- *
- * @author  Joaquín Fernández
- * @url     https://gitlab.com/joaquinfq/openscad/blob/master/Modules/Models/PCB/RaspberryPi.scad
+ * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @see     http://www.thingiverse.com/thing:3645641
+ * @version 1.0
  */
 pcbHeight    = 45;  // Alto del PCB (eje Y).
 pcbWidth     = 30.5;  // Ancho del PCB (eje X).

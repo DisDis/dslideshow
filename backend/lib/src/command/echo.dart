@@ -8,9 +8,8 @@ abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommand
   static const String TYPE = 'echo';
   @override
   String get type => TYPE;
-  String get text;
+  String? get text;
   @override
-  @nullable
   int get id;
 
   static Serializer<EchoCommand> get serializer =>
@@ -21,9 +20,8 @@ abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommand
 }
 
 abstract class EchoCommandResult implements RpcResult, Built<EchoCommandResult, EchoCommandResultBuilder> {
-  String get resultText;
+  String? get resultText;
   @override
-  @nullable
   int get id;
 
   static Serializer<EchoCommandResult> get serializer =>

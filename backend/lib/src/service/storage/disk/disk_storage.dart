@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 class DiskMediaItem extends MediaItem {
-  DiskMediaItem(String id, Uri uri) : super(id, uri);
+  DiskMediaItem(String? id, Uri? uri) : super(id, uri);
 }
 
 class DiskStorage extends Storage {
@@ -35,18 +35,18 @@ class DiskStorage extends Storage {
 
   final Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-  DiskStorage(Map<String, dynamic> config) : this._config = new DiskStorageConfig(config) {}
+  DiskStorage(Map<String, dynamic>? config) : this._config = new DiskStorageConfig(config) {}
 
-  MediaItem _current;
-  MediaItem _next;
+  MediaItem? _current;
+  MediaItem? _next;
 
   @override
-  Future<MediaItem> getCurrent() async {
+  Future<MediaItem?> getCurrent() async {
     return _current;
   }
 
   @override
-  Future<MediaItem> getNext() async {
+  Future<MediaItem?> getNext() async {
     return _next;
   }
 
@@ -55,10 +55,10 @@ class DiskStorage extends Storage {
 
   List<Uri> _cache = <Uri>[];
 
-  Future<Uri> _getRandomItem() async {
+  Future<Uri?> _getRandomItem() async {
     if (_cache.isEmpty) {
       final items = await _folder.listSync();
-      if (items.length == 0) {
+      if (items.isEmpty) {
         return null;
       }
       _cache = items.map((e) => e.uri).toList(growable: true);
@@ -67,11 +67,13 @@ class DiskStorage extends Storage {
     return _cache.removeAt(_rnd.nextInt(_cache.length));
   }
 
+  static final _nullMediaItem = new DiskMediaItem(null,null);
+
   @override
-  Future<MediaItem> next() async {
+  Future<MediaItem?> next() async {
     _current = _next;
-    var nextUri = await _getRandomItem();
-    _next = new DiskMediaItem(nextUri.path, nextUri);
+    final nextUri = await _getRandomItem();
+    _next = nextUri==null? _nullMediaItem : new DiskMediaItem(nextUri.path, nextUri);
     return _next;
   }
 
@@ -83,7 +85,7 @@ class DiskStorage extends Storage {
   @override
   final StorageType type = StorageType.local;
 
-  StreamSubscription _watchSubscription;
+  StreamSubscription? _watchSubscription;
 
   @override
   Future init() async {
@@ -94,17 +96,25 @@ class DiskStorage extends Storage {
     }
     await next();
     await next();
-    return;
   }
 
   Future release() async {
     if (_watchSubscription!=null){
-      _watchSubscription.cancel();
+      _watchSubscription!.cancel();
     }
   }
 
+  Timer? _timerFolderUpdate;
   void _onFolderUpdated(FileSystemEvent event) {
-    _log.info('Storage folder changed, file cache flushed');
-    _cache = <Uri>[];
+    if (_timerFolderUpdate != null){
+      _log.info('Storage folder changed, wait...');
+      return;
+    }
+    _log.info('Storage folder changed, run timer');
+    _timerFolderUpdate = new Timer(Duration(minutes: 1),(){
+      _log.info('File cache flushed');
+      _timerFolderUpdate = null;
+      _cache = <Uri>[];
+    });
   }
 }

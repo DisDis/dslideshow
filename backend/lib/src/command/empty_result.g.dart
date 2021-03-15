@@ -15,20 +15,18 @@ class _$EmptyResultSerializer implements StructuredSerializer<EmptyResult> {
   final String wireName = 'EmptyResult';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, EmptyResult object,
+  Iterable<Object?> serialize(Serializers serializers, EmptyResult object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.id != null) {
-      result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
-    }
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
+    ];
+
     return result;
   }
 
   @override
-  EmptyResult deserialize(Serializers serializers, Iterable<Object> serialized,
+  EmptyResult deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new EmptyResultBuilder();
 
@@ -36,7 +34,7 @@ class _$EmptyResultSerializer implements StructuredSerializer<EmptyResult> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'id':
           result.id = serializers.deserialize(value,
@@ -53,10 +51,12 @@ class _$EmptyResult extends EmptyResult {
   @override
   final int id;
 
-  factory _$EmptyResult([void Function(EmptyResultBuilder) updates]) =>
+  factory _$EmptyResult([void Function(EmptyResultBuilder)? updates]) =>
       (new EmptyResultBuilder()..update(updates)).build();
 
-  _$EmptyResult._({this.id}) : super._();
+  _$EmptyResult._({required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'EmptyResult', 'id');
+  }
 
   @override
   EmptyResult rebuild(void Function(EmptyResultBuilder) updates) =>
@@ -84,17 +84,18 @@ class _$EmptyResult extends EmptyResult {
 }
 
 class EmptyResultBuilder implements Builder<EmptyResult, EmptyResultBuilder> {
-  _$EmptyResult _$v;
+  _$EmptyResult? _$v;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   EmptyResultBuilder();
 
   EmptyResultBuilder get _$this {
-    if (_$v != null) {
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -102,20 +103,20 @@ class EmptyResultBuilder implements Builder<EmptyResult, EmptyResultBuilder> {
 
   @override
   void replace(EmptyResult other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$EmptyResult;
   }
 
   @override
-  void update(void Function(EmptyResultBuilder) updates) {
+  void update(void Function(EmptyResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$EmptyResult build() {
-    final _$result = _$v ?? new _$EmptyResult._(id: id);
+    final _$result = _$v ??
+        new _$EmptyResult._(
+            id: BuiltValueNullFieldError.checkNotNull(id, 'EmptyResult', 'id'));
     replace(_$result);
     return _$result;
   }

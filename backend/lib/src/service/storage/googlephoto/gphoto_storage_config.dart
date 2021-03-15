@@ -1,22 +1,22 @@
 import 'package:dslideshow_backend/config.dart';
 
 class GPhotoStorageConfig  extends BaseConfig {
-  int _imageWidth;
+  int? _imageWidth;
   int get imageWidth => _imageWidth ??= readInt("imageWidth", 2560);
-  int _imageHeight;
+  int? _imageHeight;
   int get imageHeight => _imageHeight ??= readInt("imageHeight", 1600);
 
-  Duration _syncPeriod;
+  Duration? _syncPeriod;
   Duration get syncPeriod => _syncPeriod ??= new Duration(seconds: readInt("syncPeriodSec", 60*60));//1 hour
 
-  String _albumName;
-  String get albumName => _albumName ??= readValue<String>("albumName", "SlideShow");
+  List<String>? _albumNames;
+  List<String> get albumNames => _albumNames ??= readValue<List<String>>("albumNames", <String>["SlideShow"]);
 
-  GPhotoClientIdConfig _clientId;
-  GPhotoClientIdConfig get clientId => _clientId??=new GPhotoClientIdConfig(readRaw("clientId") as Map<String, dynamic>);
+  GPhotoClientIdConfig? _clientId;
+  GPhotoClientIdConfig get clientId => _clientId??=new GPhotoClientIdConfig(readRaw("clientId") as Map<String, dynamic>?);
 
 
-  String _refreshToken;
+  String? _refreshToken;
   /// A refresh token, which can be used to refresh the access credentials.
   ///
   /// This field may be null.
@@ -27,13 +27,13 @@ class GPhotoStorageConfig  extends BaseConfig {
 
 class GPhotoClientIdConfig  extends BaseConfig {
 
-  String _identifier;
+  String? _identifier;
   /// The identifier used to identify this application to the server.
   String get identifier => _identifier ??= readValue<String>("identifier");
 
-  String _secret;
+  String? _secret;
   /// The client secret used to identify this application to the server.
   String get secret => _secret ??= readValue<String>("secret");
 
-  GPhotoClientIdConfig(Map<String, dynamic> config) :super(config);
+  GPhotoClientIdConfig(Map<String, dynamic>? config) :super(config);
 }

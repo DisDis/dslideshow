@@ -8,14 +8,14 @@ abstract class Storage {
   Stream<DateTime> get onStartSync;
   StorageType get type;
 
-  Future<MediaItem> getCurrent();
+  Future<MediaItem?> getCurrent();
 
   // когда последний раз происходила синхронизация
-  Future<MediaItem> getNext();
+  Future<MediaItem?> getNext();
   // принудительно синхронизироваться
   Future init();
   // Вернуть текищий
-  Future<MediaItem> next();
+  Future<MediaItem?> next();
   // Вернуть следующий
   Future release();
   // Осуществить сдвиг

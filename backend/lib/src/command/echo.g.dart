@@ -17,23 +17,25 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
   final String wireName = 'EchoCommand';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, EchoCommand object,
+  Iterable<Object?> serialize(Serializers serializers, EchoCommand object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'text',
-      serializers.serialize(object.text, specifiedType: const FullType(String)),
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
+    Object? value;
+    value = object.text;
+    if (value != null) {
       result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
+        ..add('text')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     return result;
   }
 
   @override
-  EchoCommand deserialize(Serializers serializers, Iterable<Object> serialized,
+  EchoCommand deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new EchoCommandBuilder();
 
@@ -41,7 +43,7 @@ class _$EchoCommandSerializer implements StructuredSerializer<EchoCommand> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'text':
           result.text = serializers.deserialize(value,
@@ -66,25 +68,26 @@ class _$EchoCommandResultSerializer
   final String wireName = 'EchoCommandResult';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, EchoCommandResult object,
+  Iterable<Object?> serialize(Serializers serializers, EchoCommandResult object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'resultText',
-      serializers.serialize(object.resultText,
-          specifiedType: const FullType(String)),
+    final result = <Object?>[
+      'id',
+      serializers.serialize(object.id, specifiedType: const FullType(int)),
     ];
-    if (object.id != null) {
+    Object? value;
+    value = object.resultText;
+    if (value != null) {
       result
-        ..add('id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(int)));
+        ..add('resultText')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(String)));
     }
     return result;
   }
 
   @override
   EchoCommandResult deserialize(
-      Serializers serializers, Iterable<Object> serialized,
+      Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new EchoCommandResultBuilder();
 
@@ -92,7 +95,7 @@ class _$EchoCommandResultSerializer
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'resultText':
           result.resultText = serializers.deserialize(value,
@@ -111,17 +114,15 @@ class _$EchoCommandResultSerializer
 
 class _$EchoCommand extends EchoCommand {
   @override
-  final String text;
+  final String? text;
   @override
   final int id;
 
-  factory _$EchoCommand([void Function(EchoCommandBuilder) updates]) =>
+  factory _$EchoCommand([void Function(EchoCommandBuilder)? updates]) =>
       (new EchoCommandBuilder()..update(updates)).build();
 
-  _$EchoCommand._({this.text, this.id}) : super._() {
-    if (text == null) {
-      throw new BuiltValueNullFieldError('EchoCommand', 'text');
-    }
+  _$EchoCommand._({this.text, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'EchoCommand', 'id');
   }
 
   @override
@@ -152,22 +153,23 @@ class _$EchoCommand extends EchoCommand {
 }
 
 class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
-  _$EchoCommand _$v;
+  _$EchoCommand? _$v;
 
-  String _text;
-  String get text => _$this._text;
-  set text(String text) => _$this._text = text;
+  String? _text;
+  String? get text => _$this._text;
+  set text(String? text) => _$this._text = text;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   EchoCommandBuilder();
 
   EchoCommandBuilder get _$this {
-    if (_$v != null) {
-      _text = _$v.text;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _text = $v.text;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -175,20 +177,21 @@ class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
 
   @override
   void replace(EchoCommand other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$EchoCommand;
   }
 
   @override
-  void update(void Function(EchoCommandBuilder) updates) {
+  void update(void Function(EchoCommandBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$EchoCommand build() {
-    final _$result = _$v ?? new _$EchoCommand._(text: text, id: id);
+    final _$result = _$v ??
+        new _$EchoCommand._(
+            text: text,
+            id: BuiltValueNullFieldError.checkNotNull(id, 'EchoCommand', 'id'));
     replace(_$result);
     return _$result;
   }
@@ -196,18 +199,16 @@ class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
 
 class _$EchoCommandResult extends EchoCommandResult {
   @override
-  final String resultText;
+  final String? resultText;
   @override
   final int id;
 
   factory _$EchoCommandResult(
-          [void Function(EchoCommandResultBuilder) updates]) =>
+          [void Function(EchoCommandResultBuilder)? updates]) =>
       (new EchoCommandResultBuilder()..update(updates)).build();
 
-  _$EchoCommandResult._({this.resultText, this.id}) : super._() {
-    if (resultText == null) {
-      throw new BuiltValueNullFieldError('EchoCommandResult', 'resultText');
-    }
+  _$EchoCommandResult._({this.resultText, required this.id}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(id, 'EchoCommandResult', 'id');
   }
 
   @override
@@ -242,22 +243,23 @@ class _$EchoCommandResult extends EchoCommandResult {
 
 class EchoCommandResultBuilder
     implements Builder<EchoCommandResult, EchoCommandResultBuilder> {
-  _$EchoCommandResult _$v;
+  _$EchoCommandResult? _$v;
 
-  String _resultText;
-  String get resultText => _$this._resultText;
-  set resultText(String resultText) => _$this._resultText = resultText;
+  String? _resultText;
+  String? get resultText => _$this._resultText;
+  set resultText(String? resultText) => _$this._resultText = resultText;
 
-  int _id;
-  int get id => _$this._id;
-  set id(int id) => _$this._id = id;
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   EchoCommandResultBuilder();
 
   EchoCommandResultBuilder get _$this {
-    if (_$v != null) {
-      _resultText = _$v.resultText;
-      _id = _$v.id;
+    final $v = _$v;
+    if ($v != null) {
+      _resultText = $v.resultText;
+      _id = $v.id;
       _$v = null;
     }
     return this;
@@ -265,21 +267,22 @@ class EchoCommandResultBuilder
 
   @override
   void replace(EchoCommandResult other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$EchoCommandResult;
   }
 
   @override
-  void update(void Function(EchoCommandResultBuilder) updates) {
+  void update(void Function(EchoCommandResultBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$EchoCommandResult build() {
-    final _$result =
-        _$v ?? new _$EchoCommandResult._(resultText: resultText, id: id);
+    final _$result = _$v ??
+        new _$EchoCommandResult._(
+            resultText: resultText,
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'EchoCommandResult', 'id'));
     replace(_$result);
     return _$result;
   }

@@ -6,9 +6,9 @@ import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_contain
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
 
 class UptimeInfoWidget extends StatefulWidget {
-  final String uptime;
+  final String? uptime;
 
-  UptimeInfoWidget({@required String model, Key key})
+  UptimeInfoWidget({required String? model, Key? key})
       : uptime = model,
         super(key: key);
 
@@ -27,7 +27,7 @@ class _UptimeInfoWidgetState extends State<UptimeInfoWidget> {
       child: Container(
         color: Colors.teal,
         child: Column(children: <Widget>[
-          Row(children: [MetricsDetails('${widget.uptime}last updated ${_timeFormatter.format(DateTime.now())}')]),
+          Row(children: [MetricsDetails('${widget.uptime}last updated ${_timeFormatter.format(DateTime.now())}', value: null)]),
         ]),
       ),
     );

@@ -41,12 +41,9 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
   final String wireName = 'GlobalState';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, GlobalState object,
+  Iterable<Object?> serialize(Serializers serializers, GlobalState object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'delayBetweenItems',
-      serializers.serialize(object.delayBetweenItems,
-          specifiedType: const FullType(Duration)),
+    final result = <Object?>[
       'hasInternet',
       serializers.serialize(object.hasInternet,
           specifiedType: const FullType(bool)),
@@ -59,33 +56,48 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
       'isPaused',
       serializers.serialize(object.isPaused,
           specifiedType: const FullType(bool)),
-      'storageStatus',
-      serializers.serialize(object.storageStatus,
-          specifiedType: const FullType(StorageStatusEnum)),
     ];
-    if (object.beginTimePowerButtonPress != null) {
+    Object? value;
+    value = object.beginTimePowerButtonPress;
+    if (value != null) {
       result
         ..add('beginTimePowerButtonPress')
-        ..add(serializers.serialize(object.beginTimePowerButtonPress,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(DateTime)));
     }
-    if (object.currentMediaFile != null) {
+    value = object.currentMediaFile;
+    if (value != null) {
       result
         ..add('currentMediaFile')
-        ..add(serializers.serialize(object.currentMediaFile,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
     }
-    if (object.nextMediaFile != null) {
+    value = object.delayBetweenItems;
+    if (value != null) {
+      result
+        ..add('delayBetweenItems')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(Duration)));
+    }
+    value = object.nextMediaFile;
+    if (value != null) {
       result
         ..add('nextMediaFile')
-        ..add(serializers.serialize(object.nextMediaFile,
+        ..add(serializers.serialize(value,
             specifiedType: const FullType(String)));
+    }
+    value = object.storageStatus;
+    if (value != null) {
+      result
+        ..add('storageStatus')
+        ..add(serializers.serialize(value,
+            specifiedType: const FullType(StorageStatusEnum)));
     }
     return result;
   }
 
   @override
-  GlobalState deserialize(Serializers serializers, Iterable<Object> serialized,
+  GlobalState deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new GlobalStateBuilder();
 
@@ -93,7 +105,7 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'beginTimePowerButtonPress':
           result.beginTimePowerButtonPress = serializers.deserialize(value,
@@ -159,11 +171,11 @@ class _$StorageStatusEnumSerializer
 
 class _$GlobalState extends GlobalState {
   @override
-  final DateTime beginTimePowerButtonPress;
+  final DateTime? beginTimePowerButtonPress;
   @override
-  final String currentMediaFile;
+  final String? currentMediaFile;
   @override
-  final Duration delayBetweenItems;
+  final Duration? delayBetweenItems;
   @override
   final bool hasInternet;
   @override
@@ -173,42 +185,30 @@ class _$GlobalState extends GlobalState {
   @override
   final bool isPaused;
   @override
-  final String nextMediaFile;
+  final String? nextMediaFile;
   @override
-  final StorageStatusEnum storageStatus;
+  final StorageStatusEnum? storageStatus;
 
-  factory _$GlobalState([void Function(GlobalStateBuilder) updates]) =>
+  factory _$GlobalState([void Function(GlobalStateBuilder)? updates]) =>
       (new GlobalStateBuilder()..update(updates)).build();
 
   _$GlobalState._(
       {this.beginTimePowerButtonPress,
       this.currentMediaFile,
       this.delayBetweenItems,
-      this.hasInternet,
-      this.isScreenLock,
-      this.isDebug,
-      this.isPaused,
+      required this.hasInternet,
+      required this.isScreenLock,
+      required this.isDebug,
+      required this.isPaused,
       this.nextMediaFile,
       this.storageStatus})
       : super._() {
-    if (delayBetweenItems == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'delayBetweenItems');
-    }
-    if (hasInternet == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'hasInternet');
-    }
-    if (isScreenLock == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'isScreenLock');
-    }
-    if (isDebug == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'isDebug');
-    }
-    if (isPaused == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'isPaused');
-    }
-    if (storageStatus == null) {
-      throw new BuiltValueNullFieldError('GlobalState', 'storageStatus');
-    }
+    BuiltValueNullFieldError.checkNotNull(
+        hasInternet, 'GlobalState', 'hasInternet');
+    BuiltValueNullFieldError.checkNotNull(
+        isScreenLock, 'GlobalState', 'isScreenLock');
+    BuiltValueNullFieldError.checkNotNull(isDebug, 'GlobalState', 'isDebug');
+    BuiltValueNullFieldError.checkNotNull(isPaused, 'GlobalState', 'isPaused');
   }
 
   @override
@@ -270,62 +270,63 @@ class _$GlobalState extends GlobalState {
 }
 
 class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
-  _$GlobalState _$v;
+  _$GlobalState? _$v;
 
-  DateTime _beginTimePowerButtonPress;
-  DateTime get beginTimePowerButtonPress => _$this._beginTimePowerButtonPress;
-  set beginTimePowerButtonPress(DateTime beginTimePowerButtonPress) =>
+  DateTime? _beginTimePowerButtonPress;
+  DateTime? get beginTimePowerButtonPress => _$this._beginTimePowerButtonPress;
+  set beginTimePowerButtonPress(DateTime? beginTimePowerButtonPress) =>
       _$this._beginTimePowerButtonPress = beginTimePowerButtonPress;
 
-  String _currentMediaFile;
-  String get currentMediaFile => _$this._currentMediaFile;
-  set currentMediaFile(String currentMediaFile) =>
+  String? _currentMediaFile;
+  String? get currentMediaFile => _$this._currentMediaFile;
+  set currentMediaFile(String? currentMediaFile) =>
       _$this._currentMediaFile = currentMediaFile;
 
-  Duration _delayBetweenItems;
-  Duration get delayBetweenItems => _$this._delayBetweenItems;
-  set delayBetweenItems(Duration delayBetweenItems) =>
+  Duration? _delayBetweenItems;
+  Duration? get delayBetweenItems => _$this._delayBetweenItems;
+  set delayBetweenItems(Duration? delayBetweenItems) =>
       _$this._delayBetweenItems = delayBetweenItems;
 
-  bool _hasInternet;
-  bool get hasInternet => _$this._hasInternet;
-  set hasInternet(bool hasInternet) => _$this._hasInternet = hasInternet;
+  bool? _hasInternet;
+  bool? get hasInternet => _$this._hasInternet;
+  set hasInternet(bool? hasInternet) => _$this._hasInternet = hasInternet;
 
-  bool _isScreenLock;
-  bool get isScreenLock => _$this._isScreenLock;
-  set isScreenLock(bool isScreenLock) => _$this._isScreenLock = isScreenLock;
+  bool? _isScreenLock;
+  bool? get isScreenLock => _$this._isScreenLock;
+  set isScreenLock(bool? isScreenLock) => _$this._isScreenLock = isScreenLock;
 
-  bool _isDebug;
-  bool get isDebug => _$this._isDebug;
-  set isDebug(bool isDebug) => _$this._isDebug = isDebug;
+  bool? _isDebug;
+  bool? get isDebug => _$this._isDebug;
+  set isDebug(bool? isDebug) => _$this._isDebug = isDebug;
 
-  bool _isPaused;
-  bool get isPaused => _$this._isPaused;
-  set isPaused(bool isPaused) => _$this._isPaused = isPaused;
+  bool? _isPaused;
+  bool? get isPaused => _$this._isPaused;
+  set isPaused(bool? isPaused) => _$this._isPaused = isPaused;
 
-  String _nextMediaFile;
-  String get nextMediaFile => _$this._nextMediaFile;
-  set nextMediaFile(String nextMediaFile) =>
+  String? _nextMediaFile;
+  String? get nextMediaFile => _$this._nextMediaFile;
+  set nextMediaFile(String? nextMediaFile) =>
       _$this._nextMediaFile = nextMediaFile;
 
-  StorageStatusEnum _storageStatus;
-  StorageStatusEnum get storageStatus => _$this._storageStatus;
-  set storageStatus(StorageStatusEnum storageStatus) =>
+  StorageStatusEnum? _storageStatus;
+  StorageStatusEnum? get storageStatus => _$this._storageStatus;
+  set storageStatus(StorageStatusEnum? storageStatus) =>
       _$this._storageStatus = storageStatus;
 
   GlobalStateBuilder();
 
   GlobalStateBuilder get _$this {
-    if (_$v != null) {
-      _beginTimePowerButtonPress = _$v.beginTimePowerButtonPress;
-      _currentMediaFile = _$v.currentMediaFile;
-      _delayBetweenItems = _$v.delayBetweenItems;
-      _hasInternet = _$v.hasInternet;
-      _isScreenLock = _$v.isScreenLock;
-      _isDebug = _$v.isDebug;
-      _isPaused = _$v.isPaused;
-      _nextMediaFile = _$v.nextMediaFile;
-      _storageStatus = _$v.storageStatus;
+    final $v = _$v;
+    if ($v != null) {
+      _beginTimePowerButtonPress = $v.beginTimePowerButtonPress;
+      _currentMediaFile = $v.currentMediaFile;
+      _delayBetweenItems = $v.delayBetweenItems;
+      _hasInternet = $v.hasInternet;
+      _isScreenLock = $v.isScreenLock;
+      _isDebug = $v.isDebug;
+      _isPaused = $v.isPaused;
+      _nextMediaFile = $v.nextMediaFile;
+      _storageStatus = $v.storageStatus;
       _$v = null;
     }
     return this;
@@ -333,14 +334,12 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
 
   @override
   void replace(GlobalState other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$GlobalState;
   }
 
   @override
-  void update(void Function(GlobalStateBuilder) updates) {
+  void update(void Function(GlobalStateBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -351,10 +350,14 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
             beginTimePowerButtonPress: beginTimePowerButtonPress,
             currentMediaFile: currentMediaFile,
             delayBetweenItems: delayBetweenItems,
-            hasInternet: hasInternet,
-            isScreenLock: isScreenLock,
-            isDebug: isDebug,
-            isPaused: isPaused,
+            hasInternet: BuiltValueNullFieldError.checkNotNull(
+                hasInternet, 'GlobalState', 'hasInternet'),
+            isScreenLock: BuiltValueNullFieldError.checkNotNull(
+                isScreenLock, 'GlobalState', 'isScreenLock'),
+            isDebug: BuiltValueNullFieldError.checkNotNull(
+                isDebug, 'GlobalState', 'isDebug'),
+            isPaused: BuiltValueNullFieldError.checkNotNull(
+                isPaused, 'GlobalState', 'isPaused'),
             nextMediaFile: nextMediaFile,
             storageStatus: storageStatus);
     replace(_$result);

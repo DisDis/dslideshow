@@ -15,9 +15,9 @@ class _$SensorInfoSerializer implements StructuredSerializer<SensorInfo> {
   final String wireName = 'SensorInfo';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, SensorInfo object,
+  Iterable<Object?> serialize(Serializers serializers, SensorInfo object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'name',
       serializers.serialize(object.name, specifiedType: const FullType(String)),
       'value',
@@ -29,7 +29,7 @@ class _$SensorInfoSerializer implements StructuredSerializer<SensorInfo> {
   }
 
   @override
-  SensorInfo deserialize(Serializers serializers, Iterable<Object> serialized,
+  SensorInfo deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SensorInfoBuilder();
 
@@ -37,7 +37,7 @@ class _$SensorInfoSerializer implements StructuredSerializer<SensorInfo> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'name':
           result.name = serializers.deserialize(value,
@@ -60,16 +60,12 @@ class _$SensorInfo extends SensorInfo {
   @override
   final String value;
 
-  factory _$SensorInfo([void Function(SensorInfoBuilder) updates]) =>
+  factory _$SensorInfo([void Function(SensorInfoBuilder)? updates]) =>
       (new SensorInfoBuilder()..update(updates)).build();
 
-  _$SensorInfo._({this.name, this.value}) : super._() {
-    if (name == null) {
-      throw new BuiltValueNullFieldError('SensorInfo', 'name');
-    }
-    if (value == null) {
-      throw new BuiltValueNullFieldError('SensorInfo', 'value');
-    }
+  _$SensorInfo._({required this.name, required this.value}) : super._() {
+    BuiltValueNullFieldError.checkNotNull(name, 'SensorInfo', 'name');
+    BuiltValueNullFieldError.checkNotNull(value, 'SensorInfo', 'value');
   }
 
   @override
@@ -100,22 +96,23 @@ class _$SensorInfo extends SensorInfo {
 }
 
 class SensorInfoBuilder implements Builder<SensorInfo, SensorInfoBuilder> {
-  _$SensorInfo _$v;
+  _$SensorInfo? _$v;
 
-  String _name;
-  String get name => _$this._name;
-  set name(String name) => _$this._name = name;
+  String? _name;
+  String? get name => _$this._name;
+  set name(String? name) => _$this._name = name;
 
-  String _value;
-  String get value => _$this._value;
-  set value(String value) => _$this._value = value;
+  String? _value;
+  String? get value => _$this._value;
+  set value(String? value) => _$this._value = value;
 
   SensorInfoBuilder();
 
   SensorInfoBuilder get _$this {
-    if (_$v != null) {
-      _name = _$v.name;
-      _value = _$v.value;
+    final $v = _$v;
+    if ($v != null) {
+      _name = $v.name;
+      _value = $v.value;
       _$v = null;
     }
     return this;
@@ -123,20 +120,23 @@ class SensorInfoBuilder implements Builder<SensorInfo, SensorInfoBuilder> {
 
   @override
   void replace(SensorInfo other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$SensorInfo;
   }
 
   @override
-  void update(void Function(SensorInfoBuilder) updates) {
+  void update(void Function(SensorInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$SensorInfo build() {
-    final _$result = _$v ?? new _$SensorInfo._(name: name, value: value);
+    final _$result = _$v ??
+        new _$SensorInfo._(
+            name: BuiltValueNullFieldError.checkNotNull(
+                name, 'SensorInfo', 'name'),
+            value: BuiltValueNullFieldError.checkNotNull(
+                value, 'SensorInfo', 'value'));
     replace(_$result);
     return _$result;
   }

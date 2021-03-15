@@ -1,15 +1,38 @@
 // This is a generated file (see the discoveryapis_generator project).
 
-// ignore_for_file: unnecessary_cast
+// ignore_for_file: camel_case_types
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_string_interpolations
 
-library googleapis.playcustomapp.v1;
+/// Google Play Custom App Publishing API - v1
+///
+/// API to create and publish custom Android apps
+///
+/// For more information, see
+/// <https://developers.google.com/android/work/play/custom-app-api/>
+///
+/// Create an instance of [PlaycustomappApi] to access these resources:
+///
+/// - [AccountsResource]
+///   - [AccountsCustomAppsResource]
+library playcustomapp.v1;
 
-import 'dart:core' as core;
 import 'dart:async' as async;
 import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
+
+import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show
@@ -22,41 +45,38 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
         PartialDownloadOptions,
         ByteRange;
 
-const core.String USER_AGENT = 'dart-api-client playcustomapp/v1';
-
-/// An API to publish custom Android apps.
+/// API to create and publish custom Android apps
 class PlaycustomappApi {
   /// View and manage your Google Play Developer account
-  static const AndroidpublisherScope =
-      "https://www.googleapis.com/auth/androidpublisher";
+  static const androidpublisherScope =
+      'https://www.googleapis.com/auth/androidpublisher';
 
   final commons.ApiRequester _requester;
 
-  AccountsResourceApi get accounts => new AccountsResourceApi(_requester);
+  AccountsResource get accounts => AccountsResource(_requester);
 
   PlaycustomappApi(http.Client client,
-      {core.String rootUrl: "https://www.googleapis.com/",
-      core.String servicePath: "playcustomapp/v1/accounts/"})
+      {core.String rootUrl = 'https://playcustomapp.googleapis.com/',
+      core.String servicePath = ''})
       : _requester =
-            new commons.ApiRequester(client, rootUrl, servicePath, USER_AGENT);
+            commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
 }
 
-class AccountsResourceApi {
+class AccountsResource {
   final commons.ApiRequester _requester;
 
-  AccountsCustomAppsResourceApi get customApps =>
-      new AccountsCustomAppsResourceApi(_requester);
+  AccountsCustomAppsResource get customApps =>
+      AccountsCustomAppsResource(_requester);
 
-  AccountsResourceApi(commons.ApiRequester client) : _requester = client;
+  AccountsResource(commons.ApiRequester client) : _requester = client;
 }
 
-class AccountsCustomAppsResourceApi {
+class AccountsCustomAppsResource {
   final commons.ApiRequester _requester;
 
-  AccountsCustomAppsResourceApi(commons.ApiRequester client)
-      : _requester = client;
+  AccountsCustomAppsResource(commons.ApiRequester client) : _requester = client;
 
-  /// Create and publish a new custom app.
+  /// Creates a new custom app.
   ///
   /// [request] - The metadata request object.
   ///
@@ -80,80 +100,77 @@ class AccountsCustomAppsResourceApi {
   ///
   /// If the used [http.Client] completes with an error when making a REST call,
   /// this method will complete with the same error.
-  async.Future<CustomApp> create(CustomApp request, core.String account,
-      {core.String $fields,
-      commons.UploadOptions uploadOptions: commons.UploadOptions.Default,
-      commons.Media uploadMedia}) {
-    var _url = null;
-    var _queryParams = new core.Map<core.String, core.List<core.String>>();
-    var _uploadMedia = null;
-    var _uploadOptions = null;
-    var _downloadOptions = commons.DownloadOptions.Metadata;
-    var _body = null;
+  async.Future<CustomApp> create(
+    CustomApp request,
+    core.String account, {
+    core.String? $fields,
+    commons.UploadOptions uploadOptions = commons.UploadOptions.defaultOptions,
+    commons.Media? uploadMedia,
+  }) async {
+    final _body = convert.json.encode(request.toJson());
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
 
-    if (request != null) {
-      _body = convert.json.encode((request).toJson());
-    }
-    if (account == null) {
-      throw new core.ArgumentError("Parameter account is required.");
-    }
-    if ($fields != null) {
-      _queryParams["fields"] = [$fields];
-    }
-
-    _uploadMedia = uploadMedia;
-    _uploadOptions = uploadOptions;
-
-    if (_uploadMedia == null) {
-      _url = commons.Escaper.ecapeVariable('$account') + '/customApps';
-    } else if (_uploadOptions is commons.ResumableUploadOptions) {
+    core.String _url;
+    if (uploadMedia == null) {
+      _url = 'playcustomapp/v1/accounts/' +
+          commons.escapeVariable('$account') +
+          '/customApps';
+    } else if (uploadOptions is commons.ResumableUploadOptions) {
       _url = '/resumable/upload/playcustomapp/v1/accounts/' +
-          commons.Escaper.ecapeVariable('$account') +
+          commons.escapeVariable('$account') +
           '/customApps';
     } else {
       _url = '/upload/playcustomapp/v1/accounts/' +
-          commons.Escaper.ecapeVariable('$account') +
+          commons.escapeVariable('$account') +
           '/customApps';
     }
 
-    var _response = _requester.request(_url, "POST",
-        body: _body,
-        queryParams: _queryParams,
-        uploadOptions: _uploadOptions,
-        uploadMedia: _uploadMedia,
-        downloadOptions: _downloadOptions);
-    return _response.then((data) => new CustomApp.fromJson(data));
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+      uploadMedia: uploadMedia,
+      uploadOptions: uploadOptions,
+    );
+    return CustomApp.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
 /// This resource represents a custom app.
 class CustomApp {
   /// Default listing language in BCP 47 format.
-  core.String languageCode;
+  core.String? languageCode;
+
+  /// Package name of the created Android app.
+  ///
+  /// Only present in the API response.
+  ///
+  /// Output only.
+  core.String? packageName;
 
   /// Title for the Android app.
-  core.String title;
+  core.String? title;
 
   CustomApp();
 
   CustomApp.fromJson(core.Map _json) {
-    if (_json.containsKey("languageCode")) {
-      languageCode = _json["languageCode"];
+    if (_json.containsKey('languageCode')) {
+      languageCode = _json['languageCode'] as core.String;
     }
-    if (_json.containsKey("title")) {
-      title = _json["title"];
+    if (_json.containsKey('packageName')) {
+      packageName = _json['packageName'] as core.String;
+    }
+    if (_json.containsKey('title')) {
+      title = _json['title'] as core.String;
     }
   }
 
-  core.Map<core.String, core.Object> toJson() {
-    final core.Map<core.String, core.Object> _json =
-        new core.Map<core.String, core.Object>();
-    if (languageCode != null) {
-      _json["languageCode"] = languageCode;
-    }
-    if (title != null) {
-      _json["title"] = title;
-    }
-    return _json;
-  }
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (languageCode != null) 'languageCode': languageCode!,
+        if (packageName != null) 'packageName': packageName!,
+        if (title != null) 'title': title!,
+      };
 }

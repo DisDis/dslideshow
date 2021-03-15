@@ -11,7 +11,7 @@ abstract class CpuInfo implements Built<CpuInfo, CpuInfoBuilder> {
 
   static Serializer<CpuInfo> get serializer => _$cpuInfoSerializer;
 
-  factory CpuInfo([void updates(CpuInfoBuilder b)]) = _$CpuInfo;
+  factory CpuInfo([void updates(CpuInfoBuilder b)?]) = _$CpuInfo;
 
   CpuInfo._();
 

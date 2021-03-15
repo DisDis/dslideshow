@@ -15,9 +15,9 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
   final String wireName = 'CpuInfo';
 
   @override
-  Iterable<Object> serialize(Serializers serializers, CpuInfo object,
+  Iterable<Object?> serialize(Serializers serializers, CpuInfo object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
+    final result = <Object?>[
       'cores',
       serializers.serialize(object.cores, specifiedType: const FullType(int)),
       'hardware',
@@ -35,7 +35,7 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
   }
 
   @override
-  CpuInfo deserialize(Serializers serializers, Iterable<Object> serialized,
+  CpuInfo deserialize(Serializers serializers, Iterable<Object?> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new CpuInfoBuilder();
 
@@ -43,7 +43,7 @@ class _$CpuInfoSerializer implements StructuredSerializer<CpuInfo> {
     while (iterator.moveNext()) {
       final key = iterator.current as String;
       iterator.moveNext();
-      final dynamic value = iterator.current;
+      final Object? value = iterator.current;
       switch (key) {
         case 'cores':
           result.cores = serializers.deserialize(value,
@@ -78,23 +78,19 @@ class _$CpuInfo extends CpuInfo {
   @override
   final String revision;
 
-  factory _$CpuInfo([void Function(CpuInfoBuilder) updates]) =>
+  factory _$CpuInfo([void Function(CpuInfoBuilder)? updates]) =>
       (new CpuInfoBuilder()..update(updates)).build();
 
-  _$CpuInfo._({this.cores, this.hardware, this.model, this.revision})
+  _$CpuInfo._(
+      {required this.cores,
+      required this.hardware,
+      required this.model,
+      required this.revision})
       : super._() {
-    if (cores == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'cores');
-    }
-    if (hardware == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'hardware');
-    }
-    if (model == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'model');
-    }
-    if (revision == null) {
-      throw new BuiltValueNullFieldError('CpuInfo', 'revision');
-    }
+    BuiltValueNullFieldError.checkNotNull(cores, 'CpuInfo', 'cores');
+    BuiltValueNullFieldError.checkNotNull(hardware, 'CpuInfo', 'hardware');
+    BuiltValueNullFieldError.checkNotNull(model, 'CpuInfo', 'model');
+    BuiltValueNullFieldError.checkNotNull(revision, 'CpuInfo', 'revision');
   }
 
   @override
@@ -133,32 +129,33 @@ class _$CpuInfo extends CpuInfo {
 }
 
 class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
-  _$CpuInfo _$v;
+  _$CpuInfo? _$v;
 
-  int _cores;
-  int get cores => _$this._cores;
-  set cores(int cores) => _$this._cores = cores;
+  int? _cores;
+  int? get cores => _$this._cores;
+  set cores(int? cores) => _$this._cores = cores;
 
-  String _hardware;
-  String get hardware => _$this._hardware;
-  set hardware(String hardware) => _$this._hardware = hardware;
+  String? _hardware;
+  String? get hardware => _$this._hardware;
+  set hardware(String? hardware) => _$this._hardware = hardware;
 
-  String _model;
-  String get model => _$this._model;
-  set model(String model) => _$this._model = model;
+  String? _model;
+  String? get model => _$this._model;
+  set model(String? model) => _$this._model = model;
 
-  String _revision;
-  String get revision => _$this._revision;
-  set revision(String revision) => _$this._revision = revision;
+  String? _revision;
+  String? get revision => _$this._revision;
+  set revision(String? revision) => _$this._revision = revision;
 
   CpuInfoBuilder();
 
   CpuInfoBuilder get _$this {
-    if (_$v != null) {
-      _cores = _$v.cores;
-      _hardware = _$v.hardware;
-      _model = _$v.model;
-      _revision = _$v.revision;
+    final $v = _$v;
+    if ($v != null) {
+      _cores = $v.cores;
+      _hardware = $v.hardware;
+      _model = $v.model;
+      _revision = $v.revision;
       _$v = null;
     }
     return this;
@@ -166,14 +163,12 @@ class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
 
   @override
   void replace(CpuInfo other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
+    ArgumentError.checkNotNull(other, 'other');
     _$v = other as _$CpuInfo;
   }
 
   @override
-  void update(void Function(CpuInfoBuilder) updates) {
+  void update(void Function(CpuInfoBuilder)? updates) {
     if (updates != null) updates(this);
   }
 
@@ -181,7 +176,14 @@ class CpuInfoBuilder implements Builder<CpuInfo, CpuInfoBuilder> {
   _$CpuInfo build() {
     final _$result = _$v ??
         new _$CpuInfo._(
-            cores: cores, hardware: hardware, model: model, revision: revision);
+            cores: BuiltValueNullFieldError.checkNotNull(
+                cores, 'CpuInfo', 'cores'),
+            hardware: BuiltValueNullFieldError.checkNotNull(
+                hardware, 'CpuInfo', 'hardware'),
+            model: BuiltValueNullFieldError.checkNotNull(
+                model, 'CpuInfo', 'model'),
+            revision: BuiltValueNullFieldError.checkNotNull(
+                revision, 'CpuInfo', 'revision'));
     replace(_$result);
     return _$result;
   }

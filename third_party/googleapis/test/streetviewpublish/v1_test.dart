@@ -1,218 +1,201 @@
-library googleapis.streetviewpublish.v1.test;
+// ignore_for_file: avoid_returning_null
+// ignore_for_file: camel_case_types
+// ignore_for_file: cascade_invocations
+// ignore_for_file: comment_references
+// ignore_for_file: file_names
+// ignore_for_file: library_names
+// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_expression_function_bodies
+// ignore_for_file: prefer_final_locals
+// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_single_quotes
+// ignore_for_file: unnecessary_brace_in_string_interps
+// ignore_for_file: unnecessary_cast
+// ignore_for_file: unnecessary_lambdas
+// ignore_for_file: unnecessary_parenthesis
+// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unused_local_variable
 
-import "dart:core" as core;
-import "dart:async" as async;
-import "dart:convert" as convert;
+import 'dart:async' as async;
+import 'dart:convert' as convert;
+import 'dart:core' as core;
 
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-
 import 'package:googleapis/streetviewpublish/v1.dart' as api;
 
-class HttpServerMock extends http.BaseClient {
-  core.Function _callback;
-  core.bool _expectJson;
+import '../test_shared.dart';
 
-  void register(core.Function callback, core.bool expectJson) {
-    _callback = callback;
-    _expectJson = expectJson;
-  }
-
-  async.Future<http.StreamedResponse> send(http.BaseRequest request) {
-    if (_expectJson) {
-      return request
-          .finalize()
-          .transform(convert.utf8.decoder)
-          .join('')
-          .then((core.String jsonString) {
-        if (jsonString.isEmpty) {
-          return _callback(request, null);
-        } else {
-          return _callback(request, convert.json.decode(jsonString));
-        }
-      });
-    } else {
-      var stream = request.finalize();
-      if (stream == null) {
-        return _callback(request, []);
-      } else {
-        return stream.toBytes().then((data) {
-          return _callback(request, data);
-        });
-      }
-    }
-  }
-}
-
-http.StreamedResponse stringResponse(core.int status,
-    core.Map<core.String, core.String> headers, core.String body) {
-  var stream = new async.Stream.fromIterable([convert.utf8.encode(body)]);
-  return new http.StreamedResponse(stream, status, headers: headers);
-}
-
-buildUnnamed1743() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed2342() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed1743(core.List<core.String> o) {
+void checkUnnamed2342(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterBatchDeletePhotosRequest = 0;
-buildBatchDeletePhotosRequest() {
-  var o = new api.BatchDeletePhotosRequest();
+api.BatchDeletePhotosRequest buildBatchDeletePhotosRequest() {
+  var o = api.BatchDeletePhotosRequest();
   buildCounterBatchDeletePhotosRequest++;
   if (buildCounterBatchDeletePhotosRequest < 3) {
-    o.photoIds = buildUnnamed1743();
+    o.photoIds = buildUnnamed2342();
   }
   buildCounterBatchDeletePhotosRequest--;
   return o;
 }
 
-checkBatchDeletePhotosRequest(api.BatchDeletePhotosRequest o) {
+void checkBatchDeletePhotosRequest(api.BatchDeletePhotosRequest o) {
   buildCounterBatchDeletePhotosRequest++;
   if (buildCounterBatchDeletePhotosRequest < 3) {
-    checkUnnamed1743(o.photoIds);
+    checkUnnamed2342(o.photoIds!);
   }
   buildCounterBatchDeletePhotosRequest--;
 }
 
-buildUnnamed1744() {
-  var o = new core.List<api.Status>();
+core.List<api.Status> buildUnnamed2343() {
+  var o = <api.Status>[];
   o.add(buildStatus());
   o.add(buildStatus());
   return o;
 }
 
-checkUnnamed1744(core.List<api.Status> o) {
+void checkUnnamed2343(core.List<api.Status> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkStatus(o[0]);
-  checkStatus(o[1]);
+  checkStatus(o[0] as api.Status);
+  checkStatus(o[1] as api.Status);
 }
 
 core.int buildCounterBatchDeletePhotosResponse = 0;
-buildBatchDeletePhotosResponse() {
-  var o = new api.BatchDeletePhotosResponse();
+api.BatchDeletePhotosResponse buildBatchDeletePhotosResponse() {
+  var o = api.BatchDeletePhotosResponse();
   buildCounterBatchDeletePhotosResponse++;
   if (buildCounterBatchDeletePhotosResponse < 3) {
-    o.status = buildUnnamed1744();
+    o.status = buildUnnamed2343();
   }
   buildCounterBatchDeletePhotosResponse--;
   return o;
 }
 
-checkBatchDeletePhotosResponse(api.BatchDeletePhotosResponse o) {
+void checkBatchDeletePhotosResponse(api.BatchDeletePhotosResponse o) {
   buildCounterBatchDeletePhotosResponse++;
   if (buildCounterBatchDeletePhotosResponse < 3) {
-    checkUnnamed1744(o.status);
+    checkUnnamed2343(o.status!);
   }
   buildCounterBatchDeletePhotosResponse--;
 }
 
-buildUnnamed1745() {
-  var o = new core.List<api.PhotoResponse>();
+core.List<api.PhotoResponse> buildUnnamed2344() {
+  var o = <api.PhotoResponse>[];
   o.add(buildPhotoResponse());
   o.add(buildPhotoResponse());
   return o;
 }
 
-checkUnnamed1745(core.List<api.PhotoResponse> o) {
+void checkUnnamed2344(core.List<api.PhotoResponse> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPhotoResponse(o[0]);
-  checkPhotoResponse(o[1]);
+  checkPhotoResponse(o[0] as api.PhotoResponse);
+  checkPhotoResponse(o[1] as api.PhotoResponse);
 }
 
 core.int buildCounterBatchGetPhotosResponse = 0;
-buildBatchGetPhotosResponse() {
-  var o = new api.BatchGetPhotosResponse();
+api.BatchGetPhotosResponse buildBatchGetPhotosResponse() {
+  var o = api.BatchGetPhotosResponse();
   buildCounterBatchGetPhotosResponse++;
   if (buildCounterBatchGetPhotosResponse < 3) {
-    o.results = buildUnnamed1745();
+    o.results = buildUnnamed2344();
   }
   buildCounterBatchGetPhotosResponse--;
   return o;
 }
 
-checkBatchGetPhotosResponse(api.BatchGetPhotosResponse o) {
+void checkBatchGetPhotosResponse(api.BatchGetPhotosResponse o) {
   buildCounterBatchGetPhotosResponse++;
   if (buildCounterBatchGetPhotosResponse < 3) {
-    checkUnnamed1745(o.results);
+    checkUnnamed2344(o.results!);
   }
   buildCounterBatchGetPhotosResponse--;
 }
 
-buildUnnamed1746() {
-  var o = new core.List<api.UpdatePhotoRequest>();
+core.List<api.UpdatePhotoRequest> buildUnnamed2345() {
+  var o = <api.UpdatePhotoRequest>[];
   o.add(buildUpdatePhotoRequest());
   o.add(buildUpdatePhotoRequest());
   return o;
 }
 
-checkUnnamed1746(core.List<api.UpdatePhotoRequest> o) {
+void checkUnnamed2345(core.List<api.UpdatePhotoRequest> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUpdatePhotoRequest(o[0]);
-  checkUpdatePhotoRequest(o[1]);
+  checkUpdatePhotoRequest(o[0] as api.UpdatePhotoRequest);
+  checkUpdatePhotoRequest(o[1] as api.UpdatePhotoRequest);
 }
 
 core.int buildCounterBatchUpdatePhotosRequest = 0;
-buildBatchUpdatePhotosRequest() {
-  var o = new api.BatchUpdatePhotosRequest();
+api.BatchUpdatePhotosRequest buildBatchUpdatePhotosRequest() {
+  var o = api.BatchUpdatePhotosRequest();
   buildCounterBatchUpdatePhotosRequest++;
   if (buildCounterBatchUpdatePhotosRequest < 3) {
-    o.updatePhotoRequests = buildUnnamed1746();
+    o.updatePhotoRequests = buildUnnamed2345();
   }
   buildCounterBatchUpdatePhotosRequest--;
   return o;
 }
 
-checkBatchUpdatePhotosRequest(api.BatchUpdatePhotosRequest o) {
+void checkBatchUpdatePhotosRequest(api.BatchUpdatePhotosRequest o) {
   buildCounterBatchUpdatePhotosRequest++;
   if (buildCounterBatchUpdatePhotosRequest < 3) {
-    checkUnnamed1746(o.updatePhotoRequests);
+    checkUnnamed2345(o.updatePhotoRequests!);
   }
   buildCounterBatchUpdatePhotosRequest--;
 }
 
-buildUnnamed1747() {
-  var o = new core.List<api.PhotoResponse>();
+core.List<api.PhotoResponse> buildUnnamed2346() {
+  var o = <api.PhotoResponse>[];
   o.add(buildPhotoResponse());
   o.add(buildPhotoResponse());
   return o;
 }
 
-checkUnnamed1747(core.List<api.PhotoResponse> o) {
+void checkUnnamed2346(core.List<api.PhotoResponse> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPhotoResponse(o[0]);
-  checkPhotoResponse(o[1]);
+  checkPhotoResponse(o[0] as api.PhotoResponse);
+  checkPhotoResponse(o[1] as api.PhotoResponse);
 }
 
 core.int buildCounterBatchUpdatePhotosResponse = 0;
-buildBatchUpdatePhotosResponse() {
-  var o = new api.BatchUpdatePhotosResponse();
+api.BatchUpdatePhotosResponse buildBatchUpdatePhotosResponse() {
+  var o = api.BatchUpdatePhotosResponse();
   buildCounterBatchUpdatePhotosResponse++;
   if (buildCounterBatchUpdatePhotosResponse < 3) {
-    o.results = buildUnnamed1747();
+    o.results = buildUnnamed2346();
   }
   buildCounterBatchUpdatePhotosResponse--;
   return o;
 }
 
-checkBatchUpdatePhotosResponse(api.BatchUpdatePhotosResponse o) {
+void checkBatchUpdatePhotosResponse(api.BatchUpdatePhotosResponse o) {
   buildCounterBatchUpdatePhotosResponse++;
   if (buildCounterBatchUpdatePhotosResponse < 3) {
-    checkUnnamed1747(o.results);
+    checkUnnamed2346(o.results!);
   }
   buildCounterBatchUpdatePhotosResponse--;
 }
 
 core.int buildCounterConnection = 0;
-buildConnection() {
-  var o = new api.Connection();
+api.Connection buildConnection() {
+  var o = api.Connection();
   buildCounterConnection++;
   if (buildCounterConnection < 3) {
     o.target = buildPhotoId();
@@ -221,32 +204,32 @@ buildConnection() {
   return o;
 }
 
-checkConnection(api.Connection o) {
+void checkConnection(api.Connection o) {
   buildCounterConnection++;
   if (buildCounterConnection < 3) {
-    checkPhotoId(o.target);
+    checkPhotoId(o.target! as api.PhotoId);
   }
   buildCounterConnection--;
 }
 
 core.int buildCounterEmpty = 0;
-buildEmpty() {
-  var o = new api.Empty();
+api.Empty buildEmpty() {
+  var o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
   return o;
 }
 
-checkEmpty(api.Empty o) {
+void checkEmpty(api.Empty o) {
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
 }
 
 core.int buildCounterLatLng = 0;
-buildLatLng() {
-  var o = new api.LatLng();
+api.LatLng buildLatLng() {
+  var o = api.LatLng();
   buildCounterLatLng++;
   if (buildCounterLatLng < 3) {
     o.latitude = 42.0;
@@ -256,78 +239,93 @@ buildLatLng() {
   return o;
 }
 
-checkLatLng(api.LatLng o) {
+void checkLatLng(api.LatLng o) {
   buildCounterLatLng++;
   if (buildCounterLatLng < 3) {
-    unittest.expect(o.latitude, unittest.equals(42.0));
-    unittest.expect(o.longitude, unittest.equals(42.0));
+    unittest.expect(
+      o.latitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.longitude!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterLatLng--;
 }
 
 core.int buildCounterLevel = 0;
-buildLevel() {
-  var o = new api.Level();
+api.Level buildLevel() {
+  var o = api.Level();
   buildCounterLevel++;
   if (buildCounterLevel < 3) {
-    o.name = "foo";
+    o.name = 'foo';
     o.number = 42.0;
   }
   buildCounterLevel--;
   return o;
 }
 
-checkLevel(api.Level o) {
+void checkLevel(api.Level o) {
   buildCounterLevel++;
   if (buildCounterLevel < 3) {
-    unittest.expect(o.name, unittest.equals('foo'));
-    unittest.expect(o.number, unittest.equals(42.0));
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.number!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterLevel--;
 }
 
-buildUnnamed1748() {
-  var o = new core.List<api.Photo>();
+core.List<api.Photo> buildUnnamed2347() {
+  var o = <api.Photo>[];
   o.add(buildPhoto());
   o.add(buildPhoto());
   return o;
 }
 
-checkUnnamed1748(core.List<api.Photo> o) {
+void checkUnnamed2347(core.List<api.Photo> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPhoto(o[0]);
-  checkPhoto(o[1]);
+  checkPhoto(o[0] as api.Photo);
+  checkPhoto(o[1] as api.Photo);
 }
 
 core.int buildCounterListPhotosResponse = 0;
-buildListPhotosResponse() {
-  var o = new api.ListPhotosResponse();
+api.ListPhotosResponse buildListPhotosResponse() {
+  var o = api.ListPhotosResponse();
   buildCounterListPhotosResponse++;
   if (buildCounterListPhotosResponse < 3) {
-    o.nextPageToken = "foo";
-    o.photos = buildUnnamed1748();
+    o.nextPageToken = 'foo';
+    o.photos = buildUnnamed2347();
   }
   buildCounterListPhotosResponse--;
   return o;
 }
 
-checkListPhotosResponse(api.ListPhotosResponse o) {
+void checkListPhotosResponse(api.ListPhotosResponse o) {
   buildCounterListPhotosResponse++;
   if (buildCounterListPhotosResponse < 3) {
-    unittest.expect(o.nextPageToken, unittest.equals('foo'));
-    checkUnnamed1748(o.photos);
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed2347(o.photos!);
   }
   buildCounterListPhotosResponse--;
 }
 
-buildUnnamed1749() {
-  var o = new core.Map<core.String, core.Object>();
-  o["x"] = {
+core.Map<core.String, core.Object> buildUnnamed2348() {
+  var o = <core.String, core.Object>{};
+  o['x'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
   };
-  o["y"] = {
+  o['y'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
@@ -335,28 +333,46 @@ buildUnnamed1749() {
   return o;
 }
 
-checkUnnamed1749(core.Map<core.String, core.Object> o) {
+void checkUnnamed2348(core.Map<core.String, core.Object> o) {
   unittest.expect(o, unittest.hasLength(2));
-  var casted1 = (o["x"]) as core.Map;
+  var casted1 = (o['x']!) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
-  unittest.expect(casted1["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted1["bool"], unittest.equals(true));
-  unittest.expect(casted1["string"], unittest.equals('foo'));
-  var casted2 = (o["y"]) as core.Map;
+  unittest.expect(
+    casted1['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted1['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted1['string'],
+    unittest.equals('foo'),
+  );
+  var casted2 = (o['y']!) as core.Map;
   unittest.expect(casted2, unittest.hasLength(3));
-  unittest.expect(casted2["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted2["bool"], unittest.equals(true));
-  unittest.expect(casted2["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted2['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted2['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted2['string'],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed1750() {
-  var o = new core.Map<core.String, core.Object>();
-  o["x"] = {
+core.Map<core.String, core.Object> buildUnnamed2349() {
+  var o = <core.String, core.Object>{};
+  o['x'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
   };
-  o["y"] = {
+  o['y'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
@@ -364,136 +380,181 @@ buildUnnamed1750() {
   return o;
 }
 
-checkUnnamed1750(core.Map<core.String, core.Object> o) {
+void checkUnnamed2349(core.Map<core.String, core.Object> o) {
   unittest.expect(o, unittest.hasLength(2));
-  var casted3 = (o["x"]) as core.Map;
+  var casted3 = (o['x']!) as core.Map;
   unittest.expect(casted3, unittest.hasLength(3));
-  unittest.expect(casted3["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted3["bool"], unittest.equals(true));
-  unittest.expect(casted3["string"], unittest.equals('foo'));
-  var casted4 = (o["y"]) as core.Map;
+  unittest.expect(
+    casted3['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted3['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted3['string'],
+    unittest.equals('foo'),
+  );
+  var casted4 = (o['y']!) as core.Map;
   unittest.expect(casted4, unittest.hasLength(3));
-  unittest.expect(casted4["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted4["bool"], unittest.equals(true));
-  unittest.expect(casted4["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted4['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted4['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted4['string'],
+    unittest.equals('foo'),
+  );
 }
 
 core.int buildCounterOperation = 0;
-buildOperation() {
-  var o = new api.Operation();
+api.Operation buildOperation() {
+  var o = api.Operation();
   buildCounterOperation++;
   if (buildCounterOperation < 3) {
     o.done = true;
     o.error = buildStatus();
-    o.metadata = buildUnnamed1749();
-    o.name = "foo";
-    o.response = buildUnnamed1750();
+    o.metadata = buildUnnamed2348();
+    o.name = 'foo';
+    o.response = buildUnnamed2349();
   }
   buildCounterOperation--;
   return o;
 }
 
-checkOperation(api.Operation o) {
+void checkOperation(api.Operation o) {
   buildCounterOperation++;
   if (buildCounterOperation < 3) {
-    unittest.expect(o.done, unittest.isTrue);
-    checkStatus(o.error);
-    checkUnnamed1749(o.metadata);
-    unittest.expect(o.name, unittest.equals('foo'));
-    checkUnnamed1750(o.response);
+    unittest.expect(o.done!, unittest.isTrue);
+    checkStatus(o.error! as api.Status);
+    checkUnnamed2348(o.metadata!);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed2349(o.response!);
   }
   buildCounterOperation--;
 }
 
-buildUnnamed1751() {
-  var o = new core.List<api.Connection>();
+core.List<api.Connection> buildUnnamed2350() {
+  var o = <api.Connection>[];
   o.add(buildConnection());
   o.add(buildConnection());
   return o;
 }
 
-checkUnnamed1751(core.List<api.Connection> o) {
+void checkUnnamed2350(core.List<api.Connection> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkConnection(o[0]);
-  checkConnection(o[1]);
+  checkConnection(o[0] as api.Connection);
+  checkConnection(o[1] as api.Connection);
 }
 
-buildUnnamed1752() {
-  var o = new core.List<api.Place>();
+core.List<api.Place> buildUnnamed2351() {
+  var o = <api.Place>[];
   o.add(buildPlace());
   o.add(buildPlace());
   return o;
 }
 
-checkUnnamed1752(core.List<api.Place> o) {
+void checkUnnamed2351(core.List<api.Place> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPlace(o[0]);
-  checkPlace(o[1]);
+  checkPlace(o[0] as api.Place);
+  checkPlace(o[1] as api.Place);
 }
 
 core.int buildCounterPhoto = 0;
-buildPhoto() {
-  var o = new api.Photo();
+api.Photo buildPhoto() {
+  var o = api.Photo();
   buildCounterPhoto++;
   if (buildCounterPhoto < 3) {
-    o.captureTime = "foo";
-    o.connections = buildUnnamed1751();
-    o.downloadUrl = "foo";
-    o.mapsPublishStatus = "foo";
+    o.captureTime = 'foo';
+    o.connections = buildUnnamed2350();
+    o.downloadUrl = 'foo';
+    o.mapsPublishStatus = 'foo';
     o.photoId = buildPhotoId();
-    o.places = buildUnnamed1752();
+    o.places = buildUnnamed2351();
     o.pose = buildPose();
-    o.shareLink = "foo";
-    o.thumbnailUrl = "foo";
-    o.transferStatus = "foo";
+    o.shareLink = 'foo';
+    o.thumbnailUrl = 'foo';
+    o.transferStatus = 'foo';
     o.uploadReference = buildUploadRef();
-    o.viewCount = "foo";
+    o.viewCount = 'foo';
   }
   buildCounterPhoto--;
   return o;
 }
 
-checkPhoto(api.Photo o) {
+void checkPhoto(api.Photo o) {
   buildCounterPhoto++;
   if (buildCounterPhoto < 3) {
-    unittest.expect(o.captureTime, unittest.equals('foo'));
-    checkUnnamed1751(o.connections);
-    unittest.expect(o.downloadUrl, unittest.equals('foo'));
-    unittest.expect(o.mapsPublishStatus, unittest.equals('foo'));
-    checkPhotoId(o.photoId);
-    checkUnnamed1752(o.places);
-    checkPose(o.pose);
-    unittest.expect(o.shareLink, unittest.equals('foo'));
-    unittest.expect(o.thumbnailUrl, unittest.equals('foo'));
-    unittest.expect(o.transferStatus, unittest.equals('foo'));
-    checkUploadRef(o.uploadReference);
-    unittest.expect(o.viewCount, unittest.equals('foo'));
+    unittest.expect(
+      o.captureTime!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed2350(o.connections!);
+    unittest.expect(
+      o.downloadUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.mapsPublishStatus!,
+      unittest.equals('foo'),
+    );
+    checkPhotoId(o.photoId! as api.PhotoId);
+    checkUnnamed2351(o.places!);
+    checkPose(o.pose! as api.Pose);
+    unittest.expect(
+      o.shareLink!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.thumbnailUrl!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.transferStatus!,
+      unittest.equals('foo'),
+    );
+    checkUploadRef(o.uploadReference! as api.UploadRef);
+    unittest.expect(
+      o.viewCount!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterPhoto--;
 }
 
 core.int buildCounterPhotoId = 0;
-buildPhotoId() {
-  var o = new api.PhotoId();
+api.PhotoId buildPhotoId() {
+  var o = api.PhotoId();
   buildCounterPhotoId++;
   if (buildCounterPhotoId < 3) {
-    o.id = "foo";
+    o.id = 'foo';
   }
   buildCounterPhotoId--;
   return o;
 }
 
-checkPhotoId(api.PhotoId o) {
+void checkPhotoId(api.PhotoId o) {
   buildCounterPhotoId++;
   if (buildCounterPhotoId < 3) {
-    unittest.expect(o.id, unittest.equals('foo'));
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterPhotoId--;
 }
 
 core.int buildCounterPhotoResponse = 0;
-buildPhotoResponse() {
-  var o = new api.PhotoResponse();
+api.PhotoResponse buildPhotoResponse() {
+  var o = api.PhotoResponse();
   buildCounterPhotoResponse++;
   if (buildCounterPhotoResponse < 3) {
     o.photo = buildPhoto();
@@ -503,41 +564,50 @@ buildPhotoResponse() {
   return o;
 }
 
-checkPhotoResponse(api.PhotoResponse o) {
+void checkPhotoResponse(api.PhotoResponse o) {
   buildCounterPhotoResponse++;
   if (buildCounterPhotoResponse < 3) {
-    checkPhoto(o.photo);
-    checkStatus(o.status);
+    checkPhoto(o.photo! as api.Photo);
+    checkStatus(o.status! as api.Status);
   }
   buildCounterPhotoResponse--;
 }
 
 core.int buildCounterPlace = 0;
-buildPlace() {
-  var o = new api.Place();
+api.Place buildPlace() {
+  var o = api.Place();
   buildCounterPlace++;
   if (buildCounterPlace < 3) {
-    o.languageCode = "foo";
-    o.name = "foo";
-    o.placeId = "foo";
+    o.languageCode = 'foo';
+    o.name = 'foo';
+    o.placeId = 'foo';
   }
   buildCounterPlace--;
   return o;
 }
 
-checkPlace(api.Place o) {
+void checkPlace(api.Place o) {
   buildCounterPlace++;
   if (buildCounterPlace < 3) {
-    unittest.expect(o.languageCode, unittest.equals('foo'));
-    unittest.expect(o.name, unittest.equals('foo'));
-    unittest.expect(o.placeId, unittest.equals('foo'));
+    unittest.expect(
+      o.languageCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.placeId!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterPlace--;
 }
 
 core.int buildCounterPose = 0;
-buildPose() {
-  var o = new api.Pose();
+api.Pose buildPose() {
+  var o = api.Pose();
   buildCounterPose++;
   if (buildCounterPose < 3) {
     o.accuracyMeters = 42.0;
@@ -552,28 +622,43 @@ buildPose() {
   return o;
 }
 
-checkPose(api.Pose o) {
+void checkPose(api.Pose o) {
   buildCounterPose++;
   if (buildCounterPose < 3) {
-    unittest.expect(o.accuracyMeters, unittest.equals(42.0));
-    unittest.expect(o.altitude, unittest.equals(42.0));
-    unittest.expect(o.heading, unittest.equals(42.0));
-    checkLatLng(o.latLngPair);
-    checkLevel(o.level);
-    unittest.expect(o.pitch, unittest.equals(42.0));
-    unittest.expect(o.roll, unittest.equals(42.0));
+    unittest.expect(
+      o.accuracyMeters!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.altitude!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.heading!,
+      unittest.equals(42.0),
+    );
+    checkLatLng(o.latLngPair! as api.LatLng);
+    checkLevel(o.level! as api.Level);
+    unittest.expect(
+      o.pitch!,
+      unittest.equals(42.0),
+    );
+    unittest.expect(
+      o.roll!,
+      unittest.equals(42.0),
+    );
   }
   buildCounterPose--;
 }
 
-buildUnnamed1753() {
-  var o = new core.Map<core.String, core.Object>();
-  o["x"] = {
+core.Map<core.String, core.Object> buildUnnamed2352() {
+  var o = <core.String, core.Object>{};
+  o['x'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
   };
-  o["y"] = {
+  o['y'] = {
     'list': [1, 2, 3],
     'bool': true,
     'string': 'foo'
@@ -581,778 +666,895 @@ buildUnnamed1753() {
   return o;
 }
 
-checkUnnamed1753(core.Map<core.String, core.Object> o) {
+void checkUnnamed2352(core.Map<core.String, core.Object> o) {
   unittest.expect(o, unittest.hasLength(2));
-  var casted5 = (o["x"]) as core.Map;
+  var casted5 = (o['x']!) as core.Map;
   unittest.expect(casted5, unittest.hasLength(3));
-  unittest.expect(casted5["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted5["bool"], unittest.equals(true));
-  unittest.expect(casted5["string"], unittest.equals('foo'));
-  var casted6 = (o["y"]) as core.Map;
+  unittest.expect(
+    casted5['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted5['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted5['string'],
+    unittest.equals('foo'),
+  );
+  var casted6 = (o['y']!) as core.Map;
   unittest.expect(casted6, unittest.hasLength(3));
-  unittest.expect(casted6["list"], unittest.equals([1, 2, 3]));
-  unittest.expect(casted6["bool"], unittest.equals(true));
-  unittest.expect(casted6["string"], unittest.equals('foo'));
+  unittest.expect(
+    casted6['list'],
+    unittest.equals([1, 2, 3]),
+  );
+  unittest.expect(
+    casted6['bool'],
+    unittest.equals(true),
+  );
+  unittest.expect(
+    casted6['string'],
+    unittest.equals('foo'),
+  );
 }
 
-buildUnnamed1754() {
-  var o = new core.List<core.Map<core.String, core.Object>>();
-  o.add(buildUnnamed1753());
-  o.add(buildUnnamed1753());
+core.List<core.Map<core.String, core.Object>> buildUnnamed2353() {
+  var o = <core.Map<core.String, core.Object>>[];
+  o.add(buildUnnamed2352());
+  o.add(buildUnnamed2352());
   return o;
 }
 
-checkUnnamed1754(core.List<core.Map<core.String, core.Object>> o) {
+void checkUnnamed2353(core.List<core.Map<core.String, core.Object>> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed1753(o[0]);
-  checkUnnamed1753(o[1]);
+  checkUnnamed2352(o[0]);
+  checkUnnamed2352(o[1]);
 }
 
 core.int buildCounterStatus = 0;
-buildStatus() {
-  var o = new api.Status();
+api.Status buildStatus() {
+  var o = api.Status();
   buildCounterStatus++;
   if (buildCounterStatus < 3) {
     o.code = 42;
-    o.details = buildUnnamed1754();
-    o.message = "foo";
+    o.details = buildUnnamed2353();
+    o.message = 'foo';
   }
   buildCounterStatus--;
   return o;
 }
 
-checkStatus(api.Status o) {
+void checkStatus(api.Status o) {
   buildCounterStatus++;
   if (buildCounterStatus < 3) {
-    unittest.expect(o.code, unittest.equals(42));
-    checkUnnamed1754(o.details);
-    unittest.expect(o.message, unittest.equals('foo'));
+    unittest.expect(
+      o.code!,
+      unittest.equals(42),
+    );
+    checkUnnamed2353(o.details!);
+    unittest.expect(
+      o.message!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterStatus--;
 }
 
 core.int buildCounterUpdatePhotoRequest = 0;
-buildUpdatePhotoRequest() {
-  var o = new api.UpdatePhotoRequest();
+api.UpdatePhotoRequest buildUpdatePhotoRequest() {
+  var o = api.UpdatePhotoRequest();
   buildCounterUpdatePhotoRequest++;
   if (buildCounterUpdatePhotoRequest < 3) {
     o.photo = buildPhoto();
-    o.updateMask = "foo";
+    o.updateMask = 'foo';
   }
   buildCounterUpdatePhotoRequest--;
   return o;
 }
 
-checkUpdatePhotoRequest(api.UpdatePhotoRequest o) {
+void checkUpdatePhotoRequest(api.UpdatePhotoRequest o) {
   buildCounterUpdatePhotoRequest++;
   if (buildCounterUpdatePhotoRequest < 3) {
-    checkPhoto(o.photo);
-    unittest.expect(o.updateMask, unittest.equals('foo'));
+    checkPhoto(o.photo! as api.Photo);
+    unittest.expect(
+      o.updateMask!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUpdatePhotoRequest--;
 }
 
 core.int buildCounterUploadRef = 0;
-buildUploadRef() {
-  var o = new api.UploadRef();
+api.UploadRef buildUploadRef() {
+  var o = api.UploadRef();
   buildCounterUploadRef++;
   if (buildCounterUploadRef < 3) {
-    o.uploadUrl = "foo";
+    o.uploadUrl = 'foo';
   }
   buildCounterUploadRef--;
   return o;
 }
 
-checkUploadRef(api.UploadRef o) {
+void checkUploadRef(api.UploadRef o) {
   buildCounterUploadRef++;
   if (buildCounterUploadRef < 3) {
-    unittest.expect(o.uploadUrl, unittest.equals('foo'));
+    unittest.expect(
+      o.uploadUrl!,
+      unittest.equals('foo'),
+    );
   }
   buildCounterUploadRef--;
 }
 
-buildUnnamed1755() {
-  var o = new core.List<core.String>();
-  o.add("foo");
-  o.add("foo");
+core.List<core.String> buildUnnamed2354() {
+  var o = <core.String>[];
+  o.add('foo');
+  o.add('foo');
   return o;
 }
 
-checkUnnamed1755(core.List<core.String> o) {
+void checkUnnamed2354(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o[0], unittest.equals('foo'));
-  unittest.expect(o[1], unittest.equals('foo'));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
 }
 
-main() {
-  unittest.group("obj-schema-BatchDeletePhotosRequest", () {
-    unittest.test("to-json--from-json", () {
+void main() {
+  unittest.group('obj-schema-BatchDeletePhotosRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchDeletePhotosRequest();
-      var od = new api.BatchDeletePhotosRequest.fromJson(o.toJson());
-      checkBatchDeletePhotosRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchDeletePhotosRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchDeletePhotosRequest(od as api.BatchDeletePhotosRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchDeletePhotosResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchDeletePhotosResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchDeletePhotosResponse();
-      var od = new api.BatchDeletePhotosResponse.fromJson(o.toJson());
-      checkBatchDeletePhotosResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchDeletePhotosResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchDeletePhotosResponse(od as api.BatchDeletePhotosResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchGetPhotosResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchGetPhotosResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchGetPhotosResponse();
-      var od = new api.BatchGetPhotosResponse.fromJson(o.toJson());
-      checkBatchGetPhotosResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchGetPhotosResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchGetPhotosResponse(od as api.BatchGetPhotosResponse);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdatePhotosRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdatePhotosRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdatePhotosRequest();
-      var od = new api.BatchUpdatePhotosRequest.fromJson(o.toJson());
-      checkBatchUpdatePhotosRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdatePhotosRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdatePhotosRequest(od as api.BatchUpdatePhotosRequest);
     });
   });
 
-  unittest.group("obj-schema-BatchUpdatePhotosResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-BatchUpdatePhotosResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildBatchUpdatePhotosResponse();
-      var od = new api.BatchUpdatePhotosResponse.fromJson(o.toJson());
-      checkBatchUpdatePhotosResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.BatchUpdatePhotosResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkBatchUpdatePhotosResponse(od as api.BatchUpdatePhotosResponse);
     });
   });
 
-  unittest.group("obj-schema-Connection", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Connection', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildConnection();
-      var od = new api.Connection.fromJson(o.toJson());
-      checkConnection(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Connection.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkConnection(od as api.Connection);
     });
   });
 
-  unittest.group("obj-schema-Empty", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Empty', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildEmpty();
-      var od = new api.Empty.fromJson(o.toJson());
-      checkEmpty(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od as api.Empty);
     });
   });
 
-  unittest.group("obj-schema-LatLng", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-LatLng', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildLatLng();
-      var od = new api.LatLng.fromJson(o.toJson());
-      checkLatLng(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.LatLng.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLatLng(od as api.LatLng);
     });
   });
 
-  unittest.group("obj-schema-Level", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Level', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildLevel();
-      var od = new api.Level.fromJson(o.toJson());
-      checkLevel(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Level.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLevel(od as api.Level);
     });
   });
 
-  unittest.group("obj-schema-ListPhotosResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-ListPhotosResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildListPhotosResponse();
-      var od = new api.ListPhotosResponse.fromJson(o.toJson());
-      checkListPhotosResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.ListPhotosResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListPhotosResponse(od as api.ListPhotosResponse);
     });
   });
 
-  unittest.group("obj-schema-Operation", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Operation', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildOperation();
-      var od = new api.Operation.fromJson(o.toJson());
-      checkOperation(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Operation.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkOperation(od as api.Operation);
     });
   });
 
-  unittest.group("obj-schema-Photo", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Photo', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildPhoto();
-      var od = new api.Photo.fromJson(o.toJson());
-      checkPhoto(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Photo.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPhoto(od as api.Photo);
     });
   });
 
-  unittest.group("obj-schema-PhotoId", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-PhotoId', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildPhotoId();
-      var od = new api.PhotoId.fromJson(o.toJson());
-      checkPhotoId(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.PhotoId.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPhotoId(od as api.PhotoId);
     });
   });
 
-  unittest.group("obj-schema-PhotoResponse", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-PhotoResponse', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildPhotoResponse();
-      var od = new api.PhotoResponse.fromJson(o.toJson());
-      checkPhotoResponse(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.PhotoResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkPhotoResponse(od as api.PhotoResponse);
     });
   });
 
-  unittest.group("obj-schema-Place", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Place', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildPlace();
-      var od = new api.Place.fromJson(o.toJson());
-      checkPlace(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Place.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPlace(od as api.Place);
     });
   });
 
-  unittest.group("obj-schema-Pose", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Pose', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildPose();
-      var od = new api.Pose.fromJson(o.toJson());
-      checkPose(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.Pose.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPose(od as api.Pose);
     });
   });
 
-  unittest.group("obj-schema-Status", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-Status', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildStatus();
-      var od = new api.Status.fromJson(o.toJson());
-      checkStatus(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.Status.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkStatus(od as api.Status);
     });
   });
 
-  unittest.group("obj-schema-UpdatePhotoRequest", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UpdatePhotoRequest', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUpdatePhotoRequest();
-      var od = new api.UpdatePhotoRequest.fromJson(o.toJson());
-      checkUpdatePhotoRequest(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od = api.UpdatePhotoRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdatePhotoRequest(od as api.UpdatePhotoRequest);
     });
   });
 
-  unittest.group("obj-schema-UploadRef", () {
-    unittest.test("to-json--from-json", () {
+  unittest.group('obj-schema-UploadRef', () {
+    unittest.test('to-json--from-json', () async {
       var o = buildUploadRef();
-      var od = new api.UploadRef.fromJson(o.toJson());
-      checkUploadRef(od);
+      var oJson = convert.jsonDecode(convert.jsonEncode(o));
+      var od =
+          api.UploadRef.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkUploadRef(od as api.UploadRef);
     });
   });
 
-  unittest.group("resource-PhotoResourceApi", () {
-    unittest.test("method--create", () {
-      var mock = new HttpServerMock();
-      api.PhotoResourceApi res = new api.StreetviewpublishApi(mock).photo;
+  unittest.group('resource-PhotoResource', () {
+    unittest.test('method--create', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photo;
       var arg_request = buildPhoto();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Photo.fromJson(json);
-        checkPhoto(obj);
+        var obj =
+            api.Photo.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkPhoto(obj as api.Photo);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 8),
-            unittest.equals("v1/photo"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 8),
+          unittest.equals("v1/photo"),
+        );
         pathOffset += 8;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildPhoto());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .create(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkPhoto(response);
-      })));
+      final response = await res.create(arg_request, $fields: arg_$fields);
+      checkPhoto(response as api.Photo);
     });
 
-    unittest.test("method--delete", () {
-      var mock = new HttpServerMock();
-      api.PhotoResourceApi res = new api.StreetviewpublishApi(mock).photo;
-      var arg_photoId = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--delete', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photo;
+      var arg_photoId = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("v1/photo/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 9),
+          unittest.equals("v1/photo/"),
+        );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_photoId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_photoId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildEmpty());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .delete(arg_photoId, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkEmpty(response);
-      })));
+      final response = await res.delete(arg_photoId, $fields: arg_$fields);
+      checkEmpty(response as api.Empty);
     });
 
-    unittest.test("method--get", () {
-      var mock = new HttpServerMock();
-      api.PhotoResourceApi res = new api.StreetviewpublishApi(mock).photo;
-      var arg_photoId = "foo";
-      var arg_view = "foo";
-      var arg_languageCode = "foo";
-      var arg_$fields = "foo";
+    unittest.test('method--get', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photo;
+      var arg_photoId = 'foo';
+      var arg_languageCode = 'foo';
+      var arg_view = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("v1/photo/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 9),
+          unittest.equals("v1/photo/"),
+        );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_photoId"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_photoId'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["view"].first, unittest.equals(arg_view));
         unittest.expect(
-            queryMap["languageCode"].first, unittest.equals(arg_languageCode));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["languageCode"]!.first,
+          unittest.equals(arg_languageCode),
+        );
+        unittest.expect(
+          queryMap["view"]!.first,
+          unittest.equals(arg_view),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildPhoto());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .get(arg_photoId,
-              view: arg_view,
-              languageCode: arg_languageCode,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkPhoto(response);
-      })));
+      final response = await res.get(arg_photoId,
+          languageCode: arg_languageCode, view: arg_view, $fields: arg_$fields);
+      checkPhoto(response as api.Photo);
     });
 
-    unittest.test("method--startUpload", () {
-      var mock = new HttpServerMock();
-      api.PhotoResourceApi res = new api.StreetviewpublishApi(mock).photo;
+    unittest.test('method--startUpload', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photo;
       var arg_request = buildEmpty();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Empty.fromJson(json);
-        checkEmpty(obj);
+        var obj =
+            api.Empty.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkEmpty(obj as api.Empty);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 20),
-            unittest.equals("v1/photo:startUpload"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals("v1/photo:startUpload"),
+        );
         pathOffset += 20;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildUploadRef());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .startUpload(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkUploadRef(response);
-      })));
+      final response = await res.startUpload(arg_request, $fields: arg_$fields);
+      checkUploadRef(response as api.UploadRef);
     });
 
-    unittest.test("method--update", () {
-      var mock = new HttpServerMock();
-      api.PhotoResourceApi res = new api.StreetviewpublishApi(mock).photo;
+    unittest.test('method--update', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photo;
       var arg_request = buildPhoto();
-      var arg_id = "foo";
-      var arg_updateMask = "foo";
-      var arg_$fields = "foo";
+      var arg_id = 'foo';
+      var arg_updateMask = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.Photo.fromJson(json);
-        checkPhoto(obj);
+        var obj =
+            api.Photo.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkPhoto(obj as api.Photo);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("v1/photo/"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 9),
+          unittest.equals("v1/photo/"),
+        );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
         pathOffset = path.length;
-        unittest.expect(subPart, unittest.equals("$arg_id"));
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_id'),
+        );
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["updateMask"].first, unittest.equals(arg_updateMask));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["updateMask"]!.first,
+          unittest.equals(arg_updateMask),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildPhoto());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .update(arg_request, arg_id,
-              updateMask: arg_updateMask, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkPhoto(response);
-      })));
+      final response = await res.update(arg_request, arg_id,
+          updateMask: arg_updateMask, $fields: arg_$fields);
+      checkPhoto(response as api.Photo);
     });
   });
 
-  unittest.group("resource-PhotosResourceApi", () {
-    unittest.test("method--batchDelete", () {
-      var mock = new HttpServerMock();
-      api.PhotosResourceApi res = new api.StreetviewpublishApi(mock).photos;
+  unittest.group('resource-PhotosResource', () {
+    unittest.test('method--batchDelete', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photos;
       var arg_request = buildBatchDeletePhotosRequest();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchDeletePhotosRequest.fromJson(json);
-        checkBatchDeletePhotosRequest(obj);
+        var obj = api.BatchDeletePhotosRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchDeletePhotosRequest(obj as api.BatchDeletePhotosRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("v1/photos:batchDelete"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals("v1/photos:batchDelete"),
+        );
         pathOffset += 21;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchDeletePhotosResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchDelete(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchDeletePhotosResponse(response);
-      })));
+      final response = await res.batchDelete(arg_request, $fields: arg_$fields);
+      checkBatchDeletePhotosResponse(response as api.BatchDeletePhotosResponse);
     });
 
-    unittest.test("method--batchGet", () {
-      var mock = new HttpServerMock();
-      api.PhotosResourceApi res = new api.StreetviewpublishApi(mock).photos;
-      var arg_view = "foo";
-      var arg_languageCode = "foo";
-      var arg_photoIds = buildUnnamed1755();
-      var arg_$fields = "foo";
+    unittest.test('method--batchGet', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photos;
+      var arg_languageCode = 'foo';
+      var arg_photoIds = buildUnnamed2354();
+      var arg_view = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 18),
-            unittest.equals("v1/photos:batchGet"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 18),
+          unittest.equals("v1/photos:batchGet"),
+        );
         pathOffset += 18;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["view"].first, unittest.equals(arg_view));
         unittest.expect(
-            queryMap["languageCode"].first, unittest.equals(arg_languageCode));
-        unittest.expect(queryMap["photoIds"], unittest.equals(arg_photoIds));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["languageCode"]!.first,
+          unittest.equals(arg_languageCode),
+        );
+        unittest.expect(
+          queryMap["photoIds"]!,
+          unittest.equals(arg_photoIds),
+        );
+        unittest.expect(
+          queryMap["view"]!.first,
+          unittest.equals(arg_view),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchGetPhotosResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchGet(
-              view: arg_view,
-              languageCode: arg_languageCode,
-              photoIds: arg_photoIds,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchGetPhotosResponse(response);
-      })));
+      final response = await res.batchGet(
+          languageCode: arg_languageCode,
+          photoIds: arg_photoIds,
+          view: arg_view,
+          $fields: arg_$fields);
+      checkBatchGetPhotosResponse(response as api.BatchGetPhotosResponse);
     });
 
-    unittest.test("method--batchUpdate", () {
-      var mock = new HttpServerMock();
-      api.PhotosResourceApi res = new api.StreetviewpublishApi(mock).photos;
+    unittest.test('method--batchUpdate', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photos;
       var arg_request = buildBatchUpdatePhotosRequest();
-      var arg_$fields = "foo";
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = new api.BatchUpdatePhotosRequest.fromJson(json);
-        checkBatchUpdatePhotosRequest(obj);
+        var obj = api.BatchUpdatePhotosRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkBatchUpdatePhotosRequest(obj as api.BatchUpdatePhotosRequest);
 
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 21),
-            unittest.equals("v1/photos:batchUpdate"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals("v1/photos:batchUpdate"),
+        );
         pathOffset += 21;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildBatchUpdatePhotosResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .batchUpdate(arg_request, $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkBatchUpdatePhotosResponse(response);
-      })));
+      final response = await res.batchUpdate(arg_request, $fields: arg_$fields);
+      checkBatchUpdatePhotosResponse(response as api.BatchUpdatePhotosResponse);
     });
 
-    unittest.test("method--list", () {
-      var mock = new HttpServerMock();
-      api.PhotosResourceApi res = new api.StreetviewpublishApi(mock).photos;
-      var arg_pageToken = "foo";
+    unittest.test('method--list', () async {
+      var mock = HttpServerMock();
+      var res = api.StreetViewPublishApi(mock).photos;
+      var arg_filter = 'foo';
+      var arg_languageCode = 'foo';
       var arg_pageSize = 42;
-      var arg_view = "foo";
-      var arg_filter = "foo";
-      var arg_languageCode = "foo";
-      var arg_$fields = "foo";
+      var arg_pageToken = 'foo';
+      var arg_view = 'foo';
+      var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
         var path = (req.url).path;
         var pathOffset = 0;
-        var index;
-        var subPart;
+        core.int index;
+        core.String subPart;
         unittest.expect(
-            path.substring(pathOffset, pathOffset + 1), unittest.equals("/"));
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals("/"),
+        );
         pathOffset += 1;
-        unittest.expect(path.substring(pathOffset, pathOffset + 9),
-            unittest.equals("v1/photos"));
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 9),
+          unittest.equals("v1/photos"),
+        );
         pathOffset += 9;
 
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        addQueryParam(n, v) => queryMap.putIfAbsent(n, () => []).add(v);
-        parseBool(n) {
-          if (n == "true") return true;
-          if (n == "false") return false;
-          if (n == null) return null;
-          throw new core.ArgumentError("Invalid boolean: $n");
-        }
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
 
-        if (query.length > 0) {
-          for (var part in query.split("&")) {
-            var keyvalue = part.split("=");
-            addQueryParam(core.Uri.decodeQueryComponent(keyvalue[0]),
-                core.Uri.decodeQueryComponent(keyvalue[1]));
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            var keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
           }
         }
         unittest.expect(
-            queryMap["pageToken"].first, unittest.equals(arg_pageToken));
-        unittest.expect(core.int.parse(queryMap["pageSize"].first),
-            unittest.equals(arg_pageSize));
-        unittest.expect(queryMap["view"].first, unittest.equals(arg_view));
-        unittest.expect(queryMap["filter"].first, unittest.equals(arg_filter));
+          queryMap["filter"]!.first,
+          unittest.equals(arg_filter),
+        );
         unittest.expect(
-            queryMap["languageCode"].first, unittest.equals(arg_languageCode));
-        unittest.expect(queryMap["fields"].first, unittest.equals(arg_$fields));
+          queryMap["languageCode"]!.first,
+          unittest.equals(arg_languageCode),
+        );
+        unittest.expect(
+          core.int.parse(queryMap["pageSize"]!.first),
+          unittest.equals(arg_pageSize),
+        );
+        unittest.expect(
+          queryMap["pageToken"]!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap["view"]!.first,
+          unittest.equals(arg_view),
+        );
+        unittest.expect(
+          queryMap["fields"]!.first,
+          unittest.equals(arg_$fields),
+        );
 
         var h = {
-          "content-type": "application/json; charset=utf-8",
+          'content-type': 'application/json; charset=utf-8',
         };
         var resp = convert.json.encode(buildListPhotosResponse());
-        return new async.Future.value(stringResponse(200, h, resp));
+        return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      res
-          .list(
-              pageToken: arg_pageToken,
-              pageSize: arg_pageSize,
-              view: arg_view,
-              filter: arg_filter,
-              languageCode: arg_languageCode,
-              $fields: arg_$fields)
-          .then(unittest.expectAsync1(((response) {
-        checkListPhotosResponse(response);
-      })));
+      final response = await res.list(
+          filter: arg_filter,
+          languageCode: arg_languageCode,
+          pageSize: arg_pageSize,
+          pageToken: arg_pageToken,
+          view: arg_view,
+          $fields: arg_$fields);
+      checkListPhotosResponse(response as api.ListPhotosResponse);
     });
   });
 }
