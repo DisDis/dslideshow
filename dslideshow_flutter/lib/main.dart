@@ -37,7 +37,9 @@ void main() async {
 	     DeviceOrientation.landscapeLeft,
 	  ]);
   } else {
-    OmxplayerVideoPlayer.useAsImplementation();
+    if (OmxplayerVideoPlayer.isPlatformSidePresent()) {
+      OmxplayerVideoPlayer.useAsImplementation();
+    }
   }
 
   try {

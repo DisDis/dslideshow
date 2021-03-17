@@ -20,34 +20,38 @@ class VideoWidget extends StatefulWidget implements ItemWidget {
 
 class _VideoWidgetState extends State<VideoWidget> {
   //TODO: https://github.com/google/flutter-desktop-embedding/issues/255
-  static final bool isVideoSupport = true;//!(Platform.isLinux || Platform.isWindows);
+  static final bool isVideoSupport = false;//!(Platform.isLinux || Platform.isWindows);
 
   static final Logger _log = Logger('_VideoWidgetState');
 
   final File videoFile;
 
-  VideoPlayerController? _controller;
+  late VideoPlayerController _controller;
 
   _VideoWidgetState(this.videoFile);
 
   @override
   Widget build(BuildContext context) {
     if (!isVideoSupport) {
-      return Container();
+      return Container(
+        child: Text('Video not supported'),
+      );
     }
 
-    return _controller!.value.isInitialized
-        ? AspectRatio(
-            aspectRatio: _controller!.value.aspectRatio,
-            child: VideoPlayer(_controller!),
-          )
-        : Container();
+    return Center(
+      child: _controller.value.isInitialized
+          ? AspectRatio(
+        aspectRatio: _controller.value.aspectRatio,
+        child: VideoPlayer(_controller),
+      )
+          : Container(),
+    );
   }
 
   @override
   void dispose() {
-    if (_controller != null) {
-      _controller!.dispose();
+    if (isVideoSupport) {
+      _controller.dispose();
     }
     super.dispose();
   }
@@ -61,10 +65,10 @@ class _VideoWidgetState extends State<VideoWidget> {
           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
           setState(() {});
         }).catchError((dynamic message, StackTrace s){
-          _log.severe(message, s);
+          _log.severe('VideoPlayerController.initialize: $message', s);
         });
-      _controller!.play().catchError((dynamic message, StackTrace s){
-        _log.severe(message, s);
+      _controller.play().catchError((dynamic message, StackTrace s){
+        _log.severe('VideoPlayerController.play: $message', s);
       });
     }
   }
