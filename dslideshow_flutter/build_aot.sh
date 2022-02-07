@@ -4,6 +4,7 @@ OUTPUT_KERNEL_DILL=./build/kernel_snapshot.dill
 OUTPUT_KERNEL_D=./build/kernel_snapshot.d
 OUTPUT_SO=./build/flutter_assets/app.so
 APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
+BUILD_PROFILE=release
 ENGINE_BINARIES=.
 echo "----------- README -----------"
 echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"
@@ -28,8 +29,8 @@ echo "------------------------"
 echo "$CMD"
 eval $CMD
 
-CMD="$ENGINE_BINARIES/gen_snapshot_linux_x64 \
-  --lazy-async-stacks \
+#  --lazy-async-stacks \
+CMD="$ENGINE_BINARIES/gen_snapshot_linux_x64_$BUILD_PROFILE \
   --deterministic \
   --snapshot_kind=app-aot-elf \
   --elf=$OUTPUT_SO \

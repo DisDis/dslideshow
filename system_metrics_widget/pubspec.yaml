@@ -16,14 +16,10 @@ dependencies:
 
   intl: ^0.17.0
   logging: ^1.0.0
-  #TODO: Fix after NNBD
-  flutter_redux: #^0.7.0
-    git:
-      url: https://github.com/Lafannn/flutter_redux
-      ref: null-safety
+  flutter_redux: ^0.8.0
   built_value: ^8.0.0
   built_collection: ^5.0.0
-  duration: ^2.0.2
+  duration: ^3.0.0
   flutter_staggered_grid_view: ^0.4.0-nullsafety.3
   google_fonts: ^2.0.0
   #TODO: Fix after NNBD
@@ -41,7 +37,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   built_value_generator: ^8.0.2
-  build_runner:  ^1.11.5
+  build_runner:  ^2.1.0
 
 flutter:
   uses-material-design: true

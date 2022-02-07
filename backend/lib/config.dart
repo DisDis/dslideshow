@@ -10,49 +10,57 @@ import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 
-class AppConfig{
+class AppConfig {
   static const String CONFIG_FILE = "config.json";
   static final Logger _log = new Logger('AppConfig');
   Map<String, dynamic>? _config;
-  AppConfig([String? rootPath]){
-    var config = new File(rootPath!=null ? path.join(rootPath,CONFIG_FILE):CONFIG_FILE) ;
+  AppConfig([String? rootPath]) {
+    var config = new File(
+        rootPath != null ? path.join(rootPath, CONFIG_FILE) : CONFIG_FILE);
     String configStr;
-    if (!config.existsSync()){
+    if (!config.existsSync()) {
       _log.fine('Not found config file "$config"');
       //exit(1);
       configStr = '{}';
     } else {
       configStr = config.readAsStringSync();
     }
-    _config = json.decode(configStr) as Map<String,dynamic>?;
+    _config = json.decode(configStr) as Map<String, dynamic>?;
     _log.info("Config loaded");
   }
-  AppConfig.json(String data){
-    _config = json.decode(data) as Map<String,dynamic>?;
+  AppConfig.json(String data) {
+    _config = json.decode(data) as Map<String, dynamic>?;
     _log.info("Config loaded");
   }
 
   _LogConfig? _logConfig;
-  _LogConfig get log => _logConfig??=new _LogConfig(_config!["log"] as Map<String, dynamic>?);
+  _LogConfig get log =>
+      _logConfig ??= new _LogConfig(_config!["log"] as Map<String, dynamic>?);
 
   HardwareConfig? _hardware;
-  HardwareConfig get hardware => _hardware??=new HardwareConfig(_config!["hardware"] as Map<String, dynamic>?);
+  HardwareConfig get hardware => _hardware ??=
+      new HardwareConfig(_config!["hardware"] as Map<String, dynamic>?);
 
   SlideShowConfig? _slideShowConfig;
-  SlideShowConfig get slideshow => _slideShowConfig??=new SlideShowConfig(_config!["slideshow"] as Map<String, dynamic>?);
+  SlideShowConfig get slideshow => _slideShowConfig ??=
+      new SlideShowConfig(_config!["slideshow"] as Map<String, dynamic>?);
 
   WebServerConfig? _webServerConfig;
-  WebServerConfig get webServer => _webServerConfig??=new WebServerConfig(_config!["web"] as Map<String, dynamic>?);
+  WebServerConfig get webServer => _webServerConfig ??=
+      new WebServerConfig(_config!["web"] as Map<String, dynamic>?);
 
   MqttConfig? _mqtt;
-  MqttConfig get mqtt => _mqtt??=new MqttConfig(_config!["mqtt"] as Map<String, dynamic>?);
+  MqttConfig get mqtt =>
+      _mqtt ??= new MqttConfig(_config!["mqtt"] as Map<String, dynamic>?);
 
   Map<String, dynamic>? _storageSection;
-  Map<String, dynamic>? get storageSection => _storageSection??=(_config!["storage"]==null?<String, dynamic>{}: _config!["storage"] as Map<String, dynamic>?);
+  Map<String, dynamic>? get storageSection =>
+      _storageSection ??= (_config!["storage"] == null
+          ? <String, dynamic>{}
+          : _config!["storage"] as Map<String, dynamic>?);
 }
 
-class SlideShowConfig  extends BaseConfig {
-
+class SlideShowConfig extends BaseConfig {
   int? _displayTime;
 
   /// How long the image is shown
@@ -63,60 +71,76 @@ class SlideShowConfig  extends BaseConfig {
   int get fadeTimeMs => _fadeTime ??= readInt("fadeTimeMs", 2000);
 
   int? _transitionTimeMs;
+
   /// How long do images change
-  int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
+  int get transitionTimeMs =>
+      _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
 
   Iterable<String>? _allowedEffects;
 
   /// Allowed effects
-  Iterable<String> get allowedEffects => _allowedEffects ??=
-        List<String>.from(readValue<List<dynamic>>("allowedEffects", <dynamic>[]).map<String>((dynamic i) => i.toString()));
+  Iterable<String> get allowedEffects => _allowedEffects ??= List<String>.from(
+      readValue<List<dynamic>>("allowedEffects", <dynamic>[])
+          .map<String>((dynamic i) => i.toString()));
 
   bool? _isBlurredBackground;
 
   ///create a blurred background
-  bool get isBlurredBackground => (_isBlurredBackground ??= readValue("isBlurredBackground", true))!;
+  bool get isBlurredBackground =>
+      (_isBlurredBackground ??= readValue("isBlurredBackground", true))!;
 
   int? _backgroundBlurSigma;
-  int get backgroundBlurSigma => _backgroundBlurSigma ??= readInt("backgroundBlurSigma", 20);
+  int get backgroundBlurSigma =>
+      _backgroundBlurSigma ??= readInt("backgroundBlurSigma", 20);
   double? _backgroundOpacity;
-  double get backgroundOpacity => _backgroundOpacity ??= readDouble("backgroundOpacity", 0.9);
+  double get backgroundOpacity =>
+      _backgroundOpacity ??= readDouble("backgroundOpacity", 0.9);
 
   int? _backgroundColorR;
-  int get backgroundColorR => _backgroundColorR ??= readInt("backgroundColorR", 255);
+  int get backgroundColorR =>
+      _backgroundColorR ??= readInt("backgroundColorR", 255);
   int? _backgroundColorG;
-  int get backgroundColorG => _backgroundColorG ??= readInt("backgroundColorG", 255);
+  int get backgroundColorG =>
+      _backgroundColorG ??= readInt("backgroundColorG", 255);
   int? _backgroundColorB;
-  int get backgroundColorB => _backgroundColorB ??= readInt("backgroundColorB", 255);
+  int get backgroundColorB =>
+      _backgroundColorB ??= readInt("backgroundColorB", 255);
 
-
-
-  SlideShowConfig(Map<String, dynamic>? config) :super(config);
+  SlideShowConfig(Map<String, dynamic>? config) : super(config);
 }
 
-class AppStorage{
+class AppStorage {
   static const String STORAGE_FILE = "storage.json";
   static final Logger _log = new Logger('AppStorage');
   Map<String, dynamic>? _storage;
   final File _storageFile;
   Timer? _saveTimer;
 
-  AppStorage([String? rootPath]): this._storageFile = new File(rootPath!=null ? path.join(rootPath,AppStorage.STORAGE_FILE):AppStorage.STORAGE_FILE){
+  AppStorage([String? rootPath])
+      : this._storageFile = new File(rootPath != null
+            ? path.join(rootPath, AppStorage.STORAGE_FILE)
+            : AppStorage.STORAGE_FILE) {
     load();
   }
 
   void load() {
     _log.info('load');
     String configStr;
-    if (!_storageFile.existsSync()){
+    if (!_storageFile.existsSync()) {
       _log.fine('Not found storage file "$_storageFile"');
       configStr = '{}';
     } else {
       configStr = _storageFile.readAsStringSync();
     }
-    _storage = json.decode(configStr) as Map<String,dynamic>?;
+    try {
+      _storage = json.decode(configStr) as Map<String, dynamic>?;
+    } catch (e, st) {
+      _log.severe("Storage.json", e, st);
+      _storage = <String, dynamic>{};
+    }
     _log.info("Storage loaded");
   }
+
   void save() {
     _log.info('save');
     if (_saveTimer != null) {
@@ -129,34 +153,35 @@ class AppStorage{
   }
 
   /// Autosave every 10 sec
-  void setValue<T>(String key, T value){
-   _storage![key] = value;
-   if (_saveTimer == null) {
-     _saveTimer = new Timer(new Duration(seconds: 10), (){
-       save();
-     });
-   }
+  void setValue<T>(String key, T value) {
+    _storage![key] = value;
+    if (_saveTimer == null) {
+      _saveTimer = new Timer(new Duration(seconds: 10), () {
+        save();
+      });
+    }
   }
 
-  T getValue<T>(String field, [T? defaultValue]){
+  T getValue<T>(String field, [T? defaultValue]) {
     var value = _storage![field] as T?;
-    if (value == null){
-      if (defaultValue == null){
+    if (value == null) {
+      if (defaultValue == null) {
         throw new Exception('Field "$field" not set.');
       }
       return defaultValue;
     }
     return value;
   }
-  dynamic getRaw(String field)=> _storage![field];
+
+  dynamic getRaw(String field) => _storage![field];
 
   int getInt(String field, int defaultValue) {
     dynamic value = getRaw(field);
-    if (value == null){
+    if (value == null) {
       _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
       return defaultValue;
     }
-    if (value is int){
+    if (value is int) {
       return value;
     }
     return int.parse(value as String, onError: (val) {
@@ -164,21 +189,22 @@ class AppStorage{
       return defaultValue;
     });
   }
-
 }
 
-abstract class BaseConfig{
+abstract class BaseConfig {
   static final Logger _log = new Logger('BaseConfig');
   final Map<String, dynamic> _config;
-  BaseConfig(Map<String, dynamic>? config): _config = config??<String, dynamic>{};
+  BaseConfig(Map<String, dynamic>? config)
+      : _config = config ?? <String, dynamic>{};
 
-  T readValue<T>(String field, [T? defaultValue]){
+  T readValue<T>(String field, [T? defaultValue]) {
     dynamic tmp = _config[field];
     T? value = null;
-    if (tmp is T){
+    if (tmp is T) {
       value = tmp;
     } else {
-      _log.fine('Field "$field" expects "$T", actual "${tmp==null?'null':tmp.runtimeType}"');
+      _log.fine(
+          'Field "$field" expects "$T", actual "${tmp == null ? 'null' : tmp.runtimeType}"');
     }
     if (value == null) {
       if (defaultValue == null) {
@@ -189,20 +215,23 @@ abstract class BaseConfig{
     }
     return value;
   }
-  dynamic readRaw(String field)=> _config[field];
-  Level readLogLevel(String field, [Level defaultValue = Level.ALL]) => _parseLog(readRaw(field) as String?, defaultValue);
 
-  Level _parseLog(String? value, Level defaultValue){
-    return Level.LEVELS.firstWhere((item)=>item.toString() == value, orElse: ()=>defaultValue);
+  dynamic readRaw(String field) => _config[field];
+  Level readLogLevel(String field, [Level defaultValue = Level.ALL]) =>
+      _parseLog(readRaw(field) as String?, defaultValue);
+
+  Level _parseLog(String? value, Level defaultValue) {
+    return Level.LEVELS.firstWhere((item) => item.toString() == value,
+        orElse: () => defaultValue);
   }
 
   int readInt(String field, int defaultValue) {
     dynamic value = readRaw(field);
-    if (value == null){
+    if (value == null) {
       _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
       return defaultValue;
     }
-    if (value is int){
+    if (value is int) {
       return value;
     }
     return int.parse(value as String, onError: (val) {
@@ -213,11 +242,11 @@ abstract class BaseConfig{
 
   double readDouble(String field, double defaultValue) {
     dynamic value = readRaw(field);
-    if (value == null){
+    if (value == null) {
       _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
       return defaultValue;
     }
-    if (value is double){
+    if (value is double) {
       return value;
     }
     return double.parse(value as String, (val) {
@@ -227,10 +256,10 @@ abstract class BaseConfig{
   }
 }
 
-class _LogConfig extends BaseConfig{
-  Level get levelWeb=>readLogLevel("web");
-  Level get levelMain=>readLogLevel("main");
-  Level get levelHwFrame=>readLogLevel("hw_frame");
+class _LogConfig extends BaseConfig {
+  Level get levelWeb => readLogLevel("web");
+  Level get levelMain => readLogLevel("main");
+  Level get levelHwFrame => readLogLevel("hw_frame");
 
-  _LogConfig(Map<String, dynamic>? config):super(config);
+  _LogConfig(Map<String, dynamic>? config) : super(config);
 }

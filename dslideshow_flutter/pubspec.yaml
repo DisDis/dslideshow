@@ -11,26 +11,18 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  get_it: ^6.0.0
+  get_it: ^7.0.0
   path_provider: ^2.0.1
   path: ^1.8.0
-  permission_handler: ^6.0.0
+  permission_handler: ^8.0.0
 
   qr_flutter: ^4.0.0
-  #TODO: Fix after NNBD
-  isolate: #^2.0.3
-    git:
-      url: https://github.com/2ZeroSix/isolate
   logging: ^1.0.0
-  #TODO: Fix after NNBD
-  flutter_redux: #^0.7.0
-    git:
-      url: https://github.com/Lafannn/flutter_redux
-      ref: null-safety
+  flutter_redux: ^0.8.0
   built_value: ^8.0.0
   omxplayer_video_player: ^2.0.0
-  video_player: ^2.0.1
-  duration: ^2.0.2
+  video_player: ^2.2.1
+  duration: ^3.0.0
   dslideshow_backend: 
     path: ../backend
 
@@ -44,7 +36,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   built_value_generator: ^8.0.2
-  build_runner: ^1.11.5
+  build_runner: ^2.1.0
 
 flutter:
   uses-material-design: true

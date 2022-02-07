@@ -1,22 +1,22 @@
 /*
  * @author  Igor Demyanov
  * @license CC-BY-NC-4.0
- * @version 1.1.2
+ * @version 2.0.0
  */
 
-cover_version = "04.01.2021 v1.1.2";
+cover_version = "04.02.2022 v2.0.0";
 
-width = 220;
-height = 170;
-back_thickness = 1.5;
-wall_thickness = 1.5;
-wall_depth = 5;
+width = 220; // Ширина рамки
+height = 170; // Высота рамки
+back_thickness = 1.5; //толщина задней панели
+wall_thickness = 1.5; // толщина стеноки
+wall_depth = 5; // высота стенки
 // China
 //pcbDriverW = 65;
 //pcbDriverH = 67.5;
 // Toshiba
-pcbDriverW = 70.10;
-pcbDriverH = 40.15;
+pcbDriverW = 70.10; // ширина драйвера
+pcbDriverH = 40.15; // высота драйвера
 
 pcbDriverRotate = [0,0,90];//[180,0,-90];
 pcbPowerH  = 45;
@@ -27,27 +27,28 @@ pcbRPiT    = 1.4;
 pcbRPi4Rotate = [0,0,-90];
 
 hasKeyHoles = false;
+hasRPiPortOut = false; // Порты выходят наружу
 
 
-frame_thickness = 10;
+frame_thickness = 10; // толщина стенок фоторамки
 
 M3_rad = 3.3;
 
 
-pcbRPi4X = 153;
-pcbRPi4Y = 87.9;
+pcbRPi4X = width - 67;
+pcbRPi4Y = hasRPiPortOut? 87.9 : 100;
 pcbRPi4Z = back_thickness+4;
-pcbPowerX = frame_thickness + 7;
+pcbPowerX = (height+pcbPowerW)/2;
 pcbPowerY = height - pcbPowerH - frame_thickness - 7;
 pcbPowerZ = back_thickness + 1.5 + 2;
-pcbDriverX = (width+pcbDriverW)/2-10;
-pcbDriverY = (height)/2 + 15;
+pcbDriverX = pcbDriverW+frame_thickness + 5;//(width+pcbDriverW)/2-10;
+pcbDriverY = frame_thickness + 45;
 //pcbDriverZ = ;
 
-cooling_holes_width = 1.5;
+cooling_holes_width = 2; // ширина вентиляционных отверстий
 cooling_holes_deep = wall_depth + back_thickness - 4;
-cooling_holes_height = 8;
-cooling_holes_interval = 5;
+cooling_holes_height = hasRPiPortOut? 8 : 10; // длина вентиляционных отверстий
+cooling_holes_interval = 6;// расстояния между отверстиями
 cooling_holes_startx = frame_thickness + cooling_holes_width;
 cooling_holes_endx = width - frame_thickness - cooling_holes_width;
 
@@ -196,6 +197,7 @@ module cooling_holes(){
     }
 }
 
+//Блоки крепления крышки к рамке
 module frameMountBlocks(){
         mount_z = wall_depth+back_thickness;
         color("Red")
@@ -204,6 +206,8 @@ module frameMountBlocks(){
             translate([width-frame_thickness,0,0]) cube([frame_thickness,frame_thickness,mount_z]);
             translate([0,height-frame_thickness,0]) cube([frame_thickness,frame_thickness,mount_z]);
             translate([width-frame_thickness,height-frame_thickness,0]) cube([frame_thickness,frame_thickness,mount_z]);
+            //translate([(width-frame_thickness-30)/2,0,0]) cube([frame_thickness,frame_thickness,mount_z]);
+            //translate([(width-frame_thickness-30)/2,height-frame_thickness,0]) cube([frame_thickness,frame_thickness,mount_z]);
         }
 }
 
@@ -261,6 +265,8 @@ module frameMountHoles(){
     translate([width-frame_thickness,0,0]) cover_mount_holes();
     translate([width-frame_thickness,height-frame_thickness,0]) cover_mount_holes();
     translate([0,height-frame_thickness,0]) cover_mount_holes();
+    //translate([(width-frame_thickness-30)/2,0,0]) cover_mount_holes();
+    //translate([(width-frame_thickness-30)/2,height-frame_thickness,0]) cover_mount_holes();
 }    
    
 module pcbsMounts(){
@@ -321,13 +327,17 @@ difference()
         //keyholes hanger hangar
         if (hasKeyHoles) buildKeyHolesHangar();
         //RaPi4 back panel
-        raPi4_back_panel();
+        if (hasRPiPortOut){
+         raPi4_back_panel();
+        }
     }
     // Frame mount holes
     frameMountHoles();
     // cooling holes
     cooling_holes();
-    raPi4_back_holes();
+    if (hasRPiPortOut){
+        raPi4_back_holes();
+    }
     //keyholes hanger
     color("pink") {
         for (ii = keyholes_hanger_pos){

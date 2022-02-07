@@ -18,7 +18,6 @@ import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
@@ -31,11 +30,11 @@ void main() async {
   _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
-  if (!environment.isLinuxEmbedded){
-	  await SystemChrome.setEnabledSystemUIOverlays([]);
-	  await SystemChrome.setPreferredOrientations([
-	     DeviceOrientation.landscapeLeft,
-	  ]);
+  if (!environment.isLinuxEmbedded) {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+    ]);
   } else {
     if (OmxplayerVideoPlayer.isPlatformSidePresent()) {
       OmxplayerVideoPlayer.useAsImplementation();
@@ -49,11 +48,12 @@ void main() async {
 
     _log.info("Config path: '${localPath}'");
 
-    final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
+    final store = Store<GlobalState>(appReducer,
+        initialState: GlobalState.initial(), middleware: []);
 
     injector.registerSingleton<AppConfig>(AppConfig(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
-    injector.registerLazySingleton<FrontendService>((){
+    injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();
       return FrontendService(_config, _backendService, store);
     });
@@ -65,7 +65,8 @@ void main() async {
 
     IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
     final currentIsoRunner = await _createCurrentIsolateRunner();
-    await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
+    await _backendServiceIsolate
+        .run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
     _backendService = RemoteService(_backendServiceIsolate, serializers);
 
     final _frontendService = injector.get<FrontendService>();
@@ -86,8 +87,6 @@ Future<IsolateRunner> _createCurrentIsolateRunner() async {
 }
 
 void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
-
-
   runApp(FlutterReduxApp(store: store));
 }
 
@@ -108,7 +107,7 @@ class FlutterReduxApp extends StatelessWidget {
             const Locale('en'), // English
             // ... other locales the app supports
           ],
-          home: SlideShowPage(),//WelcomePage(),
+          home: SlideShowPage(), //WelcomePage(),
           routes: <String, WidgetBuilder>{
             '/welcome': (BuildContext context) => WelcomePage(),
             '/slideshow': (BuildContext context) => SlideShowPage(),

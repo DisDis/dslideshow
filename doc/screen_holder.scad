@@ -7,6 +7,7 @@
 TODO:
 [ ] Легко ломаются держатели. Может их клеить?
 */
+text_version = "v2.2.1";
 frame_inner_width = 200;
 frame_inner_hieght = 150;
 
@@ -76,6 +77,14 @@ module 3dmodel_form(){
             translate([frame_inner_width/2-mount_w/2,pos_y,thickness]) cube(size=[mount_w,mount_h,mount_thickness]);
         }            
     }
+    color("Black"){
+          translate([55,0.5,thickness]) {
+            linear_extrude(height = 0.4, convexity = 20)
+                {
+                    text(text_version, 5);
+                }
+            }
+        }
 }
 
 3dmodel_form();
