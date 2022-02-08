@@ -6,7 +6,7 @@ import 'package:logging/logging.dart';
 
 // TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
 
-abstract class GPIOService{
+abstract class GPIOService {
   Stream<bool> get onBack;
   Stream<bool> get onMotion;
   Stream<bool> get onPause;
@@ -17,7 +17,7 @@ abstract class GPIOService{
   set powerLED(bool? value);
 }
 
-class GPIOServiceImpl extends GPIOService{
+class GPIOServiceImpl extends GPIOService {
   static final Logger _log = new Logger('GPIOFlutterService');
   final HardwareConfig _config;
   static final ProxyGpiod _gpio = ProxyGpiod.getInstance();
@@ -31,26 +31,27 @@ class GPIOServiceImpl extends GPIOService{
   // Default ON
   bool? _powerLEDStatus = true;
   final StreamController<bool> _scMotion = new StreamController.broadcast();
-  Stream<bool> get onMotion =>_scMotion.stream;
+  Stream<bool> get onMotion => _scMotion.stream;
 
   final StreamController<bool> _scPause = new StreamController.broadcast();
-  Stream<bool> get onPause =>_scPause.stream;
+  Stream<bool> get onPause => _scPause.stream;
 
   final StreamController<bool> _scBack = new StreamController.broadcast();
-  Stream<bool> get onBack =>_scBack.stream;
+  Stream<bool> get onBack => _scBack.stream;
 
   final StreamController<bool> _scMenu = new StreamController.broadcast();
-  Stream<bool> get onMenu =>_scMenu.stream;
+  Stream<bool> get onMenu => _scMenu.stream;
 
-  final StreamController<bool> _scScreenToggle = new StreamController.broadcast();
-  Stream<bool> get onScreenToggle =>_scScreenToggle.stream;
+  final StreamController<bool> _scScreenToggle =
+      new StreamController.broadcast();
+  Stream<bool> get onScreenToggle => _scScreenToggle.stream;
 
-  GPIOServiceImpl(this._config){
-  }
+  GPIOServiceImpl(this._config) {}
 
-  void _status() async{
+  void _status() async {
     _log.info('GPIO Status:');
     final chips = _gpio.chips;
+
     /// Print out all GPIO chips and all lines
     /// for all GPIO chips.
     for (var chip in chips) {
@@ -59,7 +60,7 @@ class GPIOServiceImpl extends GPIOService{
       var index = 0;
       for (var line in chip.lines) {
         final info = await line.info;
-        if (info.consumer!=null) {
+        if (info.consumer != null) {
           _log.info('$index:  ${info}');
         }
         index++;
@@ -72,14 +73,15 @@ class GPIOServiceImpl extends GPIOService{
   DateTime _lastMenuButtonTime = new DateTime.now();
   DateTime _lastScreenButtonTime = new DateTime.now();
   DateTime _lastBackButtonTime = new DateTime.now();
-  Future init() async{
+  Future init() async {
     _log.info('init...');
     try {
       /// Retrieve the list of GPIO chips.
       final chips = _gpio.chips;
       _log.info('chips - OK');
-      _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2835');
-      _log.info('pinctrl-bcm2835 - OK');
+      // old kernel: pinctrl-bcm2835, new kernel: pinctrl-bcm2711
+      _chip = chips.singleWhere((chip) => chip.label == 'pinctrl-bcm2711');
+      _log.info('pinctrl-bcm2711 - OK');
       _linePowerLED = _chip.lines[_config.pinPowerLED];
       _log.info('linePowerLED - OK');
       _linePIR = _chip.lines[_config.pinPIRSensor];
@@ -88,8 +90,7 @@ class GPIOServiceImpl extends GPIOService{
       _lineMenuButton = _chip.lines[_config.pinMenuButton];
       _lineScreenToggleButton = _chip.lines[_config.pinScreenToggleButton];
 
-      _linePowerLED.requestOutput(
-          consumer: "PowerLED", initialValue: true);
+      _linePowerLED.requestOutput(consumer: "PowerLED", initialValue: true);
 
       _linePIR.requestInput(
           consumer: "PIR Sensor",
@@ -108,7 +109,6 @@ class GPIOServiceImpl extends GPIOService{
           consumer: "ScreenToggleButton",
           triggers: {SignalEdge.falling, SignalEdge.rising});
 
-
       _linePIR.onEvent.listen((event) {
         if (DateTime.now().difference(_lastPIRTime).inSeconds > 1) {
           _log.info('PIR: $event');
@@ -118,28 +118,32 @@ class GPIOServiceImpl extends GPIOService{
       });
 
       _linePauseButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastPauseButtonTime).inMilliseconds >
+            _config.smoothingGPIOMs) {
           _log.info('PauseButton: $event');
           _lastPauseButtonTime = DateTime.now();
           _scPause.add(event.edge == SignalEdge.falling);
         }
       });
       _lineBackButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastBackButtonTime).inMilliseconds >
+            _config.smoothingGPIOMs) {
           _log.info('BackButton: $event');
           _lastBackButtonTime = DateTime.now();
           _scBack.add(event.edge == SignalEdge.falling);
         }
       });
       _lineMenuButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastMenuButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastMenuButtonTime).inMilliseconds >
+            _config.smoothingGPIOMs) {
           _log.info('MenuButton: $event');
           _lastMenuButtonTime = DateTime.now();
           _scMenu.add(event.edge == SignalEdge.falling);
         }
       });
       _lineScreenToggleButton.onEvent.listen((event) {
-        if (DateTime.now().difference(_lastScreenButtonTime).inMilliseconds > _config.smoothingGPIOMs) {
+        if (DateTime.now().difference(_lastScreenButtonTime).inMilliseconds >
+            _config.smoothingGPIOMs) {
           _log.info('ScreenToggleButton: $event');
           _lastScreenButtonTime = DateTime.now();
           _scScreenToggle.add(event.edge == SignalEdge.falling);
@@ -152,7 +156,7 @@ class GPIOServiceImpl extends GPIOService{
     _status();
   }
 
-  Future release() async{
+  Future release() async {
     _linePowerLED.release();
     _linePIR.release();
     _linePauseButton.release();
@@ -161,10 +165,8 @@ class GPIOServiceImpl extends GPIOService{
     _lineScreenToggleButton.release();
   }
 
-
-
-  set powerLED(bool? value){
-    if (_powerLEDStatus == value){
+  set powerLED(bool? value) {
+    if (_powerLEDStatus == value) {
       return;
     }
     _powerLEDStatus = value;

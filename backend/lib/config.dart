@@ -53,6 +53,10 @@ class AppConfig {
   MqttConfig get mqtt =>
       _mqtt ??= new MqttConfig(_config!["mqtt"] as Map<String, dynamic>?);
 
+  WelcomeConfig? _welcome;
+  WelcomeConfig get welcome => _welcome ??=
+      new WelcomeConfig(_config!["welcome"] as Map<String, dynamic>?);
+
   Map<String, dynamic>? _storageSection;
   Map<String, dynamic>? get storageSection =>
       _storageSection ??= (_config!["storage"] == null
@@ -107,6 +111,19 @@ class SlideShowConfig extends BaseConfig {
       _backgroundColorB ??= readInt("backgroundColorB", 255);
 
   SlideShowConfig(Map<String, dynamic>? config) : super(config);
+}
+
+class WelcomeConfig extends BaseConfig {
+  String? _text;
+  String get text => _text ??= readValue("text", "Welcome").toString();
+
+  double? _size;
+  double get size => _size ??= readDouble("size", 100);
+
+  int? _delayMs;
+  int get delayMs => _delayMs ??= readInt("delayMs", 2000);
+
+  WelcomeConfig(Map<String, dynamic>? config) : super(config);
 }
 
 class AppStorage {
