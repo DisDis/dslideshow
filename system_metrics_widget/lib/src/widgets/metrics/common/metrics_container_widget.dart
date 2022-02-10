@@ -5,13 +5,15 @@ class MetricsContainerWidget extends StatelessWidget {
   final Color backgroundColor;
   final IconData iconData;
   final Widget child;
+  final Color iconColor;
 
-  MetricsContainerWidget({
-    required this.iconData,
-    required this.backgroundColor,
-    required this.child,
-    Key? key,
-  }) : super(key: key);
+  MetricsContainerWidget(
+      {required this.iconData,
+      required this.backgroundColor,
+      required this.child,
+      Key? key,
+      this.iconColor = Colors.white})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) => Row(
@@ -25,7 +27,7 @@ class MetricsContainerWidget extends StatelessWidget {
                 padding: EdgeInsets.all(4),
                 child: Icon(
                   iconData,
-                  color: Colors.white,
+                  color: iconColor,
                   size: 20.0,
                 ),
               ),
@@ -35,7 +37,10 @@ class MetricsContainerWidget extends StatelessWidget {
             flex: 6,
             child: Container(
               color: backgroundColor,
-              child: Padding(padding: EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8), child: child),
+              child: Padding(
+                  padding:
+                      EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8),
+                  child: child),
             ),
           ),
         ],

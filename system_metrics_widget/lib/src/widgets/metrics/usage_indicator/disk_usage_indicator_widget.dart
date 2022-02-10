@@ -6,17 +6,18 @@ class DiskUsageIndicatorWidget extends UsageIndicatorWidget {
   final int usedMemory;
   final int? usagePercent;
 
-  DiskUsageIndicatorWidget({
-    required this.totalMemory,
-    required this.usedMemory,
-    required this.usagePercent
-  }) : super(
+  DiskUsageIndicatorWidget(
+      {required this.totalMemory,
+      required this.usedMemory,
+      required this.usagePercent})
+      : super(
           title: 'Disk',
           total: _formatter(totalMemory),
-          free: _formatter(totalMemory - usedMemory),
+          free: _formatter((totalMemory - usedMemory)),
           used: _formatter(usedMemory),
           usagePercent: usagePercent,
         );
 
-  static String _formatter(int memory) => UsageIndicatorWidget.formatBytes(memory, 2);
+  static String _formatter(int memory) =>
+      UsageIndicatorWidget.formatKBytes(memory, 2);
 }

@@ -27,10 +27,12 @@ class UsageBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final transitionWidth = 8.0;
     final usageEndPosition = size.width * usagePercent / 100;
-    final hasTransition = math.min(usageEndPosition, size.width - usageEndPosition) > 10;
+    final hasTransition =
+        math.min(usageEndPosition, size.width - usageEndPosition) > 10;
 
     final usedRect = Offset.zero & Size(usageEndPosition, size.height);
-    final freeRect = usedRect.topRight & Size(size.width - usageEndPosition, size.height);
+    final freeRect =
+        usedRect.topRight & Size(size.width - usageEndPosition, size.height);
 
     final Paint usedPaint = Paint()
       ..shader = LinearGradient(
@@ -49,7 +51,8 @@ class UsageBarPainter extends CustomPainter {
       ).createShader(freeRect);
 
     final transitionRect = hasTransition
-        ? (usedRect.topRight - Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
+        ? (usedRect.topRight - Offset(transitionWidth, 0) &
+            Size(transitionWidth, usedRect.height))
         : Rect.zero;
 
     final Paint transitionPaint = Paint()
@@ -60,15 +63,21 @@ class UsageBarPainter extends CustomPainter {
         ],
       ).createShader(transitionRect);
 
-    canvas..drawRect(usedRect, usedPaint)..drawRect(freeRect, freePaint)..drawRect(transitionRect, transitionPaint);
+    canvas
+      ..drawRect(usedRect, usedPaint)
+      ..drawRect(freeRect, freePaint)
+      ..drawRect(transitionRect, transitionPaint);
   }
 
   @override
-  bool shouldRepaint(UsageBarPainter oldDelegate) => oldDelegate.usagePercent != usagePercent;
+  bool shouldRepaint(UsageBarPainter oldDelegate) =>
+      oldDelegate.usagePercent != usagePercent;
 }
 
-class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
-  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+class _UsageBarState extends State<UsageBar>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller =
+      AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
@@ -76,13 +85,15 @@ class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin
 
     return CustomPaint(
       size: Size(size.width, 8),
-      painter: UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
+      painter:
+          UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
     );
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _controller.dispose();
+    super.dispose();
   }
 
   @override

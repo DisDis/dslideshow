@@ -39,10 +39,16 @@ abstract class UsageIndicatorWidget extends StatelessWidget {
     );
   }
 
-  static String formatBytes(int bytes, int decimals) {
+  static String formatKBytes(int bytes, int decimals) {
     if (bytes <= 0) return '0 B';
-    const suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    var i = (log(bytes) / log(1024)).floor();
-    return ((bytes / pow(1024, i)).toStringAsFixed(decimals)) + ' ' + suffixes[i];
+    double num = bytes.toDouble();
+    const suffixes = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    for (var unit in suffixes) {
+      if (num.abs() < 1024) {
+        return "${num.toStringAsFixed(decimals)} $unit";
+      }
+      num = num / 1024;
+    }
+    return "${num.toStringAsFixed(decimals)} YB";
   }
 }

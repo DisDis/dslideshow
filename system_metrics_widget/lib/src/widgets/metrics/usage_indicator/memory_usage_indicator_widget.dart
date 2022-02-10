@@ -6,14 +6,18 @@ class MemoryUsageIndicatorWidget extends UsageIndicatorWidget {
   final int usedMemory;
   final String title;
 
-  MemoryUsageIndicatorWidget({required this.totalMemory, required this.usedMemory, this.title = 'Mem'})
+  MemoryUsageIndicatorWidget(
+      {required this.totalMemory, required this.usedMemory, this.title = 'Mem'})
       : super(
           title: title,
           total: _formatter(totalMemory),
           free: _formatter(totalMemory - usedMemory),
           used: _formatter(usedMemory),
-          usagePercent: totalMemory > 0 ? ((usedMemory / totalMemory) * 100).round().floor() : 0,
+          usagePercent: totalMemory > 0
+              ? ((usedMemory / totalMemory) * 100).round().floor()
+              : 0,
         );
 
-  static String _formatter(int memory) => UsageIndicatorWidget.formatBytes(memory, 2);
+  static String _formatter(int memory) =>
+      UsageIndicatorWidget.formatKBytes(memory, 2);
 }

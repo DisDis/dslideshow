@@ -53,6 +53,8 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
       'isDebug',
       serializers.serialize(object.isDebug,
           specifiedType: const FullType(bool)),
+      'isMenu',
+      serializers.serialize(object.isMenu, specifiedType: const FullType(bool)),
       'isPaused',
       serializers.serialize(object.isPaused,
           specifiedType: const FullType(bool)),
@@ -109,15 +111,15 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
       switch (key) {
         case 'beginTimePowerButtonPress':
           result.beginTimePowerButtonPress = serializers.deserialize(value,
-              specifiedType: const FullType(DateTime)) as DateTime;
+              specifiedType: const FullType(DateTime)) as DateTime?;
           break;
         case 'currentMediaFile':
           result.currentMediaFile = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String)) as String?;
           break;
         case 'delayBetweenItems':
           result.delayBetweenItems = serializers.deserialize(value,
-              specifiedType: const FullType(Duration)) as Duration;
+              specifiedType: const FullType(Duration)) as Duration?;
           break;
         case 'hasInternet':
           result.hasInternet = serializers.deserialize(value,
@@ -131,18 +133,22 @@ class _$GlobalStateSerializer implements StructuredSerializer<GlobalState> {
           result.isDebug = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
+        case 'isMenu':
+          result.isMenu = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
         case 'isPaused':
           result.isPaused = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
           break;
         case 'nextMediaFile':
           result.nextMediaFile = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(String)) as String?;
           break;
         case 'storageStatus':
           result.storageStatus = serializers.deserialize(value,
                   specifiedType: const FullType(StorageStatusEnum))
-              as StorageStatusEnum;
+              as StorageStatusEnum?;
           break;
       }
     }
@@ -183,6 +189,8 @@ class _$GlobalState extends GlobalState {
   @override
   final bool isDebug;
   @override
+  final bool isMenu;
+  @override
   final bool isPaused;
   @override
   final String? nextMediaFile;
@@ -199,6 +207,7 @@ class _$GlobalState extends GlobalState {
       required this.hasInternet,
       required this.isScreenLock,
       required this.isDebug,
+      required this.isMenu,
       required this.isPaused,
       this.nextMediaFile,
       this.storageStatus})
@@ -208,6 +217,7 @@ class _$GlobalState extends GlobalState {
     BuiltValueNullFieldError.checkNotNull(
         isScreenLock, 'GlobalState', 'isScreenLock');
     BuiltValueNullFieldError.checkNotNull(isDebug, 'GlobalState', 'isDebug');
+    BuiltValueNullFieldError.checkNotNull(isMenu, 'GlobalState', 'isMenu');
     BuiltValueNullFieldError.checkNotNull(isPaused, 'GlobalState', 'isPaused');
   }
 
@@ -228,6 +238,7 @@ class _$GlobalState extends GlobalState {
         hasInternet == other.hasInternet &&
         isScreenLock == other.isScreenLock &&
         isDebug == other.isDebug &&
+        isMenu == other.isMenu &&
         isPaused == other.isPaused &&
         nextMediaFile == other.nextMediaFile &&
         storageStatus == other.storageStatus;
@@ -242,12 +253,16 @@ class _$GlobalState extends GlobalState {
                     $jc(
                         $jc(
                             $jc(
-                                $jc($jc(0, beginTimePowerButtonPress.hashCode),
-                                    currentMediaFile.hashCode),
-                                delayBetweenItems.hashCode),
-                            hasInternet.hashCode),
-                        isScreenLock.hashCode),
-                    isDebug.hashCode),
+                                $jc(
+                                    $jc(
+                                        $jc(0,
+                                            beginTimePowerButtonPress.hashCode),
+                                        currentMediaFile.hashCode),
+                                    delayBetweenItems.hashCode),
+                                hasInternet.hashCode),
+                            isScreenLock.hashCode),
+                        isDebug.hashCode),
+                    isMenu.hashCode),
                 isPaused.hashCode),
             nextMediaFile.hashCode),
         storageStatus.hashCode));
@@ -262,6 +277,7 @@ class _$GlobalState extends GlobalState {
           ..add('hasInternet', hasInternet)
           ..add('isScreenLock', isScreenLock)
           ..add('isDebug', isDebug)
+          ..add('isMenu', isMenu)
           ..add('isPaused', isPaused)
           ..add('nextMediaFile', nextMediaFile)
           ..add('storageStatus', storageStatus))
@@ -299,6 +315,10 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
   bool? get isDebug => _$this._isDebug;
   set isDebug(bool? isDebug) => _$this._isDebug = isDebug;
 
+  bool? _isMenu;
+  bool? get isMenu => _$this._isMenu;
+  set isMenu(bool? isMenu) => _$this._isMenu = isMenu;
+
   bool? _isPaused;
   bool? get isPaused => _$this._isPaused;
   set isPaused(bool? isPaused) => _$this._isPaused = isPaused;
@@ -324,6 +344,7 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
       _hasInternet = $v.hasInternet;
       _isScreenLock = $v.isScreenLock;
       _isDebug = $v.isDebug;
+      _isMenu = $v.isMenu;
       _isPaused = $v.isPaused;
       _nextMediaFile = $v.nextMediaFile;
       _storageStatus = $v.storageStatus;
@@ -356,6 +377,8 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
                 isScreenLock, 'GlobalState', 'isScreenLock'),
             isDebug: BuiltValueNullFieldError.checkNotNull(
                 isDebug, 'GlobalState', 'isDebug'),
+            isMenu: BuiltValueNullFieldError.checkNotNull(
+                isMenu, 'GlobalState', 'isMenu'),
             isPaused: BuiltValueNullFieldError.checkNotNull(
                 isPaused, 'GlobalState', 'isPaused'),
             nextMediaFile: nextMediaFile,
@@ -365,4 +388,4 @@ class GlobalStateBuilder implements Builder<GlobalState, GlobalStateBuilder> {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

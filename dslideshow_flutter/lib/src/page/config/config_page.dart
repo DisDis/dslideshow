@@ -18,7 +18,7 @@ class ConfigPage extends StatefulWidget {
   _ConfigPageState createState() => _ConfigPageState();
 }
 
-class _ConfigPageState extends State<ConfigPage>{
+class _ConfigPageState extends State<ConfigPage> {
   static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
   static final Random rnd = new Random();
@@ -33,7 +33,7 @@ class _ConfigPageState extends State<ConfigPage>{
   @override
   void dispose() {
     _frontendService.stopWebServer();
-    this.dispose();
+    super.dispose();
   }
 
   @override
@@ -49,8 +49,9 @@ class _ConfigPageState extends State<ConfigPage>{
           ),
           Text(_urlData),
           StoreConnector<GlobalState, VoidCallback>(
-              converter: (store) => () => store.dispatch(ChangeStorageStatusAction(
-                  StorageStatusEnum.values.elementAt(rnd.nextInt(StorageStatusEnum.values.length - 1)))),
+              converter: (store) => () => store.dispatch(
+                  ChangeStorageStatusAction(StorageStatusEnum.values.elementAt(
+                      rnd.nextInt(StorageStatusEnum.values.length - 1)))),
               builder: (context, callback) => ElevatedButton(
                     onPressed: callback,
                     child: Text('StorageChange'),

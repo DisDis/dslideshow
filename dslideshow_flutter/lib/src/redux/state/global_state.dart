@@ -20,6 +20,7 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
           ..beginTimePowerButtonPress = DateTime.now()
           ..isScreenLock = false
           ..isDebug = false
+          ..isMenu = false
           ..hasInternet = true)
         .build();
   }
@@ -37,6 +38,8 @@ abstract class GlobalState implements Built<GlobalState, GlobalStateBuilder> {
   bool get isScreenLock;
 
   bool get isDebug;
+
+  bool get isMenu;
 
   bool get isPaused;
 
@@ -56,7 +59,8 @@ class StorageStatusEnum extends EnumClass {
   /// Declare a static final [Serializers] field called `serializer`.
   /// The built_value code generator will provide the implementation. You need
   /// to do this for every type you want to serialize.
-  static Serializer<StorageStatusEnum> get serializer => _$storageStatusEnumSerializer;
+  static Serializer<StorageStatusEnum> get serializer =>
+      _$storageStatusEnumSerializer;
 
   static BuiltSet<StorageStatusEnum> get values => _$values;
 

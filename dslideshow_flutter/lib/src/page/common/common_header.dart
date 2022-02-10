@@ -17,7 +17,8 @@ import 'package:redux/redux.dart';
 ///  * [WidgetBuilder], which is similar but only takes a [BuildContext].
 ///  * [IndexedWidgetBuilder], which is similar but also takes an index.
 ///  * [ValueWidgetBuilder], which is similar but takes a value and a child.
-typedef BlinkTransitionBuilder = Widget Function(BuildContext context, Widget child, Animation<Color> animation);
+typedef BlinkTransitionBuilder = Widget Function(
+    BuildContext context, Widget child, Animation<Color> animation);
 
 class BlinkAnimation extends StatefulWidget {
   final int countBlink;
@@ -26,10 +27,15 @@ class BlinkAnimation extends StatefulWidget {
   final bool hideAfterBlink;
 
   const BlinkAnimation(
-      {Key? key, this.countBlink: 3, this.milliseconds: 1500, required this.child, this.hideAfterBlink: true})
+      {Key? key,
+      this.countBlink: 3,
+      this.milliseconds: 1500,
+      required this.child,
+      this.hideAfterBlink: true})
       : super(key: key);
   @override
-  _BlinkAnimationState createState() => _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
+  _BlinkAnimationState createState() =>
+      _BlinkAnimationState(countBlink, milliseconds, hideAfterBlink, child);
 }
 
 class CommonHeaderWidget extends StatelessWidget {
@@ -41,15 +47,18 @@ class CommonHeaderWidget extends StatelessWidget {
         converter: (store) => store,
         builder: (context, Store<GlobalState> store) => Stack(
           children: <Widget>[
-            if (!isLinuxEmbedded) Positioned(
-              right: 0,
-              top: 0,
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => store.dispatch(ChangeDebugAction(!store.state.isDebug)),
-                child: Container(color: Colors.transparent, width: 30, height: 30),
+            if (!isLinuxEmbedded)
+              Positioned(
+                right: 0,
+                top: 0,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () =>
+                      store.dispatch(ChangeDebugAction(!store.state.isDebug)),
+                  child: Container(
+                      color: Colors.transparent, width: 30, height: 30),
+                ),
               ),
-            ),
             Row(
               children: <Widget>[
                 if (store.state.storageStatus == StorageStatusEnum.off)
@@ -62,7 +71,8 @@ class CommonHeaderWidget extends StatelessWidget {
                     ),
                     hideAfterBlink: false,
                   )
-                else if (store.state.storageStatus == StorageStatusEnum.download)
+                else if (store.state.storageStatus ==
+                    StorageStatusEnum.download)
                   BlinkAnimation(
                     key: const Key('cloud_download'),
                     child: Icon(
@@ -96,6 +106,16 @@ class CommonHeaderWidget extends StatelessWidget {
                       color: Colors.red,
                     ),
                     hideAfterBlink: false,
+                  ),
+                if (store.state.isPaused)
+                  BlinkAnimation(
+                    key: const Key('isPaused'),
+                    child: Icon(
+                      Icons.pause_circle,
+                      size: 24.0,
+                      color: Colors.red,
+                    ),
+                    hideAfterBlink: false,
                   )
               ],
             ),
@@ -106,7 +126,8 @@ class CommonHeaderWidget extends StatelessWidget {
   }
 }
 
-class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProviderStateMixin {
+class _BlinkAnimationState extends State<BlinkAnimation>
+    with SingleTickerProviderStateMixin {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);
   late Animation<double> animation;
   late AnimationController controller;
@@ -115,7 +136,8 @@ class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProvid
   final Widget child;
   final bool hideAfterBlink;
 
-  _BlinkAnimationState(this.countBlink, this.milliseconds, this.hideAfterBlink, this.child);
+  _BlinkAnimationState(
+      this.countBlink, this.milliseconds, this.hideAfterBlink, this.child);
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +158,8 @@ class _BlinkAnimationState extends State<BlinkAnimation> with SingleTickerProvid
 
   initState() {
     super.initState();
-    controller = AnimationController(duration: Duration(milliseconds: this.milliseconds), vsync: this);
+    controller = AnimationController(
+        duration: Duration(milliseconds: this.milliseconds), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn);
     animation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {

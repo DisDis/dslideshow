@@ -14,12 +14,23 @@ class NetworkUsageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
-      iconData: _model!.hasInternet ? FlutterIcons.lan_connect_mco : FlutterIcons.lan_disconnect_mco,
+      iconData: _model!.hasInternet
+          ? FlutterIcons.lan_connect_mco
+          : FlutterIcons.lan_disconnect_mco,
       backgroundColor: Colors.lightBlueAccent,
+      iconColor: _model!.hasInternet ? Colors.white : Colors.red,
       child: Column(children: <Widget>[
-        Row(children: [MetricsDetails(' network: ${_model!.lastUpdate}', value: null)] ),
+        Row(children: [
+          MetricsDetails(
+              ' network: ${new DateTime.fromMillisecondsSinceEpoch(_model!.lastUpdate)}',
+              value: null)
+        ]),
         for (final interface in _model!.interfaces!)
-          Row(children: [MetricsDetails('${interface.name} - ${interface.status}', value: null)]),
+          if (interface.status == NetworkInterfaceStatus.running &&
+              interface.name != 'lo')
+            Row(children: [
+              MetricsDetails('${interface.name}', value: interface.ip4)
+            ]),
       ]),
     );
   }

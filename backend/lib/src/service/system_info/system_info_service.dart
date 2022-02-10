@@ -17,8 +17,10 @@ class SystemInfoService {
   static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
   static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
   static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
-  static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
-  static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findMem =
+      new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findSwap =
+      new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
 
   SystemInfo? _lastInfo;
 
@@ -43,13 +45,16 @@ class SystemInfoService {
         b.networkInfo = _networkInfo;
       });
     } else {
-      var delta =
-          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo.lastUpdate));
+      var delta = new DateTime.now().difference(
+          new DateTime.fromMillisecondsSinceEpoch(
+              _lastInfo!.networkInfo.lastUpdate));
       if (delta > _networkInfoUpdatePeriod) {
         final _networkInfo = await _getNetworkInfo();
-        _lastInfo = _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
+        _lastInfo =
+            _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
       }
-      _lastInfo = _lastInfo?.rebuild((builder) => builder.updateInfo = updateInfo);
+      _lastInfo =
+          _lastInfo?.rebuild((builder) => builder.updateInfo = updateInfo);
     }
     return _lastInfo;
   }
@@ -57,7 +62,8 @@ class SystemInfoService {
   Future<Iterable<NetworkInterfaceInfo>> getNetworkInterfaces() async {
     //    _log.info('getNetworkInterfaces');
     try {
-      var result = await io.Process.run(_config.systemIfConfigScript, []);
+      var result = await io.Process.run(_config.systemIfConfigScript, [],
+          environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
         return _parseIfconfigOutput(result.stdout.toString().split('\n\n'));
       }
@@ -87,15 +93,18 @@ class SystemInfoService {
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var strArr = str.split('\n');
-        var diskInfo = strArr.firstWhere((element) => element.startsWith(_config.systemDiskDev), orElse: () => '');
+        var diskInfo = strArr.firstWhere(
+            (element) => element.startsWith(_config.systemDiskDev),
+            orElse: () => '');
         if (diskInfo.isNotEmpty) {
-          var parseDiskInfo = RegExp('${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
+          var parseDiskInfo = RegExp(
+              '${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
           //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
 
           var info = parseDiskInfo.firstMatch(diskInfo)!;
           b
-            ..diskUsed = int.tryParse(info.group(2)!)?? 0
-            ..diskAvailable = int.tryParse(info.group(3)!)?? 0
+            ..diskUsed = int.tryParse(info.group(2)!) ?? 0
+            ..diskAvailable = int.tryParse(info.group(3)!) ?? 0
             ..diskUsedPercent = int.tryParse(info.group(4)!) ?? 0;
         }
       }
@@ -110,19 +119,19 @@ class SystemInfoService {
         var str = result.stdout.toString();
         //              total        used        free
         var info = _findMem.firstMatch(str)!;
-        b.memTotal = int.tryParse(info.group(1)!)??0;
-        b.memUsed = int.tryParse(info.group(2)!)??0;
+        b.memTotal = int.tryParse(info.group(1)!) ?? 0;
+        b.memUsed = int.tryParse(info.group(2)!) ?? 0;
         info = _findSwap.firstMatch(str)!;
-        b.swapTotal = int.tryParse(info.group(1)!)??0;
-        b.swapUsed = int.tryParse(info.group(2)!)??0;
+        b.swapTotal = int.tryParse(info.group(1)!) ?? 0;
+        b.swapUsed = int.tryParse(info.group(2)!) ?? 0;
       }
       result = await io.Process.run('cat', ['/proc/loadavg']);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var arrData = str.split(' ');
-        b.cpuLoad1 = double.tryParse(arrData[0])??0;
-        b.cpuLoad5 = double.tryParse(arrData[1])??0;
-        b.cpuLoad15 = double.tryParse(arrData[2])??0;
+        b.cpuLoad1 = double.tryParse(arrData[0]) ?? 0;
+        b.cpuLoad5 = double.tryParse(arrData[1]) ?? 0;
+        b.cpuLoad15 = double.tryParse(arrData[2]) ?? 0;
       }
       //  _log.info(b.build());
     } catch (e, s) {
@@ -136,7 +145,8 @@ class SystemInfoService {
   Future<bool> hasInternet() async {
     //    _log.info('hasInternet');
     try {
-      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8']);
+      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8'],
+          environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
       }
@@ -161,15 +171,15 @@ class SystemInfoService {
     try {
       var result = await io.Process.run('nproc', ['--all']);
       if (result.exitCode == 0) {
-        b.cores = int.tryParse(result.stdout.toString())??0;
+        b.cores = int.tryParse(result.stdout.toString()) ?? 0;
       }
 
       result = await io.Process.run('cat', ['/proc/cpuinfo']);
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
-        b.hardware = _findHardware.firstMatch(str)?.group(1)??'Unknown';
-        b.model = _findModel.firstMatch(str)?.group(1)??'Unknown';
-        b.revision = _findRevision.firstMatch(str)?.group(1)??'Unknown';
+        b.hardware = _findHardware.firstMatch(str)?.group(1) ?? 'Unknown';
+        b.model = _findModel.firstMatch(str)?.group(1) ?? 'Unknown';
+        b.revision = _findRevision.firstMatch(str)?.group(1) ?? 'Unknown';
       }
       //      _log.info(b.build());
     } catch (e, s) {
@@ -235,13 +245,22 @@ class SystemInfoService {
     output.forEach((element) {
       try {
         var interfaceName = element.substring(0, element.indexOf(':'));
-        var interfaceStatus = _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
-            ? NetworkInterfaceStatus.running
-            : NetworkInterfaceStatus.offline;
+        var interfaceStatus =
+            _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
+                ? NetworkInterfaceStatus.running
+                : NetworkInterfaceStatus.offline;
         var interfaceIp4 = _findIp4.firstMatch(element);
-        var interfaceIp4Str = interfaceIp4 == null ? '' : interfaceIp4.groupCount == 1 ? interfaceIp4.group(1) : '';
+        var interfaceIp4Str = interfaceIp4 == null
+            ? ''
+            : interfaceIp4.groupCount == 1
+                ? interfaceIp4.group(1)
+                : '';
         var interfaceIp6 = _findIp6.firstMatch(element);
-        var interfaceIp6Str = interfaceIp6 == null ? '' : interfaceIp6.groupCount == 1 ? interfaceIp6.group(1) : '';
+        var interfaceIp6Str = interfaceIp6 == null
+            ? ''
+            : interfaceIp6.groupCount == 1
+                ? interfaceIp6.group(1)
+                : '';
         result.add(new NetworkInterfaceInfo((b) {
           b.name = interfaceName;
           b.status = interfaceStatus;
