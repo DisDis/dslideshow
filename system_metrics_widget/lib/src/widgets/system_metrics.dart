@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +57,8 @@ class SystemInfoMetrics extends StatelessWidget {
             usedSwapMemory: _model.updateInfo!.swapUsed,
           ),
           DiskUsageWidget(
-            totalMemory: _model.updateInfo!.diskUsed! + _model.updateInfo!.diskAvailable!,
+            totalMemory: _model.updateInfo!.diskUsed! +
+                _model.updateInfo!.diskAvailable!,
             usedMemory: _model.updateInfo!.diskUsed,
             usagePercent: _model.updateInfo!.diskUsedPercent,
           ),

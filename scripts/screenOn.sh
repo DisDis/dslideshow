@@ -1,6 +1,7 @@
 #!/bin/sh
+#/opt/vc/bin/tvservice
 #LED 2560*1600
-#/opt/vc/bin/tvservice --explicit="DMT 87 HDMI"
+#tvservice --explicit="DMT 87 HDMI"
 
 #Default
-/opt/vc/bin/tvservice -p
+tvservice -p

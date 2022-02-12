@@ -27,7 +27,8 @@ import 'package:omxplayer_video_player/omxplayer_video_player.dart';
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   initLog('flutter');
-  _log.info("Run, isLinuxEmbedded: ${environment.isLinuxEmbedded}");
+  _log.info(
+      "Run, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {

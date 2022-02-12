@@ -6,6 +6,7 @@ OUTPUT_SO=./build/flutter_assets/app.so
 APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
 BUILD_PROFILE=release_64
 ENGINE_BINARIES=.
+
 echo "----------- README -----------"
 echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"
 echo "git clone --depth 1 --branch engine-binaries https://github.com/ardera/flutter-pi.git flutter_engine_binaries"

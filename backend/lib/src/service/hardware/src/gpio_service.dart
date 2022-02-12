@@ -4,8 +4,6 @@ import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_con
 import 'package:gpiod/proxy_gpiod.dart';
 import 'package:logging/logging.dart';
 
-// TODO: Unable to call a platform channel method from another isolate  https://github.com/flutter/flutter/issues/13937
-
 abstract class GPIOService {
   Stream<bool> get onBack;
   Stream<bool> get onMotion;

@@ -1,16 +1,18 @@
-// export ENABLE_FLUTTER_DESKTOP=true
-// debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
-// run ./build_linux
-
 import 'dart:io';
 
 import 'package:path/path.dart' as path;
 export 'package:dslideshow_backend/environment.dart';
 
-final bool isLinuxEmbedded = true;
+final bool isLinuxEmbedded =
+    Platform.environment['DSLIDESHOW_EMBEDDED'] == 'true';
+
+Directory? _appDocumentsDirectory;
 
 Future<Directory> getApplicationDocumentsDirectory() async {
-  return new Directory(path.current);
+  return _appDocumentsDirectory ??= new Directory(
+      Platform.environment.containsKey("DSLIDESHOW_ROOT")
+          ? Platform.environment["DSLIDESHOW_ROOT"]!
+          : path.current);
 }
 
 Future<bool> checkPermissionReadExternalStorage() async {

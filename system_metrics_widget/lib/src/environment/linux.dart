@@ -7,7 +7,8 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 export 'package:dslideshow_backend/environment.dart';
 
-final bool isLinuxEmbedded = true;
+final bool isLinuxEmbedded =
+    Platform.environment['DSLIDESHOW_EMBEDDED'] == 'true';
 
 // Future<Directory> getApplicationDocumentsDirectory() async {
 //   return new Directory(path.current);

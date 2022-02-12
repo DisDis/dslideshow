@@ -6,4 +6,4 @@ autover:
       frontend:
           path: './'
           match_token: '_FRONT_'
-  targets: ["../common/lib/version.dart.template"]
+  targets: ["../common/lib/version.dart.template","../deb_factory/dslideshow_arm64/DEBIAN/control.template","../deb_factory/dslideshow_arm64/opt/dslideshow/version.template"]

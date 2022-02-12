@@ -26,11 +26,11 @@ void main(List<String> args) async {
   _log.info("Run");
   try {
     getInjectorModule();
-    injector.registerLazySingleton<GPIOService>((){
+    injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
-      return  new GPIOServiceImpl(_config.hardware);
+      return new GPIOServiceImpl(_config.hardware);
     });
-    injector.registerLazySingleton<MqttService>((){
+    injector.registerLazySingleton<MqttService>(() {
       final _config = injector.get<AppConfig>();
       return new MqttService(_config.mqtt);
     });
@@ -55,7 +55,6 @@ void main(List<String> args) async {
 //    IsolateRunner _hw_FrameService = await IsolateRunner.spawn();
 //    await _hw_FrameService.run(hw_frame.main,<dynamic>[]);
 
-
 //    IsolateRunner _rService = await IsolateRunner.spawn();
 //    await _rService.run(result_service.main,<dynamic>[]);
 //    IsolateRunner _server = await IsolateRunner.spawn();
@@ -64,30 +63,31 @@ void main(List<String> args) async {
 //    _simulatorService.run(universe.setServicesIsolate, [_rService]);
 //         _service.run(service.executeCommand,"run proccess");
 
-
 //    await Future.wait<dynamic>([_hw_FrameService.onExit]);
-  } catch(e, s){
+  } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
   }
 }
 
-void _testGPIO() async{
+void _testGPIO() async {
   final _service = injector.get<GPIOService>();
   await _service.init();
 }
 
-void _testSystemInfo() async{
+void _testSystemInfo() async {
   final _systemInfoService = injector.get<SystemInfoService>();
   _log.info(await _systemInfoService.getNetworkInterfaces());
   _log.info('hasInternet: ${await _systemInfoService.hasInternet()}');
   _log.info(await _systemInfoService.getFullInfo());
 }
 
-void testGPhoto() async{
+void testGPhoto() async {
   final _gphotoStorage = injector.get<Storage>() as GPhotoStorage;
-  var mediaList = await _gphotoStorage.googlePhotoService!.getMediaItemInAlbum('TEST_slide', 100, 100);
+  var mediaList = await _gphotoStorage.googlePhotoService!
+      .getMediaItemInAlbum('TEST_slide', 100, 100);
   mediaList.forEach((googleItem) {
-    _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
+    _log.info(
+        '  downloading "${googleItem.id}": type=${googleItem.mimeType} url=${googleItem.url}');
   });
 }

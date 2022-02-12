@@ -1,0 +1,6 @@
+Package: dslideshow
+Version: _FRONT_
+Maintainer: Igor Demyanov
+Architecture: arm64
+Description: DslideShow front: _FRONT_ back: _BACK_
+Depends: hostapd, dnsmasq, ttf-mscorefonts-installer, fontconfig
