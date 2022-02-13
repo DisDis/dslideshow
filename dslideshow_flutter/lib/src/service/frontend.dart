@@ -9,28 +9,39 @@ import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_internet_action.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_pause_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
 
 class FrontendService implements RpcService {
   static final Logger _log = new Logger('FlutterService');
-  final RemoteService? _backendService;
+  late RemoteService _backendService;
+  late RemoteService _otaService;
   final _screenStateChangePreparation = new StreamController<bool>.broadcast();
   final _onSystemInfoUpdate = new StreamController<SystemInfo>.broadcast();
   final _onPushButton = new StreamController<ButtonType>.broadcast();
+  final _onOTAReady = new StreamController<Null>.broadcast();
+  final _onOTAInfo = new StreamController<OTAInfo>.broadcast();
+  final _onOTAOutput = new StreamController<String>.broadcast();
 
-  Stream<bool> get onScreenStateChangePreparation => _screenStateChangePreparation.stream;
+  Stream<Null> get onOTAReady => _onOTAReady.stream;
+  Stream<OTAInfo> get onOTAInfo => _onOTAInfo.stream;
+  Stream<String> get onOTAOutput => _onOTAOutput.stream;
+
+  Stream<bool> get onScreenStateChangePreparation =>
+      _screenStateChangePreparation.stream;
   Stream<SystemInfo> get onSystemInfoUpdate => _onSystemInfoUpdate.stream;
   Stream<ButtonType> get onPushButton => _onPushButton.stream;
 
   final Store<GlobalState> _store;
   Store<GlobalState> get store => _store;
 
-  FrontendService(AppConfig config, this._backendService, this._store) {
-    new Timer.periodic(new Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
+  FrontendService(
+      AppConfig config, this._backendService, this._otaService, this._store) {
+    new Timer.periodic(
+        new Duration(minutes: 1), (Timer timer) => _updateSystemInfo());
     _updateSystemInfo();
   }
-
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
@@ -40,7 +51,8 @@ class FrontendService implements RpcService {
       ..start();
     return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info(
+          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -62,12 +74,15 @@ class FrontendService implements RpcService {
   }
 
   Future LEDControl(LEDType type, bool value) async {
-    return _backendService!.send(new LEDControlCommand((b) => b..id = RpcCommand.generateId()..led = type..value = value));
+    return _backendService!.send(new LEDControlCommand((b) => b
+      ..id = RpcCommand.generateId()
+      ..led = type
+      ..value = value));
   }
 
-
   Future storageNext() async {
-    return _backendService!.send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
+    return _backendService!
+        .send(new StorageNextCommand((b) => b..id = RpcCommand.generateId()));
   }
 
   void testEcho(String text) async {
@@ -82,11 +97,23 @@ class FrontendService implements RpcService {
       case PushButtonCommand.TYPE:
         return _executePushButtonCommand(command as PushButtonCommand);
       case ScreenTurnCommand.TYPE:
-        return new Future.value(_executeScreenTurnCommand(command as ScreenTurnCommand));
+        return new Future.value(
+            _executeScreenTurnCommand(command as ScreenTurnCommand));
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
+      case OTAReadyCommand.TYPE:
+        return new Future.value(
+            _executeOTAReadyCommand(command as OTAReadyCommand));
+      case OTAGetInfoCommand.TYPE:
+        return new Future.value(
+            _executeOTAGetInfoCommand(command as OTAGetInfoCommand));
+      case OTAOutputCommand.TYPE:
+        return new Future.value(
+            _executeOTAOutputCommand(command as OTAOutputCommand));
+
       default:
-        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
+        return new Future.value(_generateErrorResult(
+            new Exception("Unknown command: ${command.type}"), command));
     }
   }
 
@@ -112,64 +139,79 @@ class FrontendService implements RpcService {
   }
 
   Future<SystemInfo> getSystemInfo() async {
-    final resultRaw = await _backendService!.send(new GetSystemInfoCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ));
+    final resultRaw = await _backendService!
+        .send(new GetSystemInfoCommand((b) => b..id = RpcCommand.generateId()));
     var result = resultRaw as GetSystemInfoCommandResult;
     return result.systemInfo;
   }
 
-  void _updateSystemInfo() async{
+  void _updateSystemInfo() async {
     var result = await getSystemInfo();
-    if (_store.state.hasInternet != result.networkInfo.hasInternet){
+    if (_store.state.hasInternet != result.networkInfo.hasInternet) {
       _store.dispatch(ChangeInternetAction(result.networkInfo.hasInternet));
     }
     _onSystemInfoUpdate.add(result);
   }
 
-  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async{
+  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async {
     _onPushButton.add(command.button);
     return new EmptyResult((b) => b..id = command.id);
   }
 
-  Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async{
+  Future<RpcResult> changeScreenLock(bool isScreenLockNewValue) async {
     return _backendService!.send(new ScreenLockCommand((b) => b
       ..isLock = isScreenLockNewValue
-      ..id = RpcCommand.generateId()
-    ));
+      ..id = RpcCommand.generateId()));
   }
 
-  Future pushButton(ButtonType buttonType) async{
+  Future pushButton(ButtonType buttonType) async {
     return _backendService!.send(new PushButtonCommand((b) => b
       ..button = buttonType
-      ..id = RpcCommand.generateId()
-    ));
+      ..id = RpcCommand.generateId()));
   }
 
   Future screenTurn(bool value) async {
     return _backendService!.send(new ScreenTurnCommand((b) => b
       ..enabled = value
-      ..id = RpcCommand.generateId()
-    ));
+      ..id = RpcCommand.generateId()));
   }
 
-  Future backendIsReady() async{
-    return _backendService!.send(new AreYouReadyCommand((b) => b
-      ..id = RpcCommand.generateId()
-    ));
+  Future backendIsReady() async {
+    return _backendService!
+        .send(new AreYouReadyCommand((b) => b..id = RpcCommand.generateId()));
   }
 
-  Future stopWebServer() async{
+  Future stopWebServer() async {
     return _backendService!.send(new WebServerControlCommand((b) => b
       ..enable = false
-      ..id = RpcCommand.generateId()
-    ));
+      ..id = RpcCommand.generateId()));
   }
 
-  Future startWebServer() async{
+  Future startWebServer() async {
     return _backendService!.send(new WebServerControlCommand((b) => b
       ..enable = true
-      ..id = RpcCommand.generateId()
-    ));
+      ..id = RpcCommand.generateId()));
+  }
+
+  Future<RpcResult> _executeOTAReadyCommand(OTAReadyCommand command) async {
+    _onOTAReady.add(null);
+    return new EmptyResult((b) => b..id = command.id);
+  }
+
+  FutureOr<RpcResult>? _executeOTAGetInfoCommand(
+      OTAGetInfoCommand command) async {
+    _onOTAInfo.add(command.info!);
+    return new EmptyResult((b) => b..id = command.id);
+  }
+
+  FutureOr<RpcResult>? getOTAInfo() async {
+    return _otaService
+        .send(new OTAGetInfoCommand((b) => b..id = RpcCommand.generateId()));
+  }
+
+  FutureOr<RpcResult>? _executeOTAOutputCommand(
+      OTAOutputCommand command) async {
+    _onOTAOutput.add(command.output);
+    return new EmptyResult((b) => b..id = command.id);
   }
 }

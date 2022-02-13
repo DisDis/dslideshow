@@ -1,20 +1,3 @@
-//export 'src/server.dart';
-
-//export 'src/web_server.dart';
-//export 'src/web_config.dart';
-//
-//import 'dart:io';
-//
-//import 'package:crazy_pigs_common/injector/di.dart';
-//import 'package:crazy_pigs_backend/injector_module.dart';
-//import 'package:crazy_pigs_backend/rpc/remote_service.dart';
-//import 'package:crazy_pigs_backend/web_server/src/web_server.dart';
-//import 'package:isolate/isolate.dart';
-//import 'package:logging/logging.dart';
-//import 'package:crazy_pigs_backend/config.dart';
-//import 'package:crazy_pigs_common/log.dart';
-//import 'package:crazy_pigs_backend/rpc/init_rpc.dart';
-//
 import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
@@ -30,30 +13,31 @@ import 'package:get_it/get_it.dart';
 
 final Logger _log = new Logger('main');
 late WebServer _webServer;
-void main(List<dynamic> args) async{
+void main(List<dynamic> args) async {
   initLog("web");
   _log.info("Run");
   try {
     IsolateRunner remoteBackEndService = args[0] as IsolateRunner;
-    final RemoteService _remoteBackendService = new RemoteService(remoteBackEndService, serializers);
+    final RemoteService _remoteBackendService =
+        new RemoteService(remoteBackEndService, serializers);
 
     // Use this static instance
     final injector = GetIt.instance;
     getInjectorModule();
-    injector.registerLazySingleton<WebService>((){
+    injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
       return new WebService(_config.webServer);
     });
-    injector.registerLazySingleton<WebServer>((){
+    injector.registerLazySingleton<WebServer>(() {
       final _config = injector.get<AppConfig>();
-      return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
+      return new WebServer(
+          _config.webServer, _remoteBackendService, injector.get<WebService>());
     });
     final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;
     _webServer = injector.get<WebServer>();
     initRpc(_webServer, serializers);
-
-  } catch(e, s){
+  } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
   }

@@ -4,7 +4,9 @@ import 'dart:isolate' as isol;
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/hw_frame.dart' as hw_frame;
+import 'package:dslideshow_backend/ota.dart' as ota;
 import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'src/injector.dart';
 import 'package:dslideshow_common/log.dart';
 import 'package:dslideshow_common/rpc.dart';
@@ -44,6 +46,8 @@ void main() async {
 
   try {
     RemoteService? _backendService;
+    RemoteService? _OTAService;
+
     await environment.checkPermissionReadExternalStorage();
     var localPath = await environment.getApplicationDocumentsDirectory();
 
@@ -56,7 +60,7 @@ void main() async {
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();
-      return FrontendService(_config, _backendService, store);
+      return FrontendService(_config, _backendService!, _OTAService!, store);
     });
 
     _log.info("externalStorage: '${environment.externalStorage.path}'");
@@ -64,11 +68,16 @@ void main() async {
     var config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelMain;
 
-    IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
     final currentIsoRunner = await _createCurrentIsolateRunner();
+
+    IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
     await _backendServiceIsolate
         .run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
     _backendService = RemoteService(_backendServiceIsolate, serializers);
+
+    IsolateRunner _OTAServiceIsolate = await IsolateRunner.spawn();
+    await _OTAServiceIsolate.run(ota.main, <IsolateRunner>[currentIsoRunner]);
+    _OTAService = RemoteService(_OTAServiceIsolate, serializers);
 
     final _frontendService = injector.get<FrontendService>();
     initRpc(_frontendService, serializers);
@@ -93,11 +102,19 @@ void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
 
 class FlutterReduxApp extends StatelessWidget {
   final Store<GlobalState>? store;
-
+  static final _frontendService = injector.get<FrontendService>();
+  static StreamSubscription? _otaSubscription;
   FlutterReduxApp({Key? key, this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    if (_otaSubscription != null) {
+      _otaSubscription!.cancel();
+      _otaSubscription = null;
+    }
+    _otaSubscription = _frontendService.onOTAReady.listen((_) {
+      _gotoOTA(context);
+    });
     return StoreProvider<GlobalState>(
         store: store!,
         child: MaterialApp(
@@ -114,7 +131,12 @@ class FlutterReduxApp extends StatelessWidget {
             '/welcome': (BuildContext context) => WelcomePage(),
             '/slideshow': (BuildContext context) => SlideShowPage(),
             '/config': (BuildContext context) => ConfigPage(),
+            '/ota': (BuildContext context) => OTAPage(),
           },
         ));
+  }
+
+  void _gotoOTA(BuildContext context) {
+    Navigator.pushReplacementNamed(context, '/ota');
   }
 }

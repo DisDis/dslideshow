@@ -62,6 +62,12 @@ class _ConfigPageState extends State<ConfigPage> {
             },
             child: Text('SlideShow'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/ota');
+            },
+            child: Text('OTA'),
+          ),
         ],
       ),
     );

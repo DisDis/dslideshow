@@ -276,6 +276,7 @@ abstract class BaseConfig {
 class _LogConfig extends BaseConfig {
   Level get levelWeb => readLogLevel("web");
   Level get levelMain => readLogLevel("main");
+  Level get levelOTA => readLogLevel("ota");
   Level get levelHwFrame => readLogLevel("hw_frame");
 
   _LogConfig(Map<String, dynamic>? config) : super(config);

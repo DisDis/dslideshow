@@ -3,6 +3,7 @@ library crazy_pig.serializers;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_backend/src/command/ota_commands.dart';
 import 'package:dslideshow_backend/src/service/system_info/cpu_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/network_info.dart';
 import 'package:dslideshow_backend/src/service/system_info/os_info.dart';
@@ -38,6 +39,11 @@ part 'serializers.g.dart';
   ButtonType,
   ScreenLockCommand,
   WebServerControlCommand,
-  AreYouReadyCommand
+  AreYouReadyCommand,
+  OTAReadyCommand,
+  OTAGetInfoCommand,
+  OTAGetInfoCommandResult,
+  OTAOutputCommand,
+  OTAStatus
 ])
 Serializers serializers = _$serializers;

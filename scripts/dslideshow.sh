@@ -14,6 +14,6 @@ while true
 do
 	echo "Press [CTRL+C] to stop.."
 	sleep 1
-        ./flutter-pi -d "192, 120"  --release ./flutter_assets/
+        ./flutter-pi --release ./flutter_assets/
 done
 
