@@ -102,19 +102,12 @@ void _runFlutter(FrontendService frontendService, Store<GlobalState> store) {
 
 class FlutterReduxApp extends StatelessWidget {
   final Store<GlobalState>? store;
-  static final _frontendService = injector.get<FrontendService>();
-  static StreamSubscription? _otaSubscription;
+  // static final _frontendService = injector.get<FrontendService>();
+  // static StreamSubscription? _otaSubscription;
   FlutterReduxApp({Key? key, this.store}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (_otaSubscription != null) {
-      _otaSubscription!.cancel();
-      _otaSubscription = null;
-    }
-    _otaSubscription = _frontendService.onOTAReady.listen((_) {
-      _gotoOTA(context);
-    });
     return StoreProvider<GlobalState>(
         store: store!,
         child: MaterialApp(
@@ -134,9 +127,5 @@ class FlutterReduxApp extends StatelessWidget {
             '/ota': (BuildContext context) => OTAPage(),
           },
         ));
-  }
-
-  void _gotoOTA(BuildContext context) {
-    Navigator.pushReplacementNamed(context, '/ota');
   }
 }

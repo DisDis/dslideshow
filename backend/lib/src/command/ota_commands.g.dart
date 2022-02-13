@@ -266,6 +266,8 @@ class _$OTAInfoSerializer implements StructuredSerializer<OTAInfo> {
       'uploadingPercent',
       serializers.serialize(object.uploadingPercent,
           specifiedType: const FullType(double)),
+      'code',
+      serializers.serialize(object.code, specifiedType: const FullType(String)),
     ];
     Object? value;
     value = object.exitCode;
@@ -302,6 +304,10 @@ class _$OTAInfoSerializer implements StructuredSerializer<OTAInfo> {
         case 'uploadingPercent':
           result.uploadingPercent = serializers.deserialize(value,
               specifiedType: const FullType(double)) as double;
+          break;
+        case 'code':
+          result.code = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
         case 'exitCode':
           result.exitCode = serializers.deserialize(value,
@@ -723,6 +729,8 @@ class _$OTAInfo extends OTAInfo {
   @override
   final double uploadingPercent;
   @override
+  final String code;
+  @override
   final int? exitCode;
   @override
   final String? errorText;
@@ -733,12 +741,14 @@ class _$OTAInfo extends OTAInfo {
   _$OTAInfo._(
       {required this.status,
       required this.uploadingPercent,
+      required this.code,
       this.exitCode,
       this.errorText})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(status, 'OTAInfo', 'status');
     BuiltValueNullFieldError.checkNotNull(
         uploadingPercent, 'OTAInfo', 'uploadingPercent');
+    BuiltValueNullFieldError.checkNotNull(code, 'OTAInfo', 'code');
   }
 
   @override
@@ -754,6 +764,7 @@ class _$OTAInfo extends OTAInfo {
     return other is OTAInfo &&
         status == other.status &&
         uploadingPercent == other.uploadingPercent &&
+        code == other.code &&
         exitCode == other.exitCode &&
         errorText == other.errorText;
   }
@@ -761,7 +772,9 @@ class _$OTAInfo extends OTAInfo {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, status.hashCode), uploadingPercent.hashCode),
+        $jc(
+            $jc($jc($jc(0, status.hashCode), uploadingPercent.hashCode),
+                code.hashCode),
             exitCode.hashCode),
         errorText.hashCode));
   }
@@ -771,6 +784,7 @@ class _$OTAInfo extends OTAInfo {
     return (newBuiltValueToStringHelper('OTAInfo')
           ..add('status', status)
           ..add('uploadingPercent', uploadingPercent)
+          ..add('code', code)
           ..add('exitCode', exitCode)
           ..add('errorText', errorText))
         .toString();
@@ -789,6 +803,10 @@ class OTAInfoBuilder implements Builder<OTAInfo, OTAInfoBuilder> {
   set uploadingPercent(double? uploadingPercent) =>
       _$this._uploadingPercent = uploadingPercent;
 
+  String? _code;
+  String? get code => _$this._code;
+  set code(String? code) => _$this._code = code;
+
   int? _exitCode;
   int? get exitCode => _$this._exitCode;
   set exitCode(int? exitCode) => _$this._exitCode = exitCode;
@@ -804,6 +822,7 @@ class OTAInfoBuilder implements Builder<OTAInfo, OTAInfoBuilder> {
     if ($v != null) {
       _status = $v.status;
       _uploadingPercent = $v.uploadingPercent;
+      _code = $v.code;
       _exitCode = $v.exitCode;
       _errorText = $v.errorText;
       _$v = null;
@@ -830,6 +849,8 @@ class OTAInfoBuilder implements Builder<OTAInfo, OTAInfoBuilder> {
                 status, 'OTAInfo', 'status'),
             uploadingPercent: BuiltValueNullFieldError.checkNotNull(
                 uploadingPercent, 'OTAInfo', 'uploadingPercent'),
+            code:
+                BuiltValueNullFieldError.checkNotNull(code, 'OTAInfo', 'code'),
             exitCode: exitCode,
             errorText: errorText);
     replace(_$result);

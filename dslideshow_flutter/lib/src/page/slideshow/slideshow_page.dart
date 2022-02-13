@@ -120,6 +120,10 @@ class _SlideShowPageState extends State<SlideShowPage>
   void initState() {
     super.initState();
 
+    _subs.add(_frontendService.onOTAReady.listen((_) {
+      _gotoOTA(context);
+    }));
+
     final allowedETmp = _appConfig.slideshow.allowedEffects;
     _log.info('Config effects = ${allowedETmp}');
     if (allowedETmp.isNotEmpty) {
@@ -320,5 +324,9 @@ class _SlideShowPageState extends State<SlideShowPage>
 
   void _systemInfoChanged(SystemInfo info) {
     _log.info(info.updateInfo);
+  }
+
+  void _gotoOTA(BuildContext context) {
+    Navigator.pushNamed(context, '/ota');
   }
 }

@@ -79,6 +79,7 @@ abstract class OTAInfo implements Built<OTAInfo, OTAInfoBuilder> {
 
   OTAStatus get status;
   double get uploadingPercent;
+  String get code;
 
   int? get exitCode;
 

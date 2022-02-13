@@ -31,6 +31,7 @@ class OTAService implements RpcService {
 
   OTAInfo _info = OTAInfo((b) {
     b.status = OTAStatus.disabled;
+    b.code = "-";
     b.uploadingPercent = 0;
   });
 
@@ -62,6 +63,7 @@ class OTAService implements RpcService {
     _autostop = new Timer(const Duration(seconds: 30), () {
       enabled = false;
     });
+    _info = _info.rebuild((p0) => p0.code = code);
   }
 
   static String _generateCode() {
@@ -76,6 +78,8 @@ class OTAService implements RpcService {
 
   void updateCode() {
     _code = _generateCode();
+    _updateInfo(_info.rebuild((b) => b.code = code));
+    _log.info('New code: $_code');
   }
 
   io.HttpServer? _server;
@@ -266,7 +270,7 @@ class OTAService implements RpcService {
 
     _frontendService.send(new OTAOutputCommand((b) => b
       ..id = RpcCommand.generateId()
-      ..output = 'Save firmware to "$fullFilename"'));
+      ..output = '\n\rSave firmware to "$fullFilename"\n\r'));
     _updateInfo(_info.rebuild((b) => b
       ..uploadingPercent = 100
       ..status = OTAStatus.instaling));
@@ -293,7 +297,7 @@ class OTAService implements RpcService {
     var exitCode = await process.exitCode;
     _frontendService.send(new OTAOutputCommand((b) => b
       ..id = RpcCommand.generateId()
-      ..output = 'Exit code: $exitCode'));
+      ..output = '\n\rExit code: $exitCode'));
     _updateInfo(_info.rebuild((b) => b
       ..uploadingPercent = 100
       ..exitCode = exitCode

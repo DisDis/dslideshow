@@ -204,9 +204,10 @@ class FrontendService implements RpcService {
     return new EmptyResult((b) => b..id = command.id);
   }
 
-  FutureOr<RpcResult>? getOTAInfo() async {
-    return _otaService
+  Future<OTAInfo> getOTAInfo() async {
+    var result = await _otaService
         .send(new OTAGetInfoCommand((b) => b..id = RpcCommand.generateId()));
+    return (result as OTAGetInfoCommandResult).info;
   }
 
   FutureOr<RpcResult>? _executeOTAOutputCommand(
