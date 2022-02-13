@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dslideshow_backend/command.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
@@ -117,8 +118,12 @@ class _OTAPageState extends State<OTAPage> {
                 style: TextStyle(color: Colors.white),
               ),
               Text(
+                "Version: v${ApplicationInfo.frontendVersion}",
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+              Text(
                 "Code: ${_info.code}",
-                style: TextStyle(color: Colors.white, fontSize: 15),
+                style: TextStyle(color: Colors.white, fontSize: 35),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -139,7 +144,7 @@ class _OTAPageState extends State<OTAPage> {
                 child: Text('Config'),
               ),
               Container(
-                  height: 300,
+                  height: 600,
                   //width: 300,
                   child: //SingleChildScrollView(
 

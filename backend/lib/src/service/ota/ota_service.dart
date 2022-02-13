@@ -309,7 +309,7 @@ class OTAService implements RpcService {
           ..exitCode = 0
           ..status = OTAStatus.preReboot));
         Timer(const Duration(seconds: 5), () {
-          io.Process.start('sudo', ['reboot']);
+          io.Process.start('pkill', ['flutter']);
         });
       });
     }
