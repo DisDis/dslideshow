@@ -14,8 +14,21 @@ logger -s -p "syslog.err" -t "dslideshow.deb" "dslideshow.deb script '$0' error 
 exit $exit_status
 }
 
+# Give the pi permission to use 3D acceleration.
+sudo usermod -a -G render pi
+
 sudo systemctl enable dslideshow
 #sudo systemctl start dslideshow
+
+# Update the system fonts.
+sudo fc-cache
+
+# https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet
+sudo systemctl unmask hostapd
+sudo systemctl disable hostapd
+sudo systemctl disable dnsmasq
+
+sudo systemctl enable autohotspot
 
 exit 0
 

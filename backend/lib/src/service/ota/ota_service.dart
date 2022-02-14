@@ -236,7 +236,7 @@ class OTAService implements RpcService {
 <body>
 <form method="post" enctype="multipart/form-data" action="ota_upload">
  <div>
-    <p>v${ApplicationInfo.frontendVersion}</p><Br> 
+    <p>v${ApplicationInfo.frontendVersion}</p> 
     <p><b>OTA ready</b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
@@ -330,7 +330,7 @@ class OTAService implements RpcService {
 <body>
 <form method="post" >
  <div>
-    <p>v${ApplicationInfo.frontendVersion}</p><Br>
+    <p>v${ApplicationInfo.frontendVersion}</p>
     <p><b>OTA get config.json </b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
@@ -361,7 +361,7 @@ class OTAService implements RpcService {
 <body>
 <form method="post" enctype="multipart/form-data" >
  <div>
-   <p>v${ApplicationInfo.frontendVersion}</p><Br>
+   <p>v${ApplicationInfo.frontendVersion}</p>
    <p><b>OTA upload config.json</b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
