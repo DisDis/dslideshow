@@ -12,6 +12,7 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/page/common/debug_widget.dart';
 import 'package:dslideshow_flutter/src/page/common/state_notify_widget.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/image_widget.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/video_widget.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_debug_action.dart';
@@ -46,8 +47,7 @@ final _loaderWidget = Container(
   ),
 );
 
-class _SlideShowPageState extends State<SlideShowPage>
-    with TickerProviderStateMixin {
+class _SlideShowPageState extends State<SlideShowPage> with TickerProviderStateMixin {
   static final Logger _log = Logger('_SlideShowPageState');
   static GlobalKey<StateNotifyState> _stateKey = GlobalKey<StateNotifyState>();
 
@@ -95,9 +95,7 @@ class _SlideShowPageState extends State<SlideShowPage>
           StoreConnector<GlobalState, Store<GlobalState>>(
               converter: (store) => store,
               builder: (context, Store<GlobalState> store) {
-                return store.state.isDebug
-                    ? DebugWidget(_frontendService)
-                    : Container();
+                return store.state.isDebug ? DebugWidget(_frontendService) : Container();
               }),
         CommonHeaderWidget(),
       ],
@@ -120,8 +118,8 @@ class _SlideShowPageState extends State<SlideShowPage>
   void initState() {
     super.initState();
 
-    _subs.add(_frontendService.onOTAReady.listen((_) {
-      _gotoOTA(context);
+    _subs.add(_frontendService.onOTAReady.listen((value) {
+      OTAPage.processingOTAReady(context, value);
     }));
 
     final allowedETmp = _appConfig.slideshow.allowedEffects;
@@ -135,12 +133,10 @@ class _SlideShowPageState extends State<SlideShowPage>
     }
     _log.info('Allowed effects: ${_allowedEffects}');
 
-    _transitionTime =
-        Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
+    _transitionTime = Duration(milliseconds: _appConfig.slideshow.transitionTimeMs);
     final fadeTime = Duration(milliseconds: _appConfig.slideshow.fadeTimeMs);
 
-    _effectController =
-        AnimationController(duration: _transitionTime, vsync: this);
+    _effectController = AnimationController(duration: _transitionTime, vsync: this);
     //Curves.easeOutQuad;
     _effectController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -158,10 +154,8 @@ class _SlideShowPageState extends State<SlideShowPage>
       }
     });
 
-    final displayTime =
-        Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
-    _mediaItemLoopController =
-        AnimationController(duration: displayTime, vsync: this);
+    final displayTime = Duration(milliseconds: _appConfig.slideshow.displayTimeMs);
+    _mediaItemLoopController = AnimationController(duration: displayTime, vsync: this);
 
     _mediaItemLoopController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
@@ -171,8 +165,7 @@ class _SlideShowPageState extends State<SlideShowPage>
 
     _mediaItemLoopController.forward();
 
-    _subs.add(_frontendService.onScreenStateChangePreparation
-        .listen(_screenStateChangePreparation));
+    _subs.add(_frontendService.onScreenStateChangePreparation.listen(_screenStateChangePreparation));
     _subs.add(_frontendService.onSystemInfoUpdate.listen(_systemInfoChanged));
     _subs.add(_frontendService.onPushButton.listen(_pushButton));
     if (_currentWidget == _loaderWidget) {
@@ -184,14 +177,11 @@ class _SlideShowPageState extends State<SlideShowPage>
     _log.info('Change image');
     await _frontendService.storageNext();
     var mediaItem = await _getCurrentMediaItem();
-    var itemWidget = _isVideo(mediaItem)
-        ? VideoWidget(mediaItem)
-        : ImageWidget(mediaItem, _appConfig.slideshow);
+    var itemWidget = _isVideo(mediaItem) ? VideoWidget(mediaItem) : ImageWidget(mediaItem, _appConfig.slideshow);
     if (mediaItem.uri != null) {
       _log.info('file: "${path.basename(mediaItem.uri!.toFilePath())}"');
     }
-    _log.info(
-        'imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
+    _log.info('imageCache.liveImageCount = ${imageCache!.liveImageCount}, .currentSize = ${imageCache!.currentSize}');
 
     final screenW = MediaQuery.of(context).size.width;
     final screenH = MediaQuery.of(context).size.height;
@@ -199,11 +189,9 @@ class _SlideShowPageState extends State<SlideShowPage>
       if (itemWidget is ImageWidget) {
         await itemWidget.precache(context);
       }
-      _nextWidget =
-          Container(width: screenW, height: screenH, child: itemWidget);
+      _nextWidget = Container(width: screenW, height: screenH, child: itemWidget);
     } catch (e, st) {
-      _log.warning(
-          'Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e, st);
+      _log.warning('Error file: "${path.basename(mediaItem.uri!.toFilePath())}"', e, st);
       _nextWidget = _loaderWidget;
     }
 
@@ -212,10 +200,10 @@ class _SlideShowPageState extends State<SlideShowPage>
         animation: _effectController,
         builder: (_, __) {
           return Stack(children: <Widget>[
-            _currentEffect.transform(context, _currentWidget, true /*,0,0*/,
-                _effectController.value /*, 2*/, screenW, screenH),
-            _currentEffect.transform(context, _nextWidget, false /*1, 0*/,
-                _effectController.value /*, 1*/, screenW, screenH)
+            _currentEffect.transform(
+                context, _currentWidget, true /*,0,0*/, _effectController.value /*, 2*/, screenW, screenH),
+            _currentEffect.transform(
+                context, _nextWidget, false /*1, 0*/, _effectController.value /*, 1*/, screenW, screenH)
           ]);
         },
         child: _loaderWidget);
@@ -237,9 +225,7 @@ class _SlideShowPageState extends State<SlideShowPage>
     return item;
   }
 
-  bool _isVideo(MediaItem item) => item.uri == null
-      ? false
-      : path.extension(item.uri!.path).toLowerCase() == '.mp4';
+  bool _isVideo(MediaItem item) => item.uri == null ? false : path.extension(item.uri!.path).toLowerCase() == '.mp4';
 
   void _pushButton(ButtonType event) {
     switch (event) {
@@ -324,9 +310,5 @@ class _SlideShowPageState extends State<SlideShowPage>
 
   void _systemInfoChanged(SystemInfo info) {
     _log.info(info.updateInfo);
-  }
-
-  void _gotoOTA(BuildContext context) {
-    Navigator.pushNamed(context, '/ota');
   }
 }

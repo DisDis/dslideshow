@@ -29,8 +29,7 @@ import 'package:omxplayer_video_player/omxplayer_video_player.dart';
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   initLog('flutter');
-  _log.info(
-      "Run, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
+  _log.info("Run, isLinuxEmbedded: ${Platform.environment['DSLIDESHOW_EMBEDDED']}->${environment.isLinuxEmbedded}");
 
   WidgetsFlutterBinding.ensureInitialized();
   if (!environment.isLinuxEmbedded) {
@@ -53,8 +52,7 @@ void main() async {
 
     _log.info("Config path: '${localPath}'");
 
-    final store = Store<GlobalState>(appReducer,
-        initialState: GlobalState.initial(), middleware: []);
+    final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
     injector.registerSingleton<AppConfig>(AppConfig(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
@@ -71,8 +69,7 @@ void main() async {
     final currentIsoRunner = await _createCurrentIsolateRunner();
 
     IsolateRunner _backendServiceIsolate = await IsolateRunner.spawn();
-    await _backendServiceIsolate
-        .run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
+    await _backendServiceIsolate.run(hw_frame.main, <IsolateRunner>[currentIsoRunner]);
     _backendService = RemoteService(_backendServiceIsolate, serializers);
 
     IsolateRunner _OTAServiceIsolate = await IsolateRunner.spawn();

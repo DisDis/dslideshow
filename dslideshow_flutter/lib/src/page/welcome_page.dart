@@ -4,6 +4,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/environment.dart' as environment;
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_common/version.dart';
+import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -19,8 +20,7 @@ class AnimatedLogo extends AnimatedWidget {
   final String text;
   final double size;
 
-  AnimatedLogo(this.text, this.size,
-      {Key? key, required Animation<double> animation})
+  AnimatedLogo(this.text, this.size, {Key? key, required Animation<double> animation})
       : super(key: key, listenable: animation);
 
   // String get welcomeText {
@@ -46,15 +46,9 @@ class AnimatedLogo extends AnimatedWidget {
               textAlign: TextAlign.center,
             ))),
             Text("front: v${ApplicationInfo.frontendVersion}",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic)),
+                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic)),
             Text("back: v${ApplicationInfo.backendVersion}",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontStyle: FontStyle.italic))
+                style: TextStyle(color: Colors.white, fontSize: 15, fontStyle: FontStyle.italic))
           ],
         ),
       ),
@@ -66,13 +60,13 @@ class WelcomePage extends StatefulWidget {
   _WelcomePageState createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage>
-    with SingleTickerProviderStateMixin {
+class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
   static final Logger _log = Logger('_WelcomePageState');
   late Animation<double> animation;
   late AnimationController controller;
   final FrontendService _frontendService = injector.get<FrontendService>();
   final AppConfig _appConfig = injector.get<AppConfig>();
+  final List<StreamSubscription> _subs = <StreamSubscription>[];
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +82,10 @@ class _WelcomePageState extends State<WelcomePage>
   @override
   void dispose() {
     controller.dispose();
+    _subs.forEach((element) {
+      element.cancel();
+    });
+    _subs.clear();
     super.dispose();
   }
 
@@ -95,10 +93,11 @@ class _WelcomePageState extends State<WelcomePage>
   void initState() {
     _log.info("initState");
     super.initState();
+    _subs.add(_frontendService.onOTAReady.listen((value) {
+      OTAPage.processingOTAReady(context, value);
+    }));
     var future = environment.checkPermissionReadExternalStorage();
-    controller = AnimationController(
-        duration: Duration(milliseconds: _appConfig.welcome.delayMs),
-        vsync: this);
+    controller = AnimationController(duration: Duration(milliseconds: _appConfig.welcome.delayMs), vsync: this);
     animation = CurvedAnimation(parent: controller, curve: Curves.easeIn)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
@@ -106,8 +105,7 @@ class _WelcomePageState extends State<WelcomePage>
         } else if (status == AnimationStatus.dismissed) {
           controller.stop();
           _frontendService.backendIsReady().then((dynamic _) {
-            future.then((dynamic _) =>
-                Navigator.pushReplacementNamed(context, '/slideshow'));
+            future.then((dynamic _) => Navigator.pushReplacementNamed(context, '/slideshow'));
           });
         }
       });

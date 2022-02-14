@@ -15,6 +15,14 @@ import 'package:xterm/terminal/terminal_backend.dart';
 import 'package:xterm/theme/terminal_style.dart';
 
 class OTAPage extends StatefulWidget {
+  static void processingOTAReady(BuildContext context, bool isReady) {
+    if (isReady) {
+      Navigator.pushNamed(context, '/ota');
+    } else {
+      Navigator.pushNamed(context, '/welcome');
+    }
+  }
+
   OTAPage({Key? key}) : super(key: key);
 
   @override
@@ -95,6 +103,9 @@ class _OTAPageState extends State<OTAPage> {
     _subs.add(_frontendService.onOTAOutput.listen((event) {
       backend.onWrite(event);
     }));
+    _subs.add(_frontendService.onOTAReady.listen((value) {
+      OTAPage.processingOTAReady(context, value);
+    }));
   }
 
   @override
@@ -165,11 +176,8 @@ class _OTAPageState extends State<OTAPage> {
 
   void _runTestCommand() async {
     _log.info('Test run');
-    var result = await io.Process.start('./test_console.sh', [], environment: {
-      'LC_ALL': 'C',
-      'TERM': 'xterm-256color',
-      'COLUMNS': '120'
-    });
+    var result = await io.Process.start('./test_console.sh', [],
+        environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
     result.stdout.transform(utf8.decoder).forEach((str) {
       backend.onWrite(str);
       // setState(() {});

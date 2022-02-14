@@ -5,24 +5,21 @@ import 'package:built_collection/built_collection.dart';
 
 part 'ota_commands.g.dart';
 
-abstract class OTAReadyCommand
-    implements RpcCommand, Built<OTAReadyCommand, OTAReadyCommandBuilder> {
+abstract class OTAReadyCommand implements RpcCommand, Built<OTAReadyCommand, OTAReadyCommandBuilder> {
   static const String TYPE = 'ota_ready';
   @override
   String get type => TYPE;
   @override
   int get id;
+  bool get ready;
 
-  static Serializer<OTAReadyCommand> get serializer =>
-      _$oTAReadyCommandSerializer;
+  static Serializer<OTAReadyCommand> get serializer => _$oTAReadyCommandSerializer;
 
-  factory OTAReadyCommand([void updates(OTAReadyCommandBuilder b)?]) =
-      _$OTAReadyCommand;
+  factory OTAReadyCommand([void updates(OTAReadyCommandBuilder b)?]) = _$OTAReadyCommand;
   OTAReadyCommand._();
 }
 
-abstract class OTAGetInfoCommand
-    implements RpcCommand, Built<OTAGetInfoCommand, OTAGetInfoCommandBuilder> {
+abstract class OTAGetInfoCommand implements RpcCommand, Built<OTAGetInfoCommand, OTAGetInfoCommandBuilder> {
   static const String TYPE = 'ota_getinfo';
   @override
   String get type => TYPE;
@@ -31,33 +28,25 @@ abstract class OTAGetInfoCommand
 
   OTAInfo? get info;
 
-  static Serializer<OTAGetInfoCommand> get serializer =>
-      _$oTAGetInfoCommandSerializer;
+  static Serializer<OTAGetInfoCommand> get serializer => _$oTAGetInfoCommandSerializer;
 
-  factory OTAGetInfoCommand([void updates(OTAGetInfoCommandBuilder b)?]) =
-      _$OTAGetInfoCommand;
+  factory OTAGetInfoCommand([void updates(OTAGetInfoCommandBuilder b)?]) = _$OTAGetInfoCommand;
   OTAGetInfoCommand._();
 }
 
 abstract class OTAGetInfoCommandResult
-    implements
-        RpcResult,
-        Built<OTAGetInfoCommandResult, OTAGetInfoCommandResultBuilder> {
+    implements RpcResult, Built<OTAGetInfoCommandResult, OTAGetInfoCommandResultBuilder> {
   OTAInfo get info;
   @override
   int get id;
 
-  static Serializer<OTAGetInfoCommandResult> get serializer =>
-      _$oTAGetInfoCommandResultSerializer;
+  static Serializer<OTAGetInfoCommandResult> get serializer => _$oTAGetInfoCommandResultSerializer;
 
-  factory OTAGetInfoCommandResult(
-          [void updates(OTAGetInfoCommandResultBuilder b)]) =
-      _$OTAGetInfoCommandResult;
+  factory OTAGetInfoCommandResult([void updates(OTAGetInfoCommandResultBuilder b)]) = _$OTAGetInfoCommandResult;
   OTAGetInfoCommandResult._();
 }
 
-abstract class OTAOutputCommand
-    implements RpcCommand, Built<OTAOutputCommand, OTAOutputCommandBuilder> {
+abstract class OTAOutputCommand implements RpcCommand, Built<OTAOutputCommand, OTAOutputCommandBuilder> {
   static const String TYPE = 'ota_output';
   @override
   String get type => TYPE;
@@ -66,11 +55,9 @@ abstract class OTAOutputCommand
 
   String get output;
 
-  static Serializer<OTAOutputCommand> get serializer =>
-      _$oTAOutputCommandSerializer;
+  static Serializer<OTAOutputCommand> get serializer => _$oTAOutputCommandSerializer;
 
-  factory OTAOutputCommand([void updates(OTAOutputCommandBuilder b)?]) =
-      _$OTAOutputCommand;
+  factory OTAOutputCommand([void updates(OTAOutputCommandBuilder b)?]) = _$OTAOutputCommand;
   OTAOutputCommand._();
 }
 

@@ -70,6 +70,8 @@ class _$OTAReadyCommandSerializer
     final result = <Object?>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(int)),
+      'ready',
+      serializers.serialize(object.ready, specifiedType: const FullType(bool)),
     ];
 
     return result;
@@ -90,6 +92,10 @@ class _$OTAReadyCommandSerializer
         case 'id':
           result.id = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+        case 'ready':
+          result.ready = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
@@ -344,12 +350,15 @@ class _$OTAStatusSerializer implements PrimitiveSerializer<OTAStatus> {
 class _$OTAReadyCommand extends OTAReadyCommand {
   @override
   final int id;
+  @override
+  final bool ready;
 
   factory _$OTAReadyCommand([void Function(OTAReadyCommandBuilder)? updates]) =>
       (new OTAReadyCommandBuilder()..update(updates)).build();
 
-  _$OTAReadyCommand._({required this.id}) : super._() {
+  _$OTAReadyCommand._({required this.id, required this.ready}) : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'OTAReadyCommand', 'id');
+    BuiltValueNullFieldError.checkNotNull(ready, 'OTAReadyCommand', 'ready');
   }
 
   @override
@@ -363,17 +372,19 @@ class _$OTAReadyCommand extends OTAReadyCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is OTAReadyCommand && id == other.id;
+    return other is OTAReadyCommand && id == other.id && ready == other.ready;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, id.hashCode));
+    return $jf($jc($jc(0, id.hashCode), ready.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('OTAReadyCommand')..add('id', id))
+    return (newBuiltValueToStringHelper('OTAReadyCommand')
+          ..add('id', id)
+          ..add('ready', ready))
         .toString();
   }
 }
@@ -386,12 +397,17 @@ class OTAReadyCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  bool? _ready;
+  bool? get ready => _$this._ready;
+  set ready(bool? ready) => _$this._ready = ready;
+
   OTAReadyCommandBuilder();
 
   OTAReadyCommandBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
       _id = $v.id;
+      _ready = $v.ready;
       _$v = null;
     }
     return this;
@@ -413,7 +429,9 @@ class OTAReadyCommandBuilder
     final _$result = _$v ??
         new _$OTAReadyCommand._(
             id: BuiltValueNullFieldError.checkNotNull(
-                id, 'OTAReadyCommand', 'id'));
+                id, 'OTAReadyCommand', 'id'),
+            ready: BuiltValueNullFieldError.checkNotNull(
+                ready, 'OTAReadyCommand', 'ready'));
     replace(_$result);
     return _$result;
   }
