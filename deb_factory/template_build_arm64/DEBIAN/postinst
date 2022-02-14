@@ -15,7 +15,7 @@ exit $exit_status
 }
 
 sudo systemctl enable dslideshow
-sudo systemctl start dslideshow
+#sudo systemctl start dslideshow
 
 exit 0
 

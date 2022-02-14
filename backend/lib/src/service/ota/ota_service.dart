@@ -8,6 +8,7 @@ import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/env/default.dart';
 import 'package:dslideshow_common/rpc.dart';
+import 'package:dslideshow_common/version.dart';
 import 'package:logging/logging.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:shelf/shelf_io.dart' as io;
@@ -235,6 +236,7 @@ class OTAService implements RpcService {
 <body>
 <form method="post" enctype="multipart/form-data" action="ota_upload">
  <div>
+    <p>v${ApplicationInfo.frontendVersion}</p><Br> 
     <p><b>OTA ready</b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
@@ -328,7 +330,8 @@ class OTAService implements RpcService {
 <body>
 <form method="post" >
  <div>
-    <p><b>OTA get config.json</b></p>
+    <p>v${ApplicationInfo.frontendVersion}</p><Br>
+    <p><b>OTA get config.json </b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
  </div>
@@ -358,7 +361,8 @@ class OTAService implements RpcService {
 <body>
 <form method="post" enctype="multipart/form-data" >
  <div>
-    <p><b>OTA upload config.json</b></p>
+   <p>v${ApplicationInfo.frontendVersion}</p><Br>
+   <p><b>OTA upload config.json</b></p>
    <label for="code">Code</label><Br>
    <input id="code" name="code" ><Br>
    <label for="file">Choose file to upload config</label><Br>

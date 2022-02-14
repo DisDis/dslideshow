@@ -134,7 +134,7 @@ class _OTAPageState extends State<OTAPage> {
               ),
               Text(
                 "Code: ${_info.code}",
-                style: TextStyle(color: Colors.white, fontSize: 35),
+                style: TextStyle(color: Colors.white, fontSize: 50),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),

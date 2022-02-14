@@ -14,7 +14,7 @@ logger -s -p "syslog.err" -t "dslideshow.deb" "dslideshow.deb script '$0' error 
 exit $exit_status
 }
 
+#sudo systemctl stop dslideshow
 sudo systemctl disable dslideshow
-sudo systemctl stop dslideshow
 
 exit 0
