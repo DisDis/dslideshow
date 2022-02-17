@@ -85,6 +85,7 @@ class _OTAPageState extends State<OTAPage> {
   @override
   void initState() {
     super.initState();
+    _log.info('initState');
 
     backend = ProcessTerminalBackend();
     terminal = Terminal(backend: backend, maxLines: 10000);

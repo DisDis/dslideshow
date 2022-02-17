@@ -8,8 +8,7 @@ import "package:googleapis/photoslibrary/v1.dart";
 import 'package:logging/logging.dart';
 import 'package:googleapis_auth/src/auth_http_utils.dart';
 
-
-class GooglePhotoItem{
+class GooglePhotoItem {
   final String? id;
   final String url;
   final String? mimeType;
@@ -17,14 +16,16 @@ class GooglePhotoItem{
   GooglePhotoItem(String? this.id, String this.url, String? this.mimeType);
 }
 
-class GooglePhotoService{
+class GooglePhotoService {
   static final Logger _log = new Logger('GooglePhotoService');
   final ClientId _clientId;
   String _refreshToken;
-  String _tokenAccess ;
+  String _tokenAccess;
   DateTime? _tokenAExpire;
-  GooglePhotoService(final String identifier, final String secret, this._refreshToken,[this._tokenAccess = "", this._tokenAExpire]): this._clientId = new ClientId(identifier, secret){
-    if (_tokenAExpire == null){
+  GooglePhotoService(final String identifier, final String secret, this._refreshToken,
+      [this._tokenAccess = "", this._tokenAExpire])
+      : this._clientId = new ClientId(identifier, secret) {
+    if (_tokenAExpire == null) {
       _tokenAExpire = new DateTime.now().toUtc();
     }
   }
@@ -54,10 +55,9 @@ class GooglePhotoService{
       queryValues.add('state=${Uri.encodeQueryComponent(state)}');
     }
     return Uri.parse('https://accounts.google.com/o/oauth2/auth'
-        '?${queryValues.join('&')}')
+            '?${queryValues.join('&')}')
         .toString();
   }
-
 
   Future _run(Completer<String> codeCompleter) async {
     HttpServer server = await HttpServer.bind('localhost', 8989);
@@ -91,13 +91,11 @@ class GooglePhotoService{
 //        }
 
         if (error != null) {
-          throw new UserConsentException(
-              'Error occured while obtaining access credentials: $error');
+          throw new UserConsentException('Error occured while obtaining access credentials: $error');
         }
 
         if (code == null || code == '') {
-          throw new Exception(
-              'Invalid response from server (no auth code transmitted).');
+          throw new Exception('Invalid response from server (no auth code transmitted).');
         }
 
         codeCompleter.complete(code);
@@ -131,7 +129,7 @@ class GooglePhotoService{
     }
   }
 
-  Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(String albumName, int imageW, int imageH) async{
+  Future<Iterable<GooglePhotoItem>> getMediaItemInAlbum(String albumName, int imageW, int imageH) async {
     List<GooglePhotoItem> result = <GooglePhotoItem>[];
     var client = new http.Client();
     try {
@@ -142,8 +140,7 @@ class GooglePhotoService{
         var codeCompleter = new Completer<String>();
         _run(codeCompleter);
         var code = await codeCompleter.future;
-        credentials = await obtainAccessCredentialsViaCodeExchange(
-            client, _clientId, code, redirectUrl: redirectUri);
+        credentials = await obtainAccessCredentialsViaCodeExchange(client, _clientId, code, redirectUrl: redirectUri);
       } else {
         var at = new AccessToken(tokenAType, _tokenAccess, _tokenAExpire!);
         credentials = new AccessCredentials(at, _refreshToken, scopes);
@@ -152,35 +149,37 @@ class GooglePhotoService{
 //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       var clientARC = new AutoRefreshingClient(client, _clientId, credentials);
 
-    final gphoto = new PhotosLibraryApi(clientARC);
+      final gphoto = new PhotosLibraryApi(clientARC);
       var albumsRes = await gphoto.albums.list();
-      var slideShowAlbum = albumsRes.albums!.firstWhereOrNull((item)=>item.title == albumName);
-      if (slideShowAlbum != null){
+      var slideShowAlbum = albumsRes.albums!.firstWhereOrNull((item) => item.title == albumName);
+      if (slideShowAlbum != null) {
         _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
         String? nextPageToken;
         while (true) {
-         final smiRequest = new SearchMediaItemsRequest()..albumId=slideShowAlbum.id..pageSize=25;
-         if (nextPageToken != null){
-           smiRequest.pageToken = nextPageToken;
-         }
-         var mediaItems = await gphoto.mediaItems.search(smiRequest);
-         mediaItems.mediaItems!.forEach((item) {
-           if (item.mediaMetadata!.video != null){
-             //TODO: https://issuetracker.google.com/issues/80149160
-             /*
+          final smiRequest = new SearchMediaItemsRequest()
+            ..albumId = slideShowAlbum.id
+            ..pageSize = 25;
+          if (nextPageToken != null) {
+            smiRequest.pageToken = nextPageToken;
+          }
+          var mediaItems = await gphoto.mediaItems.search(smiRequest);
+          mediaItems.mediaItems!.forEach((item) {
+            if (item.mediaMetadata!.video != null) {
+              //TODO: https://issuetracker.google.com/issues/80149160
+              /*
              * https://github.com/gilesknap/gphotos-sync
              * Video download transcodes the videos even if you ask for the original file (=vd parameter). My experience is that the result is looks similar to the original but the compression is more clearly visible. It is a smaller file with approximately 60% bitrate (same resolution).
              **/
-             result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=vd', item.mimeType));
-           } else {
-             result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
-           }
-         });
-         nextPageToken = mediaItems.nextPageToken;
-         _log.info('received ${result.length} media item(s) information');
-         if (nextPageToken == null || nextPageToken.isEmpty){
-           break;
-         }
+              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=vd', item.mimeType));
+            } else {
+              result.add(new GooglePhotoItem(item.id, '${item.baseUrl}=w$imageW-h$imageH', item.mimeType));
+            }
+          });
+          nextPageToken = mediaItems.nextPageToken;
+          _log.info('received ${result.length} media item(s) information');
+          if (nextPageToken == null || nextPageToken.isEmpty) {
+            break;
+          }
         }
       } else {
         _log.severe("Not found '$albumName' album");
@@ -191,7 +190,7 @@ class GooglePhotoService{
       _scUpdateCredentials.add(credentials);
 //      _log.info('Cred id:${credentials.idToken} at:${credentials.accessToken} rt:${credentials.refreshToken}');
       client.close();
-    } catch(err){
+    } catch (err) {
       _log.severe("Unable to create Google photo service: $err");
     }
     return result;

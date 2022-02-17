@@ -18,7 +18,7 @@ class ConfigPage extends StatefulWidget {
 }
 
 class _ConfigPageState extends State<ConfigPage> {
-  //static final Logger _log = Logger('_ConfigPageState');
+  static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
   static final Random rnd = new Random();
   final FrontendService _frontendService = injector.get<FrontendService>();
@@ -26,6 +26,7 @@ class _ConfigPageState extends State<ConfigPage> {
   @override
   void initState() {
     super.initState();
+    _log.info('initState');
     _frontendService.startWebServer();
   }
 

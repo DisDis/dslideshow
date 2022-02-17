@@ -1141,8 +1141,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildActionParameter();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActionParameter.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.ActionParameter.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkActionParameter(od as api.ActionParameter);
     });
   });
@@ -1151,8 +1150,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildActionResponse();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActionResponse.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.ActionResponse.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkActionResponse(od as api.ActionResponse);
     });
   });
@@ -1161,8 +1159,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildAnnotation();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Annotation.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Annotation.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkAnnotation(od as api.Annotation);
     });
   });
@@ -1171,8 +1168,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildAttachment();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Attachment.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Attachment.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkAttachment(od as api.Attachment);
     });
   });
@@ -1181,8 +1177,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildAttachmentDataRef();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AttachmentDataRef.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.AttachmentDataRef.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkAttachmentDataRef(od as api.AttachmentDataRef);
     });
   });
@@ -1191,8 +1186,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildButton();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Button.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Button.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkButton(od as api.Button);
     });
   });
@@ -1210,8 +1204,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildCardAction();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.CardAction.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.CardAction.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkCardAction(od as api.CardAction);
     });
   });
@@ -1220,8 +1213,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildCardHeader();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.CardHeader.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.CardHeader.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkCardHeader(od as api.CardHeader);
     });
   });
@@ -1230,8 +1222,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildDeprecatedEvent();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DeprecatedEvent.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.DeprecatedEvent.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkDeprecatedEvent(od as api.DeprecatedEvent);
     });
   });
@@ -1240,8 +1231,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildDriveDataRef();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DriveDataRef.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.DriveDataRef.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkDriveDataRef(od as api.DriveDataRef);
     });
   });
@@ -1259,8 +1249,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildFormAction();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.FormAction.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.FormAction.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkFormAction(od as api.FormAction);
     });
   });
@@ -1278,8 +1267,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildImageButton();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ImageButton.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.ImageButton.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkImageButton(od as api.ImageButton);
     });
   });
@@ -1288,8 +1276,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildKeyValue();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.KeyValue.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.KeyValue.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkKeyValue(od as api.KeyValue);
     });
   });
@@ -1298,8 +1285,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildListMembershipsResponse();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListMembershipsResponse.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.ListMembershipsResponse.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkListMembershipsResponse(od as api.ListMembershipsResponse);
     });
   });
@@ -1308,8 +1294,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildListSpacesResponse();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListSpacesResponse.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.ListSpacesResponse.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkListSpacesResponse(od as api.ListSpacesResponse);
     });
   });
@@ -1327,8 +1312,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildMembership();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Membership.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Membership.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkMembership(od as api.Membership);
     });
   });
@@ -1337,8 +1321,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildMessage();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Message.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Message.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkMessage(od as api.Message);
     });
   });
@@ -1347,8 +1330,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildOnClick();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.OnClick.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.OnClick.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkOnClick(od as api.OnClick);
     });
   });
@@ -1357,8 +1339,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildOpenLink();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.OpenLink.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.OpenLink.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkOpenLink(od as api.OpenLink);
     });
   });
@@ -1367,8 +1348,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildSection();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Section.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Section.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkSection(od as api.Section);
     });
   });
@@ -1377,8 +1357,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildSlashCommand();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SlashCommand.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.SlashCommand.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkSlashCommand(od as api.SlashCommand);
     });
   });
@@ -1387,8 +1366,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildSlashCommandMetadata();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SlashCommandMetadata.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.SlashCommandMetadata.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkSlashCommandMetadata(od as api.SlashCommandMetadata);
     });
   });
@@ -1406,8 +1384,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildTextButton();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.TextButton.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.TextButton.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkTextButton(od as api.TextButton);
     });
   });
@@ -1416,8 +1393,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildTextParagraph();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TextParagraph.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.TextParagraph.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkTextParagraph(od as api.TextParagraph);
     });
   });
@@ -1426,8 +1402,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildThread();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
-          api.Thread.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      var od = api.Thread.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkThread(od as api.Thread);
     });
   });
@@ -1445,8 +1420,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildUserMentionMetadata();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UserMentionMetadata.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.UserMentionMetadata.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkUserMentionMetadata(od as api.UserMentionMetadata);
     });
   });
@@ -1455,8 +1429,7 @@ void main() {
     unittest.test('to-json--from-json', () async {
       var o = buildWidgetMarkup();
       var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.WidgetMarkup.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
+      var od = api.WidgetMarkup.fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkWidgetMarkup(od as api.WidgetMarkup);
     });
   });
@@ -1470,8 +1443,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1493,8 +1465,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1520,8 +1491,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.messages(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.messages(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
 
@@ -1533,8 +1503,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1556,8 +1525,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1583,8 +1551,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.webhooks(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.webhooks(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -1598,8 +1565,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1621,8 +1587,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1648,8 +1613,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.messages(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.messages(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -1683,8 +1647,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1706,8 +1669,7 @@ void main() {
         var resp = convert.json.encode(buildMedia());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.download(arg_resourceName, $fields: arg_$fields);
+      final response = await res.download(arg_resourceName, $fields: arg_$fields);
       checkMedia(response as api.Media);
     });
   });
@@ -1721,8 +1683,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1744,8 +1705,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1771,8 +1731,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.messages(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.messages(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
 
@@ -1784,8 +1743,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1807,8 +1765,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1834,8 +1791,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.webhooks(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.webhooks(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -1849,8 +1805,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -1872,8 +1827,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1899,8 +1853,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.messages(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.messages(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -1931,8 +1884,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -1983,8 +1935,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2014,10 +1965,7 @@ void main() {
         var resp = convert.json.encode(buildListSpacesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.list(
-          pageSize: arg_pageSize,
-          pageToken: arg_pageToken,
-          $fields: arg_$fields);
+      final response = await res.list(pageSize: arg_pageSize, pageToken: arg_pageToken, $fields: arg_$fields);
       checkListSpacesResponse(response as api.ListSpacesResponse);
     });
 
@@ -2029,8 +1977,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -2052,8 +1999,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2079,8 +2025,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.webhooks(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.webhooks(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -2111,8 +2056,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2165,8 +2109,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2196,10 +2139,8 @@ void main() {
         var resp = convert.json.encode(buildListMembershipsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.list(arg_parent,
-          pageSize: arg_pageSize,
-          pageToken: arg_pageToken,
-          $fields: arg_$fields);
+      final response =
+          await res.list(arg_parent, pageSize: arg_pageSize, pageToken: arg_pageToken, $fields: arg_$fields);
       checkListMembershipsResponse(response as api.ListMembershipsResponse);
     });
   });
@@ -2213,8 +2154,7 @@ void main() {
       var arg_threadKey = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -2236,8 +2176,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2263,8 +2202,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.create(arg_request, arg_parent,
-          threadKey: arg_threadKey, $fields: arg_$fields);
+      final response = await res.create(arg_request, arg_parent, threadKey: arg_threadKey, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
 
@@ -2293,8 +2231,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2345,8 +2282,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2380,8 +2316,7 @@ void main() {
       var arg_updateMask = 'foo';
       var arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
+        var obj = api.Message.fromJson(json as core.Map<core.String, core.dynamic>);
         checkMessage(obj as api.Message);
 
         var path = (req.url).path;
@@ -2403,8 +2338,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
@@ -2430,8 +2364,7 @@ void main() {
         var resp = convert.json.encode(buildMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response = await res.update(arg_request, arg_name,
-          updateMask: arg_updateMask, $fields: arg_$fields);
+      final response = await res.update(arg_request, arg_name, updateMask: arg_updateMask, $fields: arg_$fields);
       checkMessage(response as api.Message);
     });
   });
@@ -2462,8 +2395,7 @@ void main() {
         var query = (req.url).query;
         var queryOffset = 0;
         var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
+        void addQueryParam(core.String n, core.String v) => queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
