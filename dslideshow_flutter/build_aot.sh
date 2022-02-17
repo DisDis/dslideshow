@@ -5,7 +5,7 @@ OUTPUT_KERNEL_D=./build/kernel_snapshot.d
 OUTPUT_SO=./build/flutter_assets/app.so
 APPLICATION_ENTRY_POINT=package:dslideshow_flutter/main.dart
 BUILD_PROFILE=release_64
-ENGINE_BINARIES=.
+ENGINE_BINARIES=../deb_factory/source_arm64/engine-binaries
 
 echo "----------- README -----------"
 echo "Instruction: https://github.com/ardera/flutter-pi/tree/engine-binaries"

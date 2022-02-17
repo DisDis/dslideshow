@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 
@@ -46,10 +45,8 @@ class CircularArcPainter extends CustomPainter {
     final startAngle = -math.pi / 2;
     final sweepAngle = 2 * math.pi * percent;
 
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        2 * math.pi, false, backgroundPaint);
-    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle,
-        sweepAngle, false, paint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, 2 * math.pi, false, backgroundPaint);
+    canvas.drawArc(Rect.fromCircle(center: center, radius: radius), startAngle, sweepAngle, false, paint);
   }
 
   @override
@@ -82,10 +79,8 @@ class CircularIndicatorWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _CircularIndicatorWidgetState();
 }
 
-class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller =
-      AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+class _CircularIndicatorWidgetState extends State<CircularIndicatorWidget> with SingleTickerProviderStateMixin {
+  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {

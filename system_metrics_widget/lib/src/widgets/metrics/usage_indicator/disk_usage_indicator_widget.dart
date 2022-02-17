@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/usage_indicator/usage_indicator_widget.dart';
 
 class DiskUsageIndicatorWidget extends UsageIndicatorWidget {
@@ -6,10 +5,7 @@ class DiskUsageIndicatorWidget extends UsageIndicatorWidget {
   final int usedMemory;
   final int? usagePercent;
 
-  DiskUsageIndicatorWidget(
-      {required this.totalMemory,
-      required this.usedMemory,
-      required this.usagePercent})
+  DiskUsageIndicatorWidget({required this.totalMemory, required this.usedMemory, required this.usagePercent})
       : super(
           title: 'Disk',
           total: _formatter(totalMemory),
@@ -18,6 +14,5 @@ class DiskUsageIndicatorWidget extends UsageIndicatorWidget {
           usagePercent: usagePercent,
         );
 
-  static String _formatter(int memory) =>
-      UsageIndicatorWidget.formatKBytes(memory, 2);
+  static String _formatter(int memory) => UsageIndicatorWidget.formatKBytes(memory, 2);
 }

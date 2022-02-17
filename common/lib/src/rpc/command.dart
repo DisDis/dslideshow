@@ -1,4 +1,4 @@
-abstract class RpcCommand implements RpcResult{
+abstract class RpcCommand implements RpcResult {
   static int _id = 0;
 
   static int generateId() => _id++;
@@ -8,10 +8,10 @@ abstract class RpcCommand implements RpcResult{
   int get id;
 }
 
-abstract class RpcResult{
+abstract class RpcResult {
   int get id;
 }
 
-abstract class RpcErrorResult extends RpcResult{
+abstract class RpcErrorResult extends RpcResult {
   String get error;
 }

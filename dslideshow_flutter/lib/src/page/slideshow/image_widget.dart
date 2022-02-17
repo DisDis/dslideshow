@@ -7,13 +7,12 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/storage.dart';
 import 'package:dslideshow_flutter/src/page/slideshow/item_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
 @immutable
-class ImageWidget extends StatelessWidget implements ItemWidget{
+class ImageWidget extends StatelessWidget implements ItemWidget {
   static final Logger _log = Logger('ImageWidget');
   Image? _image;
   final MediaItem item;
@@ -23,16 +22,13 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
 
   ImageWidget(this.item, this._config) : super(key: Key('img:${item.uri!.toFilePath()}')) {
     if (isGif) {
-      _image =
-          Image.memory(
-              new File(item.uri!.toFilePath()).readAsBytesSync(),
-              errorBuilder: (context,_, __)=>Container(),
-              fit: BoxFit.contain, filterQuality: FilterQuality.high);
+      _image = Image.memory(new File(item.uri!.toFilePath()).readAsBytesSync(),
+          errorBuilder: (context, _, __) => Container(), fit: BoxFit.contain, filterQuality: FilterQuality.high);
     }
   }
 
   @override
-  Widget build(BuildContext context) => _image!=null? _image! : Container();
+  Widget build(BuildContext context) => _image != null ? _image! : Container();
 
   Future<void> precache(BuildContext context) async {
     if (isGif) {
@@ -43,17 +39,20 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     final recorder = ui.PictureRecorder();
     final paintBlur = Paint();
     if (_config.isBlurredBackground && _config.backgroundBlurSigma > 0) {
-      paintBlur.imageFilter = ui.ImageFilter.blur(sigmaX: _config.backgroundBlurSigma.toDouble(), sigmaY: _config.backgroundBlurSigma.toDouble());
+      paintBlur.imageFilter = ui.ImageFilter.blur(
+          sigmaX: _config.backgroundBlurSigma.toDouble(), sigmaY: _config.backgroundBlurSigma.toDouble());
     }
     paintBlur.color = Color.fromRGBO(0, 0, 0, _config.backgroundOpacity);
 
     Canvas canvas = Canvas(recorder);
-    canvas.drawColor(Color.fromRGBO(_config.backgroundColorR, _config.backgroundColorG, _config.backgroundColorB, 1.0), BlendMode.color);
+    canvas.drawColor(Color.fromRGBO(_config.backgroundColorR, _config.backgroundColorG, _config.backgroundColorB, 1.0),
+        BlendMode.color);
     final outputSize = MediaQuery.of(context).size;
 
     // Cover
     if (_config.isBlurredBackground) {
-      paintImage(canvas: canvas,
+      paintImage(
+          canvas: canvas,
           inputPaint: paintBlur,
           image: imageSrc,
           rect: ui.Rect.fromLTWH(0, 0, outputSize.width, outputSize.height),
@@ -62,15 +61,19 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
           isAntiAlias: true);
     }
 
-
     // Contain
-    paintImage(canvas: canvas, image: imageSrc,
-        rect: ui.Rect.fromLTWH(0,0,outputSize.width,outputSize.height), fit: BoxFit.contain, filterQuality: FilterQuality.high, isAntiAlias: true);
+    paintImage(
+        canvas: canvas,
+        image: imageSrc,
+        rect: ui.Rect.fromLTWH(0, 0, outputSize.width, outputSize.height),
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.high,
+        isAntiAlias: true);
 
-
-    final outputImage = await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
+    final outputImage =
+        await recorder.endRecording().toImage(outputSize.width.truncate(), outputSize.height.truncate());
     final byteData = await outputImage.toByteData(format: ui.ImageByteFormat.png);
-    _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context,_, __)=>Container());
+    _image = Image.memory(byteData!.buffer.asUint8List(), errorBuilder: (context, _, __) => Container());
     return precacheImage(_image!.image, context);
   }
 
@@ -143,32 +146,25 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
   ///  * [DecorationImage], which holds a configuration for calling this function.
   ///  * [BoxDecoration], which uses this function to paint a [DecorationImage].
   ///  decoration_image.dart
-  void paintImage({
-    required Canvas canvas,
-    required Rect rect,
-    required ui.Image image,
-    String? debugImageLabel,
-    double scale = 1.0,
-    ColorFilter? colorFilter,
-    BoxFit? fit,
-    Alignment alignment = Alignment.center,
-    Rect? centerSlice,
-    //ImageRepeat repeat = ImageRepeat.noRepeat,
-    bool flipHorizontally = false,
-    bool invertColors = false,
-    FilterQuality filterQuality = FilterQuality.low,
-    bool isAntiAlias = false,
-    Paint? inputPaint = null
-  }) {
+  void paintImage(
+      {required Canvas canvas,
+      required Rect rect,
+      required ui.Image image,
+      String? debugImageLabel,
+      double scale = 1.0,
+      ColorFilter? colorFilter,
+      BoxFit? fit,
+      Alignment alignment = Alignment.center,
+      Rect? centerSlice,
+      //ImageRepeat repeat = ImageRepeat.noRepeat,
+      bool flipHorizontally = false,
+      bool invertColors = false,
+      FilterQuality filterQuality = FilterQuality.low,
+      bool isAntiAlias = false,
+      Paint? inputPaint = null}) {
     ImageRepeat repeat = ImageRepeat.noRepeat;
-    assert(canvas != null);
-    assert(image != null);
-    assert(alignment != null);
-    //assert(repeat != null);
-    assert(flipHorizontally != null);
-    assert(isAntiAlias != null);
-    if (rect.isEmpty)
-      return;
+
+    if (rect.isEmpty) return;
     Size outputSize = rect.size;
     Size inputSize = Size(image.width.toDouble(), image.height.toDouble());
     late Offset sliceBorder;
@@ -190,7 +186,8 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       destinationSize += sliceBorder;
       // We don't have the ability to draw a subset of the image at the same time
       // as we apply a nine-patch stretch.
-      assert(sourceSize == inputSize, 'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.');
+      assert(sourceSize == inputSize,
+          'centerSlice was used with a BoxFit that does not guarantee that the image is fully visible.');
     }
 
     /*if (repeat != ImageRepeat.noRepeat && destinationSize == outputSize) {
@@ -198,9 +195,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       // output rect with the image.
       repeat = ImageRepeat.noRepeat;
     }*/
-    final Paint paint =  inputPaint==null? (Paint()..isAntiAlias = isAntiAlias ): inputPaint..isAntiAlias = isAntiAlias;
-    if (colorFilter != null)
-      paint.colorFilter = colorFilter;
+    final Paint paint = inputPaint == null ? (Paint()..isAntiAlias = isAntiAlias) : inputPaint
+      ..isAntiAlias = isAntiAlias;
+    if (colorFilter != null) paint.colorFilter = colorFilter;
     if (sourceSize != destinationSize) {
       paint.filterQuality = filterQuality;
     }
@@ -285,10 +282,8 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     }*/
 
     final bool needSave = repeat != ImageRepeat.noRepeat || flipHorizontally;
-    if (needSave)
-      canvas.save();
-    if (repeat != ImageRepeat.noRepeat)
-      canvas.clipRect(rect);
+    if (needSave) canvas.save();
+    if (repeat != ImageRepeat.noRepeat) canvas.clipRect(rect);
     if (flipHorizontally) {
       final double dx = -(rect.left + rect.width / 2.0);
       canvas.translate(-dx, 0.0);
@@ -297,12 +292,13 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     }
     if (centerSlice == null) {
       final Rect sourceRect = alignment.inscribe(
-        sourceSize, Offset.zero & inputSize,
+        sourceSize,
+        Offset.zero & inputSize,
       );
       //if (repeat == ImageRepeat.noRepeat)
       {
         canvas.drawImageRect(image, sourceRect, destinationRect, paint);
-      }/* else {
+      } /* else {
         for (final Rect tileRect in _generateImageTileRects(rect, destinationRect, repeat))
           canvas.drawImageRect(image, sourceRect, tileRect, paint);
       }*/
@@ -315,8 +311,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
           canvas.drawImageNine(image, centerSlice, tileRect, paint);
       }*/
     }
-    if (needSave)
-      canvas.restore();
+    if (needSave) canvas.restore();
 
     if (invertedCanvas) {
       canvas.restore();
@@ -349,9 +344,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
   ///load ui.Image from ImageProvider
   ///[provider] ImageProvider
   static Future<ui.Image> loadImageFromProvider(
-      ImageProvider provider, {
-        ImageConfiguration config = ImageConfiguration.empty,
-      }) async {
+    ImageProvider provider, {
+    ImageConfiguration config = ImageConfiguration.empty,
+  }) async {
     Completer<ui.Image> completer = Completer<ui.Image>();
     late ImageStreamListener listener;
     ImageStream stream = provider.resolve(config);
@@ -359,7 +354,7 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
       final ui.Image image = frame.image;
       completer.complete(image);
       stream.removeListener(listener);
-    }, onError:(e, st){
+    }, onError: (e, st) {
       _log.warning('loadImageFromProvider', e, st);
       completer.completeError(e, st);
       stream.removeListener(listener);
@@ -369,5 +364,4 @@ class ImageWidget extends StatelessWidget implements ItemWidget{
     stream.addListener(listener);
     return completer.future;
   }
-
 }

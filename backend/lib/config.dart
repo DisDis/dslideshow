@@ -187,10 +187,13 @@ class AppStorage {
     if (value is int) {
       return value;
     }
-    return int.parse(value as String, onError: (val) {
-      _log.fine('Could not parse value "$val" (field "$field") into a number.');
+    final valueO = int.tryParse(value as String);
+    if (valueO == null) {
+      _log.fine('Could not parse value "$value" (field "$field") into a number.');
       return defaultValue;
-    });
+    } else {
+      return valueO;
+    }
   }
 }
 
@@ -234,10 +237,13 @@ abstract class BaseConfig {
     if (value is int) {
       return value;
     }
-    return int.parse(value as String, onError: (val) {
-      _log.fine('Could not parse value "$val" (field "$field") into a number.');
+    final valueO = int.tryParse(value as String);
+    if (valueO == null) {
+      _log.fine('Could not parse value "$value" (field "$field") into a number.');
       return defaultValue;
-    });
+    } else {
+      return valueO;
+    }
   }
 
   double readDouble(String field, double defaultValue) {
@@ -249,10 +255,13 @@ abstract class BaseConfig {
     if (value is double) {
       return value;
     }
-    return double.parse(value as String, (val) {
-      _log.fine('Could not parse value "$val" (field "$field") into a number.');
+    final valueO = double.tryParse(value as String);
+    if (valueO == null) {
+      _log.fine('Could not parse value "$value" (field "$field") into a number.');
       return defaultValue;
-    });
+    } else {
+      return valueO;
+    }
   }
 }
 

@@ -5,7 +5,6 @@ import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:system_metrics_widget/system_metrics_widget.dart';
 
 class SystemInfoWidget extends StatefulWidget {

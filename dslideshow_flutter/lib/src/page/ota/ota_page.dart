@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_common/version.dart';
@@ -7,12 +6,11 @@ import 'package:dslideshow_flutter/src/injector.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'dart:io' as io;
 
 import 'package:xterm/flutter.dart';
 import 'package:xterm/terminal/terminal.dart';
 import 'package:xterm/terminal/terminal_backend.dart';
-import 'package:xterm/theme/terminal_style.dart';
+// import 'package:xterm/theme/terminal_style.dart';
 
 class OTAPage extends StatefulWidget {
   static void processingOTAReady(BuildContext context, bool isReady) {
@@ -67,9 +65,7 @@ class ProcessTerminalBackend extends TerminalBackend {
   void write(String input) {}
 
   @override
-  void ackProcessed() {
-    // TODO: implement ackProcessed
-  }
+  void ackProcessed() {}
 }
 
 class _OTAPageState extends State<OTAPage> {
@@ -134,7 +130,7 @@ class _OTAPageState extends State<OTAPage> {
               ),
               Text(
                 "Code: ${_info.code}",
-                style: TextStyle(color: Colors.white, fontSize: 50),
+                style: TextStyle(color: Colors.white, fontSize: 60),
               ),
               Padding(
                 padding: EdgeInsets.all(16.0),
@@ -144,10 +140,10 @@ class _OTAPageState extends State<OTAPage> {
                   minHeight: 15,
                 ),
               ),
-              ElevatedButton(
-                onPressed: _runTestCommand,
-                child: Text('TEST'),
-              ),
+              // ElevatedButton(
+              //   onPressed: _runTestCommand,
+              //   child: Text('TEST'),
+              // ),
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushReplacementNamed(context, '/config');
@@ -174,18 +170,18 @@ class _OTAPageState extends State<OTAPage> {
         ));
   }
 
-  void _runTestCommand() async {
-    _log.info('Test run');
-    var result = await io.Process.start('./test_console.sh', [],
-        environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
-    result.stdout.transform(utf8.decoder).forEach((str) {
-      backend.onWrite(str);
-      // setState(() {});
-    });
-    result.stderr.transform(utf8.decoder).forEach((str) {
-      backend.onWrite(str);
-    });
-    var exitCode = await result.exitCode;
-    backend.onWrite('Exit code: $exitCode');
-  }
+  // void _runTestCommand() async {
+  //   _log.info('Test run');
+  //   var result = await io.Process.start('./test_console.sh', [],
+  //       environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
+  //   result.stdout.transform(utf8.decoder).forEach((str) {
+  //     backend.onWrite(str);
+  //     // setState(() {});
+  //   });
+  //   result.stderr.transform(utf8.decoder).forEach((str) {
+  //     backend.onWrite(str);
+  //   });
+  //   var exitCode = await result.exitCode;
+  //   backend.onWrite('Exit code: $exitCode');
+  // }
 }

@@ -1,6 +1,7 @@
 name: googleapis
 version: 2.0.0+special
 description: Auto-generated client libraries.
+publish_to: none
 environment:
   sdk: '>=2.12.0-0 <3.0.0'
 dependencies:

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class MetricsContainerWidget extends StatelessWidget {
   final Color backgroundColor;
@@ -37,10 +36,7 @@ class MetricsContainerWidget extends StatelessWidget {
             flex: 6,
             child: Container(
               color: backgroundColor,
-              child: Padding(
-                  padding:
-                      EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8),
-                  child: child),
+              child: Padding(padding: EdgeInsets.only(top: 4, left: 8, right: 4, bottom: 8), child: child),
             ),
           ),
         ],

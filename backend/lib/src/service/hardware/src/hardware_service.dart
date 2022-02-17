@@ -3,11 +3,6 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
-import 'package:dslideshow_backend/src/command/echo.dart';
-import 'package:dslideshow_backend/src/command/empty_result.dart';
-import 'package:dslideshow_backend/src/command/hardware_commands.dart';
-import 'package:dslideshow_backend/src/command/screen_commands.dart';
-import 'package:dslideshow_backend/src/command/storage_commands.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
@@ -17,7 +12,7 @@ import 'package:logging/logging.dart';
 
 import 'gpio_service.dart';
 
-class HardwareService implements RpcService{
+class HardwareService implements RpcService {
   static final Logger _log = new Logger('HardwareService');
 
   final SystemInfoService _systemInfoService;
@@ -29,13 +24,14 @@ class HardwareService implements RpcService{
   final ScreenService _screenService;
   final MqttService _mqttService;
 
-  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService, this._systemInfoService, this._webServer, this._mqttService){
+  HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService,
+      this._systemInfoService, this._webServer, this._mqttService) {
     _init();
   }
 
   final List<Future> _initFutures = <Future>[];
   void _init() {
-    _initFutures.add( _storage.init());
+    _initFutures.add(_storage.init());
     if (Platform.isLinux) {
       _initFutures.add(_gpioService.init());
     } else {
@@ -76,16 +72,14 @@ class HardwareService implements RpcService{
     _initFutures.add(_systemInfoService.init());
   }
 
-  void screenConfigure(bool enabled){
-    _frontendService.send(new ScreenTurnCommand((b) =>
-    b
+  void screenConfigure(bool enabled) {
+    _frontendService.send(new ScreenTurnCommand((b) => b
       ..id = RpcCommand.generateId()
       ..enabled = enabled));
   }
 
   void testEcho(String text) async {
-    final result = await _frontendService.send(new EchoCommand((b) =>
-    b
+    final result = await _frontendService.send(new EchoCommand((b) => b
       ..id = RpcCommand.generateId()
       ..text = text));
     _log.info("Message: $result");
@@ -97,9 +91,10 @@ class HardwareService implements RpcService{
     Stopwatch work = new Stopwatch()
       ..reset()
       ..start();
-    return _executeCommand(command).whenComplete((){
+    return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info(
+          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -126,17 +121,12 @@ class HardwareService implements RpcService{
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
       default:
-        return new Future.value(_generateErrorResult(
-            new Exception("Unknown command: ${command.type}"), command));
+        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
     }
   }
 
-
-
-
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return new ErrorResult((b) =>
-    b
+    return new ErrorResult((b) => b
       ..id = command.id
       ..error = "$e");
   }
@@ -151,22 +141,23 @@ class HardwareService implements RpcService{
     });
   }
 
-  Future<RpcResult> _executeStorageNextCommand(StorageNextCommand command) async{
+  Future<RpcResult> _executeStorageNextCommand(StorageNextCommand command) async {
     await _storage.next();
     return new EmptyResult((b) {
       b.id = command.id;
     });
   }
+
   Future<RpcResult> _executeGetMediaItemCommand(GetMediaItemCommand command) async {
-    final item = await (command.isCurrent ? _storage.getCurrent():_storage.getNext());
+    final item = await (command.isCurrent ? _storage.getCurrent() : _storage.getNext());
     return new GetMediaItemCommandResult((b) {
       b.id = command.id;
-      b.mediaId = item!=null? item.id: null;
-      b.mediaUri = item!=null? item.uri: null;
+      b.mediaId = item != null ? item.id : null;
+      b.mediaUri = item != null ? item.uri : null;
     });
   }
 
-  Future<RpcResult> _executeGetSystemInfoCommand(GetSystemInfoCommand command) async{
+  Future<RpcResult> _executeGetSystemInfoCommand(GetSystemInfoCommand command) async {
     final info = await _systemInfoService.getFullInfo();
     return new GetSystemInfoCommandResult((b) {
       b.id = command.id;
@@ -174,9 +165,8 @@ class HardwareService implements RpcService{
     });
   }
 
-  Future<RpcResult> _pushButton(ButtonType type) async{
-    return _frontendService.send(new PushButtonCommand((b) =>
-    b
+  Future<RpcResult> _pushButton(ButtonType type) async {
+    return _frontendService.send(new PushButtonCommand((b) => b
       ..id = RpcCommand.generateId()
       ..button = type));
   }
@@ -190,15 +180,15 @@ class HardwareService implements RpcService{
     });
   }
 
-  Future<RpcResult> _executeScreenLockCommand(ScreenLockCommand command) async{
+  Future<RpcResult> _executeScreenLockCommand(ScreenLockCommand command) async {
     _screenService.isScreenOffLock = command.isLock;
     return new EmptyResult((b) {
       b.id = command.id;
     });
   }
 
-  Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async{
-    if (command.enabled){
+  Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
+    if (command.enabled) {
       _screenService.screenOn();
     } else {
       _screenService.screenOff();
@@ -208,11 +198,11 @@ class HardwareService implements RpcService{
     });
   }
 
-  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async{
+  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
     return _webServer.send(command);
   }
 
-  Future<RpcResult> _executeAreYouReadyCommand(AreYouReadyCommand command) async{
+  Future<RpcResult> _executeAreYouReadyCommand(AreYouReadyCommand command) async {
     if (_initFutures.isNotEmpty) {
       await Future.wait<dynamic>(_initFutures);
       _initFutures.clear();
@@ -222,7 +212,7 @@ class HardwareService implements RpcService{
     });
   }
 
-  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async{
+  Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async {
     //Emulate
     _pushButton(command.button);
     return new EmptyResult((b) {

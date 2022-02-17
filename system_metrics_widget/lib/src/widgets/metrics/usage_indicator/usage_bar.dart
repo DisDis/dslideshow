@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class UsageBar extends StatefulWidget {
   final int? usagePercent;
@@ -27,12 +26,10 @@ class UsageBarPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final transitionWidth = 8.0;
     final usageEndPosition = size.width * usagePercent / 100;
-    final hasTransition =
-        math.min(usageEndPosition, size.width - usageEndPosition) > 10;
+    final hasTransition = math.min(usageEndPosition, size.width - usageEndPosition) > 10;
 
     final usedRect = Offset.zero & Size(usageEndPosition, size.height);
-    final freeRect =
-        usedRect.topRight & Size(size.width - usageEndPosition, size.height);
+    final freeRect = usedRect.topRight & Size(size.width - usageEndPosition, size.height);
 
     final Paint usedPaint = Paint()
       ..shader = LinearGradient(
@@ -51,8 +48,7 @@ class UsageBarPainter extends CustomPainter {
       ).createShader(freeRect);
 
     final transitionRect = hasTransition
-        ? (usedRect.topRight - Offset(transitionWidth, 0) &
-            Size(transitionWidth, usedRect.height))
+        ? (usedRect.topRight - Offset(transitionWidth, 0) & Size(transitionWidth, usedRect.height))
         : Rect.zero;
 
     final Paint transitionPaint = Paint()
@@ -70,14 +66,11 @@ class UsageBarPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(UsageBarPainter oldDelegate) =>
-      oldDelegate.usagePercent != usagePercent;
+  bool shouldRepaint(UsageBarPainter oldDelegate) => oldDelegate.usagePercent != usagePercent;
 }
 
-class _UsageBarState extends State<UsageBar>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller =
-      AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+class _UsageBarState extends State<UsageBar> with SingleTickerProviderStateMixin {
+  late AnimationController _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +78,7 @@ class _UsageBarState extends State<UsageBar>
 
     return CustomPaint(
       size: Size(size.width, 8),
-      painter:
-          UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
+      painter: UsageBarPainter((widget.usagePercent! * _controller.value).toInt()),
     );
   }
 

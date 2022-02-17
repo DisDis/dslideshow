@@ -1,7 +1,4 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
 
 class StateNotify extends StatefulWidget {
   final bool? isPaused;
@@ -12,7 +9,7 @@ class StateNotify extends StatefulWidget {
   StateNotifyState createState() => StateNotifyState(isPaused);
 }
 
-class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin {
+class StateNotifyState extends State<StateNotify> with TickerProviderStateMixin {
   late AnimationController _controller;
   bool? _isPaused;
 
@@ -22,20 +19,14 @@ class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
-        duration: const Duration(milliseconds: 1000),
-        vsync: this
-    );
+    _controller = AnimationController(duration: const Duration(milliseconds: 1000), vsync: this);
     if (_isPaused!) {
-      _controller
-          .forward()
-          .orCancel
-          .then((value) => _controller.reverse());
+      _controller.forward().orCancel.then((value) => _controller.reverse());
     }
   }
 
-  void set isPaused(bool value){
-    if (_isPaused == value){
+  void set isPaused(bool value) {
+    if (_isPaused == value) {
       return;
     }
     setState(() {
@@ -44,7 +35,7 @@ class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin
     play();
   }
 
-  void play(){
+  void play() {
     _controller.reset();
     _controller.forward().orCancel.then((value) => _controller.reverse());
   }
@@ -65,21 +56,19 @@ class StateNotifyState extends State<StateNotify>  with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return StaggerAnimation(
-              controller: _controller.view,
-              isPaused: _isPaused
-          );
+    return StaggerAnimation(controller: _controller.view, isPaused: _isPaused);
   }
 }
 
 class StaggerAnimation extends StatelessWidget {
   final bool? isPaused;
-  StaggerAnimation({ Key? key, required this.controller, this.isPaused }) :
+  StaggerAnimation({Key? key, required this.controller, this.isPaused})
+      :
 
-  // Each animation defined here transforms its value during the subset
-  // of the controller's duration defined by the animation's interval.
-  // For example the opacity animation transforms its value during
-  // the first 10% of the controller's duration.
+        // Each animation defined here transforms its value during the subset
+        // of the controller's duration defined by the animation's interval.
+        // For example the opacity animation transforms its value during
+        // the first 10% of the controller's duration.
 
         opacity = Tween<double>(
           begin: 0.0,
@@ -88,7 +77,8 @@ class StaggerAnimation extends StatelessWidget {
           CurvedAnimation(
             parent: controller,
             curve: Interval(
-              0.0, 0.3,
+              0.0,
+              0.3,
               curve: Curves.ease,
             ),
           ),
@@ -100,12 +90,12 @@ class StaggerAnimation extends StatelessWidget {
           CurvedAnimation(
             parent: controller,
             curve: Interval(
-              0.3, 0.500,
+              0.3,
+              0.500,
               curve: Curves.ease,
             ),
           ),
         ),
-
         size = Tween<double>(
           begin: 100.0,
           end: 200.0,
@@ -113,14 +103,12 @@ class StaggerAnimation extends StatelessWidget {
           CurvedAnimation(
             parent: controller,
             curve: Interval(
-              0.4, 0.70,
+              0.4,
+              0.70,
               curve: Curves.easeIn,
             ),
           ),
         ),
-
-
-
         super(key: key);
 
   final Animation<double> controller;
@@ -132,22 +120,21 @@ class StaggerAnimation extends StatelessWidget {
   // When it runs, all of the animation's values will have been
   // updated to reflect the controller's current value.
   Widget _buildAnimation(BuildContext context, Widget? child) {
-    return
-      Opacity(
-        opacity: opacity.value,
-        child: Container(
-            color: Color.fromARGB(125, 133, 133, 133),
-            child: Opacity(
-            opacity: opacityIcon.value,
-              child:Center(
-                child: Icon(
-                   isPaused! ? Icons.pause:Icons.play_arrow,
-                  size:size.value,
-                  color: Colors.white,
-                ),
+    return Opacity(
+      opacity: opacity.value,
+      child: Container(
+        color: Color.fromARGB(125, 133, 133, 133),
+        child: Opacity(
+          opacity: opacityIcon.value,
+          child: Center(
+            child: Icon(
+              isPaused! ? Icons.pause : Icons.play_arrow,
+              size: size.value,
+              color: Colors.white,
             ),
-            ),
+          ),
         ),
+      ),
     );
   }
 

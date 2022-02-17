@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
@@ -27,7 +26,9 @@ class _UptimeInfoWidgetState extends State<UptimeInfoWidget> {
       child: Container(
         color: Colors.teal,
         child: Column(children: <Widget>[
-          Row(children: [MetricsDetails('${widget.uptime}last updated ${_timeFormatter.format(DateTime.now())}', value: null)]),
+          Row(children: [
+            MetricsDetails('${widget.uptime}last updated ${_timeFormatter.format(DateTime.now())}', value: null)
+          ]),
         ]),
       ),
     );

@@ -24,11 +24,11 @@ sudo systemctl enable dslideshow
 sudo fc-cache
 
 # https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet
-sudo systemctl unmask hostapd
-sudo systemctl disable hostapd
-sudo systemctl disable dnsmasq
+#sudo systemctl unmask hostapd
+#sudo systemctl disable hostapd
+#sudo systemctl disable dnsmasq
 
-sudo systemctl enable autohotspot
+#sudo systemctl enable autohotspot
 
 exit 0
 

@@ -40,4 +40,5 @@ dpkg-deb -Zxz --build --root-owner-group ./$DIR
 
 VERSION=`cat $DEST/version`
 mv ./$DIR.deb ./dslideshow-$VERSION-$PROFILE_ARC.deb
+echo "Last version dslideshow-$VERSION-$PROFILE_ARC.deb"
 

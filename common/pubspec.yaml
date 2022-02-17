@@ -1,7 +1,6 @@
 name: 'dslideshow_common'
 version: 1.0.0
 description: An absolute bare-bones web app.
-author: Igor Demyanov
 
 environment:
   sdk: '>=2.12.0 <3.0.0'

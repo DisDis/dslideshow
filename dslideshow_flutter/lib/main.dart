@@ -24,7 +24,6 @@ import 'package:flutter_redux/flutter_redux.dart';
 import 'package:isolate/isolate.dart';
 import 'package:logging/logging.dart';
 import 'package:redux/redux.dart';
-import 'package:omxplayer_video_player/omxplayer_video_player.dart';
 
 void main() async {
   debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
@@ -37,12 +36,7 @@ void main() async {
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
     ]);
-  } else {
-    if (OmxplayerVideoPlayer.isPlatformSidePresent()) {
-      OmxplayerVideoPlayer.useAsImplementation();
-    }
   }
-
   try {
     RemoteService? _backendService;
     RemoteService? _OTAService;

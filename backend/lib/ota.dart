@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/injector_module.dart';
@@ -19,8 +18,7 @@ void main(List<dynamic> args) async {
   _log.info("Run");
   try {
     IsolateRunner remoteIsolateService = args[0] as IsolateRunner;
-    final RemoteService _remoteFrontendService =
-        new RemoteService(remoteIsolateService, serializers);
+    final RemoteService _remoteFrontendService = new RemoteService(remoteIsolateService, serializers);
 
     // Use this static instance
     final injector = GetIt.instance;
@@ -41,7 +39,7 @@ void main(List<dynamic> args) async {
   }
 }
 
-Future<IsolateRunner> _createCurrentIsolateRunner() async {
-  var remote = IsolateRunnerRemote();
-  return IsolateRunner(Isolate.current, remote.commandPort);
-}
+// Future<IsolateRunner> _createCurrentIsolateRunner() async {
+//   var remote = IsolateRunnerRemote();
+//   return IsolateRunner(Isolate.current, remote.commandPort);
+// }

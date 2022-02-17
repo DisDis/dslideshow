@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FadeWidget extends AnimatedWidget {
   static final _opacityTween = Tween<double>(begin: 0, end: 1);

@@ -1,6 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/circular_indicator/circular_indicator_widget.dart';
@@ -15,8 +14,7 @@ class CpuInfoWidget extends StatelessWidget {
   final double cpuUsedSize = 50;
   final Color backgroundBarColor = Colors.purple.shade300.withAlpha(100);
 
-  CpuInfoWidget(
-      {required this.cpu, required this.cpuLoad1, required this.cpuLoad5, required this.cpuLoad15, Key? key})
+  CpuInfoWidget({required this.cpu, required this.cpuLoad1, required this.cpuLoad5, required this.cpuLoad15, Key? key})
       : super(key: key);
 
   @override

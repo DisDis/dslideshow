@@ -47,8 +47,7 @@ class MqttService {
     _client.resubscribeOnAutoReconnect = true;
 
     final connMess = MqttConnectMessage()
-        .withClientIdentifier(_config.clientId)
-        .keepAliveFor(_config.keepAlivePeriod) // Must agree with the keep alive set above or not set
+        .withClientIdentifier(_config.clientId) // Must agree with the keep alive set above or not set
         // .withWillTopic(mqttConfig.discovery_prefix+mqttConfig.configuration_topic) // If you set this you must set a will message
         // .withWillMessage(configPayload)
         .startClean() // Non persistent session for testing

@@ -7,8 +7,6 @@ import 'package:dslideshow_common/version.dart';
 import 'package:dslideshow_flutter/src/page/ota/ota_page.dart';
 import 'package:dslideshow_flutter/src/service/frontend.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:intl/intl.dart' as intl;
 import 'package:logging/logging.dart';
 
 class AnimatedLogo extends AnimatedWidget {

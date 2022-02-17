@@ -1,6 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:system_metrics_widget/src/environment/android.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
@@ -21,7 +20,7 @@ class OSInfoWidget extends StatelessWidget {
       backgroundColor: Colors.deepPurpleAccent,
       child: Column(children: <Widget>[
         _model!.osType == OSType.unknown
-            ? MetricsDetails('os info', value:  _model!.name)
+            ? MetricsDetails('os info', value: _model!.name)
             : MetricsDetails('os info', value: '${_model!.name} (${_model!.osType})'),
         Icon(
           iconData,

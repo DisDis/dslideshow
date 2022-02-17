@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:intl/intl.dart';
 import 'package:system_metrics_widget/src/environment/settings.dart';
@@ -34,8 +33,8 @@ class _CurrentTimeWidgetState extends State<CurrentTimeWidget> {
             MetricsDetails('${_timeFormatter.format(now)}', value: null, style: Settings.metricsClockTextDigitalStyle)
           ]),
           Row(children: [
-            MetricsDetails('${_dateFormatter.format(now)}', value: null,
-                style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))
+            MetricsDetails('${_dateFormatter.format(now)}',
+                value: null, style: Settings.metricsClockTextDigitalStyle.copyWith(fontSize: 14))
           ]),
         ]),
       ),

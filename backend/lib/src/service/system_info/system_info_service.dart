@@ -2,14 +2,7 @@ import 'dart:io' as io;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/hardware_service_config.dart';
-import 'package:dslideshow_backend/src/service/system_info/cpu_info.dart';
-import 'package:dslideshow_backend/src/service/system_info/sensor_info.dart';
-import 'package:dslideshow_backend/src/service/system_info/system_info.dart';
-import 'package:dslideshow_backend/src/service/system_info/update_info.dart';
 import 'package:logging/logging.dart';
-
-import 'network_info.dart';
-import 'os_info.dart';
 
 class SystemInfoService {
   static final Logger _log = new Logger('SystemInfoService');
@@ -17,10 +10,8 @@ class SystemInfoService {
   static final RegExp _findHardware = new RegExp('Hardware *[^ ]*([^\n]*)');
   static final RegExp _findRevision = new RegExp('Revision *[^ ]*([^\n]*)');
   static final RegExp _findModel = new RegExp('Model *[^ ]*([^\n]*)');
-  static final RegExp _findMem =
-      new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
-  static final RegExp _findSwap =
-      new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findMem = new RegExp('Mem:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
+  static final RegExp _findSwap = new RegExp('Swap:[ ]*([^ ]*)[ ]*([^ ]*)[ ]*([^ ]*)');
 
   SystemInfo? _lastInfo;
 
@@ -45,16 +36,13 @@ class SystemInfoService {
         b.networkInfo = _networkInfo;
       });
     } else {
-      var delta = new DateTime.now().difference(
-          new DateTime.fromMillisecondsSinceEpoch(
-              _lastInfo!.networkInfo.lastUpdate));
+      var delta =
+          new DateTime.now().difference(new DateTime.fromMillisecondsSinceEpoch(_lastInfo!.networkInfo.lastUpdate));
       if (delta > _networkInfoUpdatePeriod) {
         final _networkInfo = await _getNetworkInfo();
-        _lastInfo =
-            _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
+        _lastInfo = _lastInfo?.rebuild((builder) => builder.networkInfo = _networkInfo);
       }
-      _lastInfo =
-          _lastInfo?.rebuild((builder) => builder.updateInfo = updateInfo);
+      _lastInfo = _lastInfo?.rebuild((builder) => builder.updateInfo = updateInfo);
     }
     return _lastInfo;
   }
@@ -62,8 +50,7 @@ class SystemInfoService {
   Future<Iterable<NetworkInterfaceInfo>> getNetworkInterfaces() async {
     //    _log.info('getNetworkInterfaces');
     try {
-      var result = await io.Process.run(_config.systemIfConfigScript, [],
-          environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run(_config.systemIfConfigScript, [], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
         return _parseIfconfigOutput(result.stdout.toString().split('\n\n'));
       }
@@ -93,12 +80,9 @@ class SystemInfoService {
       if (result.exitCode == 0) {
         var str = result.stdout.toString();
         var strArr = str.split('\n');
-        var diskInfo = strArr.firstWhere(
-            (element) => element.startsWith(_config.systemDiskDev),
-            orElse: () => '');
+        var diskInfo = strArr.firstWhere((element) => element.startsWith(_config.systemDiskDev), orElse: () => '');
         if (diskInfo.isNotEmpty) {
-          var parseDiskInfo = RegExp(
-              '${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
+          var parseDiskInfo = RegExp('${_config.systemDiskDev} *([^ ]*) *([^ ]*) *([^ ]*) *([^ %]*)');
           //  Файл.система   Размер Использовано  Дост Использовано% Cмонтировано в
 
           var info = parseDiskInfo.firstMatch(diskInfo)!;
@@ -145,8 +129,7 @@ class SystemInfoService {
   Future<bool> hasInternet() async {
     //    _log.info('hasInternet');
     try {
-      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8'],
-          environment: {'LC_ALL': 'C'});
+      var result = await io.Process.run('ping', ['-c', '1', '8.8.8.8'], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
         return !result.stdout.toString().contains('100% packet loss');
       }
@@ -245,10 +228,9 @@ class SystemInfoService {
     output.forEach((element) {
       try {
         var interfaceName = element.substring(0, element.indexOf(':'));
-        var interfaceStatus =
-            _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
-                ? NetworkInterfaceStatus.running
-                : NetworkInterfaceStatus.offline;
+        var interfaceStatus = _findFlags.firstMatch(element)!.group(0)!.indexOf('RUNNING') != -1
+            ? NetworkInterfaceStatus.running
+            : NetworkInterfaceStatus.offline;
         var interfaceIp4 = _findIp4.firstMatch(element);
         var interfaceIp4Str = interfaceIp4 == null
             ? ''

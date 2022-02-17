@@ -1,6 +1,5 @@
 import 'package:dslideshow_backend/command.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/common/metrics_container_widget.dart';
 import 'package:system_metrics_widget/src/widgets/metrics/details/metrics_details_widget.dart';
@@ -14,23 +13,16 @@ class NetworkUsageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MetricsContainerWidget(
-      iconData: _model!.hasInternet
-          ? FlutterIcons.lan_connect_mco
-          : FlutterIcons.lan_disconnect_mco,
+      iconData: _model!.hasInternet ? FlutterIcons.lan_connect_mco : FlutterIcons.lan_disconnect_mco,
       backgroundColor: Colors.lightBlueAccent,
       iconColor: _model!.hasInternet ? Colors.white : Colors.red,
       child: Column(children: <Widget>[
         Row(children: [
-          MetricsDetails(
-              ' network: ${new DateTime.fromMillisecondsSinceEpoch(_model!.lastUpdate)}',
-              value: null)
+          MetricsDetails(' network: ${new DateTime.fromMillisecondsSinceEpoch(_model!.lastUpdate)}', value: null)
         ]),
         for (final interface in _model!.interfaces!)
-          if (interface.status == NetworkInterfaceStatus.running &&
-              interface.name != 'lo')
-            Row(children: [
-              MetricsDetails('${interface.name}', value: interface.ip4)
-            ]),
+          if (interface.status == NetworkInterfaceStatus.running && interface.name != 'lo')
+            Row(children: [MetricsDetails('${interface.name}', value: interface.ip4)]),
       ]),
     );
   }
