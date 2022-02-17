@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,15 +20,15 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/firebaserules/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/firebaserules/v1.dart' as api;
 
 import '../test_shared.dart';
 
 core.int buildCounterArg = 0;
 api.Arg buildArg() {
-  var o = api.Arg();
+  final o = api.Arg();
   buildCounterArg++;
   if (buildCounterArg < 3) {
     o.anyValue = buildEmpty();
@@ -46,7 +45,7 @@ api.Arg buildArg() {
 void checkArg(api.Arg o) {
   buildCounterArg++;
   if (buildCounterArg < 3) {
-    checkEmpty(o.anyValue! as api.Empty);
+    checkEmpty(o.anyValue!);
     var casted1 = (o.exactValue!) as core.Map;
     unittest.expect(casted1, unittest.hasLength(3));
     unittest.expect(
@@ -67,7 +66,7 @@ void checkArg(api.Arg o) {
 
 core.int buildCounterEmpty = 0;
 api.Empty buildEmpty() {
-  var o = api.Empty();
+  final o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
@@ -80,40 +79,36 @@ void checkEmpty(api.Empty o) {
   buildCounterEmpty--;
 }
 
-core.List<api.ExpressionReport> buildUnnamed2402() {
-  var o = <api.ExpressionReport>[];
-  o.add(buildExpressionReport());
-  o.add(buildExpressionReport());
-  return o;
-}
+core.List<api.ExpressionReport> buildUnnamed0() => [
+      buildExpressionReport(),
+      buildExpressionReport(),
+    ];
 
-void checkUnnamed2402(core.List<api.ExpressionReport> o) {
+void checkUnnamed0(core.List<api.ExpressionReport> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExpressionReport(o[0] as api.ExpressionReport);
-  checkExpressionReport(o[1] as api.ExpressionReport);
+  checkExpressionReport(o[0]);
+  checkExpressionReport(o[1]);
 }
 
-core.List<api.ValueCount> buildUnnamed2403() {
-  var o = <api.ValueCount>[];
-  o.add(buildValueCount());
-  o.add(buildValueCount());
-  return o;
-}
+core.List<api.ValueCount> buildUnnamed1() => [
+      buildValueCount(),
+      buildValueCount(),
+    ];
 
-void checkUnnamed2403(core.List<api.ValueCount> o) {
+void checkUnnamed1(core.List<api.ValueCount> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkValueCount(o[0] as api.ValueCount);
-  checkValueCount(o[1] as api.ValueCount);
+  checkValueCount(o[0]);
+  checkValueCount(o[1]);
 }
 
 core.int buildCounterExpressionReport = 0;
 api.ExpressionReport buildExpressionReport() {
-  var o = api.ExpressionReport();
+  final o = api.ExpressionReport();
   buildCounterExpressionReport++;
   if (buildCounterExpressionReport < 3) {
-    o.children = buildUnnamed2402();
+    o.children = buildUnnamed0();
     o.sourcePosition = buildSourcePosition();
-    o.values = buildUnnamed2403();
+    o.values = buildUnnamed1();
   }
   buildCounterExpressionReport--;
   return o;
@@ -122,16 +117,16 @@ api.ExpressionReport buildExpressionReport() {
 void checkExpressionReport(api.ExpressionReport o) {
   buildCounterExpressionReport++;
   if (buildCounterExpressionReport < 3) {
-    checkUnnamed2402(o.children!);
-    checkSourcePosition(o.sourcePosition! as api.SourcePosition);
-    checkUnnamed2403(o.values!);
+    checkUnnamed0(o.children!);
+    checkSourcePosition(o.sourcePosition!);
+    checkUnnamed1(o.values!);
   }
   buildCounterExpressionReport--;
 }
 
 core.int buildCounterFile = 0;
 api.File buildFile() {
-  var o = api.File();
+  final o = api.File();
   buildCounterFile++;
   if (buildCounterFile < 3) {
     o.content = 'foo';
@@ -161,22 +156,20 @@ void checkFile(api.File o) {
   buildCounterFile--;
 }
 
-core.List<core.Object> buildUnnamed2404() {
-  var o = <core.Object>[];
-  o.add({
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  });
-  o.add({
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  });
-  return o;
-}
+core.List<core.Object?> buildUnnamed2() => [
+      {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    ];
 
-void checkUnnamed2404(core.List<core.Object> o) {
+void checkUnnamed2(core.List<core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted2 = (o[0]) as core.Map;
   unittest.expect(casted2, unittest.hasLength(3));
@@ -210,10 +203,10 @@ void checkUnnamed2404(core.List<core.Object> o) {
 
 core.int buildCounterFunctionCall = 0;
 api.FunctionCall buildFunctionCall() {
-  var o = api.FunctionCall();
+  final o = api.FunctionCall();
   buildCounterFunctionCall++;
   if (buildCounterFunctionCall < 3) {
-    o.args = buildUnnamed2404();
+    o.args = buildUnnamed2();
     o.function = 'foo';
   }
   buildCounterFunctionCall--;
@@ -223,7 +216,7 @@ api.FunctionCall buildFunctionCall() {
 void checkFunctionCall(api.FunctionCall o) {
   buildCounterFunctionCall++;
   if (buildCounterFunctionCall < 3) {
-    checkUnnamed2404(o.args!);
+    checkUnnamed2(o.args!);
     unittest.expect(
       o.function!,
       unittest.equals('foo'),
@@ -232,25 +225,23 @@ void checkFunctionCall(api.FunctionCall o) {
   buildCounterFunctionCall--;
 }
 
-core.List<api.Arg> buildUnnamed2405() {
-  var o = <api.Arg>[];
-  o.add(buildArg());
-  o.add(buildArg());
-  return o;
-}
+core.List<api.Arg> buildUnnamed3() => [
+      buildArg(),
+      buildArg(),
+    ];
 
-void checkUnnamed2405(core.List<api.Arg> o) {
+void checkUnnamed3(core.List<api.Arg> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkArg(o[0] as api.Arg);
-  checkArg(o[1] as api.Arg);
+  checkArg(o[0]);
+  checkArg(o[1]);
 }
 
 core.int buildCounterFunctionMock = 0;
 api.FunctionMock buildFunctionMock() {
-  var o = api.FunctionMock();
+  final o = api.FunctionMock();
   buildCounterFunctionMock++;
   if (buildCounterFunctionMock < 3) {
-    o.args = buildUnnamed2405();
+    o.args = buildUnnamed3();
     o.function = 'foo';
     o.result = buildResult();
   }
@@ -261,19 +252,19 @@ api.FunctionMock buildFunctionMock() {
 void checkFunctionMock(api.FunctionMock o) {
   buildCounterFunctionMock++;
   if (buildCounterFunctionMock < 3) {
-    checkUnnamed2405(o.args!);
+    checkUnnamed3(o.args!);
     unittest.expect(
       o.function!,
       unittest.equals('foo'),
     );
-    checkResult(o.result! as api.Result);
+    checkResult(o.result!);
   }
   buildCounterFunctionMock--;
 }
 
 core.int buildCounterGetReleaseExecutableResponse = 0;
 api.GetReleaseExecutableResponse buildGetReleaseExecutableResponse() {
-  var o = api.GetReleaseExecutableResponse();
+  final o = api.GetReleaseExecutableResponse();
   buildCounterGetReleaseExecutableResponse++;
   if (buildCounterGetReleaseExecutableResponse < 3) {
     o.executable = 'foo';
@@ -320,7 +311,7 @@ void checkGetReleaseExecutableResponse(api.GetReleaseExecutableResponse o) {
 
 core.int buildCounterIssue = 0;
 api.Issue buildIssue() {
-  var o = api.Issue();
+  final o = api.Issue();
   buildCounterIssue++;
   if (buildCounterIssue < 3) {
     o.description = 'foo';
@@ -342,31 +333,29 @@ void checkIssue(api.Issue o) {
       o.severity!,
       unittest.equals('foo'),
     );
-    checkSourcePosition(o.sourcePosition! as api.SourcePosition);
+    checkSourcePosition(o.sourcePosition!);
   }
   buildCounterIssue--;
 }
 
-core.List<api.Release> buildUnnamed2406() {
-  var o = <api.Release>[];
-  o.add(buildRelease());
-  o.add(buildRelease());
-  return o;
-}
+core.List<api.Release> buildUnnamed4() => [
+      buildRelease(),
+      buildRelease(),
+    ];
 
-void checkUnnamed2406(core.List<api.Release> o) {
+void checkUnnamed4(core.List<api.Release> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRelease(o[0] as api.Release);
-  checkRelease(o[1] as api.Release);
+  checkRelease(o[0]);
+  checkRelease(o[1]);
 }
 
 core.int buildCounterListReleasesResponse = 0;
 api.ListReleasesResponse buildListReleasesResponse() {
-  var o = api.ListReleasesResponse();
+  final o = api.ListReleasesResponse();
   buildCounterListReleasesResponse++;
   if (buildCounterListReleasesResponse < 3) {
     o.nextPageToken = 'foo';
-    o.releases = buildUnnamed2406();
+    o.releases = buildUnnamed4();
   }
   buildCounterListReleasesResponse--;
   return o;
@@ -379,31 +368,29 @@ void checkListReleasesResponse(api.ListReleasesResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed2406(o.releases!);
+    checkUnnamed4(o.releases!);
   }
   buildCounterListReleasesResponse--;
 }
 
-core.List<api.Ruleset> buildUnnamed2407() {
-  var o = <api.Ruleset>[];
-  o.add(buildRuleset());
-  o.add(buildRuleset());
-  return o;
-}
+core.List<api.Ruleset> buildUnnamed5() => [
+      buildRuleset(),
+      buildRuleset(),
+    ];
 
-void checkUnnamed2407(core.List<api.Ruleset> o) {
+void checkUnnamed5(core.List<api.Ruleset> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRuleset(o[0] as api.Ruleset);
-  checkRuleset(o[1] as api.Ruleset);
+  checkRuleset(o[0]);
+  checkRuleset(o[1]);
 }
 
 core.int buildCounterListRulesetsResponse = 0;
 api.ListRulesetsResponse buildListRulesetsResponse() {
-  var o = api.ListRulesetsResponse();
+  final o = api.ListRulesetsResponse();
   buildCounterListRulesetsResponse++;
   if (buildCounterListRulesetsResponse < 3) {
     o.nextPageToken = 'foo';
-    o.rulesets = buildUnnamed2407();
+    o.rulesets = buildUnnamed5();
   }
   buildCounterListRulesetsResponse--;
   return o;
@@ -416,19 +403,17 @@ void checkListRulesetsResponse(api.ListRulesetsResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed2407(o.rulesets!);
+    checkUnnamed5(o.rulesets!);
   }
   buildCounterListRulesetsResponse--;
 }
 
-core.List<core.String> buildUnnamed2408() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed6() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2408(core.List<core.String> o) {
+void checkUnnamed6(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -442,10 +427,10 @@ void checkUnnamed2408(core.List<core.String> o) {
 
 core.int buildCounterMetadata = 0;
 api.Metadata buildMetadata() {
-  var o = api.Metadata();
+  final o = api.Metadata();
   buildCounterMetadata++;
   if (buildCounterMetadata < 3) {
-    o.services = buildUnnamed2408();
+    o.services = buildUnnamed6();
   }
   buildCounterMetadata--;
   return o;
@@ -454,14 +439,14 @@ api.Metadata buildMetadata() {
 void checkMetadata(api.Metadata o) {
   buildCounterMetadata++;
   if (buildCounterMetadata < 3) {
-    checkUnnamed2408(o.services!);
+    checkUnnamed6(o.services!);
   }
   buildCounterMetadata--;
 }
 
 core.int buildCounterRelease = 0;
 api.Release buildRelease() {
-  var o = api.Release();
+  final o = api.Release();
   buildCounterRelease++;
   if (buildCounterRelease < 3) {
     o.createTime = 'foo';
@@ -498,7 +483,7 @@ void checkRelease(api.Release o) {
 
 core.int buildCounterResult = 0;
 api.Result buildResult() {
-  var o = api.Result();
+  final o = api.Result();
   buildCounterResult++;
   if (buildCounterResult < 3) {
     o.undefined = buildEmpty();
@@ -515,7 +500,7 @@ api.Result buildResult() {
 void checkResult(api.Result o) {
   buildCounterResult++;
   if (buildCounterResult < 3) {
-    checkEmpty(o.undefined! as api.Empty);
+    checkEmpty(o.undefined!);
     var casted4 = (o.value!) as core.Map;
     unittest.expect(casted4, unittest.hasLength(3));
     unittest.expect(
@@ -536,7 +521,7 @@ void checkResult(api.Result o) {
 
 core.int buildCounterRuleset = 0;
 api.Ruleset buildRuleset() {
-  var o = api.Ruleset();
+  final o = api.Ruleset();
   buildCounterRuleset++;
   if (buildCounterRuleset < 3) {
     o.createTime = 'foo';
@@ -555,35 +540,33 @@ void checkRuleset(api.Ruleset o) {
       o.createTime!,
       unittest.equals('foo'),
     );
-    checkMetadata(o.metadata! as api.Metadata);
+    checkMetadata(o.metadata!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
     );
-    checkSource(o.source! as api.Source);
+    checkSource(o.source!);
   }
   buildCounterRuleset--;
 }
 
-core.List<api.File> buildUnnamed2409() {
-  var o = <api.File>[];
-  o.add(buildFile());
-  o.add(buildFile());
-  return o;
-}
+core.List<api.File> buildUnnamed7() => [
+      buildFile(),
+      buildFile(),
+    ];
 
-void checkUnnamed2409(core.List<api.File> o) {
+void checkUnnamed7(core.List<api.File> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFile(o[0] as api.File);
-  checkFile(o[1] as api.File);
+  checkFile(o[0]);
+  checkFile(o[1]);
 }
 
 core.int buildCounterSource = 0;
 api.Source buildSource() {
-  var o = api.Source();
+  final o = api.Source();
   buildCounterSource++;
   if (buildCounterSource < 3) {
-    o.files = buildUnnamed2409();
+    o.files = buildUnnamed7();
   }
   buildCounterSource--;
   return o;
@@ -592,14 +575,14 @@ api.Source buildSource() {
 void checkSource(api.Source o) {
   buildCounterSource++;
   if (buildCounterSource < 3) {
-    checkUnnamed2409(o.files!);
+    checkUnnamed7(o.files!);
   }
   buildCounterSource--;
 }
 
 core.int buildCounterSourcePosition = 0;
 api.SourcePosition buildSourcePosition() {
-  var o = api.SourcePosition();
+  final o = api.SourcePosition();
   buildCounterSourcePosition++;
   if (buildCounterSourcePosition < 3) {
     o.column = 42;
@@ -639,27 +622,25 @@ void checkSourcePosition(api.SourcePosition o) {
   buildCounterSourcePosition--;
 }
 
-core.List<api.FunctionMock> buildUnnamed2410() {
-  var o = <api.FunctionMock>[];
-  o.add(buildFunctionMock());
-  o.add(buildFunctionMock());
-  return o;
-}
+core.List<api.FunctionMock> buildUnnamed8() => [
+      buildFunctionMock(),
+      buildFunctionMock(),
+    ];
 
-void checkUnnamed2410(core.List<api.FunctionMock> o) {
+void checkUnnamed8(core.List<api.FunctionMock> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFunctionMock(o[0] as api.FunctionMock);
-  checkFunctionMock(o[1] as api.FunctionMock);
+  checkFunctionMock(o[0]);
+  checkFunctionMock(o[1]);
 }
 
 core.int buildCounterTestCase = 0;
 api.TestCase buildTestCase() {
-  var o = api.TestCase();
+  final o = api.TestCase();
   buildCounterTestCase++;
   if (buildCounterTestCase < 3) {
     o.expectation = 'foo';
     o.expressionReportLevel = 'foo';
-    o.functionMocks = buildUnnamed2410();
+    o.functionMocks = buildUnnamed8();
     o.pathEncoding = 'foo';
     o.request = {
       'list': [1, 2, 3],
@@ -687,7 +668,7 @@ void checkTestCase(api.TestCase o) {
       o.expressionReportLevel!,
       unittest.equals('foo'),
     );
-    checkUnnamed2410(o.functionMocks!);
+    checkUnnamed8(o.functionMocks!);
     unittest.expect(
       o.pathEncoding!,
       unittest.equals('foo'),
@@ -724,14 +705,12 @@ void checkTestCase(api.TestCase o) {
   buildCounterTestCase--;
 }
 
-core.List<core.String> buildUnnamed2411() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed9() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2411(core.List<core.String> o) {
+void checkUnnamed9(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -743,56 +722,50 @@ void checkUnnamed2411(core.List<core.String> o) {
   );
 }
 
-core.List<api.ExpressionReport> buildUnnamed2412() {
-  var o = <api.ExpressionReport>[];
-  o.add(buildExpressionReport());
-  o.add(buildExpressionReport());
-  return o;
-}
+core.List<api.ExpressionReport> buildUnnamed10() => [
+      buildExpressionReport(),
+      buildExpressionReport(),
+    ];
 
-void checkUnnamed2412(core.List<api.ExpressionReport> o) {
+void checkUnnamed10(core.List<api.ExpressionReport> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExpressionReport(o[0] as api.ExpressionReport);
-  checkExpressionReport(o[1] as api.ExpressionReport);
+  checkExpressionReport(o[0]);
+  checkExpressionReport(o[1]);
 }
 
-core.List<api.FunctionCall> buildUnnamed2413() {
-  var o = <api.FunctionCall>[];
-  o.add(buildFunctionCall());
-  o.add(buildFunctionCall());
-  return o;
-}
+core.List<api.FunctionCall> buildUnnamed11() => [
+      buildFunctionCall(),
+      buildFunctionCall(),
+    ];
 
-void checkUnnamed2413(core.List<api.FunctionCall> o) {
+void checkUnnamed11(core.List<api.FunctionCall> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFunctionCall(o[0] as api.FunctionCall);
-  checkFunctionCall(o[1] as api.FunctionCall);
+  checkFunctionCall(o[0]);
+  checkFunctionCall(o[1]);
 }
 
-core.List<api.VisitedExpression> buildUnnamed2414() {
-  var o = <api.VisitedExpression>[];
-  o.add(buildVisitedExpression());
-  o.add(buildVisitedExpression());
-  return o;
-}
+core.List<api.VisitedExpression> buildUnnamed12() => [
+      buildVisitedExpression(),
+      buildVisitedExpression(),
+    ];
 
-void checkUnnamed2414(core.List<api.VisitedExpression> o) {
+void checkUnnamed12(core.List<api.VisitedExpression> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVisitedExpression(o[0] as api.VisitedExpression);
-  checkVisitedExpression(o[1] as api.VisitedExpression);
+  checkVisitedExpression(o[0]);
+  checkVisitedExpression(o[1]);
 }
 
 core.int buildCounterTestResult = 0;
 api.TestResult buildTestResult() {
-  var o = api.TestResult();
+  final o = api.TestResult();
   buildCounterTestResult++;
   if (buildCounterTestResult < 3) {
-    o.debugMessages = buildUnnamed2411();
+    o.debugMessages = buildUnnamed9();
     o.errorPosition = buildSourcePosition();
-    o.expressionReports = buildUnnamed2412();
-    o.functionCalls = buildUnnamed2413();
+    o.expressionReports = buildUnnamed10();
+    o.functionCalls = buildUnnamed11();
     o.state = 'foo';
-    o.visitedExpressions = buildUnnamed2414();
+    o.visitedExpressions = buildUnnamed12();
   }
   buildCounterTestResult--;
   return o;
@@ -801,22 +774,22 @@ api.TestResult buildTestResult() {
 void checkTestResult(api.TestResult o) {
   buildCounterTestResult++;
   if (buildCounterTestResult < 3) {
-    checkUnnamed2411(o.debugMessages!);
-    checkSourcePosition(o.errorPosition! as api.SourcePosition);
-    checkUnnamed2412(o.expressionReports!);
-    checkUnnamed2413(o.functionCalls!);
+    checkUnnamed9(o.debugMessages!);
+    checkSourcePosition(o.errorPosition!);
+    checkUnnamed10(o.expressionReports!);
+    checkUnnamed11(o.functionCalls!);
     unittest.expect(
       o.state!,
       unittest.equals('foo'),
     );
-    checkUnnamed2414(o.visitedExpressions!);
+    checkUnnamed12(o.visitedExpressions!);
   }
   buildCounterTestResult--;
 }
 
 core.int buildCounterTestRulesetRequest = 0;
 api.TestRulesetRequest buildTestRulesetRequest() {
-  var o = api.TestRulesetRequest();
+  final o = api.TestRulesetRequest();
   buildCounterTestRulesetRequest++;
   if (buildCounterTestRulesetRequest < 3) {
     o.source = buildSource();
@@ -829,45 +802,41 @@ api.TestRulesetRequest buildTestRulesetRequest() {
 void checkTestRulesetRequest(api.TestRulesetRequest o) {
   buildCounterTestRulesetRequest++;
   if (buildCounterTestRulesetRequest < 3) {
-    checkSource(o.source! as api.Source);
-    checkTestSuite(o.testSuite! as api.TestSuite);
+    checkSource(o.source!);
+    checkTestSuite(o.testSuite!);
   }
   buildCounterTestRulesetRequest--;
 }
 
-core.List<api.Issue> buildUnnamed2415() {
-  var o = <api.Issue>[];
-  o.add(buildIssue());
-  o.add(buildIssue());
-  return o;
-}
+core.List<api.Issue> buildUnnamed13() => [
+      buildIssue(),
+      buildIssue(),
+    ];
 
-void checkUnnamed2415(core.List<api.Issue> o) {
+void checkUnnamed13(core.List<api.Issue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkIssue(o[0] as api.Issue);
-  checkIssue(o[1] as api.Issue);
+  checkIssue(o[0]);
+  checkIssue(o[1]);
 }
 
-core.List<api.TestResult> buildUnnamed2416() {
-  var o = <api.TestResult>[];
-  o.add(buildTestResult());
-  o.add(buildTestResult());
-  return o;
-}
+core.List<api.TestResult> buildUnnamed14() => [
+      buildTestResult(),
+      buildTestResult(),
+    ];
 
-void checkUnnamed2416(core.List<api.TestResult> o) {
+void checkUnnamed14(core.List<api.TestResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTestResult(o[0] as api.TestResult);
-  checkTestResult(o[1] as api.TestResult);
+  checkTestResult(o[0]);
+  checkTestResult(o[1]);
 }
 
 core.int buildCounterTestRulesetResponse = 0;
 api.TestRulesetResponse buildTestRulesetResponse() {
-  var o = api.TestRulesetResponse();
+  final o = api.TestRulesetResponse();
   buildCounterTestRulesetResponse++;
   if (buildCounterTestRulesetResponse < 3) {
-    o.issues = buildUnnamed2415();
-    o.testResults = buildUnnamed2416();
+    o.issues = buildUnnamed13();
+    o.testResults = buildUnnamed14();
   }
   buildCounterTestRulesetResponse--;
   return o;
@@ -876,31 +845,29 @@ api.TestRulesetResponse buildTestRulesetResponse() {
 void checkTestRulesetResponse(api.TestRulesetResponse o) {
   buildCounterTestRulesetResponse++;
   if (buildCounterTestRulesetResponse < 3) {
-    checkUnnamed2415(o.issues!);
-    checkUnnamed2416(o.testResults!);
+    checkUnnamed13(o.issues!);
+    checkUnnamed14(o.testResults!);
   }
   buildCounterTestRulesetResponse--;
 }
 
-core.List<api.TestCase> buildUnnamed2417() {
-  var o = <api.TestCase>[];
-  o.add(buildTestCase());
-  o.add(buildTestCase());
-  return o;
-}
+core.List<api.TestCase> buildUnnamed15() => [
+      buildTestCase(),
+      buildTestCase(),
+    ];
 
-void checkUnnamed2417(core.List<api.TestCase> o) {
+void checkUnnamed15(core.List<api.TestCase> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTestCase(o[0] as api.TestCase);
-  checkTestCase(o[1] as api.TestCase);
+  checkTestCase(o[0]);
+  checkTestCase(o[1]);
 }
 
 core.int buildCounterTestSuite = 0;
 api.TestSuite buildTestSuite() {
-  var o = api.TestSuite();
+  final o = api.TestSuite();
   buildCounterTestSuite++;
   if (buildCounterTestSuite < 3) {
-    o.testCases = buildUnnamed2417();
+    o.testCases = buildUnnamed15();
   }
   buildCounterTestSuite--;
   return o;
@@ -909,14 +876,14 @@ api.TestSuite buildTestSuite() {
 void checkTestSuite(api.TestSuite o) {
   buildCounterTestSuite++;
   if (buildCounterTestSuite < 3) {
-    checkUnnamed2417(o.testCases!);
+    checkUnnamed15(o.testCases!);
   }
   buildCounterTestSuite--;
 }
 
 core.int buildCounterUpdateReleaseRequest = 0;
 api.UpdateReleaseRequest buildUpdateReleaseRequest() {
-  var o = api.UpdateReleaseRequest();
+  final o = api.UpdateReleaseRequest();
   buildCounterUpdateReleaseRequest++;
   if (buildCounterUpdateReleaseRequest < 3) {
     o.release = buildRelease();
@@ -929,7 +896,7 @@ api.UpdateReleaseRequest buildUpdateReleaseRequest() {
 void checkUpdateReleaseRequest(api.UpdateReleaseRequest o) {
   buildCounterUpdateReleaseRequest++;
   if (buildCounterUpdateReleaseRequest < 3) {
-    checkRelease(o.release! as api.Release);
+    checkRelease(o.release!);
     unittest.expect(
       o.updateMask!,
       unittest.equals('foo'),
@@ -940,7 +907,7 @@ void checkUpdateReleaseRequest(api.UpdateReleaseRequest o) {
 
 core.int buildCounterValueCount = 0;
 api.ValueCount buildValueCount() {
-  var o = api.ValueCount();
+  final o = api.ValueCount();
   buildCounterValueCount++;
   if (buildCounterValueCount < 3) {
     o.count = 42;
@@ -981,7 +948,7 @@ void checkValueCount(api.ValueCount o) {
 
 core.int buildCounterVisitedExpression = 0;
 api.VisitedExpression buildVisitedExpression() {
-  var o = api.VisitedExpression();
+  final o = api.VisitedExpression();
   buildCounterVisitedExpression++;
   if (buildCounterVisitedExpression < 3) {
     o.sourcePosition = buildSourcePosition();
@@ -998,7 +965,7 @@ api.VisitedExpression buildVisitedExpression() {
 void checkVisitedExpression(api.VisitedExpression o) {
   buildCounterVisitedExpression++;
   if (buildCounterVisitedExpression < 3) {
-    checkSourcePosition(o.sourcePosition! as api.SourcePosition);
+    checkSourcePosition(o.sourcePosition!);
     var casted8 = (o.value!) as core.Map;
     unittest.expect(casted8, unittest.hasLength(3));
     unittest.expect(
@@ -1020,277 +987,280 @@ void checkVisitedExpression(api.VisitedExpression o) {
 void main() {
   unittest.group('obj-schema-Arg', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildArg();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Arg.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkArg(od as api.Arg);
+      final o = buildArg();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Arg.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkArg(od);
     });
   });
 
   unittest.group('obj-schema-Empty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEmpty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEmpty(od as api.Empty);
+      final o = buildEmpty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od);
     });
   });
 
   unittest.group('obj-schema-ExpressionReport', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExpressionReport();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExpressionReport.fromJson(
+      final o = buildExpressionReport();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExpressionReport.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExpressionReport(od as api.ExpressionReport);
+      checkExpressionReport(od);
     });
   });
 
   unittest.group('obj-schema-File', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.File.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkFile(od as api.File);
+      final o = buildFile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.File.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkFile(od);
     });
   });
 
   unittest.group('obj-schema-FunctionCall', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFunctionCall();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FunctionCall.fromJson(
+      final o = buildFunctionCall();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FunctionCall.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFunctionCall(od as api.FunctionCall);
+      checkFunctionCall(od);
     });
   });
 
   unittest.group('obj-schema-FunctionMock', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFunctionMock();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FunctionMock.fromJson(
+      final o = buildFunctionMock();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FunctionMock.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFunctionMock(od as api.FunctionMock);
+      checkFunctionMock(od);
     });
   });
 
   unittest.group('obj-schema-GetReleaseExecutableResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGetReleaseExecutableResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GetReleaseExecutableResponse.fromJson(
+      final o = buildGetReleaseExecutableResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GetReleaseExecutableResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGetReleaseExecutableResponse(od as api.GetReleaseExecutableResponse);
+      checkGetReleaseExecutableResponse(od);
     });
   });
 
   unittest.group('obj-schema-Issue', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildIssue();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Issue.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkIssue(od as api.Issue);
+      final o = buildIssue();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Issue.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkIssue(od);
     });
   });
 
   unittest.group('obj-schema-ListReleasesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListReleasesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListReleasesResponse.fromJson(
+      final o = buildListReleasesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListReleasesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListReleasesResponse(od as api.ListReleasesResponse);
+      checkListReleasesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListRulesetsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListRulesetsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListRulesetsResponse.fromJson(
+      final o = buildListRulesetsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListRulesetsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListRulesetsResponse(od as api.ListRulesetsResponse);
+      checkListRulesetsResponse(od);
     });
   });
 
   unittest.group('obj-schema-Metadata', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildMetadata();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Metadata.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkMetadata(od as api.Metadata);
+      checkMetadata(od);
     });
   });
 
   unittest.group('obj-schema-Release', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRelease();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildRelease();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Release.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkRelease(od as api.Release);
+      checkRelease(od);
     });
   });
 
   unittest.group('obj-schema-Result', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Result.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkResult(od as api.Result);
+      checkResult(od);
     });
   });
 
   unittest.group('obj-schema-Ruleset', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRuleset();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildRuleset();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Ruleset.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkRuleset(od as api.Ruleset);
+      checkRuleset(od);
     });
   });
 
   unittest.group('obj-schema-Source', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSource();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildSource();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Source.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkSource(od as api.Source);
+      checkSource(od);
     });
   });
 
   unittest.group('obj-schema-SourcePosition', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSourcePosition();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SourcePosition.fromJson(
+      final o = buildSourcePosition();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SourcePosition.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSourcePosition(od as api.SourcePosition);
+      checkSourcePosition(od);
     });
   });
 
   unittest.group('obj-schema-TestCase', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestCase();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTestCase();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TestCase.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTestCase(od as api.TestCase);
+      checkTestCase(od);
     });
   });
 
   unittest.group('obj-schema-TestResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTestResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TestResult.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTestResult(od as api.TestResult);
+      checkTestResult(od);
     });
   });
 
   unittest.group('obj-schema-TestRulesetRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestRulesetRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TestRulesetRequest.fromJson(
+      final o = buildTestRulesetRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TestRulesetRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTestRulesetRequest(od as api.TestRulesetRequest);
+      checkTestRulesetRequest(od);
     });
   });
 
   unittest.group('obj-schema-TestRulesetResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestRulesetResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TestRulesetResponse.fromJson(
+      final o = buildTestRulesetResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TestRulesetResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTestRulesetResponse(od as api.TestRulesetResponse);
+      checkTestRulesetResponse(od);
     });
   });
 
   unittest.group('obj-schema-TestSuite', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestSuite();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTestSuite();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TestSuite.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTestSuite(od as api.TestSuite);
+      checkTestSuite(od);
     });
   });
 
   unittest.group('obj-schema-UpdateReleaseRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpdateReleaseRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpdateReleaseRequest.fromJson(
+      final o = buildUpdateReleaseRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateReleaseRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpdateReleaseRequest(od as api.UpdateReleaseRequest);
+      checkUpdateReleaseRequest(od);
     });
   });
 
   unittest.group('obj-schema-ValueCount', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildValueCount();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildValueCount();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.ValueCount.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkValueCount(od as api.ValueCount);
+      checkValueCount(od);
     });
   });
 
   unittest.group('obj-schema-VisitedExpression', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVisitedExpression();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VisitedExpression.fromJson(
+      final o = buildVisitedExpression();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VisitedExpression.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVisitedExpression(od as api.VisitedExpression);
+      checkVisitedExpression(od);
     });
   });
 
   unittest.group('resource-ProjectsResource', () {
     unittest.test('method--test', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects;
-      var arg_request = buildTestRulesetRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects;
+      final arg_request = buildTestRulesetRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.TestRulesetRequest.fromJson(
+        final obj = api.TestRulesetRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkTestRulesetRequest(obj as api.TestRulesetRequest);
+        checkTestRulesetRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1298,14 +1268,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTestRulesetResponse());
+        final resp = convert.json.encode(buildTestRulesetResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -1316,41 +1286,41 @@ void main() {
 
   unittest.group('resource-ProjectsReleasesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_request = buildRelease();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_request = buildRelease();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Release.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkRelease(obj as api.Release);
+        checkRelease(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1358,14 +1328,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRelease());
+        final resp = convert.json.encode(buildRelease());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -1374,36 +1344,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1411,14 +1381,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -1426,36 +1396,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1463,14 +1433,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRelease());
+        final resp = convert.json.encode(buildRelease());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -1478,37 +1448,37 @@ void main() {
     });
 
     unittest.test('method--getExecutable', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_name = 'foo';
-      var arg_executableVersion = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_name = 'foo';
+      final arg_executableVersion = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1516,18 +1486,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["executableVersion"]!.first,
+          queryMap['executableVersion']!.first,
           unittest.equals(arg_executableVersion),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGetReleaseExecutableResponse());
+        final resp = convert.json.encode(buildGetReleaseExecutableResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getExecutable(arg_name,
@@ -1537,39 +1507,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_name = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_name = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1577,26 +1547,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListReleasesResponse());
+        final resp = convert.json.encode(buildListReleasesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_name,
@@ -1608,41 +1578,41 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.releases;
-      var arg_request = buildUpdateReleaseRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.releases;
+      final arg_request = buildUpdateReleaseRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpdateReleaseRequest.fromJson(
+        final obj = api.UpdateReleaseRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpdateReleaseRequest(obj as api.UpdateReleaseRequest);
+        checkUpdateReleaseRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1650,14 +1620,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRelease());
+        final resp = convert.json.encode(buildRelease());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -1668,41 +1638,41 @@ void main() {
 
   unittest.group('resource-ProjectsRulesetsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.rulesets;
-      var arg_request = buildRuleset();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.rulesets;
+      final arg_request = buildRuleset();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Ruleset.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkRuleset(obj as api.Ruleset);
+        checkRuleset(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1710,14 +1680,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRuleset());
+        final resp = convert.json.encode(buildRuleset());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -1726,36 +1696,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.rulesets;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.rulesets;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1763,14 +1733,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -1778,36 +1748,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.rulesets;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.rulesets;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1815,14 +1785,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRuleset());
+        final resp = convert.json.encode(buildRuleset());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -1830,39 +1800,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.FirebaseRulesApi(mock).projects.rulesets;
-      var arg_name = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.FirebaseRulesApi(mock).projects.rulesets;
+      final arg_name = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1870,26 +1840,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListRulesetsResponse());
+        final resp = convert.json.encode(buildListRulesetsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_name,

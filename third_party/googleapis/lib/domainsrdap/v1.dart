@@ -30,12 +30,13 @@
 library domainsrdap.v1;
 
 import 'dart:async' as async;
-import 'dart:convert' as convert;
 import 'dart:core' as core;
 
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -477,56 +478,7 @@ class V1Resource {
 /// (stream google.api.HttpBody); } Use of this type only changes how the
 /// request and response bodies are handled, all other features will continue to
 /// work unchanged.
-class HttpBody {
-  /// The HTTP Content-Type header value specifying the content type of the
-  /// body.
-  core.String? contentType;
-
-  /// The HTTP request/response body as raw binary.
-  core.String? data;
-  core.List<core.int> get dataAsBytes => convert.base64.decode(data!);
-
-  set dataAsBytes(core.List<core.int> _bytes) {
-    data =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  /// Application specific response metadata.
-  ///
-  /// Must be set in the first response for streaming APIs.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? extensions;
-
-  HttpBody();
-
-  HttpBody.fromJson(core.Map _json) {
-    if (_json.containsKey('contentType')) {
-      contentType = _json['contentType'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('extensions')) {
-      extensions = (_json['extensions'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (contentType != null) 'contentType': contentType!,
-        if (data != null) 'data': data!,
-        if (extensions != null) 'extensions': extensions!,
-      };
-}
+typedef HttpBody = $HttpBody;
 
 /// Links object defined in
 /// [section 4.2 of RFC 7483](https://tools.ietf.org/html/rfc7483#section-4.2).
@@ -566,31 +518,31 @@ class Link {
   /// Example: "http://example.com/current".
   core.String? value;
 
-  Link();
+  Link({
+    this.href,
+    this.hreflang,
+    this.media,
+    this.rel,
+    this.title,
+    this.type,
+    this.value,
+  });
 
-  Link.fromJson(core.Map _json) {
-    if (_json.containsKey('href')) {
-      href = _json['href'] as core.String;
-    }
-    if (_json.containsKey('hreflang')) {
-      hreflang = _json['hreflang'] as core.String;
-    }
-    if (_json.containsKey('media')) {
-      media = _json['media'] as core.String;
-    }
-    if (_json.containsKey('rel')) {
-      rel = _json['rel'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  Link.fromJson(core.Map _json)
+      : this(
+          href: _json.containsKey('href') ? _json['href'] as core.String : null,
+          hreflang: _json.containsKey('hreflang')
+              ? _json['hreflang'] as core.String
+              : null,
+          media:
+              _json.containsKey('media') ? _json['media'] as core.String : null,
+          rel: _json.containsKey('rel') ? _json['rel'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (href != null) 'href': href!,
@@ -624,32 +576,34 @@ class Notice {
   /// unexplainable reasons".
   core.String? type;
 
-  Notice();
+  Notice({
+    this.description,
+    this.links,
+    this.title,
+    this.type,
+  });
 
-  Notice.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = (_json['description'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('links')) {
-      links = (_json['links'] as core.List)
-          .map<Link>((value) =>
-              Link.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Notice.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? (_json['description'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          links: _json.containsKey('links')
+              ? (_json['links'] as core.List)
+                  .map((value) => Link.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
-        if (links != null)
-          'links': links!.map((value) => value.toJson()).toList(),
+        if (links != null) 'links': links!,
         if (title != null) 'title': title!,
         if (type != null) 'type': type!,
       };
@@ -683,47 +637,52 @@ class RdapResponse {
   /// Error title.
   core.String? title;
 
-  RdapResponse();
+  RdapResponse({
+    this.description,
+    this.errorCode,
+    this.jsonResponse,
+    this.lang,
+    this.notices,
+    this.rdapConformance,
+    this.title,
+  });
 
-  RdapResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = (_json['description'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('errorCode')) {
-      errorCode = _json['errorCode'] as core.int;
-    }
-    if (_json.containsKey('jsonResponse')) {
-      jsonResponse = HttpBody.fromJson(
-          _json['jsonResponse'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('lang')) {
-      lang = _json['lang'] as core.String;
-    }
-    if (_json.containsKey('notices')) {
-      notices = (_json['notices'] as core.List)
-          .map<Notice>((value) =>
-              Notice.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('rdapConformance')) {
-      rdapConformance = (_json['rdapConformance'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  RdapResponse.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? (_json['description'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          errorCode: _json.containsKey('errorCode')
+              ? _json['errorCode'] as core.int
+              : null,
+          jsonResponse: _json.containsKey('jsonResponse')
+              ? HttpBody.fromJson(
+                  _json['jsonResponse'] as core.Map<core.String, core.dynamic>)
+              : null,
+          lang: _json.containsKey('lang') ? _json['lang'] as core.String : null,
+          notices: _json.containsKey('notices')
+              ? (_json['notices'] as core.List)
+                  .map((value) => Notice.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          rdapConformance: _json.containsKey('rdapConformance')
+              ? (_json['rdapConformance'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (errorCode != null) 'errorCode': errorCode!,
-        if (jsonResponse != null) 'jsonResponse': jsonResponse!.toJson(),
+        if (jsonResponse != null) 'jsonResponse': jsonResponse!,
         if (lang != null) 'lang': lang!,
-        if (notices != null)
-          'notices': notices!.map((value) => value.toJson()).toList(),
+        if (notices != null) 'notices': notices!,
         if (rdapConformance != null) 'rdapConformance': rdapConformance!,
         if (title != null) 'title': title!,
       };

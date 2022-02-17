@@ -21,6 +21,9 @@
 /// - [AdminResource]
 ///   - [AdminProjectsResource]
 ///     - [AdminProjectsLocationsResource]
+///       - [AdminProjectsLocationsOperationsResource]
+///       - [AdminProjectsLocationsReservationsResource]
+///         - [AdminProjectsLocationsReservationsTopicsResource]
 ///       - [AdminProjectsLocationsSubscriptionsResource]
 ///       - [AdminProjectsLocationsTopicsResource]
 ///         - [AdminProjectsLocationsTopicsSubscriptionsResource]
@@ -42,13 +45,16 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
 class PubsubLiteApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -85,6 +91,10 @@ class AdminProjectsResource {
 class AdminProjectsLocationsResource {
   final commons.ApiRequester _requester;
 
+  AdminProjectsLocationsOperationsResource get operations =>
+      AdminProjectsLocationsOperationsResource(_requester);
+  AdminProjectsLocationsReservationsResource get reservations =>
+      AdminProjectsLocationsReservationsResource(_requester);
   AdminProjectsLocationsSubscriptionsResource get subscriptions =>
       AdminProjectsLocationsSubscriptionsResource(_requester);
   AdminProjectsLocationsTopicsResource get topics =>
@@ -92,6 +102,491 @@ class AdminProjectsLocationsResource {
 
   AdminProjectsLocationsResource(commons.ApiRequester client)
       : _requester = client;
+}
+
+class AdminProjectsLocationsOperationsResource {
+  final commons.ApiRequester _requester;
+
+  AdminProjectsLocationsOperationsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Starts asynchronous cancellation on a long-running operation.
+  ///
+  /// The server makes a best effort to cancel the operation, but success is not
+  /// guaranteed. If the server doesn't support this method, it returns
+  /// `google.rpc.Code.UNIMPLEMENTED`. Clients can use Operations.GetOperation
+  /// or other methods to check whether the cancellation succeeded or whether
+  /// the operation completed despite cancellation. On successful cancellation,
+  /// the operation is not deleted; instead, it becomes an operation with an
+  /// Operation.error value with a google.rpc.Status.code of 1, corresponding to
+  /// `Code.CANCELLED`.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource to be cancelled.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> cancel(
+    CancelOperationRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name') + ':cancel';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a long-running operation.
+  ///
+  /// This method indicates that the client is no longer interested in the
+  /// operation result. It does not cancel the operation. If the server doesn't
+  /// support this method, it returns `google.rpc.Code.UNIMPLEMENTED`.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource to be deleted.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the latest state of a long-running operation.
+  ///
+  /// Clients can use this method to poll the operation result at intervals as
+  /// recommended by the API service.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists operations that match the specified filter in the request.
+  ///
+  /// If the server doesn't support this method, it returns `UNIMPLEMENTED`.
+  /// NOTE: the `name` binding allows API services to override the binding to
+  /// use different resource name schemes, such as `users / * /operations`. To
+  /// override the binding, API services can add a binding such as
+  /// `"/v1/{name=users / * }/operations"` to their service configuration. For
+  /// backwards compatibility, the default name includes the operations
+  /// collection id, however overriding users must ensure the name binding is
+  /// the parent resource, without the operations collection id.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation's parent resource.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [filter] - The standard list filter.
+  ///
+  /// [pageSize] - The standard list page size.
+  ///
+  /// [pageToken] - The standard list page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListOperationsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListOperationsResponse> list(
+    core.String name, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name') + '/operations';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListOperationsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class AdminProjectsLocationsReservationsResource {
+  final commons.ApiRequester _requester;
+
+  AdminProjectsLocationsReservationsTopicsResource get topics =>
+      AdminProjectsLocationsReservationsTopicsResource(_requester);
+
+  AdminProjectsLocationsReservationsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a new reservation.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent location in which to create the
+  /// reservation. Structured like
+  /// `projects/{project_number}/locations/{location}`.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [reservationId] - Required. The ID to use for the reservation, which will
+  /// become the final component of the reservation's name. This value is
+  /// structured like: `my-reservation-name`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Reservation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Reservation> create(
+    Reservation request,
+    core.String parent, {
+    core.String? reservationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (reservationId != null) 'reservationId': [reservationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$parent') + '/reservations';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Reservation.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified reservation.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the reservation to delete. Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns the reservation configuration.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the reservation whose configuration to
+  /// return. Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Reservation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Reservation> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Reservation.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns the list of reservations for the given project.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent whose reservations are to be listed.
+  /// Structured like `projects/{project_number}/locations/{location}`.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of reservations to return. The service may
+  /// return fewer than this value. If unset or zero, all reservations for the
+  /// parent will be returned.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListReservations`
+  /// call. Provide this to retrieve the subsequent page. When paginating, all
+  /// other parameters provided to `ListReservations` must match the call that
+  /// provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListReservationsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListReservationsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$parent') + '/reservations';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListReservationsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates properties of the specified reservation.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the reservation. Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. A mask specifying the reservation fields to
+  /// change.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Reservation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Reservation> patch(
+    Reservation request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Reservation.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class AdminProjectsLocationsReservationsTopicsResource {
+  final commons.ApiRequester _requester;
+
+  AdminProjectsLocationsReservationsTopicsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Lists the topics attached to the specified reservation.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the reservation whose topics to list.
+  /// Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of topics to return. The service may
+  /// return fewer than this value. If unset or zero, all topics for the given
+  /// reservation will be returned.
+  ///
+  /// [pageToken] - A page token, received from a previous
+  /// `ListReservationTopics` call. Provide this to retrieve the subsequent
+  /// page. When paginating, all other parameters provided to
+  /// `ListReservationTopics` must match the call that provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListReservationTopicsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListReservationTopicsResponse> list(
+    core.String name, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name') + '/topics';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListReservationTopicsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class AdminProjectsLocationsSubscriptionsResource {
@@ -111,6 +606,11 @@ class AdminProjectsLocationsSubscriptionsResource {
   /// `projects/{project_number}/locations/{location}`.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
+  /// [skipBacklog] - If true, the newly created subscription will only receive
+  /// messages published after the subscription was created. Otherwise, the
+  /// entire message backlog will be received on the subscription. Defaults to
+  /// false.
+  ///
   /// [subscriptionId] - Required. The ID to use for the subscription, which
   /// will become the final component of the subscription's name. This value is
   /// structured like: `my-sub-name`.
@@ -128,11 +628,13 @@ class AdminProjectsLocationsSubscriptionsResource {
   async.Future<Subscription> create(
     Subscription request,
     core.String parent, {
+    core.bool? skipBacklog,
     core.String? subscriptionId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (skipBacklog != null) 'skipBacklog': ['${skipBacklog}'],
       if (subscriptionId != null) 'subscriptionId': [subscriptionId],
       if ($fields != null) 'fields': [$fields],
     };
@@ -305,7 +807,7 @@ class AdminProjectsLocationsSubscriptionsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -321,6 +823,63 @@ class AdminProjectsLocationsSubscriptionsResource {
     );
     return Subscription.fromJson(
         _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Performs an out-of-band seek for a subscription to a specified target,
+  /// which may be timestamps or named positions within the message backlog.
+  ///
+  /// Seek translates these targets to cursors for each partition and
+  /// orchestrates subscribers to start consuming messages from these seek
+  /// cursors. If an operation is returned, the seek has been registered and
+  /// subscribers will eventually receive messages from the seek cursors (i.e.
+  /// eventual consistency), as long as they are using a minimum supported
+  /// client library version and not a system that tracks cursors independently
+  /// of Pub/Sub Lite (e.g. Apache Beam, Dataflow, Spark). The seek operation
+  /// will fail for unsupported clients. If clients would like to know when
+  /// subscribers react to the seek (or not), they can poll the operation. The
+  /// seek operation will succeed and complete once subscribers are ready to
+  /// receive messages from the seek cursors for all partitions of the topic.
+  /// This means that the seek operation will not complete until all subscribers
+  /// come online. If the previous seek operation has not yet completed, it will
+  /// be aborted and the new invocation of seek will supersede it.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the subscription to seek.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/subscriptions/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> seek(
+    SeekSubscriptionRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/admin/' + core.Uri.encodeFull('$name') + ':seek';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -363,7 +922,7 @@ class AdminProjectsLocationsTopicsResource {
     core.String? topicId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (topicId != null) 'topicId': [topicId],
       if ($fields != null) 'fields': [$fields],
@@ -568,7 +1127,7 @@ class AdminProjectsLocationsTopicsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -678,6 +1237,49 @@ class CursorProjectsLocationsSubscriptionsResource {
 
   CursorProjectsLocationsSubscriptionsResource(commons.ApiRequester client)
       : _requester = client;
+
+  /// Updates the committed cursor.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [subscription] - The subscription for which to update the cursor.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/subscriptions/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CommitCursorResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CommitCursorResponse> commitCursor(
+    CommitCursorRequest request,
+    core.String subscription, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/cursor/' + core.Uri.encodeFull('$subscription') + ':commitCursor';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CommitCursorResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class CursorProjectsLocationsSubscriptionsCursorsResource {
@@ -776,10 +1378,11 @@ class TopicStatsProjectsLocationsTopicsResource {
 
   /// Compute the head cursor for the partition.
   ///
-  /// The head cursor’s offset is guaranteed to be before or equal to all
-  /// messages which have not yet been acknowledged to be published, and greater
+  /// The head cursor's offset is guaranteed to be less than or equal to all
+  /// messages which have not yet been acknowledged as published, and greater
   /// than the offset of any message whose publish has already been
-  /// acknowledged. It is 0 if there have never been messages on the partition.
+  /// acknowledged. It is zero if there have never been messages in the
+  /// partition.
   ///
   /// [request] - The metadata request object.
   ///
@@ -804,7 +1407,7 @@ class TopicStatsProjectsLocationsTopicsResource {
     core.String topic, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -848,7 +1451,7 @@ class TopicStatsProjectsLocationsTopicsResource {
     core.String topic, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -866,30 +1469,81 @@ class TopicStatsProjectsLocationsTopicsResource {
     return ComputeMessageStatsResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
+
+  /// Compute the corresponding cursor for a publish or event time in a topic
+  /// partition.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [topic] - Required. The topic for which we should compute the cursor.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/topics/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ComputeTimeCursorResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ComputeTimeCursorResponse> computeTimeCursor(
+    ComputeTimeCursorRequest request,
+    core.String topic, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/topicStats/' + core.Uri.encodeFull('$topic') + ':computeTimeCursor';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ComputeTimeCursorResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
+
+/// The request message for Operations.CancelOperation.
+typedef CancelOperationRequest = $Empty;
 
 /// The throughput capacity configuration for each partition.
 class Capacity {
   /// Publish throughput capacity per partition in MiB/s.
   ///
-  /// Must be >= 4 and <= 16.
+  /// Must be \>= 4 and \<= 16.
   core.int? publishMibPerSec;
 
   /// Subscribe throughput capacity per partition in MiB/s.
   ///
-  /// Must be >= 4 and <= 32.
+  /// Must be \>= 4 and \<= 32.
   core.int? subscribeMibPerSec;
 
-  Capacity();
+  Capacity({
+    this.publishMibPerSec,
+    this.subscribeMibPerSec,
+  });
 
-  Capacity.fromJson(core.Map _json) {
-    if (_json.containsKey('publishMibPerSec')) {
-      publishMibPerSec = _json['publishMibPerSec'] as core.int;
-    }
-    if (_json.containsKey('subscribeMibPerSec')) {
-      subscribeMibPerSec = _json['subscribeMibPerSec'] as core.int;
-    }
-  }
+  Capacity.fromJson(core.Map _json)
+      : this(
+          publishMibPerSec: _json.containsKey('publishMibPerSec')
+              ? _json['publishMibPerSec'] as core.int
+              : null,
+          subscribeMibPerSec: _json.containsKey('subscribeMibPerSec')
+              ? _json['subscribeMibPerSec'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (publishMibPerSec != null) 'publishMibPerSec': publishMibPerSec!,
@@ -898,6 +1552,42 @@ class Capacity {
       };
 }
 
+/// Request for CommitCursor.
+class CommitCursorRequest {
+  /// The new value for the committed cursor.
+  Cursor? cursor;
+
+  /// The partition for which to update the cursor.
+  ///
+  /// Partitions are zero indexed, so `partition` must be in the range \[0,
+  /// topic.num_partitions).
+  core.String? partition;
+
+  CommitCursorRequest({
+    this.cursor,
+    this.partition,
+  });
+
+  CommitCursorRequest.fromJson(core.Map _json)
+      : this(
+          cursor: _json.containsKey('cursor')
+              ? Cursor.fromJson(
+                  _json['cursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+          partition: _json.containsKey('partition')
+              ? _json['partition'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cursor != null) 'cursor': cursor!,
+        if (partition != null) 'partition': partition!,
+      };
+}
+
+/// Response for CommitCursor.
+typedef CommitCursorResponse = $Empty;
+
 /// Compute the current head cursor for a partition.
 class ComputeHeadCursorRequest {
   /// The partition for which we should compute the head cursor.
@@ -905,13 +1595,16 @@ class ComputeHeadCursorRequest {
   /// Required.
   core.String? partition;
 
-  ComputeHeadCursorRequest();
+  ComputeHeadCursorRequest({
+    this.partition,
+  });
 
-  ComputeHeadCursorRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('partition')) {
-      partition = _json['partition'] as core.String;
-    }
-  }
+  ComputeHeadCursorRequest.fromJson(core.Map _json)
+      : this(
+          partition: _json.containsKey('partition')
+              ? _json['partition'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (partition != null) 'partition': partition!,
@@ -923,17 +1616,20 @@ class ComputeHeadCursorResponse {
   /// The head cursor.
   Cursor? headCursor;
 
-  ComputeHeadCursorResponse();
+  ComputeHeadCursorResponse({
+    this.headCursor,
+  });
 
-  ComputeHeadCursorResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('headCursor')) {
-      headCursor = Cursor.fromJson(
-          _json['headCursor'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ComputeHeadCursorResponse.fromJson(core.Map _json)
+      : this(
+          headCursor: _json.containsKey('headCursor')
+              ? Cursor.fromJson(
+                  _json['headCursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (headCursor != null) 'headCursor': headCursor!.toJson(),
+        if (headCursor != null) 'headCursor': headCursor!,
       };
 }
 
@@ -941,7 +1637,7 @@ class ComputeHeadCursorResponse {
 class ComputeMessageStatsRequest {
   /// The exclusive end of the range.
   ///
-  /// The range is empty if end_cursor <= start_cursor. Specifying a
+  /// The range is empty if end_cursor \<= start_cursor. Specifying a
   /// start_cursor before the first message and an end_cursor after the last
   /// message will retrieve all messages.
   Cursor? endCursor;
@@ -954,26 +1650,31 @@ class ComputeMessageStatsRequest {
   /// The inclusive start of the range.
   Cursor? startCursor;
 
-  ComputeMessageStatsRequest();
+  ComputeMessageStatsRequest({
+    this.endCursor,
+    this.partition,
+    this.startCursor,
+  });
 
-  ComputeMessageStatsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('endCursor')) {
-      endCursor = Cursor.fromJson(
-          _json['endCursor'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('partition')) {
-      partition = _json['partition'] as core.String;
-    }
-    if (_json.containsKey('startCursor')) {
-      startCursor = Cursor.fromJson(
-          _json['startCursor'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ComputeMessageStatsRequest.fromJson(core.Map _json)
+      : this(
+          endCursor: _json.containsKey('endCursor')
+              ? Cursor.fromJson(
+                  _json['endCursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+          partition: _json.containsKey('partition')
+              ? _json['partition'] as core.String
+              : null,
+          startCursor: _json.containsKey('startCursor')
+              ? Cursor.fromJson(
+                  _json['startCursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endCursor != null) 'endCursor': endCursor!.toJson(),
+        if (endCursor != null) 'endCursor': endCursor!,
         if (partition != null) 'partition': partition!,
-        if (startCursor != null) 'startCursor': startCursor!.toJson(),
+        if (startCursor != null) 'startCursor': startCursor!,
       };
 }
 
@@ -998,22 +1699,28 @@ class ComputeMessageStatsResponse {
   /// non-decreasing. The timestamp will be unset if there are no messages.
   core.String? minimumPublishTime;
 
-  ComputeMessageStatsResponse();
+  ComputeMessageStatsResponse({
+    this.messageBytes,
+    this.messageCount,
+    this.minimumEventTime,
+    this.minimumPublishTime,
+  });
 
-  ComputeMessageStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('messageBytes')) {
-      messageBytes = _json['messageBytes'] as core.String;
-    }
-    if (_json.containsKey('messageCount')) {
-      messageCount = _json['messageCount'] as core.String;
-    }
-    if (_json.containsKey('minimumEventTime')) {
-      minimumEventTime = _json['minimumEventTime'] as core.String;
-    }
-    if (_json.containsKey('minimumPublishTime')) {
-      minimumPublishTime = _json['minimumPublishTime'] as core.String;
-    }
-  }
+  ComputeMessageStatsResponse.fromJson(core.Map _json)
+      : this(
+          messageBytes: _json.containsKey('messageBytes')
+              ? _json['messageBytes'] as core.String
+              : null,
+          messageCount: _json.containsKey('messageCount')
+              ? _json['messageCount'] as core.String
+              : null,
+          minimumEventTime: _json.containsKey('minimumEventTime')
+              ? _json['minimumEventTime'] as core.String
+              : null,
+          minimumPublishTime: _json.containsKey('minimumPublishTime')
+              ? _json['minimumPublishTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (messageBytes != null) 'messageBytes': messageBytes!,
@@ -1024,6 +1731,70 @@ class ComputeMessageStatsResponse {
       };
 }
 
+/// Compute the corresponding cursor for a publish or event time in a topic
+/// partition.
+class ComputeTimeCursorRequest {
+  /// The partition for which we should compute the cursor.
+  ///
+  /// Required.
+  core.String? partition;
+
+  /// The target publish or event time.
+  ///
+  /// Specifying a future time will return an unset cursor.
+  ///
+  /// Required.
+  TimeTarget? target;
+
+  ComputeTimeCursorRequest({
+    this.partition,
+    this.target,
+  });
+
+  ComputeTimeCursorRequest.fromJson(core.Map _json)
+      : this(
+          partition: _json.containsKey('partition')
+              ? _json['partition'] as core.String
+              : null,
+          target: _json.containsKey('target')
+              ? TimeTarget.fromJson(
+                  _json['target'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (partition != null) 'partition': partition!,
+        if (target != null) 'target': target!,
+      };
+}
+
+/// Response containing the cursor corresponding to a publish or event time in a
+/// topic partition.
+class ComputeTimeCursorResponse {
+  /// If present, the cursor references the first message with time greater than
+  /// or equal to the specified target time.
+  ///
+  /// If such a message cannot be found, the cursor will be unset (i.e. `cursor`
+  /// is not present).
+  Cursor? cursor;
+
+  ComputeTimeCursorResponse({
+    this.cursor,
+  });
+
+  ComputeTimeCursorResponse.fromJson(core.Map _json)
+      : this(
+          cursor: _json.containsKey('cursor')
+              ? Cursor.fromJson(
+                  _json['cursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cursor != null) 'cursor': cursor!,
+      };
+}
+
 /// A cursor that describes the position of a message within a topic partition.
 class Cursor {
   /// The offset of a message within a topic partition.
@@ -1031,13 +1802,16 @@ class Cursor {
   /// Must be greater than or equal 0.
   core.String? offset;
 
-  Cursor();
+  Cursor({
+    this.offset,
+  });
 
-  Cursor.fromJson(core.Map _json) {
-    if (_json.containsKey('offset')) {
-      offset = _json['offset'] as core.String;
-    }
-  }
+  Cursor.fromJson(core.Map _json)
+      : this(
+          offset: _json.containsKey('offset')
+              ? _json['offset'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (offset != null) 'offset': offset!,
@@ -1057,13 +1831,16 @@ class DeliveryConfig {
   /// This will result in higher end-to-end latency, but consistent delivery.
   core.String? deliveryRequirement;
 
-  DeliveryConfig();
+  DeliveryConfig({
+    this.deliveryRequirement,
+  });
 
-  DeliveryConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('deliveryRequirement')) {
-      deliveryRequirement = _json['deliveryRequirement'] as core.String;
-    }
-  }
+  DeliveryConfig.fromJson(core.Map _json)
+      : this(
+          deliveryRequirement: _json.containsKey('deliveryRequirement')
+              ? _json['deliveryRequirement'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deliveryRequirement != null)
@@ -1078,14 +1855,38 @@ class DeliveryConfig {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// The response message for Operations.ListOperations.
+class ListOperationsResponse {
+  /// The standard List next-page token.
+  core.String? nextPageToken;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// A list of operations that matches the specified filter in the request.
+  core.List<Operation>? operations;
+
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
+
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (operations != null) 'operations': operations!,
+      };
 }
 
 /// Response for ListPartitionCursors
@@ -1098,25 +1899,100 @@ class ListPartitionCursorsResponse {
   /// The partition cursors from this request.
   core.List<PartitionCursor>? partitionCursors;
 
-  ListPartitionCursorsResponse();
+  ListPartitionCursorsResponse({
+    this.nextPageToken,
+    this.partitionCursors,
+  });
 
-  ListPartitionCursorsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('partitionCursors')) {
-      partitionCursors = (_json['partitionCursors'] as core.List)
-          .map<PartitionCursor>((value) => PartitionCursor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListPartitionCursorsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          partitionCursors: _json.containsKey('partitionCursors')
+              ? (_json['partitionCursors'] as core.List)
+                  .map((value) => PartitionCursor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (partitionCursors != null)
-          'partitionCursors':
-              partitionCursors!.map((value) => value.toJson()).toList(),
+        if (partitionCursors != null) 'partitionCursors': partitionCursors!,
+      };
+}
+
+/// Response for ListReservationTopics.
+class ListReservationTopicsResponse {
+  /// A token that can be sent as `page_token` to retrieve the next page of
+  /// results.
+  ///
+  /// If this field is omitted, there are no more results.
+  core.String? nextPageToken;
+
+  /// The names of topics attached to the reservation.
+  ///
+  /// The order of the topics is unspecified.
+  core.List<core.String>? topics;
+
+  ListReservationTopicsResponse({
+    this.nextPageToken,
+    this.topics,
+  });
+
+  ListReservationTopicsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          topics: _json.containsKey('topics')
+              ? (_json['topics'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (topics != null) 'topics': topics!,
+      };
+}
+
+/// Response for ListReservations.
+class ListReservationsResponse {
+  /// A token that can be sent as `page_token` to retrieve the next page of
+  /// results.
+  ///
+  /// If this field is omitted, there are no more results.
+  core.String? nextPageToken;
+
+  /// The list of reservation in the requested parent.
+  ///
+  /// The order of the reservations is unspecified.
+  core.List<Reservation>? reservations;
+
+  ListReservationsResponse({
+    this.nextPageToken,
+    this.reservations,
+  });
+
+  ListReservationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          reservations: _json.containsKey('reservations')
+              ? (_json['reservations'] as core.List)
+                  .map((value) => Reservation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (reservations != null) 'reservations': reservations!,
       };
 }
 
@@ -1133,25 +2009,27 @@ class ListSubscriptionsResponse {
   /// The order of the subscriptions is unspecified.
   core.List<Subscription>? subscriptions;
 
-  ListSubscriptionsResponse();
+  ListSubscriptionsResponse({
+    this.nextPageToken,
+    this.subscriptions,
+  });
 
-  ListSubscriptionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('subscriptions')) {
-      subscriptions = (_json['subscriptions'] as core.List)
-          .map<Subscription>((value) => Subscription.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListSubscriptionsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          subscriptions: _json.containsKey('subscriptions')
+              ? (_json['subscriptions'] as core.List)
+                  .map((value) => Subscription.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (subscriptions != null)
-          'subscriptions':
-              subscriptions!.map((value) => value.toJson()).toList(),
+        if (subscriptions != null) 'subscriptions': subscriptions!,
       };
 }
 
@@ -1168,18 +2046,22 @@ class ListTopicSubscriptionsResponse {
   /// The order of the subscriptions is unspecified.
   core.List<core.String>? subscriptions;
 
-  ListTopicSubscriptionsResponse();
+  ListTopicSubscriptionsResponse({
+    this.nextPageToken,
+    this.subscriptions,
+  });
 
-  ListTopicSubscriptionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('subscriptions')) {
-      subscriptions = (_json['subscriptions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListTopicSubscriptionsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          subscriptions: _json.containsKey('subscriptions')
+              ? (_json['subscriptions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
@@ -1200,24 +2082,103 @@ class ListTopicsResponse {
   /// The order of the topics is unspecified.
   core.List<Topic>? topics;
 
-  ListTopicsResponse();
+  ListTopicsResponse({
+    this.nextPageToken,
+    this.topics,
+  });
 
-  ListTopicsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('topics')) {
-      topics = (_json['topics'] as core.List)
-          .map<Topic>((value) =>
-              Topic.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTopicsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          topics: _json.containsKey('topics')
+              ? (_json['topics'] as core.List)
+                  .map((value) => Topic.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (topics != null)
-          'topics': topics!.map((value) => value.toJson()).toList(),
+        if (topics != null) 'topics': topics!,
+      };
+}
+
+/// This resource represents a long-running operation that is the result of a
+/// network API call.
+class Operation {
+  /// If the value is `false`, it means the operation is still in progress.
+  ///
+  /// If `true`, the operation is completed, and either `error` or `response` is
+  /// available.
+  core.bool? done;
+
+  /// The error result of the operation in case of failure or cancellation.
+  Status? error;
+
+  /// Service-specific metadata associated with the operation.
+  ///
+  /// It typically contains progress information and common metadata such as
+  /// create time. Some services might not provide such metadata. Any method
+  /// that returns a long-running operation should document the metadata type,
+  /// if any.
+  ///
+  /// The values for Object must be JSON objects. It can consist of `num`,
+  /// `String`, `bool` and `null` as well as `Map` and `List` values.
+  core.Map<core.String, core.Object?>? metadata;
+
+  /// The server-assigned name, which is only unique within the same service
+  /// that originally returns it.
+  ///
+  /// If you use the default HTTP mapping, the `name` should be a resource name
+  /// ending with `operations/{unique_id}`.
+  core.String? name;
+
+  /// The normal response of the operation in case of success.
+  ///
+  /// If the original method returns no data on success, such as `Delete`, the
+  /// response is `google.protobuf.Empty`. If the original method is standard
+  /// `Get`/`Create`/`Update`, the response should be the resource. For other
+  /// methods, the response should have the type `XxxResponse`, where `Xxx` is
+  /// the original method name. For example, if the original method name is
+  /// `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.
+  ///
+  /// The values for Object must be JSON objects. It can consist of `num`,
+  /// `String`, `bool` and `null` as well as `Map` and `List` values.
+  core.Map<core.String, core.Object?>? response;
+
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
+
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (done != null) 'done': done!,
+        if (error != null) 'error': error!,
+        if (metadata != null) 'metadata': metadata!,
+        if (name != null) 'name': name!,
+        if (response != null) 'response': response!,
       };
 }
 
@@ -1243,23 +2204,25 @@ class PartitionConfig {
   /// charged for 20 partitions. This value must be in the range \[1,4\].
   core.int? scale;
 
-  PartitionConfig();
+  PartitionConfig({
+    this.capacity,
+    this.count,
+    this.scale,
+  });
 
-  PartitionConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('capacity')) {
-      capacity = Capacity.fromJson(
-          _json['capacity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.String;
-    }
-    if (_json.containsKey('scale')) {
-      scale = _json['scale'] as core.int;
-    }
-  }
+  PartitionConfig.fromJson(core.Map _json)
+      : this(
+          capacity: _json.containsKey('capacity')
+              ? Capacity.fromJson(
+                  _json['capacity'] as core.Map<core.String, core.dynamic>)
+              : null,
+          count:
+              _json.containsKey('count') ? _json['count'] as core.String : null,
+          scale: _json.containsKey('scale') ? _json['scale'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (capacity != null) 'capacity': capacity!.toJson(),
+        if (capacity != null) 'capacity': capacity!,
         if (count != null) 'count': count!,
         if (scale != null) 'scale': scale!,
       };
@@ -1273,21 +2236,86 @@ class PartitionCursor {
   /// The partition this is for.
   core.String? partition;
 
-  PartitionCursor();
+  PartitionCursor({
+    this.cursor,
+    this.partition,
+  });
 
-  PartitionCursor.fromJson(core.Map _json) {
-    if (_json.containsKey('cursor')) {
-      cursor = Cursor.fromJson(
-          _json['cursor'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('partition')) {
-      partition = _json['partition'] as core.String;
-    }
-  }
+  PartitionCursor.fromJson(core.Map _json)
+      : this(
+          cursor: _json.containsKey('cursor')
+              ? Cursor.fromJson(
+                  _json['cursor'] as core.Map<core.String, core.dynamic>)
+              : null,
+          partition: _json.containsKey('partition')
+              ? _json['partition'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (cursor != null) 'cursor': cursor!.toJson(),
+        if (cursor != null) 'cursor': cursor!,
         if (partition != null) 'partition': partition!,
+      };
+}
+
+/// Metadata about a reservation resource.
+class Reservation {
+  /// The name of the reservation.
+  ///
+  /// Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  core.String? name;
+
+  /// The reserved throughput capacity.
+  ///
+  /// Every unit of throughput capacity is equivalent to 1 MiB/s of published
+  /// messages or 2 MiB/s of subscribed messages. Any topics which are declared
+  /// as using capacity from a Reservation will consume resources from this
+  /// reservation instead of being charged individually.
+  core.String? throughputCapacity;
+
+  Reservation({
+    this.name,
+    this.throughputCapacity,
+  });
+
+  Reservation.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          throughputCapacity: _json.containsKey('throughputCapacity')
+              ? _json['throughputCapacity'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (name != null) 'name': name!,
+        if (throughputCapacity != null)
+          'throughputCapacity': throughputCapacity!,
+      };
+}
+
+/// The settings for this topic's Reservation usage.
+class ReservationConfig {
+  /// The Reservation to use for this topic's throughput capacity.
+  ///
+  /// Structured like:
+  /// projects/{project_number}/locations/{location}/reservations/{reservation_id}
+  core.String? throughputReservation;
+
+  ReservationConfig({
+    this.throughputReservation,
+  });
+
+  ReservationConfig.fromJson(core.Map _json)
+      : this(
+          throughputReservation: _json.containsKey('throughputReservation')
+              ? _json['throughputReservation'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (throughputReservation != null)
+          'throughputReservation': throughputReservation!,
       };
 }
 
@@ -1306,22 +2334,74 @@ class RetentionConfig {
   /// partition is below `per_partition_bytes`.
   core.String? period;
 
-  RetentionConfig();
+  RetentionConfig({
+    this.perPartitionBytes,
+    this.period,
+  });
 
-  RetentionConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('perPartitionBytes')) {
-      perPartitionBytes = _json['perPartitionBytes'] as core.String;
-    }
-    if (_json.containsKey('period')) {
-      period = _json['period'] as core.String;
-    }
-  }
+  RetentionConfig.fromJson(core.Map _json)
+      : this(
+          perPartitionBytes: _json.containsKey('perPartitionBytes')
+              ? _json['perPartitionBytes'] as core.String
+              : null,
+          period: _json.containsKey('period')
+              ? _json['period'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (perPartitionBytes != null) 'perPartitionBytes': perPartitionBytes!,
         if (period != null) 'period': period!,
       };
 }
+
+/// Request for SeekSubscription.
+class SeekSubscriptionRequest {
+  /// Seek to a named position with respect to the message backlog.
+  /// Possible string values are:
+  /// - "NAMED_TARGET_UNSPECIFIED" : Unspecified named target. Do not use.
+  /// - "TAIL" : Seek to the oldest retained message.
+  /// - "HEAD" : Seek past all recently published messages, skipping the entire
+  /// message backlog.
+  core.String? namedTarget;
+
+  /// Seek to the first message whose publish or event time is greater than or
+  /// equal to the specified query time.
+  ///
+  /// If no such message can be located, will seek to the end of the message
+  /// backlog.
+  TimeTarget? timeTarget;
+
+  SeekSubscriptionRequest({
+    this.namedTarget,
+    this.timeTarget,
+  });
+
+  SeekSubscriptionRequest.fromJson(core.Map _json)
+      : this(
+          namedTarget: _json.containsKey('namedTarget')
+              ? _json['namedTarget'] as core.String
+              : null,
+          timeTarget: _json.containsKey('timeTarget')
+              ? TimeTarget.fromJson(
+                  _json['timeTarget'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (namedTarget != null) 'namedTarget': namedTarget!,
+        if (timeTarget != null) 'timeTarget': timeTarget!,
+      };
+}
+
+/// The `Status` type defines a logical error model that is suitable for
+/// different programming environments, including REST APIs and RPC APIs.
+///
+/// It is used by [gRPC](https://github.com/grpc). Each `Status` message
+/// contains three pieces of data: error code, error message, and error details.
+/// You can find out more about this error model and how to work with it in the
+/// [API Design Guide](https://cloud.google.com/apis/design/errors).
+typedef Status = $Status;
 
 /// Metadata about a subscription resource.
 class Subscription {
@@ -1340,25 +2420,68 @@ class Subscription {
   /// projects/{project_number}/locations/{location}/topics/{topic_id}
   core.String? topic;
 
-  Subscription();
+  Subscription({
+    this.deliveryConfig,
+    this.name,
+    this.topic,
+  });
 
-  Subscription.fromJson(core.Map _json) {
-    if (_json.containsKey('deliveryConfig')) {
-      deliveryConfig = DeliveryConfig.fromJson(
-          _json['deliveryConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('topic')) {
-      topic = _json['topic'] as core.String;
-    }
-  }
+  Subscription.fromJson(core.Map _json)
+      : this(
+          deliveryConfig: _json.containsKey('deliveryConfig')
+              ? DeliveryConfig.fromJson(_json['deliveryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          topic:
+              _json.containsKey('topic') ? _json['topic'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deliveryConfig != null) 'deliveryConfig': deliveryConfig!.toJson(),
+        if (deliveryConfig != null) 'deliveryConfig': deliveryConfig!,
         if (name != null) 'name': name!,
         if (topic != null) 'topic': topic!,
+      };
+}
+
+/// A target publish or event time.
+///
+/// Can be used for seeking to or retrieving the corresponding cursor.
+class TimeTarget {
+  /// Request the cursor of the first message with event time greater than or
+  /// equal to `event_time`.
+  ///
+  /// If messages are missing an event time, the publish time is used as a
+  /// fallback. As event times are user supplied, subsequent messages may have
+  /// event times less than `event_time` and should be filtered by the client,
+  /// if necessary.
+  core.String? eventTime;
+
+  /// Request the cursor of the first message with publish time greater than or
+  /// equal to `publish_time`.
+  ///
+  /// All messages thereafter are guaranteed to have publish times \>=
+  /// `publish_time`.
+  core.String? publishTime;
+
+  TimeTarget({
+    this.eventTime,
+    this.publishTime,
+  });
+
+  TimeTarget.fromJson(core.Map _json)
+      : this(
+          eventTime: _json.containsKey('eventTime')
+              ? _json['eventTime'] as core.String
+              : null,
+          publishTime: _json.containsKey('publishTime')
+              ? _json['publishTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (eventTime != null) 'eventTime': eventTime!,
+        if (publishTime != null) 'publishTime': publishTime!,
       };
 }
 
@@ -1373,31 +2496,41 @@ class Topic {
   /// The settings for this topic's partitions.
   PartitionConfig? partitionConfig;
 
+  /// The settings for this topic's Reservation usage.
+  ReservationConfig? reservationConfig;
+
   /// The settings for this topic's message retention.
   RetentionConfig? retentionConfig;
 
-  Topic();
+  Topic({
+    this.name,
+    this.partitionConfig,
+    this.reservationConfig,
+    this.retentionConfig,
+  });
 
-  Topic.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('partitionConfig')) {
-      partitionConfig = PartitionConfig.fromJson(
-          _json['partitionConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('retentionConfig')) {
-      retentionConfig = RetentionConfig.fromJson(
-          _json['retentionConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Topic.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          partitionConfig: _json.containsKey('partitionConfig')
+              ? PartitionConfig.fromJson(_json['partitionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          reservationConfig: _json.containsKey('reservationConfig')
+              ? ReservationConfig.fromJson(_json['reservationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          retentionConfig: _json.containsKey('retentionConfig')
+              ? RetentionConfig.fromJson(_json['retentionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (partitionConfig != null)
-          'partitionConfig': partitionConfig!.toJson(),
-        if (retentionConfig != null)
-          'retentionConfig': retentionConfig!.toJson(),
+        if (partitionConfig != null) 'partitionConfig': partitionConfig!,
+        if (reservationConfig != null) 'reservationConfig': reservationConfig!,
+        if (retentionConfig != null) 'retentionConfig': retentionConfig!,
       };
 }
 
@@ -1406,13 +2539,16 @@ class TopicPartitions {
   /// The number of partitions in the topic.
   core.String? partitionCount;
 
-  TopicPartitions();
+  TopicPartitions({
+    this.partitionCount,
+  });
 
-  TopicPartitions.fromJson(core.Map _json) {
-    if (_json.containsKey('partitionCount')) {
-      partitionCount = _json['partitionCount'] as core.String;
-    }
-  }
+  TopicPartitions.fromJson(core.Map _json)
+      : this(
+          partitionCount: _json.containsKey('partitionCount')
+              ? _json['partitionCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (partitionCount != null) 'partitionCount': partitionCount!,

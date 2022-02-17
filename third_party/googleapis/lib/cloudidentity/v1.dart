@@ -34,6 +34,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -55,7 +57,8 @@ class CloudIdentityApi {
   static const cloudIdentityGroupsReadonlyScope =
       'https://www.googleapis.com/auth/cloud-identity.groups.readonly';
 
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -94,8 +97,8 @@ class DevicesResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}`, where device_id is the unique
-  /// ID assigned to the Device.
+  /// the Device in format: `devices/{device}`, where device is the unique ID
+  /// assigned to the Device.
   /// Value must have pattern `^devices/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -113,7 +116,7 @@ class DevicesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -140,12 +143,12 @@ class DevicesResource {
   ///
   /// Request parameters:
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -162,7 +165,7 @@ class DevicesResource {
     core.String? customer,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (customer != null) 'customer': [customer],
       if ($fields != null) 'fields': [$fields],
@@ -185,16 +188,16 @@ class DevicesResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}`, where device_id is the unique
-  /// ID assigned to the Device.
+  /// the Device in format: `devices/{device}`, where device is the unique ID
+  /// assigned to the Device.
   /// Value must have pattern `^devices/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -232,17 +235,17 @@ class DevicesResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in the format: `devices/{device_id}`, where device_id is the
-  /// unique ID assigned to the Device.
+  /// the Device in the format: `devices/{device}`, where device is the unique
+  /// ID assigned to the Device.
   /// Value must have pattern `^devices/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Customer in the format: `customers/{customer_id}`, where customer_id
-  /// is the customer to whom the device belongs. If you're using this API for
-  /// your own organization, use `customers/my_customer`. If you're using this
-  /// API to manage another organization, use `customers/{customer_id}`, where
-  /// customer_id is the customer to whom the device belongs.
+  /// the Customer in the format: `customers/{customer}`, where customer is the
+  /// customer to whom the device belongs. If you're using this API for your own
+  /// organization, use `customers/my_customer`. If you're using this API to
+  /// manage another organization, use `customers/{customer}`, where customer is
+  /// the customer to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -279,13 +282,13 @@ class DevicesResource {
   ///
   /// Request parameters:
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer in the format: `customers/{customer_id}`, where customer_id
-  /// is the customer to whom the device belongs. If you're using this API for
-  /// your own organization, use `customers/my_customer`. If you're using this
-  /// API to manage another organization, use `customers/{customer_id}`, where
-  /// customer_id is the customer to whom the device belongs.
+  /// the customer in the format: `customers/{customer}`, where customer is the
+  /// customer to whom the device belongs. If you're using this API for your own
+  /// organization, use `customers/my_customer`. If you're using this API to
+  /// manage another organization, use `customers/{customer}`, where customer is
+  /// the customer to whom the device belongs.
   ///
   /// [filter] - Optional. Additional restrictions when fetching list of
   /// devices. For a list of search fields, refer to
@@ -366,9 +369,9 @@ class DevicesResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -386,7 +389,7 @@ class DevicesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -419,9 +422,9 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -439,7 +442,7 @@ class DevicesDeviceUsersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -463,9 +466,9 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -483,7 +486,7 @@ class DevicesDeviceUsersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -510,9 +513,9 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -530,7 +533,7 @@ class DevicesDeviceUsersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -554,17 +557,17 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -602,17 +605,17 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -654,12 +657,12 @@ class DevicesDeviceUsersResource {
   /// the device. Format: devices/{device}
   /// Value must have pattern `^devices/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [filter] - Optional. Additional restrictions when fetching list of
   /// devices. For a list of search fields, refer to
@@ -815,9 +818,9 @@ class DevicesDeviceUsersResource {
   ///
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}/deviceUsers/{device_user_id}`,
-  /// where device_id is the unique ID assigned to the Device, and
-  /// device_user_id is the unique ID assigned to the User.
+  /// the Device in format: `devices/{device}/deviceUsers/{device_user}`, where
+  /// device is the unique ID assigned to the Device, and device_user is the
+  /// unique ID assigned to the User.
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -835,7 +838,7 @@ class DevicesDeviceUsersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -865,24 +868,27 @@ class DevicesDeviceUsersClientStatesResource {
   /// [name] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the ClientState in format:
-  /// `devices/{device_id}/deviceUsers/{device_user_id}/clientStates/{partner_id}`,
-  /// where device_id is the unique ID assigned to the Device, device_user_id is
-  /// the unique ID assigned to the User and partner_id identifies the partner
+  /// `devices/{device}/deviceUsers/{device_user}/clientStates/{partner}`, where
+  /// `device` is the unique ID assigned to the Device, `device_user` is the
+  /// unique ID assigned to the User and `partner` identifies the partner
   /// storing the data. To get the client state for devices belonging to your
   /// own organization, the `partnerId` is in the format:
   /// `customerId-*anystring*`. Where the `customerId` is your organization's
   /// customer ID and `anystring` is any suffix. This suffix is used in setting
   /// up Custom Access Levels in Context-Aware Access. You may use `my_customer`
   /// instead of the customer ID for devices managed by your own organization.
+  /// You may specify `-` in place of the `{device}`, so the ClientState
+  /// resource name can be:
+  /// `devices/-/deviceUsers/{device_user_resource}/clientStates/{partner}`.
   /// Value must have pattern
   /// `^devices/\[^/\]+/deviceUsers/\[^/\]+/clientStates/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -925,12 +931,12 @@ class DevicesDeviceUsersClientStatesResource {
   /// devices/{device}/deviceUsers/{deviceUser}
   /// Value must have pattern `^devices/\[^/\]+/deviceUsers/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [filter] - Optional. Additional restrictions when fetching list of client
   /// states.
@@ -993,15 +999,15 @@ class DevicesDeviceUsersClientStatesResource {
   /// [name] - Output only.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the ClientState in format:
-  /// `devices/{device_id}/deviceUsers/{device_user_id}/clientState/{partner_id}`,
-  /// where partner_id corresponds to the partner storing the data. For partners
+  /// `devices/{device}/deviceUsers/{device_user}/clientState/{partner}`, where
+  /// partner corresponds to the partner storing the data. For partners
   /// belonging to the "BeyondCorp Alliance", this is the partner ID specified
   /// to you by Google. For all other callers, this is a string of the form:
-  /// `{customer_id}-suffix`, where `customer_id` is your customer ID. The
-  /// *suffix* is any string the caller specifies. This string will be displayed
-  /// verbatim in the administration console. This suffix is used in setting up
-  /// Custom Access Levels in Context-Aware Access. Your organization's customer
-  /// ID can be obtained from the URL: `GET
+  /// `{customer}-suffix`, where `customer` is your customer ID. The *suffix* is
+  /// any string the caller specifies. This string will be displayed verbatim in
+  /// the administration console. This suffix is used in setting up Custom
+  /// Access Levels in Context-Aware Access. Your organization's customer ID can
+  /// be obtained from the URL: `GET
   /// https://www.googleapis.com/admin/directory/v1/customers/my_customer` The
   /// `id` field in the response contains the customer ID starting with the
   /// letter 'C'. The customer ID to be used in this API is the string after the
@@ -1009,12 +1015,12 @@ class DevicesDeviceUsersClientStatesResource {
   /// Value must have pattern
   /// `^devices/\[^/\]+/deviceUsers/\[^/\]+/clientStates/\[^/\]+$`.
   ///
-  /// [customer] - Required.
+  /// [customer] - Optional.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the customer. If you're using this API for your own organization, use
   /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
+  /// organization, use `customers/{customer}`, where customer is the customer
+  /// to whom the device belongs.
   ///
   /// [updateMask] - Optional. Comma-separated list of fully qualified names of
   /// fields to be updated. If not specified, all updatable fields in
@@ -1037,7 +1043,7 @@ class DevicesDeviceUsersClientStatesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (customer != null) 'customer': [customer],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -1094,7 +1100,7 @@ class GroupsResource {
     core.String? initialGroupConfig,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (initialGroupConfig != null)
         'initialGroupConfig': [initialGroupConfig],
@@ -1118,7 +1124,7 @@ class GroupsResource {
   ///
   /// [name] - Required. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the `Group` to retrieve. Must be of the form `groups/{group_id}`.
+  /// the `Group` to retrieve. Must be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1155,7 +1161,7 @@ class GroupsResource {
   ///
   /// [name] - Required. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the `Group` to retrieve. Must be of the form `groups/{group_id}`.
+  /// the `Group` to retrieve. Must be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1186,7 +1192,50 @@ class GroupsResource {
     return Group.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Lists the `Group`s under a customer or namespace.
+  /// Get Security Settings
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The security settings to retrieve. Format:
+  /// `groups/{group_id}/securitySettings`
+  /// Value must have pattern `^groups/\[^/\]+/securitySettings$`.
+  ///
+  /// [readMask] - Field-level read mask of which fields to return. "*" returns
+  /// all fields. If not specified, all fields will be returned. May only
+  /// contain the following field: `member_restriction`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [SecuritySettings].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<SecuritySettings> getSecuritySettings(
+    core.String name, {
+    core.String? readMask,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (readMask != null) 'readMask': [readMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return SecuritySettings.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the `Group` resources under a customer or namespace.
   ///
   /// Request parameters:
   ///
@@ -1201,9 +1250,10 @@ class GroupsResource {
   /// [pageToken] - The `next_page_token` value returned from a previous list
   /// request, if any.
   ///
-  /// [parent] - Required. The parent resource under which to list all `Group`s.
-  /// Must be of the form `identitysources/{identity_source_id}` for external-
-  /// identity-mapped groups or `customers/{customer_id}` for Google Groups.
+  /// [parent] - Required. The parent resource under which to list all `Group`
+  /// resources. Must be of the form `identitysources/{identity_source}` for
+  /// external- identity-mapped groups or `customers/{customer}` for Google
+  /// Groups. The `customer` must begin with "C" (for example, 'C046psxkn').
   ///
   /// [view] - The level of detail to be returned. If unspecified, defaults to
   /// `View.BASIC`.
@@ -1260,11 +1310,11 @@ class GroupsResource {
   /// the Identity Source's requirements. Must be unique within a `namespace`.
   ///
   /// [groupKey_namespace] - The namespace in which the entity exists. If not
-  /// specified, the \`EntityKey\` represents a Google-managed entity such as a
-  /// Google user or a Google Group. If specified, the \`EntityKey\` represents
-  /// an external-identity-mapped group. The namespace must correspond to an
+  /// specified, the `EntityKey` represents a Google-managed entity such as a
+  /// Google user or a Google Group. If specified, the `EntityKey` represents an
+  /// external-identity-mapped group. The namespace must correspond to an
   /// identity source created in Admin Console and must be in the form of
-  /// \`identitysources/{identity_source_id}.
+  /// `identitysources/{identity_source}`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1307,11 +1357,11 @@ class GroupsResource {
   ///
   /// [name] - Output only. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the `Group`. Shall be of the form `groups/{group_id}`.
+  /// the `Group`. Shall be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
-  /// [updateMask] - Required. The fully-qualified names of fields to update.
-  /// May only contain the following fields: `display_name`, `description`.
+  /// [updateMask] - Required. The names of fields to update. May only contain
+  /// the following field names: `display_name`, `description`, `labels`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1329,7 +1379,7 @@ class GroupsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1346,7 +1396,7 @@ class GroupsResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Searches for `Group`s matching a specified query.
+  /// Searches for `Group` resources matching a specified query.
   ///
   /// Request parameters:
   ///
@@ -1364,8 +1414,9 @@ class GroupsResource {
   /// [query] - Required. The search query. Must be specified in
   /// [Common Expression Language](https://opensource.google/projects/cel). May
   /// only contain equality operators on the parent and inclusion operators on
-  /// labels (e.g., `parent == 'customers/{customer_id}' &&
-  /// 'cloudidentity.googleapis.com/groups.discussion_forum' in labels`).
+  /// labels (e.g., `parent == 'customers/{customer}' &&
+  /// 'cloudidentity.googleapis.com/groups.discussion_forum' in labels`). The
+  /// `customer` must begin with "C" (for example, 'C046psxkn').
   ///
   /// [view] - The level of detail to be returned. If unspecified, defaults to
   /// `View.BASIC`.
@@ -1409,6 +1460,52 @@ class GroupsResource {
     return SearchGroupsResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
+
+  /// Update Security Settings
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Output only. The resource name of the security settings. Shall be
+  /// of the form `groups/{group_id}/securitySettings`.
+  /// Value must have pattern `^groups/\[^/\]+/securitySettings$`.
+  ///
+  /// [updateMask] - Required. The fully-qualified names of fields to update.
+  /// May only contain the following field: `member_restriction.query`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> updateSecuritySettings(
+    SecuritySettings request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class GroupsMembershipsResource {
@@ -1431,9 +1528,9 @@ class GroupsMembershipsResource {
   ///
   /// [parent] -
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the group to check the transitive membership in. Format:
-  /// `groups/{group_id}`, where `group_id` is the unique id assigned to the
-  /// Group to which the Membership belongs to.
+  /// the group to check the transitive membership in. Format: `groups/{group}`,
+  /// where `group` is the unique id assigned to the Group to which the
+  /// Membership belongs to.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [query] - Required. A CEL expression that MUST include member
@@ -1482,7 +1579,7 @@ class GroupsMembershipsResource {
   /// Request parameters:
   ///
   /// [parent] - Required. The parent `Group` resource under which to create the
-  /// `Membership`. Must be of the form `groups/{group_id}`.
+  /// `Membership`. Must be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1500,7 +1597,7 @@ class GroupsMembershipsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1523,7 +1620,7 @@ class GroupsMembershipsResource {
   /// [name] - Required. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the `Membership` to delete. Must be of the form
-  /// `groups/{group_id}/memberships/{membership_id}`
+  /// `groups/{group}/memberships/{membership}`
   /// Value must have pattern `^groups/\[^/\]+/memberships/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1561,7 +1658,7 @@ class GroupsMembershipsResource {
   /// [name] - Required. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the `Membership` to retrieve. Must be of the form
-  /// `groups/{group_id}/memberships/{membership_id}`.
+  /// `groups/{group}/memberships/{membership}`.
   /// Value must have pattern `^groups/\[^/\]+/memberships/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1607,13 +1704,13 @@ class GroupsMembershipsResource {
   ///
   /// [parent] - Required.
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the group to search transitive memberships in. Format:
-  /// `groups/{group_id}`, where `group_id` is the unique ID assigned to the
-  /// Group to which the Membership belongs to. group_id can be a wildcard
-  /// collection id "-". When a group_id is specified, the membership graph will
-  /// be constrained to paths between the member (defined in the query) and the
-  /// parent. If a wildcard collection is provided, all membership paths
-  /// connected to the member will be returned.
+  /// the group to search transitive memberships in. Format: `groups/{group}`,
+  /// where `group` is the unique ID assigned to the Group to which the
+  /// Membership belongs to. group can be a wildcard collection id "-". When a
+  /// group is specified, the membership graph will be constrained to paths
+  /// between the member (defined in the query) and the parent. If a wildcard
+  /// collection is provided, all membership paths connected to the member will
+  /// be returned.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [query] - Required. A CEL expression that MUST include member
@@ -1659,7 +1756,7 @@ class GroupsMembershipsResource {
   /// Request parameters:
   ///
   /// [parent] - Required. The parent `Group` resource under which to lookup the
-  /// `Membership` name. Must be of the form `groups/{group_id}`.
+  /// `Membership` name. Must be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [pageSize] - The maximum number of results to return. Note that the number
@@ -1722,7 +1819,7 @@ class GroupsMembershipsResource {
   /// Request parameters:
   ///
   /// [parent] - Required. The parent `Group` resource under which to lookup the
-  /// `Membership` name. Must be of the form `groups/{group_id}`.
+  /// `Membership` name. Must be of the form `groups/{group}`.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [memberKey_id] - The ID of the entity. For Google-managed entities, the
@@ -1731,11 +1828,11 @@ class GroupsMembershipsResource {
   /// the Identity Source's requirements. Must be unique within a `namespace`.
   ///
   /// [memberKey_namespace] - The namespace in which the entity exists. If not
-  /// specified, the \`EntityKey\` represents a Google-managed entity such as a
-  /// Google user or a Google Group. If specified, the \`EntityKey\` represents
-  /// an external-identity-mapped group. The namespace must correspond to an
+  /// specified, the `EntityKey` represents a Google-managed entity such as a
+  /// Google user or a Google Group. If specified, the `EntityKey` represents an
+  /// external-identity-mapped group. The namespace must correspond to an
   /// identity source created in Admin Console and must be in the form of
-  /// \`identitysources/{identity_source_id}.
+  /// `identitysources/{identity_source}`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1780,7 +1877,7 @@ class GroupsMembershipsResource {
   /// [name] - Required. The
   /// [resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the `Membership` whose roles are to be modified. Must be of the form
-  /// `groups/{group_id}/memberships/{membership_id}`.
+  /// `groups/{group}/memberships/{membership}`.
   /// Value must have pattern `^groups/\[^/\]+/memberships/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1798,7 +1895,7 @@ class GroupsMembershipsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1829,9 +1926,9 @@ class GroupsMembershipsResource {
   ///
   /// [parent] -
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the group to search transitive memberships in. Format:
-  /// `groups/{group_id}`, where `group_id` is always '-' as this API will
-  /// search across all groups for a given member.
+  /// the group to search transitive memberships in. Format: `groups/{group}`,
+  /// where `group` is always '-' as this API will search across all groups for
+  /// a given member.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [pageSize] - The default page size is 200 (max 1000).
@@ -1842,9 +1939,9 @@ class GroupsMembershipsResource {
   /// [query] - Required. A CEL expression that MUST include member
   /// specification AND label(s). This is a `required` field. Users can search
   /// on label attributes of groups. CONTAINS match ('in') is supported on
-  /// labels. Certain groups are uniquely identified by both a 'member_key_id'
-  /// and a 'member_key_namespace', which requires an additional query input:
-  /// 'member_key_namespace'. Example query: `member_key_id ==
+  /// labels. Identity-mapped groups are uniquely identified by both a
+  /// `member_key_id` and a `member_key_namespace`, which requires an additional
+  /// query input: `member_key_namespace`. Example query: `member_key_id ==
   /// 'member_key_id_value' && in labels`
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1897,9 +1994,8 @@ class GroupsMembershipsResource {
   ///
   /// [parent] -
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the group to search transitive memberships in. Format:
-  /// `groups/{group_id}`, where `group_id` is the unique ID assigned to the
-  /// Group.
+  /// the group to search transitive memberships in. Format: `groups/{group}`,
+  /// where `group` is the unique ID assigned to the Group.
   /// Value must have pattern `^groups/\[^/\]+$`.
   ///
   /// [pageSize] - The default page size is 200 (max 1000).
@@ -1952,13 +2048,16 @@ class CheckTransitiveMembershipResponse {
   /// possible lack of authorization in some of the paths.
   core.bool? hasMembership;
 
-  CheckTransitiveMembershipResponse();
+  CheckTransitiveMembershipResponse({
+    this.hasMembership,
+  });
 
-  CheckTransitiveMembershipResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hasMembership')) {
-      hasMembership = _json['hasMembership'] as core.bool;
-    }
-  }
+  CheckTransitiveMembershipResponse.fromJson(core.Map _json)
+      : this(
+          hasMembership: _json.containsKey('hasMembership')
+              ? _json['hasMembership'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hasMembership != null) 'hasMembership': hasMembership!,
@@ -1978,25 +2077,28 @@ class DynamicGroupMetadata {
   /// Output only.
   DynamicGroupStatus? status;
 
-  DynamicGroupMetadata();
+  DynamicGroupMetadata({
+    this.queries,
+    this.status,
+  });
 
-  DynamicGroupMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('queries')) {
-      queries = (_json['queries'] as core.List)
-          .map<DynamicGroupQuery>((value) => DynamicGroupQuery.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('status')) {
-      status = DynamicGroupStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DynamicGroupMetadata.fromJson(core.Map _json)
+      : this(
+          queries: _json.containsKey('queries')
+              ? (_json['queries'] as core.List)
+                  .map((value) => DynamicGroupQuery.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          status: _json.containsKey('status')
+              ? DynamicGroupStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (queries != null)
-          'queries': queries!.map((value) => value.toJson()).toList(),
-        if (status != null) 'status': status!.toJson(),
+        if (queries != null) 'queries': queries!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -2009,6 +2111,9 @@ class DynamicGroupQuery {
   /// org.department=='engineering')` All users with at least one location that
   /// has `area` of `foo` and `building_id` of `bar`.
   /// `user.locations.exists(loc, loc.area=='foo' && loc.building_id=='bar')`
+  /// All users with any variation of the name John Doe (case-insensitive
+  /// queries add `equalsIgnoreCase()` to the value being queried).
+  /// `user.name.value.equalsIgnoreCase('jOhn DoE')`
   core.String? query;
 
   /// Resource type for the Dynamic Group Query
@@ -2017,16 +2122,19 @@ class DynamicGroupQuery {
   /// - "USER" : For queries on User
   core.String? resourceType;
 
-  DynamicGroupQuery();
+  DynamicGroupQuery({
+    this.query,
+    this.resourceType,
+  });
 
-  DynamicGroupQuery.fromJson(core.Map _json) {
-    if (_json.containsKey('query')) {
-      query = _json['query'] as core.String;
-    }
-    if (_json.containsKey('resourceType')) {
-      resourceType = _json['resourceType'] as core.String;
-    }
-  }
+  DynamicGroupQuery.fromJson(core.Map _json)
+      : this(
+          query:
+              _json.containsKey('query') ? _json['query'] as core.String : null,
+          resourceType: _json.containsKey('resourceType')
+              ? _json['resourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (query != null) 'query': query!,
@@ -2042,6 +2150,8 @@ class DynamicGroupStatus {
   /// - "UP_TO_DATE" : The dynamic group is up-to-date.
   /// - "UPDATING_MEMBERSHIPS" : The dynamic group has just been created and
   /// memberships are being updated.
+  /// - "INVALID_QUERY" : Group is in an unrecoverable state and its memberships
+  /// can't be updated.
   core.String? status;
 
   /// The latest time at which the dynamic group is guaranteed to be in the
@@ -2052,16 +2162,20 @@ class DynamicGroupStatus {
   /// at which dynamic group was created.
   core.String? statusTime;
 
-  DynamicGroupStatus();
+  DynamicGroupStatus({
+    this.status,
+    this.statusTime,
+  });
 
-  DynamicGroupStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('statusTime')) {
-      statusTime = _json['statusTime'] as core.String;
-    }
-  }
+  DynamicGroupStatus.fromJson(core.Map _json)
+      : this(
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          statusTime: _json.containsKey('statusTime')
+              ? _json['statusTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (status != null) 'status': status!,
@@ -2085,23 +2199,25 @@ class EntityKey {
 
   /// The namespace in which the entity exists.
   ///
-  /// If not specified, the \`EntityKey\` represents a Google-managed entity
-  /// such as a Google user or a Google Group. If specified, the \`EntityKey\`
+  /// If not specified, the `EntityKey` represents a Google-managed entity such
+  /// as a Google user or a Google Group. If specified, the `EntityKey`
   /// represents an external-identity-mapped group. The namespace must
   /// correspond to an identity source created in Admin Console and must be in
-  /// the form of \`identitysources/{identity_source_id}.
+  /// the form of `identitysources/{identity_source}`.
   core.String? namespace;
 
-  EntityKey();
+  EntityKey({
+    this.id,
+    this.namespace,
+  });
 
-  EntityKey.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('namespace')) {
-      namespace = _json['namespace'] as core.String;
-    }
-  }
+  EntityKey.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          namespace: _json.containsKey('namespace')
+              ? _json['namespace'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -2114,54 +2230,19 @@ class ExpiryDetail {
   /// The time at which the `MembershipRole` will expire.
   core.String? expireTime;
 
-  ExpiryDetail();
+  ExpiryDetail({
+    this.expireTime,
+  });
 
-  ExpiryDetail.fromJson(core.Map _json) {
-    if (_json.containsKey('expireTime')) {
-      expireTime = _json['expireTime'] as core.String;
-    }
-  }
+  ExpiryDetail.fromJson(core.Map _json)
+      : this(
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (expireTime != null) 'expireTime': expireTime!,
-      };
-}
-
-/// The response message for MembershipsService.GetMembershipGraph.
-class GetMembershipGraphResponse {
-  /// The membership graph's path information represented as an adjacency list.
-  core.List<MembershipAdjacencyList>? adjacencyList;
-
-  /// The resources representing each group in the adjacency list.
-  ///
-  /// Each group in this list can be correlated to a 'group' of the
-  /// MembershipAdjacencyList using the 'name' of the Group resource.
-  core.List<Group>? groups;
-
-  GetMembershipGraphResponse();
-
-  GetMembershipGraphResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('adjacencyList')) {
-      adjacencyList = (_json['adjacencyList'] as core.List)
-          .map<MembershipAdjacencyList>((value) =>
-              MembershipAdjacencyList.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('groups')) {
-      groups = (_json['groups'] as core.List)
-          .map<Group>((value) =>
-              Group.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (adjacencyList != null)
-          'adjacencyList':
-              adjacencyList!.map((value) => value.toJson()).toList(),
-        if (groups != null)
-          'groups': groups!.map((value) => value.toJson()).toList(),
       };
 }
 
@@ -2192,22 +2273,28 @@ class GoogleAppsCloudidentityDevicesV1AndroidAttributes {
   /// administrator turns on the "Enforce Work Profile" policy.
   core.bool? supportsWorkProfile;
 
-  GoogleAppsCloudidentityDevicesV1AndroidAttributes();
+  GoogleAppsCloudidentityDevicesV1AndroidAttributes({
+    this.enabledUnknownSources,
+    this.ownerProfileAccount,
+    this.ownershipPrivilege,
+    this.supportsWorkProfile,
+  });
 
-  GoogleAppsCloudidentityDevicesV1AndroidAttributes.fromJson(core.Map _json) {
-    if (_json.containsKey('enabledUnknownSources')) {
-      enabledUnknownSources = _json['enabledUnknownSources'] as core.bool;
-    }
-    if (_json.containsKey('ownerProfileAccount')) {
-      ownerProfileAccount = _json['ownerProfileAccount'] as core.bool;
-    }
-    if (_json.containsKey('ownershipPrivilege')) {
-      ownershipPrivilege = _json['ownershipPrivilege'] as core.String;
-    }
-    if (_json.containsKey('supportsWorkProfile')) {
-      supportsWorkProfile = _json['supportsWorkProfile'] as core.bool;
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1AndroidAttributes.fromJson(core.Map _json)
+      : this(
+          enabledUnknownSources: _json.containsKey('enabledUnknownSources')
+              ? _json['enabledUnknownSources'] as core.bool
+              : null,
+          ownerProfileAccount: _json.containsKey('ownerProfileAccount')
+              ? _json['ownerProfileAccount'] as core.bool
+              : null,
+          ownershipPrivilege: _json.containsKey('ownershipPrivilege')
+              ? _json['ownershipPrivilege'] as core.String
+              : null,
+          supportsWorkProfile: _json.containsKey('supportsWorkProfile')
+              ? _json['supportsWorkProfile'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enabledUnknownSources != null)
@@ -2222,194 +2309,17 @@ class GoogleAppsCloudidentityDevicesV1AndroidAttributes {
 }
 
 /// Request message for approving the device to access user data.
-class GoogleAppsCloudidentityDevicesV1ApproveDeviceUserRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1ApproveDeviceUserRequest();
-
-  GoogleAppsCloudidentityDevicesV1ApproveDeviceUserRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for approving the device to access user data.
-class GoogleAppsCloudidentityDevicesV1ApproveDeviceUserResponse {
-  /// Resultant DeviceUser object for the action.
-  GoogleAppsCloudidentityDevicesV1DeviceUser? deviceUser;
-
-  GoogleAppsCloudidentityDevicesV1ApproveDeviceUserResponse();
-
-  GoogleAppsCloudidentityDevicesV1ApproveDeviceUserResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('deviceUser')) {
-      deviceUser = GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
-          _json['deviceUser'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceUser != null) 'deviceUser': deviceUser!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1ApproveDeviceUserRequest = $Request00;
 
 /// Request message for blocking account on device.
-class GoogleAppsCloudidentityDevicesV1BlockDeviceUserRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1BlockDeviceUserRequest();
-
-  GoogleAppsCloudidentityDevicesV1BlockDeviceUserRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for blocking the device from accessing user data.
-class GoogleAppsCloudidentityDevicesV1BlockDeviceUserResponse {
-  /// Resultant DeviceUser object for the action.
-  GoogleAppsCloudidentityDevicesV1DeviceUser? deviceUser;
-
-  GoogleAppsCloudidentityDevicesV1BlockDeviceUserResponse();
-
-  GoogleAppsCloudidentityDevicesV1BlockDeviceUserResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('deviceUser')) {
-      deviceUser = GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
-          _json['deviceUser'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceUser != null) 'deviceUser': deviceUser!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1BlockDeviceUserRequest = $Request00;
 
 /// Request message for cancelling an unfinished device wipe.
-class GoogleAppsCloudidentityDevicesV1CancelWipeDeviceRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceRequest();
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for cancelling an unfinished device wipe.
-class GoogleAppsCloudidentityDevicesV1CancelWipeDeviceResponse {
-  /// Resultant Device object for the action.
-  ///
-  /// Note that asset tags will not be returned in the device object.
-  GoogleAppsCloudidentityDevicesV1Device? device;
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceResponse();
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('device')) {
-      device = GoogleAppsCloudidentityDevicesV1Device.fromJson(
-          _json['device'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (device != null) 'device': device!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1CancelWipeDeviceRequest = $Request00;
 
 /// Request message for cancelling an unfinished user account wipe.
-class GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserRequest();
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for cancelling an unfinished user account wipe.
-class GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserResponse {
-  /// Resultant DeviceUser object for the action.
-  GoogleAppsCloudidentityDevicesV1DeviceUser? deviceUser;
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserResponse();
-
-  GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('deviceUser')) {
-      deviceUser = GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
-          _json['deviceUser'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceUser != null) 'deviceUser': deviceUser!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1CancelWipeDeviceUserRequest
+    = $Request00;
 
 /// Represents the state associated with an API client calling the Devices API.
 ///
@@ -2480,16 +2390,16 @@ class GoogleAppsCloudidentityDevicesV1ClientState {
 
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
   /// the ClientState in format:
-  /// `devices/{device_id}/deviceUsers/{device_user_id}/clientState/{partner_id}`,
-  /// where partner_id corresponds to the partner storing the data.
+  /// `devices/{device}/deviceUsers/{device_user}/clientState/{partner}`, where
+  /// partner corresponds to the partner storing the data.
   ///
   /// For partners belonging to the "BeyondCorp Alliance", this is the partner
   /// ID specified to you by Google. For all other callers, this is a string of
-  /// the form: `{customer_id}-suffix`, where `customer_id` is your customer ID.
-  /// The *suffix* is any string the caller specifies. This string will be
-  /// displayed verbatim in the administration console. This suffix is used in
-  /// setting up Custom Access Levels in Context-Aware Access. Your
-  /// organization's customer ID can be obtained from the URL: `GET
+  /// the form: `{customer}-suffix`, where `customer` is your customer ID. The
+  /// *suffix* is any string the caller specifies. This string will be displayed
+  /// verbatim in the administration console. This suffix is used in setting up
+  /// Custom Access Levels in Context-Aware Access. Your organization's customer
+  /// ID can be obtained from the URL: `GET
   /// https://www.googleapis.com/admin/directory/v1/customers/my_customer` The
   /// `id` field in the response contains the customer ID starting with the
   /// letter 'C'. The customer ID to be used in this API is the string after the
@@ -2510,55 +2420,65 @@ class GoogleAppsCloudidentityDevicesV1ClientState {
   /// A descriptive cause of the health score.
   core.String? scoreReason;
 
-  GoogleAppsCloudidentityDevicesV1ClientState();
+  GoogleAppsCloudidentityDevicesV1ClientState({
+    this.assetTags,
+    this.complianceState,
+    this.createTime,
+    this.customId,
+    this.etag,
+    this.healthScore,
+    this.keyValuePairs,
+    this.lastUpdateTime,
+    this.managed,
+    this.name,
+    this.ownerType,
+    this.scoreReason,
+  });
 
-  GoogleAppsCloudidentityDevicesV1ClientState.fromJson(core.Map _json) {
-    if (_json.containsKey('assetTags')) {
-      assetTags = (_json['assetTags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('complianceState')) {
-      complianceState = _json['complianceState'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('customId')) {
-      customId = _json['customId'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('healthScore')) {
-      healthScore = _json['healthScore'] as core.String;
-    }
-    if (_json.containsKey('keyValuePairs')) {
-      keyValuePairs =
-          (_json['keyValuePairs'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          GoogleAppsCloudidentityDevicesV1CustomAttributeValue.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('lastUpdateTime')) {
-      lastUpdateTime = _json['lastUpdateTime'] as core.String;
-    }
-    if (_json.containsKey('managed')) {
-      managed = _json['managed'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('ownerType')) {
-      ownerType = _json['ownerType'] as core.String;
-    }
-    if (_json.containsKey('scoreReason')) {
-      scoreReason = _json['scoreReason'] as core.String;
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1ClientState.fromJson(core.Map _json)
+      : this(
+          assetTags: _json.containsKey('assetTags')
+              ? (_json['assetTags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          complianceState: _json.containsKey('complianceState')
+              ? _json['complianceState'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          customId: _json.containsKey('customId')
+              ? _json['customId'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          healthScore: _json.containsKey('healthScore')
+              ? _json['healthScore'] as core.String
+              : null,
+          keyValuePairs: _json.containsKey('keyValuePairs')
+              ? (_json['keyValuePairs'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    GoogleAppsCloudidentityDevicesV1CustomAttributeValue
+                        .fromJson(item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          lastUpdateTime: _json.containsKey('lastUpdateTime')
+              ? _json['lastUpdateTime'] as core.String
+              : null,
+          managed: _json.containsKey('managed')
+              ? _json['managed'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          ownerType: _json.containsKey('ownerType')
+              ? _json['ownerType'] as core.String
+              : null,
+          scoreReason: _json.containsKey('scoreReason')
+              ? _json['scoreReason'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (assetTags != null) 'assetTags': assetTags!,
@@ -2567,9 +2487,7 @@ class GoogleAppsCloudidentityDevicesV1ClientState {
         if (customId != null) 'customId': customId!,
         if (etag != null) 'etag': etag!,
         if (healthScore != null) 'healthScore': healthScore!,
-        if (keyValuePairs != null)
-          'keyValuePairs': keyValuePairs!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
+        if (keyValuePairs != null) 'keyValuePairs': keyValuePairs!,
         if (lastUpdateTime != null) 'lastUpdateTime': lastUpdateTime!,
         if (managed != null) 'managed': managed!,
         if (name != null) 'name': name!,
@@ -2589,20 +2507,24 @@ class GoogleAppsCloudidentityDevicesV1CustomAttributeValue {
   /// Represents a string value.
   core.String? stringValue;
 
-  GoogleAppsCloudidentityDevicesV1CustomAttributeValue();
+  GoogleAppsCloudidentityDevicesV1CustomAttributeValue({
+    this.boolValue,
+    this.numberValue,
+    this.stringValue,
+  });
 
-  GoogleAppsCloudidentityDevicesV1CustomAttributeValue.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('boolValue')) {
-      boolValue = _json['boolValue'] as core.bool;
-    }
-    if (_json.containsKey('numberValue')) {
-      numberValue = (_json['numberValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1CustomAttributeValue.fromJson(core.Map _json)
+      : this(
+          boolValue: _json.containsKey('boolValue')
+              ? _json['boolValue'] as core.bool
+              : null,
+          numberValue: _json.containsKey('numberValue')
+              ? (_json['numberValue'] as core.num).toDouble()
+              : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (boolValue != null) 'boolValue': boolValue!,
@@ -2748,8 +2670,8 @@ class GoogleAppsCloudidentityDevicesV1Device {
   core.String? model;
 
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the Device in format: `devices/{device_id}`, where device_id is the unique
-  /// id assigned to the Device.
+  /// the Device in format: `devices/{device}`, where device is the unique id
+  /// assigned to the Device.
   ///
   /// Output only.
   core.String? name;
@@ -2805,105 +2727,127 @@ class GoogleAppsCloudidentityDevicesV1Device {
   /// WiFi MAC addresses of device.
   core.List<core.String>? wifiMacAddresses;
 
-  GoogleAppsCloudidentityDevicesV1Device();
+  GoogleAppsCloudidentityDevicesV1Device({
+    this.androidSpecificAttributes,
+    this.assetTag,
+    this.basebandVersion,
+    this.bootloaderVersion,
+    this.brand,
+    this.buildNumber,
+    this.compromisedState,
+    this.createTime,
+    this.deviceType,
+    this.enabledDeveloperOptions,
+    this.enabledUsbDebugging,
+    this.encryptionState,
+    this.imei,
+    this.kernelVersion,
+    this.lastSyncTime,
+    this.managementState,
+    this.manufacturer,
+    this.meid,
+    this.model,
+    this.name,
+    this.networkOperator,
+    this.osVersion,
+    this.otherAccounts,
+    this.ownerType,
+    this.releaseVersion,
+    this.securityPatchTime,
+    this.serialNumber,
+    this.wifiMacAddresses,
+  });
 
-  GoogleAppsCloudidentityDevicesV1Device.fromJson(core.Map _json) {
-    if (_json.containsKey('androidSpecificAttributes')) {
-      androidSpecificAttributes =
-          GoogleAppsCloudidentityDevicesV1AndroidAttributes.fromJson(
-              _json['androidSpecificAttributes']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('assetTag')) {
-      assetTag = _json['assetTag'] as core.String;
-    }
-    if (_json.containsKey('basebandVersion')) {
-      basebandVersion = _json['basebandVersion'] as core.String;
-    }
-    if (_json.containsKey('bootloaderVersion')) {
-      bootloaderVersion = _json['bootloaderVersion'] as core.String;
-    }
-    if (_json.containsKey('brand')) {
-      brand = _json['brand'] as core.String;
-    }
-    if (_json.containsKey('buildNumber')) {
-      buildNumber = _json['buildNumber'] as core.String;
-    }
-    if (_json.containsKey('compromisedState')) {
-      compromisedState = _json['compromisedState'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('deviceType')) {
-      deviceType = _json['deviceType'] as core.String;
-    }
-    if (_json.containsKey('enabledDeveloperOptions')) {
-      enabledDeveloperOptions = _json['enabledDeveloperOptions'] as core.bool;
-    }
-    if (_json.containsKey('enabledUsbDebugging')) {
-      enabledUsbDebugging = _json['enabledUsbDebugging'] as core.bool;
-    }
-    if (_json.containsKey('encryptionState')) {
-      encryptionState = _json['encryptionState'] as core.String;
-    }
-    if (_json.containsKey('imei')) {
-      imei = _json['imei'] as core.String;
-    }
-    if (_json.containsKey('kernelVersion')) {
-      kernelVersion = _json['kernelVersion'] as core.String;
-    }
-    if (_json.containsKey('lastSyncTime')) {
-      lastSyncTime = _json['lastSyncTime'] as core.String;
-    }
-    if (_json.containsKey('managementState')) {
-      managementState = _json['managementState'] as core.String;
-    }
-    if (_json.containsKey('manufacturer')) {
-      manufacturer = _json['manufacturer'] as core.String;
-    }
-    if (_json.containsKey('meid')) {
-      meid = _json['meid'] as core.String;
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('networkOperator')) {
-      networkOperator = _json['networkOperator'] as core.String;
-    }
-    if (_json.containsKey('osVersion')) {
-      osVersion = _json['osVersion'] as core.String;
-    }
-    if (_json.containsKey('otherAccounts')) {
-      otherAccounts = (_json['otherAccounts'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('ownerType')) {
-      ownerType = _json['ownerType'] as core.String;
-    }
-    if (_json.containsKey('releaseVersion')) {
-      releaseVersion = _json['releaseVersion'] as core.String;
-    }
-    if (_json.containsKey('securityPatchTime')) {
-      securityPatchTime = _json['securityPatchTime'] as core.String;
-    }
-    if (_json.containsKey('serialNumber')) {
-      serialNumber = _json['serialNumber'] as core.String;
-    }
-    if (_json.containsKey('wifiMacAddresses')) {
-      wifiMacAddresses = (_json['wifiMacAddresses'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1Device.fromJson(core.Map _json)
+      : this(
+          androidSpecificAttributes:
+              _json.containsKey('androidSpecificAttributes')
+                  ? GoogleAppsCloudidentityDevicesV1AndroidAttributes.fromJson(
+                      _json['androidSpecificAttributes']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          assetTag: _json.containsKey('assetTag')
+              ? _json['assetTag'] as core.String
+              : null,
+          basebandVersion: _json.containsKey('basebandVersion')
+              ? _json['basebandVersion'] as core.String
+              : null,
+          bootloaderVersion: _json.containsKey('bootloaderVersion')
+              ? _json['bootloaderVersion'] as core.String
+              : null,
+          brand:
+              _json.containsKey('brand') ? _json['brand'] as core.String : null,
+          buildNumber: _json.containsKey('buildNumber')
+              ? _json['buildNumber'] as core.String
+              : null,
+          compromisedState: _json.containsKey('compromisedState')
+              ? _json['compromisedState'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          deviceType: _json.containsKey('deviceType')
+              ? _json['deviceType'] as core.String
+              : null,
+          enabledDeveloperOptions: _json.containsKey('enabledDeveloperOptions')
+              ? _json['enabledDeveloperOptions'] as core.bool
+              : null,
+          enabledUsbDebugging: _json.containsKey('enabledUsbDebugging')
+              ? _json['enabledUsbDebugging'] as core.bool
+              : null,
+          encryptionState: _json.containsKey('encryptionState')
+              ? _json['encryptionState'] as core.String
+              : null,
+          imei: _json.containsKey('imei') ? _json['imei'] as core.String : null,
+          kernelVersion: _json.containsKey('kernelVersion')
+              ? _json['kernelVersion'] as core.String
+              : null,
+          lastSyncTime: _json.containsKey('lastSyncTime')
+              ? _json['lastSyncTime'] as core.String
+              : null,
+          managementState: _json.containsKey('managementState')
+              ? _json['managementState'] as core.String
+              : null,
+          manufacturer: _json.containsKey('manufacturer')
+              ? _json['manufacturer'] as core.String
+              : null,
+          meid: _json.containsKey('meid') ? _json['meid'] as core.String : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          networkOperator: _json.containsKey('networkOperator')
+              ? _json['networkOperator'] as core.String
+              : null,
+          osVersion: _json.containsKey('osVersion')
+              ? _json['osVersion'] as core.String
+              : null,
+          otherAccounts: _json.containsKey('otherAccounts')
+              ? (_json['otherAccounts'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          ownerType: _json.containsKey('ownerType')
+              ? _json['ownerType'] as core.String
+              : null,
+          releaseVersion: _json.containsKey('releaseVersion')
+              ? _json['releaseVersion'] as core.String
+              : null,
+          securityPatchTime: _json.containsKey('securityPatchTime')
+              ? _json['securityPatchTime'] as core.String
+              : null,
+          serialNumber: _json.containsKey('serialNumber')
+              ? _json['serialNumber'] as core.String
+              : null,
+          wifiMacAddresses: _json.containsKey('wifiMacAddresses')
+              ? (_json['wifiMacAddresses'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (androidSpecificAttributes != null)
-          'androidSpecificAttributes': androidSpecificAttributes!.toJson(),
+          'androidSpecificAttributes': androidSpecificAttributes!,
         if (assetTag != null) 'assetTag': assetTag!,
         if (basebandVersion != null) 'basebandVersion': basebandVersion!,
         if (bootloaderVersion != null) 'bootloaderVersion': bootloaderVersion!,
@@ -2982,8 +2926,8 @@ class GoogleAppsCloudidentityDevicesV1DeviceUser {
   core.String? managementState;
 
   /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the DeviceUser in format: `devices/{device_id}/deviceUsers/{user_id}`,
-  /// where user_id is the ID of the user associated with the user session.
+  /// the DeviceUser in format: `devices/{device}/deviceUsers/{device_user}`,
+  /// where `device_user` uniquely identifies a user's use of a device.
   ///
   /// Output only.
   core.String? name;
@@ -3003,40 +2947,50 @@ class GoogleAppsCloudidentityDevicesV1DeviceUser {
   /// Email address of the user registered on the device.
   core.String? userEmail;
 
-  GoogleAppsCloudidentityDevicesV1DeviceUser();
+  GoogleAppsCloudidentityDevicesV1DeviceUser({
+    this.compromisedState,
+    this.createTime,
+    this.firstSyncTime,
+    this.languageCode,
+    this.lastSyncTime,
+    this.managementState,
+    this.name,
+    this.passwordState,
+    this.userAgent,
+    this.userEmail,
+  });
 
-  GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(core.Map _json) {
-    if (_json.containsKey('compromisedState')) {
-      compromisedState = _json['compromisedState'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('firstSyncTime')) {
-      firstSyncTime = _json['firstSyncTime'] as core.String;
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('lastSyncTime')) {
-      lastSyncTime = _json['lastSyncTime'] as core.String;
-    }
-    if (_json.containsKey('managementState')) {
-      managementState = _json['managementState'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('passwordState')) {
-      passwordState = _json['passwordState'] as core.String;
-    }
-    if (_json.containsKey('userAgent')) {
-      userAgent = _json['userAgent'] as core.String;
-    }
-    if (_json.containsKey('userEmail')) {
-      userEmail = _json['userEmail'] as core.String;
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(core.Map _json)
+      : this(
+          compromisedState: _json.containsKey('compromisedState')
+              ? _json['compromisedState'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          firstSyncTime: _json.containsKey('firstSyncTime')
+              ? _json['firstSyncTime'] as core.String
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          lastSyncTime: _json.containsKey('lastSyncTime')
+              ? _json['lastSyncTime'] as core.String
+              : null,
+          managementState: _json.containsKey('managementState')
+              ? _json['managementState'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          passwordState: _json.containsKey('passwordState')
+              ? _json['passwordState'] as core.String
+              : null,
+          userAgent: _json.containsKey('userAgent')
+              ? _json['userAgent'] as core.String
+              : null,
+          userEmail: _json.containsKey('userEmail')
+              ? _json['userEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (compromisedState != null) 'compromisedState': compromisedState!,
@@ -3062,25 +3016,28 @@ class GoogleAppsCloudidentityDevicesV1ListClientStatesResponse {
   /// Empty if there are no more results.
   core.String? nextPageToken;
 
-  GoogleAppsCloudidentityDevicesV1ListClientStatesResponse();
+  GoogleAppsCloudidentityDevicesV1ListClientStatesResponse({
+    this.clientStates,
+    this.nextPageToken,
+  });
 
   GoogleAppsCloudidentityDevicesV1ListClientStatesResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('clientStates')) {
-      clientStates = (_json['clientStates'] as core.List)
-          .map<GoogleAppsCloudidentityDevicesV1ClientState>((value) =>
-              GoogleAppsCloudidentityDevicesV1ClientState.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+      core.Map _json)
+      : this(
+          clientStates: _json.containsKey('clientStates')
+              ? (_json['clientStates'] as core.List)
+                  .map((value) =>
+                      GoogleAppsCloudidentityDevicesV1ClientState.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clientStates != null)
-          'clientStates': clientStates!.map((value) => value.toJson()).toList(),
+        if (clientStates != null) 'clientStates': clientStates!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3095,25 +3052,28 @@ class GoogleAppsCloudidentityDevicesV1ListDeviceUsersResponse {
   /// Empty if there are no more results.
   core.String? nextPageToken;
 
-  GoogleAppsCloudidentityDevicesV1ListDeviceUsersResponse();
+  GoogleAppsCloudidentityDevicesV1ListDeviceUsersResponse({
+    this.deviceUsers,
+    this.nextPageToken,
+  });
 
   GoogleAppsCloudidentityDevicesV1ListDeviceUsersResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('deviceUsers')) {
-      deviceUsers = (_json['deviceUsers'] as core.List)
-          .map<GoogleAppsCloudidentityDevicesV1DeviceUser>((value) =>
-              GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+      core.Map _json)
+      : this(
+          deviceUsers: _json.containsKey('deviceUsers')
+              ? (_json['deviceUsers'] as core.List)
+                  .map((value) =>
+                      GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceUsers != null)
-          'deviceUsers': deviceUsers!.map((value) => value.toJson()).toList(),
+        if (deviceUsers != null) 'deviceUsers': deviceUsers!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3128,24 +3088,27 @@ class GoogleAppsCloudidentityDevicesV1ListDevicesResponse {
   /// Empty if there are no more results.
   core.String? nextPageToken;
 
-  GoogleAppsCloudidentityDevicesV1ListDevicesResponse();
+  GoogleAppsCloudidentityDevicesV1ListDevicesResponse({
+    this.devices,
+    this.nextPageToken,
+  });
 
-  GoogleAppsCloudidentityDevicesV1ListDevicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.List)
-          .map<GoogleAppsCloudidentityDevicesV1Device>((value) =>
-              GoogleAppsCloudidentityDevicesV1Device.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleAppsCloudidentityDevicesV1ListDevicesResponse.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.List)
+                  .map((value) =>
+                      GoogleAppsCloudidentityDevicesV1Device.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devices != null)
-          'devices': devices!.map((value) => value.toJson()).toList(),
+        if (devices != null) 'devices': devices!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3159,9 +3122,8 @@ class GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse {
 
   /// [Resource names](https://cloud.google.com/apis/design/resource_names) of
   /// the DeviceUsers in the format:
-  /// `devices/{device_id}/deviceUsers/{user_resource_id}`, where device_id is
-  /// the unique ID assigned to a Device and user_resource_id is the unique user
-  /// ID
+  /// `devices/{device}/deviceUsers/{user_resource}`, where device is the unique
+  /// ID assigned to a Device and user_resource is the unique user ID
   core.List<core.String>? names;
 
   /// Token to retrieve the next page of results.
@@ -3169,22 +3131,27 @@ class GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse {
   /// Empty if there are no more results.
   core.String? nextPageToken;
 
-  GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse();
+  GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse({
+    this.customer,
+    this.names,
+    this.nextPageToken,
+  });
 
   GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-    if (_json.containsKey('names')) {
-      names = (_json['names'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+      core.Map _json)
+      : this(
+          customer: _json.containsKey('customer')
+              ? _json['customer'] as core.String
+              : null,
+          names: _json.containsKey('names')
+              ? (_json['names'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (customer != null) 'customer': customer!,
@@ -3194,98 +3161,10 @@ class GoogleAppsCloudidentityDevicesV1LookupSelfDeviceUsersResponse {
 }
 
 /// Request message for wiping all data on the device.
-class GoogleAppsCloudidentityDevicesV1WipeDeviceRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceRequest();
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for wiping all data on the device.
-class GoogleAppsCloudidentityDevicesV1WipeDeviceResponse {
-  /// Resultant Device object for the action.
-  ///
-  /// Note that asset tags will not be returned in the device object.
-  GoogleAppsCloudidentityDevicesV1Device? device;
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceResponse();
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('device')) {
-      device = GoogleAppsCloudidentityDevicesV1Device.fromJson(
-          _json['device'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (device != null) 'device': device!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1WipeDeviceRequest = $Request00;
 
 /// Request message for starting an account wipe on device.
-class GoogleAppsCloudidentityDevicesV1WipeDeviceUserRequest {
-  /// [Resource name](https://cloud.google.com/apis/design/resource_names) of
-  /// the customer.
-  ///
-  /// If you're using this API for your own organization, use
-  /// `customers/my_customer` If you're using this API to manage another
-  /// organization, use `customers/{customer_id}`, where customer_id is the
-  /// customer to whom the device belongs.
-  ///
-  /// Required.
-  core.String? customer;
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceUserRequest();
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceUserRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('customer')) {
-      customer = _json['customer'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (customer != null) 'customer': customer!,
-      };
-}
-
-/// Response message for wiping the user's account from the device.
-class GoogleAppsCloudidentityDevicesV1WipeDeviceUserResponse {
-  /// Resultant DeviceUser object for the action.
-  GoogleAppsCloudidentityDevicesV1DeviceUser? deviceUser;
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceUserResponse();
-
-  GoogleAppsCloudidentityDevicesV1WipeDeviceUserResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('deviceUser')) {
-      deviceUser = GoogleAppsCloudidentityDevicesV1DeviceUser.fromJson(
-          _json['deviceUser'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceUser != null) 'deviceUser': deviceUser!.toJson(),
-      };
-}
+typedef GoogleAppsCloudidentityDevicesV1WipeDeviceUserRequest = $Request00;
 
 /// A group within the Cloud Identity Groups API.
 ///
@@ -3312,7 +3191,7 @@ class Group {
 
   /// The `EntityKey` of the `Group`.
   ///
-  /// Required. Immutable.
+  /// Required.
   EntityKey? groupKey;
 
   /// One or more label entries that apply to the Group.
@@ -3326,9 +3205,7 @@ class Group {
   /// removed once added.** Dynamic groups have a label with a key of
   /// `cloudidentity.googleapis.com/groups.dynamic`. Identity-mapped groups for
   /// Cloud Search have a label with a key of `system/groups/external` and an
-  /// empty value. Examples:
-  /// {"cloudidentity.googleapis.com/groups.discussion_forum": ""} or
-  /// {"system/groups/external": ""}.
+  /// empty value.
   ///
   /// Required.
   core.Map<core.String, core.String>? labels;
@@ -3336,7 +3213,7 @@ class Group {
   /// The [resource name](https://cloud.google.com/apis/design/resource_names)
   /// of the `Group`.
   ///
-  /// Shall be of the form `groups/{group_id}`.
+  /// Shall be of the form `groups/{group}`.
   ///
   /// Output only.
   core.String? name;
@@ -3344,8 +3221,9 @@ class Group {
   /// The resource name of the entity under which this `Group` resides in the
   /// Cloud Identity resource hierarchy.
   ///
-  /// Must be of the form `identitysources/{identity_source_id}` for external-
-  /// identity-mapped groups or `customers/{customer_id}` for Google Groups.
+  /// Must be of the form `identitysources/{identity_source}` for external-
+  /// identity-mapped groups or `customers/{customer}` for Google Groups. The
+  /// `customer` must begin with "C" (for example, 'C046psxkn').
   ///
   /// Required. Immutable.
   core.String? parent;
@@ -3355,52 +3233,61 @@ class Group {
   /// Output only.
   core.String? updateTime;
 
-  Group();
+  Group({
+    this.createTime,
+    this.description,
+    this.displayName,
+    this.dynamicGroupMetadata,
+    this.groupKey,
+    this.labels,
+    this.name,
+    this.parent,
+    this.updateTime,
+  });
 
-  Group.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('dynamicGroupMetadata')) {
-      dynamicGroupMetadata = DynamicGroupMetadata.fromJson(
-          _json['dynamicGroupMetadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('groupKey')) {
-      groupKey = EntityKey.fromJson(
-          _json['groupKey'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Group.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          dynamicGroupMetadata: _json.containsKey('dynamicGroupMetadata')
+              ? DynamicGroupMetadata.fromJson(_json['dynamicGroupMetadata']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          groupKey: _json.containsKey('groupKey')
+              ? EntityKey.fromJson(
+                  _json['groupKey'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
         if (dynamicGroupMetadata != null)
-          'dynamicGroupMetadata': dynamicGroupMetadata!.toJson(),
-        if (groupKey != null) 'groupKey': groupKey!.toJson(),
+          'dynamicGroupMetadata': dynamicGroupMetadata!,
+        if (groupKey != null) 'groupKey': groupKey!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (parent != null) 'parent': parent!,
@@ -3440,47 +3327,52 @@ class GroupRelation {
   /// Membership roles of the member for the group.
   core.List<TransitiveMembershipRole>? roles;
 
-  GroupRelation();
+  GroupRelation({
+    this.displayName,
+    this.group,
+    this.groupKey,
+    this.labels,
+    this.relationType,
+    this.roles,
+  });
 
-  GroupRelation.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('group')) {
-      group = _json['group'] as core.String;
-    }
-    if (_json.containsKey('groupKey')) {
-      groupKey = EntityKey.fromJson(
-          _json['groupKey'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('relationType')) {
-      relationType = _json['relationType'] as core.String;
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<TransitiveMembershipRole>((value) =>
-              TransitiveMembershipRole.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GroupRelation.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          group:
+              _json.containsKey('group') ? _json['group'] as core.String : null,
+          groupKey: _json.containsKey('groupKey')
+              ? EntityKey.fromJson(
+                  _json['groupKey'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          relationType: _json.containsKey('relationType')
+              ? _json['relationType'] as core.String
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => TransitiveMembershipRole.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
         if (group != null) 'group': group!,
-        if (groupKey != null) 'groupKey': groupKey!.toJson(),
+        if (groupKey != null) 'groupKey': groupKey!,
         if (labels != null) 'labels': labels!,
         if (relationType != null) 'relationType': relationType!,
-        if (roles != null)
-          'roles': roles!.map((value) => value.toJson()).toList(),
+        if (roles != null) 'roles': roles!,
       };
 }
 
@@ -3495,23 +3387,26 @@ class ListGroupsResponse {
   /// results available for listing.
   core.String? nextPageToken;
 
-  ListGroupsResponse();
+  ListGroupsResponse({
+    this.groups,
+    this.nextPageToken,
+  });
 
-  ListGroupsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('groups')) {
-      groups = (_json['groups'] as core.List)
-          .map<Group>((value) =>
-              Group.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListGroupsResponse.fromJson(core.Map _json)
+      : this(
+          groups: _json.containsKey('groups')
+              ? (_json['groups'] as core.List)
+                  .map((value) => Group.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (groups != null)
-          'groups': groups!.map((value) => value.toJson()).toList(),
+        if (groups != null) 'groups': groups!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3525,23 +3420,26 @@ class ListMembershipsResponse {
   /// there are no more results available.
   core.String? nextPageToken;
 
-  ListMembershipsResponse();
+  ListMembershipsResponse({
+    this.memberships,
+    this.nextPageToken,
+  });
 
-  ListMembershipsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('memberships')) {
-      memberships = (_json['memberships'] as core.List)
-          .map<Membership>((value) =>
-              Membership.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListMembershipsResponse.fromJson(core.Map _json)
+      : this(
+          memberships: _json.containsKey('memberships')
+              ? (_json['memberships'] as core.List)
+                  .map((value) => Membership.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (memberships != null)
-          'memberships': memberships!.map((value) => value.toJson()).toList(),
+        if (memberships != null) 'memberships': memberships!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3552,13 +3450,14 @@ class LookupGroupNameResponse {
   /// of the looked-up `Group`.
   core.String? name;
 
-  LookupGroupNameResponse();
+  LookupGroupNameResponse({
+    this.name,
+  });
 
-  LookupGroupNameResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  LookupGroupNameResponse.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -3570,16 +3469,17 @@ class LookupMembershipNameResponse {
   /// The [resource name](https://cloud.google.com/apis/design/resource_names)
   /// of the looked-up `Membership`.
   ///
-  /// Must be of the form `groups/{group_id}/memberships/{membership_id}`.
+  /// Must be of the form `groups/{group}/memberships/{membership}`.
   core.String? name;
 
-  LookupMembershipNameResponse();
+  LookupMembershipNameResponse({
+    this.name,
+  });
 
-  LookupMembershipNameResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  LookupMembershipNameResponse.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -3588,7 +3488,7 @@ class LookupMembershipNameResponse {
 
 /// Message representing a transitive membership of a group.
 class MemberRelation {
-  /// Resource name for this member if member is a GROUP, otherwise it is empty.
+  /// Resource name for this member.
   core.String? member;
 
   /// Entity key has an id and a namespace.
@@ -3612,38 +3512,80 @@ class MemberRelation {
   /// The membership role details (i.e name of role and expiry time).
   core.List<TransitiveMembershipRole>? roles;
 
-  MemberRelation();
+  MemberRelation({
+    this.member,
+    this.preferredMemberKey,
+    this.relationType,
+    this.roles,
+  });
 
-  MemberRelation.fromJson(core.Map _json) {
-    if (_json.containsKey('member')) {
-      member = _json['member'] as core.String;
-    }
-    if (_json.containsKey('preferredMemberKey')) {
-      preferredMemberKey = (_json['preferredMemberKey'] as core.List)
-          .map<EntityKey>((value) =>
-              EntityKey.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('relationType')) {
-      relationType = _json['relationType'] as core.String;
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<TransitiveMembershipRole>((value) =>
-              TransitiveMembershipRole.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  MemberRelation.fromJson(core.Map _json)
+      : this(
+          member: _json.containsKey('member')
+              ? _json['member'] as core.String
+              : null,
+          preferredMemberKey: _json.containsKey('preferredMemberKey')
+              ? (_json['preferredMemberKey'] as core.List)
+                  .map((value) => EntityKey.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          relationType: _json.containsKey('relationType')
+              ? _json['relationType'] as core.String
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => TransitiveMembershipRole.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (member != null) 'member': member!,
         if (preferredMemberKey != null)
-          'preferredMemberKey':
-              preferredMemberKey!.map((value) => value.toJson()).toList(),
+          'preferredMemberKey': preferredMemberKey!,
         if (relationType != null) 'relationType': relationType!,
-        if (roles != null)
-          'roles': roles!.map((value) => value.toJson()).toList(),
+        if (roles != null) 'roles': roles!,
+      };
+}
+
+/// The definition of MemberRestriction
+class MemberRestriction {
+  /// The evaluated state of this restriction on a group.
+  RestrictionEvaluation? evaluation;
+
+  /// Member Restriction as defined by CEL expression.
+  ///
+  /// Supported restrictions are: `member.customer_id` and `member.type`. Valid
+  /// values for `member.type` are `1`, `2` and `3`. They correspond to USER,
+  /// SERVICE_ACCOUNT, and GROUP respectively. The value for
+  /// `member.customer_id` only supports `groupCustomerId()` currently which
+  /// means the customer id of the group will be used for restriction. Supported
+  /// operators are `&&`, `||` and `==`, corresponding to AND, OR, and EQUAL.
+  /// Examples: Allow only service accounts of given customer to be members.
+  /// `member.type == 2 && member.customer_id == groupCustomerId()` Allow only
+  /// users or groups to be members. `member.type == 1 || member.type == 3`
+  core.String? query;
+
+  MemberRestriction({
+    this.evaluation,
+    this.query,
+  });
+
+  MemberRestriction.fromJson(core.Map _json)
+      : this(
+          evaluation: _json.containsKey('evaluation')
+              ? RestrictionEvaluation.fromJson(
+                  _json['evaluation'] as core.Map<core.String, core.dynamic>)
+              : null,
+          query:
+              _json.containsKey('query') ? _json['query'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (evaluation != null) 'evaluation': evaluation!,
+        if (query != null) 'query': query!,
       };
 }
 
@@ -3660,7 +3602,7 @@ class Membership {
   /// The [resource name](https://cloud.google.com/apis/design/resource_names)
   /// of the `Membership`.
   ///
-  /// Shall be of the form `groups/{group_id}/memberships/{membership_id}`.
+  /// Shall be of the form `groups/{group}/memberships/{membership}`.
   ///
   /// Output only.
   core.String? name;
@@ -3685,6 +3627,7 @@ class Membership {
   /// - "USER" : Represents user type.
   /// - "SERVICE_ACCOUNT" : Represents service account type.
   /// - "GROUP" : Represents group type.
+  /// - "SHARED_DRIVE" : Represents Shared drive.
   /// - "OTHER" : Represents other type.
   core.String? type;
 
@@ -3693,76 +3636,45 @@ class Membership {
   /// Output only.
   core.String? updateTime;
 
-  Membership();
+  Membership({
+    this.createTime,
+    this.name,
+    this.preferredMemberKey,
+    this.roles,
+    this.type,
+    this.updateTime,
+  });
 
-  Membership.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('preferredMemberKey')) {
-      preferredMemberKey = EntityKey.fromJson(
-          _json['preferredMemberKey'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<MembershipRole>((value) => MembershipRole.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Membership.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          preferredMemberKey: _json.containsKey('preferredMemberKey')
+              ? EntityKey.fromJson(_json['preferredMemberKey']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => MembershipRole.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (name != null) 'name': name!,
         if (preferredMemberKey != null)
-          'preferredMemberKey': preferredMemberKey!.toJson(),
-        if (roles != null)
-          'roles': roles!.map((value) => value.toJson()).toList(),
+          'preferredMemberKey': preferredMemberKey!,
+        if (roles != null) 'roles': roles!,
         if (type != null) 'type': type!,
         if (updateTime != null) 'updateTime': updateTime!,
-      };
-}
-
-/// Membership graph's path information as an adjacency list.
-class MembershipAdjacencyList {
-  /// Each edge contains information about the member that belongs to this
-  /// group.
-  ///
-  /// Note: Fields returned here will help identify the specific Membership
-  /// resource (e.g name, preferred_member_key and role), but may not be a
-  /// comprehensive list of all fields.
-  core.List<Membership>? edges;
-
-  /// Resource name of the group that the members belong to.
-  core.String? group;
-
-  MembershipAdjacencyList();
-
-  MembershipAdjacencyList.fromJson(core.Map _json) {
-    if (_json.containsKey('edges')) {
-      edges = (_json['edges'] as core.List)
-          .map<Membership>((value) =>
-              Membership.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('group')) {
-      group = _json['group'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (edges != null)
-          'edges': edges!.map((value) => value.toJson()).toList(),
-        if (group != null) 'group': group!,
       };
 }
 
@@ -3781,21 +3693,64 @@ class MembershipRole {
   /// Must be one of `OWNER`, `MANAGER`, `MEMBER`.
   core.String? name;
 
-  MembershipRole();
+  /// Evaluations of restrictions applied to parent group on this membership.
+  RestrictionEvaluations? restrictionEvaluations;
 
-  MembershipRole.fromJson(core.Map _json) {
-    if (_json.containsKey('expiryDetail')) {
-      expiryDetail = ExpiryDetail.fromJson(
-          _json['expiryDetail'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  MembershipRole({
+    this.expiryDetail,
+    this.name,
+    this.restrictionEvaluations,
+  });
+
+  MembershipRole.fromJson(core.Map _json)
+      : this(
+          expiryDetail: _json.containsKey('expiryDetail')
+              ? ExpiryDetail.fromJson(
+                  _json['expiryDetail'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          restrictionEvaluations: _json.containsKey('restrictionEvaluations')
+              ? RestrictionEvaluations.fromJson(_json['restrictionEvaluations']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (expiryDetail != null) 'expiryDetail': expiryDetail!.toJson(),
+        if (expiryDetail != null) 'expiryDetail': expiryDetail!,
         if (name != null) 'name': name!,
+        if (restrictionEvaluations != null)
+          'restrictionEvaluations': restrictionEvaluations!,
+      };
+}
+
+/// The evaluated state of this restriction.
+class MembershipRoleRestrictionEvaluation {
+  /// The current state of the restriction
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : Default. Should not be used.
+  /// - "COMPLIANT" : The member adheres to the parent group's restriction.
+  /// - "FORWARD_COMPLIANT" : The group-group membership might be currently
+  /// violating some parent group's restriction but in future, it will never
+  /// allow any new member in the child group which can violate parent group's
+  /// restriction.
+  /// - "NON_COMPLIANT" : The member violates the parent group's restriction.
+  /// - "EVALUATING" : The state of the membership is under evaluation.
+  core.String? state;
+
+  MembershipRoleRestrictionEvaluation({
+    this.state,
+  });
+
+  MembershipRoleRestrictionEvaluation.fromJson(core.Map _json)
+      : this(
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (state != null) 'state': state!,
       };
 }
 
@@ -3822,36 +3777,37 @@ class ModifyMembershipRolesRequest {
   /// supported. Must not be set if either `add_roles` or `remove_roles` is set.
   core.List<UpdateMembershipRolesParams>? updateRolesParams;
 
-  ModifyMembershipRolesRequest();
+  ModifyMembershipRolesRequest({
+    this.addRoles,
+    this.removeRoles,
+    this.updateRolesParams,
+  });
 
-  ModifyMembershipRolesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('addRoles')) {
-      addRoles = (_json['addRoles'] as core.List)
-          .map<MembershipRole>((value) => MembershipRole.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('removeRoles')) {
-      removeRoles = (_json['removeRoles'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('updateRolesParams')) {
-      updateRolesParams = (_json['updateRolesParams'] as core.List)
-          .map<UpdateMembershipRolesParams>((value) =>
-              UpdateMembershipRolesParams.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ModifyMembershipRolesRequest.fromJson(core.Map _json)
+      : this(
+          addRoles: _json.containsKey('addRoles')
+              ? (_json['addRoles'] as core.List)
+                  .map((value) => MembershipRole.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          removeRoles: _json.containsKey('removeRoles')
+              ? (_json['removeRoles'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          updateRolesParams: _json.containsKey('updateRolesParams')
+              ? (_json['updateRolesParams'] as core.List)
+                  .map((value) => UpdateMembershipRolesParams.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (addRoles != null)
-          'addRoles': addRoles!.map((value) => value.toJson()).toList(),
+        if (addRoles != null) 'addRoles': addRoles!,
         if (removeRoles != null) 'removeRoles': removeRoles!,
-        if (updateRolesParams != null)
-          'updateRolesParams':
-              updateRolesParams!.map((value) => value.toJson()).toList(),
+        if (updateRolesParams != null) 'updateRolesParams': updateRolesParams!,
       };
 }
 
@@ -3860,17 +3816,20 @@ class ModifyMembershipRolesResponse {
   /// The `Membership` resource after modifying its `MembershipRole`s.
   Membership? membership;
 
-  ModifyMembershipRolesResponse();
+  ModifyMembershipRolesResponse({
+    this.membership,
+  });
 
-  ModifyMembershipRolesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('membership')) {
-      membership = Membership.fromJson(
-          _json['membership'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ModifyMembershipRolesResponse.fromJson(core.Map _json)
+      : this(
+          membership: _json.containsKey('membership')
+              ? Membership.fromJson(
+                  _json['membership'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (membership != null) 'membership': membership!.toJson(),
+        if (membership != null) 'membership': membership!,
       };
 }
 
@@ -3895,7 +3854,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3915,74 +3874,128 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
       };
 }
 
+/// The evaluated state of this restriction.
+class RestrictionEvaluation {
+  /// The current state of the restriction
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : Default. Should not be used.
+  /// - "EVALUATING" : The restriction state is currently being evaluated.
+  /// - "COMPLIANT" : All transitive memberships are adhering to restriction.
+  /// - "FORWARD_COMPLIANT" : Some transitive memberships violate the
+  /// restriction. No new violating memberships can be added.
+  /// - "NON_COMPLIANT" : Some transitive memberships violate the restriction.
+  /// New violating direct memberships will be denied while indirect memberships
+  /// may be added.
+  core.String? state;
+
+  RestrictionEvaluation({
+    this.state,
+  });
+
+  RestrictionEvaluation.fromJson(core.Map _json)
+      : this(
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (state != null) 'state': state!,
+      };
+}
+
+/// Evaluations of restrictions applied to parent group on this membership.
+class RestrictionEvaluations {
+  /// Evaluation of the member restriction applied to this membership.
+  ///
+  /// Empty if the user lacks permission to view the restriction evaluation.
+  MembershipRoleRestrictionEvaluation? memberRestrictionEvaluation;
+
+  RestrictionEvaluations({
+    this.memberRestrictionEvaluation,
+  });
+
+  RestrictionEvaluations.fromJson(core.Map _json)
+      : this(
+          memberRestrictionEvaluation:
+              _json.containsKey('memberRestrictionEvaluation')
+                  ? MembershipRoleRestrictionEvaluation.fromJson(
+                      _json['memberRestrictionEvaluation']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (memberRestrictionEvaluation != null)
+          'memberRestrictionEvaluation': memberRestrictionEvaluation!,
+      };
+}
+
 /// The response message for GroupsService.SearchGroups.
 class SearchGroupsResponse {
-  /// The `Group`s that match the search query.
+  /// The `Group` resources that match the search query.
   core.List<Group>? groups;
 
   /// A continuation token to retrieve the next page of results, or empty if
   /// there are no more results available.
   core.String? nextPageToken;
 
-  SearchGroupsResponse();
+  SearchGroupsResponse({
+    this.groups,
+    this.nextPageToken,
+  });
 
-  SearchGroupsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('groups')) {
-      groups = (_json['groups'] as core.List)
-          .map<Group>((value) =>
-              Group.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchGroupsResponse.fromJson(core.Map _json)
+      : this(
+          groups: _json.containsKey('groups')
+              ? (_json['groups'] as core.List)
+                  .map((value) => Group.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (groups != null)
-          'groups': groups!.map((value) => value.toJson()).toList(),
+        if (groups != null) 'groups': groups!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3996,23 +4009,26 @@ class SearchTransitiveGroupsResponse {
   /// results available for listing.
   core.String? nextPageToken;
 
-  SearchTransitiveGroupsResponse();
+  SearchTransitiveGroupsResponse({
+    this.memberships,
+    this.nextPageToken,
+  });
 
-  SearchTransitiveGroupsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('memberships')) {
-      memberships = (_json['memberships'] as core.List)
-          .map<GroupRelation>((value) => GroupRelation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchTransitiveGroupsResponse.fromJson(core.Map _json)
+      : this(
+          memberships: _json.containsKey('memberships')
+              ? (_json['memberships'] as core.List)
+                  .map((value) => GroupRelation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (memberships != null)
-          'memberships': memberships!.map((value) => value.toJson()).toList(),
+        if (memberships != null) 'memberships': memberships!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -4026,24 +4042,59 @@ class SearchTransitiveMembershipsResponse {
   /// results.
   core.String? nextPageToken;
 
-  SearchTransitiveMembershipsResponse();
+  SearchTransitiveMembershipsResponse({
+    this.memberships,
+    this.nextPageToken,
+  });
 
-  SearchTransitiveMembershipsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('memberships')) {
-      memberships = (_json['memberships'] as core.List)
-          .map<MemberRelation>((value) => MemberRelation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchTransitiveMembershipsResponse.fromJson(core.Map _json)
+      : this(
+          memberships: _json.containsKey('memberships')
+              ? (_json['memberships'] as core.List)
+                  .map((value) => MemberRelation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (memberships != null)
-          'memberships': memberships!.map((value) => value.toJson()).toList(),
+        if (memberships != null) 'memberships': memberships!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+/// The definition of security settings.
+class SecuritySettings {
+  /// The Member Restriction value
+  MemberRestriction? memberRestriction;
+
+  /// The resource name of the security settings.
+  ///
+  /// Shall be of the form `groups/{group_id}/securitySettings`.
+  ///
+  /// Output only.
+  core.String? name;
+
+  SecuritySettings({
+    this.memberRestriction,
+    this.name,
+  });
+
+  SecuritySettings.fromJson(core.Map _json)
+      : this(
+          memberRestriction: _json.containsKey('memberRestriction')
+              ? MemberRestriction.fromJson(_json['memberRestriction']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (memberRestriction != null) 'memberRestriction': memberRestriction!,
+        if (name != null) 'name': name!,
       };
 }
 
@@ -4054,52 +4105,7 @@ class SearchTransitiveMembershipsResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Message representing the role of a TransitiveMembership.
 class TransitiveMembershipRole {
@@ -4109,13 +4115,14 @@ class TransitiveMembershipRole {
   /// `"MANAGER"`.
   core.String? role;
 
-  TransitiveMembershipRole();
+  TransitiveMembershipRole({
+    this.role,
+  });
 
-  TransitiveMembershipRole.fromJson(core.Map _json) {
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  TransitiveMembershipRole.fromJson(core.Map _json)
+      : this(
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (role != null) 'role': role!,
@@ -4126,7 +4133,7 @@ class TransitiveMembershipRole {
 class UpdateMembershipRolesParams {
   /// The fully-qualified names of fields to update.
   ///
-  /// May only contain the field `expiry_detail`.
+  /// May only contain the field `expiry_detail.expire_time`.
   core.String? fieldMask;
 
   /// The `MembershipRole`s to be updated.
@@ -4134,75 +4141,24 @@ class UpdateMembershipRolesParams {
   /// Only `MEMBER` `MembershipRole` can currently be updated.
   MembershipRole? membershipRole;
 
-  UpdateMembershipRolesParams();
+  UpdateMembershipRolesParams({
+    this.fieldMask,
+    this.membershipRole,
+  });
 
-  UpdateMembershipRolesParams.fromJson(core.Map _json) {
-    if (_json.containsKey('fieldMask')) {
-      fieldMask = _json['fieldMask'] as core.String;
-    }
-    if (_json.containsKey('membershipRole')) {
-      membershipRole = MembershipRole.fromJson(
-          _json['membershipRole'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  UpdateMembershipRolesParams.fromJson(core.Map _json)
+      : this(
+          fieldMask: _json.containsKey('fieldMask')
+              ? _json['fieldMask'] as core.String
+              : null,
+          membershipRole: _json.containsKey('membershipRole')
+              ? MembershipRole.fromJson(_json['membershipRole']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fieldMask != null) 'fieldMask': fieldMask!,
-        if (membershipRole != null) 'membershipRole': membershipRole!.toJson(),
-      };
-}
-
-/// The `UserInvitation` resource represents an email sent to an unmanaged user
-/// account (an email address that shares the domain of the Google Workspace
-/// customer but is not managed by it yet), inviting them to join the customer’s
-/// domain.
-///
-/// If the user accepts the `UserInvitation`, the account will become a managed
-/// account.
-class UserInvitation {
-  /// Number of invitation emails sent to the user.
-  core.String? mailsSentCount;
-
-  /// Shall be of the form
-  /// `customers/{customer}/userinvitations/{user_email_address}`.
-  core.String? name;
-
-  /// State of the `UserInvitation`.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : The default value. This value is used if the state
-  /// is omitted.
-  /// - "NOT_YET_SENT" : The `UserInvitation` has been created and is ready for
-  /// sending as an email.
-  /// - "INVITED" : The user has been invited by email.
-  /// - "ACCEPTED" : The user has accepted the invitation and is part of the
-  /// organization.
-  /// - "DECLINED" : The user declined the invitation.
-  core.String? state;
-
-  /// Time when the `UserInvitation` was last updated.
-  core.String? updateTime;
-
-  UserInvitation();
-
-  UserInvitation.fromJson(core.Map _json) {
-    if (_json.containsKey('mailsSentCount')) {
-      mailsSentCount = _json['mailsSentCount'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (mailsSentCount != null) 'mailsSentCount': mailsSentCount!,
-        if (name != null) 'name': name!,
-        if (state != null) 'state': state!,
-        if (updateTime != null) 'updateTime': updateTime!,
+        if (membershipRole != null) 'membershipRole': membershipRole!,
       };
 }

@@ -40,7 +40,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Synthesizes natural-sounding speech by applying powerful neural network
 /// models.
 class TexttospeechApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -82,7 +83,7 @@ class TextResource {
     SynthesizeSpeechRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -111,12 +112,11 @@ class VoicesResource {
   ///
   /// [languageCode] - Optional. Recommended.
   /// \[BCP-47\](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag. If
-  /// specified, the ListVoices call will only return voices that can be used to
-  /// synthesize this language_code. E.g. when specifying "en-NZ", you will get
-  /// supported "en-\*" voices; when specifying "no", you will get supported
-  /// "no-\*" (Norwegian) and "nb-\*" (Norwegian Bokmal) voices; specifying "zh"
-  /// will also get supported "cmn-\*" voices; specifying "zh-hk" will also get
-  /// supported "yue-\*" voices.
+  /// not specified, the API will return all supported voices. If specified, the
+  /// ListVoices call will only return voices that can be used to synthesize
+  /// this language_code. For example, if you specify `"en-NZ"`, all `"en-NZ"`
+  /// voices will be returned. If you specify `"no"`, both `"no-\*"` (Norwegian)
+  /// and `"nb-\*"` (Norwegian Bokmal) voices will be returned.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -164,6 +164,10 @@ class AudioConfig {
   /// will be a file which can be played natively on Android, and in browsers
   /// (at least Chrome and Firefox). The quality of the encoding is considerably
   /// higher than MP3 while using approximately the same bitrate.
+  /// - "MULAW" : 8-bit samples that compand 14-bit audio samples using G.711
+  /// PCMU/mu-law. Audio content returned as MULAW also contains a WAV header.
+  /// - "ALAW" : 8-bit samples that compand 14-bit audio samples using G.711
+  /// PCMU/A-law. Audio content returned as ALAW also contains a WAV header.
   core.String? audioEncoding;
 
   /// Input only.
@@ -203,7 +207,7 @@ class AudioConfig {
   /// Speaking rate/speed, in the range \[0.25, 4.0\]. 1.0 is the normal native
   /// speed supported by the specific voice. 2.0 is twice as fast, and 0.5 is
   /// half as fast. If unset(0.0), defaults to the native 1.0 speed. Any other
-  /// values < 0.25 or > 4.0 will return an error.
+  /// values \< 0.25 or \> 4.0 will return an error.
   ///
   /// Optional.
   core.double? speakingRate;
@@ -222,30 +226,38 @@ class AudioConfig {
   /// Optional.
   core.double? volumeGainDb;
 
-  AudioConfig();
+  AudioConfig({
+    this.audioEncoding,
+    this.effectsProfileId,
+    this.pitch,
+    this.sampleRateHertz,
+    this.speakingRate,
+    this.volumeGainDb,
+  });
 
-  AudioConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('audioEncoding')) {
-      audioEncoding = _json['audioEncoding'] as core.String;
-    }
-    if (_json.containsKey('effectsProfileId')) {
-      effectsProfileId = (_json['effectsProfileId'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('pitch')) {
-      pitch = (_json['pitch'] as core.num).toDouble();
-    }
-    if (_json.containsKey('sampleRateHertz')) {
-      sampleRateHertz = _json['sampleRateHertz'] as core.int;
-    }
-    if (_json.containsKey('speakingRate')) {
-      speakingRate = (_json['speakingRate'] as core.num).toDouble();
-    }
-    if (_json.containsKey('volumeGainDb')) {
-      volumeGainDb = (_json['volumeGainDb'] as core.num).toDouble();
-    }
-  }
+  AudioConfig.fromJson(core.Map _json)
+      : this(
+          audioEncoding: _json.containsKey('audioEncoding')
+              ? _json['audioEncoding'] as core.String
+              : null,
+          effectsProfileId: _json.containsKey('effectsProfileId')
+              ? (_json['effectsProfileId'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          pitch: _json.containsKey('pitch')
+              ? (_json['pitch'] as core.num).toDouble()
+              : null,
+          sampleRateHertz: _json.containsKey('sampleRateHertz')
+              ? _json['sampleRateHertz'] as core.int
+              : null,
+          speakingRate: _json.containsKey('speakingRate')
+              ? (_json['speakingRate'] as core.num).toDouble()
+              : null,
+          volumeGainDb: _json.containsKey('volumeGainDb')
+              ? (_json['volumeGainDb'] as core.num).toDouble()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audioEncoding != null) 'audioEncoding': audioEncoding!,
@@ -262,20 +274,22 @@ class ListVoicesResponse {
   /// The list of voices.
   core.List<Voice>? voices;
 
-  ListVoicesResponse();
+  ListVoicesResponse({
+    this.voices,
+  });
 
-  ListVoicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('voices')) {
-      voices = (_json['voices'] as core.List)
-          .map<Voice>((value) =>
-              Voice.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListVoicesResponse.fromJson(core.Map _json)
+      : this(
+          voices: _json.containsKey('voices')
+              ? (_json['voices'] as core.List)
+                  .map((value) => Voice.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (voices != null)
-          'voices': voices!.map((value) => value.toJson()).toList(),
+        if (voices != null) 'voices': voices!,
       };
 }
 
@@ -295,16 +309,16 @@ class SynthesisInput {
   /// The raw text to be synthesized.
   core.String? text;
 
-  SynthesisInput();
+  SynthesisInput({
+    this.ssml,
+    this.text,
+  });
 
-  SynthesisInput.fromJson(core.Map _json) {
-    if (_json.containsKey('ssml')) {
-      ssml = _json['ssml'] as core.String;
-    }
-    if (_json.containsKey('text')) {
-      text = _json['text'] as core.String;
-    }
-  }
+  SynthesisInput.fromJson(core.Map _json)
+      : this(
+          ssml: _json.containsKey('ssml') ? _json['ssml'] as core.String : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ssml != null) 'ssml': ssml!,
@@ -329,27 +343,32 @@ class SynthesizeSpeechRequest {
   /// Required.
   VoiceSelectionParams? voice;
 
-  SynthesizeSpeechRequest();
+  SynthesizeSpeechRequest({
+    this.audioConfig,
+    this.input,
+    this.voice,
+  });
 
-  SynthesizeSpeechRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('audioConfig')) {
-      audioConfig = AudioConfig.fromJson(
-          _json['audioConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('input')) {
-      input = SynthesisInput.fromJson(
-          _json['input'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('voice')) {
-      voice = VoiceSelectionParams.fromJson(
-          _json['voice'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SynthesizeSpeechRequest.fromJson(core.Map _json)
+      : this(
+          audioConfig: _json.containsKey('audioConfig')
+              ? AudioConfig.fromJson(
+                  _json['audioConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          input: _json.containsKey('input')
+              ? SynthesisInput.fromJson(
+                  _json['input'] as core.Map<core.String, core.dynamic>)
+              : null,
+          voice: _json.containsKey('voice')
+              ? VoiceSelectionParams.fromJson(
+                  _json['voice'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (audioConfig != null) 'audioConfig': audioConfig!.toJson(),
-        if (input != null) 'input': input!.toJson(),
-        if (voice != null) 'voice': voice!.toJson(),
+        if (audioConfig != null) 'audioConfig': audioConfig!,
+        if (input != null) 'input': input!,
+        if (voice != null) 'voice': voice!,
       };
 }
 
@@ -370,13 +389,16 @@ class SynthesizeSpeechResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  SynthesizeSpeechResponse();
+  SynthesizeSpeechResponse({
+    this.audioContent,
+  });
 
-  SynthesizeSpeechResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('audioContent')) {
-      audioContent = _json['audioContent'] as core.String;
-    }
-  }
+  SynthesizeSpeechResponse.fromJson(core.Map _json)
+      : this(
+          audioContent: _json.containsKey('audioContent')
+              ? _json['audioContent'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audioContent != null) 'audioContent': audioContent!,
@@ -410,24 +432,28 @@ class Voice {
   /// - "NEUTRAL" : A gender-neutral voice. This voice is not yet supported.
   core.String? ssmlGender;
 
-  Voice();
+  Voice({
+    this.languageCodes,
+    this.name,
+    this.naturalSampleRateHertz,
+    this.ssmlGender,
+  });
 
-  Voice.fromJson(core.Map _json) {
-    if (_json.containsKey('languageCodes')) {
-      languageCodes = (_json['languageCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('naturalSampleRateHertz')) {
-      naturalSampleRateHertz = _json['naturalSampleRateHertz'] as core.int;
-    }
-    if (_json.containsKey('ssmlGender')) {
-      ssmlGender = _json['ssmlGender'] as core.String;
-    }
-  }
+  Voice.fromJson(core.Map _json)
+      : this(
+          languageCodes: _json.containsKey('languageCodes')
+              ? (_json['languageCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          naturalSampleRateHertz: _json.containsKey('naturalSampleRateHertz')
+              ? _json['naturalSampleRateHertz'] as core.int
+              : null,
+          ssmlGender: _json.containsKey('ssmlGender')
+              ? _json['ssmlGender'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (languageCodes != null) 'languageCodes': languageCodes!,
@@ -480,19 +506,22 @@ class VoiceSelectionParams {
   /// - "NEUTRAL" : A gender-neutral voice. This voice is not yet supported.
   core.String? ssmlGender;
 
-  VoiceSelectionParams();
+  VoiceSelectionParams({
+    this.languageCode,
+    this.name,
+    this.ssmlGender,
+  });
 
-  VoiceSelectionParams.fromJson(core.Map _json) {
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('ssmlGender')) {
-      ssmlGender = _json['ssmlGender'] as core.String;
-    }
-  }
+  VoiceSelectionParams.fromJson(core.Map _json)
+      : this(
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          ssmlGender: _json.containsKey('ssmlGender')
+              ? _json['ssmlGender'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (languageCode != null) 'languageCode': languageCode!,

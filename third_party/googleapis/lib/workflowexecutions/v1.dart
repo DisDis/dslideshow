@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -40,7 +42,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Execute workflows created with Workflows API.
 class WorkflowExecutionsApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -115,7 +118,7 @@ class ProjectsLocationsWorkflowsExecutionsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -159,7 +162,7 @@ class ProjectsLocationsWorkflowsExecutionsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -294,38 +297,43 @@ class ProjectsLocationsWorkflowsExecutionsResource {
 }
 
 /// Request for the CancelExecution method.
-class CancelExecutionRequest {
-  CancelExecutionRequest();
-
-  CancelExecutionRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelExecutionRequest = $Empty;
 
 /// Error describes why the execution was abnormally terminated.
 class Error {
-  /// Human readable error context, helpful for debugging purposes.
+  /// Human-readable stack trace string.
   core.String? context;
 
-  /// Error payload returned by the execution, represented as a JSON string.
+  /// Error message and data returned represented as a JSON string.
   core.String? payload;
 
-  Error();
+  /// Stack trace with detailed information of where error was generated.
+  StackTrace? stackTrace;
 
-  Error.fromJson(core.Map _json) {
-    if (_json.containsKey('context')) {
-      context = _json['context'] as core.String;
-    }
-    if (_json.containsKey('payload')) {
-      payload = _json['payload'] as core.String;
-    }
-  }
+  Error({
+    this.context,
+    this.payload,
+    this.stackTrace,
+  });
+
+  Error.fromJson(core.Map _json)
+      : this(
+          context: _json.containsKey('context')
+              ? _json['context'] as core.String
+              : null,
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.String
+              : null,
+          stackTrace: _json.containsKey('stackTrace')
+              ? StackTrace.fromJson(
+                  _json['stackTrace'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (context != null) 'context': context!,
         if (payload != null) 'payload': payload!,
+        if (stackTrace != null) 'stackTrace': stackTrace!,
       };
 }
 
@@ -339,6 +347,15 @@ class Execution {
   /// Example:
   /// `'{"argument":"{\"firstName\":\"FIRST\",\"lastName\":\"LAST\"}"}'`
   core.String? argument;
+
+  /// The call logging level associated to this execution.
+  /// Possible string values are:
+  /// - "CALL_LOG_LEVEL_UNSPECIFIED" : No call logging specified.
+  /// - "LOG_ALL_CALLS" : Log all call steps within workflows, all call returns,
+  /// and all exceptions raised.
+  /// - "LOG_ERRORS_ONLY" : Log only exceptions that are raised from call steps
+  /// within workflows.
+  core.String? callLogLevel;
 
   /// Marks the end of execution, successful or not.
   ///
@@ -389,40 +406,52 @@ class Execution {
   /// Output only.
   core.String? workflowRevisionId;
 
-  Execution();
+  Execution({
+    this.argument,
+    this.callLogLevel,
+    this.endTime,
+    this.error,
+    this.name,
+    this.result,
+    this.startTime,
+    this.state,
+    this.workflowRevisionId,
+  });
 
-  Execution.fromJson(core.Map _json) {
-    if (_json.containsKey('argument')) {
-      argument = _json['argument'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('error')) {
-      error =
-          Error.fromJson(_json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('result')) {
-      result = _json['result'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('workflowRevisionId')) {
-      workflowRevisionId = _json['workflowRevisionId'] as core.String;
-    }
-  }
+  Execution.fromJson(core.Map _json)
+      : this(
+          argument: _json.containsKey('argument')
+              ? _json['argument'] as core.String
+              : null,
+          callLogLevel: _json.containsKey('callLogLevel')
+              ? _json['callLogLevel'] as core.String
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          error: _json.containsKey('error')
+              ? Error.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          result: _json.containsKey('result')
+              ? _json['result'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          workflowRevisionId: _json.containsKey('workflowRevisionId')
+              ? _json['workflowRevisionId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (argument != null) 'argument': argument!,
+        if (callLogLevel != null) 'callLogLevel': callLogLevel!,
         if (endTime != null) 'endTime': endTime!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (name != null) 'name': name!,
         if (result != null) 'result': result!,
         if (startTime != null) 'startTime': startTime!,
@@ -442,23 +471,123 @@ class ListExecutionsResponse {
   /// If this field is omitted, there are no subsequent pages.
   core.String? nextPageToken;
 
-  ListExecutionsResponse();
+  ListExecutionsResponse({
+    this.executions,
+    this.nextPageToken,
+  });
 
-  ListExecutionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('executions')) {
-      executions = (_json['executions'] as core.List)
-          .map<Execution>((value) =>
-              Execution.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListExecutionsResponse.fromJson(core.Map _json)
+      : this(
+          executions: _json.containsKey('executions')
+              ? (_json['executions'] as core.List)
+                  .map((value) => Execution.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (executions != null)
-          'executions': executions!.map((value) => value.toJson()).toList(),
+        if (executions != null) 'executions': executions!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+/// Position contains source position information about the stack trace element
+/// such as line number, column number and length of the code block in bytes.
+class Position {
+  /// The source code column position (of the line) the current instruction was
+  /// generated from.
+  core.String? column;
+
+  /// The number of bytes of source code making up this stack trace element.
+  core.String? length;
+
+  /// The source code line number the current instruction was generated from.
+  core.String? line;
+
+  Position({
+    this.column,
+    this.length,
+    this.line,
+  });
+
+  Position.fromJson(core.Map _json)
+      : this(
+          column: _json.containsKey('column')
+              ? _json['column'] as core.String
+              : null,
+          length: _json.containsKey('length')
+              ? _json['length'] as core.String
+              : null,
+          line: _json.containsKey('line') ? _json['line'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (column != null) 'column': column!,
+        if (length != null) 'length': length!,
+        if (line != null) 'line': line!,
+      };
+}
+
+/// A collection of stack elements (frames) where an error occurred.
+class StackTrace {
+  /// An array of stack elements.
+  core.List<StackTraceElement>? elements;
+
+  StackTrace({
+    this.elements,
+  });
+
+  StackTrace.fromJson(core.Map _json)
+      : this(
+          elements: _json.containsKey('elements')
+              ? (_json['elements'] as core.List)
+                  .map((value) => StackTraceElement.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (elements != null) 'elements': elements!,
+      };
+}
+
+/// A single stack element (frame) where an error occurred.
+class StackTraceElement {
+  /// The source position information of the stack trace element.
+  Position? position;
+
+  /// The routine where the error occurred.
+  core.String? routine;
+
+  /// The step the error occurred at.
+  core.String? step;
+
+  StackTraceElement({
+    this.position,
+    this.routine,
+    this.step,
+  });
+
+  StackTraceElement.fromJson(core.Map _json)
+      : this(
+          position: _json.containsKey('position')
+              ? Position.fromJson(
+                  _json['position'] as core.Map<core.String, core.dynamic>)
+              : null,
+          routine: _json.containsKey('routine')
+              ? _json['routine'] as core.String
+              : null,
+          step: _json.containsKey('step') ? _json['step'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (position != null) 'position': position!,
+        if (routine != null) 'routine': routine!,
+        if (step != null) 'step': step!,
       };
 }

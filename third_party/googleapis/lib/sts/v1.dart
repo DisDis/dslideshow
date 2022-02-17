@@ -56,10 +56,49 @@ class V1Resource {
 
   V1Resource(commons.ApiRequester client) : _requester = client;
 
+  /// Gets information about a Google OAuth 2.0 access token issued by the
+  /// Google Cloud
+  /// [Security Token Service API](https://cloud.google.com/iam/docs/reference/sts/rest).
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleIdentityStsV1IntrospectTokenResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleIdentityStsV1IntrospectTokenResponse> introspect(
+    GoogleIdentityStsV1IntrospectTokenRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/introspect';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleIdentityStsV1IntrospectTokenResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Exchanges a credential for a Google OAuth 2.0 access token.
   ///
-  /// The token asserts an external identity within a workload identity pool, or
-  /// it applies a Credential Access Boundary to a Google access token. When you
+  /// The token asserts an external identity within an identity pool, or it
+  /// applies a Credential Access Boundary to a Google access token. When you
   /// call this method, do not send the `Authorization` HTTP header in the
   /// request. This method does not require the `Authorization` header, and
   /// using the header can cause the request to fail.
@@ -82,7 +121,7 @@ class V1Resource {
     GoogleIdentityStsV1ExchangeTokenRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -103,7 +142,7 @@ class V1Resource {
 /// Request message for ExchangeToken.
 class GoogleIdentityStsV1ExchangeTokenRequest {
   /// The full resource name of the identity provider; for example:
-  /// `//iam.googleapis.com/projects//workloadIdentityPools//providers/`.
+  /// `//iam.googleapis.com/projects//locations/global/workloadIdentityPools//providers/`.
   ///
   /// Required when exchanging an external credential for a Google access token.
   core.String? audience;
@@ -136,17 +175,17 @@ class GoogleIdentityStsV1ExchangeTokenRequest {
 
   /// The input token.
   ///
-  /// This token is a either an external credential issued by a workload
-  /// identity pool provider, or a short-lived access token issued by Google. If
-  /// the token is an OIDC JWT, it must use the JWT format defined in
+  /// This token is either an external credential issued by a workload identity
+  /// pool provider, or a short-lived access token issued by Google. If the
+  /// token is an OIDC JWT, it must use the JWT format defined in
   /// [RFC 7523](https://tools.ietf.org/html/rfc7523), and the
-  /// `subject_token_type` must be `urn:ietf:params:oauth:token-type:jwt`. The
-  /// following headers are required: - `kid`: The identifier of the signing key
-  /// securing the JWT. - `alg`: The cryptographic algorithm securing the JWT.
-  /// Must be `RS256`. The following payload fields are required. For more
-  /// information, see
-  /// [RFC 7523, Section 3](https://tools.ietf.org/html/rfc7523#section-3): -
-  /// `iss`: The issuer of the token. The issuer must provide a discovery
+  /// `subject_token_type` must be either `urn:ietf:params:oauth:token-type:jwt`
+  /// or `urn:ietf:params:oauth:token-type:id_token`. The following headers are
+  /// required: - `kid`: The identifier of the signing key securing the JWT. -
+  /// `alg`: The cryptographic algorithm securing the JWT. Must be `RS256` or
+  /// `ES256`. The following payload fields are required. For more information,
+  /// see [RFC 7523, Section 3](https://tools.ietf.org/html/rfc7523#section-3):
+  /// - `iss`: The issuer of the token. The issuer must provide a discovery
   /// document at the URL `/.well-known/openid-configuration`, where `` is the
   /// value of this field. The document must be formatted according to section
   /// 4.2 of the
@@ -155,13 +194,17 @@ class GoogleIdentityStsV1ExchangeTokenRequest {
   /// past. - `exp`: The expiration time, in seconds, since the Unix epoch. Must
   /// be less than 48 hours after `iat`. Shorter expiration times are more
   /// secure. If possible, we recommend setting an expiration time less than 6
-  /// hours. - `sub`: The identity asserted in the JWT. - `aud`: Configured by
-  /// the mapper policy. The default value is the service account's unique ID.
+  /// hours. - `sub`: The identity asserted in the JWT. - `aud`: For workload
+  /// identity pools, this must be a value specified in the allowed audiences
+  /// for the workload identity pool provider, or one of the audiences allowed
+  /// by default if no audiences were specified. See
+  /// https://cloud.google.com/iam/docs/reference/rest/v1/projects.locations.workloadIdentityPools.providers#oidc
   /// Example header: ``` { "alg": "RS256", "kid": "us-east-11" } ``` Example
   /// payload: ``` { "iss": "https://accounts.google.com", "iat": 1517963104,
-  /// "exp": 1517966704, "aud": "113475438248934895348", "sub":
-  /// "113475438248934895348", "my_claims": { "additional_claim": "value" } }
-  /// ``` If `subject_token` is for AWS, it must be a serialized
+  /// "exp": 1517966704, "aud":
+  /// "//iam.googleapis.com/projects/1234567890123/locations/global/workloadIdentityPools/my-pool/providers/my-provider",
+  /// "sub": "113475438248934895348", "my_claims": { "additional_claim": "value"
+  /// } } ``` If `subject_token` is for AWS, it must be a serialized
   /// `GetCallerIdentity` token. This token contains the same information as a
   /// request to the AWS
   /// \[`GetCallerIdentity()`\](https://docs.aws.amazon.com/STS/latest/APIReference/API_GetCallerIdentity)
@@ -185,8 +228,8 @@ class GoogleIdentityStsV1ExchangeTokenRequest {
   /// or without an `https:` prefix. To help ensure data integrity, we recommend
   /// including this header in the `SignedHeaders` field of the signed request.
   /// For example:
-  /// //iam.googleapis.com/projects//locations//workloadIdentityPools//providers/
-  /// https://iam.googleapis.com/projects//locations//workloadIdentityPools//providers/
+  /// //iam.googleapis.com/projects//locations/global/workloadIdentityPools//providers/
+  /// https://iam.googleapis.com/projects//locations/global/workloadIdentityPools//providers/
   /// If you are using temporary security credentials provided by AWS, you must
   /// also include the header `x-amz-security-token`, with the value set to the
   /// session token. The following example shows a `GetCallerIdentity` token:
@@ -194,7 +237,7 @@ class GoogleIdentityStsV1ExchangeTokenRequest {
   /// {"key": "Authorization", "value":
   /// "AWS4-HMAC-SHA256+Credential=$credential,+SignedHeaders=host;x-amz-date;x-goog-cloud-target-resource,+Signature=$signature"},
   /// {"key": "x-goog-cloud-target-resource", "value":
-  /// "//iam.googleapis.com/projects//locations//workloadIdentityPools//providers/"},
+  /// "//iam.googleapis.com/projects//locations/global/workloadIdentityPools//providers/"},
   /// {"key": "host", "value": "sts.amazonaws.com"} . ], "method": "POST",
   /// "url":
   /// "https://sts.amazonaws.com?Action=GetCallerIdentity&Version=2011-06-15" }
@@ -212,37 +255,46 @@ class GoogleIdentityStsV1ExchangeTokenRequest {
   /// `subject_token` parameter.
   ///
   /// Supported values are `urn:ietf:params:oauth:token-type:jwt`,
+  /// `urn:ietf:params:oauth:token-type:id_token`,
   /// `urn:ietf:params:aws:token-type:aws4_request`, and
   /// `urn:ietf:params:oauth:token-type:access_token`.
   ///
   /// Required.
   core.String? subjectTokenType;
 
-  GoogleIdentityStsV1ExchangeTokenRequest();
+  GoogleIdentityStsV1ExchangeTokenRequest({
+    this.audience,
+    this.grantType,
+    this.options,
+    this.requestedTokenType,
+    this.scope,
+    this.subjectToken,
+    this.subjectTokenType,
+  });
 
-  GoogleIdentityStsV1ExchangeTokenRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('audience')) {
-      audience = _json['audience'] as core.String;
-    }
-    if (_json.containsKey('grantType')) {
-      grantType = _json['grantType'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = _json['options'] as core.String;
-    }
-    if (_json.containsKey('requestedTokenType')) {
-      requestedTokenType = _json['requestedTokenType'] as core.String;
-    }
-    if (_json.containsKey('scope')) {
-      scope = _json['scope'] as core.String;
-    }
-    if (_json.containsKey('subjectToken')) {
-      subjectToken = _json['subjectToken'] as core.String;
-    }
-    if (_json.containsKey('subjectTokenType')) {
-      subjectTokenType = _json['subjectTokenType'] as core.String;
-    }
-  }
+  GoogleIdentityStsV1ExchangeTokenRequest.fromJson(core.Map _json)
+      : this(
+          audience: _json.containsKey('audience')
+              ? _json['audience'] as core.String
+              : null,
+          grantType: _json.containsKey('grantType')
+              ? _json['grantType'] as core.String
+              : null,
+          options: _json.containsKey('options')
+              ? _json['options'] as core.String
+              : null,
+          requestedTokenType: _json.containsKey('requestedTokenType')
+              ? _json['requestedTokenType'] as core.String
+              : null,
+          scope:
+              _json.containsKey('scope') ? _json['scope'] as core.String : null,
+          subjectToken: _json.containsKey('subjectToken')
+              ? _json['subjectToken'] as core.String
+              : null,
+          subjectTokenType: _json.containsKey('subjectTokenType')
+              ? _json['subjectTokenType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audience != null) 'audience': audience!,
@@ -284,27 +336,147 @@ class GoogleIdentityStsV1ExchangeTokenResponse {
   /// Always has the value `Bearer`.
   core.String? tokenType;
 
-  GoogleIdentityStsV1ExchangeTokenResponse();
+  GoogleIdentityStsV1ExchangeTokenResponse({
+    this.accessToken,
+    this.expiresIn,
+    this.issuedTokenType,
+    this.tokenType,
+  });
 
-  GoogleIdentityStsV1ExchangeTokenResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('access_token')) {
-      accessToken = _json['access_token'] as core.String;
-    }
-    if (_json.containsKey('expires_in')) {
-      expiresIn = _json['expires_in'] as core.int;
-    }
-    if (_json.containsKey('issued_token_type')) {
-      issuedTokenType = _json['issued_token_type'] as core.String;
-    }
-    if (_json.containsKey('token_type')) {
-      tokenType = _json['token_type'] as core.String;
-    }
-  }
+  GoogleIdentityStsV1ExchangeTokenResponse.fromJson(core.Map _json)
+      : this(
+          accessToken: _json.containsKey('access_token')
+              ? _json['access_token'] as core.String
+              : null,
+          expiresIn: _json.containsKey('expires_in')
+              ? _json['expires_in'] as core.int
+              : null,
+          issuedTokenType: _json.containsKey('issued_token_type')
+              ? _json['issued_token_type'] as core.String
+              : null,
+          tokenType: _json.containsKey('token_type')
+              ? _json['token_type'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessToken != null) 'access_token': accessToken!,
         if (expiresIn != null) 'expires_in': expiresIn!,
         if (issuedTokenType != null) 'issued_token_type': issuedTokenType!,
         if (tokenType != null) 'token_type': tokenType!,
+      };
+}
+
+/// Request message for IntrospectToken.
+class GoogleIdentityStsV1IntrospectTokenRequest {
+  /// The OAuth 2.0 security token issued by the Security Token Service API.
+  ///
+  /// Required.
+  core.String? token;
+
+  /// The type of the given token.
+  ///
+  /// Supported values are `urn:ietf:params:oauth:token-type:access_token` and
+  /// `access_token`.
+  ///
+  /// Optional.
+  core.String? tokenTypeHint;
+
+  GoogleIdentityStsV1IntrospectTokenRequest({
+    this.token,
+    this.tokenTypeHint,
+  });
+
+  GoogleIdentityStsV1IntrospectTokenRequest.fromJson(core.Map _json)
+      : this(
+          token:
+              _json.containsKey('token') ? _json['token'] as core.String : null,
+          tokenTypeHint: _json.containsKey('tokenTypeHint')
+              ? _json['tokenTypeHint'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (token != null) 'token': token!,
+        if (tokenTypeHint != null) 'tokenTypeHint': tokenTypeHint!,
+      };
+}
+
+/// Response message for IntrospectToken.
+class GoogleIdentityStsV1IntrospectTokenResponse {
+  /// A boolean value that indicates whether the provided access token is
+  /// currently active.
+  core.bool? active;
+
+  /// The client identifier for the OAuth 2.0 client that requested the provided
+  /// token.
+  core.String? clientId;
+
+  /// The expiration timestamp, measured in the number of seconds since January
+  /// 1 1970 UTC, indicating when this token will expire.
+  core.String? exp;
+
+  /// The issued timestamp, measured in the number of seconds since January 1
+  /// 1970 UTC, indicating when this token was originally issued.
+  core.String? iat;
+
+  /// The issuer of the provided token.
+  core.String? iss;
+
+  /// A list of scopes associated with the provided token.
+  core.String? scope;
+
+  /// The unique user ID associated with the provided token.
+  ///
+  /// For Google Accounts, this value is based on the Google Account's user ID.
+  /// For federated identities, this value is based on the identity pool ID and
+  /// the value of the mapped `google.subject` attribute.
+  core.String? sub;
+
+  /// The human-readable identifier for the token principal subject.
+  ///
+  /// For example, if the provided token is associated with a workload identity
+  /// pool, this field contains a value in the following format:
+  /// `principal://iam.googleapis.com/projects//locations/global/workloadIdentityPools//subject/`
+  core.String? username;
+
+  GoogleIdentityStsV1IntrospectTokenResponse({
+    this.active,
+    this.clientId,
+    this.exp,
+    this.iat,
+    this.iss,
+    this.scope,
+    this.sub,
+    this.username,
+  });
+
+  GoogleIdentityStsV1IntrospectTokenResponse.fromJson(core.Map _json)
+      : this(
+          active:
+              _json.containsKey('active') ? _json['active'] as core.bool : null,
+          clientId: _json.containsKey('client_id')
+              ? _json['client_id'] as core.String
+              : null,
+          exp: _json.containsKey('exp') ? _json['exp'] as core.String : null,
+          iat: _json.containsKey('iat') ? _json['iat'] as core.String : null,
+          iss: _json.containsKey('iss') ? _json['iss'] as core.String : null,
+          scope:
+              _json.containsKey('scope') ? _json['scope'] as core.String : null,
+          sub: _json.containsKey('sub') ? _json['sub'] as core.String : null,
+          username: _json.containsKey('username')
+              ? _json['username'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (active != null) 'active': active!,
+        if (clientId != null) 'client_id': clientId!,
+        if (exp != null) 'exp': exp!,
+        if (iat != null) 'iat': iat!,
+        if (iss != null) 'iss': iss!,
+        if (scope != null) 'scope': scope!,
+        if (sub != null) 'sub': sub!,
+        if (username != null) 'username': username!,
       };
 }

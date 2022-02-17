@@ -25,6 +25,8 @@
 /// - [SearchanalyticsResource]
 /// - [SitemapsResource]
 /// - [SitesResource]
+/// - [UrlInspectionResource]
+///   - [UrlInspectionIndexResource]
 /// - [UrlTestingToolsResource]
 ///   - [UrlTestingToolsMobileFriendlyTestResource]
 library searchconsole.v1;
@@ -57,6 +59,7 @@ class SearchConsoleApi {
       SearchanalyticsResource(_requester);
   SitemapsResource get sitemaps => SitemapsResource(_requester);
   SitesResource get sites => SitesResource(_requester);
+  UrlInspectionResource get urlInspection => UrlInspectionResource(_requester);
   UrlTestingToolsResource get urlTestingTools =>
       UrlTestingToolsResource(_requester);
 
@@ -102,7 +105,7 @@ class SearchanalyticsResource {
     core.String siteUrl, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -127,7 +130,10 @@ class SitemapsResource {
 
   SitemapsResource(commons.ApiRequester client) : _requester = client;
 
-  /// Deletes a sitemap from this site.
+  /// Deletes a sitemap from the Sitemaps report.
+  ///
+  /// Does not stop Google from crawling this sitemap or the URLs that were
+  /// previously crawled in the deleted sitemap.
   ///
   /// Request parameters:
   ///
@@ -434,6 +440,58 @@ class SitesResource {
   }
 }
 
+class UrlInspectionResource {
+  final commons.ApiRequester _requester;
+
+  UrlInspectionIndexResource get index =>
+      UrlInspectionIndexResource(_requester);
+
+  UrlInspectionResource(commons.ApiRequester client) : _requester = client;
+}
+
+class UrlInspectionIndexResource {
+  final commons.ApiRequester _requester;
+
+  UrlInspectionIndexResource(commons.ApiRequester client) : _requester = client;
+
+  /// Index inspection.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [InspectUrlIndexResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<InspectUrlIndexResponse> inspect(
+    InspectUrlIndexRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/urlInspection/index:inspect';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return InspectUrlIndexResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class UrlTestingToolsResource {
   final commons.ApiRequester _requester;
 
@@ -469,7 +527,7 @@ class UrlTestingToolsMobileFriendlyTestResource {
     RunMobileFriendlyTestRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -487,6 +545,172 @@ class UrlTestingToolsMobileFriendlyTestResource {
   }
 }
 
+/// AMP inspection result of the live page or the current information from
+/// Google's index, depending on whether you requested a live inspection or not.
+class AmpInspectionResult {
+  /// Index status of the AMP URL.
+  /// Possible string values are:
+  /// - "VERDICT_UNSPECIFIED" : Unknown verdict.
+  /// - "PASS" : Equivalent to "Valid" for the page or item in Search Console.
+  /// - "PARTIAL" : Equivalent to "Valid with warnings" for the page or item in
+  /// Search Console.
+  /// - "FAIL" : Equivalent to "Error" or "Invalid" for the page or item in
+  /// Search Console.
+  /// - "NEUTRAL" : Equivalent to "Excluded" for the page or item in Search
+  /// Console.
+  core.String? ampIndexStatusVerdict;
+
+  /// URL of the AMP that was inspected.
+  ///
+  /// If the submitted URL is a desktop page that refers to an AMP version, the
+  /// AMP version will be inspected.
+  core.String? ampUrl;
+
+  /// Whether or not the page blocks indexing through a noindex rule.
+  /// Possible string values are:
+  /// - "AMP_INDEXING_STATE_UNSPECIFIED" : Unknown indexing status.
+  /// - "AMP_INDEXING_ALLOWED" : Indexing allowed.
+  /// - "BLOCKED_DUE_TO_NOINDEX" : Indexing not allowed, 'noindex' detected.
+  /// - "BLOCKED_DUE_TO_EXPIRED_UNAVAILABLE_AFTER" : Indexing not allowed,
+  /// 'unavailable_after' date expired.
+  core.String? indexingState;
+
+  /// A list of zero or more AMP issues found for the inspected URL.
+  core.List<AmpIssue>? issues;
+
+  /// Last time this AMP version was crawled by Google.
+  ///
+  /// Absent if the URL was never crawled successfully.
+  core.String? lastCrawlTime;
+
+  /// Whether or not Google could fetch the AMP.
+  /// Possible string values are:
+  /// - "PAGE_FETCH_STATE_UNSPECIFIED" : Unknown fetch state.
+  /// - "SUCCESSFUL" : Successful fetch.
+  /// - "SOFT_404" : Soft 404.
+  /// - "BLOCKED_ROBOTS_TXT" : Blocked by robots.txt.
+  /// - "NOT_FOUND" : Not found (404).
+  /// - "ACCESS_DENIED" : Blocked due to unauthorized request (401).
+  /// - "SERVER_ERROR" : Server error (5xx).
+  /// - "REDIRECT_ERROR" : Redirection error.
+  /// - "ACCESS_FORBIDDEN" : Blocked due to access forbidden (403).
+  /// - "BLOCKED_4XX" : Blocked due to other 4xx issue (not 403, 404).
+  /// - "INTERNAL_CRAWL_ERROR" : Internal error.
+  /// - "INVALID_URL" : Invalid URL.
+  core.String? pageFetchState;
+
+  /// Whether or not the page is blocked to Google by a robots.txt rule.
+  /// Possible string values are:
+  /// - "ROBOTS_TXT_STATE_UNSPECIFIED" : Unknown robots.txt state, typically
+  /// because the page wasn't fetched or found, or because robots.txt itself
+  /// couldn't be reached.
+  /// - "ALLOWED" : Crawl allowed by robots.txt.
+  /// - "DISALLOWED" : Crawl blocked by robots.txt.
+  core.String? robotsTxtState;
+
+  /// The status of the most severe error on the page.
+  ///
+  /// If a page has both warnings and errors, the page status is error. Error
+  /// status means the page cannot be shown in Search results.
+  /// Possible string values are:
+  /// - "VERDICT_UNSPECIFIED" : Unknown verdict.
+  /// - "PASS" : Equivalent to "Valid" for the page or item in Search Console.
+  /// - "PARTIAL" : Equivalent to "Valid with warnings" for the page or item in
+  /// Search Console.
+  /// - "FAIL" : Equivalent to "Error" or "Invalid" for the page or item in
+  /// Search Console.
+  /// - "NEUTRAL" : Equivalent to "Excluded" for the page or item in Search
+  /// Console.
+  core.String? verdict;
+
+  AmpInspectionResult({
+    this.ampIndexStatusVerdict,
+    this.ampUrl,
+    this.indexingState,
+    this.issues,
+    this.lastCrawlTime,
+    this.pageFetchState,
+    this.robotsTxtState,
+    this.verdict,
+  });
+
+  AmpInspectionResult.fromJson(core.Map _json)
+      : this(
+          ampIndexStatusVerdict: _json.containsKey('ampIndexStatusVerdict')
+              ? _json['ampIndexStatusVerdict'] as core.String
+              : null,
+          ampUrl: _json.containsKey('ampUrl')
+              ? _json['ampUrl'] as core.String
+              : null,
+          indexingState: _json.containsKey('indexingState')
+              ? _json['indexingState'] as core.String
+              : null,
+          issues: _json.containsKey('issues')
+              ? (_json['issues'] as core.List)
+                  .map((value) => AmpIssue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          lastCrawlTime: _json.containsKey('lastCrawlTime')
+              ? _json['lastCrawlTime'] as core.String
+              : null,
+          pageFetchState: _json.containsKey('pageFetchState')
+              ? _json['pageFetchState'] as core.String
+              : null,
+          robotsTxtState: _json.containsKey('robotsTxtState')
+              ? _json['robotsTxtState'] as core.String
+              : null,
+          verdict: _json.containsKey('verdict')
+              ? _json['verdict'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (ampIndexStatusVerdict != null)
+          'ampIndexStatusVerdict': ampIndexStatusVerdict!,
+        if (ampUrl != null) 'ampUrl': ampUrl!,
+        if (indexingState != null) 'indexingState': indexingState!,
+        if (issues != null) 'issues': issues!,
+        if (lastCrawlTime != null) 'lastCrawlTime': lastCrawlTime!,
+        if (pageFetchState != null) 'pageFetchState': pageFetchState!,
+        if (robotsTxtState != null) 'robotsTxtState': robotsTxtState!,
+        if (verdict != null) 'verdict': verdict!,
+      };
+}
+
+/// AMP issue.
+class AmpIssue {
+  /// Brief description of this issue.
+  core.String? issueMessage;
+
+  /// Severity of this issue: WARNING or ERROR.
+  /// Possible string values are:
+  /// - "SEVERITY_UNSPECIFIED" : Unknown severity.
+  /// - "WARNING" : Warning.
+  /// - "ERROR" : Error.
+  core.String? severity;
+
+  AmpIssue({
+    this.issueMessage,
+    this.severity,
+  });
+
+  AmpIssue.fromJson(core.Map _json)
+      : this(
+          issueMessage: _json.containsKey('issueMessage')
+              ? _json['issueMessage'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (issueMessage != null) 'issueMessage': issueMessage!,
+        if (severity != null) 'severity': severity!,
+      };
+}
+
 class ApiDataRow {
   core.double? clicks;
   core.double? ctr;
@@ -494,27 +718,34 @@ class ApiDataRow {
   core.List<core.String>? keys;
   core.double? position;
 
-  ApiDataRow();
+  ApiDataRow({
+    this.clicks,
+    this.ctr,
+    this.impressions,
+    this.keys,
+    this.position,
+  });
 
-  ApiDataRow.fromJson(core.Map _json) {
-    if (_json.containsKey('clicks')) {
-      clicks = (_json['clicks'] as core.num).toDouble();
-    }
-    if (_json.containsKey('ctr')) {
-      ctr = (_json['ctr'] as core.num).toDouble();
-    }
-    if (_json.containsKey('impressions')) {
-      impressions = (_json['impressions'] as core.num).toDouble();
-    }
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('position')) {
-      position = (_json['position'] as core.num).toDouble();
-    }
-  }
+  ApiDataRow.fromJson(core.Map _json)
+      : this(
+          clicks: _json.containsKey('clicks')
+              ? (_json['clicks'] as core.num).toDouble()
+              : null,
+          ctr: _json.containsKey('ctr')
+              ? (_json['ctr'] as core.num).toDouble()
+              : null,
+          impressions: _json.containsKey('impressions')
+              ? (_json['impressions'] as core.num).toDouble()
+              : null,
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          position: _json.containsKey('position')
+              ? (_json['position'] as core.num).toDouble()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clicks != null) 'clicks': clicks!,
@@ -549,21 +780,28 @@ class ApiDimensionFilter {
   /// - "NOT_EQUALS"
   /// - "CONTAINS"
   /// - "NOT_CONTAINS"
+  /// - "INCLUDING_REGEX"
+  /// - "EXCLUDING_REGEX"
   core.String? operator;
 
-  ApiDimensionFilter();
+  ApiDimensionFilter({
+    this.dimension,
+    this.expression,
+    this.operator,
+  });
 
-  ApiDimensionFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('dimension')) {
-      dimension = _json['dimension'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('operator')) {
-      operator = _json['operator'] as core.String;
-    }
-  }
+  ApiDimensionFilter.fromJson(core.Map _json)
+      : this(
+          dimension: _json.containsKey('dimension')
+              ? _json['dimension'] as core.String
+              : null,
+          expression: _json.containsKey('expression')
+              ? _json['expression'] as core.String
+              : null,
+          operator: _json.containsKey('operator')
+              ? _json['operator'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dimension != null) 'dimension': dimension!,
@@ -585,23 +823,26 @@ class ApiDimensionFilterGroup {
   /// - "AND"
   core.String? groupType;
 
-  ApiDimensionFilterGroup();
+  ApiDimensionFilterGroup({
+    this.filters,
+    this.groupType,
+  });
 
-  ApiDimensionFilterGroup.fromJson(core.Map _json) {
-    if (_json.containsKey('filters')) {
-      filters = (_json['filters'] as core.List)
-          .map<ApiDimensionFilter>((value) => ApiDimensionFilter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('groupType')) {
-      groupType = _json['groupType'] as core.String;
-    }
-  }
+  ApiDimensionFilterGroup.fromJson(core.Map _json)
+      : this(
+          filters: _json.containsKey('filters')
+              ? (_json['filters'] as core.List)
+                  .map((value) => ApiDimensionFilter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          groupType: _json.containsKey('groupType')
+              ? _json['groupType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filters != null)
-          'filters': filters!.map((value) => value.toJson()).toList(),
+        if (filters != null) 'filters': filters!,
         if (groupType != null) 'groupType': groupType!,
       };
 }
@@ -611,16 +852,49 @@ class BlockedResource {
   /// URL of the blocked resource.
   core.String? url;
 
-  BlockedResource();
+  BlockedResource({
+    this.url,
+  });
 
-  BlockedResource.fromJson(core.Map _json) {
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  BlockedResource.fromJson(core.Map _json)
+      : this(
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (url != null) 'url': url!,
+      };
+}
+
+/// Rich Results items grouped by type.
+class DetectedItems {
+  /// List of Rich Results items.
+  core.List<Item>? items;
+
+  /// Rich Results type
+  core.String? richResultType;
+
+  DetectedItems({
+    this.items,
+    this.richResultType,
+  });
+
+  DetectedItems.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Item.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          richResultType: _json.containsKey('richResultType')
+              ? _json['richResultType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (items != null) 'items': items!,
+        if (richResultType != null) 'richResultType': richResultType!,
       };
 }
 
@@ -641,20 +915,295 @@ class Image {
   /// The mime-type of the image data.
   core.String? mimeType;
 
-  Image();
+  Image({
+    this.data,
+    this.mimeType,
+  });
 
-  Image.fromJson(core.Map _json) {
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-  }
+  Image.fromJson(core.Map _json)
+      : this(
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (data != null) 'data': data!,
         if (mimeType != null) 'mimeType': mimeType!,
+      };
+}
+
+/// Results of index status inspection for either the live page or the version
+/// in Google's index, depending on whether you requested a live inspection or
+/// not.
+///
+/// For more information, see the
+/// [Index coverage report documentation](https://support.google.com/webmasters/answer/7440203).
+class IndexStatusInspectionResult {
+  /// Could Google find and index the page.
+  ///
+  /// More details about page indexing appear in 'indexing_state'.
+  core.String? coverageState;
+
+  /// Primary crawler that was used by Google to crawl your site.
+  /// Possible string values are:
+  /// - "CRAWLING_USER_AGENT_UNSPECIFIED" : Unknown user agent.
+  /// - "DESKTOP" : Desktop user agent.
+  /// - "MOBILE" : Mobile user agent.
+  core.String? crawledAs;
+
+  /// The URL of the page that Google selected as canonical.
+  ///
+  /// If the page was not indexed, this field is absent.
+  core.String? googleCanonical;
+
+  /// Whether or not the page blocks indexing through a noindex rule.
+  /// Possible string values are:
+  /// - "INDEXING_STATE_UNSPECIFIED" : Unknown indexing status.
+  /// - "INDEXING_ALLOWED" : Indexing allowed.
+  /// - "BLOCKED_BY_META_TAG" : Indexing not allowed, 'noindex' detected in
+  /// 'robots' meta tag.
+  /// - "BLOCKED_BY_HTTP_HEADER" : Indexing not allowed, 'noindex' detected in
+  /// 'X-Robots-Tag' http header.
+  /// - "BLOCKED_BY_ROBOTS_TXT" : Indexing not allowed, No: 'noindex' detected
+  /// in robots.txt.
+  core.String? indexingState;
+
+  /// Last time this URL was crawled by Google using the
+  /// [primary crawler](https://support.google.com/webmasters/answer/7440203#primary_crawler).
+  ///
+  /// Absent if the URL was never crawled successfully.
+  core.String? lastCrawlTime;
+
+  /// Whether or not Google could retrieve the page from your server.
+  ///
+  /// Equivalent to \["page
+  /// fetch"\](https://support.google.com/webmasters/answer/9012289#index_coverage)
+  /// in the URL inspection report.
+  /// Possible string values are:
+  /// - "PAGE_FETCH_STATE_UNSPECIFIED" : Unknown fetch state.
+  /// - "SUCCESSFUL" : Successful fetch.
+  /// - "SOFT_404" : Soft 404.
+  /// - "BLOCKED_ROBOTS_TXT" : Blocked by robots.txt.
+  /// - "NOT_FOUND" : Not found (404).
+  /// - "ACCESS_DENIED" : Blocked due to unauthorized request (401).
+  /// - "SERVER_ERROR" : Server error (5xx).
+  /// - "REDIRECT_ERROR" : Redirection error.
+  /// - "ACCESS_FORBIDDEN" : Blocked due to access forbidden (403).
+  /// - "BLOCKED_4XX" : Blocked due to other 4xx issue (not 403, 404).
+  /// - "INTERNAL_CRAWL_ERROR" : Internal error.
+  /// - "INVALID_URL" : Invalid URL.
+  core.String? pageFetchState;
+
+  /// URLs that link to the inspected URL, directly and indirectly.
+  core.List<core.String>? referringUrls;
+
+  /// Whether or not the page is blocked to Google by a robots.txt rule.
+  /// Possible string values are:
+  /// - "ROBOTS_TXT_STATE_UNSPECIFIED" : Unknown robots.txt state, typically
+  /// because the page wasn't fetched or found, or because robots.txt itself
+  /// couldn't be reached.
+  /// - "ALLOWED" : Crawl allowed by robots.txt.
+  /// - "DISALLOWED" : Crawl blocked by robots.txt.
+  core.String? robotsTxtState;
+
+  /// Any sitemaps that this URL was listed in, as known by Google.
+  ///
+  /// Not guaranteed to be an exhaustive list, especially if Google did not
+  /// discover this URL through a sitemap. Absent if no sitemaps were found.
+  core.List<core.String>? sitemap;
+
+  /// The URL that your page or site
+  /// [declares as canonical](https://developers.google.com/search/docs/advanced/crawling/consolidate-duplicate-urls?#define-canonical).
+  ///
+  /// If you did not declare a canonical URL, this field is absent.
+  core.String? userCanonical;
+
+  /// High level verdict about whether the URL *is* indexed (indexed status), or
+  /// *can be* indexed (live inspection).
+  /// Possible string values are:
+  /// - "VERDICT_UNSPECIFIED" : Unknown verdict.
+  /// - "PASS" : Equivalent to "Valid" for the page or item in Search Console.
+  /// - "PARTIAL" : Equivalent to "Valid with warnings" for the page or item in
+  /// Search Console.
+  /// - "FAIL" : Equivalent to "Error" or "Invalid" for the page or item in
+  /// Search Console.
+  /// - "NEUTRAL" : Equivalent to "Excluded" for the page or item in Search
+  /// Console.
+  core.String? verdict;
+
+  IndexStatusInspectionResult({
+    this.coverageState,
+    this.crawledAs,
+    this.googleCanonical,
+    this.indexingState,
+    this.lastCrawlTime,
+    this.pageFetchState,
+    this.referringUrls,
+    this.robotsTxtState,
+    this.sitemap,
+    this.userCanonical,
+    this.verdict,
+  });
+
+  IndexStatusInspectionResult.fromJson(core.Map _json)
+      : this(
+          coverageState: _json.containsKey('coverageState')
+              ? _json['coverageState'] as core.String
+              : null,
+          crawledAs: _json.containsKey('crawledAs')
+              ? _json['crawledAs'] as core.String
+              : null,
+          googleCanonical: _json.containsKey('googleCanonical')
+              ? _json['googleCanonical'] as core.String
+              : null,
+          indexingState: _json.containsKey('indexingState')
+              ? _json['indexingState'] as core.String
+              : null,
+          lastCrawlTime: _json.containsKey('lastCrawlTime')
+              ? _json['lastCrawlTime'] as core.String
+              : null,
+          pageFetchState: _json.containsKey('pageFetchState')
+              ? _json['pageFetchState'] as core.String
+              : null,
+          referringUrls: _json.containsKey('referringUrls')
+              ? (_json['referringUrls'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          robotsTxtState: _json.containsKey('robotsTxtState')
+              ? _json['robotsTxtState'] as core.String
+              : null,
+          sitemap: _json.containsKey('sitemap')
+              ? (_json['sitemap'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          userCanonical: _json.containsKey('userCanonical')
+              ? _json['userCanonical'] as core.String
+              : null,
+          verdict: _json.containsKey('verdict')
+              ? _json['verdict'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (coverageState != null) 'coverageState': coverageState!,
+        if (crawledAs != null) 'crawledAs': crawledAs!,
+        if (googleCanonical != null) 'googleCanonical': googleCanonical!,
+        if (indexingState != null) 'indexingState': indexingState!,
+        if (lastCrawlTime != null) 'lastCrawlTime': lastCrawlTime!,
+        if (pageFetchState != null) 'pageFetchState': pageFetchState!,
+        if (referringUrls != null) 'referringUrls': referringUrls!,
+        if (robotsTxtState != null) 'robotsTxtState': robotsTxtState!,
+        if (sitemap != null) 'sitemap': sitemap!,
+        if (userCanonical != null) 'userCanonical': userCanonical!,
+        if (verdict != null) 'verdict': verdict!,
+      };
+}
+
+/// Index inspection request.
+class InspectUrlIndexRequest {
+  /// URL to inspect.
+  ///
+  /// Must be under the property specified in "site_url".
+  ///
+  /// Required.
+  core.String? inspectionUrl;
+
+  /// An \[IETF BCP-47\](https://en.wikipedia.org/wiki/IETF_language_tag)
+  /// language code representing the requested language for translated issue
+  /// messages, e.g. "en-US", "or "de-CH".
+  ///
+  /// Default value is "en-US".
+  ///
+  /// Optional.
+  core.String? languageCode;
+
+  /// The URL of the property as defined in Search Console.
+  ///
+  /// **Examples:** `http://www.example.com/` for a URL-prefix property, or
+  /// `sc-domain:example.com` for a Domain property.
+  ///
+  /// Required.
+  core.String? siteUrl;
+
+  InspectUrlIndexRequest({
+    this.inspectionUrl,
+    this.languageCode,
+    this.siteUrl,
+  });
+
+  InspectUrlIndexRequest.fromJson(core.Map _json)
+      : this(
+          inspectionUrl: _json.containsKey('inspectionUrl')
+              ? _json['inspectionUrl'] as core.String
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          siteUrl: _json.containsKey('siteUrl')
+              ? _json['siteUrl'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (inspectionUrl != null) 'inspectionUrl': inspectionUrl!,
+        if (languageCode != null) 'languageCode': languageCode!,
+        if (siteUrl != null) 'siteUrl': siteUrl!,
+      };
+}
+
+/// Index-Status inspection response.
+class InspectUrlIndexResponse {
+  /// URL inspection results.
+  UrlInspectionResult? inspectionResult;
+
+  InspectUrlIndexResponse({
+    this.inspectionResult,
+  });
+
+  InspectUrlIndexResponse.fromJson(core.Map _json)
+      : this(
+          inspectionResult: _json.containsKey('inspectionResult')
+              ? UrlInspectionResult.fromJson(_json['inspectionResult']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (inspectionResult != null) 'inspectionResult': inspectionResult!,
+      };
+}
+
+/// A specific rich result found on the page.
+class Item {
+  /// A list of zero or more rich result issues found for this instance.
+  core.List<RichResultsIssue>? issues;
+
+  /// The user-provided name of this item.
+  core.String? name;
+
+  Item({
+    this.issues,
+    this.name,
+  });
+
+  Item.fromJson(core.Map _json)
+      : this(
+          issues: _json.containsKey('issues')
+              ? (_json['issues'] as core.List)
+                  .map((value) => RichResultsIssue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (issues != null) 'issues': issues!,
+        if (name != null) 'name': name!,
       };
 }
 
@@ -667,8 +1216,8 @@ class MobileFriendlyIssue {
   /// - "USES_INCOMPATIBLE_PLUGINS" : Plugins incompatible with mobile devices
   /// are being used.
   /// [Learn more](https://support.google.com/webmasters/answer/6352293#flash_usage).
-  /// - "CONFIGURE_VIEWPORT" : Viewsport is not specified using the meta
-  /// viewport tag.
+  /// - "CONFIGURE_VIEWPORT" : Viewport is not specified using the meta viewport
+  /// tag.
   /// [Learn more](https://support.google.com/webmasters/answer/6352293#viewport_not_configured).
   /// - "FIXED_WIDTH_VIEWPORT" : Viewport defined to a fixed width.
   /// [Learn more](https://support.google.com/webmasters/answer/6352293#fixed-width_viewport).
@@ -681,16 +1230,117 @@ class MobileFriendlyIssue {
   /// [Learn more](https://support.google.com/webmasters/answer/6352293#touch_elements_too_close).
   core.String? rule;
 
-  MobileFriendlyIssue();
+  MobileFriendlyIssue({
+    this.rule,
+  });
 
-  MobileFriendlyIssue.fromJson(core.Map _json) {
-    if (_json.containsKey('rule')) {
-      rule = _json['rule'] as core.String;
-    }
-  }
+  MobileFriendlyIssue.fromJson(core.Map _json)
+      : this(
+          rule: _json.containsKey('rule') ? _json['rule'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (rule != null) 'rule': rule!,
+      };
+}
+
+/// Mobile-usability inspection results.
+class MobileUsabilityInspectionResult {
+  /// A list of zero or more mobile-usability issues detected for this URL.
+  core.List<MobileUsabilityIssue>? issues;
+
+  /// High-level mobile-usability inspection result for this URL.
+  /// Possible string values are:
+  /// - "VERDICT_UNSPECIFIED" : Unknown verdict.
+  /// - "PASS" : Equivalent to "Valid" for the page or item in Search Console.
+  /// - "PARTIAL" : Equivalent to "Valid with warnings" for the page or item in
+  /// Search Console.
+  /// - "FAIL" : Equivalent to "Error" or "Invalid" for the page or item in
+  /// Search Console.
+  /// - "NEUTRAL" : Equivalent to "Excluded" for the page or item in Search
+  /// Console.
+  core.String? verdict;
+
+  MobileUsabilityInspectionResult({
+    this.issues,
+    this.verdict,
+  });
+
+  MobileUsabilityInspectionResult.fromJson(core.Map _json)
+      : this(
+          issues: _json.containsKey('issues')
+              ? (_json['issues'] as core.List)
+                  .map((value) => MobileUsabilityIssue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          verdict: _json.containsKey('verdict')
+              ? _json['verdict'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (issues != null) 'issues': issues!,
+        if (verdict != null) 'verdict': verdict!,
+      };
+}
+
+/// Mobile-usability issue.
+class MobileUsabilityIssue {
+  /// Mobile-usability issue type.
+  /// Possible string values are:
+  /// - "MOBILE_USABILITY_ISSUE_TYPE_UNSPECIFIED" : Unknown issue. Sorry, we
+  /// don't have any description for the rule that was broken.
+  /// - "USES_INCOMPATIBLE_PLUGINS" : Plugins incompatible with mobile devices
+  /// are being used.
+  /// [Learn more](https://support.google.com/webmasters/answer/6352293#flash_usage#error-list).
+  /// - "CONFIGURE_VIEWPORT" : Viewport is not specified using the meta viewport
+  /// tag.
+  /// [Learn more](https://support.google.com/webmasters/answer/6352293#viewport_not_configured#error-list).
+  /// - "FIXED_WIDTH_VIEWPORT" : Viewport defined to a fixed width.
+  /// [Learn more](https://support.google.com/webmasters/answer/6352293#fixed-width_viewport#error-list).
+  /// - "SIZE_CONTENT_TO_VIEWPORT" : Content not sized to viewport.
+  /// [Learn more](https://support.google.com/webmasters/answer/6352293#content_not_sized_to_viewport#error-list).
+  /// - "USE_LEGIBLE_FONT_SIZES" : Font size is too small for easy reading on a
+  /// small screen.
+  /// [Learn More](https://support.google.com/webmasters/answer/6352293#small_font_size#error-list).
+  /// - "TAP_TARGETS_TOO_CLOSE" : Touch elements are too close to each other.
+  /// [Learn more](https://support.google.com/webmasters/answer/6352293#touch_elements_too_close#error-list).
+  core.String? issueType;
+
+  /// Additional information regarding the issue.
+  core.String? message;
+
+  /// Not returned; reserved for future use.
+  /// Possible string values are:
+  /// - "SEVERITY_UNSPECIFIED" : Unknown severity.
+  /// - "WARNING" : Warning.
+  /// - "ERROR" : Error.
+  core.String? severity;
+
+  MobileUsabilityIssue({
+    this.issueType,
+    this.message,
+    this.severity,
+  });
+
+  MobileUsabilityIssue.fromJson(core.Map _json)
+      : this(
+          issueType: _json.containsKey('issueType')
+              ? _json['issueType'] as core.String
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (issueType != null) 'issueType': issueType!,
+        if (message != null) 'message': message!,
+        if (severity != null) 'severity': severity!,
       };
 }
 
@@ -699,18 +1349,102 @@ class ResourceIssue {
   /// Describes a blocked resource issue.
   BlockedResource? blockedResource;
 
-  ResourceIssue();
+  ResourceIssue({
+    this.blockedResource,
+  });
 
-  ResourceIssue.fromJson(core.Map _json) {
-    if (_json.containsKey('blockedResource')) {
-      blockedResource = BlockedResource.fromJson(
-          _json['blockedResource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ResourceIssue.fromJson(core.Map _json)
+      : this(
+          blockedResource: _json.containsKey('blockedResource')
+              ? BlockedResource.fromJson(_json['blockedResource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (blockedResource != null)
-          'blockedResource': blockedResource!.toJson(),
+        if (blockedResource != null) 'blockedResource': blockedResource!,
+      };
+}
+
+/// Rich-Results inspection result, including any rich results found at this
+/// URL.
+class RichResultsInspectionResult {
+  /// A list of zero or more rich results detected on this page.
+  ///
+  /// Rich results that cannot even be parsed due to syntactic issues will not
+  /// be listed here.
+  core.List<DetectedItems>? detectedItems;
+
+  /// High-level rich results inspection result for this URL.
+  /// Possible string values are:
+  /// - "VERDICT_UNSPECIFIED" : Unknown verdict.
+  /// - "PASS" : Equivalent to "Valid" for the page or item in Search Console.
+  /// - "PARTIAL" : Equivalent to "Valid with warnings" for the page or item in
+  /// Search Console.
+  /// - "FAIL" : Equivalent to "Error" or "Invalid" for the page or item in
+  /// Search Console.
+  /// - "NEUTRAL" : Equivalent to "Excluded" for the page or item in Search
+  /// Console.
+  core.String? verdict;
+
+  RichResultsInspectionResult({
+    this.detectedItems,
+    this.verdict,
+  });
+
+  RichResultsInspectionResult.fromJson(core.Map _json)
+      : this(
+          detectedItems: _json.containsKey('detectedItems')
+              ? (_json['detectedItems'] as core.List)
+                  .map((value) => DetectedItems.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          verdict: _json.containsKey('verdict')
+              ? _json['verdict'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (detectedItems != null) 'detectedItems': detectedItems!,
+        if (verdict != null) 'verdict': verdict!,
+      };
+}
+
+/// Severity and status of a single issue affecting a single rich result
+/// instance on a page.
+class RichResultsIssue {
+  /// Rich Results issue type.
+  core.String? issueMessage;
+
+  /// Severity of this issue: WARNING, or ERROR.
+  ///
+  /// Items with an issue of status ERROR cannot appear with rich result
+  /// features in Google Search results.
+  /// Possible string values are:
+  /// - "SEVERITY_UNSPECIFIED" : Unknown severity.
+  /// - "WARNING" : Warning.
+  /// - "ERROR" : Error.
+  core.String? severity;
+
+  RichResultsIssue({
+    this.issueMessage,
+    this.severity,
+  });
+
+  RichResultsIssue.fromJson(core.Map _json)
+      : this(
+          issueMessage: _json.containsKey('issueMessage')
+              ? _json['issueMessage'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (issueMessage != null) 'issueMessage': issueMessage!,
+        if (severity != null) 'severity': severity!,
       };
 }
 
@@ -724,16 +1458,18 @@ class RunMobileFriendlyTestRequest {
   /// URL for inspection.
   core.String? url;
 
-  RunMobileFriendlyTestRequest();
+  RunMobileFriendlyTestRequest({
+    this.requestScreenshot,
+    this.url,
+  });
 
-  RunMobileFriendlyTestRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('requestScreenshot')) {
-      requestScreenshot = _json['requestScreenshot'] as core.bool;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  RunMobileFriendlyTestRequest.fromJson(core.Map _json)
+      : this(
+          requestScreenshot: _json.containsKey('requestScreenshot')
+              ? _json['requestScreenshot'] as core.bool
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (requestScreenshot != null) 'requestScreenshot': requestScreenshot!,
@@ -764,45 +1500,49 @@ class RunMobileFriendlyTestResponse {
   /// Final state of the test, can be either complete or an error.
   TestStatus? testStatus;
 
-  RunMobileFriendlyTestResponse();
+  RunMobileFriendlyTestResponse({
+    this.mobileFriendliness,
+    this.mobileFriendlyIssues,
+    this.resourceIssues,
+    this.screenshot,
+    this.testStatus,
+  });
 
-  RunMobileFriendlyTestResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('mobileFriendliness')) {
-      mobileFriendliness = _json['mobileFriendliness'] as core.String;
-    }
-    if (_json.containsKey('mobileFriendlyIssues')) {
-      mobileFriendlyIssues = (_json['mobileFriendlyIssues'] as core.List)
-          .map<MobileFriendlyIssue>((value) => MobileFriendlyIssue.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resourceIssues')) {
-      resourceIssues = (_json['resourceIssues'] as core.List)
-          .map<ResourceIssue>((value) => ResourceIssue.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('screenshot')) {
-      screenshot = Image.fromJson(
-          _json['screenshot'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('testStatus')) {
-      testStatus = TestStatus.fromJson(
-          _json['testStatus'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  RunMobileFriendlyTestResponse.fromJson(core.Map _json)
+      : this(
+          mobileFriendliness: _json.containsKey('mobileFriendliness')
+              ? _json['mobileFriendliness'] as core.String
+              : null,
+          mobileFriendlyIssues: _json.containsKey('mobileFriendlyIssues')
+              ? (_json['mobileFriendlyIssues'] as core.List)
+                  .map((value) => MobileFriendlyIssue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resourceIssues: _json.containsKey('resourceIssues')
+              ? (_json['resourceIssues'] as core.List)
+                  .map((value) => ResourceIssue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          screenshot: _json.containsKey('screenshot')
+              ? Image.fromJson(
+                  _json['screenshot'] as core.Map<core.String, core.dynamic>)
+              : null,
+          testStatus: _json.containsKey('testStatus')
+              ? TestStatus.fromJson(
+                  _json['testStatus'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (mobileFriendliness != null)
           'mobileFriendliness': mobileFriendliness!,
         if (mobileFriendlyIssues != null)
-          'mobileFriendlyIssues':
-              mobileFriendlyIssues!.map((value) => value.toJson()).toList(),
-        if (resourceIssues != null)
-          'resourceIssues':
-              resourceIssues!.map((value) => value.toJson()).toList(),
-        if (screenshot != null) 'screenshot': screenshot!.toJson(),
-        if (testStatus != null) 'testStatus': testStatus!.toJson(),
+          'mobileFriendlyIssues': mobileFriendlyIssues!,
+        if (resourceIssues != null) 'resourceIssues': resourceIssues!,
+        if (screenshot != null) 'screenshot': screenshot!,
+        if (testStatus != null) 'testStatus': testStatus!,
       };
 }
 
@@ -870,7 +1610,9 @@ class SearchAnalyticsQueryRequest {
   /// - "WEB"
   /// - "IMAGE"
   /// - "VIDEO"
-  /// - "NEWS"
+  /// - "NEWS" : News tab in search.
+  /// - "DISCOVER" : Discover.
+  /// - "GOOGLE_NEWS" : Google News (news.google.com or mobile app).
   core.String? searchType;
 
   /// \[Required\] Start date of the requested date range, in YYYY-MM-DD format,
@@ -886,56 +1628,81 @@ class SearchAnalyticsQueryRequest {
   /// Must be a non-negative number.
   core.int? startRow;
 
-  SearchAnalyticsQueryRequest();
+  /// \[Optional; Default is \"web\"\] Type of report: search type, or either
+  /// Discover or Gnews.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "WEB"
+  /// - "IMAGE"
+  /// - "VIDEO"
+  /// - "NEWS" : News tab in search.
+  /// - "DISCOVER" : Discover.
+  /// - "GOOGLE_NEWS" : Google News (news.google.com or mobile app).
+  core.String? type;
 
-  SearchAnalyticsQueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('aggregationType')) {
-      aggregationType = _json['aggregationType'] as core.String;
-    }
-    if (_json.containsKey('dataState')) {
-      dataState = _json['dataState'] as core.String;
-    }
-    if (_json.containsKey('dimensionFilterGroups')) {
-      dimensionFilterGroups = (_json['dimensionFilterGroups'] as core.List)
-          .map<ApiDimensionFilterGroup>((value) =>
-              ApiDimensionFilterGroup.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('dimensions')) {
-      dimensions = (_json['dimensions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('endDate')) {
-      endDate = _json['endDate'] as core.String;
-    }
-    if (_json.containsKey('rowLimit')) {
-      rowLimit = _json['rowLimit'] as core.int;
-    }
-    if (_json.containsKey('searchType')) {
-      searchType = _json['searchType'] as core.String;
-    }
-    if (_json.containsKey('startDate')) {
-      startDate = _json['startDate'] as core.String;
-    }
-    if (_json.containsKey('startRow')) {
-      startRow = _json['startRow'] as core.int;
-    }
-  }
+  SearchAnalyticsQueryRequest({
+    this.aggregationType,
+    this.dataState,
+    this.dimensionFilterGroups,
+    this.dimensions,
+    this.endDate,
+    this.rowLimit,
+    this.searchType,
+    this.startDate,
+    this.startRow,
+    this.type,
+  });
+
+  SearchAnalyticsQueryRequest.fromJson(core.Map _json)
+      : this(
+          aggregationType: _json.containsKey('aggregationType')
+              ? _json['aggregationType'] as core.String
+              : null,
+          dataState: _json.containsKey('dataState')
+              ? _json['dataState'] as core.String
+              : null,
+          dimensionFilterGroups: _json.containsKey('dimensionFilterGroups')
+              ? (_json['dimensionFilterGroups'] as core.List)
+                  .map((value) => ApiDimensionFilterGroup.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          dimensions: _json.containsKey('dimensions')
+              ? (_json['dimensions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          endDate: _json.containsKey('endDate')
+              ? _json['endDate'] as core.String
+              : null,
+          rowLimit: _json.containsKey('rowLimit')
+              ? _json['rowLimit'] as core.int
+              : null,
+          searchType: _json.containsKey('searchType')
+              ? _json['searchType'] as core.String
+              : null,
+          startDate: _json.containsKey('startDate')
+              ? _json['startDate'] as core.String
+              : null,
+          startRow: _json.containsKey('startRow')
+              ? _json['startRow'] as core.int
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (aggregationType != null) 'aggregationType': aggregationType!,
         if (dataState != null) 'dataState': dataState!,
         if (dimensionFilterGroups != null)
-          'dimensionFilterGroups':
-              dimensionFilterGroups!.map((value) => value.toJson()).toList(),
+          'dimensionFilterGroups': dimensionFilterGroups!,
         if (dimensions != null) 'dimensions': dimensions!,
         if (endDate != null) 'endDate': endDate!,
         if (rowLimit != null) 'rowLimit': rowLimit!,
         if (searchType != null) 'searchType': searchType!,
         if (startDate != null) 'startDate': startDate!,
         if (startRow != null) 'startRow': startRow!,
+        if (type != null) 'type': type!,
       };
 }
 
@@ -954,24 +1721,28 @@ class SearchAnalyticsQueryResponse {
   /// A list of rows grouped by the key values in the order given in the query.
   core.List<ApiDataRow>? rows;
 
-  SearchAnalyticsQueryResponse();
+  SearchAnalyticsQueryResponse({
+    this.responseAggregationType,
+    this.rows,
+  });
 
-  SearchAnalyticsQueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('responseAggregationType')) {
-      responseAggregationType = _json['responseAggregationType'] as core.String;
-    }
-    if (_json.containsKey('rows')) {
-      rows = (_json['rows'] as core.List)
-          .map<ApiDataRow>((value) =>
-              ApiDataRow.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SearchAnalyticsQueryResponse.fromJson(core.Map _json)
+      : this(
+          responseAggregationType: _json.containsKey('responseAggregationType')
+              ? _json['responseAggregationType'] as core.String
+              : null,
+          rows: _json.containsKey('rows')
+              ? (_json['rows'] as core.List)
+                  .map((value) => ApiDataRow.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (responseAggregationType != null)
           'responseAggregationType': responseAggregationType!,
-        if (rows != null) 'rows': rows!.map((value) => value.toJson()).toList(),
+        if (rows != null) 'rows': rows!,
       };
 }
 
@@ -981,20 +1752,22 @@ class SitemapsListResponse {
   /// [sitemap](https://support.google.com/webmasters/answer/156184).
   core.List<WmxSitemap>? sitemap;
 
-  SitemapsListResponse();
+  SitemapsListResponse({
+    this.sitemap,
+  });
 
-  SitemapsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('sitemap')) {
-      sitemap = (_json['sitemap'] as core.List)
-          .map<WmxSitemap>((value) =>
-              WmxSitemap.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SitemapsListResponse.fromJson(core.Map _json)
+      : this(
+          sitemap: _json.containsKey('sitemap')
+              ? (_json['sitemap'] as core.List)
+                  .map((value) => WmxSitemap.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (sitemap != null)
-          'sitemap': sitemap!.map((value) => value.toJson()).toList(),
+        if (sitemap != null) 'sitemap': sitemap!,
       };
 }
 
@@ -1006,20 +1779,22 @@ class SitesListResponse {
   /// [Permissions in Search Console](https://support.google.com/webmasters/answer/2451999).
   core.List<WmxSite>? siteEntry;
 
-  SitesListResponse();
+  SitesListResponse({
+    this.siteEntry,
+  });
 
-  SitesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('siteEntry')) {
-      siteEntry = (_json['siteEntry'] as core.List)
-          .map<WmxSite>((value) =>
-              WmxSite.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SitesListResponse.fromJson(core.Map _json)
+      : this(
+          siteEntry: _json.containsKey('siteEntry')
+              ? (_json['siteEntry'] as core.List)
+                  .map((value) => WmxSite.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (siteEntry != null)
-          'siteEntry': siteEntry!.map((value) => value.toJson()).toList(),
+        if (siteEntry != null) 'siteEntry': siteEntry!,
       };
 }
 
@@ -1042,20 +1817,88 @@ class TestStatus {
   /// protected.
   core.String? status;
 
-  TestStatus();
+  TestStatus({
+    this.details,
+    this.status,
+  });
 
-  TestStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('details')) {
-      details = _json['details'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
+  TestStatus.fromJson(core.Map _json)
+      : this(
+          details: _json.containsKey('details')
+              ? _json['details'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (details != null) 'details': details!,
         if (status != null) 'status': status!,
+      };
+}
+
+/// URL inspection result, including all inspection results.
+class UrlInspectionResult {
+  /// Result of the AMP analysis.
+  ///
+  /// Absent if the page is not an AMP page.
+  AmpInspectionResult? ampResult;
+
+  /// Result of the index status analysis.
+  IndexStatusInspectionResult? indexStatusResult;
+
+  /// Link to Search Console URL inspection.
+  core.String? inspectionResultLink;
+
+  /// Result of the Mobile usability analysis.
+  MobileUsabilityInspectionResult? mobileUsabilityResult;
+
+  /// Result of the Rich Results analysis.
+  ///
+  /// Absent if there are no rich results found.
+  RichResultsInspectionResult? richResultsResult;
+
+  UrlInspectionResult({
+    this.ampResult,
+    this.indexStatusResult,
+    this.inspectionResultLink,
+    this.mobileUsabilityResult,
+    this.richResultsResult,
+  });
+
+  UrlInspectionResult.fromJson(core.Map _json)
+      : this(
+          ampResult: _json.containsKey('ampResult')
+              ? AmpInspectionResult.fromJson(
+                  _json['ampResult'] as core.Map<core.String, core.dynamic>)
+              : null,
+          indexStatusResult: _json.containsKey('indexStatusResult')
+              ? IndexStatusInspectionResult.fromJson(_json['indexStatusResult']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          inspectionResultLink: _json.containsKey('inspectionResultLink')
+              ? _json['inspectionResultLink'] as core.String
+              : null,
+          mobileUsabilityResult: _json.containsKey('mobileUsabilityResult')
+              ? MobileUsabilityInspectionResult.fromJson(
+                  _json['mobileUsabilityResult']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          richResultsResult: _json.containsKey('richResultsResult')
+              ? RichResultsInspectionResult.fromJson(_json['richResultsResult']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (ampResult != null) 'ampResult': ampResult!,
+        if (indexStatusResult != null) 'indexStatusResult': indexStatusResult!,
+        if (inspectionResultLink != null)
+          'inspectionResultLink': inspectionResultLink!,
+        if (mobileUsabilityResult != null)
+          'mobileUsabilityResult': mobileUsabilityResult!,
+        if (richResultsResult != null) 'richResultsResult': richResultsResult!,
       };
 }
 
@@ -1078,16 +1921,20 @@ class WmxSite {
   /// The URL of the site.
   core.String? siteUrl;
 
-  WmxSite();
+  WmxSite({
+    this.permissionLevel,
+    this.siteUrl,
+  });
 
-  WmxSite.fromJson(core.Map _json) {
-    if (_json.containsKey('permissionLevel')) {
-      permissionLevel = _json['permissionLevel'] as core.String;
-    }
-    if (_json.containsKey('siteUrl')) {
-      siteUrl = _json['siteUrl'] as core.String;
-    }
-  }
+  WmxSite.fromJson(core.Map _json)
+      : this(
+          permissionLevel: _json.containsKey('permissionLevel')
+              ? _json['permissionLevel'] as core.String
+              : null,
+          siteUrl: _json.containsKey('siteUrl')
+              ? _json['siteUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (permissionLevel != null) 'permissionLevel': permissionLevel!,
@@ -1144,44 +1991,50 @@ class WmxSitemap {
   /// These are generally non-critical issues with URLs in the sitemaps.
   core.String? warnings;
 
-  WmxSitemap();
+  WmxSitemap({
+    this.contents,
+    this.errors,
+    this.isPending,
+    this.isSitemapsIndex,
+    this.lastDownloaded,
+    this.lastSubmitted,
+    this.path,
+    this.type,
+    this.warnings,
+  });
 
-  WmxSitemap.fromJson(core.Map _json) {
-    if (_json.containsKey('contents')) {
-      contents = (_json['contents'] as core.List)
-          .map<WmxSitemapContent>((value) => WmxSitemapContent.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('errors')) {
-      errors = _json['errors'] as core.String;
-    }
-    if (_json.containsKey('isPending')) {
-      isPending = _json['isPending'] as core.bool;
-    }
-    if (_json.containsKey('isSitemapsIndex')) {
-      isSitemapsIndex = _json['isSitemapsIndex'] as core.bool;
-    }
-    if (_json.containsKey('lastDownloaded')) {
-      lastDownloaded = _json['lastDownloaded'] as core.String;
-    }
-    if (_json.containsKey('lastSubmitted')) {
-      lastSubmitted = _json['lastSubmitted'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('warnings')) {
-      warnings = _json['warnings'] as core.String;
-    }
-  }
+  WmxSitemap.fromJson(core.Map _json)
+      : this(
+          contents: _json.containsKey('contents')
+              ? (_json['contents'] as core.List)
+                  .map((value) => WmxSitemapContent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          errors: _json.containsKey('errors')
+              ? _json['errors'] as core.String
+              : null,
+          isPending: _json.containsKey('isPending')
+              ? _json['isPending'] as core.bool
+              : null,
+          isSitemapsIndex: _json.containsKey('isSitemapsIndex')
+              ? _json['isSitemapsIndex'] as core.bool
+              : null,
+          lastDownloaded: _json.containsKey('lastDownloaded')
+              ? _json['lastDownloaded'] as core.String
+              : null,
+          lastSubmitted: _json.containsKey('lastSubmitted')
+              ? _json['lastSubmitted'] as core.String
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          warnings: _json.containsKey('warnings')
+              ? _json['warnings'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (contents != null)
-          'contents': contents!.map((value) => value.toJson()).toList(),
+        if (contents != null) 'contents': contents!,
         if (errors != null) 'errors': errors!,
         if (isPending != null) 'isPending': isPending!,
         if (isSitemapsIndex != null) 'isSitemapsIndex': isSitemapsIndex!,
@@ -1195,8 +2048,7 @@ class WmxSitemap {
 
 /// Information about the various content types in the sitemap.
 class WmxSitemapContent {
-  /// The number of URLs from the sitemap that were indexed (of the content
-  /// type).
+  /// *Deprecated; do not use.*
   core.String? indexed;
 
   /// The number of URLs in the sitemap (of the content type).
@@ -1217,19 +2069,22 @@ class WmxSitemapContent {
   /// - "DATA_FEED_ELEMENT" : Unsupported content type.
   core.String? type;
 
-  WmxSitemapContent();
+  WmxSitemapContent({
+    this.indexed,
+    this.submitted,
+    this.type,
+  });
 
-  WmxSitemapContent.fromJson(core.Map _json) {
-    if (_json.containsKey('indexed')) {
-      indexed = _json['indexed'] as core.String;
-    }
-    if (_json.containsKey('submitted')) {
-      submitted = _json['submitted'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  WmxSitemapContent.fromJson(core.Map _json)
+      : this(
+          indexed: _json.containsKey('indexed')
+              ? _json['indexed'] as core.String
+              : null,
+          submitted: _json.containsKey('submitted')
+              ? _json['submitted'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (indexed != null) 'indexed': indexed!,

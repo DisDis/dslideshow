@@ -40,6 +40,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -48,18 +50,17 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Schedule queries or transfer external data from SaaS applications to Google
 /// BigQuery on a regular basis.
 class BigQueryDataTransferApi {
-  /// View and manage your data in Google BigQuery
+  /// View and manage your data in Google BigQuery and see the email address for
+  /// your Google Account
   static const bigqueryScope = 'https://www.googleapis.com/auth/bigquery';
 
-  /// View your data in Google BigQuery
-  static const bigqueryReadonlyScope =
-      'https://www.googleapis.com/auth/bigquery.readonly';
-
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
-  /// View your data across Google Cloud Platform services
+  /// View your data across Google Cloud services and see the email address of
+  /// your Google Account
   static const cloudPlatformReadOnlyScope =
       'https://www.googleapis.com/auth/cloud-platform.read-only';
 
@@ -85,6 +86,54 @@ class ProjectsResource {
       ProjectsTransferConfigsResource(_requester);
 
   ProjectsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Enroll data sources in a user project.
+  ///
+  /// This allows users to create transfer configurations for these data
+  /// sources. They will also appear in the ListDataSources RPC and as such,
+  /// will appear in the BigQuery UI 'https://bigquery.cloud.google.com' (and
+  /// the documents can be found at
+  /// https://cloud.google.com/bigquery/bigquery-web-ui and
+  /// https://cloud.google.com/bigquery/docs/working-with-transfers).
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the project resource in the form:
+  /// `projects/{project_id}`
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> enrollDataSources(
+    EnrollDataSourcesRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':enrollDataSources';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class ProjectsDataSourcesResource {
@@ -95,11 +144,6 @@ class ProjectsDataSourcesResource {
 
   /// Returns true if valid credentials exist for the given data source and
   /// requesting user.
-  ///
-  /// Some data sources doesn't support service account, so we need to talk to
-  /// them on behalf of the end user. This API just checks whether we have OAuth
-  /// token for the particular user, which is a pre-requisite before user can
-  /// create a transfer config.
   ///
   /// [request] - The metadata request object.
   ///
@@ -125,7 +169,7 @@ class ProjectsDataSourcesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -142,8 +186,7 @@ class ProjectsDataSourcesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Retrieves a supported data source and returns its settings, which can be
-  /// used for UI rendering.
+  /// Retrieves a supported data source and returns its settings.
   ///
   /// Request parameters:
   ///
@@ -181,14 +224,13 @@ class ProjectsDataSourcesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Lists supported data sources and returns their settings, which can be used
-  /// for UI rendering.
+  /// Lists supported data sources and returns their settings.
   ///
   /// Request parameters:
   ///
   /// [parent] - Required. The BigQuery project id for which data sources should
-  /// be returned. Must be in the form: \`projects/{project_id}\` or
-  /// \`projects/{project_id}/locations/{location_id}
+  /// be returned. Must be in the form: `projects/{project_id}` or
+  /// `projects/{project_id}/locations/{location_id}`
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
   /// [pageSize] - Page size. The default page size is the maximum value of 1000
@@ -243,6 +285,54 @@ class ProjectsLocationsResource {
 
   ProjectsLocationsResource(commons.ApiRequester client) : _requester = client;
 
+  /// Enroll data sources in a user project.
+  ///
+  /// This allows users to create transfer configurations for these data
+  /// sources. They will also appear in the ListDataSources RPC and as such,
+  /// will appear in the BigQuery UI 'https://bigquery.cloud.google.com' (and
+  /// the documents can be found at
+  /// https://cloud.google.com/bigquery/bigquery-web-ui and
+  /// https://cloud.google.com/bigquery/docs/working-with-transfers).
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the project resource in the form:
+  /// `projects/{project_id}`
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> enrollDataSources(
+    EnrollDataSourcesRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':enrollDataSources';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Gets information about a location.
   ///
   /// Request parameters:
@@ -285,11 +375,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -336,11 +430,6 @@ class ProjectsLocationsDataSourcesResource {
   /// Returns true if valid credentials exist for the given data source and
   /// requesting user.
   ///
-  /// Some data sources doesn't support service account, so we need to talk to
-  /// them on behalf of the end user. This API just checks whether we have OAuth
-  /// token for the particular user, which is a pre-requisite before user can
-  /// create a transfer config.
-  ///
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
@@ -366,7 +455,7 @@ class ProjectsLocationsDataSourcesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -383,8 +472,7 @@ class ProjectsLocationsDataSourcesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Retrieves a supported data source and returns its settings, which can be
-  /// used for UI rendering.
+  /// Retrieves a supported data source and returns its settings.
   ///
   /// Request parameters:
   ///
@@ -423,14 +511,13 @@ class ProjectsLocationsDataSourcesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Lists supported data sources and returns their settings, which can be used
-  /// for UI rendering.
+  /// Lists supported data sources and returns their settings.
   ///
   /// Request parameters:
   ///
   /// [parent] - Required. The BigQuery project id for which data sources should
-  /// be returned. Must be in the form: \`projects/{project_id}\` or
-  /// \`projects/{project_id}/locations/{location_id}
+  /// be returned. Must be in the form: `projects/{project_id}` or
+  /// `projects/{project_id}/locations/{location_id}`
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
   /// [pageSize] - Page size. The default page size is the maximum value of 1000
@@ -542,7 +629,7 @@ class ProjectsLocationsTransferConfigsResource {
     core.String? versionInfo,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (authorizationCode != null) 'authorizationCode': [authorizationCode],
       if (serviceAccountName != null)
@@ -641,12 +728,13 @@ class ProjectsLocationsTransferConfigsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Returns information about all data transfers in the project.
+  /// Returns information about all transfer configs owned by a project in the
+  /// specified location.
   ///
   /// Request parameters:
   ///
-  /// [parent] - Required. The BigQuery project id for which data sources should
-  /// be returned: `projects/{project_id}` or
+  /// [parent] - Required. The BigQuery project id for which transfer configs
+  /// should be returned: `projects/{project_id}` or
   /// `projects/{project_id}/locations/{location_id}`
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
@@ -762,7 +850,7 @@ class ProjectsLocationsTransferConfigsResource {
     core.String? versionInfo,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (authorizationCode != null) 'authorizationCode': [authorizationCode],
       if (serviceAccountName != null)
@@ -815,7 +903,7 @@ class ProjectsLocationsTransferConfigsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -864,7 +952,7 @@ class ProjectsLocationsTransferConfigsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -970,7 +1058,7 @@ class ProjectsLocationsTransferConfigsRunsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Returns information about running and completed jobs.
+  /// Returns information about running and completed transfer runs.
   ///
   /// Request parameters:
   ///
@@ -1042,7 +1130,7 @@ class ProjectsLocationsTransferConfigsRunsTransferLogsResource {
       commons.ApiRequester client)
       : _requester = client;
 
-  /// Returns user facing log messages for the data transfer run.
+  /// Returns log messages for the transfer run.
   ///
   /// Request parameters:
   ///
@@ -1166,7 +1254,7 @@ class ProjectsTransferConfigsResource {
     core.String? versionInfo,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (authorizationCode != null) 'authorizationCode': [authorizationCode],
       if (serviceAccountName != null)
@@ -1263,12 +1351,13 @@ class ProjectsTransferConfigsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Returns information about all data transfers in the project.
+  /// Returns information about all transfer configs owned by a project in the
+  /// specified location.
   ///
   /// Request parameters:
   ///
-  /// [parent] - Required. The BigQuery project id for which data sources should
-  /// be returned: `projects/{project_id}` or
+  /// [parent] - Required. The BigQuery project id for which transfer configs
+  /// should be returned: `projects/{project_id}` or
   /// `projects/{project_id}/locations/{location_id}`
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
@@ -1383,7 +1472,7 @@ class ProjectsTransferConfigsResource {
     core.String? versionInfo,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (authorizationCode != null) 'authorizationCode': [authorizationCode],
       if (serviceAccountName != null)
@@ -1435,7 +1524,7 @@ class ProjectsTransferConfigsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1483,7 +1572,7 @@ class ProjectsTransferConfigsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1589,7 +1678,7 @@ class ProjectsTransferConfigsRunsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Returns information about running and completed jobs.
+  /// Returns information about running and completed transfer runs.
   ///
   /// Request parameters:
   ///
@@ -1659,7 +1748,7 @@ class ProjectsTransferConfigsRunsTransferLogsResource {
   ProjectsTransferConfigsRunsTransferLogsResource(commons.ApiRequester client)
       : _requester = client;
 
-  /// Returns user facing log messages for the data transfer run.
+  /// Returns log messages for the transfer run.
   ///
   /// Request parameters:
   ///
@@ -1723,37 +1812,30 @@ class ProjectsTransferConfigsRunsTransferLogsResource {
 /// source has the Google+ authorization type, this method returns false, as it
 /// cannot be determined whether the credentials are already valid merely based
 /// on the user id.
-class CheckValidCredsRequest {
-  CheckValidCredsRequest();
-
-  CheckValidCredsRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CheckValidCredsRequest = $Empty;
 
 /// A response indicating whether the credentials exist and are valid.
 class CheckValidCredsResponse {
   /// If set to `true`, the credentials exist and are valid.
   core.bool? hasValidCreds;
 
-  CheckValidCredsResponse();
+  CheckValidCredsResponse({
+    this.hasValidCreds,
+  });
 
-  CheckValidCredsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hasValidCreds')) {
-      hasValidCreds = _json['hasValidCreds'] as core.bool;
-    }
-  }
+  CheckValidCredsResponse.fromJson(core.Map _json)
+      : this(
+          hasValidCreds: _json.containsKey('hasValidCreds')
+              ? _json['hasValidCreds'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hasValidCreds != null) 'hasValidCreds': hasValidCreds!,
       };
 }
 
-/// Represents data source metadata.
-///
-/// Metadata is sufficient to render UI and request proper OAuth tokens.
+/// Defines the properties and custom parameters for a data source.
 class DataSource {
   /// Indicates the type of authorization.
   /// Possible string values are:
@@ -1763,10 +1845,7 @@ class DataSource {
   /// - "GOOGLE_PLUS_AUTHORIZATION_CODE" : Return an authorization code for a
   /// given Google+ page that can then be exchanged for a refresh token on the
   /// backend.
-  /// - "FIRST_PARTY_OAUTH" : Use First Party OAuth based on Loas Owned Clients.
-  /// First Party OAuth doesn't require a refresh token to get an offline access
-  /// token. Instead, it uses a client-signed JWT assertion to retrieve an
-  /// access token.
+  /// - "FIRST_PARTY_OAUTH" : Use First Party OAuth.
   core.String? authorizationType;
 
   /// Data source client id which should be used to receive refresh token.
@@ -1857,71 +1936,89 @@ class DataSource {
   /// the Data Transfer Service marks the transfer as FAILED.
   core.int? updateDeadlineSeconds;
 
-  DataSource();
+  DataSource({
+    this.authorizationType,
+    this.clientId,
+    this.dataRefreshType,
+    this.dataSourceId,
+    this.defaultDataRefreshWindowDays,
+    this.defaultSchedule,
+    this.description,
+    this.displayName,
+    this.helpUrl,
+    this.manualRunsDisabled,
+    this.minimumScheduleInterval,
+    this.name,
+    this.parameters,
+    this.scopes,
+    this.supportsCustomSchedule,
+    this.supportsMultipleTransfers,
+    this.transferType,
+    this.updateDeadlineSeconds,
+  });
 
-  DataSource.fromJson(core.Map _json) {
-    if (_json.containsKey('authorizationType')) {
-      authorizationType = _json['authorizationType'] as core.String;
-    }
-    if (_json.containsKey('clientId')) {
-      clientId = _json['clientId'] as core.String;
-    }
-    if (_json.containsKey('dataRefreshType')) {
-      dataRefreshType = _json['dataRefreshType'] as core.String;
-    }
-    if (_json.containsKey('dataSourceId')) {
-      dataSourceId = _json['dataSourceId'] as core.String;
-    }
-    if (_json.containsKey('defaultDataRefreshWindowDays')) {
-      defaultDataRefreshWindowDays =
-          _json['defaultDataRefreshWindowDays'] as core.int;
-    }
-    if (_json.containsKey('defaultSchedule')) {
-      defaultSchedule = _json['defaultSchedule'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('helpUrl')) {
-      helpUrl = _json['helpUrl'] as core.String;
-    }
-    if (_json.containsKey('manualRunsDisabled')) {
-      manualRunsDisabled = _json['manualRunsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('minimumScheduleInterval')) {
-      minimumScheduleInterval = _json['minimumScheduleInterval'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parameters')) {
-      parameters = (_json['parameters'] as core.List)
-          .map<DataSourceParameter>((value) => DataSourceParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('scopes')) {
-      scopes = (_json['scopes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('supportsCustomSchedule')) {
-      supportsCustomSchedule = _json['supportsCustomSchedule'] as core.bool;
-    }
-    if (_json.containsKey('supportsMultipleTransfers')) {
-      supportsMultipleTransfers =
-          _json['supportsMultipleTransfers'] as core.bool;
-    }
-    if (_json.containsKey('transferType')) {
-      transferType = _json['transferType'] as core.String;
-    }
-    if (_json.containsKey('updateDeadlineSeconds')) {
-      updateDeadlineSeconds = _json['updateDeadlineSeconds'] as core.int;
-    }
-  }
+  DataSource.fromJson(core.Map _json)
+      : this(
+          authorizationType: _json.containsKey('authorizationType')
+              ? _json['authorizationType'] as core.String
+              : null,
+          clientId: _json.containsKey('clientId')
+              ? _json['clientId'] as core.String
+              : null,
+          dataRefreshType: _json.containsKey('dataRefreshType')
+              ? _json['dataRefreshType'] as core.String
+              : null,
+          dataSourceId: _json.containsKey('dataSourceId')
+              ? _json['dataSourceId'] as core.String
+              : null,
+          defaultDataRefreshWindowDays:
+              _json.containsKey('defaultDataRefreshWindowDays')
+                  ? _json['defaultDataRefreshWindowDays'] as core.int
+                  : null,
+          defaultSchedule: _json.containsKey('defaultSchedule')
+              ? _json['defaultSchedule'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          helpUrl: _json.containsKey('helpUrl')
+              ? _json['helpUrl'] as core.String
+              : null,
+          manualRunsDisabled: _json.containsKey('manualRunsDisabled')
+              ? _json['manualRunsDisabled'] as core.bool
+              : null,
+          minimumScheduleInterval: _json.containsKey('minimumScheduleInterval')
+              ? _json['minimumScheduleInterval'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.List)
+                  .map((value) => DataSourceParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          scopes: _json.containsKey('scopes')
+              ? (_json['scopes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          supportsCustomSchedule: _json.containsKey('supportsCustomSchedule')
+              ? _json['supportsCustomSchedule'] as core.bool
+              : null,
+          supportsMultipleTransfers:
+              _json.containsKey('supportsMultipleTransfers')
+                  ? _json['supportsMultipleTransfers'] as core.bool
+                  : null,
+          transferType: _json.containsKey('transferType')
+              ? _json['transferType'] as core.String
+              : null,
+          updateDeadlineSeconds: _json.containsKey('updateDeadlineSeconds')
+              ? _json['updateDeadlineSeconds'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (authorizationType != null) 'authorizationType': authorizationType!,
@@ -1939,8 +2036,7 @@ class DataSource {
         if (minimumScheduleInterval != null)
           'minimumScheduleInterval': minimumScheduleInterval!,
         if (name != null) 'name': name!,
-        if (parameters != null)
-          'parameters': parameters!.map((value) => value.toJson()).toList(),
+        if (parameters != null) 'parameters': parameters!,
         if (scopes != null) 'scopes': scopes!,
         if (supportsCustomSchedule != null)
           'supportsCustomSchedule': supportsCustomSchedule!,
@@ -1952,13 +2048,7 @@ class DataSource {
       };
 }
 
-/// Represents a data source parameter with validation rules, so that parameters
-/// can be rendered in the UI.
-///
-/// These parameters are given to us by supported data sources, and include all
-/// needed information for rendering and validation. Thus, whoever uses this api
-/// can decide to generate either generic ui, or custom data source specific
-/// forms.
+/// A parameter used to define custom fields in a data source definition.
 class DataSourceParameter {
   /// All possible values for the parameter.
   core.List<core.String>? allowedValues;
@@ -2025,71 +2115,86 @@ class DataSourceParameter {
   /// Regular expression which can be used for parameter validation.
   core.String? validationRegex;
 
-  DataSourceParameter();
+  DataSourceParameter({
+    this.allowedValues,
+    this.deprecated,
+    this.description,
+    this.displayName,
+    this.fields,
+    this.immutable,
+    this.maxValue,
+    this.minValue,
+    this.paramId,
+    this.recurse,
+    this.repeated,
+    this.required,
+    this.type,
+    this.validationDescription,
+    this.validationHelpUrl,
+    this.validationRegex,
+  });
 
-  DataSourceParameter.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedValues')) {
-      allowedValues = (_json['allowedValues'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('deprecated')) {
-      deprecated = _json['deprecated'] as core.bool;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<DataSourceParameter>((value) => DataSourceParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('immutable')) {
-      immutable = _json['immutable'] as core.bool;
-    }
-    if (_json.containsKey('maxValue')) {
-      maxValue = (_json['maxValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('minValue')) {
-      minValue = (_json['minValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('paramId')) {
-      paramId = _json['paramId'] as core.String;
-    }
-    if (_json.containsKey('recurse')) {
-      recurse = _json['recurse'] as core.bool;
-    }
-    if (_json.containsKey('repeated')) {
-      repeated = _json['repeated'] as core.bool;
-    }
-    if (_json.containsKey('required')) {
-      required = _json['required'] as core.bool;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('validationDescription')) {
-      validationDescription = _json['validationDescription'] as core.String;
-    }
-    if (_json.containsKey('validationHelpUrl')) {
-      validationHelpUrl = _json['validationHelpUrl'] as core.String;
-    }
-    if (_json.containsKey('validationRegex')) {
-      validationRegex = _json['validationRegex'] as core.String;
-    }
-  }
+  DataSourceParameter.fromJson(core.Map _json)
+      : this(
+          allowedValues: _json.containsKey('allowedValues')
+              ? (_json['allowedValues'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          deprecated: _json.containsKey('deprecated')
+              ? _json['deprecated'] as core.bool
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => DataSourceParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          immutable: _json.containsKey('immutable')
+              ? _json['immutable'] as core.bool
+              : null,
+          maxValue: _json.containsKey('maxValue')
+              ? (_json['maxValue'] as core.num).toDouble()
+              : null,
+          minValue: _json.containsKey('minValue')
+              ? (_json['minValue'] as core.num).toDouble()
+              : null,
+          paramId: _json.containsKey('paramId')
+              ? _json['paramId'] as core.String
+              : null,
+          recurse: _json.containsKey('recurse')
+              ? _json['recurse'] as core.bool
+              : null,
+          repeated: _json.containsKey('repeated')
+              ? _json['repeated'] as core.bool
+              : null,
+          required: _json.containsKey('required')
+              ? _json['required'] as core.bool
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          validationDescription: _json.containsKey('validationDescription')
+              ? _json['validationDescription'] as core.String
+              : null,
+          validationHelpUrl: _json.containsKey('validationHelpUrl')
+              ? _json['validationHelpUrl'] as core.String
+              : null,
+          validationRegex: _json.containsKey('validationRegex')
+              ? _json['validationRegex'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowedValues != null) 'allowedValues': allowedValues!,
         if (deprecated != null) 'deprecated': deprecated!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (fields != null) 'fields': fields!,
         if (immutable != null) 'immutable': immutable!,
         if (maxValue != null) 'maxValue': maxValue!,
         if (minValue != null) 'minValue': minValue!,
@@ -2111,13 +2216,16 @@ class EmailPreferences {
   /// If true, email notifications will be sent on transfer run failures.
   core.bool? enableFailureEmail;
 
-  EmailPreferences();
+  EmailPreferences({
+    this.enableFailureEmail,
+  });
 
-  EmailPreferences.fromJson(core.Map _json) {
-    if (_json.containsKey('enableFailureEmail')) {
-      enableFailureEmail = _json['enableFailureEmail'] as core.bool;
-    }
-  }
+  EmailPreferences.fromJson(core.Map _json)
+      : this(
+          enableFailureEmail: _json.containsKey('enableFailureEmail')
+              ? _json['enableFailureEmail'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enableFailureEmail != null)
@@ -2132,14 +2240,32 @@ class EmailPreferences {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// A request to enroll a set of data sources so they are visible in the
+/// BigQuery UI's `Transfer` tab.
+class EnrollDataSourcesRequest {
+  /// Data sources that are enrolled.
+  ///
+  /// It is required to provide at least one data source id.
+  core.List<core.String>? dataSourceIds;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  EnrollDataSourcesRequest({
+    this.dataSourceIds,
+  });
+
+  EnrollDataSourcesRequest.fromJson(core.Map _json)
+      : this(
+          dataSourceIds: _json.containsKey('dataSourceIds')
+              ? (_json['dataSourceIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (dataSourceIds != null) 'dataSourceIds': dataSourceIds!,
+      };
 }
 
 /// Returns list of supported data sources and their metadata.
@@ -2156,23 +2282,26 @@ class ListDataSourcesResponse {
   /// Output only.
   core.String? nextPageToken;
 
-  ListDataSourcesResponse();
+  ListDataSourcesResponse({
+    this.dataSources,
+    this.nextPageToken,
+  });
 
-  ListDataSourcesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('dataSources')) {
-      dataSources = (_json['dataSources'] as core.List)
-          .map<DataSource>((value) =>
-              DataSource.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListDataSourcesResponse.fromJson(core.Map _json)
+      : this(
+          dataSources: _json.containsKey('dataSources')
+              ? (_json['dataSources'] as core.List)
+                  .map((value) => DataSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dataSources != null)
-          'dataSources': dataSources!.map((value) => value.toJson()).toList(),
+        if (dataSources != null) 'dataSources': dataSources!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2185,23 +2314,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2222,25 +2354,27 @@ class ListTransferConfigsResponse {
   /// Output only.
   core.List<TransferConfig>? transferConfigs;
 
-  ListTransferConfigsResponse();
+  ListTransferConfigsResponse({
+    this.nextPageToken,
+    this.transferConfigs,
+  });
 
-  ListTransferConfigsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('transferConfigs')) {
-      transferConfigs = (_json['transferConfigs'] as core.List)
-          .map<TransferConfig>((value) => TransferConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTransferConfigsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          transferConfigs: _json.containsKey('transferConfigs')
+              ? (_json['transferConfigs'] as core.List)
+                  .map((value) => TransferConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (transferConfigs != null)
-          'transferConfigs':
-              transferConfigs!.map((value) => value.toJson()).toList(),
+        if (transferConfigs != null) 'transferConfigs': transferConfigs!,
       };
 }
 
@@ -2260,25 +2394,27 @@ class ListTransferLogsResponse {
   /// Output only.
   core.List<TransferMessage>? transferMessages;
 
-  ListTransferLogsResponse();
+  ListTransferLogsResponse({
+    this.nextPageToken,
+    this.transferMessages,
+  });
 
-  ListTransferLogsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('transferMessages')) {
-      transferMessages = (_json['transferMessages'] as core.List)
-          .map<TransferMessage>((value) => TransferMessage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTransferLogsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          transferMessages: _json.containsKey('transferMessages')
+              ? (_json['transferMessages'] as core.List)
+                  .map((value) => TransferMessage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (transferMessages != null)
-          'transferMessages':
-              transferMessages!.map((value) => value.toJson()).toList(),
+        if (transferMessages != null) 'transferMessages': transferMessages!,
       };
 }
 
@@ -2298,95 +2434,32 @@ class ListTransferRunsResponse {
   /// Output only.
   core.List<TransferRun>? transferRuns;
 
-  ListTransferRunsResponse();
+  ListTransferRunsResponse({
+    this.nextPageToken,
+    this.transferRuns,
+  });
 
-  ListTransferRunsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('transferRuns')) {
-      transferRuns = (_json['transferRuns'] as core.List)
-          .map<TransferRun>((value) => TransferRun.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTransferRunsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          transferRuns: _json.containsKey('transferRuns')
+              ? (_json['transferRuns'] as core.List)
+                  .map((value) => TransferRun.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (transferRuns != null)
-          'transferRuns': transferRuns!.map((value) => value.toJson()).toList(),
+        if (transferRuns != null) 'transferRuns': transferRuns!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// Options customizing the data transfer schedule.
 class ScheduleOptions {
@@ -2413,19 +2486,24 @@ class ScheduleOptions {
   /// manually is not limited by this option.
   core.String? startTime;
 
-  ScheduleOptions();
+  ScheduleOptions({
+    this.disableAutoScheduling,
+    this.endTime,
+    this.startTime,
+  });
 
-  ScheduleOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('disableAutoScheduling')) {
-      disableAutoScheduling = _json['disableAutoScheduling'] as core.bool;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  ScheduleOptions.fromJson(core.Map _json)
+      : this(
+          disableAutoScheduling: _json.containsKey('disableAutoScheduling')
+              ? _json['disableAutoScheduling'] as core.bool
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disableAutoScheduling != null)
@@ -2451,16 +2529,20 @@ class ScheduleTransferRunsRequest {
   /// Required.
   core.String? startTime;
 
-  ScheduleTransferRunsRequest();
+  ScheduleTransferRunsRequest({
+    this.endTime,
+    this.startTime,
+  });
 
-  ScheduleTransferRunsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  ScheduleTransferRunsRequest.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTime != null) 'endTime': endTime!,
@@ -2473,19 +2555,22 @@ class ScheduleTransferRunsResponse {
   /// The transfer runs that were scheduled.
   core.List<TransferRun>? runs;
 
-  ScheduleTransferRunsResponse();
+  ScheduleTransferRunsResponse({
+    this.runs,
+  });
 
-  ScheduleTransferRunsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('runs')) {
-      runs = (_json['runs'] as core.List)
-          .map<TransferRun>((value) => TransferRun.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ScheduleTransferRunsResponse.fromJson(core.Map _json)
+      : this(
+          runs: _json.containsKey('runs')
+              ? (_json['runs'] as core.List)
+                  .map((value) => TransferRun.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (runs != null) 'runs': runs!.map((value) => value.toJson()).toList(),
+        if (runs != null) 'runs': runs!,
       };
 }
 
@@ -2499,22 +2584,26 @@ class StartManualTransferRunsRequest {
   /// Time range for the transfer runs that should be started.
   TimeRange? requestedTimeRange;
 
-  StartManualTransferRunsRequest();
+  StartManualTransferRunsRequest({
+    this.requestedRunTime,
+    this.requestedTimeRange,
+  });
 
-  StartManualTransferRunsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedRunTime')) {
-      requestedRunTime = _json['requestedRunTime'] as core.String;
-    }
-    if (_json.containsKey('requestedTimeRange')) {
-      requestedTimeRange = TimeRange.fromJson(
-          _json['requestedTimeRange'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  StartManualTransferRunsRequest.fromJson(core.Map _json)
+      : this(
+          requestedRunTime: _json.containsKey('requestedRunTime')
+              ? _json['requestedRunTime'] as core.String
+              : null,
+          requestedTimeRange: _json.containsKey('requestedTimeRange')
+              ? TimeRange.fromJson(_json['requestedTimeRange']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (requestedRunTime != null) 'requestedRunTime': requestedRunTime!,
         if (requestedTimeRange != null)
-          'requestedTimeRange': requestedTimeRange!.toJson(),
+          'requestedTimeRange': requestedTimeRange!,
       };
 }
 
@@ -2523,19 +2612,22 @@ class StartManualTransferRunsResponse {
   /// The transfer runs that were created.
   core.List<TransferRun>? runs;
 
-  StartManualTransferRunsResponse();
+  StartManualTransferRunsResponse({
+    this.runs,
+  });
 
-  StartManualTransferRunsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('runs')) {
-      runs = (_json['runs'] as core.List)
-          .map<TransferRun>((value) => TransferRun.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  StartManualTransferRunsResponse.fromJson(core.Map _json)
+      : this(
+          runs: _json.containsKey('runs')
+              ? (_json['runs'] as core.List)
+                  .map((value) => TransferRun.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (runs != null) 'runs': runs!.map((value) => value.toJson()).toList(),
+        if (runs != null) 'runs': runs!,
       };
 }
 
@@ -2546,52 +2638,7 @@ class StartManualTransferRunsResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A specification for a time range, this will request transfer runs with
 /// run_time between start_time (inclusive) and end_time (exclusive).
@@ -2610,16 +2657,20 @@ class TimeRange {
   /// in the range between start_time (inclusive) and end_time (exclusive).
   core.String? startTime;
 
-  TimeRange();
+  TimeRange({
+    this.endTime,
+    this.startTime,
+  });
 
-  TimeRange.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  TimeRange.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTime != null) 'endTime': endTime!,
@@ -2683,13 +2734,29 @@ class TransferConfig {
 
   /// Pub/Sub topic where notifications will be sent after transfer runs
   /// associated with this transfer config finish.
+  ///
+  /// The format for specifying a pubsub topic is:
+  /// `projects/{project}/topics/{topic}`
   core.String? notificationPubsubTopic;
 
-  /// Data transfer specific parameters.
+  /// Information about the user whose credentials are used to transfer data.
+  ///
+  /// Populated only for `transferConfigs.get` requests. In case the user
+  /// information is not available, this field will not be populated.
+  ///
+  /// Output only.
+  UserInfo? ownerInfo;
+
+  /// Parameters specific to each data source.
+  ///
+  /// For more information see the bq tab in the 'Setting up a data transfer'
+  /// section for each data source. For example the parameters for Cloud Storage
+  /// transfers are listed here:
+  /// https://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? params;
+  core.Map<core.String, core.Object?>? params;
 
   /// Data transfer schedule.
   ///
@@ -2699,7 +2766,8 @@ class TransferConfig {
   /// of month 15:30`, `every wed,fri of jan,jun 13:15`, and `first sunday of
   /// quarter 00:00`. See more explanation about the format here:
   /// https://cloud.google.com/appengine/docs/flexible/python/scheduling-jobs-with-cron-yaml#the_schedule_format
-  /// NOTE: the granularity should be at least 8 hours, or less frequent.
+  /// NOTE: The minimum interval time between recurring transfers depends on the
+  /// data source; refer to the documentation for your data source.
   core.String? schedule;
 
   /// Options customizing the data transfer schedule.
@@ -2730,65 +2798,80 @@ class TransferConfig {
   /// Deprecated.
   core.String? userId;
 
-  TransferConfig();
+  TransferConfig({
+    this.dataRefreshWindowDays,
+    this.dataSourceId,
+    this.datasetRegion,
+    this.destinationDatasetId,
+    this.disabled,
+    this.displayName,
+    this.emailPreferences,
+    this.name,
+    this.nextRunTime,
+    this.notificationPubsubTopic,
+    this.ownerInfo,
+    this.params,
+    this.schedule,
+    this.scheduleOptions,
+    this.state,
+    this.updateTime,
+    this.userId,
+  });
 
-  TransferConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('dataRefreshWindowDays')) {
-      dataRefreshWindowDays = _json['dataRefreshWindowDays'] as core.int;
-    }
-    if (_json.containsKey('dataSourceId')) {
-      dataSourceId = _json['dataSourceId'] as core.String;
-    }
-    if (_json.containsKey('datasetRegion')) {
-      datasetRegion = _json['datasetRegion'] as core.String;
-    }
-    if (_json.containsKey('destinationDatasetId')) {
-      destinationDatasetId = _json['destinationDatasetId'] as core.String;
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('emailPreferences')) {
-      emailPreferences = EmailPreferences.fromJson(
-          _json['emailPreferences'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('nextRunTime')) {
-      nextRunTime = _json['nextRunTime'] as core.String;
-    }
-    if (_json.containsKey('notificationPubsubTopic')) {
-      notificationPubsubTopic = _json['notificationPubsubTopic'] as core.String;
-    }
-    if (_json.containsKey('params')) {
-      params = (_json['params'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('schedule')) {
-      schedule = _json['schedule'] as core.String;
-    }
-    if (_json.containsKey('scheduleOptions')) {
-      scheduleOptions = ScheduleOptions.fromJson(
-          _json['scheduleOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('userId')) {
-      userId = _json['userId'] as core.String;
-    }
-  }
+  TransferConfig.fromJson(core.Map _json)
+      : this(
+          dataRefreshWindowDays: _json.containsKey('dataRefreshWindowDays')
+              ? _json['dataRefreshWindowDays'] as core.int
+              : null,
+          dataSourceId: _json.containsKey('dataSourceId')
+              ? _json['dataSourceId'] as core.String
+              : null,
+          datasetRegion: _json.containsKey('datasetRegion')
+              ? _json['datasetRegion'] as core.String
+              : null,
+          destinationDatasetId: _json.containsKey('destinationDatasetId')
+              ? _json['destinationDatasetId'] as core.String
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          emailPreferences: _json.containsKey('emailPreferences')
+              ? EmailPreferences.fromJson(_json['emailPreferences']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          nextRunTime: _json.containsKey('nextRunTime')
+              ? _json['nextRunTime'] as core.String
+              : null,
+          notificationPubsubTopic: _json.containsKey('notificationPubsubTopic')
+              ? _json['notificationPubsubTopic'] as core.String
+              : null,
+          ownerInfo: _json.containsKey('ownerInfo')
+              ? UserInfo.fromJson(
+                  _json['ownerInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          params: _json.containsKey('params')
+              ? _json['params'] as core.Map<core.String, core.dynamic>
+              : null,
+          schedule: _json.containsKey('schedule')
+              ? _json['schedule'] as core.String
+              : null,
+          scheduleOptions: _json.containsKey('scheduleOptions')
+              ? ScheduleOptions.fromJson(_json['scheduleOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataRefreshWindowDays != null)
@@ -2799,16 +2882,15 @@ class TransferConfig {
           'destinationDatasetId': destinationDatasetId!,
         if (disabled != null) 'disabled': disabled!,
         if (displayName != null) 'displayName': displayName!,
-        if (emailPreferences != null)
-          'emailPreferences': emailPreferences!.toJson(),
+        if (emailPreferences != null) 'emailPreferences': emailPreferences!,
         if (name != null) 'name': name!,
         if (nextRunTime != null) 'nextRunTime': nextRunTime!,
         if (notificationPubsubTopic != null)
           'notificationPubsubTopic': notificationPubsubTopic!,
+        if (ownerInfo != null) 'ownerInfo': ownerInfo!,
         if (params != null) 'params': params!,
         if (schedule != null) 'schedule': schedule!,
-        if (scheduleOptions != null)
-          'scheduleOptions': scheduleOptions!.toJson(),
+        if (scheduleOptions != null) 'scheduleOptions': scheduleOptions!,
         if (state != null) 'state': state!,
         if (updateTime != null) 'updateTime': updateTime!,
         if (userId != null) 'userId': userId!,
@@ -2831,19 +2913,24 @@ class TransferMessage {
   /// - "ERROR" : Error message.
   core.String? severity;
 
-  TransferMessage();
+  TransferMessage({
+    this.messageText,
+    this.messageTime,
+    this.severity,
+  });
 
-  TransferMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('messageText')) {
-      messageText = _json['messageText'] as core.String;
-    }
-    if (_json.containsKey('messageTime')) {
-      messageTime = _json['messageTime'] as core.String;
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-  }
+  TransferMessage.fromJson(core.Map _json)
+      : this(
+          messageText: _json.containsKey('messageText')
+              ? _json['messageText'] as core.String
+              : null,
+          messageTime: _json.containsKey('messageTime')
+              ? _json['messageTime'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (messageText != null) 'messageText': messageText!,
@@ -2889,18 +2976,26 @@ class TransferRun {
   core.String? name;
 
   /// Pub/Sub topic where a notification will be sent after this transfer run
-  /// finishes
+  /// finishes.
+  ///
+  /// The format for specifying a pubsub topic is:
+  /// `projects/{project}/topics/{topic}`
   ///
   /// Output only.
   core.String? notificationPubsubTopic;
 
-  /// Data transfer specific parameters.
+  /// Parameters specific to each data source.
+  ///
+  /// For more information see the bq tab in the 'Setting up a data transfer'
+  /// section for each data source. For example the parameters for Cloud Storage
+  /// transfers are listed here:
+  /// https://cloud.google.com/bigquery-transfer/docs/cloud-storage-transfer#bq
   ///
   /// Output only.
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? params;
+  core.Map<core.String, core.Object?>? params;
 
   /// For batch transfer runs, specifies the date and time of the data should be
   /// ingested.
@@ -2949,71 +3044,79 @@ class TransferRun {
   /// Deprecated.
   core.String? userId;
 
-  TransferRun();
+  TransferRun({
+    this.dataSourceId,
+    this.destinationDatasetId,
+    this.emailPreferences,
+    this.endTime,
+    this.errorStatus,
+    this.name,
+    this.notificationPubsubTopic,
+    this.params,
+    this.runTime,
+    this.schedule,
+    this.scheduleTime,
+    this.startTime,
+    this.state,
+    this.updateTime,
+    this.userId,
+  });
 
-  TransferRun.fromJson(core.Map _json) {
-    if (_json.containsKey('dataSourceId')) {
-      dataSourceId = _json['dataSourceId'] as core.String;
-    }
-    if (_json.containsKey('destinationDatasetId')) {
-      destinationDatasetId = _json['destinationDatasetId'] as core.String;
-    }
-    if (_json.containsKey('emailPreferences')) {
-      emailPreferences = EmailPreferences.fromJson(
-          _json['emailPreferences'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('errorStatus')) {
-      errorStatus = Status.fromJson(
-          _json['errorStatus'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationPubsubTopic')) {
-      notificationPubsubTopic = _json['notificationPubsubTopic'] as core.String;
-    }
-    if (_json.containsKey('params')) {
-      params = (_json['params'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('runTime')) {
-      runTime = _json['runTime'] as core.String;
-    }
-    if (_json.containsKey('schedule')) {
-      schedule = _json['schedule'] as core.String;
-    }
-    if (_json.containsKey('scheduleTime')) {
-      scheduleTime = _json['scheduleTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('userId')) {
-      userId = _json['userId'] as core.String;
-    }
-  }
+  TransferRun.fromJson(core.Map _json)
+      : this(
+          dataSourceId: _json.containsKey('dataSourceId')
+              ? _json['dataSourceId'] as core.String
+              : null,
+          destinationDatasetId: _json.containsKey('destinationDatasetId')
+              ? _json['destinationDatasetId'] as core.String
+              : null,
+          emailPreferences: _json.containsKey('emailPreferences')
+              ? EmailPreferences.fromJson(_json['emailPreferences']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          errorStatus: _json.containsKey('errorStatus')
+              ? Status.fromJson(
+                  _json['errorStatus'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationPubsubTopic: _json.containsKey('notificationPubsubTopic')
+              ? _json['notificationPubsubTopic'] as core.String
+              : null,
+          params: _json.containsKey('params')
+              ? _json['params'] as core.Map<core.String, core.dynamic>
+              : null,
+          runTime: _json.containsKey('runTime')
+              ? _json['runTime'] as core.String
+              : null,
+          schedule: _json.containsKey('schedule')
+              ? _json['schedule'] as core.String
+              : null,
+          scheduleTime: _json.containsKey('scheduleTime')
+              ? _json['scheduleTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataSourceId != null) 'dataSourceId': dataSourceId!,
         if (destinationDatasetId != null)
           'destinationDatasetId': destinationDatasetId!,
-        if (emailPreferences != null)
-          'emailPreferences': emailPreferences!.toJson(),
+        if (emailPreferences != null) 'emailPreferences': emailPreferences!,
         if (endTime != null) 'endTime': endTime!,
-        if (errorStatus != null) 'errorStatus': errorStatus!.toJson(),
+        if (errorStatus != null) 'errorStatus': errorStatus!,
         if (name != null) 'name': name!,
         if (notificationPubsubTopic != null)
           'notificationPubsubTopic': notificationPubsubTopic!,
@@ -3025,5 +3128,25 @@ class TransferRun {
         if (state != null) 'state': state!,
         if (updateTime != null) 'updateTime': updateTime!,
         if (userId != null) 'userId': userId!,
+      };
+}
+
+/// Information about a user.
+class UserInfo {
+  /// E-mail address of the user.
+  core.String? email;
+
+  UserInfo({
+    this.email,
+  });
+
+  UserInfo.fromJson(core.Map _json)
+      : this(
+          email:
+              _json.containsKey('email') ? _json['email'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (email != null) 'email': email!,
       };
 }

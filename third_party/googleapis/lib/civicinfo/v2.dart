@@ -32,6 +32,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -334,37 +336,39 @@ class AdministrationRegion {
   /// sources.
   core.List<Source>? sources;
 
-  AdministrationRegion();
+  AdministrationRegion({
+    this.electionAdministrationBody,
+    this.localJurisdiction,
+    this.name,
+    this.sources,
+  });
 
-  AdministrationRegion.fromJson(core.Map _json) {
-    if (_json.containsKey('electionAdministrationBody')) {
-      electionAdministrationBody = AdministrativeBody.fromJson(
-          _json['electionAdministrationBody']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('local_jurisdiction')) {
-      localJurisdiction = AdministrationRegion.fromJson(
-          _json['local_jurisdiction'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<Source>((value) =>
-              Source.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  AdministrationRegion.fromJson(core.Map _json)
+      : this(
+          electionAdministrationBody: _json
+                  .containsKey('electionAdministrationBody')
+              ? AdministrativeBody.fromJson(_json['electionAdministrationBody']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          localJurisdiction: _json.containsKey('local_jurisdiction')
+              ? AdministrationRegion.fromJson(_json['local_jurisdiction']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => Source.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (electionAdministrationBody != null)
-          'electionAdministrationBody': electionAdministrationBody!.toJson(),
-        if (localJurisdiction != null)
-          'local_jurisdiction': localJurisdiction!.toJson(),
+          'electionAdministrationBody': electionAdministrationBody!,
+        if (localJurisdiction != null) 'local_jurisdiction': localJurisdiction!,
         if (name != null) 'name': name!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
       };
 }
 
@@ -424,78 +428,90 @@ class AdministrativeBody {
   /// A URL provided by this administrative body for looking up where to vote.
   core.String? votingLocationFinderUrl;
 
-  AdministrativeBody();
+  AdministrativeBody({
+    this.absenteeVotingInfoUrl,
+    this.ballotInfoUrl,
+    this.correspondenceAddress,
+    this.electionInfoUrl,
+    this.electionNoticeText,
+    this.electionNoticeUrl,
+    this.electionOfficials,
+    this.electionRegistrationConfirmationUrl,
+    this.electionRegistrationUrl,
+    this.electionRulesUrl,
+    this.hoursOfOperation,
+    this.name,
+    this.physicalAddress,
+    this.voterServices,
+    this.votingLocationFinderUrl,
+  });
 
-  AdministrativeBody.fromJson(core.Map _json) {
-    if (_json.containsKey('absenteeVotingInfoUrl')) {
-      absenteeVotingInfoUrl = _json['absenteeVotingInfoUrl'] as core.String;
-    }
-    if (_json.containsKey('ballotInfoUrl')) {
-      ballotInfoUrl = _json['ballotInfoUrl'] as core.String;
-    }
-    if (_json.containsKey('correspondenceAddress')) {
-      correspondenceAddress = SimpleAddressType.fromJson(
-          _json['correspondenceAddress']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('electionInfoUrl')) {
-      electionInfoUrl = _json['electionInfoUrl'] as core.String;
-    }
-    if (_json.containsKey('electionNoticeText')) {
-      electionNoticeText = _json['electionNoticeText'] as core.String;
-    }
-    if (_json.containsKey('electionNoticeUrl')) {
-      electionNoticeUrl = _json['electionNoticeUrl'] as core.String;
-    }
-    if (_json.containsKey('electionOfficials')) {
-      electionOfficials = (_json['electionOfficials'] as core.List)
-          .map<ElectionOfficial>((value) => ElectionOfficial.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('electionRegistrationConfirmationUrl')) {
-      electionRegistrationConfirmationUrl =
-          _json['electionRegistrationConfirmationUrl'] as core.String;
-    }
-    if (_json.containsKey('electionRegistrationUrl')) {
-      electionRegistrationUrl = _json['electionRegistrationUrl'] as core.String;
-    }
-    if (_json.containsKey('electionRulesUrl')) {
-      electionRulesUrl = _json['electionRulesUrl'] as core.String;
-    }
-    if (_json.containsKey('hoursOfOperation')) {
-      hoursOfOperation = _json['hoursOfOperation'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('physicalAddress')) {
-      physicalAddress = SimpleAddressType.fromJson(
-          _json['physicalAddress'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('voter_services')) {
-      voterServices = (_json['voter_services'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('votingLocationFinderUrl')) {
-      votingLocationFinderUrl = _json['votingLocationFinderUrl'] as core.String;
-    }
-  }
+  AdministrativeBody.fromJson(core.Map _json)
+      : this(
+          absenteeVotingInfoUrl: _json.containsKey('absenteeVotingInfoUrl')
+              ? _json['absenteeVotingInfoUrl'] as core.String
+              : null,
+          ballotInfoUrl: _json.containsKey('ballotInfoUrl')
+              ? _json['ballotInfoUrl'] as core.String
+              : null,
+          correspondenceAddress: _json.containsKey('correspondenceAddress')
+              ? SimpleAddressType.fromJson(_json['correspondenceAddress']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          electionInfoUrl: _json.containsKey('electionInfoUrl')
+              ? _json['electionInfoUrl'] as core.String
+              : null,
+          electionNoticeText: _json.containsKey('electionNoticeText')
+              ? _json['electionNoticeText'] as core.String
+              : null,
+          electionNoticeUrl: _json.containsKey('electionNoticeUrl')
+              ? _json['electionNoticeUrl'] as core.String
+              : null,
+          electionOfficials: _json.containsKey('electionOfficials')
+              ? (_json['electionOfficials'] as core.List)
+                  .map((value) => ElectionOfficial.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          electionRegistrationConfirmationUrl:
+              _json.containsKey('electionRegistrationConfirmationUrl')
+                  ? _json['electionRegistrationConfirmationUrl'] as core.String
+                  : null,
+          electionRegistrationUrl: _json.containsKey('electionRegistrationUrl')
+              ? _json['electionRegistrationUrl'] as core.String
+              : null,
+          electionRulesUrl: _json.containsKey('electionRulesUrl')
+              ? _json['electionRulesUrl'] as core.String
+              : null,
+          hoursOfOperation: _json.containsKey('hoursOfOperation')
+              ? _json['hoursOfOperation'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          physicalAddress: _json.containsKey('physicalAddress')
+              ? SimpleAddressType.fromJson(_json['physicalAddress']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          voterServices: _json.containsKey('voter_services')
+              ? (_json['voter_services'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          votingLocationFinderUrl: _json.containsKey('votingLocationFinderUrl')
+              ? _json['votingLocationFinderUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (absenteeVotingInfoUrl != null)
           'absenteeVotingInfoUrl': absenteeVotingInfoUrl!,
         if (ballotInfoUrl != null) 'ballotInfoUrl': ballotInfoUrl!,
         if (correspondenceAddress != null)
-          'correspondenceAddress': correspondenceAddress!.toJson(),
+          'correspondenceAddress': correspondenceAddress!,
         if (electionInfoUrl != null) 'electionInfoUrl': electionInfoUrl!,
         if (electionNoticeText != null)
           'electionNoticeText': electionNoticeText!,
         if (electionNoticeUrl != null) 'electionNoticeUrl': electionNoticeUrl!,
-        if (electionOfficials != null)
-          'electionOfficials':
-              electionOfficials!.map((value) => value.toJson()).toList(),
+        if (electionOfficials != null) 'electionOfficials': electionOfficials!,
         if (electionRegistrationConfirmationUrl != null)
           'electionRegistrationConfirmationUrl':
               electionRegistrationConfirmationUrl!,
@@ -504,8 +520,7 @@ class AdministrativeBody {
         if (electionRulesUrl != null) 'electionRulesUrl': electionRulesUrl!,
         if (hoursOfOperation != null) 'hoursOfOperation': hoursOfOperation!,
         if (name != null) 'name': name!,
-        if (physicalAddress != null)
-          'physicalAddress': physicalAddress!.toJson(),
+        if (physicalAddress != null) 'physicalAddress': physicalAddress!,
         if (voterServices != null) 'voter_services': voterServices!,
         if (votingLocationFinderUrl != null)
           'votingLocationFinderUrl': votingLocationFinderUrl!,
@@ -542,42 +557,46 @@ class Candidate {
   /// A URL for a photo of the candidate.
   core.String? photoUrl;
 
-  Candidate();
+  Candidate({
+    this.candidateUrl,
+    this.channels,
+    this.email,
+    this.name,
+    this.orderOnBallot,
+    this.party,
+    this.phone,
+    this.photoUrl,
+  });
 
-  Candidate.fromJson(core.Map _json) {
-    if (_json.containsKey('candidateUrl')) {
-      candidateUrl = _json['candidateUrl'] as core.String;
-    }
-    if (_json.containsKey('channels')) {
-      channels = (_json['channels'] as core.List)
-          .map<Channel>((value) =>
-              Channel.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('email')) {
-      email = _json['email'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('orderOnBallot')) {
-      orderOnBallot = _json['orderOnBallot'] as core.String;
-    }
-    if (_json.containsKey('party')) {
-      party = _json['party'] as core.String;
-    }
-    if (_json.containsKey('phone')) {
-      phone = _json['phone'] as core.String;
-    }
-    if (_json.containsKey('photoUrl')) {
-      photoUrl = _json['photoUrl'] as core.String;
-    }
-  }
+  Candidate.fromJson(core.Map _json)
+      : this(
+          candidateUrl: _json.containsKey('candidateUrl')
+              ? _json['candidateUrl'] as core.String
+              : null,
+          channels: _json.containsKey('channels')
+              ? (_json['channels'] as core.List)
+                  .map((value) => Channel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          email:
+              _json.containsKey('email') ? _json['email'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          orderOnBallot: _json.containsKey('orderOnBallot')
+              ? _json['orderOnBallot'] as core.String
+              : null,
+          party:
+              _json.containsKey('party') ? _json['party'] as core.String : null,
+          phone:
+              _json.containsKey('phone') ? _json['phone'] as core.String : null,
+          photoUrl: _json.containsKey('photoUrl')
+              ? _json['photoUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (candidateUrl != null) 'candidateUrl': candidateUrl!,
-        if (channels != null)
-          'channels': channels!.map((value) => value.toJson()).toList(),
+        if (channels != null) 'channels': channels!,
         if (email != null) 'email': email!,
         if (name != null) 'name': name!,
         if (orderOnBallot != null) 'orderOnBallot': orderOnBallot!,
@@ -599,16 +618,16 @@ class Channel {
   /// Facebook, Twitter
   core.String? type;
 
-  Channel();
+  Channel({
+    this.id,
+    this.type,
+  });
 
-  Channel.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Channel.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -739,111 +758,135 @@ class Contest {
   /// contests this will typically be 'Retention'.
   core.String? type;
 
-  Contest();
+  Contest({
+    this.ballotPlacement,
+    this.ballotTitle,
+    this.candidates,
+    this.district,
+    this.electorateSpecifications,
+    this.level,
+    this.numberElected,
+    this.numberVotingFor,
+    this.office,
+    this.primaryParties,
+    this.primaryParty,
+    this.referendumBallotResponses,
+    this.referendumBrief,
+    this.referendumConStatement,
+    this.referendumEffectOfAbstain,
+    this.referendumPassageThreshold,
+    this.referendumProStatement,
+    this.referendumSubtitle,
+    this.referendumText,
+    this.referendumTitle,
+    this.referendumUrl,
+    this.roles,
+    this.sources,
+    this.special,
+    this.type,
+  });
 
-  Contest.fromJson(core.Map _json) {
-    if (_json.containsKey('ballotPlacement')) {
-      ballotPlacement = _json['ballotPlacement'] as core.String;
-    }
-    if (_json.containsKey('ballotTitle')) {
-      ballotTitle = _json['ballotTitle'] as core.String;
-    }
-    if (_json.containsKey('candidates')) {
-      candidates = (_json['candidates'] as core.List)
-          .map<Candidate>((value) =>
-              Candidate.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('district')) {
-      district = ElectoralDistrict.fromJson(
-          _json['district'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('electorateSpecifications')) {
-      electorateSpecifications =
-          _json['electorateSpecifications'] as core.String;
-    }
-    if (_json.containsKey('level')) {
-      level = (_json['level'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('numberElected')) {
-      numberElected = _json['numberElected'] as core.String;
-    }
-    if (_json.containsKey('numberVotingFor')) {
-      numberVotingFor = _json['numberVotingFor'] as core.String;
-    }
-    if (_json.containsKey('office')) {
-      office = _json['office'] as core.String;
-    }
-    if (_json.containsKey('primaryParties')) {
-      primaryParties = (_json['primaryParties'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('primaryParty')) {
-      primaryParty = _json['primaryParty'] as core.String;
-    }
-    if (_json.containsKey('referendumBallotResponses')) {
-      referendumBallotResponses =
-          (_json['referendumBallotResponses'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('referendumBrief')) {
-      referendumBrief = _json['referendumBrief'] as core.String;
-    }
-    if (_json.containsKey('referendumConStatement')) {
-      referendumConStatement = _json['referendumConStatement'] as core.String;
-    }
-    if (_json.containsKey('referendumEffectOfAbstain')) {
-      referendumEffectOfAbstain =
-          _json['referendumEffectOfAbstain'] as core.String;
-    }
-    if (_json.containsKey('referendumPassageThreshold')) {
-      referendumPassageThreshold =
-          _json['referendumPassageThreshold'] as core.String;
-    }
-    if (_json.containsKey('referendumProStatement')) {
-      referendumProStatement = _json['referendumProStatement'] as core.String;
-    }
-    if (_json.containsKey('referendumSubtitle')) {
-      referendumSubtitle = _json['referendumSubtitle'] as core.String;
-    }
-    if (_json.containsKey('referendumText')) {
-      referendumText = _json['referendumText'] as core.String;
-    }
-    if (_json.containsKey('referendumTitle')) {
-      referendumTitle = _json['referendumTitle'] as core.String;
-    }
-    if (_json.containsKey('referendumUrl')) {
-      referendumUrl = _json['referendumUrl'] as core.String;
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<Source>((value) =>
-              Source.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('special')) {
-      special = _json['special'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Contest.fromJson(core.Map _json)
+      : this(
+          ballotPlacement: _json.containsKey('ballotPlacement')
+              ? _json['ballotPlacement'] as core.String
+              : null,
+          ballotTitle: _json.containsKey('ballotTitle')
+              ? _json['ballotTitle'] as core.String
+              : null,
+          candidates: _json.containsKey('candidates')
+              ? (_json['candidates'] as core.List)
+                  .map((value) => Candidate.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          district: _json.containsKey('district')
+              ? ElectoralDistrict.fromJson(
+                  _json['district'] as core.Map<core.String, core.dynamic>)
+              : null,
+          electorateSpecifications:
+              _json.containsKey('electorateSpecifications')
+                  ? _json['electorateSpecifications'] as core.String
+                  : null,
+          level: _json.containsKey('level')
+              ? (_json['level'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          numberElected: _json.containsKey('numberElected')
+              ? _json['numberElected'] as core.String
+              : null,
+          numberVotingFor: _json.containsKey('numberVotingFor')
+              ? _json['numberVotingFor'] as core.String
+              : null,
+          office: _json.containsKey('office')
+              ? _json['office'] as core.String
+              : null,
+          primaryParties: _json.containsKey('primaryParties')
+              ? (_json['primaryParties'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          primaryParty: _json.containsKey('primaryParty')
+              ? _json['primaryParty'] as core.String
+              : null,
+          referendumBallotResponses:
+              _json.containsKey('referendumBallotResponses')
+                  ? (_json['referendumBallotResponses'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          referendumBrief: _json.containsKey('referendumBrief')
+              ? _json['referendumBrief'] as core.String
+              : null,
+          referendumConStatement: _json.containsKey('referendumConStatement')
+              ? _json['referendumConStatement'] as core.String
+              : null,
+          referendumEffectOfAbstain:
+              _json.containsKey('referendumEffectOfAbstain')
+                  ? _json['referendumEffectOfAbstain'] as core.String
+                  : null,
+          referendumPassageThreshold:
+              _json.containsKey('referendumPassageThreshold')
+                  ? _json['referendumPassageThreshold'] as core.String
+                  : null,
+          referendumProStatement: _json.containsKey('referendumProStatement')
+              ? _json['referendumProStatement'] as core.String
+              : null,
+          referendumSubtitle: _json.containsKey('referendumSubtitle')
+              ? _json['referendumSubtitle'] as core.String
+              : null,
+          referendumText: _json.containsKey('referendumText')
+              ? _json['referendumText'] as core.String
+              : null,
+          referendumTitle: _json.containsKey('referendumTitle')
+              ? _json['referendumTitle'] as core.String
+              : null,
+          referendumUrl: _json.containsKey('referendumUrl')
+              ? _json['referendumUrl'] as core.String
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => Source.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          special: _json.containsKey('special')
+              ? _json['special'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ballotPlacement != null) 'ballotPlacement': ballotPlacement!,
         if (ballotTitle != null) 'ballotTitle': ballotTitle!,
-        if (candidates != null)
-          'candidates': candidates!.map((value) => value.toJson()).toList(),
-        if (district != null) 'district': district!.toJson(),
+        if (candidates != null) 'candidates': candidates!,
+        if (district != null) 'district': district!,
         if (electorateSpecifications != null)
           'electorateSpecifications': electorateSpecifications!,
         if (level != null) 'level': level!,
@@ -869,8 +912,7 @@ class Contest {
         if (referendumTitle != null) 'referendumTitle': referendumTitle!,
         if (referendumUrl != null) 'referendumUrl': referendumUrl!,
         if (roles != null) 'roles': roles!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
         if (special != null) 'special': special!,
         if (type != null) 'type': type!,
       };
@@ -884,24 +926,25 @@ class DivisionSearchResponse {
   core.String? kind;
   core.List<DivisionSearchResult>? results;
 
-  DivisionSearchResponse();
+  DivisionSearchResponse({
+    this.kind,
+    this.results,
+  });
 
-  DivisionSearchResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('results')) {
-      results = (_json['results'] as core.List)
-          .map<DivisionSearchResult>((value) => DivisionSearchResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DivisionSearchResponse.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          results: _json.containsKey('results')
+              ? (_json['results'] as core.List)
+                  .map((value) => DivisionSearchResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (results != null)
-          'results': results!.map((value) => value.toJson()).toList(),
+        if (results != null) 'results': results!,
       };
 }
 
@@ -922,21 +965,23 @@ class DivisionSearchResult {
   /// The unique Open Civic Data identifier for this division
   core.String? ocdId;
 
-  DivisionSearchResult();
+  DivisionSearchResult({
+    this.aliases,
+    this.name,
+    this.ocdId,
+  });
 
-  DivisionSearchResult.fromJson(core.Map _json) {
-    if (_json.containsKey('aliases')) {
-      aliases = (_json['aliases'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('ocdId')) {
-      ocdId = _json['ocdId'] as core.String;
-    }
-  }
+  DivisionSearchResult.fromJson(core.Map _json)
+      : this(
+          aliases: _json.containsKey('aliases')
+              ? (_json['aliases'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          ocdId:
+              _json.containsKey('ocdId') ? _json['ocdId'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (aliases != null) 'aliases': aliases!,
@@ -964,22 +1009,24 @@ class Election {
   /// election the entire US (i.e. ocd-division/country:us).
   core.String? ocdDivisionId;
 
-  Election();
+  Election({
+    this.electionDay,
+    this.id,
+    this.name,
+    this.ocdDivisionId,
+  });
 
-  Election.fromJson(core.Map _json) {
-    if (_json.containsKey('electionDay')) {
-      electionDay = _json['electionDay'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('ocdDivisionId')) {
-      ocdDivisionId = _json['ocdDivisionId'] as core.String;
-    }
-  }
+  Election.fromJson(core.Map _json)
+      : this(
+          electionDay: _json.containsKey('electionDay')
+              ? _json['electionDay'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          ocdDivisionId: _json.containsKey('ocdDivisionId')
+              ? _json['ocdDivisionId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (electionDay != null) 'electionDay': electionDay!,
@@ -1006,25 +1053,29 @@ class ElectionOfficial {
   /// The title of the election official.
   core.String? title;
 
-  ElectionOfficial();
+  ElectionOfficial({
+    this.emailAddress,
+    this.faxNumber,
+    this.name,
+    this.officePhoneNumber,
+    this.title,
+  });
 
-  ElectionOfficial.fromJson(core.Map _json) {
-    if (_json.containsKey('emailAddress')) {
-      emailAddress = _json['emailAddress'] as core.String;
-    }
-    if (_json.containsKey('faxNumber')) {
-      faxNumber = _json['faxNumber'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('officePhoneNumber')) {
-      officePhoneNumber = _json['officePhoneNumber'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  ElectionOfficial.fromJson(core.Map _json)
+      : this(
+          emailAddress: _json.containsKey('emailAddress')
+              ? _json['emailAddress'] as core.String
+              : null,
+          faxNumber: _json.containsKey('faxNumber')
+              ? _json['faxNumber'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          officePhoneNumber: _json.containsKey('officePhoneNumber')
+              ? _json['officePhoneNumber'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (emailAddress != null) 'emailAddress': emailAddress!,
@@ -1045,23 +1096,24 @@ class ElectionsQueryResponse {
   /// Value: the fixed string "civicinfo#electionsQueryResponse".
   core.String? kind;
 
-  ElectionsQueryResponse();
+  ElectionsQueryResponse({
+    this.elections,
+    this.kind,
+  });
 
-  ElectionsQueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('elections')) {
-      elections = (_json['elections'] as core.List)
-          .map<Election>((value) =>
-              Election.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  ElectionsQueryResponse.fromJson(core.Map _json)
+      : this(
+          elections: _json.containsKey('elections')
+              ? (_json['elections'] as core.List)
+                  .map((value) => Election.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (elections != null)
-          'elections': elections!.map((value) => value.toJson()).toList(),
+        if (elections != null) 'elections': elections!,
         if (kind != null) 'kind': kind!,
       };
 }
@@ -1099,24 +1151,735 @@ class ElectoralDistrict {
   /// - "national"
   core.String? scope;
 
-  ElectoralDistrict();
+  ElectoralDistrict({
+    this.id,
+    this.name,
+    this.scope,
+  });
 
-  ElectoralDistrict.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('scope')) {
-      scope = _json['scope'] as core.String;
-    }
-  }
+  ElectoralDistrict.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          scope:
+              _json.containsKey('scope') ? _json['scope'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
         if (name != null) 'name': name!,
         if (scope != null) 'scope': scope!,
+      };
+}
+
+/// A globally unique identifier associated with each feature.
+///
+/// We use 128-bit identifiers so that we have lots of bits available to
+/// distinguish between features. The feature id currently consists of a 64-bit
+/// "cell id" that **sometimes** corresponds to the approximate centroid of the
+/// feature, plus a 64-bit fingerprint of other identifying information. See
+/// more on each respective field in its comments. Feature ids are first
+/// assigned when the data is created in MapFacts. After initial creation of the
+/// feature, they are immutable. This means that the only properties that you
+/// should rely on are that they are unique, and that cell_ids often - but not
+/// always - preserve spatial locality. The degree of locality varies as the
+/// feature undergoes geometry changes, and should not in general be considered
+/// a firm guarantee of the location of any particular feature. In fact, some
+/// locationless features have randomized cell IDs! Consumers of FeatureProtos
+/// from Mapfacts are guaranteed that fprints in the id field of features will
+/// be globally unique. Using the fprint allows consumers who don't need the
+/// spatial benefit of cell ids to uniquely identify features in a 64-bit
+/// address space. This property is not guaranteed for other sources of
+/// FeatureProtos.
+class FeatureIdProto {
+  /// The S2CellId corresponding to the approximate location of this feature as
+  /// of when it was first created.
+  ///
+  /// This can be of variable accuracy, ranging from the exact centroid of the
+  /// feature at creation, a very large S2 Cell, or even being completely
+  /// randomized for locationless features. Cell ids have the nice property that
+  /// they follow a space-filling curve over the surface of the earth. (See
+  /// s2cellid.h for details.) WARNING: Clients should only use cell IDs to
+  /// perform spatial locality optimizations. There is no strict guarantee that
+  /// the cell ID of a feature is related to the current geometry of the feature
+  /// in any way.
+  core.String? cellId;
+
+  /// A 64-bit fingerprint used to identify features.
+  ///
+  /// Most clients should rely on MapFacts or OneRing to choose fingerprints. If
+  /// creating new fprints, the strategy should be chosen so that the chance of
+  /// collision is remote or non-existent, and the distribution should be
+  /// reasonably uniform. For example, if the source data assigns unique ids to
+  /// features, then a fingerprint of the provider name, version, and source id
+  /// is sufficient.
+  core.String? fprint;
+
+  /// A place for clients to attach arbitrary data to a feature ID.
+  ///
+  /// Never set in MapFacts.
+  MessageSet? temporaryData;
+
+  FeatureIdProto({
+    this.cellId,
+    this.fprint,
+    this.temporaryData,
+  });
+
+  FeatureIdProto.fromJson(core.Map _json)
+      : this(
+          cellId: _json.containsKey('cellId')
+              ? _json['cellId'] as core.String
+              : null,
+          fprint: _json.containsKey('fprint')
+              ? _json['fprint'] as core.String
+              : null,
+          temporaryData: _json.containsKey('temporaryData')
+              ? MessageSet.fromJson(
+                  _json['temporaryData'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cellId != null) 'cellId': cellId!,
+        if (fprint != null) 'fprint': fprint!,
+        if (temporaryData != null) 'temporaryData': temporaryData!,
+      };
+}
+
+/// Detailed summary of the result from geocoding an address
+class GeocodingSummary {
+  /// Represents the best estimate of whether or not the input address was fully
+  /// understood and the address is correctly componentized.
+  ///
+  /// Mirrors the same-name field in geostore.staging.AddressLinkupScoringProto.
+  core.bool? addressUnderstood;
+
+  /// The ID of the FeatureProto returned by the geocoder
+  FeatureIdProto? featureId;
+
+  /// The feature type for the FeatureProto returned by the geocoder
+  /// Possible string values are:
+  /// - "typeAny" : ABSTRACT
+  /// - "typeTransportation" : ABSTRACT
+  /// - "typeRoute" : A route is any section of road (or rails, etc.) that has a
+  /// name. This includes city streets as well as highways. Road segments can
+  /// belong to multiple routes (e.g. El Camino, CA-82).
+  /// - "typeDeprecatedHighwayDoNotUse" : DEPRECATED
+  /// - "typeHighway" : ABSTRACT
+  /// - "typeHighway1"
+  /// - "typeHighway2"
+  /// - "typeHighway3"
+  /// - "typeHighway4"
+  /// - "typeHighway5"
+  /// - "typeHighway6"
+  /// - "typeHighway7"
+  /// - "typeHighway8"
+  /// - "typeHighway9"
+  /// - "typeBicycleRoute" : A designated bicycle route, whose segments may
+  /// consist of any combination of bicycle paths, bicycle lanes, or city
+  /// streets.
+  /// - "typeTrail" : A designated trail, which may consist of paved walkways,
+  /// dirt paths, fire road, streets or highways, etc.
+  /// - "typeSegment" : ABSTRACT
+  /// - "typeRoad"
+  /// - "typeRailway" : Railroads use several different incompatible track
+  /// types.
+  /// - "typeStandardTrack"
+  /// - "typeJrTrack"
+  /// - "typeNarrowTrack"
+  /// - "typeMonorailTrack"
+  /// - "typeSubwayTrack"
+  /// - "typeLightRailTrack"
+  /// - "typeBroadTrack"
+  /// - "typeHighSpeedRail"
+  /// - "typeTrolleyTrack" : Tracks for streetcars, cable-cars, etc. Ferries are
+  /// services that are part of the road network but are not roads. They
+  /// typically involve fares and scheduled departure times.
+  /// - "typeFerry" : ABSTRACT
+  /// - "typeFerryBoat" : The vast majority of ferries are ferry boats.
+  /// - "typeFerryTrain" : Also called a "car transport", a ferry train is a
+  /// rail service that carries passengers and their vehicles across undrivable
+  /// terrain. The Channel Tunnel ("Chunnel") is the most famous example, but
+  /// they are also common in the Alps where they connect neighboring valleys
+  /// otherwise separated by impassable mountains.
+  /// - "typeVirtualSegment" : Any plausible 1-dimensional path through a 2+
+  /// dimensional space, for the purposes of making graph-search-based routing
+  /// possible. Such segments can be used to model paths through parking lots,
+  /// squares, floors of buildings and other areas.
+  /// - "typeIntersection" : An intersection consists of a collection of
+  /// segments that terminate at the same location. This is topological
+  /// definition: it may not match what a typical user would think of as an
+  /// "intersection". See TYPE_INTERSECTION_GROUP, below, for more information.
+  /// Each segment terminating at an intersection has an "endpoint type" that
+  /// specifies how that segment is terminated: stop sign, yield sign, three-way
+  /// light, etc.
+  /// - "typeTransit" : ABSTRACT
+  /// - "typeTransitStation" : DEPRECATED
+  /// - "typeBusStation" : DEPRECATED
+  /// - "typeTramwayStation" : DEPRECATED
+  /// - "typeTrainStation" : DEPRECATED
+  /// - "typeSubwayStation" : DEPRECATED
+  /// - "typeFerryTerminal" : DEPRECATED
+  /// - "typeAirport" : DEPRECATED
+  /// - "typeAirportCivil" : DEPRECATED
+  /// - "typeAirportMilitary" : DEPRECATED
+  /// - "typeAirportMixed" : DEPRECATED
+  /// - "typeHeliport" : DEPRECATED
+  /// - "typeSeaplaneBase" : DEPRECATED
+  /// - "typeAirstrip" : DEPRECATED
+  /// - "typeCableCarStation" : DEPRECATED
+  /// - "typeGondolaLiftStation" : DEPRECATED
+  /// - "typeFunicularStation" : DEPRECATED
+  /// - "typeSpecialStation" : DEPRECATED
+  /// - "typeHorseCarriageStation" : DEPRECATED
+  /// - "typeMonorailStation" : DEPRECATED
+  /// - "typeSeaport" : DEPRECATED
+  /// - "typeTransitStop" : DEPRECATED
+  /// - "typeTransitTrip" : DEPRECATED
+  /// - "typeTransitDeparture" : DEPRECATED
+  /// - "typeTransitLeg" : DEPRECATED
+  /// - "typeTransitLine" : A transit line is a collection of transit legs,
+  /// associated with some invariant properties of the trips that run over the
+  /// legs. See also transitline.proto
+  /// - "typeTransitAgency" : A transit agency operates a number of lines,
+  /// typically all in the same city, region or country. See also
+  /// transitagency.proto
+  /// - "typeTransitTransfer" : DEPRECATED
+  /// - "typeSegmentPath" : ABSTRACT
+  /// - "typeRoadSign" : Road sign features have names, point geometry, etc.
+  /// They also have segment_path data (see below) which lists the segments that
+  /// refer to the sign. See segment.proto for the reference from the segment to
+  /// the road sign.
+  /// - "typeIntersectionGroup" : Our TYPE_INTERSECTION feature, above, models
+  /// the point where one or more segments terminate. This is topological
+  /// definition: it may not match what a typical user would think of as an
+  /// "intersection". Consider the intersections where Hayes, Market, Larkin,
+  /// and 9th Street meet near (37.77765, -122.41638) in San Francisco. Most
+  /// people would probably consider this a single feature, even though we model
+  /// it as four separate TYPE_INTERSECTION features. This
+  /// TYPE_INTERSECTION_GROUP is used to model the user's concept of a complex
+  /// intersection.
+  /// - "typePathway" : RESERVED
+  /// - "typeRestrictionGroup" : A restriction group describes a set of segment
+  /// restrictions that belong together and have a name or an associated event.
+  /// See also restriction_group.proto
+  /// - "typeTollCluster" : A toll cluster is either a single point on a segment
+  /// (represented as a point at the end of the segment that has
+  /// ENDPOINT_TOLL_BOOTH set) or a group of points on various road segments in
+  /// MapFacts that represents one or more lanes passing through a toll fixture
+  /// that all go to the same routing destination. Each toll cluster should have
+  /// at most a single price per payment method. E.g. {CASH = $5, PASS = $1}.
+  /// Note: If a toll fixture has different prices for multiple routing
+  /// destinations, drivers need to be in the correct lane before passing
+  /// through the toll fixture and hence such a fixture is represented by
+  /// multiple toll clusters. A toll cluster does not necessarily represent a
+  /// real-world entity, e.g. a particular plaza/structure as perceived by
+  /// humans. This is because a plaza can be represented by more than one toll
+  /// cluster. We require toll clusters to have names, but they might be
+  /// non-unique. For example, a plaza might be represented by multiple toll
+  /// clusters that may have the same plaza name. For further details, please
+  /// see go/toll-cluster-schema.
+  /// - "typePolitical" : ABSTRACT
+  /// - "typeCountry"
+  /// - "typeAdministrativeArea" : ABSTRACT
+  /// - "typeAdministrativeArea1"
+  /// - "typeUsState" : DEPRECATED
+  /// - "typeGbCountry" : DEPRECATED
+  /// - "typeJpTodoufuken" : DEPRECATED
+  /// - "typeAdministrativeArea2"
+  /// - "typeGbFormerPostalCounty" : DEPRECATED
+  /// - "typeGbTraditionalCounty" : DEPRECATED
+  /// - "typeAdministrativeArea3"
+  /// - "typeAdministrativeArea4"
+  /// - "typeAdministrativeArea5"
+  /// - "typeAdministrativeArea6"
+  /// - "typeAdministrativeArea7"
+  /// - "typeAdministrativeArea8"
+  /// - "typeAdministrativeArea9"
+  /// - "typeColloquialArea" : e.g. Silicon Valley
+  /// - "typeReservation" : A reservation is a region collectively held or
+  /// governed by indigenous people and officially recognized by the country’s
+  /// government at the federal or state level. A reservation may be fully
+  /// contained within an administrative feature or partially contained within
+  /// two or more. These regions are referred to by different categorical names
+  /// depending on country and even by state, including but not limited to:
+  /// “Indian Reservations”, “Indian Reserves”, “Land Claim Settlement Lands”,
+  /// “Indian Lands”, “Treaty Lands”, “Indigenous Territories”, etc. A
+  /// reservation is not a historic indigenous territory boundary or a region
+  /// which has applied for land rights but has not yet received official
+  /// recognition.
+  /// - "typeLocality"
+  /// - "typeGbPostTown" : DEPRECATED
+  /// - "typeJpGun" : DEPRECATED
+  /// - "typeJpShikuchouson" : DEPRECATED
+  /// - "typeJpSubShikuchouson" : DEPRECATED
+  /// - "typeColloquialCity" : An entity widely considered to be a city, that
+  /// may itself be made up of smaller political entities, some of which are
+  /// cities/towns/villages themselves. For example, the colloquial view of
+  /// Sydney, Australia actually comprises many smaller cities, but is regarded
+  /// as a city itself. This type is not suitable for modeling official
+  /// metro-/micropolitan or other statistical areas.
+  /// - "typeSublocality" : ABSTRACT
+  /// - "typeUsBorough" : DEPRECATED
+  /// - "typeGbDependentLocality" : DEPRECATED
+  /// - "typeJpOoaza" : DEPRECATED
+  /// - "typeJpKoaza" : DEPRECATED
+  /// - "typeJpGaiku" : DEPRECATED
+  /// - "typeGbDoubleDependentLocality" : DEPRECATED
+  /// - "typeJpChiban" : DEPRECATED
+  /// - "typeJpEdaban" : DEPRECATED
+  /// - "typeSublocality1"
+  /// - "typeSublocality2"
+  /// - "typeSublocality3"
+  /// - "typeSublocality4"
+  /// - "typeSublocality5"
+  /// - "typeNeighborhood"
+  /// - "typeConstituency"
+  /// - "typeDesignatedMarketArea" : Designated Market Areas (or DMAs) are used
+  /// by marketing and ratings companies (such as the Nielsen Media Research
+  /// company) to describe geographical regions (such as the greater New York
+  /// metropolitan area) that are covered by a set of television stations. (See
+  /// http://www.schooldata.com/pdfs/DMA.pdf) In the United States, DMAs should
+  /// have a DMA numeric ID name, tagged with the FLAG_DESIGNATED_MARKET_AREA_ID
+  /// flag.
+  /// - "typeSchoolDistrict"
+  /// - "typeLandParcel"
+  /// - "typeDisputedArea" : Eventually we'll have more data for disputed areas
+  /// (e.g., who makes claims on the area, who has de facto control, etc.). For
+  /// the moment, we just define a type so we can simply mark areas as disputed.
+  /// - "typePoliceJurisdiction" : Boundaries representing the jurisdiction of a
+  /// particular police station.
+  /// - "typeStatisticalArea" : An area used for aggregating statistical data,
+  /// eg, a census region. Note that TYPE_STATISTICAL_AREA has a third nibble so
+  /// we can add an abstract parent above it later if need be at 0x2E1 (and
+  /// rename TYPE_STATISTICAL_AREA as TYPE_STATISTICAL_AREA1).
+  /// - "typeConstituencyFuture" : RESERVED
+  /// - "typePark" : DEPRECATED
+  /// - "typeGolfCourse" : DEPRECATED
+  /// - "typeLocalPark" : DEPRECATED
+  /// - "typeNationalPark" : DEPRECATED
+  /// - "typeUsNationalPark" : DEPRECATED
+  /// - "typeUsNationalMonument" : DEPRECATED
+  /// - "typeNationalForest" : DEPRECATED
+  /// - "typeProvincialPark" : DEPRECATED
+  /// - "typeProvincialForest" : DEPRECATED
+  /// - "typeCampgrounds" : DEPRECATED
+  /// - "typeHikingArea" : DEPRECATED
+  /// - "typeBusiness" : DEPRECATED
+  /// - "typeGovernment" : DEPRECATED
+  /// - "typeBorderCrossing" : DEPRECATED
+  /// - "typeCityHall" : DEPRECATED
+  /// - "typeCourthouse" : DEPRECATED
+  /// - "typeEmbassy" : DEPRECATED
+  /// - "typeLibrary" : DEPRECATED
+  /// - "typeSchool" : DEPRECATED
+  /// - "typeUniversity" : DEPRECATED
+  /// - "typeEmergency" : DEPRECATED
+  /// - "typeHospital" : DEPRECATED
+  /// - "typePharmacy" : DEPRECATED
+  /// - "typePolice" : DEPRECATED
+  /// - "typeFire" : DEPRECATED
+  /// - "typeDoctor" : DEPRECATED
+  /// - "typeDentist" : DEPRECATED
+  /// - "typeVeterinarian" : DEPRECATED
+  /// - "typeTravelService" : DEPRECATED
+  /// - "typeLodging" : DEPRECATED
+  /// - "typeRestaurant" : DEPRECATED
+  /// - "typeGasStation" : DEPRECATED
+  /// - "typeParking" : DEPRECATED
+  /// - "typePostOffice" : DEPRECATED
+  /// - "typeRestArea" : DEPRECATED
+  /// - "typeCashMachine" : DEPRECATED
+  /// - "typeCarRental" : DEPRECATED
+  /// - "typeCarRepair" : DEPRECATED
+  /// - "typeShopping" : DEPRECATED
+  /// - "typeGrocery" : DEPRECATED
+  /// - "typeTouristDestination" : DEPRECATED
+  /// - "typeEcoTouristDestination" : DEPRECATED
+  /// - "typeBirdWatching" : DEPRECATED
+  /// - "typeFishing" : DEPRECATED
+  /// - "typeHunting" : DEPRECATED
+  /// - "typeNatureReserve" : DEPRECATED
+  /// - "typeTemple" : DEPRECATED
+  /// - "typeChurch" : DEPRECATED
+  /// - "typeGurudwara" : DEPRECATED
+  /// - "typeHinduTemple" : DEPRECATED
+  /// - "typeMosque" : DEPRECATED
+  /// - "typeSynagogue" : DEPRECATED
+  /// - "typeStadium" : DEPRECATED
+  /// - "typeBar" : DEPRECATED
+  /// - "typeMovieRental" : DEPRECATED
+  /// - "typeCoffee" : DEPRECATED
+  /// - "typeGolf" : DEPRECATED
+  /// - "typeBank" : DEPRECATED
+  /// - "typeDoodle" : DEPRECATED
+  /// - "typeGrounds" : DEPRECATED
+  /// - "typeAirportGrounds" : DEPRECATED
+  /// - "typeBuildingGrounds" : DEPRECATED
+  /// - "typeCemetery" : DEPRECATED
+  /// - "typeHospitalGrounds" : DEPRECATED
+  /// - "typeIndustrial" : DEPRECATED
+  /// - "typeMilitary" : DEPRECATED
+  /// - "typeShoppingCenter" : DEPRECATED
+  /// - "typeSportsComplex" : DEPRECATED
+  /// - "typeUniversityGrounds" : DEPRECATED
+  /// - "typeDeprecatedTarmac" : DEPRECATED
+  /// - "typeEnclosedTrafficArea" : DEPRECATED
+  /// - "typeParkingLot" : DEPRECATED
+  /// - "typeParkingGarage" : DEPRECATED
+  /// - "typeOffRoadArea" : DEPRECATED
+  /// - "typeBorder" : A line representing the boundary between two features.
+  /// See border.proto for details.
+  /// - "typeBuilding" : DEPRECATED
+  /// - "typeGeocodedAddress" : An association of a point with an address, with
+  /// no other information.
+  /// - "typeNaturalFeature" : ABSTRACT
+  /// - "typeTerrain" : Expanses of land that share common surface attributes.
+  /// These areas would look more or less uniform from a high altitude.
+  /// - "typeSand"
+  /// - "typeBeach"
+  /// - "typeDune"
+  /// - "typeRocky"
+  /// - "typeIce"
+  /// - "typeGlacier"
+  /// - "typeBuiltUpArea" : Terrain that looks populated.
+  /// - "typeVegetation" : Terrain that is covered in vegetation.
+  /// - "typeShrubbery"
+  /// - "typeWoods"
+  /// - "typeAgricultural"
+  /// - "typeGrassland"
+  /// - "typeTundra"
+  /// - "typeDesert"
+  /// - "typeSaltFlat" : A flat expanse of salt left by the evaporation of a
+  /// body of salt water.
+  /// - "typeWater" : Features can be TYPE_WATER if we don't have enough
+  /// information to properly type the body of water. TYPE_WATER is also used as
+  /// the type for child features that compose a TYPE_RIVER feature.
+  /// - "typeOcean" : One of the large salt-water bodies that covers most of the
+  /// globe.
+  /// - "typeBay" : An ocean subdivision formed by a coastal indentation.
+  /// Includes coves and gulfs.
+  /// - "typeBight" : An open body of water formed by a slight coastal
+  /// indentation.
+  /// - "typeLagoon"
+  /// - "typeSea" : An ocean subdivision more or less confined by land and
+  /// islands.
+  /// - "typeStrait" : A long narrow ocean subdivision. Includes sounds.
+  /// - "typeInlet"
+  /// - "typeFjord"
+  /// - "typeLake" : An inland body of standing water.
+  /// - "typeSeasonalLake" : A lake that dries up part of the year.
+  /// - "typeReservoir" : An artificial body of water, possibly created by a
+  /// dam, often used for irrigation or house use.
+  /// - "typePond"
+  /// - "typeRiver" : An inland body of moving water, or parts associated with
+  /// it in which there is little or no current (backwater).
+  /// - "typeRapids"
+  /// - "typeDistributary" : A branch which flows away from the main river.
+  /// Includes deltas.
+  /// - "typeConfluence" : A place where two or more rivers join.
+  /// - "typeWaterfall"
+  /// - "typeSpring" : A place where ground water flows naturally out of the
+  /// ground.
+  /// - "typeGeyser"
+  /// - "typeHotSpring"
+  /// - "typeSeasonalRiver" : A river that dries up part of the year.
+  /// - "typeWadi" : A dry riverbed that occasionally receives flashfloods.
+  /// - "typeEstuary" : A place at the end of a river where fresh and salt water
+  /// mix. Includes tidal creeks and limans.
+  /// - "typeWetland" : Land that is usually flooded. Includes bogs, marshes,
+  /// flats, moors, and swamps.
+  /// - "typeWaterNavigation"
+  /// - "typeFord" : A shallow place where water may be waded through.
+  /// - "typeCanal" : A narrow passage used by boats. Normally artificial.
+  /// - "typeHarbor" : A deep place near a shore where ships commonly drop
+  /// anchor.
+  /// - "typeChannel" : A deep part in a body of water that is suitable for
+  /// navigation. Includes narrows.
+  /// - "typeReef" : Rocks, coral, sandbars, or other features beneath the
+  /// surface of the water that pose a hazard to passing ships. Includes shoals.
+  /// - "typeReefFlat" : A relatively shallow zone of the back reef located
+  /// closest to the shore, that may be exposed at low tide.
+  /// - "typeReefGrowth" : A small section of rocks, coral, sandbars, or other
+  /// features beneath the surface of the water that forms part of a reef.
+  /// - "typeReefExtent" : The full extent of the reef complex.
+  /// - "typeReefRockSubmerged" : A submerged rock in the water.
+  /// - "typeIrrigation" : Man-made (and sometimes natural) channels used to
+  /// move water. This type was used for both dam structures and water that is
+  /// hold back by dams. We should use TYPE_COMPOUND_BUILDING for dam structures
+  /// and TYPE_RESERVOIR for water.
+  /// - "typeDam" : DEPRECATED
+  /// - "typeDrinkingWater"
+  /// - "typeCurrent" : Includes overfalls.
+  /// - "typeWateringHole" : A natural depression filled with water where
+  /// animals come to drink.
+  /// - "typeTectonic" : ABSTRACT This type is incorrectly under TYPE_TECTONIC
+  /// instead of TYPE_WATER. This was a mistake and is now fixed. See
+  /// TYPE_WATERING_HOLE for the replacement.
+  /// - "typeWateringHoleDeprecated" : DEPRECATED
+  /// - "typeVolcano"
+  /// - "typeLavaField"
+  /// - "typeFissure"
+  /// - "typeFault"
+  /// - "typeLandMass"
+  /// - "typeContinent"
+  /// - "typeIsland"
+  /// - "typeAtoll"
+  /// - "typeOceanRockExposed" : An exposed rock in the water.
+  /// - "typeCay" : A small, low-elevation, sandy island formed on the surface
+  /// of coral reefs
+  /// - "typePeninsula" : A stretch of land projecting into water. Includes
+  /// capes and spits.
+  /// - "typeIsthmus" : A strip of land connecting two larger land masses, such
+  /// as continents.
+  /// - "typeElevated" : Features that are notable for being high (or low), or
+  /// for having sudden changes in elevation. These features might have an
+  /// "elevation" extension to specify the actual elevation. See ElevationProto
+  /// for more information.
+  /// - "typePeak" : Elevations that have a distinctive peak.
+  /// - "typeNunatak" : A peak or ridge of a mountain that extends through a
+  /// glacier.
+  /// - "typeSpur" : A subsidiary peak of a mountain.
+  /// - "typePass" : A route over an otherwise difficult to traverse feature.
+  /// Includes saddle.
+  /// - "typePlateau" : Elevations that are flat on top. Includes mesas and
+  /// buttes.
+  /// - "typeRidge" : A ridge is a geographical feature consisting of a chain of
+  /// mountains or hills that form a continuous elevated crest with a single
+  /// ridgeline for some distance.
+  /// - "typeRavine" : Steep declines usually carved by erosion. Includes
+  /// valleys, canyons, ditches, and gorges.
+  /// - "typeCrater" : Depressions causes by impact, explosion, and sometimes
+  /// sink-holes.
+  /// - "typeKarst" : Topography formed on limestone and gypsum by dissolution
+  /// with sinkholes, caves, etc.
+  /// - "typeCliff" : A vertical or nearly vertical slope. Includes escarpments.
+  /// - "typeVista" : An elevated place that is notable for having a good view.
+  /// Raster digital elevation data. This is not a type to be used by providers
+  /// or consumed by clients.
+  /// - "typeDigitalElevationModel" : RESERVED
+  /// - "typeUpland" : Land along streams higher than the alluvial plain or
+  /// stream terrace.
+  /// - "typeTerrace"
+  /// - "typeSlope" : Land not so steep as a cliff, but changing elevation.
+  /// Includes slides.
+  /// - "typeContourLine" : All the points on the polygon are at the same
+  /// elevation.
+  /// - "typePan" : A near-level shallow, natural depression or basin, usually
+  /// containing an intermittent lake, pond, or pool.
+  /// - "typeUnstableHillside"
+  /// - "typeMountainRange" : A series of mountains or hills ranged in a line
+  /// and connected by high ground. Mountain ranges usually consist of many
+  /// smaller ridges. For example, the Himalayas, the Andes. the Alps, etc.
+  /// - "typeUndersea" : Features that are notable for being high (or low), or
+  /// for having sudden changes in elevation. These features might have an
+  /// "elevation" extension to specify the actual elevation. See ElevationProto
+  /// for more information.
+  /// - "typeSubmarineSeamount" : includes peaks, ranges, and spurs
+  /// - "typeSubmarineRidge"
+  /// - "typeSubmarineGap" : includes saddles
+  /// - "typeSubmarinePlateau"
+  /// - "typeSubmarineDeep"
+  /// - "typeSubmarineValley" : includes trenches and troughs
+  /// - "typeSubmarineBasin"
+  /// - "typeSubmarineSlope"
+  /// - "typeSubmarineCliff"
+  /// - "typeSubmarinePlain"
+  /// - "typeSubmarineFractureZone"
+  /// - "typeCave" : Don't use 0xA7. Use 8 bits for additional types under
+  /// TYPE_NATURAL_FEATURE, so we don't run out of space. The following are
+  /// miscellaneous natural features that don't fit any of the categories above.
+  /// - "typeRock"
+  /// - "typeArchipelago" : A feature representing a group or chain of islands.
+  /// - "typePostal" : ABSTRACT
+  /// - "typePostalCode" : This is the type for postal codes which are complete
+  /// and independent enough that there should be a feature for them (e.g. US
+  /// 5-digit ZIP codes). For even more detailed suffixes that further subdivide
+  /// a postal code (such as the +4 component in US ZIP codes), store the
+  /// information in a TYPE_POSTAL_CODE_SUFFIX address component. When a range
+  /// or set of postal codes share the same geographical area, e.g. because a
+  /// precise subdivision does not exist or this subdivision is unknown, this
+  /// type is used for each individual postal code.
+  /// - "typePostalCodePrefix" : A prefix portion of a postal code which does
+  /// not meet the requirements for TYPE_POSTAL_CODE, but which is useful to
+  /// search for, for example UK outcodes.
+  /// - "typePremise" : DEPRECATED
+  /// - "typeSubPremise" : DEPRECATED This is deprecated and we want to use
+  /// TYPE_COMPOUND_SECTION instead.
+  /// - "typeSuite" : DEPRECATED
+  /// - "typePostTown" : The term "post town" is used for a locality-like-entity
+  /// that is only used for postal addresses.
+  /// - "typePostalRound" : DEPRECATED
+  /// - "typeMetaFeature" : ABSTRACT
+  /// - "typeDataSource" : Every data source used in constructing a data
+  /// repository has a corresponding feature that provides more information
+  /// about that data source. The extra information is stored in the optional
+  /// data_source field below.
+  /// - "typeLocale" : A locale feature provides region specific conventions
+  /// such as preferred language and formatting details for time, date, and
+  /// currency values. Locales aren't necessary defined by physical geographic
+  /// features, so they are classified as meta-features.
+  /// - "typeTimezone" : A timezone feature is used to specify the region
+  /// covering an international timezone. When a point is covered by multiple
+  /// timezone features, the most specific one can be used to compute the local
+  /// time at this point. Most specific implies a much smaller region or the one
+  /// that is closer to the center. A feature's timezone can be specified in the
+  /// repeated related_timezone field.
+  /// - "typeBusinessChain" : A business chain feature is used to represent a
+  /// chain, e.g. Starbucks, McDonald's, etc. Other features representing
+  /// specific stores/franchises of this chain may refer to one such feature via
+  /// RELATION_MEMBER_OF_CHAIN. This is not strictly reserved to commercial
+  /// chains but can also be used to model organizations such as the Red Cross
+  /// or the United Nations.
+  /// - "typePhoneNumberPrefix" : A phone number prefix feature is used to
+  /// specify the region where phone numbers (typically fixed-line numbers) must
+  /// begin with a certain prefix. Any phone number prefix down to any level of
+  /// granularity could be represented by this type.
+  /// - "typePhoneNumberAreaCode" : A phone number area code is a prefix which
+  /// also coincides with the area code, or national destination code, of a
+  /// particular region.
+  /// - "typeBusinessCorridor" : A Business Corridor is a dense cluster of
+  /// semantically similar establishments. TYPE_BUSINESS_CORRIDOR features are
+  /// distinguished from TYPE_COLLOQUIAL_AREA features because the corridors are
+  /// not under the political hierarchy, are allowed to be nameless, and may not
+  /// correspond to well-known real world locations. For more details, see
+  /// go/geo-corridors-schema.
+  /// - "typeAddressTemplate" : An address template feature provides
+  /// region-specific conventions for structuring addresses. These features
+  /// aren't necessarily defined by physical geographic features, so they are
+  /// classified as meta-features.
+  /// - "typeEvent" : DEPRECATED
+  /// - "typeEarthquake" : DEPRECATED
+  /// - "typeHurricane" : DEPRECATED
+  /// - "typeWeatherCondition" : DEPRECATED
+  /// - "typeTransient" : RESERVED
+  /// - "typeEntrance" : A portal of entry or exit to another feature. Examples:
+  /// - Subway station entrance. - Parking lot entrance.
+  /// - "typeCartographic" : Cartographic features are used to capture
+  /// real-world objects for which there is no current desire to model any
+  /// specific attributes. These are only useful to make the map tiles look
+  /// pretty.
+  /// - "typeHighTension" : DEPRECATED
+  /// - "typeSkiTrail" : Also see skitrail.proto
+  /// - "typeSkiLift" : Also see skilift.proto
+  /// - "typeSkiBoundary" : Also see skiboundary.proto
+  /// - "typeWatershedBoundary"
+  /// - "typeTarmac" : Starting with TYPE_TARMAC, we use longer IDs, so that we
+  /// can expand the number of feature types under TYPE_CARTOGRAPHIC.
+  /// - "typeWall" : Use TYPE_COMPOUND_GROUND and appropriate gcids for the next
+  /// two.
+  /// - "typePicnicArea" : DEPRECATED
+  /// - "typePlayGround" : DEPRECATED
+  /// - "typeTrailHead"
+  /// - "typeGolfTeeingGround" : Sub-types within a golf course.
+  /// - "typeGolfPuttingGreen"
+  /// - "typeGolfRough"
+  /// - "typeGolfSandBunker"
+  /// - "typeGolfFairway"
+  /// - "typeGolfHole" : Use TYPE_ESTABLISHMENT_POI and gcid:golf_shop for golf
+  /// shops instead.
+  /// - "typeDeprecatedGolfShop" : DEPRECATED
+  /// - "typeCampingSite" : DEPRECATED
+  /// - "typeDesignatedBarbecuePit"
+  /// - "typeDesignatedCookingArea"
+  /// - "typeCampfirePit"
+  /// - "typeWaterFountain"
+  /// - "typeLitterReceptacle"
+  /// - "typeLockerArea"
+  /// - "typeAnimalEnclosure" : Subtype within a zoo - a cage or fenced-off or
+  /// otherwise delineated area containing animals.
+  /// - "typeCartographicLine" : A line for a cartographic detail. For example
+  /// the international date line. Such features should have polyline geometry.
+  /// - "typeEstablishment" : ABSTRACT This type is being replaced by
+  /// TYPE_COMPOUND_GROUNDS. For further details, see go/compounds-v2
+  /// - "typeEstablishmentGrounds" : DEPRECATED This type has been replaced by
+  /// TYPE_COMPOUND_BUILDING. For further details, see go/oyster-compounds
+  /// - "typeEstablishmentBuilding" : DEPRECATED
+  /// - "typeEstablishmentPoi" : Establishment POIs can be referenced by
+  /// TYPE_COMPOUND features using the RELATION_PRIMARILY_OCCUPIED_BY. This is
+  /// the reciprocal relation of the RELATION_OCCUPIES.
+  /// - "typeEstablishmentService" : Represents service-only establishments
+  /// (those without a storefront location). NOTE(tcain): Using value 0xD441,
+  /// since we could find ourselves with a need to differentiate service areas
+  /// from online-only at this level in the future, but still benefit from being
+  /// able to group those under a common parent, disjoint from
+  /// TYPE_ESTABLISHMENT_POI.
+  /// - "typeCelestial" : The root of types of features that are in the sky,
+  /// rather than on the earth. There will eventually be a hierarchy of types
+  /// here.
+  /// - "typeRoadMonitor" : Features responsible for monitoring traffic on roads
+  /// (usually for speed). Includes cameras at particular points as well as
+  /// monitors that cover larger spans. Features of this type should have a
+  /// corresponding gcid that specifies the correct subtype (e.g.
+  /// gcid:road_camera or gcid:speed_camera_zone). This type was originally
+  /// named as TYPE_ROAD_CAMERA.
+  /// - "typePublicSpacesAndMonuments" : ABSTRACT
+  /// - "typeStatue" : Note that this type does not distinguish the nature of
+  /// the statue (religious, historical, memorial, tourist, ...).
+  /// - "typeTownSquare" : Open space used for events, gathering, or as
+  /// market-place.
+  /// - "typeLevel" : A feature used to represent a logical level, e.g. floor.
+  /// - "typeCompound" : ABSTRACT
+  /// - "typeCompoundGrounds" : e.g. campus, compound, parcel.
+  /// - "typeCompoundBuilding" : e.g. single family dwelling, office building.
+  /// - "typeCompoundSection" : e.g. suite, room, hallway, cubicle.
+  /// - "typeTerminalPoint" : A terminal point represents a good location for a
+  /// user to meet a taxi, ridesharing vehicle, or general driver.
+  /// - "typeRegulatedArea" : An area controlled in some way by an authoritative
+  /// source, such as a government-designated COVID containment zone. Features
+  /// of this type should have one or more gcids corresponding to their specific
+  /// regulation.
+  /// - "typeDoNotUseReservedToCatchGeneratedFiles" : DEPRECATED
+  /// - "typeUnknown" : A feature of completely unknown type. This should only
+  /// be used when absolutely necessary. One example in which this type is
+  /// useful is in the Chinese importer, which must heuristically segment
+  /// addresses into components - it often does not know what types to make
+  /// those components. Please note that the Oyster address formatter does not
+  /// currently support address components of TYPE_UNKNOWN well.
+  core.String? featureType;
+
+  /// Precision of the center point (lat/long) of the geocoded FeatureProto
+  core.double? positionPrecisionMeters;
+
+  /// The query sent to the geocoder
+  core.String? queryString;
+
+  GeocodingSummary({
+    this.addressUnderstood,
+    this.featureId,
+    this.featureType,
+    this.positionPrecisionMeters,
+    this.queryString,
+  });
+
+  GeocodingSummary.fromJson(core.Map _json)
+      : this(
+          addressUnderstood: _json.containsKey('addressUnderstood')
+              ? _json['addressUnderstood'] as core.bool
+              : null,
+          featureId: _json.containsKey('featureId')
+              ? FeatureIdProto.fromJson(
+                  _json['featureId'] as core.Map<core.String, core.dynamic>)
+              : null,
+          featureType: _json.containsKey('featureType')
+              ? _json['featureType'] as core.String
+              : null,
+          positionPrecisionMeters: _json.containsKey('positionPrecisionMeters')
+              ? (_json['positionPrecisionMeters'] as core.num).toDouble()
+              : null,
+          queryString: _json.containsKey('queryString')
+              ? _json['queryString'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (addressUnderstood != null) 'addressUnderstood': addressUnderstood!,
+        if (featureId != null) 'featureId': featureId!,
+        if (featureType != null) 'featureType': featureType!,
+        if (positionPrecisionMeters != null)
+          'positionPrecisionMeters': positionPrecisionMeters!,
+        if (queryString != null) 'queryString': queryString!,
       };
 }
 
@@ -1144,23 +1907,26 @@ class GeographicDivision {
   /// request.
   core.List<core.int>? officeIndices;
 
-  GeographicDivision();
+  GeographicDivision({
+    this.alsoKnownAs,
+    this.name,
+    this.officeIndices,
+  });
 
-  GeographicDivision.fromJson(core.Map _json) {
-    if (_json.containsKey('alsoKnownAs')) {
-      alsoKnownAs = (_json['alsoKnownAs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('officeIndices')) {
-      officeIndices = (_json['officeIndices'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-  }
+  GeographicDivision.fromJson(core.Map _json)
+      : this(
+          alsoKnownAs: _json.containsKey('alsoKnownAs')
+              ? (_json['alsoKnownAs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          officeIndices: _json.containsKey('officeIndices')
+              ? (_json['officeIndices'] as core.List)
+                  .map((value) => value as core.int)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (alsoKnownAs != null) 'alsoKnownAs': alsoKnownAs!,
@@ -1168,6 +1934,9 @@ class GeographicDivision {
         if (officeIndices != null) 'officeIndices': officeIndices!,
       };
 }
+
+/// This is proto2's version of MessageSet.
+typedef MessageSet = $Empty;
 
 /// Information about an Office held by one or more Officials.
 class Office {
@@ -1203,37 +1972,43 @@ class Office {
   /// sources.
   core.List<Source>? sources;
 
-  Office();
+  Office({
+    this.divisionId,
+    this.levels,
+    this.name,
+    this.officialIndices,
+    this.roles,
+    this.sources,
+  });
 
-  Office.fromJson(core.Map _json) {
-    if (_json.containsKey('divisionId')) {
-      divisionId = _json['divisionId'] as core.String;
-    }
-    if (_json.containsKey('levels')) {
-      levels = (_json['levels'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('officialIndices')) {
-      officialIndices = (_json['officialIndices'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<Source>((value) =>
-              Source.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Office.fromJson(core.Map _json)
+      : this(
+          divisionId: _json.containsKey('divisionId')
+              ? _json['divisionId'] as core.String
+              : null,
+          levels: _json.containsKey('levels')
+              ? (_json['levels'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          officialIndices: _json.containsKey('officialIndices')
+              ? (_json['officialIndices'] as core.List)
+                  .map((value) => value as core.int)
+                  .toList()
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => Source.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (divisionId != null) 'divisionId': divisionId!,
@@ -1241,8 +2016,7 @@ class Office {
         if (name != null) 'name': name!,
         if (officialIndices != null) 'officialIndices': officialIndices!,
         if (roles != null) 'roles': roles!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
       };
 }
 
@@ -1256,6 +2030,9 @@ class Official {
 
   /// The direct email addresses for the official.
   core.List<core.String>? emails;
+
+  /// Detailed summary about the official's address's geocoding
+  core.List<GeocodingSummary>? geocodingSummaries;
 
   /// The official's name.
   core.String? name;
@@ -1272,53 +2049,67 @@ class Official {
   /// The official's public website URLs.
   core.List<core.String>? urls;
 
-  Official();
+  Official({
+    this.address,
+    this.channels,
+    this.emails,
+    this.geocodingSummaries,
+    this.name,
+    this.party,
+    this.phones,
+    this.photoUrl,
+    this.urls,
+  });
 
-  Official.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = (_json['address'] as core.List)
-          .map<SimpleAddressType>((value) => SimpleAddressType.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('channels')) {
-      channels = (_json['channels'] as core.List)
-          .map<Channel>((value) =>
-              Channel.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('emails')) {
-      emails = (_json['emails'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('party')) {
-      party = _json['party'] as core.String;
-    }
-    if (_json.containsKey('phones')) {
-      phones = (_json['phones'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('photoUrl')) {
-      photoUrl = _json['photoUrl'] as core.String;
-    }
-    if (_json.containsKey('urls')) {
-      urls = (_json['urls'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Official.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? (_json['address'] as core.List)
+                  .map((value) => SimpleAddressType.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          channels: _json.containsKey('channels')
+              ? (_json['channels'] as core.List)
+                  .map((value) => Channel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          emails: _json.containsKey('emails')
+              ? (_json['emails'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          geocodingSummaries: _json.containsKey('geocodingSummaries')
+              ? (_json['geocodingSummaries'] as core.List)
+                  .map((value) => GeocodingSummary.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          party:
+              _json.containsKey('party') ? _json['party'] as core.String : null,
+          phones: _json.containsKey('phones')
+              ? (_json['phones'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          photoUrl: _json.containsKey('photoUrl')
+              ? _json['photoUrl'] as core.String
+              : null,
+          urls: _json.containsKey('urls')
+              ? (_json['urls'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (address != null)
-          'address': address!.map((value) => value.toJson()).toList(),
-        if (channels != null)
-          'channels': channels!.map((value) => value.toJson()).toList(),
+        if (address != null) 'address': address!,
+        if (channels != null) 'channels': channels!,
         if (emails != null) 'emails': emails!,
+        if (geocodingSummaries != null)
+          'geocodingSummaries': geocodingSummaries!,
         if (name != null) 'name': name!,
         if (party != null) 'party': party!,
         if (phones != null) 'phones': phones!,
@@ -1377,55 +2168,63 @@ class PollingLocation {
   /// This field is not populated for polling locations.
   core.String? voterServices;
 
-  PollingLocation();
+  PollingLocation({
+    this.address,
+    this.endDate,
+    this.latitude,
+    this.longitude,
+    this.name,
+    this.notes,
+    this.pollingHours,
+    this.sources,
+    this.startDate,
+    this.voterServices,
+  });
 
-  PollingLocation.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = SimpleAddressType.fromJson(
-          _json['address'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endDate')) {
-      endDate = _json['endDate'] as core.String;
-    }
-    if (_json.containsKey('latitude')) {
-      latitude = (_json['latitude'] as core.num).toDouble();
-    }
-    if (_json.containsKey('longitude')) {
-      longitude = (_json['longitude'] as core.num).toDouble();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notes')) {
-      notes = _json['notes'] as core.String;
-    }
-    if (_json.containsKey('pollingHours')) {
-      pollingHours = _json['pollingHours'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<Source>((value) =>
-              Source.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('startDate')) {
-      startDate = _json['startDate'] as core.String;
-    }
-    if (_json.containsKey('voterServices')) {
-      voterServices = _json['voterServices'] as core.String;
-    }
-  }
+  PollingLocation.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? SimpleAddressType.fromJson(
+                  _json['address'] as core.Map<core.String, core.dynamic>)
+              : null,
+          endDate: _json.containsKey('endDate')
+              ? _json['endDate'] as core.String
+              : null,
+          latitude: _json.containsKey('latitude')
+              ? (_json['latitude'] as core.num).toDouble()
+              : null,
+          longitude: _json.containsKey('longitude')
+              ? (_json['longitude'] as core.num).toDouble()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notes:
+              _json.containsKey('notes') ? _json['notes'] as core.String : null,
+          pollingHours: _json.containsKey('pollingHours')
+              ? _json['pollingHours'] as core.String
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => Source.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          startDate: _json.containsKey('startDate')
+              ? _json['startDate'] as core.String
+              : null,
+          voterServices: _json.containsKey('voterServices')
+              ? _json['voterServices'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (address != null) 'address': address!.toJson(),
+        if (address != null) 'address': address!,
         if (endDate != null) 'endDate': endDate!,
         if (latitude != null) 'latitude': latitude!,
         if (longitude != null) 'longitude': longitude!,
         if (name != null) 'name': name!,
         if (notes != null) 'notes': notes!,
         if (pollingHours != null) 'pollingHours': pollingHours!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
         if (startDate != null) 'startDate': startDate!,
         if (voterServices != null) 'voterServices': voterServices!,
       };
@@ -1446,41 +2245,41 @@ class RepresentativeInfoData {
   /// Will only be present if includeOffices was true in the request.
   core.List<Official>? officials;
 
-  RepresentativeInfoData();
+  RepresentativeInfoData({
+    this.divisions,
+    this.offices,
+    this.officials,
+  });
 
-  RepresentativeInfoData.fromJson(core.Map _json) {
-    if (_json.containsKey('divisions')) {
-      divisions =
-          (_json['divisions'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          GeographicDivision.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('offices')) {
-      offices = (_json['offices'] as core.List)
-          .map<Office>((value) =>
-              Office.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('officials')) {
-      officials = (_json['officials'] as core.List)
-          .map<Official>((value) =>
-              Official.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  RepresentativeInfoData.fromJson(core.Map _json)
+      : this(
+          divisions: _json.containsKey('divisions')
+              ? (_json['divisions'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    GeographicDivision.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          offices: _json.containsKey('offices')
+              ? (_json['offices'] as core.List)
+                  .map((value) => Office.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          officials: _json.containsKey('officials')
+              ? (_json['officials'] as core.List)
+                  .map((value) => Official.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (divisions != null)
-          'divisions':
-              divisions!.map((key, item) => core.MapEntry(key, item.toJson())),
-        if (offices != null)
-          'offices': offices!.map((value) => value.toJson()).toList(),
-        if (officials != null)
-          'officials': officials!.map((value) => value.toJson()).toList(),
+        if (divisions != null) 'divisions': divisions!,
+        if (offices != null) 'offices': offices!,
+        if (officials != null) 'officials': officials!,
       };
 }
 
@@ -1508,51 +2307,50 @@ class RepresentativeInfoResponse {
   /// Will only be present if includeOffices was true in the request.
   core.List<Official>? officials;
 
-  RepresentativeInfoResponse();
+  RepresentativeInfoResponse({
+    this.divisions,
+    this.kind,
+    this.normalizedInput,
+    this.offices,
+    this.officials,
+  });
 
-  RepresentativeInfoResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('divisions')) {
-      divisions =
-          (_json['divisions'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          GeographicDivision.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('normalizedInput')) {
-      normalizedInput = SimpleAddressType.fromJson(
-          _json['normalizedInput'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('offices')) {
-      offices = (_json['offices'] as core.List)
-          .map<Office>((value) =>
-              Office.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('officials')) {
-      officials = (_json['officials'] as core.List)
-          .map<Official>((value) =>
-              Official.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  RepresentativeInfoResponse.fromJson(core.Map _json)
+      : this(
+          divisions: _json.containsKey('divisions')
+              ? (_json['divisions'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    GeographicDivision.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          normalizedInput: _json.containsKey('normalizedInput')
+              ? SimpleAddressType.fromJson(_json['normalizedInput']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          offices: _json.containsKey('offices')
+              ? (_json['offices'] as core.List)
+                  .map((value) => Office.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          officials: _json.containsKey('officials')
+              ? (_json['officials'] as core.List)
+                  .map((value) => Official.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (divisions != null)
-          'divisions':
-              divisions!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (divisions != null) 'divisions': divisions!,
         if (kind != null) 'kind': kind!,
-        if (normalizedInput != null)
-          'normalizedInput': normalizedInput!.toJson(),
-        if (offices != null)
-          'offices': offices!.map((value) => value.toJson()).toList(),
-        if (officials != null)
-          'officials': officials!.map((value) => value.toJson()).toList(),
+        if (normalizedInput != null) 'normalizedInput': normalizedInput!,
+        if (offices != null) 'offices': offices!,
+        if (officials != null) 'officials': officials!,
       };
 }
 
@@ -1579,31 +2377,32 @@ class SimpleAddressType {
   /// The US Postal Zip Code of the address.
   core.String? zip;
 
-  SimpleAddressType();
+  SimpleAddressType({
+    this.city,
+    this.line1,
+    this.line2,
+    this.line3,
+    this.locationName,
+    this.state,
+    this.zip,
+  });
 
-  SimpleAddressType.fromJson(core.Map _json) {
-    if (_json.containsKey('city')) {
-      city = _json['city'] as core.String;
-    }
-    if (_json.containsKey('line1')) {
-      line1 = _json['line1'] as core.String;
-    }
-    if (_json.containsKey('line2')) {
-      line2 = _json['line2'] as core.String;
-    }
-    if (_json.containsKey('line3')) {
-      line3 = _json['line3'] as core.String;
-    }
-    if (_json.containsKey('locationName')) {
-      locationName = _json['locationName'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('zip')) {
-      zip = _json['zip'] as core.String;
-    }
-  }
+  SimpleAddressType.fromJson(core.Map _json)
+      : this(
+          city: _json.containsKey('city') ? _json['city'] as core.String : null,
+          line1:
+              _json.containsKey('line1') ? _json['line1'] as core.String : null,
+          line2:
+              _json.containsKey('line2') ? _json['line2'] as core.String : null,
+          line3:
+              _json.containsKey('line3') ? _json['line3'] as core.String : null,
+          locationName: _json.containsKey('locationName')
+              ? _json['locationName'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          zip: _json.containsKey('zip') ? _json['zip'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (city != null) 'city': city!,
@@ -1624,16 +2423,18 @@ class Source {
   /// Whether this data comes from an official government source.
   core.bool? official;
 
-  Source();
+  Source({
+    this.name,
+    this.official,
+  });
 
-  Source.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('official')) {
-      official = _json['official'] as core.bool;
-    }
-  }
+  Source.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          official: _json.containsKey('official')
+              ? _json['official'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -1695,86 +2496,86 @@ class VoterInfoResponse {
   /// For the US, there will only be one element in this array.
   core.List<AdministrationRegion>? state;
 
-  VoterInfoResponse();
+  VoterInfoResponse({
+    this.contests,
+    this.dropOffLocations,
+    this.earlyVoteSites,
+    this.election,
+    this.kind,
+    this.mailOnly,
+    this.normalizedInput,
+    this.otherElections,
+    this.pollingLocations,
+    this.precinctId,
+    this.state,
+  });
 
-  VoterInfoResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('contests')) {
-      contests = (_json['contests'] as core.List)
-          .map<Contest>((value) =>
-              Contest.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('dropOffLocations')) {
-      dropOffLocations = (_json['dropOffLocations'] as core.List)
-          .map<PollingLocation>((value) => PollingLocation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('earlyVoteSites')) {
-      earlyVoteSites = (_json['earlyVoteSites'] as core.List)
-          .map<PollingLocation>((value) => PollingLocation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('election')) {
-      election = Election.fromJson(
-          _json['election'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('mailOnly')) {
-      mailOnly = _json['mailOnly'] as core.bool;
-    }
-    if (_json.containsKey('normalizedInput')) {
-      normalizedInput = SimpleAddressType.fromJson(
-          _json['normalizedInput'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('otherElections')) {
-      otherElections = (_json['otherElections'] as core.List)
-          .map<Election>((value) =>
-              Election.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('pollingLocations')) {
-      pollingLocations = (_json['pollingLocations'] as core.List)
-          .map<PollingLocation>((value) => PollingLocation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('precinctId')) {
-      precinctId = _json['precinctId'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = (_json['state'] as core.List)
-          .map<AdministrationRegion>((value) => AdministrationRegion.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  VoterInfoResponse.fromJson(core.Map _json)
+      : this(
+          contests: _json.containsKey('contests')
+              ? (_json['contests'] as core.List)
+                  .map((value) => Contest.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          dropOffLocations: _json.containsKey('dropOffLocations')
+              ? (_json['dropOffLocations'] as core.List)
+                  .map((value) => PollingLocation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          earlyVoteSites: _json.containsKey('earlyVoteSites')
+              ? (_json['earlyVoteSites'] as core.List)
+                  .map((value) => PollingLocation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          election: _json.containsKey('election')
+              ? Election.fromJson(
+                  _json['election'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          mailOnly: _json.containsKey('mailOnly')
+              ? _json['mailOnly'] as core.bool
+              : null,
+          normalizedInput: _json.containsKey('normalizedInput')
+              ? SimpleAddressType.fromJson(_json['normalizedInput']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          otherElections: _json.containsKey('otherElections')
+              ? (_json['otherElections'] as core.List)
+                  .map((value) => Election.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          pollingLocations: _json.containsKey('pollingLocations')
+              ? (_json['pollingLocations'] as core.List)
+                  .map((value) => PollingLocation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          precinctId: _json.containsKey('precinctId')
+              ? _json['precinctId'] as core.String
+              : null,
+          state: _json.containsKey('state')
+              ? (_json['state'] as core.List)
+                  .map((value) => AdministrationRegion.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (contests != null)
-          'contests': contests!.map((value) => value.toJson()).toList(),
-        if (dropOffLocations != null)
-          'dropOffLocations':
-              dropOffLocations!.map((value) => value.toJson()).toList(),
-        if (earlyVoteSites != null)
-          'earlyVoteSites':
-              earlyVoteSites!.map((value) => value.toJson()).toList(),
-        if (election != null) 'election': election!.toJson(),
+        if (contests != null) 'contests': contests!,
+        if (dropOffLocations != null) 'dropOffLocations': dropOffLocations!,
+        if (earlyVoteSites != null) 'earlyVoteSites': earlyVoteSites!,
+        if (election != null) 'election': election!,
         if (kind != null) 'kind': kind!,
         if (mailOnly != null) 'mailOnly': mailOnly!,
-        if (normalizedInput != null)
-          'normalizedInput': normalizedInput!.toJson(),
-        if (otherElections != null)
-          'otherElections':
-              otherElections!.map((value) => value.toJson()).toList(),
-        if (pollingLocations != null)
-          'pollingLocations':
-              pollingLocations!.map((value) => value.toJson()).toList(),
+        if (normalizedInput != null) 'normalizedInput': normalizedInput!,
+        if (otherElections != null) 'otherElections': otherElections!,
+        if (pollingLocations != null) 'pollingLocations': pollingLocations!,
         if (precinctId != null) 'precinctId': precinctId!,
-        if (state != null)
-          'state': state!.map((value) => value.toJson()).toList(),
+        if (state != null) 'state': state!,
       };
 }

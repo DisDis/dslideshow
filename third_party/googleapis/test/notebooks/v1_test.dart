@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,15 +20,15 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/notebooks/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/notebooks/v1.dart' as api;
 
 import '../test_shared.dart';
 
 core.int buildCounterAcceleratorConfig = 0;
 api.AcceleratorConfig buildAcceleratorConfig() {
-  var o = api.AcceleratorConfig();
+  final o = api.AcceleratorConfig();
   buildCounterAcceleratorConfig++;
   if (buildCounterAcceleratorConfig < 3) {
     o.coreCount = 'foo';
@@ -54,14 +53,12 @@ void checkAcceleratorConfig(api.AcceleratorConfig o) {
   buildCounterAcceleratorConfig--;
 }
 
-core.List<core.String> buildUnnamed1364() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed0() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1364(core.List<core.String> o) {
+void checkUnnamed0(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -75,11 +72,11 @@ void checkUnnamed1364(core.List<core.String> o) {
 
 core.int buildCounterBinding = 0;
 api.Binding buildBinding() {
-  var o = api.Binding();
+  final o = api.Binding();
   buildCounterBinding++;
   if (buildCounterBinding < 3) {
     o.condition = buildExpr();
-    o.members = buildUnnamed1364();
+    o.members = buildUnnamed0();
     o.role = 'foo';
   }
   buildCounterBinding--;
@@ -89,8 +86,8 @@ api.Binding buildBinding() {
 void checkBinding(api.Binding o) {
   buildCounterBinding++;
   if (buildCounterBinding < 3) {
-    checkExpr(o.condition! as api.Expr);
-    checkUnnamed1364(o.members!);
+    checkExpr(o.condition!);
+    checkUnnamed0(o.members!);
     unittest.expect(
       o.role!,
       unittest.equals('foo'),
@@ -101,7 +98,7 @@ void checkBinding(api.Binding o) {
 
 core.int buildCounterCancelOperationRequest = 0;
 api.CancelOperationRequest buildCancelOperationRequest() {
-  var o = api.CancelOperationRequest();
+  final o = api.CancelOperationRequest();
   buildCounterCancelOperationRequest++;
   if (buildCounterCancelOperationRequest < 3) {}
   buildCounterCancelOperationRequest--;
@@ -116,7 +113,7 @@ void checkCancelOperationRequest(api.CancelOperationRequest o) {
 
 core.int buildCounterContainerImage = 0;
 api.ContainerImage buildContainerImage() {
-  var o = api.ContainerImage();
+  final o = api.ContainerImage();
   buildCounterContainerImage++;
   if (buildCounterContainerImage < 3) {
     o.repository = 'foo';
@@ -141,27 +138,45 @@ void checkContainerImage(api.ContainerImage o) {
   buildCounterContainerImage--;
 }
 
-core.List<api.GuestOsFeature> buildUnnamed1365() {
-  var o = <api.GuestOsFeature>[];
-  o.add(buildGuestOsFeature());
-  o.add(buildGuestOsFeature());
+core.int buildCounterDataprocParameters = 0;
+api.DataprocParameters buildDataprocParameters() {
+  final o = api.DataprocParameters();
+  buildCounterDataprocParameters++;
+  if (buildCounterDataprocParameters < 3) {
+    o.cluster = 'foo';
+  }
+  buildCounterDataprocParameters--;
   return o;
 }
 
-void checkUnnamed1365(core.List<api.GuestOsFeature> o) {
+void checkDataprocParameters(api.DataprocParameters o) {
+  buildCounterDataprocParameters++;
+  if (buildCounterDataprocParameters < 3) {
+    unittest.expect(
+      o.cluster!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterDataprocParameters--;
+}
+
+core.List<api.GuestOsFeature> buildUnnamed1() => [
+      buildGuestOsFeature(),
+      buildGuestOsFeature(),
+    ];
+
+void checkUnnamed1(core.List<api.GuestOsFeature> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGuestOsFeature(o[0] as api.GuestOsFeature);
-  checkGuestOsFeature(o[1] as api.GuestOsFeature);
+  checkGuestOsFeature(o[0]);
+  checkGuestOsFeature(o[1]);
 }
 
-core.List<core.String> buildUnnamed1366() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed2() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1366(core.List<core.String> o) {
+void checkUnnamed2(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -175,18 +190,18 @@ void checkUnnamed1366(core.List<core.String> o) {
 
 core.int buildCounterDisk = 0;
 api.Disk buildDisk() {
-  var o = api.Disk();
+  final o = api.Disk();
   buildCounterDisk++;
   if (buildCounterDisk < 3) {
     o.autoDelete = true;
     o.boot = true;
     o.deviceName = 'foo';
     o.diskSizeGb = 'foo';
-    o.guestOsFeatures = buildUnnamed1365();
+    o.guestOsFeatures = buildUnnamed1();
     o.index = 'foo';
     o.interface = 'foo';
     o.kind = 'foo';
-    o.licenses = buildUnnamed1366();
+    o.licenses = buildUnnamed2();
     o.mode = 'foo';
     o.source = 'foo';
     o.type = 'foo';
@@ -208,7 +223,7 @@ void checkDisk(api.Disk o) {
       o.diskSizeGb!,
       unittest.equals('foo'),
     );
-    checkUnnamed1365(o.guestOsFeatures!);
+    checkUnnamed1(o.guestOsFeatures!);
     unittest.expect(
       o.index!,
       unittest.equals('foo'),
@@ -221,7 +236,7 @@ void checkDisk(api.Disk o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed1366(o.licenses!);
+    checkUnnamed2(o.licenses!);
     unittest.expect(
       o.mode!,
       unittest.equals('foo'),
@@ -240,7 +255,7 @@ void checkDisk(api.Disk o) {
 
 core.int buildCounterEmpty = 0;
 api.Empty buildEmpty() {
-  var o = api.Empty();
+  final o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
@@ -253,9 +268,31 @@ void checkEmpty(api.Empty o) {
   buildCounterEmpty--;
 }
 
+core.int buildCounterEncryptionConfig = 0;
+api.EncryptionConfig buildEncryptionConfig() {
+  final o = api.EncryptionConfig();
+  buildCounterEncryptionConfig++;
+  if (buildCounterEncryptionConfig < 3) {
+    o.kmsKey = 'foo';
+  }
+  buildCounterEncryptionConfig--;
+  return o;
+}
+
+void checkEncryptionConfig(api.EncryptionConfig o) {
+  buildCounterEncryptionConfig++;
+  if (buildCounterEncryptionConfig < 3) {
+    unittest.expect(
+      o.kmsKey!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterEncryptionConfig--;
+}
+
 core.int buildCounterEnvironment = 0;
 api.Environment buildEnvironment() {
-  var o = api.Environment();
+  final o = api.Environment();
   buildCounterEnvironment++;
   if (buildCounterEnvironment < 3) {
     o.containerImage = buildContainerImage();
@@ -273,7 +310,7 @@ api.Environment buildEnvironment() {
 void checkEnvironment(api.Environment o) {
   buildCounterEnvironment++;
   if (buildCounterEnvironment < 3) {
-    checkContainerImage(o.containerImage! as api.ContainerImage);
+    checkContainerImage(o.containerImage!);
     unittest.expect(
       o.createTime!,
       unittest.equals('foo'),
@@ -294,20 +331,67 @@ void checkEnvironment(api.Environment o) {
       o.postStartupScript!,
       unittest.equals('foo'),
     );
-    checkVmImage(o.vmImage! as api.VmImage);
+    checkVmImage(o.vmImage!);
   }
   buildCounterEnvironment--;
 }
 
+core.Map<core.String, core.String> buildUnnamed3() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed3(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterEvent = 0;
+api.Event buildEvent() {
+  final o = api.Event();
+  buildCounterEvent++;
+  if (buildCounterEvent < 3) {
+    o.details = buildUnnamed3();
+    o.reportTime = 'foo';
+    o.type = 'foo';
+  }
+  buildCounterEvent--;
+  return o;
+}
+
+void checkEvent(api.Event o) {
+  buildCounterEvent++;
+  if (buildCounterEvent < 3) {
+    checkUnnamed3(o.details!);
+    unittest.expect(
+      o.reportTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterEvent--;
+}
+
 core.int buildCounterExecution = 0;
 api.Execution buildExecution() {
-  var o = api.Execution();
+  final o = api.Execution();
   buildCounterExecution++;
   if (buildCounterExecution < 3) {
     o.createTime = 'foo';
     o.description = 'foo';
     o.displayName = 'foo';
     o.executionTemplate = buildExecutionTemplate();
+    o.jobUri = 'foo';
     o.name = 'foo';
     o.outputNotebookFile = 'foo';
     o.state = 'foo';
@@ -332,7 +416,11 @@ void checkExecution(api.Execution o) {
       o.displayName!,
       unittest.equals('foo'),
     );
-    checkExecutionTemplate(o.executionTemplate! as api.ExecutionTemplate);
+    checkExecutionTemplate(o.executionTemplate!);
+    unittest.expect(
+      o.jobUri!,
+      unittest.equals('foo'),
+    );
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
@@ -353,14 +441,12 @@ void checkExecution(api.Execution o) {
   buildCounterExecution--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1367() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed4() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1367(core.Map<core.String, core.String> o) {
+void checkUnnamed4(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -374,18 +460,24 @@ void checkUnnamed1367(core.Map<core.String, core.String> o) {
 
 core.int buildCounterExecutionTemplate = 0;
 api.ExecutionTemplate buildExecutionTemplate() {
-  var o = api.ExecutionTemplate();
+  final o = api.ExecutionTemplate();
   buildCounterExecutionTemplate++;
   if (buildCounterExecutionTemplate < 3) {
     o.acceleratorConfig = buildSchedulerAcceleratorConfig();
     o.containerImageUri = 'foo';
+    o.dataprocParameters = buildDataprocParameters();
     o.inputNotebookFile = 'foo';
-    o.labels = buildUnnamed1367();
+    o.jobType = 'foo';
+    o.kernelSpec = 'foo';
+    o.labels = buildUnnamed4();
     o.masterType = 'foo';
     o.outputNotebookFolder = 'foo';
     o.parameters = 'foo';
     o.paramsYamlFile = 'foo';
     o.scaleTier = 'foo';
+    o.serviceAccount = 'foo';
+    o.tensorboard = 'foo';
+    o.vertexAiParameters = buildVertexAIParameters();
   }
   buildCounterExecutionTemplate--;
   return o;
@@ -394,17 +486,25 @@ api.ExecutionTemplate buildExecutionTemplate() {
 void checkExecutionTemplate(api.ExecutionTemplate o) {
   buildCounterExecutionTemplate++;
   if (buildCounterExecutionTemplate < 3) {
-    checkSchedulerAcceleratorConfig(
-        o.acceleratorConfig! as api.SchedulerAcceleratorConfig);
+    checkSchedulerAcceleratorConfig(o.acceleratorConfig!);
     unittest.expect(
       o.containerImageUri!,
       unittest.equals('foo'),
     );
+    checkDataprocParameters(o.dataprocParameters!);
     unittest.expect(
       o.inputNotebookFile!,
       unittest.equals('foo'),
     );
-    checkUnnamed1367(o.labels!);
+    unittest.expect(
+      o.jobType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kernelSpec!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed4(o.labels!);
     unittest.expect(
       o.masterType!,
       unittest.equals('foo'),
@@ -425,13 +525,22 @@ void checkExecutionTemplate(api.ExecutionTemplate o) {
       o.scaleTier!,
       unittest.equals('foo'),
     );
+    unittest.expect(
+      o.serviceAccount!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.tensorboard!,
+      unittest.equals('foo'),
+    );
+    checkVertexAIParameters(o.vertexAiParameters!);
   }
   buildCounterExecutionTemplate--;
 }
 
 core.int buildCounterExpr = 0;
 api.Expr buildExpr() {
-  var o = api.Expr();
+  final o = api.Expr();
   buildCounterExpr++;
   if (buildCounterExpr < 3) {
     o.description = 'foo';
@@ -466,14 +575,12 @@ void checkExpr(api.Expr o) {
   buildCounterExpr--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1368() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed5() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1368(core.Map<core.String, core.String> o) {
+void checkUnnamed5(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -487,10 +594,10 @@ void checkUnnamed1368(core.Map<core.String, core.String> o) {
 
 core.int buildCounterGetInstanceHealthResponse = 0;
 api.GetInstanceHealthResponse buildGetInstanceHealthResponse() {
-  var o = api.GetInstanceHealthResponse();
+  final o = api.GetInstanceHealthResponse();
   buildCounterGetInstanceHealthResponse++;
   if (buildCounterGetInstanceHealthResponse < 3) {
-    o.healthInfo = buildUnnamed1368();
+    o.healthInfo = buildUnnamed5();
     o.healthState = 'foo';
   }
   buildCounterGetInstanceHealthResponse--;
@@ -500,7 +607,7 @@ api.GetInstanceHealthResponse buildGetInstanceHealthResponse() {
 void checkGetInstanceHealthResponse(api.GetInstanceHealthResponse o) {
   buildCounterGetInstanceHealthResponse++;
   if (buildCounterGetInstanceHealthResponse < 3) {
-    checkUnnamed1368(o.healthInfo!);
+    checkUnnamed5(o.healthInfo!);
     unittest.expect(
       o.healthState!,
       unittest.equals('foo'),
@@ -511,7 +618,7 @@ void checkGetInstanceHealthResponse(api.GetInstanceHealthResponse o) {
 
 core.int buildCounterGuestOsFeature = 0;
 api.GuestOsFeature buildGuestOsFeature() {
-  var o = api.GuestOsFeature();
+  final o = api.GuestOsFeature();
   buildCounterGuestOsFeature++;
   if (buildCounterGuestOsFeature < 3) {
     o.type = 'foo';
@@ -531,27 +638,23 @@ void checkGuestOsFeature(api.GuestOsFeature o) {
   buildCounterGuestOsFeature--;
 }
 
-core.List<api.Disk> buildUnnamed1369() {
-  var o = <api.Disk>[];
-  o.add(buildDisk());
-  o.add(buildDisk());
-  return o;
-}
+core.List<api.Disk> buildUnnamed6() => [
+      buildDisk(),
+      buildDisk(),
+    ];
 
-void checkUnnamed1369(core.List<api.Disk> o) {
+void checkUnnamed6(core.List<api.Disk> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDisk(o[0] as api.Disk);
-  checkDisk(o[1] as api.Disk);
+  checkDisk(o[0]);
+  checkDisk(o[1]);
 }
 
-core.List<core.String> buildUnnamed1370() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed7() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1370(core.List<core.String> o) {
+void checkUnnamed7(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -563,14 +666,12 @@ void checkUnnamed1370(core.List<core.String> o) {
   );
 }
 
-core.Map<core.String, core.String> buildUnnamed1371() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed8() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1371(core.Map<core.String, core.String> o) {
+void checkUnnamed8(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -582,14 +683,12 @@ void checkUnnamed1371(core.Map<core.String, core.String> o) {
   );
 }
 
-core.Map<core.String, core.String> buildUnnamed1372() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed9() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1372(core.Map<core.String, core.String> o) {
+void checkUnnamed9(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -601,14 +700,12 @@ void checkUnnamed1372(core.Map<core.String, core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1373() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed10() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1373(core.List<core.String> o) {
+void checkUnnamed10(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -620,14 +717,12 @@ void checkUnnamed1373(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1374() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed11() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1374(core.List<core.String> o) {
+void checkUnnamed11(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -639,22 +734,20 @@ void checkUnnamed1374(core.List<core.String> o) {
   );
 }
 
-core.List<api.UpgradeHistoryEntry> buildUnnamed1375() {
-  var o = <api.UpgradeHistoryEntry>[];
-  o.add(buildUpgradeHistoryEntry());
-  o.add(buildUpgradeHistoryEntry());
-  return o;
-}
+core.List<api.UpgradeHistoryEntry> buildUnnamed12() => [
+      buildUpgradeHistoryEntry(),
+      buildUpgradeHistoryEntry(),
+    ];
 
-void checkUnnamed1375(core.List<api.UpgradeHistoryEntry> o) {
+void checkUnnamed12(core.List<api.UpgradeHistoryEntry> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUpgradeHistoryEntry(o[0] as api.UpgradeHistoryEntry);
-  checkUpgradeHistoryEntry(o[1] as api.UpgradeHistoryEntry);
+  checkUpgradeHistoryEntry(o[0]);
+  checkUpgradeHistoryEntry(o[1]);
 }
 
 core.int buildCounterInstance = 0;
 api.Instance buildInstance() {
-  var o = api.Instance();
+  final o = api.Instance();
   buildCounterInstance++;
   if (buildCounterInstance < 3) {
     o.acceleratorConfig = buildAcceleratorConfig();
@@ -662,32 +755,35 @@ api.Instance buildInstance() {
     o.bootDiskType = 'foo';
     o.containerImage = buildContainerImage();
     o.createTime = 'foo';
+    o.creator = 'foo';
     o.customGpuDriverPath = 'foo';
     o.dataDiskSizeGb = 'foo';
     o.dataDiskType = 'foo';
     o.diskEncryption = 'foo';
-    o.disks = buildUnnamed1369();
+    o.disks = buildUnnamed6();
     o.installGpuDriver = true;
-    o.instanceOwners = buildUnnamed1370();
+    o.instanceOwners = buildUnnamed7();
     o.kmsKey = 'foo';
-    o.labels = buildUnnamed1371();
+    o.labels = buildUnnamed8();
     o.machineType = 'foo';
-    o.metadata = buildUnnamed1372();
+    o.metadata = buildUnnamed9();
     o.name = 'foo';
     o.network = 'foo';
+    o.nicType = 'foo';
     o.noProxyAccess = true;
     o.noPublicIp = true;
     o.noRemoveDataDisk = true;
     o.postStartupScript = 'foo';
     o.proxyUri = 'foo';
+    o.reservationAffinity = buildReservationAffinity();
     o.serviceAccount = 'foo';
-    o.serviceAccountScopes = buildUnnamed1373();
+    o.serviceAccountScopes = buildUnnamed10();
     o.shieldedInstanceConfig = buildShieldedInstanceConfig();
     o.state = 'foo';
     o.subnet = 'foo';
-    o.tags = buildUnnamed1374();
+    o.tags = buildUnnamed11();
     o.updateTime = 'foo';
-    o.upgradeHistory = buildUnnamed1375();
+    o.upgradeHistory = buildUnnamed12();
     o.vmImage = buildVmImage();
   }
   buildCounterInstance--;
@@ -697,7 +793,7 @@ api.Instance buildInstance() {
 void checkInstance(api.Instance o) {
   buildCounterInstance++;
   if (buildCounterInstance < 3) {
-    checkAcceleratorConfig(o.acceleratorConfig! as api.AcceleratorConfig);
+    checkAcceleratorConfig(o.acceleratorConfig!);
     unittest.expect(
       o.bootDiskSizeGb!,
       unittest.equals('foo'),
@@ -706,9 +802,13 @@ void checkInstance(api.Instance o) {
       o.bootDiskType!,
       unittest.equals('foo'),
     );
-    checkContainerImage(o.containerImage! as api.ContainerImage);
+    checkContainerImage(o.containerImage!);
     unittest.expect(
       o.createTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.creator!,
       unittest.equals('foo'),
     );
     unittest.expect(
@@ -727,25 +827,29 @@ void checkInstance(api.Instance o) {
       o.diskEncryption!,
       unittest.equals('foo'),
     );
-    checkUnnamed1369(o.disks!);
+    checkUnnamed6(o.disks!);
     unittest.expect(o.installGpuDriver!, unittest.isTrue);
-    checkUnnamed1370(o.instanceOwners!);
+    checkUnnamed7(o.instanceOwners!);
     unittest.expect(
       o.kmsKey!,
       unittest.equals('foo'),
     );
-    checkUnnamed1371(o.labels!);
+    checkUnnamed8(o.labels!);
     unittest.expect(
       o.machineType!,
       unittest.equals('foo'),
     );
-    checkUnnamed1372(o.metadata!);
+    checkUnnamed9(o.metadata!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
     );
     unittest.expect(
       o.network!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nicType!,
       unittest.equals('foo'),
     );
     unittest.expect(o.noProxyAccess!, unittest.isTrue);
@@ -759,13 +863,13 @@ void checkInstance(api.Instance o) {
       o.proxyUri!,
       unittest.equals('foo'),
     );
+    checkReservationAffinity(o.reservationAffinity!);
     unittest.expect(
       o.serviceAccount!,
       unittest.equals('foo'),
     );
-    checkUnnamed1373(o.serviceAccountScopes!);
-    checkShieldedInstanceConfig(
-        o.shieldedInstanceConfig! as api.ShieldedInstanceConfig);
+    checkUnnamed10(o.serviceAccountScopes!);
+    checkShieldedInstanceConfig(o.shieldedInstanceConfig!);
     unittest.expect(
       o.state!,
       unittest.equals('foo'),
@@ -774,22 +878,47 @@ void checkInstance(api.Instance o) {
       o.subnet!,
       unittest.equals('foo'),
     );
-    checkUnnamed1374(o.tags!);
+    checkUnnamed11(o.tags!);
     unittest.expect(
       o.updateTime!,
       unittest.equals('foo'),
     );
-    checkUnnamed1375(o.upgradeHistory!);
-    checkVmImage(o.vmImage! as api.VmImage);
+    checkUnnamed12(o.upgradeHistory!);
+    checkVmImage(o.vmImage!);
   }
   buildCounterInstance--;
 }
 
+core.int buildCounterInstanceConfig = 0;
+api.InstanceConfig buildInstanceConfig() {
+  final o = api.InstanceConfig();
+  buildCounterInstanceConfig++;
+  if (buildCounterInstanceConfig < 3) {
+    o.enableHealthMonitoring = true;
+    o.notebookUpgradeSchedule = 'foo';
+  }
+  buildCounterInstanceConfig--;
+  return o;
+}
+
+void checkInstanceConfig(api.InstanceConfig o) {
+  buildCounterInstanceConfig++;
+  if (buildCounterInstanceConfig < 3) {
+    unittest.expect(o.enableHealthMonitoring!, unittest.isTrue);
+    unittest.expect(
+      o.notebookUpgradeSchedule!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterInstanceConfig--;
+}
+
 core.int buildCounterIsInstanceUpgradeableResponse = 0;
 api.IsInstanceUpgradeableResponse buildIsInstanceUpgradeableResponse() {
-  var o = api.IsInstanceUpgradeableResponse();
+  final o = api.IsInstanceUpgradeableResponse();
   buildCounterIsInstanceUpgradeableResponse++;
   if (buildCounterIsInstanceUpgradeableResponse < 3) {
+    o.upgradeImage = 'foo';
     o.upgradeInfo = 'foo';
     o.upgradeVersion = 'foo';
     o.upgradeable = true;
@@ -801,6 +930,10 @@ api.IsInstanceUpgradeableResponse buildIsInstanceUpgradeableResponse() {
 void checkIsInstanceUpgradeableResponse(api.IsInstanceUpgradeableResponse o) {
   buildCounterIsInstanceUpgradeableResponse++;
   if (buildCounterIsInstanceUpgradeableResponse < 3) {
+    unittest.expect(
+      o.upgradeImage!,
+      unittest.equals('foo'),
+    );
     unittest.expect(
       o.upgradeInfo!,
       unittest.equals('foo'),
@@ -814,27 +947,23 @@ void checkIsInstanceUpgradeableResponse(api.IsInstanceUpgradeableResponse o) {
   buildCounterIsInstanceUpgradeableResponse--;
 }
 
-core.List<api.Environment> buildUnnamed1376() {
-  var o = <api.Environment>[];
-  o.add(buildEnvironment());
-  o.add(buildEnvironment());
-  return o;
-}
+core.List<api.Environment> buildUnnamed13() => [
+      buildEnvironment(),
+      buildEnvironment(),
+    ];
 
-void checkUnnamed1376(core.List<api.Environment> o) {
+void checkUnnamed13(core.List<api.Environment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEnvironment(o[0] as api.Environment);
-  checkEnvironment(o[1] as api.Environment);
+  checkEnvironment(o[0]);
+  checkEnvironment(o[1]);
 }
 
-core.List<core.String> buildUnnamed1377() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed14() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1377(core.List<core.String> o) {
+void checkUnnamed14(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -848,12 +977,12 @@ void checkUnnamed1377(core.List<core.String> o) {
 
 core.int buildCounterListEnvironmentsResponse = 0;
 api.ListEnvironmentsResponse buildListEnvironmentsResponse() {
-  var o = api.ListEnvironmentsResponse();
+  final o = api.ListEnvironmentsResponse();
   buildCounterListEnvironmentsResponse++;
   if (buildCounterListEnvironmentsResponse < 3) {
-    o.environments = buildUnnamed1376();
+    o.environments = buildUnnamed13();
     o.nextPageToken = 'foo';
-    o.unreachable = buildUnnamed1377();
+    o.unreachable = buildUnnamed14();
   }
   buildCounterListEnvironmentsResponse--;
   return o;
@@ -862,37 +991,33 @@ api.ListEnvironmentsResponse buildListEnvironmentsResponse() {
 void checkListEnvironmentsResponse(api.ListEnvironmentsResponse o) {
   buildCounterListEnvironmentsResponse++;
   if (buildCounterListEnvironmentsResponse < 3) {
-    checkUnnamed1376(o.environments!);
+    checkUnnamed13(o.environments!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed1377(o.unreachable!);
+    checkUnnamed14(o.unreachable!);
   }
   buildCounterListEnvironmentsResponse--;
 }
 
-core.List<api.Execution> buildUnnamed1378() {
-  var o = <api.Execution>[];
-  o.add(buildExecution());
-  o.add(buildExecution());
-  return o;
-}
+core.List<api.Execution> buildUnnamed15() => [
+      buildExecution(),
+      buildExecution(),
+    ];
 
-void checkUnnamed1378(core.List<api.Execution> o) {
+void checkUnnamed15(core.List<api.Execution> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExecution(o[0] as api.Execution);
-  checkExecution(o[1] as api.Execution);
+  checkExecution(o[0]);
+  checkExecution(o[1]);
 }
 
-core.List<core.String> buildUnnamed1379() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed16() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1379(core.List<core.String> o) {
+void checkUnnamed16(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -906,12 +1031,12 @@ void checkUnnamed1379(core.List<core.String> o) {
 
 core.int buildCounterListExecutionsResponse = 0;
 api.ListExecutionsResponse buildListExecutionsResponse() {
-  var o = api.ListExecutionsResponse();
+  final o = api.ListExecutionsResponse();
   buildCounterListExecutionsResponse++;
   if (buildCounterListExecutionsResponse < 3) {
-    o.executions = buildUnnamed1378();
+    o.executions = buildUnnamed15();
     o.nextPageToken = 'foo';
-    o.unreachable = buildUnnamed1379();
+    o.unreachable = buildUnnamed16();
   }
   buildCounterListExecutionsResponse--;
   return o;
@@ -920,37 +1045,33 @@ api.ListExecutionsResponse buildListExecutionsResponse() {
 void checkListExecutionsResponse(api.ListExecutionsResponse o) {
   buildCounterListExecutionsResponse++;
   if (buildCounterListExecutionsResponse < 3) {
-    checkUnnamed1378(o.executions!);
+    checkUnnamed15(o.executions!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed1379(o.unreachable!);
+    checkUnnamed16(o.unreachable!);
   }
   buildCounterListExecutionsResponse--;
 }
 
-core.List<api.Instance> buildUnnamed1380() {
-  var o = <api.Instance>[];
-  o.add(buildInstance());
-  o.add(buildInstance());
-  return o;
-}
+core.List<api.Instance> buildUnnamed17() => [
+      buildInstance(),
+      buildInstance(),
+    ];
 
-void checkUnnamed1380(core.List<api.Instance> o) {
+void checkUnnamed17(core.List<api.Instance> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkInstance(o[0] as api.Instance);
-  checkInstance(o[1] as api.Instance);
+  checkInstance(o[0]);
+  checkInstance(o[1]);
 }
 
-core.List<core.String> buildUnnamed1381() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed18() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1381(core.List<core.String> o) {
+void checkUnnamed18(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -964,12 +1085,12 @@ void checkUnnamed1381(core.List<core.String> o) {
 
 core.int buildCounterListInstancesResponse = 0;
 api.ListInstancesResponse buildListInstancesResponse() {
-  var o = api.ListInstancesResponse();
+  final o = api.ListInstancesResponse();
   buildCounterListInstancesResponse++;
   if (buildCounterListInstancesResponse < 3) {
-    o.instances = buildUnnamed1380();
+    o.instances = buildUnnamed17();
     o.nextPageToken = 'foo';
-    o.unreachable = buildUnnamed1381();
+    o.unreachable = buildUnnamed18();
   }
   buildCounterListInstancesResponse--;
   return o;
@@ -978,35 +1099,33 @@ api.ListInstancesResponse buildListInstancesResponse() {
 void checkListInstancesResponse(api.ListInstancesResponse o) {
   buildCounterListInstancesResponse++;
   if (buildCounterListInstancesResponse < 3) {
-    checkUnnamed1380(o.instances!);
+    checkUnnamed17(o.instances!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed1381(o.unreachable!);
+    checkUnnamed18(o.unreachable!);
   }
   buildCounterListInstancesResponse--;
 }
 
-core.List<api.Location> buildUnnamed1382() {
-  var o = <api.Location>[];
-  o.add(buildLocation());
-  o.add(buildLocation());
-  return o;
-}
+core.List<api.Location> buildUnnamed19() => [
+      buildLocation(),
+      buildLocation(),
+    ];
 
-void checkUnnamed1382(core.List<api.Location> o) {
+void checkUnnamed19(core.List<api.Location> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocation(o[0] as api.Location);
-  checkLocation(o[1] as api.Location);
+  checkLocation(o[0]);
+  checkLocation(o[1]);
 }
 
 core.int buildCounterListLocationsResponse = 0;
 api.ListLocationsResponse buildListLocationsResponse() {
-  var o = api.ListLocationsResponse();
+  final o = api.ListLocationsResponse();
   buildCounterListLocationsResponse++;
   if (buildCounterListLocationsResponse < 3) {
-    o.locations = buildUnnamed1382();
+    o.locations = buildUnnamed19();
     o.nextPageToken = 'foo';
   }
   buildCounterListLocationsResponse--;
@@ -1016,7 +1135,7 @@ api.ListLocationsResponse buildListLocationsResponse() {
 void checkListLocationsResponse(api.ListLocationsResponse o) {
   buildCounterListLocationsResponse++;
   if (buildCounterListLocationsResponse < 3) {
-    checkUnnamed1382(o.locations!);
+    checkUnnamed19(o.locations!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1025,26 +1144,24 @@ void checkListLocationsResponse(api.ListLocationsResponse o) {
   buildCounterListLocationsResponse--;
 }
 
-core.List<api.Operation> buildUnnamed1383() {
-  var o = <api.Operation>[];
-  o.add(buildOperation());
-  o.add(buildOperation());
-  return o;
-}
+core.List<api.Operation> buildUnnamed20() => [
+      buildOperation(),
+      buildOperation(),
+    ];
 
-void checkUnnamed1383(core.List<api.Operation> o) {
+void checkUnnamed20(core.List<api.Operation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkOperation(o[0] as api.Operation);
-  checkOperation(o[1] as api.Operation);
+  checkOperation(o[0]);
+  checkOperation(o[1]);
 }
 
 core.int buildCounterListOperationsResponse = 0;
 api.ListOperationsResponse buildListOperationsResponse() {
-  var o = api.ListOperationsResponse();
+  final o = api.ListOperationsResponse();
   buildCounterListOperationsResponse++;
   if (buildCounterListOperationsResponse < 3) {
     o.nextPageToken = 'foo';
-    o.operations = buildUnnamed1383();
+    o.operations = buildUnnamed20();
   }
   buildCounterListOperationsResponse--;
   return o;
@@ -1057,32 +1174,82 @@ void checkListOperationsResponse(api.ListOperationsResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed1383(o.operations!);
+    checkUnnamed20(o.operations!);
   }
   buildCounterListOperationsResponse--;
 }
 
-core.List<api.Schedule> buildUnnamed1384() {
-  var o = <api.Schedule>[];
-  o.add(buildSchedule());
-  o.add(buildSchedule());
-  return o;
-}
+core.List<api.Runtime> buildUnnamed21() => [
+      buildRuntime(),
+      buildRuntime(),
+    ];
 
-void checkUnnamed1384(core.List<api.Schedule> o) {
+void checkUnnamed21(core.List<api.Runtime> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSchedule(o[0] as api.Schedule);
-  checkSchedule(o[1] as api.Schedule);
+  checkRuntime(o[0]);
+  checkRuntime(o[1]);
 }
 
-core.List<core.String> buildUnnamed1385() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
+core.List<core.String> buildUnnamed22() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed22(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterListRuntimesResponse = 0;
+api.ListRuntimesResponse buildListRuntimesResponse() {
+  final o = api.ListRuntimesResponse();
+  buildCounterListRuntimesResponse++;
+  if (buildCounterListRuntimesResponse < 3) {
+    o.nextPageToken = 'foo';
+    o.runtimes = buildUnnamed21();
+    o.unreachable = buildUnnamed22();
+  }
+  buildCounterListRuntimesResponse--;
   return o;
 }
 
-void checkUnnamed1385(core.List<core.String> o) {
+void checkListRuntimesResponse(api.ListRuntimesResponse o) {
+  buildCounterListRuntimesResponse++;
+  if (buildCounterListRuntimesResponse < 3) {
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed21(o.runtimes!);
+    checkUnnamed22(o.unreachable!);
+  }
+  buildCounterListRuntimesResponse--;
+}
+
+core.List<api.Schedule> buildUnnamed23() => [
+      buildSchedule(),
+      buildSchedule(),
+    ];
+
+void checkUnnamed23(core.List<api.Schedule> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkSchedule(o[0]);
+  checkSchedule(o[1]);
+}
+
+core.List<core.String> buildUnnamed24() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed24(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1096,12 +1263,12 @@ void checkUnnamed1385(core.List<core.String> o) {
 
 core.int buildCounterListSchedulesResponse = 0;
 api.ListSchedulesResponse buildListSchedulesResponse() {
-  var o = api.ListSchedulesResponse();
+  final o = api.ListSchedulesResponse();
   buildCounterListSchedulesResponse++;
   if (buildCounterListSchedulesResponse < 3) {
     o.nextPageToken = 'foo';
-    o.schedules = buildUnnamed1384();
-    o.unreachable = buildUnnamed1385();
+    o.schedules = buildUnnamed23();
+    o.unreachable = buildUnnamed24();
   }
   buildCounterListSchedulesResponse--;
   return o;
@@ -1114,20 +1281,108 @@ void checkListSchedulesResponse(api.ListSchedulesResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed1384(o.schedules!);
-    checkUnnamed1385(o.unreachable!);
+    checkUnnamed23(o.schedules!);
+    checkUnnamed24(o.unreachable!);
   }
   buildCounterListSchedulesResponse--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1386() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
+core.List<api.RuntimeGuestOsFeature> buildUnnamed25() => [
+      buildRuntimeGuestOsFeature(),
+      buildRuntimeGuestOsFeature(),
+    ];
+
+void checkUnnamed25(core.List<api.RuntimeGuestOsFeature> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkRuntimeGuestOsFeature(o[0]);
+  checkRuntimeGuestOsFeature(o[1]);
+}
+
+core.List<core.String> buildUnnamed26() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed26(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterLocalDisk = 0;
+api.LocalDisk buildLocalDisk() {
+  final o = api.LocalDisk();
+  buildCounterLocalDisk++;
+  if (buildCounterLocalDisk < 3) {
+    o.autoDelete = true;
+    o.boot = true;
+    o.deviceName = 'foo';
+    o.guestOsFeatures = buildUnnamed25();
+    o.index = 42;
+    o.initializeParams = buildLocalDiskInitializeParams();
+    o.interface = 'foo';
+    o.kind = 'foo';
+    o.licenses = buildUnnamed26();
+    o.mode = 'foo';
+    o.source = 'foo';
+    o.type = 'foo';
+  }
+  buildCounterLocalDisk--;
   return o;
 }
 
-void checkUnnamed1386(core.Map<core.String, core.String> o) {
+void checkLocalDisk(api.LocalDisk o) {
+  buildCounterLocalDisk++;
+  if (buildCounterLocalDisk < 3) {
+    unittest.expect(o.autoDelete!, unittest.isTrue);
+    unittest.expect(o.boot!, unittest.isTrue);
+    unittest.expect(
+      o.deviceName!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed25(o.guestOsFeatures!);
+    unittest.expect(
+      o.index!,
+      unittest.equals(42),
+    );
+    checkLocalDiskInitializeParams(o.initializeParams!);
+    unittest.expect(
+      o.interface!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed26(o.licenses!);
+    unittest.expect(
+      o.mode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.source!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterLocalDisk--;
+}
+
+core.Map<core.String, core.String> buildUnnamed27() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed27(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1139,22 +1394,76 @@ void checkUnnamed1386(core.Map<core.String, core.String> o) {
   );
 }
 
-core.Map<core.String, core.Object> buildUnnamed1387() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
+core.int buildCounterLocalDiskInitializeParams = 0;
+api.LocalDiskInitializeParams buildLocalDiskInitializeParams() {
+  final o = api.LocalDiskInitializeParams();
+  buildCounterLocalDiskInitializeParams++;
+  if (buildCounterLocalDiskInitializeParams < 3) {
+    o.description = 'foo';
+    o.diskName = 'foo';
+    o.diskSizeGb = 'foo';
+    o.diskType = 'foo';
+    o.labels = buildUnnamed27();
+  }
+  buildCounterLocalDiskInitializeParams--;
   return o;
 }
 
-void checkUnnamed1387(core.Map<core.String, core.Object> o) {
+void checkLocalDiskInitializeParams(api.LocalDiskInitializeParams o) {
+  buildCounterLocalDiskInitializeParams++;
+  if (buildCounterLocalDiskInitializeParams < 3) {
+    unittest.expect(
+      o.description!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.diskName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.diskSizeGb!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.diskType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed27(o.labels!);
+  }
+  buildCounterLocalDiskInitializeParams--;
+}
+
+core.Map<core.String, core.String> buildUnnamed28() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed28(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.Map<core.String, core.Object?> buildUnnamed29() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
+
+void checkUnnamed29(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted1 = (o['x']!) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
@@ -1188,13 +1497,13 @@ void checkUnnamed1387(core.Map<core.String, core.Object> o) {
 
 core.int buildCounterLocation = 0;
 api.Location buildLocation() {
-  var o = api.Location();
+  final o = api.Location();
   buildCounterLocation++;
   if (buildCounterLocation < 3) {
     o.displayName = 'foo';
-    o.labels = buildUnnamed1386();
+    o.labels = buildUnnamed28();
     o.locationId = 'foo';
-    o.metadata = buildUnnamed1387();
+    o.metadata = buildUnnamed29();
     o.name = 'foo';
   }
   buildCounterLocation--;
@@ -1208,12 +1517,12 @@ void checkLocation(api.Location o) {
       o.displayName!,
       unittest.equals('foo'),
     );
-    checkUnnamed1386(o.labels!);
+    checkUnnamed28(o.labels!);
     unittest.expect(
       o.locationId!,
       unittest.equals('foo'),
     );
-    checkUnnamed1387(o.metadata!);
+    checkUnnamed29(o.metadata!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
@@ -1222,22 +1531,20 @@ void checkLocation(api.Location o) {
   buildCounterLocation--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed1388() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed30() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed1388(core.Map<core.String, core.Object> o) {
+void checkUnnamed30(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted3 = (o['x']!) as core.Map;
   unittest.expect(casted3, unittest.hasLength(3));
@@ -1269,22 +1576,20 @@ void checkUnnamed1388(core.Map<core.String, core.Object> o) {
   );
 }
 
-core.Map<core.String, core.Object> buildUnnamed1389() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed31() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed1389(core.Map<core.String, core.Object> o) {
+void checkUnnamed31(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted5 = (o['x']!) as core.Map;
   unittest.expect(casted5, unittest.hasLength(3));
@@ -1318,14 +1623,14 @@ void checkUnnamed1389(core.Map<core.String, core.Object> o) {
 
 core.int buildCounterOperation = 0;
 api.Operation buildOperation() {
-  var o = api.Operation();
+  final o = api.Operation();
   buildCounterOperation++;
   if (buildCounterOperation < 3) {
     o.done = true;
     o.error = buildStatus();
-    o.metadata = buildUnnamed1388();
+    o.metadata = buildUnnamed30();
     o.name = 'foo';
-    o.response = buildUnnamed1389();
+    o.response = buildUnnamed31();
   }
   buildCounterOperation--;
   return o;
@@ -1335,90 +1640,34 @@ void checkOperation(api.Operation o) {
   buildCounterOperation++;
   if (buildCounterOperation < 3) {
     unittest.expect(o.done!, unittest.isTrue);
-    checkStatus(o.error! as api.Status);
-    checkUnnamed1388(o.metadata!);
+    checkStatus(o.error!);
+    checkUnnamed30(o.metadata!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed1389(o.response!);
+    checkUnnamed31(o.response!);
   }
   buildCounterOperation--;
 }
 
-core.int buildCounterOperationMetadata = 0;
-api.OperationMetadata buildOperationMetadata() {
-  var o = api.OperationMetadata();
-  buildCounterOperationMetadata++;
-  if (buildCounterOperationMetadata < 3) {
-    o.apiVersion = 'foo';
-    o.createTime = 'foo';
-    o.endTime = 'foo';
-    o.endpoint = 'foo';
-    o.requestedCancellation = true;
-    o.statusMessage = 'foo';
-    o.target = 'foo';
-    o.verb = 'foo';
-  }
-  buildCounterOperationMetadata--;
-  return o;
-}
+core.List<api.Binding> buildUnnamed32() => [
+      buildBinding(),
+      buildBinding(),
+    ];
 
-void checkOperationMetadata(api.OperationMetadata o) {
-  buildCounterOperationMetadata++;
-  if (buildCounterOperationMetadata < 3) {
-    unittest.expect(
-      o.apiVersion!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.createTime!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.endTime!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.endpoint!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(o.requestedCancellation!, unittest.isTrue);
-    unittest.expect(
-      o.statusMessage!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.target!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.verb!,
-      unittest.equals('foo'),
-    );
-  }
-  buildCounterOperationMetadata--;
-}
-
-core.List<api.Binding> buildUnnamed1390() {
-  var o = <api.Binding>[];
-  o.add(buildBinding());
-  o.add(buildBinding());
-  return o;
-}
-
-void checkUnnamed1390(core.List<api.Binding> o) {
+void checkUnnamed32(core.List<api.Binding> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBinding(o[0] as api.Binding);
-  checkBinding(o[1] as api.Binding);
+  checkBinding(o[0]);
+  checkBinding(o[1]);
 }
 
 core.int buildCounterPolicy = 0;
 api.Policy buildPolicy() {
-  var o = api.Policy();
+  final o = api.Policy();
   buildCounterPolicy++;
   if (buildCounterPolicy < 3) {
-    o.bindings = buildUnnamed1390();
+    o.bindings = buildUnnamed32();
     o.etag = 'foo';
     o.version = 42;
   }
@@ -1429,7 +1678,7 @@ api.Policy buildPolicy() {
 void checkPolicy(api.Policy o) {
   buildCounterPolicy++;
   if (buildCounterPolicy < 3) {
-    checkUnnamed1390(o.bindings!);
+    checkUnnamed32(o.bindings!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -1444,7 +1693,7 @@ void checkPolicy(api.Policy o) {
 
 core.int buildCounterRegisterInstanceRequest = 0;
 api.RegisterInstanceRequest buildRegisterInstanceRequest() {
-  var o = api.RegisterInstanceRequest();
+  final o = api.RegisterInstanceRequest();
   buildCounterRegisterInstanceRequest++;
   if (buildCounterRegisterInstanceRequest < 3) {
     o.instanceId = 'foo';
@@ -1464,14 +1713,12 @@ void checkRegisterInstanceRequest(api.RegisterInstanceRequest o) {
   buildCounterRegisterInstanceRequest--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1391() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed33() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1391(core.Map<core.String, core.String> o) {
+void checkUnnamed33(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1485,10 +1732,10 @@ void checkUnnamed1391(core.Map<core.String, core.String> o) {
 
 core.int buildCounterReportInstanceInfoRequest = 0;
 api.ReportInstanceInfoRequest buildReportInstanceInfoRequest() {
-  var o = api.ReportInstanceInfoRequest();
+  final o = api.ReportInstanceInfoRequest();
   buildCounterReportInstanceInfoRequest++;
   if (buildCounterReportInstanceInfoRequest < 3) {
-    o.metadata = buildUnnamed1391();
+    o.metadata = buildUnnamed33();
     o.vmId = 'foo';
   }
   buildCounterReportInstanceInfoRequest--;
@@ -1498,7 +1745,7 @@ api.ReportInstanceInfoRequest buildReportInstanceInfoRequest() {
 void checkReportInstanceInfoRequest(api.ReportInstanceInfoRequest o) {
   buildCounterReportInstanceInfoRequest++;
   if (buildCounterReportInstanceInfoRequest < 3) {
-    checkUnnamed1391(o.metadata!);
+    checkUnnamed33(o.metadata!);
     unittest.expect(
       o.vmId!,
       unittest.equals('foo'),
@@ -1507,9 +1754,79 @@ void checkReportInstanceInfoRequest(api.ReportInstanceInfoRequest o) {
   buildCounterReportInstanceInfoRequest--;
 }
 
+core.int buildCounterReportRuntimeEventRequest = 0;
+api.ReportRuntimeEventRequest buildReportRuntimeEventRequest() {
+  final o = api.ReportRuntimeEventRequest();
+  buildCounterReportRuntimeEventRequest++;
+  if (buildCounterReportRuntimeEventRequest < 3) {
+    o.event = buildEvent();
+    o.vmId = 'foo';
+  }
+  buildCounterReportRuntimeEventRequest--;
+  return o;
+}
+
+void checkReportRuntimeEventRequest(api.ReportRuntimeEventRequest o) {
+  buildCounterReportRuntimeEventRequest++;
+  if (buildCounterReportRuntimeEventRequest < 3) {
+    checkEvent(o.event!);
+    unittest.expect(
+      o.vmId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterReportRuntimeEventRequest--;
+}
+
+core.List<core.String> buildUnnamed34() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed34(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterReservationAffinity = 0;
+api.ReservationAffinity buildReservationAffinity() {
+  final o = api.ReservationAffinity();
+  buildCounterReservationAffinity++;
+  if (buildCounterReservationAffinity < 3) {
+    o.consumeReservationType = 'foo';
+    o.key = 'foo';
+    o.values = buildUnnamed34();
+  }
+  buildCounterReservationAffinity--;
+  return o;
+}
+
+void checkReservationAffinity(api.ReservationAffinity o) {
+  buildCounterReservationAffinity++;
+  if (buildCounterReservationAffinity < 3) {
+    unittest.expect(
+      o.consumeReservationType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.key!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed34(o.values!);
+  }
+  buildCounterReservationAffinity--;
+}
+
 core.int buildCounterResetInstanceRequest = 0;
 api.ResetInstanceRequest buildResetInstanceRequest() {
-  var o = api.ResetInstanceRequest();
+  final o = api.ResetInstanceRequest();
   buildCounterResetInstanceRequest++;
   if (buildCounterResetInstanceRequest < 3) {}
   buildCounterResetInstanceRequest--;
@@ -1522,22 +1839,305 @@ void checkResetInstanceRequest(api.ResetInstanceRequest o) {
   buildCounterResetInstanceRequest--;
 }
 
-core.List<api.Execution> buildUnnamed1392() {
-  var o = <api.Execution>[];
-  o.add(buildExecution());
-  o.add(buildExecution());
+core.int buildCounterResetRuntimeRequest = 0;
+api.ResetRuntimeRequest buildResetRuntimeRequest() {
+  final o = api.ResetRuntimeRequest();
+  buildCounterResetRuntimeRequest++;
+  if (buildCounterResetRuntimeRequest < 3) {}
+  buildCounterResetRuntimeRequest--;
   return o;
 }
 
-void checkUnnamed1392(core.List<api.Execution> o) {
+void checkResetRuntimeRequest(api.ResetRuntimeRequest o) {
+  buildCounterResetRuntimeRequest++;
+  if (buildCounterResetRuntimeRequest < 3) {}
+  buildCounterResetRuntimeRequest--;
+}
+
+core.int buildCounterRollbackInstanceRequest = 0;
+api.RollbackInstanceRequest buildRollbackInstanceRequest() {
+  final o = api.RollbackInstanceRequest();
+  buildCounterRollbackInstanceRequest++;
+  if (buildCounterRollbackInstanceRequest < 3) {
+    o.targetSnapshot = 'foo';
+  }
+  buildCounterRollbackInstanceRequest--;
+  return o;
+}
+
+void checkRollbackInstanceRequest(api.RollbackInstanceRequest o) {
+  buildCounterRollbackInstanceRequest++;
+  if (buildCounterRollbackInstanceRequest < 3) {
+    unittest.expect(
+      o.targetSnapshot!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterRollbackInstanceRequest--;
+}
+
+core.int buildCounterRuntime = 0;
+api.Runtime buildRuntime() {
+  final o = api.Runtime();
+  buildCounterRuntime++;
+  if (buildCounterRuntime < 3) {
+    o.accessConfig = buildRuntimeAccessConfig();
+    o.createTime = 'foo';
+    o.healthState = 'foo';
+    o.metrics = buildRuntimeMetrics();
+    o.name = 'foo';
+    o.softwareConfig = buildRuntimeSoftwareConfig();
+    o.state = 'foo';
+    o.updateTime = 'foo';
+    o.virtualMachine = buildVirtualMachine();
+  }
+  buildCounterRuntime--;
+  return o;
+}
+
+void checkRuntime(api.Runtime o) {
+  buildCounterRuntime++;
+  if (buildCounterRuntime < 3) {
+    checkRuntimeAccessConfig(o.accessConfig!);
+    unittest.expect(
+      o.createTime!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.healthState!,
+      unittest.equals('foo'),
+    );
+    checkRuntimeMetrics(o.metrics!);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    checkRuntimeSoftwareConfig(o.softwareConfig!);
+    unittest.expect(
+      o.state!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.updateTime!,
+      unittest.equals('foo'),
+    );
+    checkVirtualMachine(o.virtualMachine!);
+  }
+  buildCounterRuntime--;
+}
+
+core.int buildCounterRuntimeAcceleratorConfig = 0;
+api.RuntimeAcceleratorConfig buildRuntimeAcceleratorConfig() {
+  final o = api.RuntimeAcceleratorConfig();
+  buildCounterRuntimeAcceleratorConfig++;
+  if (buildCounterRuntimeAcceleratorConfig < 3) {
+    o.coreCount = 'foo';
+    o.type = 'foo';
+  }
+  buildCounterRuntimeAcceleratorConfig--;
+  return o;
+}
+
+void checkRuntimeAcceleratorConfig(api.RuntimeAcceleratorConfig o) {
+  buildCounterRuntimeAcceleratorConfig++;
+  if (buildCounterRuntimeAcceleratorConfig < 3) {
+    unittest.expect(
+      o.coreCount!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterRuntimeAcceleratorConfig--;
+}
+
+core.int buildCounterRuntimeAccessConfig = 0;
+api.RuntimeAccessConfig buildRuntimeAccessConfig() {
+  final o = api.RuntimeAccessConfig();
+  buildCounterRuntimeAccessConfig++;
+  if (buildCounterRuntimeAccessConfig < 3) {
+    o.accessType = 'foo';
+    o.proxyUri = 'foo';
+    o.runtimeOwner = 'foo';
+  }
+  buildCounterRuntimeAccessConfig--;
+  return o;
+}
+
+void checkRuntimeAccessConfig(api.RuntimeAccessConfig o) {
+  buildCounterRuntimeAccessConfig++;
+  if (buildCounterRuntimeAccessConfig < 3) {
+    unittest.expect(
+      o.accessType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.proxyUri!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.runtimeOwner!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterRuntimeAccessConfig--;
+}
+
+core.int buildCounterRuntimeGuestOsFeature = 0;
+api.RuntimeGuestOsFeature buildRuntimeGuestOsFeature() {
+  final o = api.RuntimeGuestOsFeature();
+  buildCounterRuntimeGuestOsFeature++;
+  if (buildCounterRuntimeGuestOsFeature < 3) {
+    o.type = 'foo';
+  }
+  buildCounterRuntimeGuestOsFeature--;
+  return o;
+}
+
+void checkRuntimeGuestOsFeature(api.RuntimeGuestOsFeature o) {
+  buildCounterRuntimeGuestOsFeature++;
+  if (buildCounterRuntimeGuestOsFeature < 3) {
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterRuntimeGuestOsFeature--;
+}
+
+core.Map<core.String, core.String> buildUnnamed35() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed35(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExecution(o[0] as api.Execution);
-  checkExecution(o[1] as api.Execution);
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterRuntimeMetrics = 0;
+api.RuntimeMetrics buildRuntimeMetrics() {
+  final o = api.RuntimeMetrics();
+  buildCounterRuntimeMetrics++;
+  if (buildCounterRuntimeMetrics < 3) {
+    o.systemMetrics = buildUnnamed35();
+  }
+  buildCounterRuntimeMetrics--;
+  return o;
+}
+
+void checkRuntimeMetrics(api.RuntimeMetrics o) {
+  buildCounterRuntimeMetrics++;
+  if (buildCounterRuntimeMetrics < 3) {
+    checkUnnamed35(o.systemMetrics!);
+  }
+  buildCounterRuntimeMetrics--;
+}
+
+core.int buildCounterRuntimeShieldedInstanceConfig = 0;
+api.RuntimeShieldedInstanceConfig buildRuntimeShieldedInstanceConfig() {
+  final o = api.RuntimeShieldedInstanceConfig();
+  buildCounterRuntimeShieldedInstanceConfig++;
+  if (buildCounterRuntimeShieldedInstanceConfig < 3) {
+    o.enableIntegrityMonitoring = true;
+    o.enableSecureBoot = true;
+    o.enableVtpm = true;
+  }
+  buildCounterRuntimeShieldedInstanceConfig--;
+  return o;
+}
+
+void checkRuntimeShieldedInstanceConfig(api.RuntimeShieldedInstanceConfig o) {
+  buildCounterRuntimeShieldedInstanceConfig++;
+  if (buildCounterRuntimeShieldedInstanceConfig < 3) {
+    unittest.expect(o.enableIntegrityMonitoring!, unittest.isTrue);
+    unittest.expect(o.enableSecureBoot!, unittest.isTrue);
+    unittest.expect(o.enableVtpm!, unittest.isTrue);
+  }
+  buildCounterRuntimeShieldedInstanceConfig--;
+}
+
+core.List<api.ContainerImage> buildUnnamed36() => [
+      buildContainerImage(),
+      buildContainerImage(),
+    ];
+
+void checkUnnamed36(core.List<api.ContainerImage> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkContainerImage(o[0]);
+  checkContainerImage(o[1]);
+}
+
+core.int buildCounterRuntimeSoftwareConfig = 0;
+api.RuntimeSoftwareConfig buildRuntimeSoftwareConfig() {
+  final o = api.RuntimeSoftwareConfig();
+  buildCounterRuntimeSoftwareConfig++;
+  if (buildCounterRuntimeSoftwareConfig < 3) {
+    o.customGpuDriverPath = 'foo';
+    o.enableHealthMonitoring = true;
+    o.idleShutdown = true;
+    o.idleShutdownTimeout = 42;
+    o.installGpuDriver = true;
+    o.kernels = buildUnnamed36();
+    o.notebookUpgradeSchedule = 'foo';
+    o.postStartupScript = 'foo';
+    o.upgradeable = true;
+  }
+  buildCounterRuntimeSoftwareConfig--;
+  return o;
+}
+
+void checkRuntimeSoftwareConfig(api.RuntimeSoftwareConfig o) {
+  buildCounterRuntimeSoftwareConfig++;
+  if (buildCounterRuntimeSoftwareConfig < 3) {
+    unittest.expect(
+      o.customGpuDriverPath!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.enableHealthMonitoring!, unittest.isTrue);
+    unittest.expect(o.idleShutdown!, unittest.isTrue);
+    unittest.expect(
+      o.idleShutdownTimeout!,
+      unittest.equals(42),
+    );
+    unittest.expect(o.installGpuDriver!, unittest.isTrue);
+    checkUnnamed36(o.kernels!);
+    unittest.expect(
+      o.notebookUpgradeSchedule!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.postStartupScript!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.upgradeable!, unittest.isTrue);
+  }
+  buildCounterRuntimeSoftwareConfig--;
+}
+
+core.List<api.Execution> buildUnnamed37() => [
+      buildExecution(),
+      buildExecution(),
+    ];
+
+void checkUnnamed37(core.List<api.Execution> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkExecution(o[0]);
+  checkExecution(o[1]);
 }
 
 core.int buildCounterSchedule = 0;
 api.Schedule buildSchedule() {
-  var o = api.Schedule();
+  final o = api.Schedule();
   buildCounterSchedule++;
   if (buildCounterSchedule < 3) {
     o.createTime = 'foo';
@@ -1546,7 +2146,7 @@ api.Schedule buildSchedule() {
     o.displayName = 'foo';
     o.executionTemplate = buildExecutionTemplate();
     o.name = 'foo';
-    o.recentExecutions = buildUnnamed1392();
+    o.recentExecutions = buildUnnamed37();
     o.state = 'foo';
     o.timeZone = 'foo';
     o.updateTime = 'foo';
@@ -1574,12 +2174,12 @@ void checkSchedule(api.Schedule o) {
       o.displayName!,
       unittest.equals('foo'),
     );
-    checkExecutionTemplate(o.executionTemplate! as api.ExecutionTemplate);
+    checkExecutionTemplate(o.executionTemplate!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed1392(o.recentExecutions!);
+    checkUnnamed37(o.recentExecutions!);
     unittest.expect(
       o.state!,
       unittest.equals('foo'),
@@ -1598,7 +2198,7 @@ void checkSchedule(api.Schedule o) {
 
 core.int buildCounterSchedulerAcceleratorConfig = 0;
 api.SchedulerAcceleratorConfig buildSchedulerAcceleratorConfig() {
-  var o = api.SchedulerAcceleratorConfig();
+  final o = api.SchedulerAcceleratorConfig();
   buildCounterSchedulerAcceleratorConfig++;
   if (buildCounterSchedulerAcceleratorConfig < 3) {
     o.coreCount = 'foo';
@@ -1625,7 +2225,7 @@ void checkSchedulerAcceleratorConfig(api.SchedulerAcceleratorConfig o) {
 
 core.int buildCounterSetIamPolicyRequest = 0;
 api.SetIamPolicyRequest buildSetIamPolicyRequest() {
-  var o = api.SetIamPolicyRequest();
+  final o = api.SetIamPolicyRequest();
   buildCounterSetIamPolicyRequest++;
   if (buildCounterSetIamPolicyRequest < 3) {
     o.policy = buildPolicy();
@@ -1637,14 +2237,14 @@ api.SetIamPolicyRequest buildSetIamPolicyRequest() {
 void checkSetIamPolicyRequest(api.SetIamPolicyRequest o) {
   buildCounterSetIamPolicyRequest++;
   if (buildCounterSetIamPolicyRequest < 3) {
-    checkPolicy(o.policy! as api.Policy);
+    checkPolicy(o.policy!);
   }
   buildCounterSetIamPolicyRequest--;
 }
 
 core.int buildCounterSetInstanceAcceleratorRequest = 0;
 api.SetInstanceAcceleratorRequest buildSetInstanceAcceleratorRequest() {
-  var o = api.SetInstanceAcceleratorRequest();
+  final o = api.SetInstanceAcceleratorRequest();
   buildCounterSetInstanceAcceleratorRequest++;
   if (buildCounterSetInstanceAcceleratorRequest < 3) {
     o.coreCount = 'foo';
@@ -1669,14 +2269,12 @@ void checkSetInstanceAcceleratorRequest(api.SetInstanceAcceleratorRequest o) {
   buildCounterSetInstanceAcceleratorRequest--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1393() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed38() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1393(core.Map<core.String, core.String> o) {
+void checkUnnamed38(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1690,10 +2288,10 @@ void checkUnnamed1393(core.Map<core.String, core.String> o) {
 
 core.int buildCounterSetInstanceLabelsRequest = 0;
 api.SetInstanceLabelsRequest buildSetInstanceLabelsRequest() {
-  var o = api.SetInstanceLabelsRequest();
+  final o = api.SetInstanceLabelsRequest();
   buildCounterSetInstanceLabelsRequest++;
   if (buildCounterSetInstanceLabelsRequest < 3) {
-    o.labels = buildUnnamed1393();
+    o.labels = buildUnnamed38();
   }
   buildCounterSetInstanceLabelsRequest--;
   return o;
@@ -1702,14 +2300,14 @@ api.SetInstanceLabelsRequest buildSetInstanceLabelsRequest() {
 void checkSetInstanceLabelsRequest(api.SetInstanceLabelsRequest o) {
   buildCounterSetInstanceLabelsRequest++;
   if (buildCounterSetInstanceLabelsRequest < 3) {
-    checkUnnamed1393(o.labels!);
+    checkUnnamed38(o.labels!);
   }
   buildCounterSetInstanceLabelsRequest--;
 }
 
 core.int buildCounterSetInstanceMachineTypeRequest = 0;
 api.SetInstanceMachineTypeRequest buildSetInstanceMachineTypeRequest() {
-  var o = api.SetInstanceMachineTypeRequest();
+  final o = api.SetInstanceMachineTypeRequest();
   buildCounterSetInstanceMachineTypeRequest++;
   if (buildCounterSetInstanceMachineTypeRequest < 3) {
     o.machineType = 'foo';
@@ -1731,7 +2329,7 @@ void checkSetInstanceMachineTypeRequest(api.SetInstanceMachineTypeRequest o) {
 
 core.int buildCounterShieldedInstanceConfig = 0;
 api.ShieldedInstanceConfig buildShieldedInstanceConfig() {
-  var o = api.ShieldedInstanceConfig();
+  final o = api.ShieldedInstanceConfig();
   buildCounterShieldedInstanceConfig++;
   if (buildCounterShieldedInstanceConfig < 3) {
     o.enableIntegrityMonitoring = true;
@@ -1754,7 +2352,7 @@ void checkShieldedInstanceConfig(api.ShieldedInstanceConfig o) {
 
 core.int buildCounterStartInstanceRequest = 0;
 api.StartInstanceRequest buildStartInstanceRequest() {
-  var o = api.StartInstanceRequest();
+  final o = api.StartInstanceRequest();
   buildCounterStartInstanceRequest++;
   if (buildCounterStartInstanceRequest < 3) {}
   buildCounterStartInstanceRequest--;
@@ -1767,22 +2365,35 @@ void checkStartInstanceRequest(api.StartInstanceRequest o) {
   buildCounterStartInstanceRequest--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed1394() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
+core.int buildCounterStartRuntimeRequest = 0;
+api.StartRuntimeRequest buildStartRuntimeRequest() {
+  final o = api.StartRuntimeRequest();
+  buildCounterStartRuntimeRequest++;
+  if (buildCounterStartRuntimeRequest < 3) {}
+  buildCounterStartRuntimeRequest--;
   return o;
 }
 
-void checkUnnamed1394(core.Map<core.String, core.Object> o) {
+void checkStartRuntimeRequest(api.StartRuntimeRequest o) {
+  buildCounterStartRuntimeRequest++;
+  if (buildCounterStartRuntimeRequest < 3) {}
+  buildCounterStartRuntimeRequest--;
+}
+
+core.Map<core.String, core.Object?> buildUnnamed39() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
+
+void checkUnnamed39(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted7 = (o['x']!) as core.Map;
   unittest.expect(casted7, unittest.hasLength(3));
@@ -1814,26 +2425,24 @@ void checkUnnamed1394(core.Map<core.String, core.Object> o) {
   );
 }
 
-core.List<core.Map<core.String, core.Object>> buildUnnamed1395() {
-  var o = <core.Map<core.String, core.Object>>[];
-  o.add(buildUnnamed1394());
-  o.add(buildUnnamed1394());
-  return o;
-}
+core.List<core.Map<core.String, core.Object?>> buildUnnamed40() => [
+      buildUnnamed39(),
+      buildUnnamed39(),
+    ];
 
-void checkUnnamed1395(core.List<core.Map<core.String, core.Object>> o) {
+void checkUnnamed40(core.List<core.Map<core.String, core.Object?>> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed1394(o[0]);
-  checkUnnamed1394(o[1]);
+  checkUnnamed39(o[0]);
+  checkUnnamed39(o[1]);
 }
 
 core.int buildCounterStatus = 0;
 api.Status buildStatus() {
-  var o = api.Status();
+  final o = api.Status();
   buildCounterStatus++;
   if (buildCounterStatus < 3) {
     o.code = 42;
-    o.details = buildUnnamed1395();
+    o.details = buildUnnamed40();
     o.message = 'foo';
   }
   buildCounterStatus--;
@@ -1847,7 +2456,7 @@ void checkStatus(api.Status o) {
       o.code!,
       unittest.equals(42),
     );
-    checkUnnamed1395(o.details!);
+    checkUnnamed40(o.details!);
     unittest.expect(
       o.message!,
       unittest.equals('foo'),
@@ -1858,7 +2467,7 @@ void checkStatus(api.Status o) {
 
 core.int buildCounterStopInstanceRequest = 0;
 api.StopInstanceRequest buildStopInstanceRequest() {
-  var o = api.StopInstanceRequest();
+  final o = api.StopInstanceRequest();
   buildCounterStopInstanceRequest++;
   if (buildCounterStopInstanceRequest < 3) {}
   buildCounterStopInstanceRequest--;
@@ -1871,14 +2480,51 @@ void checkStopInstanceRequest(api.StopInstanceRequest o) {
   buildCounterStopInstanceRequest--;
 }
 
-core.List<core.String> buildUnnamed1396() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
+core.int buildCounterStopRuntimeRequest = 0;
+api.StopRuntimeRequest buildStopRuntimeRequest() {
+  final o = api.StopRuntimeRequest();
+  buildCounterStopRuntimeRequest++;
+  if (buildCounterStopRuntimeRequest < 3) {}
+  buildCounterStopRuntimeRequest--;
   return o;
 }
 
-void checkUnnamed1396(core.List<core.String> o) {
+void checkStopRuntimeRequest(api.StopRuntimeRequest o) {
+  buildCounterStopRuntimeRequest++;
+  if (buildCounterStopRuntimeRequest < 3) {}
+  buildCounterStopRuntimeRequest--;
+}
+
+core.int buildCounterSwitchRuntimeRequest = 0;
+api.SwitchRuntimeRequest buildSwitchRuntimeRequest() {
+  final o = api.SwitchRuntimeRequest();
+  buildCounterSwitchRuntimeRequest++;
+  if (buildCounterSwitchRuntimeRequest < 3) {
+    o.acceleratorConfig = buildRuntimeAcceleratorConfig();
+    o.machineType = 'foo';
+  }
+  buildCounterSwitchRuntimeRequest--;
+  return o;
+}
+
+void checkSwitchRuntimeRequest(api.SwitchRuntimeRequest o) {
+  buildCounterSwitchRuntimeRequest++;
+  if (buildCounterSwitchRuntimeRequest < 3) {
+    checkRuntimeAcceleratorConfig(o.acceleratorConfig!);
+    unittest.expect(
+      o.machineType!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterSwitchRuntimeRequest--;
+}
+
+core.List<core.String> buildUnnamed41() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed41(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1892,10 +2538,10 @@ void checkUnnamed1396(core.List<core.String> o) {
 
 core.int buildCounterTestIamPermissionsRequest = 0;
 api.TestIamPermissionsRequest buildTestIamPermissionsRequest() {
-  var o = api.TestIamPermissionsRequest();
+  final o = api.TestIamPermissionsRequest();
   buildCounterTestIamPermissionsRequest++;
   if (buildCounterTestIamPermissionsRequest < 3) {
-    o.permissions = buildUnnamed1396();
+    o.permissions = buildUnnamed41();
   }
   buildCounterTestIamPermissionsRequest--;
   return o;
@@ -1904,19 +2550,17 @@ api.TestIamPermissionsRequest buildTestIamPermissionsRequest() {
 void checkTestIamPermissionsRequest(api.TestIamPermissionsRequest o) {
   buildCounterTestIamPermissionsRequest++;
   if (buildCounterTestIamPermissionsRequest < 3) {
-    checkUnnamed1396(o.permissions!);
+    checkUnnamed41(o.permissions!);
   }
   buildCounterTestIamPermissionsRequest--;
 }
 
-core.List<core.String> buildUnnamed1397() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed42() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1397(core.List<core.String> o) {
+void checkUnnamed42(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1930,10 +2574,10 @@ void checkUnnamed1397(core.List<core.String> o) {
 
 core.int buildCounterTestIamPermissionsResponse = 0;
 api.TestIamPermissionsResponse buildTestIamPermissionsResponse() {
-  var o = api.TestIamPermissionsResponse();
+  final o = api.TestIamPermissionsResponse();
   buildCounterTestIamPermissionsResponse++;
   if (buildCounterTestIamPermissionsResponse < 3) {
-    o.permissions = buildUnnamed1397();
+    o.permissions = buildUnnamed42();
   }
   buildCounterTestIamPermissionsResponse--;
   return o;
@@ -1942,14 +2586,14 @@ api.TestIamPermissionsResponse buildTestIamPermissionsResponse() {
 void checkTestIamPermissionsResponse(api.TestIamPermissionsResponse o) {
   buildCounterTestIamPermissionsResponse++;
   if (buildCounterTestIamPermissionsResponse < 3) {
-    checkUnnamed1397(o.permissions!);
+    checkUnnamed42(o.permissions!);
   }
   buildCounterTestIamPermissionsResponse--;
 }
 
 core.int buildCounterTriggerScheduleRequest = 0;
 api.TriggerScheduleRequest buildTriggerScheduleRequest() {
-  var o = api.TriggerScheduleRequest();
+  final o = api.TriggerScheduleRequest();
   buildCounterTriggerScheduleRequest++;
   if (buildCounterTriggerScheduleRequest < 3) {}
   buildCounterTriggerScheduleRequest--;
@@ -1962,9 +2606,125 @@ void checkTriggerScheduleRequest(api.TriggerScheduleRequest o) {
   buildCounterTriggerScheduleRequest--;
 }
 
+core.int buildCounterUpdateInstanceConfigRequest = 0;
+api.UpdateInstanceConfigRequest buildUpdateInstanceConfigRequest() {
+  final o = api.UpdateInstanceConfigRequest();
+  buildCounterUpdateInstanceConfigRequest++;
+  if (buildCounterUpdateInstanceConfigRequest < 3) {
+    o.config = buildInstanceConfig();
+  }
+  buildCounterUpdateInstanceConfigRequest--;
+  return o;
+}
+
+void checkUpdateInstanceConfigRequest(api.UpdateInstanceConfigRequest o) {
+  buildCounterUpdateInstanceConfigRequest++;
+  if (buildCounterUpdateInstanceConfigRequest < 3) {
+    checkInstanceConfig(o.config!);
+  }
+  buildCounterUpdateInstanceConfigRequest--;
+}
+
+core.Map<core.String, core.String> buildUnnamed43() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed43(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterUpdateInstanceMetadataItemsRequest = 0;
+api.UpdateInstanceMetadataItemsRequest
+    buildUpdateInstanceMetadataItemsRequest() {
+  final o = api.UpdateInstanceMetadataItemsRequest();
+  buildCounterUpdateInstanceMetadataItemsRequest++;
+  if (buildCounterUpdateInstanceMetadataItemsRequest < 3) {
+    o.items = buildUnnamed43();
+  }
+  buildCounterUpdateInstanceMetadataItemsRequest--;
+  return o;
+}
+
+void checkUpdateInstanceMetadataItemsRequest(
+    api.UpdateInstanceMetadataItemsRequest o) {
+  buildCounterUpdateInstanceMetadataItemsRequest++;
+  if (buildCounterUpdateInstanceMetadataItemsRequest < 3) {
+    checkUnnamed43(o.items!);
+  }
+  buildCounterUpdateInstanceMetadataItemsRequest--;
+}
+
+core.Map<core.String, core.String> buildUnnamed44() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed44(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterUpdateInstanceMetadataItemsResponse = 0;
+api.UpdateInstanceMetadataItemsResponse
+    buildUpdateInstanceMetadataItemsResponse() {
+  final o = api.UpdateInstanceMetadataItemsResponse();
+  buildCounterUpdateInstanceMetadataItemsResponse++;
+  if (buildCounterUpdateInstanceMetadataItemsResponse < 3) {
+    o.items = buildUnnamed44();
+  }
+  buildCounterUpdateInstanceMetadataItemsResponse--;
+  return o;
+}
+
+void checkUpdateInstanceMetadataItemsResponse(
+    api.UpdateInstanceMetadataItemsResponse o) {
+  buildCounterUpdateInstanceMetadataItemsResponse++;
+  if (buildCounterUpdateInstanceMetadataItemsResponse < 3) {
+    checkUnnamed44(o.items!);
+  }
+  buildCounterUpdateInstanceMetadataItemsResponse--;
+}
+
+core.int buildCounterUpdateShieldedInstanceConfigRequest = 0;
+api.UpdateShieldedInstanceConfigRequest
+    buildUpdateShieldedInstanceConfigRequest() {
+  final o = api.UpdateShieldedInstanceConfigRequest();
+  buildCounterUpdateShieldedInstanceConfigRequest++;
+  if (buildCounterUpdateShieldedInstanceConfigRequest < 3) {
+    o.shieldedInstanceConfig = buildShieldedInstanceConfig();
+  }
+  buildCounterUpdateShieldedInstanceConfigRequest--;
+  return o;
+}
+
+void checkUpdateShieldedInstanceConfigRequest(
+    api.UpdateShieldedInstanceConfigRequest o) {
+  buildCounterUpdateShieldedInstanceConfigRequest++;
+  if (buildCounterUpdateShieldedInstanceConfigRequest < 3) {
+    checkShieldedInstanceConfig(o.shieldedInstanceConfig!);
+  }
+  buildCounterUpdateShieldedInstanceConfigRequest--;
+}
+
 core.int buildCounterUpgradeHistoryEntry = 0;
 api.UpgradeHistoryEntry buildUpgradeHistoryEntry() {
-  var o = api.UpgradeHistoryEntry();
+  final o = api.UpgradeHistoryEntry();
   buildCounterUpgradeHistoryEntry++;
   if (buildCounterUpgradeHistoryEntry < 3) {
     o.action = 'foo';
@@ -2031,9 +2791,10 @@ void checkUpgradeHistoryEntry(api.UpgradeHistoryEntry o) {
 
 core.int buildCounterUpgradeInstanceInternalRequest = 0;
 api.UpgradeInstanceInternalRequest buildUpgradeInstanceInternalRequest() {
-  var o = api.UpgradeInstanceInternalRequest();
+  final o = api.UpgradeInstanceInternalRequest();
   buildCounterUpgradeInstanceInternalRequest++;
   if (buildCounterUpgradeInstanceInternalRequest < 3) {
+    o.type = 'foo';
     o.vmId = 'foo';
   }
   buildCounterUpgradeInstanceInternalRequest--;
@@ -2044,6 +2805,10 @@ void checkUpgradeInstanceInternalRequest(api.UpgradeInstanceInternalRequest o) {
   buildCounterUpgradeInstanceInternalRequest++;
   if (buildCounterUpgradeInstanceInternalRequest < 3) {
     unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
       o.vmId!,
       unittest.equals('foo'),
     );
@@ -2053,22 +2818,245 @@ void checkUpgradeInstanceInternalRequest(api.UpgradeInstanceInternalRequest o) {
 
 core.int buildCounterUpgradeInstanceRequest = 0;
 api.UpgradeInstanceRequest buildUpgradeInstanceRequest() {
-  var o = api.UpgradeInstanceRequest();
+  final o = api.UpgradeInstanceRequest();
   buildCounterUpgradeInstanceRequest++;
-  if (buildCounterUpgradeInstanceRequest < 3) {}
+  if (buildCounterUpgradeInstanceRequest < 3) {
+    o.type = 'foo';
+  }
   buildCounterUpgradeInstanceRequest--;
   return o;
 }
 
 void checkUpgradeInstanceRequest(api.UpgradeInstanceRequest o) {
   buildCounterUpgradeInstanceRequest++;
-  if (buildCounterUpgradeInstanceRequest < 3) {}
+  if (buildCounterUpgradeInstanceRequest < 3) {
+    unittest.expect(
+      o.type!,
+      unittest.equals('foo'),
+    );
+  }
   buildCounterUpgradeInstanceRequest--;
+}
+
+core.Map<core.String, core.String> buildUnnamed45() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed45(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterVertexAIParameters = 0;
+api.VertexAIParameters buildVertexAIParameters() {
+  final o = api.VertexAIParameters();
+  buildCounterVertexAIParameters++;
+  if (buildCounterVertexAIParameters < 3) {
+    o.env = buildUnnamed45();
+    o.network = 'foo';
+  }
+  buildCounterVertexAIParameters--;
+  return o;
+}
+
+void checkVertexAIParameters(api.VertexAIParameters o) {
+  buildCounterVertexAIParameters++;
+  if (buildCounterVertexAIParameters < 3) {
+    checkUnnamed45(o.env!);
+    unittest.expect(
+      o.network!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterVertexAIParameters--;
+}
+
+core.int buildCounterVirtualMachine = 0;
+api.VirtualMachine buildVirtualMachine() {
+  final o = api.VirtualMachine();
+  buildCounterVirtualMachine++;
+  if (buildCounterVirtualMachine < 3) {
+    o.instanceId = 'foo';
+    o.instanceName = 'foo';
+    o.virtualMachineConfig = buildVirtualMachineConfig();
+  }
+  buildCounterVirtualMachine--;
+  return o;
+}
+
+void checkVirtualMachine(api.VirtualMachine o) {
+  buildCounterVirtualMachine++;
+  if (buildCounterVirtualMachine < 3) {
+    unittest.expect(
+      o.instanceId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.instanceName!,
+      unittest.equals('foo'),
+    );
+    checkVirtualMachineConfig(o.virtualMachineConfig!);
+  }
+  buildCounterVirtualMachine--;
+}
+
+core.List<api.ContainerImage> buildUnnamed46() => [
+      buildContainerImage(),
+      buildContainerImage(),
+    ];
+
+void checkUnnamed46(core.List<api.ContainerImage> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkContainerImage(o[0]);
+  checkContainerImage(o[1]);
+}
+
+core.Map<core.String, core.String> buildUnnamed47() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed47(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.Map<core.String, core.String> buildUnnamed48() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed48(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.Map<core.String, core.String> buildUnnamed49() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
+
+void checkUnnamed49(core.Map<core.String, core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o['x']!,
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o['y']!,
+    unittest.equals('foo'),
+  );
+}
+
+core.List<core.String> buildUnnamed50() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed50(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterVirtualMachineConfig = 0;
+api.VirtualMachineConfig buildVirtualMachineConfig() {
+  final o = api.VirtualMachineConfig();
+  buildCounterVirtualMachineConfig++;
+  if (buildCounterVirtualMachineConfig < 3) {
+    o.acceleratorConfig = buildRuntimeAcceleratorConfig();
+    o.containerImages = buildUnnamed46();
+    o.dataDisk = buildLocalDisk();
+    o.encryptionConfig = buildEncryptionConfig();
+    o.guestAttributes = buildUnnamed47();
+    o.internalIpOnly = true;
+    o.labels = buildUnnamed48();
+    o.machineType = 'foo';
+    o.metadata = buildUnnamed49();
+    o.network = 'foo';
+    o.nicType = 'foo';
+    o.reservedIpRange = 'foo';
+    o.shieldedInstanceConfig = buildRuntimeShieldedInstanceConfig();
+    o.subnet = 'foo';
+    o.tags = buildUnnamed50();
+    o.zone = 'foo';
+  }
+  buildCounterVirtualMachineConfig--;
+  return o;
+}
+
+void checkVirtualMachineConfig(api.VirtualMachineConfig o) {
+  buildCounterVirtualMachineConfig++;
+  if (buildCounterVirtualMachineConfig < 3) {
+    checkRuntimeAcceleratorConfig(o.acceleratorConfig!);
+    checkUnnamed46(o.containerImages!);
+    checkLocalDisk(o.dataDisk!);
+    checkEncryptionConfig(o.encryptionConfig!);
+    checkUnnamed47(o.guestAttributes!);
+    unittest.expect(o.internalIpOnly!, unittest.isTrue);
+    checkUnnamed48(o.labels!);
+    unittest.expect(
+      o.machineType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed49(o.metadata!);
+    unittest.expect(
+      o.network!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nicType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.reservedIpRange!,
+      unittest.equals('foo'),
+    );
+    checkRuntimeShieldedInstanceConfig(o.shieldedInstanceConfig!);
+    unittest.expect(
+      o.subnet!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed50(o.tags!);
+    unittest.expect(
+      o.zone!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterVirtualMachineConfig--;
 }
 
 core.int buildCounterVmImage = 0;
 api.VmImage buildVmImage() {
-  var o = api.VmImage();
+  final o = api.VmImage();
   buildCounterVmImage++;
   if (buildCounterVmImage < 3) {
     o.imageFamily = 'foo';
@@ -2101,477 +3089,746 @@ void checkVmImage(api.VmImage o) {
 void main() {
   unittest.group('obj-schema-AcceleratorConfig', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAcceleratorConfig();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AcceleratorConfig.fromJson(
+      final o = buildAcceleratorConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AcceleratorConfig.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAcceleratorConfig(od as api.AcceleratorConfig);
+      checkAcceleratorConfig(od);
     });
   });
 
   unittest.group('obj-schema-Binding', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBinding();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildBinding();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Binding.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkBinding(od as api.Binding);
+      checkBinding(od);
     });
   });
 
   unittest.group('obj-schema-CancelOperationRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCancelOperationRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CancelOperationRequest.fromJson(
+      final o = buildCancelOperationRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CancelOperationRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCancelOperationRequest(od as api.CancelOperationRequest);
+      checkCancelOperationRequest(od);
     });
   });
 
   unittest.group('obj-schema-ContainerImage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildContainerImage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ContainerImage.fromJson(
+      final o = buildContainerImage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ContainerImage.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkContainerImage(od as api.ContainerImage);
+      checkContainerImage(od);
+    });
+  });
+
+  unittest.group('obj-schema-DataprocParameters', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildDataprocParameters();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DataprocParameters.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkDataprocParameters(od);
     });
   });
 
   unittest.group('obj-schema-Disk', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDisk();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Disk.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDisk(od as api.Disk);
+      final o = buildDisk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Disk.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDisk(od);
     });
   });
 
   unittest.group('obj-schema-Empty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEmpty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEmpty(od as api.Empty);
+      final o = buildEmpty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od);
+    });
+  });
+
+  unittest.group('obj-schema-EncryptionConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildEncryptionConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EncryptionConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkEncryptionConfig(od);
     });
   });
 
   unittest.group('obj-schema-Environment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEnvironment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Environment.fromJson(
+      final o = buildEnvironment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Environment.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEnvironment(od as api.Environment);
+      checkEnvironment(od);
+    });
+  });
+
+  unittest.group('obj-schema-Event', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildEvent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Event.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEvent(od);
     });
   });
 
   unittest.group('obj-schema-Execution', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExecution();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildExecution();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Execution.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkExecution(od as api.Execution);
+      checkExecution(od);
     });
   });
 
   unittest.group('obj-schema-ExecutionTemplate', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExecutionTemplate();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExecutionTemplate.fromJson(
+      final o = buildExecutionTemplate();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExecutionTemplate.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExecutionTemplate(od as api.ExecutionTemplate);
+      checkExecutionTemplate(od);
     });
   });
 
   unittest.group('obj-schema-Expr', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExpr();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Expr.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkExpr(od as api.Expr);
+      final o = buildExpr();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Expr.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkExpr(od);
     });
   });
 
   unittest.group('obj-schema-GetInstanceHealthResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGetInstanceHealthResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GetInstanceHealthResponse.fromJson(
+      final o = buildGetInstanceHealthResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GetInstanceHealthResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGetInstanceHealthResponse(od as api.GetInstanceHealthResponse);
+      checkGetInstanceHealthResponse(od);
     });
   });
 
   unittest.group('obj-schema-GuestOsFeature', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGuestOsFeature();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GuestOsFeature.fromJson(
+      final o = buildGuestOsFeature();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GuestOsFeature.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGuestOsFeature(od as api.GuestOsFeature);
+      checkGuestOsFeature(od);
     });
   });
 
   unittest.group('obj-schema-Instance', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInstance();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildInstance();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Instance.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkInstance(od as api.Instance);
+      checkInstance(od);
+    });
+  });
+
+  unittest.group('obj-schema-InstanceConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildInstanceConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InstanceConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkInstanceConfig(od);
     });
   });
 
   unittest.group('obj-schema-IsInstanceUpgradeableResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildIsInstanceUpgradeableResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.IsInstanceUpgradeableResponse.fromJson(
+      final o = buildIsInstanceUpgradeableResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.IsInstanceUpgradeableResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkIsInstanceUpgradeableResponse(
-          od as api.IsInstanceUpgradeableResponse);
+      checkIsInstanceUpgradeableResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListEnvironmentsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListEnvironmentsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListEnvironmentsResponse.fromJson(
+      final o = buildListEnvironmentsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListEnvironmentsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListEnvironmentsResponse(od as api.ListEnvironmentsResponse);
+      checkListEnvironmentsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListExecutionsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListExecutionsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListExecutionsResponse.fromJson(
+      final o = buildListExecutionsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListExecutionsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListExecutionsResponse(od as api.ListExecutionsResponse);
+      checkListExecutionsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListInstancesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListInstancesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListInstancesResponse.fromJson(
+      final o = buildListInstancesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListInstancesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListInstancesResponse(od as api.ListInstancesResponse);
+      checkListInstancesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListLocationsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListLocationsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListLocationsResponse.fromJson(
+      final o = buildListLocationsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListLocationsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListLocationsResponse(od as api.ListLocationsResponse);
+      checkListLocationsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListOperationsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListOperationsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListOperationsResponse.fromJson(
+      final o = buildListOperationsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListOperationsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListOperationsResponse(od as api.ListOperationsResponse);
+      checkListOperationsResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-ListRuntimesResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildListRuntimesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListRuntimesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListRuntimesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListSchedulesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListSchedulesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListSchedulesResponse.fromJson(
+      final o = buildListSchedulesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListSchedulesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListSchedulesResponse(od as api.ListSchedulesResponse);
+      checkListSchedulesResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-LocalDisk', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildLocalDisk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.LocalDisk.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLocalDisk(od);
+    });
+  });
+
+  unittest.group('obj-schema-LocalDiskInitializeParams', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildLocalDiskInitializeParams();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LocalDiskInitializeParams.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkLocalDiskInitializeParams(od);
     });
   });
 
   unittest.group('obj-schema-Location', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildLocation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Location.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLocation(od as api.Location);
+      checkLocation(od);
     });
   });
 
   unittest.group('obj-schema-Operation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildOperation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildOperation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Operation.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkOperation(od as api.Operation);
-    });
-  });
-
-  unittest.group('obj-schema-OperationMetadata', () {
-    unittest.test('to-json--from-json', () async {
-      var o = buildOperationMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.OperationMetadata.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
-      checkOperationMetadata(od as api.OperationMetadata);
+      checkOperation(od);
     });
   });
 
   unittest.group('obj-schema-Policy', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPolicy();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildPolicy();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Policy.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkPolicy(od as api.Policy);
+      checkPolicy(od);
     });
   });
 
   unittest.group('obj-schema-RegisterInstanceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRegisterInstanceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RegisterInstanceRequest.fromJson(
+      final o = buildRegisterInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RegisterInstanceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRegisterInstanceRequest(od as api.RegisterInstanceRequest);
+      checkRegisterInstanceRequest(od);
     });
   });
 
   unittest.group('obj-schema-ReportInstanceInfoRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReportInstanceInfoRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReportInstanceInfoRequest.fromJson(
+      final o = buildReportInstanceInfoRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReportInstanceInfoRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReportInstanceInfoRequest(od as api.ReportInstanceInfoRequest);
+      checkReportInstanceInfoRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-ReportRuntimeEventRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildReportRuntimeEventRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReportRuntimeEventRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkReportRuntimeEventRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-ReservationAffinity', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildReservationAffinity();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReservationAffinity.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkReservationAffinity(od);
     });
   });
 
   unittest.group('obj-schema-ResetInstanceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildResetInstanceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ResetInstanceRequest.fromJson(
+      final o = buildResetInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ResetInstanceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkResetInstanceRequest(od as api.ResetInstanceRequest);
+      checkResetInstanceRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-ResetRuntimeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildResetRuntimeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ResetRuntimeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkResetRuntimeRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-RollbackInstanceRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRollbackInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RollbackInstanceRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRollbackInstanceRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-Runtime', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntime();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Runtime.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkRuntime(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeAcceleratorConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeAcceleratorConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeAcceleratorConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeAcceleratorConfig(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeAccessConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeAccessConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeAccessConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeAccessConfig(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeGuestOsFeature', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeGuestOsFeature();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeGuestOsFeature.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeGuestOsFeature(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeMetrics', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeMetrics();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeMetrics.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeMetrics(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeShieldedInstanceConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeShieldedInstanceConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeShieldedInstanceConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeShieldedInstanceConfig(od);
+    });
+  });
+
+  unittest.group('obj-schema-RuntimeSoftwareConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRuntimeSoftwareConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RuntimeSoftwareConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRuntimeSoftwareConfig(od);
     });
   });
 
   unittest.group('obj-schema-Schedule', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSchedule();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildSchedule();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Schedule.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkSchedule(od as api.Schedule);
+      checkSchedule(od);
     });
   });
 
   unittest.group('obj-schema-SchedulerAcceleratorConfig', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSchedulerAcceleratorConfig();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SchedulerAcceleratorConfig.fromJson(
+      final o = buildSchedulerAcceleratorConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SchedulerAcceleratorConfig.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSchedulerAcceleratorConfig(od as api.SchedulerAcceleratorConfig);
+      checkSchedulerAcceleratorConfig(od);
     });
   });
 
   unittest.group('obj-schema-SetIamPolicyRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetIamPolicyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SetIamPolicyRequest.fromJson(
+      final o = buildSetIamPolicyRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SetIamPolicyRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSetIamPolicyRequest(od as api.SetIamPolicyRequest);
+      checkSetIamPolicyRequest(od);
     });
   });
 
   unittest.group('obj-schema-SetInstanceAcceleratorRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetInstanceAcceleratorRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SetInstanceAcceleratorRequest.fromJson(
+      final o = buildSetInstanceAcceleratorRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SetInstanceAcceleratorRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSetInstanceAcceleratorRequest(
-          od as api.SetInstanceAcceleratorRequest);
+      checkSetInstanceAcceleratorRequest(od);
     });
   });
 
   unittest.group('obj-schema-SetInstanceLabelsRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetInstanceLabelsRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SetInstanceLabelsRequest.fromJson(
+      final o = buildSetInstanceLabelsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SetInstanceLabelsRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSetInstanceLabelsRequest(od as api.SetInstanceLabelsRequest);
+      checkSetInstanceLabelsRequest(od);
     });
   });
 
   unittest.group('obj-schema-SetInstanceMachineTypeRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetInstanceMachineTypeRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SetInstanceMachineTypeRequest.fromJson(
+      final o = buildSetInstanceMachineTypeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SetInstanceMachineTypeRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSetInstanceMachineTypeRequest(
-          od as api.SetInstanceMachineTypeRequest);
+      checkSetInstanceMachineTypeRequest(od);
     });
   });
 
   unittest.group('obj-schema-ShieldedInstanceConfig', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildShieldedInstanceConfig();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ShieldedInstanceConfig.fromJson(
+      final o = buildShieldedInstanceConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ShieldedInstanceConfig.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkShieldedInstanceConfig(od as api.ShieldedInstanceConfig);
+      checkShieldedInstanceConfig(od);
     });
   });
 
   unittest.group('obj-schema-StartInstanceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStartInstanceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.StartInstanceRequest.fromJson(
+      final o = buildStartInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StartInstanceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkStartInstanceRequest(od as api.StartInstanceRequest);
+      checkStartInstanceRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-StartRuntimeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildStartRuntimeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StartRuntimeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkStartRuntimeRequest(od);
     });
   });
 
   unittest.group('obj-schema-Status', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Status.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkStatus(od as api.Status);
+      checkStatus(od);
     });
   });
 
   unittest.group('obj-schema-StopInstanceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStopInstanceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.StopInstanceRequest.fromJson(
+      final o = buildStopInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StopInstanceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkStopInstanceRequest(od as api.StopInstanceRequest);
+      checkStopInstanceRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-StopRuntimeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildStopRuntimeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StopRuntimeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkStopRuntimeRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-SwitchRuntimeRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildSwitchRuntimeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SwitchRuntimeRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSwitchRuntimeRequest(od);
     });
   });
 
   unittest.group('obj-schema-TestIamPermissionsRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestIamPermissionsRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TestIamPermissionsRequest.fromJson(
+      final o = buildTestIamPermissionsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TestIamPermissionsRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTestIamPermissionsRequest(od as api.TestIamPermissionsRequest);
+      checkTestIamPermissionsRequest(od);
     });
   });
 
   unittest.group('obj-schema-TestIamPermissionsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestIamPermissionsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TestIamPermissionsResponse.fromJson(
+      final o = buildTestIamPermissionsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TestIamPermissionsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTestIamPermissionsResponse(od as api.TestIamPermissionsResponse);
+      checkTestIamPermissionsResponse(od);
     });
   });
 
   unittest.group('obj-schema-TriggerScheduleRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTriggerScheduleRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TriggerScheduleRequest.fromJson(
+      final o = buildTriggerScheduleRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TriggerScheduleRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTriggerScheduleRequest(od as api.TriggerScheduleRequest);
+      checkTriggerScheduleRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateInstanceConfigRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildUpdateInstanceConfigRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateInstanceConfigRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateInstanceConfigRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateInstanceMetadataItemsRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildUpdateInstanceMetadataItemsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateInstanceMetadataItemsRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateInstanceMetadataItemsRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateInstanceMetadataItemsResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildUpdateInstanceMetadataItemsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateInstanceMetadataItemsResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateInstanceMetadataItemsResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-UpdateShieldedInstanceConfigRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildUpdateShieldedInstanceConfigRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateShieldedInstanceConfigRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkUpdateShieldedInstanceConfigRequest(od);
     });
   });
 
   unittest.group('obj-schema-UpgradeHistoryEntry', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpgradeHistoryEntry();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpgradeHistoryEntry.fromJson(
+      final o = buildUpgradeHistoryEntry();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpgradeHistoryEntry.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpgradeHistoryEntry(od as api.UpgradeHistoryEntry);
+      checkUpgradeHistoryEntry(od);
     });
   });
 
   unittest.group('obj-schema-UpgradeInstanceInternalRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpgradeInstanceInternalRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpgradeInstanceInternalRequest.fromJson(
+      final o = buildUpgradeInstanceInternalRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpgradeInstanceInternalRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpgradeInstanceInternalRequest(
-          od as api.UpgradeInstanceInternalRequest);
+      checkUpgradeInstanceInternalRequest(od);
     });
   });
 
   unittest.group('obj-schema-UpgradeInstanceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpgradeInstanceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpgradeInstanceRequest.fromJson(
+      final o = buildUpgradeInstanceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpgradeInstanceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpgradeInstanceRequest(od as api.UpgradeInstanceRequest);
+      checkUpgradeInstanceRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-VertexAIParameters', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildVertexAIParameters();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VertexAIParameters.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVertexAIParameters(od);
+    });
+  });
+
+  unittest.group('obj-schema-VirtualMachine', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildVirtualMachine();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VirtualMachine.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVirtualMachine(od);
+    });
+  });
+
+  unittest.group('obj-schema-VirtualMachineConfig', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildVirtualMachineConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VirtualMachineConfig.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVirtualMachineConfig(od);
     });
   });
 
   unittest.group('obj-schema-VmImage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVmImage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildVmImage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.VmImage.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkVmImage(od as api.VmImage);
+      checkVmImage(od);
     });
   });
 
   unittest.group('resource-ProjectsLocationsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2579,14 +3836,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLocation());
+        final resp = convert.json.encode(buildLocation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -2594,39 +3851,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations;
-      var arg_name = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations;
+      final arg_name = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2634,26 +3891,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListLocationsResponse());
+        final resp = convert.json.encode(buildListLocationsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_name,
@@ -2667,43 +3924,43 @@ void main() {
 
   unittest.group('resource-ProjectsLocationsEnvironmentsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res =
+      final mock = HttpServerMock();
+      final res =
           api.AIPlatformNotebooksApi(mock).projects.locations.environments;
-      var arg_request = buildEnvironment();
-      var arg_parent = 'foo';
-      var arg_environmentId = 'foo';
-      var arg_$fields = 'foo';
+      final arg_request = buildEnvironment();
+      final arg_parent = 'foo';
+      final arg_environmentId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Environment.fromJson(
+        final obj = api.Environment.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkEnvironment(obj as api.Environment);
+        checkEnvironment(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2711,18 +3968,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["environmentId"]!.first,
+          queryMap['environmentId']!.first,
           unittest.equals(arg_environmentId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, arg_parent,
@@ -2731,37 +3988,37 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res =
+      final mock = HttpServerMock();
+      final res =
           api.AIPlatformNotebooksApi(mock).projects.locations.environments;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2769,14 +4026,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -2784,37 +4041,37 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res =
+      final mock = HttpServerMock();
+      final res =
           api.AIPlatformNotebooksApi(mock).projects.locations.environments;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2822,14 +4079,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEnvironment());
+        final resp = convert.json.encode(buildEnvironment());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -2837,39 +4094,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res =
+      final mock = HttpServerMock();
+      final res =
           api.AIPlatformNotebooksApi(mock).projects.locations.environments;
-      var arg_parent = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2877,22 +4134,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListEnvironmentsResponse());
+        final resp = convert.json.encode(buildListEnvironmentsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -2905,42 +4162,43 @@ void main() {
 
   unittest.group('resource-ProjectsLocationsExecutionsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.executions;
-      var arg_request = buildExecution();
-      var arg_parent = 'foo';
-      var arg_executionId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.executions;
+      final arg_request = buildExecution();
+      final arg_parent = 'foo';
+      final arg_executionId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Execution.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkExecution(obj as api.Execution);
+        checkExecution(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2948,18 +4206,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["executionId"]!.first,
+          queryMap['executionId']!.first,
           unittest.equals(arg_executionId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, arg_parent,
@@ -2968,36 +4226,37 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.executions;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.executions;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3005,14 +4264,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -3020,36 +4279,37 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.executions;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.executions;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3057,14 +4317,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildExecution());
+        final resp = convert.json.encode(buildExecution());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -3072,40 +4332,41 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.executions;
-      var arg_parent = 'foo';
-      var arg_filter = 'foo';
-      var arg_orderBy = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.executions;
+      final arg_parent = 'foo';
+      final arg_filter = 'foo';
+      final arg_orderBy = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3113,30 +4374,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListExecutionsResponse());
+        final resp = convert.json.encode(buildListExecutionsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -3151,42 +4412,42 @@ void main() {
 
   unittest.group('resource-ProjectsLocationsInstancesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildInstance();
-      var arg_parent = 'foo';
-      var arg_instanceId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildInstance();
+      final arg_parent = 'foo';
+      final arg_instanceId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Instance.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkInstance(obj as api.Instance);
+        checkInstance(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3194,18 +4455,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["instanceId"]!.first,
+          queryMap['instanceId']!.first,
           unittest.equals(arg_instanceId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, arg_parent,
@@ -3214,36 +4475,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3251,14 +4512,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -3266,36 +4527,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3303,14 +4564,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInstance());
+        final resp = convert.json.encode(buildInstance());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -3318,37 +4579,37 @@ void main() {
     });
 
     unittest.test('method--getIamPolicy', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_resource = 'foo';
-      var arg_options_requestedPolicyVersion = 42;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_resource = 'foo';
+      final arg_options_requestedPolicyVersion = 42;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3356,18 +4617,18 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["options.requestedPolicyVersion"]!.first),
+          core.int.parse(queryMap['options.requestedPolicyVersion']!.first),
           unittest.equals(arg_options_requestedPolicyVersion),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPolicy());
+        final resp = convert.json.encode(buildPolicy());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getIamPolicy(arg_resource,
@@ -3377,36 +4638,36 @@ void main() {
     });
 
     unittest.test('method--getInstanceHealth', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3414,14 +4675,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGetInstanceHealthResponse());
+        final resp = convert.json.encode(buildGetInstanceHealthResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3430,36 +4691,37 @@ void main() {
     });
 
     unittest.test('method--isUpgradeable', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_notebookInstance = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_notebookInstance = 'foo';
+      final arg_type = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3467,55 +4729,59 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['type']!.first,
+          unittest.equals(arg_type),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildIsInstanceUpgradeableResponse());
+        final resp = convert.json.encode(buildIsInstanceUpgradeableResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.isUpgradeable(arg_notebookInstance, $fields: arg_$fields);
+      final response = await res.isUpgradeable(arg_notebookInstance,
+          type: arg_type, $fields: arg_$fields);
       checkIsInstanceUpgradeableResponse(
           response as api.IsInstanceUpgradeableResponse);
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_parent = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3523,22 +4789,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListInstancesResponse());
+        final resp = convert.json.encode(buildListInstancesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -3549,41 +4815,41 @@ void main() {
     });
 
     unittest.test('method--register', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildRegisterInstanceRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildRegisterInstanceRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.RegisterInstanceRequest.fromJson(
+        final obj = api.RegisterInstanceRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkRegisterInstanceRequest(obj as api.RegisterInstanceRequest);
+        checkRegisterInstanceRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3591,14 +4857,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3607,41 +4873,41 @@ void main() {
     });
 
     unittest.test('method--report', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildReportInstanceInfoRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildReportInstanceInfoRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ReportInstanceInfoRequest.fromJson(
+        final obj = api.ReportInstanceInfoRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkReportInstanceInfoRequest(obj as api.ReportInstanceInfoRequest);
+        checkReportInstanceInfoRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3649,14 +4915,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3665,41 +4931,41 @@ void main() {
     });
 
     unittest.test('method--reset', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildResetInstanceRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildResetInstanceRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ResetInstanceRequest.fromJson(
+        final obj = api.ResetInstanceRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkResetInstanceRequest(obj as api.ResetInstanceRequest);
+        checkResetInstanceRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3707,14 +4973,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3722,43 +4988,42 @@ void main() {
       checkOperation(response as api.Operation);
     });
 
-    unittest.test('method--setAccelerator', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildSetInstanceAcceleratorRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+    unittest.test('method--rollback', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildRollbackInstanceRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SetInstanceAcceleratorRequest.fromJson(
+        final obj = api.RollbackInstanceRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSetInstanceAcceleratorRequest(
-            obj as api.SetInstanceAcceleratorRequest);
+        checkRollbackInstanceRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3766,14 +5031,72 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.rollback(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--setAccelerator', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildSetInstanceAcceleratorRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.SetInstanceAcceleratorRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkSetInstanceAcceleratorRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3782,41 +5105,41 @@ void main() {
     });
 
     unittest.test('method--setIamPolicy', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildSetIamPolicyRequest();
-      var arg_resource = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildSetIamPolicyRequest();
+      final arg_resource = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SetIamPolicyRequest.fromJson(
+        final obj = api.SetIamPolicyRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSetIamPolicyRequest(obj as api.SetIamPolicyRequest);
+        checkSetIamPolicyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3824,14 +5147,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPolicy());
+        final resp = convert.json.encode(buildPolicy());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.setIamPolicy(arg_request, arg_resource,
@@ -3840,41 +5163,41 @@ void main() {
     });
 
     unittest.test('method--setLabels', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildSetInstanceLabelsRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildSetInstanceLabelsRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SetInstanceLabelsRequest.fromJson(
+        final obj = api.SetInstanceLabelsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSetInstanceLabelsRequest(obj as api.SetInstanceLabelsRequest);
+        checkSetInstanceLabelsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3882,14 +5205,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3898,42 +5221,41 @@ void main() {
     });
 
     unittest.test('method--setMachineType', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildSetInstanceMachineTypeRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildSetInstanceMachineTypeRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SetInstanceMachineTypeRequest.fromJson(
+        final obj = api.SetInstanceMachineTypeRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSetInstanceMachineTypeRequest(
-            obj as api.SetInstanceMachineTypeRequest);
+        checkSetInstanceMachineTypeRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3941,14 +5263,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3957,41 +5279,41 @@ void main() {
     });
 
     unittest.test('method--start', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildStartInstanceRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildStartInstanceRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.StartInstanceRequest.fromJson(
+        final obj = api.StartInstanceRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkStartInstanceRequest(obj as api.StartInstanceRequest);
+        checkStartInstanceRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3999,14 +5321,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4015,41 +5337,41 @@ void main() {
     });
 
     unittest.test('method--stop', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildStopInstanceRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildStopInstanceRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.StopInstanceRequest.fromJson(
+        final obj = api.StopInstanceRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkStopInstanceRequest(obj as api.StopInstanceRequest);
+        checkStopInstanceRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4057,14 +5379,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4073,41 +5395,41 @@ void main() {
     });
 
     unittest.test('method--testIamPermissions', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildTestIamPermissionsRequest();
-      var arg_resource = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildTestIamPermissionsRequest();
+      final arg_resource = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.TestIamPermissionsRequest.fromJson(
+        final obj = api.TestIamPermissionsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkTestIamPermissionsRequest(obj as api.TestIamPermissionsRequest);
+        checkTestIamPermissionsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4115,14 +5437,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTestIamPermissionsResponse());
+        final resp = convert.json.encode(buildTestIamPermissionsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.testIamPermissions(arg_request, arg_resource,
@@ -4131,42 +5453,42 @@ void main() {
           response as api.TestIamPermissionsResponse);
     });
 
-    unittest.test('method--upgrade', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildUpgradeInstanceRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+    unittest.test('method--updateConfig', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildUpdateInstanceConfigRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpgradeInstanceRequest.fromJson(
+        final obj = api.UpdateInstanceConfigRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpgradeInstanceRequest(obj as api.UpgradeInstanceRequest);
+        checkUpdateInstanceConfigRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4174,14 +5496,191 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.updateConfig(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--updateMetadataItems', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildUpdateInstanceMetadataItemsRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.UpdateInstanceMetadataItemsRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkUpdateInstanceMetadataItemsRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp =
+            convert.json.encode(buildUpdateInstanceMetadataItemsResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.updateMetadataItems(arg_request, arg_name,
+          $fields: arg_$fields);
+      checkUpdateInstanceMetadataItemsResponse(
+          response as api.UpdateInstanceMetadataItemsResponse);
+    });
+
+    unittest.test('method--updateShieldedInstanceConfig', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildUpdateShieldedInstanceConfigRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.UpdateShieldedInstanceConfigRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkUpdateShieldedInstanceConfigRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.updateShieldedInstanceConfig(
+          arg_request, arg_name,
+          $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--upgrade', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildUpgradeInstanceRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.UpgradeInstanceRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkUpgradeInstanceRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4190,42 +5689,41 @@ void main() {
     });
 
     unittest.test('method--upgradeInternal', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
-      var arg_request = buildUpgradeInstanceInternalRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.instances;
+      final arg_request = buildUpgradeInstanceInternalRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpgradeInstanceInternalRequest.fromJson(
+        final obj = api.UpgradeInstanceInternalRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpgradeInstanceInternalRequest(
-            obj as api.UpgradeInstanceInternalRequest);
+        checkUpgradeInstanceInternalRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4233,14 +5731,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.upgradeInternal(arg_request, arg_name,
@@ -4251,41 +5749,42 @@ void main() {
 
   unittest.group('resource-ProjectsLocationsOperationsResource', () {
     unittest.test('method--cancel', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.operations;
-      var arg_request = buildCancelOperationRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.operations;
+      final arg_request = buildCancelOperationRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CancelOperationRequest.fromJson(
+        final obj = api.CancelOperationRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCancelOperationRequest(obj as api.CancelOperationRequest);
+        checkCancelOperationRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4293,14 +5792,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4309,36 +5808,37 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.operations;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.operations;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4346,14 +5846,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -4361,36 +5861,37 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.operations;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.operations;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4398,14 +5899,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -4413,39 +5914,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.operations;
-      var arg_name = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.AIPlatformNotebooksApi(mock).projects.locations.operations;
+      final arg_name = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4453,26 +5955,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListOperationsResponse());
+        final resp = convert.json.encode(buildListOperationsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_name,
@@ -4484,44 +5986,44 @@ void main() {
     });
   });
 
-  unittest.group('resource-ProjectsLocationsSchedulesResource', () {
+  unittest.group('resource-ProjectsLocationsRuntimesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
-      var arg_request = buildSchedule();
-      var arg_parent = 'foo';
-      var arg_scheduleId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildRuntime();
+      final arg_parent = 'foo';
+      final arg_runtimeId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
-            api.Schedule.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkSchedule(obj as api.Schedule);
+        final obj =
+            api.Runtime.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkRuntime(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4529,18 +6031,718 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["scheduleId"]!.first,
-          unittest.equals(arg_scheduleId),
+          queryMap['runtimeId']!.first,
+          unittest.equals(arg_runtimeId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.create(arg_request, arg_parent,
+          runtimeId: arg_runtimeId, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--delete', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.delete(arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--get', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildRuntime());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_name, $fields: arg_$fields);
+      checkRuntime(response as api.Runtime);
+    });
+
+    unittest.test('method--getIamPolicy', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_resource = 'foo';
+      final arg_options_requestedPolicyVersion = 42;
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          core.int.parse(queryMap['options.requestedPolicyVersion']!.first),
+          unittest.equals(arg_options_requestedPolicyVersion),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildPolicy());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.getIamPolicy(arg_resource,
+          options_requestedPolicyVersion: arg_options_requestedPolicyVersion,
+          $fields: arg_$fields);
+      checkPolicy(response as api.Policy);
+    });
+
+    unittest.test('method--list', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          core.int.parse(queryMap['pageSize']!.first),
+          unittest.equals(arg_pageSize),
+        );
+        unittest.expect(
+          queryMap['pageToken']!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildListRuntimesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_parent,
+          pageSize: arg_pageSize,
+          pageToken: arg_pageToken,
+          $fields: arg_$fields);
+      checkListRuntimesResponse(response as api.ListRuntimesResponse);
+    });
+
+    unittest.test('method--reportEvent', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildReportRuntimeEventRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.ReportRuntimeEventRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkReportRuntimeEventRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.reportEvent(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--reset', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildResetRuntimeRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.ResetRuntimeRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkResetRuntimeRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.reset(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--setIamPolicy', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildSetIamPolicyRequest();
+      final arg_resource = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.SetIamPolicyRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkSetIamPolicyRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildPolicy());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.setIamPolicy(arg_request, arg_resource,
+          $fields: arg_$fields);
+      checkPolicy(response as api.Policy);
+    });
+
+    unittest.test('method--start', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildStartRuntimeRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.StartRuntimeRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkStartRuntimeRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.start(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--stop', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildStopRuntimeRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.StopRuntimeRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkStopRuntimeRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.stop(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--switch_', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildSwitchRuntimeRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.SwitchRuntimeRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkSwitchRuntimeRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.switch_(arg_request, arg_name, $fields: arg_$fields);
+      checkOperation(response as api.Operation);
+    });
+
+    unittest.test('method--testIamPermissions', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.runtimes;
+      final arg_request = buildTestIamPermissionsRequest();
+      final arg_resource = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.TestIamPermissionsRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkTestIamPermissionsRequest(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildTestIamPermissionsResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.testIamPermissions(arg_request, arg_resource,
+          $fields: arg_$fields);
+      checkTestIamPermissionsResponse(
+          response as api.TestIamPermissionsResponse);
+    });
+  });
+
+  unittest.group('resource-ProjectsLocationsSchedulesResource', () {
+    unittest.test('method--create', () async {
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
+      final arg_request = buildSchedule();
+      final arg_parent = 'foo';
+      final arg_scheduleId = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj =
+            api.Schedule.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkSchedule(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 3),
+          unittest.equals('v1/'),
+        );
+        pathOffset += 3;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['scheduleId']!.first,
+          unittest.equals(arg_scheduleId),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, arg_parent,
@@ -4549,36 +6751,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4586,14 +6788,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -4601,36 +6803,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4638,14 +6840,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSchedule());
+        final resp = convert.json.encode(buildSchedule());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -4653,40 +6855,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
-      var arg_parent = 'foo';
-      var arg_filter = 'foo';
-      var arg_orderBy = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
+      final arg_parent = 'foo';
+      final arg_filter = 'foo';
+      final arg_orderBy = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4694,30 +6896,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListSchedulesResponse());
+        final resp = convert.json.encode(buildListSchedulesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -4730,41 +6932,41 @@ void main() {
     });
 
     unittest.test('method--trigger', () async {
-      var mock = HttpServerMock();
-      var res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
-      var arg_request = buildTriggerScheduleRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AIPlatformNotebooksApi(mock).projects.locations.schedules;
+      final arg_request = buildTriggerScheduleRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.TriggerScheduleRequest.fromJson(
+        final obj = api.TriggerScheduleRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkTriggerScheduleRequest(obj as api.TriggerScheduleRequest);
+        checkTriggerScheduleRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4772,14 +6974,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildOperation());
+        final resp = convert.json.encode(buildOperation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =

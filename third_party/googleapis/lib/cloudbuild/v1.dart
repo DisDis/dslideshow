@@ -20,13 +20,22 @@
 ///
 /// Create an instance of [CloudBuildApi] to access these resources:
 ///
+/// - [LocationsResource]
 /// - [OperationsResource]
 /// - [ProjectsResource]
 ///   - [ProjectsBuildsResource]
+///   - [ProjectsGithubEnterpriseConfigsResource]
 ///   - [ProjectsLocationsResource]
+///     - [ProjectsLocationsBitbucketServerConfigsResource]
+/// - [ProjectsLocationsBitbucketServerConfigsConnectedRepositoriesResource]
+///       - [ProjectsLocationsBitbucketServerConfigsReposResource]
 ///     - [ProjectsLocationsBuildsResource]
+///     - [ProjectsLocationsGithubEnterpriseConfigsResource]
 ///     - [ProjectsLocationsOperationsResource]
+///     - [ProjectsLocationsTriggersResource]
+///     - [ProjectsLocationsWorkerPoolsResource]
 ///   - [ProjectsTriggersResource]
+/// - [V1Resource]
 library cloudbuild.v1;
 
 import 'dart:async' as async;
@@ -36,6 +45,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -43,20 +54,76 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Creates and manages builds on Google Cloud Platform.
 class CloudBuildApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
   final commons.ApiRequester _requester;
 
+  LocationsResource get locations => LocationsResource(_requester);
   OperationsResource get operations => OperationsResource(_requester);
   ProjectsResource get projects => ProjectsResource(_requester);
+  V1Resource get v1 => V1Resource(_requester);
 
   CloudBuildApi(http.Client client,
       {core.String rootUrl = 'https://cloudbuild.googleapis.com/',
       core.String servicePath = ''})
       : _requester =
             commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
+}
+
+class LocationsResource {
+  final commons.ApiRequester _requester;
+
+  LocationsResource(commons.ApiRequester client) : _requester = client;
+
+  /// ReceiveRegionalWebhook is called when the API receives a regional GitHub
+  /// webhook.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [location] - Required. The location where the webhook should be sent.
+  /// Value must have pattern `^locations/\[^/\]+$`.
+  ///
+  /// [webhookKey] - For GitHub Enterprise webhooks, this key is used to
+  /// associate the webhook request with the GitHubEnterpriseConfig to use for
+  /// validation.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> regionalWebhook(
+    HttpBody request,
+    core.String location, {
+    core.String? webhookKey,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (webhookKey != null) 'webhookKey': [webhookKey],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$location') + '/regionalWebhook';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class OperationsResource {
@@ -97,7 +164,7 @@ class OperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -156,6 +223,8 @@ class ProjectsResource {
   final commons.ApiRequester _requester;
 
   ProjectsBuildsResource get builds => ProjectsBuildsResource(_requester);
+  ProjectsGithubEnterpriseConfigsResource get githubEnterpriseConfigs =>
+      ProjectsGithubEnterpriseConfigsResource(_requester);
   ProjectsLocationsResource get locations =>
       ProjectsLocationsResource(_requester);
   ProjectsTriggersResource get triggers => ProjectsTriggersResource(_requester);
@@ -167,6 +236,50 @@ class ProjectsBuildsResource {
   final commons.ApiRequester _requester;
 
   ProjectsBuildsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Approves or rejects a pending build.
+  ///
+  /// If approved, the returned LRO will be analogous to the LRO returned from a
+  /// CreateBuild call. If rejected, the returned LRO will be immediately done.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the target build. For example:
+  /// "projects/{$project_id}/builds/{$build_id}"
+  /// Value must have pattern `^projects/\[^/\]+/builds/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> approve(
+    ApproveBuildRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':approve';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 
   /// Cancels a build in progress.
   ///
@@ -194,7 +307,7 @@ class ProjectsBuildsResource {
     core.String id, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -245,7 +358,7 @@ class ProjectsBuildsResource {
     core.String? parent,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (parent != null) 'parent': [parent],
       if ($fields != null) 'fields': [$fields],
@@ -414,7 +527,7 @@ class ProjectsBuildsResource {
     core.String id, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -435,15 +548,731 @@ class ProjectsBuildsResource {
   }
 }
 
+class ProjectsGithubEnterpriseConfigsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsGithubEnterpriseConfigsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Create an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Name of the parent project. For example:
+  /// projects/{$project_number} or projects/{$project_id}
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [gheConfigId] - Optional. The ID to use for the GithubEnterpriseConfig,
+  /// which will become the final component of the GithubEnterpriseConfig’s
+  /// resource name. ghe_config_id must meet the following requirements: + They
+  /// must contain only alphanumeric characters and dashes. + They can be 1-64
+  /// characters long. + They must begin and end with an alphanumeric character
+  ///
+  /// [projectId] - ID of the project.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    GitHubEnterpriseConfig request,
+    core.String parent, {
+    core.String? gheConfigId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (gheConfigId != null) 'gheConfigId': [gheConfigId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/githubEnterpriseConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field should contain the name of the enterprise config
+  /// resource. For example:
+  /// "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [configId] - Unique identifier of the `GitHubEnterpriseConfig`
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> delete(
+    core.String name, {
+    core.String? configId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (configId != null) 'configId': [configId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Retrieve a GitHubEnterpriseConfig.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field should contain the name of the enterprise config
+  /// resource. For example:
+  /// "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [configId] - Unique identifier of the `GitHubEnterpriseConfig`
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GitHubEnterpriseConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GitHubEnterpriseConfig> get(
+    core.String name, {
+    core.String? configId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (configId != null) 'configId': [configId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GitHubEnterpriseConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List all GitHubEnterpriseConfigs for a given project.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Name of the parent project. For example:
+  /// projects/{$project_number} or projects/{$project_id}
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListGithubEnterpriseConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListGithubEnterpriseConfigsResponse> list(
+    core.String parent, {
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/githubEnterpriseConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListGithubEnterpriseConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Optional. The full resource name for the GitHubEnterpriseConfig
+  /// For example: "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - Update mask for the resource. If this is set, the server
+  /// will only update the fields specified in the field mask. Otherwise, a full
+  /// update of the mutable resource fields will be performed.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> patch(
+    GitHubEnterpriseConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class ProjectsLocationsResource {
   final commons.ApiRequester _requester;
 
+  ProjectsLocationsBitbucketServerConfigsResource get bitbucketServerConfigs =>
+      ProjectsLocationsBitbucketServerConfigsResource(_requester);
   ProjectsLocationsBuildsResource get builds =>
       ProjectsLocationsBuildsResource(_requester);
+  ProjectsLocationsGithubEnterpriseConfigsResource
+      get githubEnterpriseConfigs =>
+          ProjectsLocationsGithubEnterpriseConfigsResource(_requester);
   ProjectsLocationsOperationsResource get operations =>
       ProjectsLocationsOperationsResource(_requester);
+  ProjectsLocationsTriggersResource get triggers =>
+      ProjectsLocationsTriggersResource(_requester);
+  ProjectsLocationsWorkerPoolsResource get workerPools =>
+      ProjectsLocationsWorkerPoolsResource(_requester);
 
   ProjectsLocationsResource(commons.ApiRequester client) : _requester = client;
+}
+
+class ProjectsLocationsBitbucketServerConfigsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsBitbucketServerConfigsConnectedRepositoriesResource
+      get connectedRepositories =>
+          ProjectsLocationsBitbucketServerConfigsConnectedRepositoriesResource(
+              _requester);
+  ProjectsLocationsBitbucketServerConfigsReposResource get repos =>
+      ProjectsLocationsBitbucketServerConfigsReposResource(_requester);
+
+  ProjectsLocationsBitbucketServerConfigsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Add a Bitbucket Server repository to a given BitbucketServerConfig's
+  /// connected repositories.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [config] - Required. The name of the `BitbucketServerConfig` to add a
+  /// connected repository. Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AddBitbucketServerConnectedRepositoryResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AddBitbucketServerConnectedRepositoryResponse>
+      addBitbucketServerConnectedRepository(
+    AddBitbucketServerConnectedRepositoryRequest request,
+    core.String config, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' +
+        core.Uri.encodeFull('$config') +
+        ':addBitbucketServerConnectedRepository';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AddBitbucketServerConnectedRepositoryResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Creates a new `BitbucketServerConfig`.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the parent resource.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [bitbucketServerConfigId] - Optional. The ID to use for the
+  /// BitbucketServerConfig, which will become the final component of the
+  /// BitbucketServerConfig's resource name. bitbucket_server_config_id must
+  /// meet the following requirements: + They must contain only alphanumeric
+  /// characters and dashes. + They can be 1-64 characters long. + They must
+  /// begin and end with an alphanumeric character.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    BitbucketServerConfig request,
+    core.String parent, {
+    core.String? bitbucketServerConfigId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (bitbucketServerConfigId != null)
+        'bitbucketServerConfigId': [bitbucketServerConfigId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/bitbucketServerConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete a `BitbucketServerConfig`.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The config resource name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Retrieve a `BitbucketServerConfig`.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The config resource name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [BitbucketServerConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<BitbucketServerConfig> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return BitbucketServerConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List all `BitbucketServerConfigs` for a given project.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the parent resource.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of configs to return. The service may
+  /// return fewer than this value. If unspecified, at most 50 configs will be
+  /// returned. The maximum value is 1000; values above 1000 will be coerced to
+  /// 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous
+  /// `ListBitbucketServerConfigsRequest` call. Provide this to retrieve the
+  /// subsequent page. When paginating, all other parameters provided to
+  /// `ListBitbucketServerConfigsRequest` must match the call that provided the
+  /// page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListBitbucketServerConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListBitbucketServerConfigsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/bitbucketServerConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListBitbucketServerConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates an existing `BitbucketServerConfig`.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The resource name for the config.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - Update mask for the resource. If this is set, the server
+  /// will only update the fields specified in the field mask. Otherwise, a full
+  /// update of the mutable resource fields will be performed.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> patch(
+    BitbucketServerConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Remove a Bitbucket Server repository from an given BitbucketServerConfig’s
+  /// connected repositories.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [config] - Required. The name of the `BitbucketServerConfig` to remove a
+  /// connected repository. Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> removeBitbucketServerConnectedRepository(
+    RemoveBitbucketServerConnectedRepositoryRequest request,
+    core.String config, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' +
+        core.Uri.encodeFull('$config') +
+        ':removeBitbucketServerConnectedRepository';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsBitbucketServerConfigsConnectedRepositoriesResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsBitbucketServerConfigsConnectedRepositoriesResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Batch connecting Bitbucket Server repositories to Cloud Build.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - The name of the `BitbucketServerConfig` that added connected
+  /// repository. Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> batchCreate(
+    BatchCreateBitbucketServerConnectedRepositoriesRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/connectedRepositories:batchCreate';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsBitbucketServerConfigsReposResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsBitbucketServerConfigsReposResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// List all repositories for a given `BitbucketServerConfig`.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the parent resource.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/bitbucketServerConfigs/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of configs to return. The service may
+  /// return fewer than this value. If unspecified, at most 50 configs will be
+  /// returned. The maximum value is 1000; values above 1000 will be coerced to
+  /// 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous
+  /// `ListBitbucketServerRepositoriesRequest` call. Provide this to retrieve
+  /// the subsequent page. When paginating, all other parameters provided to
+  /// `ListBitbucketServerConfigsRequest` must match the call that provided the
+  /// page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListBitbucketServerRepositoriesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListBitbucketServerRepositoriesResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/repos';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListBitbucketServerRepositoriesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class ProjectsLocationsBuildsResource {
@@ -451,6 +1280,51 @@ class ProjectsLocationsBuildsResource {
 
   ProjectsLocationsBuildsResource(commons.ApiRequester client)
       : _requester = client;
+
+  /// Approves or rejects a pending build.
+  ///
+  /// If approved, the returned LRO will be analogous to the LRO returned from a
+  /// CreateBuild call. If rejected, the returned LRO will be immediately done.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the target build. For example:
+  /// "projects/{$project_id}/builds/{$build_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/builds/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> approve(
+    ApproveBuildRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':approve';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 
   /// Cancels a build in progress.
   ///
@@ -478,7 +1352,7 @@ class ProjectsLocationsBuildsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -526,7 +1400,7 @@ class ProjectsLocationsBuildsResource {
     core.String? projectId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (projectId != null) 'projectId': [projectId],
       if ($fields != null) 'fields': [$fields],
@@ -694,7 +1568,7 @@ class ProjectsLocationsBuildsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -704,6 +1578,253 @@ class ProjectsLocationsBuildsResource {
     final _response = await _requester.request(
       _url,
       'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsGithubEnterpriseConfigsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsGithubEnterpriseConfigsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Create an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Name of the parent project. For example:
+  /// projects/{$project_number} or projects/{$project_id}
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [gheConfigId] - Optional. The ID to use for the GithubEnterpriseConfig,
+  /// which will become the final component of the GithubEnterpriseConfig’s
+  /// resource name. ghe_config_id must meet the following requirements: + They
+  /// must contain only alphanumeric characters and dashes. + They can be 1-64
+  /// characters long. + They must begin and end with an alphanumeric character
+  ///
+  /// [projectId] - ID of the project.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    GitHubEnterpriseConfig request,
+    core.String parent, {
+    core.String? gheConfigId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (gheConfigId != null) 'gheConfigId': [gheConfigId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/githubEnterpriseConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field should contain the name of the enterprise config
+  /// resource. For example:
+  /// "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [configId] - Unique identifier of the `GitHubEnterpriseConfig`
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> delete(
+    core.String name, {
+    core.String? configId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (configId != null) 'configId': [configId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Retrieve a GitHubEnterpriseConfig.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field should contain the name of the enterprise config
+  /// resource. For example:
+  /// "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [configId] - Unique identifier of the `GitHubEnterpriseConfig`
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GitHubEnterpriseConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GitHubEnterpriseConfig> get(
+    core.String name, {
+    core.String? configId,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (configId != null) 'configId': [configId],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GitHubEnterpriseConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List all GitHubEnterpriseConfigs for a given project.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Name of the parent project. For example:
+  /// projects/{$project_number} or projects/{$project_id}
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [projectId] - ID of the project
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListGithubEnterpriseConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListGithubEnterpriseConfigsResponse> list(
+    core.String parent, {
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/githubEnterpriseConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListGithubEnterpriseConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update an association between a GCP project and a GitHub Enterprise
+  /// server.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Optional. The full resource name for the GitHubEnterpriseConfig
+  /// For example: "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/githubEnterpriseConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - Update mask for the resource. If this is set, the server
+  /// will only update the fields specified in the field mask. Otherwise, a full
+  /// update of the mutable resource fields will be performed.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> patch(
+    GitHubEnterpriseConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
       body: _body,
       queryParams: _queryParams,
     );
@@ -751,7 +1872,7 @@ class ProjectsLocationsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -807,10 +1928,11 @@ class ProjectsLocationsOperationsResource {
   }
 }
 
-class ProjectsTriggersResource {
+class ProjectsLocationsTriggersResource {
   final commons.ApiRequester _requester;
 
-  ProjectsTriggersResource(commons.ApiRequester client) : _requester = client;
+  ProjectsLocationsTriggersResource(commons.ApiRequester client)
+      : _requester = client;
 
   /// Creates a new `BuildTrigger`.
   ///
@@ -819,6 +1941,10 @@ class ProjectsTriggersResource {
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
+  ///
+  /// [parent] - The parent resource where this trigger will be created. Format:
+  /// `projects/{project}/locations/{location}`
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
   /// [projectId] - Required. ID of the project for which to configure automatic
   /// builds.
@@ -835,11 +1961,618 @@ class ProjectsTriggersResource {
   /// this method will complete with the same error.
   async.Future<BuildTrigger> create(
     BuildTrigger request,
-    core.String projectId, {
+    core.String parent, {
+    core.String? projectId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/triggers';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return BuildTrigger.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a `BuildTrigger` by its project ID and trigger ID.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the `Trigger` to delete. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/triggers/\[^/\]+$`.
+  ///
+  /// [projectId] - Required. ID of the project that owns the trigger.
+  ///
+  /// [triggerId] - Required. ID of the `BuildTrigger` to delete.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? projectId,
+    core.String? triggerId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if (triggerId != null) 'triggerId': [triggerId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns information about a `BuildTrigger`.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the `Trigger` to retrieve. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/triggers/\[^/\]+$`.
+  ///
+  /// [projectId] - Required. ID of the project that owns the trigger.
+  ///
+  /// [triggerId] - Required. Identifier (`id` or `name`) of the `BuildTrigger`
+  /// to get.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [BuildTrigger].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<BuildTrigger> get(
+    core.String name, {
+    core.String? projectId,
+    core.String? triggerId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if (triggerId != null) 'triggerId': [triggerId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return BuildTrigger.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists existing `BuildTrigger`s.
+  ///
+  /// This API is experimental.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - The parent of the collection of `Triggers`. Format:
+  /// `projects/{project}/locations/{location}`
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - Number of results to return in the list.
+  ///
+  /// [pageToken] - Token to provide to skip to a particular spot in the list.
+  ///
+  /// [projectId] - Required. ID of the project for which to list BuildTriggers.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListBuildTriggersResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListBuildTriggersResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? projectId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if (projectId != null) 'projectId': [projectId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/triggers';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListBuildTriggersResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a `BuildTrigger` by its project ID and trigger ID.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resourceName] - The `Trigger` name with format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`, where
+  /// {trigger} is a unique identifier generated by the service.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/triggers/\[^/\]+$`.
+  ///
+  /// [projectId] - Required. ID of the project that owns the trigger.
+  ///
+  /// [triggerId] - Required. ID of the `BuildTrigger` to update.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [BuildTrigger].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<BuildTrigger> patch(
+    BuildTrigger request,
+    core.String resourceName, {
+    core.String? projectId,
+    core.String? triggerId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if (triggerId != null) 'triggerId': [triggerId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resourceName');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return BuildTrigger.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Runs a `BuildTrigger` at a particular source revision.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the `Trigger` to run. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/triggers/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> run(
+    RunBuildTriggerRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':run';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// ReceiveTriggerWebhook \[Experimental\] is called when the API receives a
+  /// webhook request targeted at a specific trigger.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the `ReceiveTriggerWebhook` to retrieve. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/triggers/\[^/\]+$`.
+  ///
+  /// [projectId] - Project in which the specified trigger lives
+  ///
+  /// [secret] - Secret token used for authorization if an OAuth token isn't
+  /// provided.
+  ///
+  /// [trigger] - Name of the trigger to run the payload against
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ReceiveTriggerWebhookResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ReceiveTriggerWebhookResponse> webhook(
+    HttpBody request,
+    core.String name, {
+    core.String? projectId,
+    core.String? secret,
+    core.String? trigger,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (projectId != null) 'projectId': [projectId],
+      if (secret != null) 'secret': [secret],
+      if (trigger != null) 'trigger': [trigger],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':webhook';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ReceiveTriggerWebhookResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsWorkerPoolsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsWorkerPoolsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a `WorkerPool`.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent resource where this worker pool will be
+  /// created. Format: `projects/{project}/locations/{location}`.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [validateOnly] - If set, validate the request and preview the response,
+  /// but do not actually post it.
+  ///
+  /// [workerPoolId] - Required. Immutable. The ID to use for the `WorkerPool`,
+  /// which will become the final component of the resource name. This value
+  /// should be 1-63 characters, and valid characters are /a-z-/.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    WorkerPool request,
+    core.String parent, {
+    core.bool? validateOnly,
+    core.String? workerPoolId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (validateOnly != null) 'validateOnly': ['${validateOnly}'],
+      if (workerPoolId != null) 'workerPoolId': [workerPoolId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/workerPools';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a `WorkerPool`.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the `WorkerPool` to delete. Format:
+  /// `projects/{project}/locations/{workerPool}/workerPools/{workerPool}`.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/workerPools/\[^/\]+$`.
+  ///
+  /// [allowMissing] - If set to true, and the `WorkerPool` is not found, the
+  /// request will succeed but no action will be taken on the server.
+  ///
+  /// [etag] - Optional. If provided, it must match the server's etag on the
+  /// workerpool for the request to be processed.
+  ///
+  /// [validateOnly] - If set, validate the request and preview the response,
+  /// but do not actually post it.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> delete(
+    core.String name, {
+    core.bool? allowMissing,
+    core.String? etag,
+    core.bool? validateOnly,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (allowMissing != null) 'allowMissing': ['${allowMissing}'],
+      if (etag != null) 'etag': [etag],
+      if (validateOnly != null) 'validateOnly': ['${validateOnly}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns details of a `WorkerPool`.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the `WorkerPool` to retrieve. Format:
+  /// `projects/{project}/locations/{location}/workerPools/{workerPool}`.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/workerPools/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [WorkerPool].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<WorkerPool> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return WorkerPool.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists `WorkerPool`s.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent of the collection of `WorkerPools`.
+  /// Format: `projects/{project}/locations/{location}`.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of `WorkerPool`s to return. The service
+  /// may return fewer than this value. If omitted, the server will use a
+  /// sensible default.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListWorkerPools`
+  /// call. Provide this to retrieve the subsequent page.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListWorkerPoolsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListWorkerPoolsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/workerPools';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListWorkerPoolsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a `WorkerPool`.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Output only. The resource name of the `WorkerPool`, with format
+  /// `projects/{project}/locations/{location}/workerPools/{worker_pool}`. The
+  /// value of `{worker_pool}` is provided by `worker_pool_id` in
+  /// `CreateWorkerPool` request and the value of `{location}` is determined by
+  /// the endpoint accessed.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/workerPools/\[^/\]+$`.
+  ///
+  /// [updateMask] - A mask specifying which fields in `worker_pool` to update.
+  ///
+  /// [validateOnly] - If set, validate the request and preview the response,
+  /// but do not actually post it.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> patch(
+    WorkerPool request,
+    core.String name, {
+    core.String? updateMask,
+    core.bool? validateOnly,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if (validateOnly != null) 'validateOnly': ['${validateOnly}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsTriggersResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsTriggersResource(commons.ApiRequester client) : _requester = client;
+
+  /// Creates a new `BuildTrigger`.
+  ///
+  /// This API is experimental.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [projectId] - Required. ID of the project for which to configure automatic
+  /// builds.
+  ///
+  /// [parent] - The parent resource where this trigger will be created. Format:
+  /// `projects/{project}/locations/{location}`
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [BuildTrigger].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<BuildTrigger> create(
+    BuildTrigger request,
+    core.String projectId, {
+    core.String? parent,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (parent != null) 'parent': [parent],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -866,6 +2599,9 @@ class ProjectsTriggersResource {
   ///
   /// [triggerId] - Required. ID of the `BuildTrigger` to delete.
   ///
+  /// [name] - The name of the `Trigger` to delete. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -879,9 +2615,11 @@ class ProjectsTriggersResource {
   async.Future<Empty> delete(
     core.String projectId,
     core.String triggerId, {
+    core.String? name,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (name != null) 'name': [name],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -909,6 +2647,9 @@ class ProjectsTriggersResource {
   /// [triggerId] - Required. Identifier (`id` or `name`) of the `BuildTrigger`
   /// to get.
   ///
+  /// [name] - The name of the `Trigger` to retrieve. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -922,9 +2663,11 @@ class ProjectsTriggersResource {
   async.Future<BuildTrigger> get(
     core.String projectId,
     core.String triggerId, {
+    core.String? name,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (name != null) 'name': [name],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -954,6 +2697,9 @@ class ProjectsTriggersResource {
   ///
   /// [pageToken] - Token to provide to skip to a particular spot in the list.
   ///
+  /// [parent] - The parent of the collection of `Triggers`. Format:
+  /// `projects/{project}/locations/{location}`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -968,11 +2714,13 @@ class ProjectsTriggersResource {
     core.String projectId, {
     core.int? pageSize,
     core.String? pageToken,
+    core.String? parent,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (pageSize != null) 'pageSize': ['${pageSize}'],
       if (pageToken != null) 'pageToken': [pageToken],
+      if (parent != null) 'parent': [parent],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1016,7 +2764,7 @@ class ProjectsTriggersResource {
     core.String triggerId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1046,6 +2794,9 @@ class ProjectsTriggersResource {
   ///
   /// [triggerId] - Required. ID of the trigger.
   ///
+  /// [name] - The name of the `Trigger` to run. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1060,10 +2811,12 @@ class ProjectsTriggersResource {
     RepoSource request,
     core.String projectId,
     core.String triggerId, {
+    core.String? name,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (name != null) 'name': [name],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1093,6 +2846,9 @@ class ProjectsTriggersResource {
   ///
   /// [trigger] - Name of the trigger to run the payload against
   ///
+  /// [name] - The name of the `ReceiveTriggerWebhook` to retrieve. Format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`
+  ///
   /// [secret] - Secret token used for authorization if an OAuth token isn't
   /// provided.
   ///
@@ -1110,11 +2866,13 @@ class ProjectsTriggersResource {
     HttpBody request,
     core.String projectId,
     core.String trigger, {
+    core.String? name,
     core.String? secret,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (name != null) 'name': [name],
       if (secret != null) 'secret': [secret],
       if ($fields != null) 'fields': [$fields],
     };
@@ -1134,6 +2892,232 @@ class ProjectsTriggersResource {
     return ReceiveTriggerWebhookResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
+}
+
+class V1Resource {
+  final commons.ApiRequester _requester;
+
+  V1Resource(commons.ApiRequester client) : _requester = client;
+
+  /// ReceiveWebhook is called when the API receives a GitHub webhook.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [webhookKey] - For GitHub Enterprise webhooks, this key is used to
+  /// associate the webhook request with the GitHubEnterpriseConfig to use for
+  /// validation.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> webhook(
+    HttpBody request, {
+    core.String? webhookKey,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (webhookKey != null) 'webhookKey': [webhookKey],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/webhook';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+/// RPC request object accepted by the AddBitbucketServerConnectedRepository RPC
+/// method.
+class AddBitbucketServerConnectedRepositoryRequest {
+  /// The connected repository to add.
+  BitbucketServerRepositoryId? connectedRepository;
+
+  AddBitbucketServerConnectedRepositoryRequest({
+    this.connectedRepository,
+  });
+
+  AddBitbucketServerConnectedRepositoryRequest.fromJson(core.Map _json)
+      : this(
+          connectedRepository: _json.containsKey('connectedRepository')
+              ? BitbucketServerRepositoryId.fromJson(
+                  _json['connectedRepository']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (connectedRepository != null)
+          'connectedRepository': connectedRepository!,
+      };
+}
+
+/// RPC request object returned by the AddBitbucketServerConnectedRepository RPC
+/// method.
+class AddBitbucketServerConnectedRepositoryResponse {
+  /// The name of the `BitbucketServerConfig` that added connected repository.
+  ///
+  /// Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  core.String? config;
+
+  /// The connected repository.
+  BitbucketServerRepositoryId? connectedRepository;
+
+  AddBitbucketServerConnectedRepositoryResponse({
+    this.config,
+    this.connectedRepository,
+  });
+
+  AddBitbucketServerConnectedRepositoryResponse.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? _json['config'] as core.String
+              : null,
+          connectedRepository: _json.containsKey('connectedRepository')
+              ? BitbucketServerRepositoryId.fromJson(
+                  _json['connectedRepository']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (config != null) 'config': config!,
+        if (connectedRepository != null)
+          'connectedRepository': connectedRepository!,
+      };
+}
+
+/// ApprovalConfig describes configuration for manual approval of a build.
+class ApprovalConfig {
+  /// Whether or not approval is needed.
+  ///
+  /// If this is set on a build, it will become pending when created, and will
+  /// need to be explicitly approved to start.
+  core.bool? approvalRequired;
+
+  ApprovalConfig({
+    this.approvalRequired,
+  });
+
+  ApprovalConfig.fromJson(core.Map _json)
+      : this(
+          approvalRequired: _json.containsKey('approvalRequired')
+              ? _json['approvalRequired'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (approvalRequired != null) 'approvalRequired': approvalRequired!,
+      };
+}
+
+/// ApprovalResult describes the decision and associated metadata of a manual
+/// approval of a build.
+class ApprovalResult {
+  /// The time when the approval decision was made.
+  ///
+  /// Output only.
+  core.String? approvalTime;
+
+  /// Email of the user that called the ApproveBuild API to approve or reject a
+  /// build at the time that the API was called.
+  ///
+  /// Output only.
+  core.String? approverAccount;
+
+  /// An optional comment for this manual approval result.
+  ///
+  /// Optional.
+  core.String? comment;
+
+  /// The decision of this manual approval.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "DECISION_UNSPECIFIED" : Default enum type. This should not be used.
+  /// - "APPROVED" : Build is approved.
+  /// - "REJECTED" : Build is rejected.
+  core.String? decision;
+
+  /// An optional URL tied to this manual approval result.
+  ///
+  /// This field is essentially the same as comment, except that it will be
+  /// rendered by the UI differently. An example use case is a link to an
+  /// external job that approved this Build.
+  ///
+  /// Optional.
+  core.String? url;
+
+  ApprovalResult({
+    this.approvalTime,
+    this.approverAccount,
+    this.comment,
+    this.decision,
+    this.url,
+  });
+
+  ApprovalResult.fromJson(core.Map _json)
+      : this(
+          approvalTime: _json.containsKey('approvalTime')
+              ? _json['approvalTime'] as core.String
+              : null,
+          approverAccount: _json.containsKey('approverAccount')
+              ? _json['approverAccount'] as core.String
+              : null,
+          comment: _json.containsKey('comment')
+              ? _json['comment'] as core.String
+              : null,
+          decision: _json.containsKey('decision')
+              ? _json['decision'] as core.String
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (approvalTime != null) 'approvalTime': approvalTime!,
+        if (approverAccount != null) 'approverAccount': approverAccount!,
+        if (comment != null) 'comment': comment!,
+        if (decision != null) 'decision': decision!,
+        if (url != null) 'url': url!,
+      };
+}
+
+/// Request to approve or reject a pending build.
+class ApproveBuildRequest {
+  /// Approval decision and metadata.
+  ApprovalResult? approvalResult;
+
+  ApproveBuildRequest({
+    this.approvalResult,
+  });
+
+  ApproveBuildRequest.fromJson(core.Map _json)
+      : this(
+          approvalResult: _json.containsKey('approvalResult')
+              ? ApprovalResult.fromJson(_json['approvalResult']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (approvalResult != null) 'approvalResult': approvalResult!,
+      };
 }
 
 /// Files in the workspace to upload to Cloud Storage upon successful completion
@@ -1156,61 +3140,32 @@ class ArtifactObjects {
   /// Output only.
   TimeSpan? timing;
 
-  ArtifactObjects();
+  ArtifactObjects({
+    this.location,
+    this.paths,
+    this.timing,
+  });
 
-  ArtifactObjects.fromJson(core.Map _json) {
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('paths')) {
-      paths = (_json['paths'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('timing')) {
-      timing = TimeSpan.fromJson(
-          _json['timing'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ArtifactObjects.fromJson(core.Map _json)
+      : this(
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          paths: _json.containsKey('paths')
+              ? (_json['paths'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          timing: _json.containsKey('timing')
+              ? TimeSpan.fromJson(
+                  _json['timing'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (location != null) 'location': location!,
         if (paths != null) 'paths': paths!,
-        if (timing != null) 'timing': timing!.toJson(),
-      };
-}
-
-/// An artifact that was uploaded during a build.
-///
-/// This is a single record in the artifact manifest JSON file.
-class ArtifactResult {
-  /// The file hash of the artifact.
-  core.List<FileHashes>? fileHash;
-
-  /// The path of an artifact in a Google Cloud Storage bucket, with the
-  /// generation number.
-  ///
-  /// For example, `gs://mybucket/path/to/output.jar#generation`.
-  core.String? location;
-
-  ArtifactResult();
-
-  ArtifactResult.fromJson(core.Map _json) {
-    if (_json.containsKey('fileHash')) {
-      fileHash = (_json['fileHash'] as core.List)
-          .map<FileHashes>((value) =>
-              FileHashes.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (fileHash != null)
-          'fileHash': fileHash!.map((value) => value.toJson()).toList(),
-        if (location != null) 'location': location!,
+        if (timing != null) 'timing': timing!,
       };
 }
 
@@ -1236,23 +3191,468 @@ class Artifacts {
   /// pushed, the build is marked FAILURE.
   ArtifactObjects? objects;
 
-  Artifacts();
+  Artifacts({
+    this.images,
+    this.objects,
+  });
 
-  Artifacts.fromJson(core.Map _json) {
-    if (_json.containsKey('images')) {
-      images = (_json['images'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('objects')) {
-      objects = ArtifactObjects.fromJson(
-          _json['objects'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Artifacts.fromJson(core.Map _json)
+      : this(
+          images: _json.containsKey('images')
+              ? (_json['images'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          objects: _json.containsKey('objects')
+              ? ArtifactObjects.fromJson(
+                  _json['objects'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (images != null) 'images': images!,
-        if (objects != null) 'objects': objects!.toJson(),
+        if (objects != null) 'objects': objects!,
+      };
+}
+
+/// RPC request object accepted by
+/// BatchCreateBitbucketServerConnectedRepositories RPC method.
+class BatchCreateBitbucketServerConnectedRepositoriesRequest {
+  /// Requests to connect Bitbucket Server repositories.
+  ///
+  /// Required.
+  core.List<CreateBitbucketServerConnectedRepositoryRequest>? requests;
+
+  BatchCreateBitbucketServerConnectedRepositoriesRequest({
+    this.requests,
+  });
+
+  BatchCreateBitbucketServerConnectedRepositoriesRequest.fromJson(
+      core.Map _json)
+      : this(
+          requests: _json.containsKey('requests')
+              ? (_json['requests'] as core.List)
+                  .map((value) =>
+                      CreateBitbucketServerConnectedRepositoryRequest.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (requests != null) 'requests': requests!,
+      };
+}
+
+/// BitbucketServerConfig represents the configuration for a Bitbucket Server.
+class BitbucketServerConfig {
+  /// API Key that will be attached to webhook.
+  ///
+  /// Once this field has been set, it cannot be changed. If you need to change
+  /// it, please create another BitbucketServerConfig.
+  ///
+  /// Required. Immutable.
+  core.String? apiKey;
+
+  /// Connected Bitbucket Server repositories for this config.
+  ///
+  /// Output only.
+  core.List<BitbucketServerRepositoryId>? connectedRepositories;
+
+  /// Time when the config was created.
+  core.String? createTime;
+
+  /// The URI of the Bitbucket Server host.
+  ///
+  /// Once this field has been set, it cannot be changed. If you need to change
+  /// it, please create another BitbucketServerConfig.
+  ///
+  /// Required. Immutable.
+  core.String? hostUri;
+
+  /// The resource name for the config.
+  core.String? name;
+
+  /// The network to be used when reaching out to the Bitbucket Server instance.
+  ///
+  /// The VPC network must be enabled for private service connection. This
+  /// should be set if the Bitbucket Server instance is hosted on-premises and
+  /// not reachable by public internet. If this field is left empty, no network
+  /// peering will occur and calls to the Bitbucket Server instance will be made
+  /// over the public internet. Must be in the format
+  /// `projects/{project}/global/networks/{network}`, where {project} is a
+  /// project number or id and {network} is the name of a VPC network in the
+  /// project.
+  ///
+  /// Optional.
+  core.String? peeredNetwork;
+
+  /// Secret Manager secrets needed by the config.
+  ///
+  /// Required.
+  BitbucketServerSecrets? secrets;
+
+  /// SSL certificate to use for requests to Bitbucket Server.
+  ///
+  /// The format should be PEM format but the extension can be one of .pem,
+  /// .cer, or .crt.
+  ///
+  /// Optional.
+  core.String? sslCa;
+
+  /// Username of the account Cloud Build will use on Bitbucket Server.
+  core.String? username;
+
+  /// UUID included in webhook requests.
+  ///
+  /// The UUID is used to look up the corresponding config.
+  ///
+  /// Output only.
+  core.String? webhookKey;
+
+  BitbucketServerConfig({
+    this.apiKey,
+    this.connectedRepositories,
+    this.createTime,
+    this.hostUri,
+    this.name,
+    this.peeredNetwork,
+    this.secrets,
+    this.sslCa,
+    this.username,
+    this.webhookKey,
+  });
+
+  BitbucketServerConfig.fromJson(core.Map _json)
+      : this(
+          apiKey: _json.containsKey('apiKey')
+              ? _json['apiKey'] as core.String
+              : null,
+          connectedRepositories: _json.containsKey('connectedRepositories')
+              ? (_json['connectedRepositories'] as core.List)
+                  .map((value) => BitbucketServerRepositoryId.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          hostUri: _json.containsKey('hostUri')
+              ? _json['hostUri'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          peeredNetwork: _json.containsKey('peeredNetwork')
+              ? _json['peeredNetwork'] as core.String
+              : null,
+          secrets: _json.containsKey('secrets')
+              ? BitbucketServerSecrets.fromJson(
+                  _json['secrets'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sslCa:
+              _json.containsKey('sslCa') ? _json['sslCa'] as core.String : null,
+          username: _json.containsKey('username')
+              ? _json['username'] as core.String
+              : null,
+          webhookKey: _json.containsKey('webhookKey')
+              ? _json['webhookKey'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiKey != null) 'apiKey': apiKey!,
+        if (connectedRepositories != null)
+          'connectedRepositories': connectedRepositories!,
+        if (createTime != null) 'createTime': createTime!,
+        if (hostUri != null) 'hostUri': hostUri!,
+        if (name != null) 'name': name!,
+        if (peeredNetwork != null) 'peeredNetwork': peeredNetwork!,
+        if (secrets != null) 'secrets': secrets!,
+        if (sslCa != null) 'sslCa': sslCa!,
+        if (username != null) 'username': username!,
+        if (webhookKey != null) 'webhookKey': webhookKey!,
+      };
+}
+
+/// / BitbucketServerConnectedRepository represents a connected Bitbucket Server
+/// / repository.
+class BitbucketServerConnectedRepository {
+  /// The name of the `BitbucketServerConfig` that added connected repository.
+  ///
+  /// Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  core.String? parent;
+
+  /// The Bitbucket Server repositories to connect.
+  BitbucketServerRepositoryId? repo;
+
+  /// The status of the repo connection request.
+  ///
+  /// Output only.
+  Status? status;
+
+  BitbucketServerConnectedRepository({
+    this.parent,
+    this.repo,
+    this.status,
+  });
+
+  BitbucketServerConnectedRepository.fromJson(core.Map _json)
+      : this(
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+          repo: _json.containsKey('repo')
+              ? BitbucketServerRepositoryId.fromJson(
+                  _json['repo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? Status.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (parent != null) 'parent': parent!,
+        if (repo != null) 'repo': repo!,
+        if (status != null) 'status': status!,
+      };
+}
+
+/// BitbucketServerRepository represents a repository hosted on a Bitbucket
+/// Server.
+class BitbucketServerRepository {
+  /// Link to the browse repo page on the Bitbucket Server instance.
+  core.String? browseUri;
+
+  /// Description of the repository.
+  core.String? description;
+
+  /// Display name of the repository.
+  core.String? displayName;
+
+  /// The resource name of the repository.
+  core.String? name;
+
+  /// Identifier for a repository hosted on a Bitbucket Server.
+  BitbucketServerRepositoryId? repoId;
+
+  BitbucketServerRepository({
+    this.browseUri,
+    this.description,
+    this.displayName,
+    this.name,
+    this.repoId,
+  });
+
+  BitbucketServerRepository.fromJson(core.Map _json)
+      : this(
+          browseUri: _json.containsKey('browseUri')
+              ? _json['browseUri'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          repoId: _json.containsKey('repoId')
+              ? BitbucketServerRepositoryId.fromJson(
+                  _json['repoId'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (browseUri != null) 'browseUri': browseUri!,
+        if (description != null) 'description': description!,
+        if (displayName != null) 'displayName': displayName!,
+        if (name != null) 'name': name!,
+        if (repoId != null) 'repoId': repoId!,
+      };
+}
+
+/// BitbucketServerRepositoryId identifies a specific repository hosted on a
+/// Bitbucket Server.
+class BitbucketServerRepositoryId {
+  /// Identifier for the project storing the repository.
+  ///
+  /// Required.
+  core.String? projectKey;
+
+  /// Identifier for the repository.
+  ///
+  /// Required.
+  core.String? repoSlug;
+
+  /// The ID of the webhook that was created for receiving events from this
+  /// repo.
+  ///
+  /// We only create and manage a single webhook for each repo.
+  ///
+  /// Output only.
+  core.int? webhookId;
+
+  BitbucketServerRepositoryId({
+    this.projectKey,
+    this.repoSlug,
+    this.webhookId,
+  });
+
+  BitbucketServerRepositoryId.fromJson(core.Map _json)
+      : this(
+          projectKey: _json.containsKey('projectKey')
+              ? _json['projectKey'] as core.String
+              : null,
+          repoSlug: _json.containsKey('repoSlug')
+              ? _json['repoSlug'] as core.String
+              : null,
+          webhookId: _json.containsKey('webhookId')
+              ? _json['webhookId'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (projectKey != null) 'projectKey': projectKey!,
+        if (repoSlug != null) 'repoSlug': repoSlug!,
+        if (webhookId != null) 'webhookId': webhookId!,
+      };
+}
+
+/// BitbucketServerSecrets represents the secrets in Secret Manager for a
+/// Bitbucket Server.
+class BitbucketServerSecrets {
+  /// The resource name for the admin access token's secret version.
+  ///
+  /// Required.
+  core.String? adminAccessTokenVersionName;
+
+  /// The resource name for the read access token's secret version.
+  ///
+  /// Required.
+  core.String? readAccessTokenVersionName;
+
+  /// The resource name for the webhook secret's secret version.
+  ///
+  /// Once this field has been set, it cannot be changed. If you need to change
+  /// it, please create another BitbucketServerConfig.
+  ///
+  /// Required. Immutable.
+  core.String? webhookSecretVersionName;
+
+  BitbucketServerSecrets({
+    this.adminAccessTokenVersionName,
+    this.readAccessTokenVersionName,
+    this.webhookSecretVersionName,
+  });
+
+  BitbucketServerSecrets.fromJson(core.Map _json)
+      : this(
+          adminAccessTokenVersionName:
+              _json.containsKey('adminAccessTokenVersionName')
+                  ? _json['adminAccessTokenVersionName'] as core.String
+                  : null,
+          readAccessTokenVersionName:
+              _json.containsKey('readAccessTokenVersionName')
+                  ? _json['readAccessTokenVersionName'] as core.String
+                  : null,
+          webhookSecretVersionName:
+              _json.containsKey('webhookSecretVersionName')
+                  ? _json['webhookSecretVersionName'] as core.String
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (adminAccessTokenVersionName != null)
+          'adminAccessTokenVersionName': adminAccessTokenVersionName!,
+        if (readAccessTokenVersionName != null)
+          'readAccessTokenVersionName': readAccessTokenVersionName!,
+        if (webhookSecretVersionName != null)
+          'webhookSecretVersionName': webhookSecretVersionName!,
+      };
+}
+
+/// BitbucketServerTriggerConfig describes the configuration of a trigger that
+/// creates a build whenever a Bitbucket Server event is received.
+class BitbucketServerTriggerConfig {
+  /// The BitbucketServerConfig specified in the
+  /// bitbucket_server_config_resource field.
+  ///
+  /// Output only.
+  BitbucketServerConfig? bitbucketServerConfig;
+
+  /// The Bitbucket server config resource that this trigger config maps to.
+  ///
+  /// Required.
+  core.String? bitbucketServerConfigResource;
+
+  /// Key of the project that the repo is in.
+  ///
+  /// For example: The key for
+  /// http://mybitbucket.server/projects/TEST/repos/test-repo is "TEST".
+  ///
+  /// Required.
+  core.String? projectKey;
+
+  /// Filter to match changes in pull requests.
+  PullRequestFilter? pullRequest;
+
+  /// Filter to match changes in refs like branches, tags.
+  PushFilter? push;
+
+  /// Slug of the repository.
+  ///
+  /// A repository slug is a URL-friendly version of a repository name,
+  /// automatically generated by Bitbucket for use in the URL. For example, if
+  /// the repository name is 'test repo', in the URL it would become 'test-repo'
+  /// as in http://mybitbucket.server/projects/TEST/repos/test-repo.
+  ///
+  /// Required.
+  core.String? repoSlug;
+
+  BitbucketServerTriggerConfig({
+    this.bitbucketServerConfig,
+    this.bitbucketServerConfigResource,
+    this.projectKey,
+    this.pullRequest,
+    this.push,
+    this.repoSlug,
+  });
+
+  BitbucketServerTriggerConfig.fromJson(core.Map _json)
+      : this(
+          bitbucketServerConfig: _json.containsKey('bitbucketServerConfig')
+              ? BitbucketServerConfig.fromJson(_json['bitbucketServerConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          bitbucketServerConfigResource:
+              _json.containsKey('bitbucketServerConfigResource')
+                  ? _json['bitbucketServerConfigResource'] as core.String
+                  : null,
+          projectKey: _json.containsKey('projectKey')
+              ? _json['projectKey'] as core.String
+              : null,
+          pullRequest: _json.containsKey('pullRequest')
+              ? PullRequestFilter.fromJson(
+                  _json['pullRequest'] as core.Map<core.String, core.dynamic>)
+              : null,
+          push: _json.containsKey('push')
+              ? PushFilter.fromJson(
+                  _json['push'] as core.Map<core.String, core.dynamic>)
+              : null,
+          repoSlug: _json.containsKey('repoSlug')
+              ? _json['repoSlug'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bitbucketServerConfig != null)
+          'bitbucketServerConfig': bitbucketServerConfig!,
+        if (bitbucketServerConfigResource != null)
+          'bitbucketServerConfigResource': bitbucketServerConfigResource!,
+        if (projectKey != null) 'projectKey': projectKey!,
+        if (pullRequest != null) 'pullRequest': pullRequest!,
+        if (push != null) 'push': push!,
+        if (repoSlug != null) 'repoSlug': repoSlug!,
       };
 }
 
@@ -1262,14 +3662,19 @@ class Artifacts {
 /// it (for example, the builder image to run on the source), and where to store
 /// the built artifacts. Fields can include the following variables, which will
 /// be expanded when the build is created: - $PROJECT_ID: the project ID of the
-/// build. - $PROJECT_NUMBER: the project number of the build. - $BUILD_ID: the
-/// autogenerated ID of the build. - $REPO_NAME: the source repository name
-/// specified by RepoSource. - $BRANCH_NAME: the branch name specified by
-/// RepoSource. - $TAG_NAME: the tag name specified by RepoSource. -
-/// $REVISION_ID or $COMMIT_SHA: the commit SHA specified by RepoSource or
-/// resolved from the specified branch or tag. - $SHORT_SHA: first 7 characters
-/// of $REVISION_ID or $COMMIT_SHA.
+/// build. - $PROJECT_NUMBER: the project number of the build. - $LOCATION: the
+/// location/region of the build. - $BUILD_ID: the autogenerated ID of the
+/// build. - $REPO_NAME: the source repository name specified by RepoSource. -
+/// $BRANCH_NAME: the branch name specified by RepoSource. - $TAG_NAME: the tag
+/// name specified by RepoSource. - $REVISION_ID or $COMMIT_SHA: the commit SHA
+/// specified by RepoSource or resolved from the specified branch or tag. -
+/// $SHORT_SHA: first 7 characters of $REVISION_ID or $COMMIT_SHA.
 class Build {
+  /// Describes this build's approval configuration, status, and result.
+  ///
+  /// Output only.
+  BuildApproval? approval;
+
   /// Artifacts produced by the build that should be uploaded upon successful
   /// completion of all build steps.
   Artifacts? artifacts;
@@ -1287,6 +3692,11 @@ class Build {
   ///
   /// Output only.
   core.String? createTime;
+
+  /// Contains information about the build when status=FAILURE.
+  ///
+  /// Output only.
+  FailureInfo? failureInfo;
 
   /// Time at which execution of the build was finished.
   ///
@@ -1360,8 +3770,7 @@ class Build {
   /// IAM service account whose credentials will be used at build runtime.
   ///
   /// Must be of the format `projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT}`.
-  /// ACCOUNT can be email address or uniqueId of the service account. This
-  /// field is in beta.
+  /// ACCOUNT can be email address or uniqueId of the service account.
   core.String? serviceAccount;
 
   /// The location of the source files to build.
@@ -1382,6 +3791,8 @@ class Build {
   /// Output only.
   /// Possible string values are:
   /// - "STATUS_UNKNOWN" : Status of the build is unknown.
+  /// - "PENDING" : Build has been created and is pending execution and queuing.
+  /// It has not been queued.
   /// - "QUEUED" : Build or step is queued; work has not yet begun.
   /// - "WORKING" : Build or step is being executed.
   /// - "SUCCESS" : Build or step finished successfully.
@@ -1420,175 +3831,251 @@ class Build {
 
   /// Stores timing information for phases of the build.
   ///
-  /// Valid keys are: * BUILD: time to execute all build steps * PUSH: time to
-  /// push all specified images. * FETCHSOURCE: time to fetch source. If the
-  /// build does not specify source or images, these keys will not be included.
+  /// Valid keys are: * BUILD: time to execute all build steps. * PUSH: time to
+  /// push all specified images. * FETCHSOURCE: time to fetch source. *
+  /// SETUPBUILD: time to set up build. If the build does not specify source or
+  /// images, these keys will not be included.
   ///
   /// Output only.
   core.Map<core.String, TimeSpan>? timing;
 
-  Build();
+  /// Non-fatal problems encountered during the execution of the build.
+  ///
+  /// Output only.
+  core.List<Warning>? warnings;
 
-  Build.fromJson(core.Map _json) {
-    if (_json.containsKey('artifacts')) {
-      artifacts = Artifacts.fromJson(
-          _json['artifacts'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('availableSecrets')) {
-      availableSecrets = Secrets.fromJson(
-          _json['availableSecrets'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('buildTriggerId')) {
-      buildTriggerId = _json['buildTriggerId'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('finishTime')) {
-      finishTime = _json['finishTime'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('images')) {
-      images = (_json['images'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logUrl')) {
-      logUrl = _json['logUrl'] as core.String;
-    }
-    if (_json.containsKey('logsBucket')) {
-      logsBucket = _json['logsBucket'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = BuildOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('queueTtl')) {
-      queueTtl = _json['queueTtl'] as core.String;
-    }
-    if (_json.containsKey('results')) {
-      results = Results.fromJson(
-          _json['results'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('secrets')) {
-      secrets = (_json['secrets'] as core.List)
-          .map<Secret>((value) =>
-              Secret.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceProvenance')) {
-      sourceProvenance = SourceProvenance.fromJson(
-          _json['sourceProvenance'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('statusDetail')) {
-      statusDetail = _json['statusDetail'] as core.String;
-    }
-    if (_json.containsKey('steps')) {
-      steps = (_json['steps'] as core.List)
-          .map<BuildStep>((value) =>
-              BuildStep.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('substitutions')) {
-      substitutions =
-          (_json['substitutions'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('timeout')) {
-      timeout = _json['timeout'] as core.String;
-    }
-    if (_json.containsKey('timing')) {
-      timing = (_json['timing'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          TimeSpan.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
+  Build({
+    this.approval,
+    this.artifacts,
+    this.availableSecrets,
+    this.buildTriggerId,
+    this.createTime,
+    this.failureInfo,
+    this.finishTime,
+    this.id,
+    this.images,
+    this.logUrl,
+    this.logsBucket,
+    this.name,
+    this.options,
+    this.projectId,
+    this.queueTtl,
+    this.results,
+    this.secrets,
+    this.serviceAccount,
+    this.source,
+    this.sourceProvenance,
+    this.startTime,
+    this.status,
+    this.statusDetail,
+    this.steps,
+    this.substitutions,
+    this.tags,
+    this.timeout,
+    this.timing,
+    this.warnings,
+  });
+
+  Build.fromJson(core.Map _json)
+      : this(
+          approval: _json.containsKey('approval')
+              ? BuildApproval.fromJson(
+                  _json['approval'] as core.Map<core.String, core.dynamic>)
+              : null,
+          artifacts: _json.containsKey('artifacts')
+              ? Artifacts.fromJson(
+                  _json['artifacts'] as core.Map<core.String, core.dynamic>)
+              : null,
+          availableSecrets: _json.containsKey('availableSecrets')
+              ? Secrets.fromJson(_json['availableSecrets']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          buildTriggerId: _json.containsKey('buildTriggerId')
+              ? _json['buildTriggerId'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          failureInfo: _json.containsKey('failureInfo')
+              ? FailureInfo.fromJson(
+                  _json['failureInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          finishTime: _json.containsKey('finishTime')
+              ? _json['finishTime'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          images: _json.containsKey('images')
+              ? (_json['images'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          logUrl: _json.containsKey('logUrl')
+              ? _json['logUrl'] as core.String
+              : null,
+          logsBucket: _json.containsKey('logsBucket')
+              ? _json['logsBucket'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          options: _json.containsKey('options')
+              ? BuildOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          queueTtl: _json.containsKey('queueTtl')
+              ? _json['queueTtl'] as core.String
+              : null,
+          results: _json.containsKey('results')
+              ? Results.fromJson(
+                  _json['results'] as core.Map<core.String, core.dynamic>)
+              : null,
+          secrets: _json.containsKey('secrets')
+              ? (_json['secrets'] as core.List)
+                  .map((value) => Secret.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceProvenance: _json.containsKey('sourceProvenance')
+              ? SourceProvenance.fromJson(_json['sourceProvenance']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          statusDetail: _json.containsKey('statusDetail')
+              ? _json['statusDetail'] as core.String
+              : null,
+          steps: _json.containsKey('steps')
+              ? (_json['steps'] as core.List)
+                  .map((value) => BuildStep.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          substitutions: _json.containsKey('substitutions')
+              ? (_json['substitutions'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          timeout: _json.containsKey('timeout')
+              ? _json['timeout'] as core.String
+              : null,
+          timing: _json.containsKey('timing')
+              ? (_json['timing'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    TimeSpan.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          warnings: _json.containsKey('warnings')
+              ? (_json['warnings'] as core.List)
+                  .map((value) => Warning.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (artifacts != null) 'artifacts': artifacts!.toJson(),
-        if (availableSecrets != null)
-          'availableSecrets': availableSecrets!.toJson(),
+        if (approval != null) 'approval': approval!,
+        if (artifacts != null) 'artifacts': artifacts!,
+        if (availableSecrets != null) 'availableSecrets': availableSecrets!,
         if (buildTriggerId != null) 'buildTriggerId': buildTriggerId!,
         if (createTime != null) 'createTime': createTime!,
+        if (failureInfo != null) 'failureInfo': failureInfo!,
         if (finishTime != null) 'finishTime': finishTime!,
         if (id != null) 'id': id!,
         if (images != null) 'images': images!,
         if (logUrl != null) 'logUrl': logUrl!,
         if (logsBucket != null) 'logsBucket': logsBucket!,
         if (name != null) 'name': name!,
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
         if (projectId != null) 'projectId': projectId!,
         if (queueTtl != null) 'queueTtl': queueTtl!,
-        if (results != null) 'results': results!.toJson(),
-        if (secrets != null)
-          'secrets': secrets!.map((value) => value.toJson()).toList(),
+        if (results != null) 'results': results!,
+        if (secrets != null) 'secrets': secrets!,
         if (serviceAccount != null) 'serviceAccount': serviceAccount!,
-        if (source != null) 'source': source!.toJson(),
-        if (sourceProvenance != null)
-          'sourceProvenance': sourceProvenance!.toJson(),
+        if (source != null) 'source': source!,
+        if (sourceProvenance != null) 'sourceProvenance': sourceProvenance!,
         if (startTime != null) 'startTime': startTime!,
         if (status != null) 'status': status!,
         if (statusDetail != null) 'statusDetail': statusDetail!,
-        if (steps != null)
-          'steps': steps!.map((value) => value.toJson()).toList(),
+        if (steps != null) 'steps': steps!,
         if (substitutions != null) 'substitutions': substitutions!,
         if (tags != null) 'tags': tags!,
         if (timeout != null) 'timeout': timeout!,
-        if (timing != null)
-          'timing':
-              timing!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (timing != null) 'timing': timing!,
+        if (warnings != null) 'warnings': warnings!,
       };
 }
 
-/// Metadata for build operations.
-class BuildOperationMetadata {
-  /// The build that the operation is tracking.
-  Build? build;
+/// BuildApproval describes a build's approval configuration, state, and result.
+class BuildApproval {
+  /// Configuration for manual approval of this build.
+  ///
+  /// Output only.
+  ApprovalConfig? config;
 
-  BuildOperationMetadata();
+  /// Result of manual approval for this Build.
+  ///
+  /// Output only.
+  ApprovalResult? result;
 
-  BuildOperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('build')) {
-      build =
-          Build.fromJson(_json['build'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  /// The state of this build's approval.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : Default enum type. This should not be used.
+  /// - "PENDING" : Build approval is pending.
+  /// - "APPROVED" : Build approval has been approved.
+  /// - "REJECTED" : Build approval has been rejected.
+  /// - "CANCELLED" : Build was cancelled while it was still pending approval.
+  core.String? state;
+
+  BuildApproval({
+    this.config,
+    this.result,
+    this.state,
+  });
+
+  BuildApproval.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? ApprovalConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          result: _json.containsKey('result')
+              ? ApprovalResult.fromJson(
+                  _json['result'] as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (build != null) 'build': build!.toJson(),
+        if (config != null) 'config': config!,
+        if (result != null) 'result': result!,
+        if (state != null) 'state': state!,
       };
 }
 
@@ -1634,12 +4121,12 @@ class BuildOptions {
   /// - "LOGGING_UNSPECIFIED" : The service determines the logging mode. The
   /// default is `LEGACY`. Do not rely on the default logging behavior as it may
   /// change in the future.
-  /// - "LEGACY" : Cloud Logging and Cloud Storage logging are enabled.
-  /// - "GCS_ONLY" : Only Cloud Storage logging is enabled.
+  /// - "LEGACY" : Build logs are stored in Cloud Logging and Cloud Storage.
+  /// - "GCS_ONLY" : Build logs are stored in Cloud Storage.
   /// - "STACKDRIVER_ONLY" : This option is the same as CLOUD_LOGGING_ONLY.
-  /// - "CLOUD_LOGGING_ONLY" : Only Cloud Logging is enabled. Note that logs for
-  /// both the Cloud Console UI and Cloud SDK are based on Cloud Storage logs,
-  /// so neither will provide logs if this option is chosen.
+  /// - "CLOUD_LOGGING_ONLY" : Build logs are stored in Cloud Logging. Selecting
+  /// this option will not allow
+  /// [logs streaming](https://cloud.google.com/sdk/gcloud/reference/builds/log).
   /// - "NONE" : Turn off all logging. No build logs will be captured.
   core.String? logging;
 
@@ -1651,6 +4138,15 @@ class BuildOptions {
   /// - "E2_HIGHCPU_8" : Highcpu e2 machine with 8 CPUs.
   /// - "E2_HIGHCPU_32" : Highcpu e2 machine with 32 CPUs.
   core.String? machineType;
+
+  /// Specification for execution on a `WorkerPool`.
+  ///
+  /// See
+  /// [running builds in a private pool](https://cloud.google.com/build/docs/private-pools/run-builds-in-private-pool)
+  /// for more information.
+  ///
+  /// Optional.
+  PoolOption? pool;
 
   /// Requested verifiability options.
   /// Possible string values are:
@@ -1689,61 +4185,77 @@ class BuildOptions {
   /// configuration.
   core.List<Volume>? volumes;
 
-  /// Option to specify a `WorkerPool` for the build.
-  ///
-  /// Format: projects/{project}/locations/{location}/workerPools/{workerPool}
-  /// This field is in beta and is available only to restricted users.
+  /// This field deprecated; please use `pool.name` instead.
   core.String? workerPool;
 
-  BuildOptions();
+  BuildOptions({
+    this.diskSizeGb,
+    this.dynamicSubstitutions,
+    this.env,
+    this.logStreamingOption,
+    this.logging,
+    this.machineType,
+    this.pool,
+    this.requestedVerifyOption,
+    this.secretEnv,
+    this.sourceProvenanceHash,
+    this.substitutionOption,
+    this.volumes,
+    this.workerPool,
+  });
 
-  BuildOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('diskSizeGb')) {
-      diskSizeGb = _json['diskSizeGb'] as core.String;
-    }
-    if (_json.containsKey('dynamicSubstitutions')) {
-      dynamicSubstitutions = _json['dynamicSubstitutions'] as core.bool;
-    }
-    if (_json.containsKey('env')) {
-      env = (_json['env'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logStreamingOption')) {
-      logStreamingOption = _json['logStreamingOption'] as core.String;
-    }
-    if (_json.containsKey('logging')) {
-      logging = _json['logging'] as core.String;
-    }
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-    if (_json.containsKey('requestedVerifyOption')) {
-      requestedVerifyOption = _json['requestedVerifyOption'] as core.String;
-    }
-    if (_json.containsKey('secretEnv')) {
-      secretEnv = (_json['secretEnv'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('sourceProvenanceHash')) {
-      sourceProvenanceHash = (_json['sourceProvenanceHash'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('substitutionOption')) {
-      substitutionOption = _json['substitutionOption'] as core.String;
-    }
-    if (_json.containsKey('volumes')) {
-      volumes = (_json['volumes'] as core.List)
-          .map<Volume>((value) =>
-              Volume.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('workerPool')) {
-      workerPool = _json['workerPool'] as core.String;
-    }
-  }
+  BuildOptions.fromJson(core.Map _json)
+      : this(
+          diskSizeGb: _json.containsKey('diskSizeGb')
+              ? _json['diskSizeGb'] as core.String
+              : null,
+          dynamicSubstitutions: _json.containsKey('dynamicSubstitutions')
+              ? _json['dynamicSubstitutions'] as core.bool
+              : null,
+          env: _json.containsKey('env')
+              ? (_json['env'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          logStreamingOption: _json.containsKey('logStreamingOption')
+              ? _json['logStreamingOption'] as core.String
+              : null,
+          logging: _json.containsKey('logging')
+              ? _json['logging'] as core.String
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+          pool: _json.containsKey('pool')
+              ? PoolOption.fromJson(
+                  _json['pool'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requestedVerifyOption: _json.containsKey('requestedVerifyOption')
+              ? _json['requestedVerifyOption'] as core.String
+              : null,
+          secretEnv: _json.containsKey('secretEnv')
+              ? (_json['secretEnv'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          sourceProvenanceHash: _json.containsKey('sourceProvenanceHash')
+              ? (_json['sourceProvenanceHash'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          substitutionOption: _json.containsKey('substitutionOption')
+              ? _json['substitutionOption'] as core.String
+              : null,
+          volumes: _json.containsKey('volumes')
+              ? (_json['volumes'] as core.List)
+                  .map((value) => Volume.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          workerPool: _json.containsKey('workerPool')
+              ? _json['workerPool'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (diskSizeGb != null) 'diskSizeGb': diskSizeGb!,
@@ -1754,6 +4266,7 @@ class BuildOptions {
           'logStreamingOption': logStreamingOption!,
         if (logging != null) 'logging': logging!,
         if (machineType != null) 'machineType': machineType!,
+        if (pool != null) 'pool': pool!,
         if (requestedVerifyOption != null)
           'requestedVerifyOption': requestedVerifyOption!,
         if (secretEnv != null) 'secretEnv': secretEnv!,
@@ -1761,8 +4274,7 @@ class BuildOptions {
           'sourceProvenanceHash': sourceProvenanceHash!,
         if (substitutionOption != null)
           'substitutionOption': substitutionOption!,
-        if (volumes != null)
-          'volumes': volumes!.map((value) => value.toJson()).toList(),
+        if (volumes != null) 'volumes': volumes!,
         if (workerPool != null) 'workerPool': workerPool!,
       };
 }
@@ -1827,6 +4339,11 @@ class BuildStep {
   /// Output only.
   TimeSpan? pullTiming;
 
+  /// A shell script to be executed in the step.
+  ///
+  /// When script is provided, the user cannot specify the entrypoint or args.
+  core.String? script;
+
   /// A list of environment variables which are encrypted using a Cloud Key
   /// Management Service crypto key.
   ///
@@ -1841,6 +4358,8 @@ class BuildStep {
   /// Output only.
   /// Possible string values are:
   /// - "STATUS_UNKNOWN" : Status of the build is unknown.
+  /// - "PENDING" : Build has been created and is pending execution and queuing.
+  /// It has not been queued.
   /// - "QUEUED" : Build or step is queued; work has not yet begun.
   /// - "WORKING" : Build or step is being executed.
   /// - "SUCCESS" : Build or step finished successfully.
@@ -1878,62 +4397,75 @@ class BuildStep {
   /// completed successfully.
   core.List<core.String>? waitFor;
 
-  BuildStep();
+  BuildStep({
+    this.args,
+    this.dir,
+    this.entrypoint,
+    this.env,
+    this.id,
+    this.name,
+    this.pullTiming,
+    this.script,
+    this.secretEnv,
+    this.status,
+    this.timeout,
+    this.timing,
+    this.volumes,
+    this.waitFor,
+  });
 
-  BuildStep.fromJson(core.Map _json) {
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('dir')) {
-      dir = _json['dir'] as core.String;
-    }
-    if (_json.containsKey('entrypoint')) {
-      entrypoint = _json['entrypoint'] as core.String;
-    }
-    if (_json.containsKey('env')) {
-      env = (_json['env'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('pullTiming')) {
-      pullTiming = TimeSpan.fromJson(
-          _json['pullTiming'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('secretEnv')) {
-      secretEnv = (_json['secretEnv'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('timeout')) {
-      timeout = _json['timeout'] as core.String;
-    }
-    if (_json.containsKey('timing')) {
-      timing = TimeSpan.fromJson(
-          _json['timing'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('volumes')) {
-      volumes = (_json['volumes'] as core.List)
-          .map<Volume>((value) =>
-              Volume.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('waitFor')) {
-      waitFor = (_json['waitFor'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  BuildStep.fromJson(core.Map _json)
+      : this(
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          dir: _json.containsKey('dir') ? _json['dir'] as core.String : null,
+          entrypoint: _json.containsKey('entrypoint')
+              ? _json['entrypoint'] as core.String
+              : null,
+          env: _json.containsKey('env')
+              ? (_json['env'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pullTiming: _json.containsKey('pullTiming')
+              ? TimeSpan.fromJson(
+                  _json['pullTiming'] as core.Map<core.String, core.dynamic>)
+              : null,
+          script: _json.containsKey('script')
+              ? _json['script'] as core.String
+              : null,
+          secretEnv: _json.containsKey('secretEnv')
+              ? (_json['secretEnv'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          timeout: _json.containsKey('timeout')
+              ? _json['timeout'] as core.String
+              : null,
+          timing: _json.containsKey('timing')
+              ? TimeSpan.fromJson(
+                  _json['timing'] as core.Map<core.String, core.dynamic>)
+              : null,
+          volumes: _json.containsKey('volumes')
+              ? (_json['volumes'] as core.List)
+                  .map((value) => Volume.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          waitFor: _json.containsKey('waitFor')
+              ? (_json['waitFor'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (args != null) 'args': args!,
@@ -1942,13 +4474,13 @@ class BuildStep {
         if (env != null) 'env': env!,
         if (id != null) 'id': id!,
         if (name != null) 'name': name!,
-        if (pullTiming != null) 'pullTiming': pullTiming!.toJson(),
+        if (pullTiming != null) 'pullTiming': pullTiming!,
+        if (script != null) 'script': script!,
         if (secretEnv != null) 'secretEnv': secretEnv!,
         if (status != null) 'status': status!,
         if (timeout != null) 'timeout': timeout!,
-        if (timing != null) 'timing': timing!.toJson(),
-        if (volumes != null)
-          'volumes': volumes!.map((value) => value.toJson()).toList(),
+        if (timing != null) 'timing': timing!,
+        if (volumes != null) 'volumes': volumes!,
         if (waitFor != null) 'waitFor': waitFor!,
       };
 }
@@ -1956,6 +4488,21 @@ class BuildStep {
 /// Configuration for an automated build in response to source repository
 /// changes.
 class BuildTrigger {
+  /// Configuration for manual approval to start a build invocation of this
+  /// BuildTrigger.
+  ApprovalConfig? approvalConfig;
+
+  /// Autodetect build configuration.
+  ///
+  /// The following precedence is used (case insensitive): 1. cloudbuild.yaml 2.
+  /// cloudbuild.yml 3. cloudbuild.json 4. Dockerfile Currently only available
+  /// for GitHub App Triggers.
+  core.bool? autodetect;
+
+  /// BitbucketServerTriggerConfig describes the configuration of a trigger that
+  /// creates a build whenever a Bitbucket Server event is received.
+  BitbucketServerTriggerConfig? bitbucketServerTriggerConfig;
+
   /// Contents of the build template.
   Build? build;
 
@@ -1970,9 +4517,29 @@ class BuildTrigger {
   /// If true, the trigger will never automatically execute a build.
   core.bool? disabled;
 
+  /// EventType allows the user to explicitly set the type of event to which
+  /// this BuildTrigger should respond.
+  ///
+  /// This field will be validated against the rest of the configuration if it
+  /// is set.
+  /// Possible string values are:
+  /// - "EVENT_TYPE_UNSPECIFIED" : EVENT_TYPE_UNSPECIFIED event_types are
+  /// ignored.
+  /// - "REPO" : REPO corresponds to the supported VCS integrations.
+  /// - "WEBHOOK" : WEBHOOK corresponds to webhook triggers.
+  /// - "PUBSUB" : PUBSUB corresponds to pubsub triggers.
+  /// - "MANUAL" : MANUAL corresponds to manual-only invoked triggers.
+  core.String? eventType;
+
   /// Path, from the source root, to the build configuration file (i.e.
   /// cloudbuild.yaml).
   core.String? filename;
+
+  /// A Common Expression Language string.
+  core.String? filter;
+
+  /// The file source describing the local or remote Build template.
+  GitFileSource? gitFileSource;
 
   /// GitHubEventsConfig describes the configuration of a trigger that creates a
   /// build whenever a GitHub event is received.
@@ -2014,6 +4581,31 @@ class BuildTrigger {
   /// alphanumeric character.
   core.String? name;
 
+  /// PubsubConfig describes the configuration of a trigger that creates a build
+  /// whenever a Pub/Sub message is published.
+  PubsubConfig? pubsubConfig;
+
+  /// The `Trigger` name with format:
+  /// `projects/{project}/locations/{location}/triggers/{trigger}`, where
+  /// {trigger} is a unique identifier generated by the service.
+  core.String? resourceName;
+
+  /// The service account used for all user-controlled operations including
+  /// UpdateBuildTrigger, RunBuildTrigger, CreateBuild, and CancelBuild.
+  ///
+  /// If no service account is set, then the standard Cloud Build service
+  /// account (\[PROJECT_NUM\]@system.gserviceaccount.com) will be used instead.
+  /// Format: `projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT_ID_OR_EMAIL}`
+  core.String? serviceAccount;
+
+  /// The repo and ref of the repository from which to build.
+  ///
+  /// This field is used only for those triggers that do not respond to SCM
+  /// events. Triggers that respond to such events build source at whatever
+  /// commit caused the event. This field is currently only used by Webhook,
+  /// Pub/Sub, Manual, and Cron triggers.
+  GitRepoSource? sourceToBuild;
+
   /// Substitutions for Build resource.
   ///
   /// The keys must match the following regular expression: `^_[A-Z0-9_]+$`.
@@ -2029,80 +4621,158 @@ class BuildTrigger {
   /// will trigger a build. Mutually exclusive with `github`.
   RepoSource? triggerTemplate;
 
-  BuildTrigger();
+  /// WebhookConfig describes the configuration of a trigger that creates a
+  /// build whenever a webhook is sent to a trigger's webhook URL.
+  WebhookConfig? webhookConfig;
 
-  BuildTrigger.fromJson(core.Map _json) {
-    if (_json.containsKey('build')) {
-      build =
-          Build.fromJson(_json['build'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('filename')) {
-      filename = _json['filename'] as core.String;
-    }
-    if (_json.containsKey('github')) {
-      github = GitHubEventsConfig.fromJson(
-          _json['github'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('ignoredFiles')) {
-      ignoredFiles = (_json['ignoredFiles'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('includedFiles')) {
-      includedFiles = (_json['includedFiles'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('substitutions')) {
-      substitutions =
-          (_json['substitutions'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('triggerTemplate')) {
-      triggerTemplate = RepoSource.fromJson(
-          _json['triggerTemplate'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BuildTrigger({
+    this.approvalConfig,
+    this.autodetect,
+    this.bitbucketServerTriggerConfig,
+    this.build,
+    this.createTime,
+    this.description,
+    this.disabled,
+    this.eventType,
+    this.filename,
+    this.filter,
+    this.gitFileSource,
+    this.github,
+    this.id,
+    this.ignoredFiles,
+    this.includedFiles,
+    this.name,
+    this.pubsubConfig,
+    this.resourceName,
+    this.serviceAccount,
+    this.sourceToBuild,
+    this.substitutions,
+    this.tags,
+    this.triggerTemplate,
+    this.webhookConfig,
+  });
+
+  BuildTrigger.fromJson(core.Map _json)
+      : this(
+          approvalConfig: _json.containsKey('approvalConfig')
+              ? ApprovalConfig.fromJson(_json['approvalConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          autodetect: _json.containsKey('autodetect')
+              ? _json['autodetect'] as core.bool
+              : null,
+          bitbucketServerTriggerConfig:
+              _json.containsKey('bitbucketServerTriggerConfig')
+                  ? BitbucketServerTriggerConfig.fromJson(
+                      _json['bitbucketServerTriggerConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          build: _json.containsKey('build')
+              ? Build.fromJson(
+                  _json['build'] as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          eventType: _json.containsKey('eventType')
+              ? _json['eventType'] as core.String
+              : null,
+          filename: _json.containsKey('filename')
+              ? _json['filename'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          gitFileSource: _json.containsKey('gitFileSource')
+              ? GitFileSource.fromJson(
+                  _json['gitFileSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          github: _json.containsKey('github')
+              ? GitHubEventsConfig.fromJson(
+                  _json['github'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          ignoredFiles: _json.containsKey('ignoredFiles')
+              ? (_json['ignoredFiles'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          includedFiles: _json.containsKey('includedFiles')
+              ? (_json['includedFiles'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pubsubConfig: _json.containsKey('pubsubConfig')
+              ? PubsubConfig.fromJson(
+                  _json['pubsubConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resourceName: _json.containsKey('resourceName')
+              ? _json['resourceName'] as core.String
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          sourceToBuild: _json.containsKey('sourceToBuild')
+              ? GitRepoSource.fromJson(
+                  _json['sourceToBuild'] as core.Map<core.String, core.dynamic>)
+              : null,
+          substitutions: _json.containsKey('substitutions')
+              ? (_json['substitutions'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          triggerTemplate: _json.containsKey('triggerTemplate')
+              ? RepoSource.fromJson(_json['triggerTemplate']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          webhookConfig: _json.containsKey('webhookConfig')
+              ? WebhookConfig.fromJson(
+                  _json['webhookConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (build != null) 'build': build!.toJson(),
+        if (approvalConfig != null) 'approvalConfig': approvalConfig!,
+        if (autodetect != null) 'autodetect': autodetect!,
+        if (bitbucketServerTriggerConfig != null)
+          'bitbucketServerTriggerConfig': bitbucketServerTriggerConfig!,
+        if (build != null) 'build': build!,
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
         if (disabled != null) 'disabled': disabled!,
+        if (eventType != null) 'eventType': eventType!,
         if (filename != null) 'filename': filename!,
-        if (github != null) 'github': github!.toJson(),
+        if (filter != null) 'filter': filter!,
+        if (gitFileSource != null) 'gitFileSource': gitFileSource!,
+        if (github != null) 'github': github!,
         if (id != null) 'id': id!,
         if (ignoredFiles != null) 'ignoredFiles': ignoredFiles!,
         if (includedFiles != null) 'includedFiles': includedFiles!,
         if (name != null) 'name': name!,
+        if (pubsubConfig != null) 'pubsubConfig': pubsubConfig!,
+        if (resourceName != null) 'resourceName': resourceName!,
+        if (serviceAccount != null) 'serviceAccount': serviceAccount!,
+        if (sourceToBuild != null) 'sourceToBuild': sourceToBuild!,
         if (substitutions != null) 'substitutions': substitutions!,
         if (tags != null) 'tags': tags!,
-        if (triggerTemplate != null)
-          'triggerTemplate': triggerTemplate!.toJson(),
+        if (triggerTemplate != null) 'triggerTemplate': triggerTemplate!,
+        if (webhookConfig != null) 'webhookConfig': webhookConfig!,
       };
 }
 
@@ -2120,25 +4790,28 @@ class BuiltImage {
   /// Output only.
   TimeSpan? pushTiming;
 
-  BuiltImage();
+  BuiltImage({
+    this.digest,
+    this.name,
+    this.pushTiming,
+  });
 
-  BuiltImage.fromJson(core.Map _json) {
-    if (_json.containsKey('digest')) {
-      digest = _json['digest'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('pushTiming')) {
-      pushTiming = TimeSpan.fromJson(
-          _json['pushTiming'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BuiltImage.fromJson(core.Map _json)
+      : this(
+          digest: _json.containsKey('digest')
+              ? _json['digest'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pushTiming: _json.containsKey('pushTiming')
+              ? TimeSpan.fromJson(
+                  _json['pushTiming'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (digest != null) 'digest': digest!,
         if (name != null) 'name': name!,
-        if (pushTiming != null) 'pushTiming': pushTiming!.toJson(),
+        if (pushTiming != null) 'pushTiming': pushTiming!,
       };
 }
 
@@ -2159,19 +4832,20 @@ class CancelBuildRequest {
   /// Required.
   core.String? projectId;
 
-  CancelBuildRequest();
+  CancelBuildRequest({
+    this.id,
+    this.name,
+    this.projectId,
+  });
 
-  CancelBuildRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-  }
+  CancelBuildRequest.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -2181,14 +4855,47 @@ class CancelBuildRequest {
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
+typedef CancelOperationRequest = $Empty;
 
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Request to connect a repository from a connected Bitbucket Server host.
+class CreateBitbucketServerConnectedRepositoryRequest {
+  /// The Bitbucket Server repository to connect.
+  ///
+  /// Required.
+  BitbucketServerConnectedRepository? bitbucketServerConnectedRepository;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// The name of the `BitbucketServerConfig` that added connected repository.
+  ///
+  /// Format:
+  /// `projects/{project}/locations/{location}/bitbucketServerConfigs/{config}`
+  ///
+  /// Required.
+  core.String? parent;
+
+  CreateBitbucketServerConnectedRepositoryRequest({
+    this.bitbucketServerConnectedRepository,
+    this.parent,
+  });
+
+  CreateBitbucketServerConnectedRepositoryRequest.fromJson(core.Map _json)
+      : this(
+          bitbucketServerConnectedRepository:
+              _json.containsKey('bitbucketServerConnectedRepository')
+                  ? BitbucketServerConnectedRepository.fromJson(
+                      _json['bitbucketServerConnectedRepository']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bitbucketServerConnectedRepository != null)
+          'bitbucketServerConnectedRepository':
+              bitbucketServerConnectedRepository!,
+        if (parent != null) 'parent': parent!,
+      };
 }
 
 /// A generic empty message that you can re-use to avoid defining duplicated
@@ -2198,14 +4905,41 @@ class CancelOperationRequest {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// A fatal problem encountered during the execution of the build.
+class FailureInfo {
+  /// Explains the failure issue in more detail using hard-coded text.
+  core.String? detail;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// The name of the failure.
+  /// Possible string values are:
+  /// - "FAILURE_TYPE_UNSPECIFIED" : Type unspecified
+  /// - "PUSH_FAILED" : Unable to push the image to the repository.
+  /// - "PUSH_IMAGE_NOT_FOUND" : Final image not found.
+  /// - "PUSH_NOT_AUTHORIZED" : Unauthorized push of the final image.
+  /// - "LOGGING_FAILURE" : Backend logging failures. Should retry.
+  /// - "USER_BUILD_STEP" : A build step has failed.
+  /// - "FETCH_SOURCE_FAILED" : The source fetching has failed.
+  core.String? type;
+
+  FailureInfo({
+    this.detail,
+    this.type,
+  });
+
+  FailureInfo.fromJson(core.Map _json)
+      : this(
+          detail: _json.containsKey('detail')
+              ? _json['detail'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (detail != null) 'detail': detail!,
+        if (type != null) 'type': type!,
+      };
 }
 
 /// Container message for hashes of byte content of files, used in
@@ -2214,28 +4948,283 @@ class FileHashes {
   /// Collection of file hashes.
   core.List<Hash>? fileHash;
 
-  FileHashes();
+  FileHashes({
+    this.fileHash,
+  });
 
-  FileHashes.fromJson(core.Map _json) {
-    if (_json.containsKey('fileHash')) {
-      fileHash = (_json['fileHash'] as core.List)
-          .map<Hash>((value) =>
-              Hash.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  FileHashes.fromJson(core.Map _json)
+      : this(
+          fileHash: _json.containsKey('fileHash')
+              ? (_json['fileHash'] as core.List)
+                  .map((value) => Hash.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fileHash != null)
-          'fileHash': fileHash!.map((value) => value.toJson()).toList(),
+        if (fileHash != null) 'fileHash': fileHash!,
+      };
+}
+
+/// GitFileSource describes a file within a (possibly remote) code repository.
+class GitFileSource {
+  /// The path of the file, with the repo root as the root of the path.
+  core.String? path;
+
+  /// See RepoType above.
+  /// Possible string values are:
+  /// - "UNKNOWN" : The default, unknown repo type.
+  /// - "CLOUD_SOURCE_REPOSITORIES" : A Google Cloud Source Repositories-hosted
+  /// repo.
+  /// - "GITHUB" : A GitHub-hosted repo not necessarily on "github.com" (i.e.
+  /// GitHub Enterprise).
+  core.String? repoType;
+
+  /// The branch, tag, arbitrary ref, or SHA version of the repo to use when
+  /// resolving the filename (optional).
+  ///
+  /// This field respects the same syntax/resolution as described here:
+  /// https://git-scm.com/docs/gitrevisions If unspecified, the revision from
+  /// which the trigger invocation originated is assumed to be the revision from
+  /// which to read the specified path.
+  core.String? revision;
+
+  /// The URI of the repo (optional).
+  ///
+  /// If unspecified, the repo from which the trigger invocation originated is
+  /// assumed to be the repo from which to read the specified path.
+  core.String? uri;
+
+  GitFileSource({
+    this.path,
+    this.repoType,
+    this.revision,
+    this.uri,
+  });
+
+  GitFileSource.fromJson(core.Map _json)
+      : this(
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          repoType: _json.containsKey('repoType')
+              ? _json['repoType'] as core.String
+              : null,
+          revision: _json.containsKey('revision')
+              ? _json['revision'] as core.String
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (path != null) 'path': path!,
+        if (repoType != null) 'repoType': repoType!,
+        if (revision != null) 'revision': revision!,
+        if (uri != null) 'uri': uri!,
+      };
+}
+
+/// GitHubEnterpriseConfig represents a configuration for a GitHub Enterprise
+/// server.
+class GitHubEnterpriseConfig {
+  /// The GitHub app id of the Cloud Build app on the GitHub Enterprise server.
+  ///
+  /// Required.
+  core.String? appId;
+
+  /// Time when the installation was associated with the project.
+  ///
+  /// Output only.
+  core.String? createTime;
+
+  /// Name to display for this config.
+  core.String? displayName;
+
+  /// The URL of the github enterprise host the configuration is for.
+  core.String? hostUrl;
+
+  /// The full resource name for the GitHubEnterpriseConfig For example:
+  /// "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  ///
+  /// Optional.
+  core.String? name;
+
+  /// The network to be used when reaching out to the GitHub Enterprise server.
+  ///
+  /// The VPC network must be enabled for private service connection. This
+  /// should be set if the GitHub Enterprise server is hosted on-premises and
+  /// not reachable by public internet. If this field is left empty, no network
+  /// peering will occur and calls to the GitHub Enterprise server will be made
+  /// over the public internet. Must be in the format
+  /// `projects/{project}/global/networks/{network}`, where {project} is a
+  /// project number or id and {network} is the name of a VPC network in the
+  /// project.
+  ///
+  /// Optional.
+  core.String? peeredNetwork;
+
+  /// Names of secrets in Secret Manager.
+  GitHubEnterpriseSecrets? secrets;
+
+  /// SSL certificate to use for requests to GitHub Enterprise.
+  ///
+  /// Optional.
+  core.String? sslCa;
+
+  /// The key that should be attached to webhook calls to the ReceiveWebhook
+  /// endpoint.
+  core.String? webhookKey;
+
+  GitHubEnterpriseConfig({
+    this.appId,
+    this.createTime,
+    this.displayName,
+    this.hostUrl,
+    this.name,
+    this.peeredNetwork,
+    this.secrets,
+    this.sslCa,
+    this.webhookKey,
+  });
+
+  GitHubEnterpriseConfig.fromJson(core.Map _json)
+      : this(
+          appId:
+              _json.containsKey('appId') ? _json['appId'] as core.String : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          hostUrl: _json.containsKey('hostUrl')
+              ? _json['hostUrl'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          peeredNetwork: _json.containsKey('peeredNetwork')
+              ? _json['peeredNetwork'] as core.String
+              : null,
+          secrets: _json.containsKey('secrets')
+              ? GitHubEnterpriseSecrets.fromJson(
+                  _json['secrets'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sslCa:
+              _json.containsKey('sslCa') ? _json['sslCa'] as core.String : null,
+          webhookKey: _json.containsKey('webhookKey')
+              ? _json['webhookKey'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (appId != null) 'appId': appId!,
+        if (createTime != null) 'createTime': createTime!,
+        if (displayName != null) 'displayName': displayName!,
+        if (hostUrl != null) 'hostUrl': hostUrl!,
+        if (name != null) 'name': name!,
+        if (peeredNetwork != null) 'peeredNetwork': peeredNetwork!,
+        if (secrets != null) 'secrets': secrets!,
+        if (sslCa != null) 'sslCa': sslCa!,
+        if (webhookKey != null) 'webhookKey': webhookKey!,
+      };
+}
+
+/// GitHubEnterpriseSecrets represents the names of all necessary secrets in
+/// Secret Manager for a GitHub Enterprise server.
+///
+/// Format is: projects//secrets/.
+class GitHubEnterpriseSecrets {
+  /// The resource name for the OAuth client ID secret in Secret Manager.
+  core.String? oauthClientIdName;
+
+  /// The resource name for the OAuth client ID secret version in Secret
+  /// Manager.
+  core.String? oauthClientIdVersionName;
+
+  /// The resource name for the OAuth secret in Secret Manager.
+  core.String? oauthSecretName;
+
+  /// The resource name for the OAuth secret secret version in Secret Manager.
+  core.String? oauthSecretVersionName;
+
+  /// The resource name for the private key secret.
+  core.String? privateKeyName;
+
+  /// The resource name for the private key secret version.
+  core.String? privateKeyVersionName;
+
+  /// The resource name for the webhook secret in Secret Manager.
+  core.String? webhookSecretName;
+
+  /// The resource name for the webhook secret secret version in Secret Manager.
+  core.String? webhookSecretVersionName;
+
+  GitHubEnterpriseSecrets({
+    this.oauthClientIdName,
+    this.oauthClientIdVersionName,
+    this.oauthSecretName,
+    this.oauthSecretVersionName,
+    this.privateKeyName,
+    this.privateKeyVersionName,
+    this.webhookSecretName,
+    this.webhookSecretVersionName,
+  });
+
+  GitHubEnterpriseSecrets.fromJson(core.Map _json)
+      : this(
+          oauthClientIdName: _json.containsKey('oauthClientIdName')
+              ? _json['oauthClientIdName'] as core.String
+              : null,
+          oauthClientIdVersionName:
+              _json.containsKey('oauthClientIdVersionName')
+                  ? _json['oauthClientIdVersionName'] as core.String
+                  : null,
+          oauthSecretName: _json.containsKey('oauthSecretName')
+              ? _json['oauthSecretName'] as core.String
+              : null,
+          oauthSecretVersionName: _json.containsKey('oauthSecretVersionName')
+              ? _json['oauthSecretVersionName'] as core.String
+              : null,
+          privateKeyName: _json.containsKey('privateKeyName')
+              ? _json['privateKeyName'] as core.String
+              : null,
+          privateKeyVersionName: _json.containsKey('privateKeyVersionName')
+              ? _json['privateKeyVersionName'] as core.String
+              : null,
+          webhookSecretName: _json.containsKey('webhookSecretName')
+              ? _json['webhookSecretName'] as core.String
+              : null,
+          webhookSecretVersionName:
+              _json.containsKey('webhookSecretVersionName')
+                  ? _json['webhookSecretVersionName'] as core.String
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (oauthClientIdName != null) 'oauthClientIdName': oauthClientIdName!,
+        if (oauthClientIdVersionName != null)
+          'oauthClientIdVersionName': oauthClientIdVersionName!,
+        if (oauthSecretName != null) 'oauthSecretName': oauthSecretName!,
+        if (oauthSecretVersionName != null)
+          'oauthSecretVersionName': oauthSecretVersionName!,
+        if (privateKeyName != null) 'privateKeyName': privateKeyName!,
+        if (privateKeyVersionName != null)
+          'privateKeyVersionName': privateKeyVersionName!,
+        if (webhookSecretName != null) 'webhookSecretName': webhookSecretName!,
+        if (webhookSecretVersionName != null)
+          'webhookSecretVersionName': webhookSecretVersionName!,
       };
 }
 
 /// GitHubEventsConfig describes the configuration of a trigger that creates a
 /// build whenever a GitHub event is received.
-///
-/// This message is experimental.
 class GitHubEventsConfig {
+  /// The resource name of the github enterprise config that should be applied
+  /// to this installation.
+  ///
+  /// For example: "projects/{$project_id}/githubEnterpriseConfigs/{$config_id}"
+  ///
+  /// Optional.
+  core.String? enterpriseConfigResourceName;
+
   /// The installationID that emits the GitHub event.
   core.String? installationId;
 
@@ -2258,51 +5247,85 @@ class GitHubEventsConfig {
   /// filter to match changes in refs like branches, tags.
   PushFilter? push;
 
-  GitHubEventsConfig();
+  GitHubEventsConfig({
+    this.enterpriseConfigResourceName,
+    this.installationId,
+    this.name,
+    this.owner,
+    this.pullRequest,
+    this.push,
+  });
 
-  GitHubEventsConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('installationId')) {
-      installationId = _json['installationId'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('owner')) {
-      owner = _json['owner'] as core.String;
-    }
-    if (_json.containsKey('pullRequest')) {
-      pullRequest = PullRequestFilter.fromJson(
-          _json['pullRequest'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('push')) {
-      push = PushFilter.fromJson(
-          _json['push'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GitHubEventsConfig.fromJson(core.Map _json)
+      : this(
+          enterpriseConfigResourceName:
+              _json.containsKey('enterpriseConfigResourceName')
+                  ? _json['enterpriseConfigResourceName'] as core.String
+                  : null,
+          installationId: _json.containsKey('installationId')
+              ? _json['installationId'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          owner:
+              _json.containsKey('owner') ? _json['owner'] as core.String : null,
+          pullRequest: _json.containsKey('pullRequest')
+              ? PullRequestFilter.fromJson(
+                  _json['pullRequest'] as core.Map<core.String, core.dynamic>)
+              : null,
+          push: _json.containsKey('push')
+              ? PushFilter.fromJson(
+                  _json['push'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (enterpriseConfigResourceName != null)
+          'enterpriseConfigResourceName': enterpriseConfigResourceName!,
         if (installationId != null) 'installationId': installationId!,
         if (name != null) 'name': name!,
         if (owner != null) 'owner': owner!,
-        if (pullRequest != null) 'pullRequest': pullRequest!.toJson(),
-        if (push != null) 'push': push!.toJson(),
+        if (pullRequest != null) 'pullRequest': pullRequest!,
+        if (push != null) 'push': push!,
       };
 }
 
-/// HTTPDelivery is the delivery configuration for an HTTP notification.
-class HTTPDelivery {
-  /// The URI to which JSON-containing HTTP POST requests should be sent.
+/// GitRepoSource describes a repo and ref of a code repository.
+class GitRepoSource {
+  /// The branch or tag to use.
+  ///
+  /// Must start with "refs/" (required).
+  core.String? ref;
+
+  /// See RepoType below.
+  /// Possible string values are:
+  /// - "UNKNOWN" : The default, unknown repo type.
+  /// - "CLOUD_SOURCE_REPOSITORIES" : A Google Cloud Source Repositories-hosted
+  /// repo.
+  /// - "GITHUB" : A GitHub-hosted repo not necessarily on "github.com" (i.e.
+  /// GitHub Enterprise).
+  core.String? repoType;
+
+  /// The URI of the repo (required).
   core.String? uri;
 
-  HTTPDelivery();
+  GitRepoSource({
+    this.ref,
+    this.repoType,
+    this.uri,
+  });
 
-  HTTPDelivery.fromJson(core.Map _json) {
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  GitRepoSource.fromJson(core.Map _json)
+      : this(
+          ref: _json.containsKey('ref') ? _json['ref'] as core.String : null,
+          repoType: _json.containsKey('repoType')
+              ? _json['repoType'] as core.String
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (ref != null) 'ref': ref!,
+        if (repoType != null) 'repoType': repoType!,
         if (uri != null) 'uri': uri!,
       };
 }
@@ -2325,16 +5348,17 @@ class Hash {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  Hash();
+  Hash({
+    this.type,
+    this.value,
+  });
 
-  Hash.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  Hash.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (type != null) 'type': type!,
@@ -2360,56 +5384,7 @@ class Hash {
 /// (stream google.api.HttpBody); } Use of this type only changes how the
 /// request and response bodies are handled, all other features will continue to
 /// work unchanged.
-class HttpBody {
-  /// The HTTP Content-Type header value specifying the content type of the
-  /// body.
-  core.String? contentType;
-
-  /// The HTTP request/response body as raw binary.
-  core.String? data;
-  core.List<core.int> get dataAsBytes => convert.base64.decode(data!);
-
-  set dataAsBytes(core.List<core.int> _bytes) {
-    data =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  /// Application specific response metadata.
-  ///
-  /// Must be set in the first response for streaming APIs.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? extensions;
-
-  HttpBody();
-
-  HttpBody.fromJson(core.Map _json) {
-    if (_json.containsKey('contentType')) {
-      contentType = _json['contentType'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('extensions')) {
-      extensions = (_json['extensions'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (contentType != null) 'contentType': contentType!,
-        if (data != null) 'data': data!,
-        if (extensions != null) 'extensions': extensions!,
-      };
-}
+typedef HttpBody = $HttpBody;
 
 /// Pairs a set of secret environment variables mapped to encrypted values with
 /// the Cloud KMS key to use to decrypt the value.
@@ -2427,25 +5402,101 @@ class InlineSecret {
   /// In format: projects / * /locations / * /keyRings / * /cryptoKeys / *
   core.String? kmsKeyName;
 
-  InlineSecret();
+  InlineSecret({
+    this.envMap,
+    this.kmsKeyName,
+  });
 
-  InlineSecret.fromJson(core.Map _json) {
-    if (_json.containsKey('envMap')) {
-      envMap = (_json['envMap'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('kmsKeyName')) {
-      kmsKeyName = _json['kmsKeyName'] as core.String;
-    }
-  }
+  InlineSecret.fromJson(core.Map _json)
+      : this(
+          envMap: _json.containsKey('envMap')
+              ? (_json['envMap'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          kmsKeyName: _json.containsKey('kmsKeyName')
+              ? _json['kmsKeyName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (envMap != null) 'envMap': envMap!,
         if (kmsKeyName != null) 'kmsKeyName': kmsKeyName!,
+      };
+}
+
+/// RPC response object returned by ListBitbucketServerConfigs RPC method.
+class ListBitbucketServerConfigsResponse {
+  /// A list of BitbucketServerConfigs
+  core.List<BitbucketServerConfig>? bitbucketServerConfigs;
+
+  /// A token that can be sent as `page_token` to retrieve the next page.
+  ///
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
+
+  ListBitbucketServerConfigsResponse({
+    this.bitbucketServerConfigs,
+    this.nextPageToken,
+  });
+
+  ListBitbucketServerConfigsResponse.fromJson(core.Map _json)
+      : this(
+          bitbucketServerConfigs: _json.containsKey('bitbucketServerConfigs')
+              ? (_json['bitbucketServerConfigs'] as core.List)
+                  .map((value) => BitbucketServerConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bitbucketServerConfigs != null)
+          'bitbucketServerConfigs': bitbucketServerConfigs!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+/// RPC response object returned by the ListBitbucketServerRepositories RPC
+/// method.
+class ListBitbucketServerRepositoriesResponse {
+  /// List of Bitbucket Server repositories.
+  core.List<BitbucketServerRepository>? bitbucketServerRepositories;
+
+  /// A token that can be sent as `page_token` to retrieve the next page.
+  ///
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
+
+  ListBitbucketServerRepositoriesResponse({
+    this.bitbucketServerRepositories,
+    this.nextPageToken,
+  });
+
+  ListBitbucketServerRepositoriesResponse.fromJson(core.Map _json)
+      : this(
+          bitbucketServerRepositories:
+              _json.containsKey('bitbucketServerRepositories')
+                  ? (_json['bitbucketServerRepositories'] as core.List)
+                      .map((value) => BitbucketServerRepository.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bitbucketServerRepositories != null)
+          'bitbucketServerRepositories': bitbucketServerRepositories!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
@@ -2457,24 +5508,27 @@ class ListBuildTriggersResponse {
   /// `BuildTriggers` for the project, sorted by `create_time` descending.
   core.List<BuildTrigger>? triggers;
 
-  ListBuildTriggersResponse();
+  ListBuildTriggersResponse({
+    this.nextPageToken,
+    this.triggers,
+  });
 
-  ListBuildTriggersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('triggers')) {
-      triggers = (_json['triggers'] as core.List)
-          .map<BuildTrigger>((value) => BuildTrigger.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListBuildTriggersResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          triggers: _json.containsKey('triggers')
+              ? (_json['triggers'] as core.List)
+                  .map((value) => BuildTrigger.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (triggers != null)
-          'triggers': triggers!.map((value) => value.toJson()).toList(),
+        if (triggers != null) 'triggers': triggers!,
       };
 }
 
@@ -2488,240 +5542,131 @@ class ListBuildsResponse {
   /// This will be absent if the end of the response list has been reached.
   core.String? nextPageToken;
 
-  ListBuildsResponse();
+  ListBuildsResponse({
+    this.builds,
+    this.nextPageToken,
+  });
 
-  ListBuildsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('builds')) {
-      builds = (_json['builds'] as core.List)
-          .map<Build>((value) =>
-              Build.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListBuildsResponse.fromJson(core.Map _json)
+      : this(
+          builds: _json.containsKey('builds')
+              ? (_json['builds'] as core.List)
+                  .map((value) => Build.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (builds != null)
-          'builds': builds!.map((value) => value.toJson()).toList(),
+        if (builds != null) 'builds': builds!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
-/// Notification is the container which holds the data that is relevant to this
-/// particular notification.
-class Notification {
-  /// The filter string to use for notification filtering.
-  ///
-  /// Currently, this is assumed to be a CEL program. See
-  /// https://opensource.google/projects/cel for more.
-  core.String? filter;
+/// RPC response object returned by ListGithubEnterpriseConfigs RPC method.
+class ListGithubEnterpriseConfigsResponse {
+  /// A list of GitHubEnterpriseConfigs
+  core.List<GitHubEnterpriseConfig>? configs;
 
-  /// Configuration for HTTP delivery.
-  HTTPDelivery? httpDelivery;
+  ListGithubEnterpriseConfigsResponse({
+    this.configs,
+  });
 
-  /// Configuration for Slack delivery.
-  SlackDelivery? slackDelivery;
-
-  /// Configuration for SMTP (email) delivery.
-  SMTPDelivery? smtpDelivery;
-
-  /// Escape hatch for users to supply custom delivery configs.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? structDelivery;
-
-  Notification();
-
-  Notification.fromJson(core.Map _json) {
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('httpDelivery')) {
-      httpDelivery = HTTPDelivery.fromJson(
-          _json['httpDelivery'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('slackDelivery')) {
-      slackDelivery = SlackDelivery.fromJson(
-          _json['slackDelivery'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('smtpDelivery')) {
-      smtpDelivery = SMTPDelivery.fromJson(
-          _json['smtpDelivery'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('structDelivery')) {
-      structDelivery =
-          (_json['structDelivery'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  ListGithubEnterpriseConfigsResponse.fromJson(core.Map _json)
+      : this(
+          configs: _json.containsKey('configs')
+              ? (_json['configs'] as core.List)
+                  .map((value) => GitHubEnterpriseConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filter != null) 'filter': filter!,
-        if (httpDelivery != null) 'httpDelivery': httpDelivery!.toJson(),
-        if (slackDelivery != null) 'slackDelivery': slackDelivery!.toJson(),
-        if (smtpDelivery != null) 'smtpDelivery': smtpDelivery!.toJson(),
-        if (structDelivery != null) 'structDelivery': structDelivery!,
+        if (configs != null) 'configs': configs!,
       };
 }
 
-/// NotifierConfig is the top-level configuration message.
-class NotifierConfig {
-  /// The API version of this configuration format.
-  core.String? apiVersion;
-
-  /// The type of notifier to use (e.g. SMTPNotifier).
-  core.String? kind;
-
-  /// Metadata for referring to/handling/deploying this notifier.
-  NotifierMetadata? metadata;
-
-  /// The actual configuration for this notifier.
-  NotifierSpec? spec;
-
-  NotifierConfig();
-
-  NotifierConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = NotifierMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = NotifierSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-      };
-}
-
-/// NotifierMetadata contains the data which can be used to reference or
-/// describe this notifier.
-class NotifierMetadata {
-  /// The human-readable and user-given name for the notifier.
+/// Response containing existing `WorkerPools`.
+class ListWorkerPoolsResponse {
+  /// Continuation token used to page through large result sets.
   ///
-  /// For example: "repo-merge-email-notifier".
-  core.String? name;
+  /// Provide this value in a subsequent ListWorkerPoolsRequest to return the
+  /// next page of results.
+  core.String? nextPageToken;
 
-  /// The string representing the name and version of notifier to deploy.
+  /// `WorkerPools` for the specified project.
+  core.List<WorkerPool>? workerPools;
+
+  ListWorkerPoolsResponse({
+    this.nextPageToken,
+    this.workerPools,
+  });
+
+  ListWorkerPoolsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          workerPools: _json.containsKey('workerPools')
+              ? (_json['workerPools'] as core.List)
+                  .map((value) => WorkerPool.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (workerPools != null) 'workerPools': workerPools!,
+      };
+}
+
+/// Defines the network configuration for the pool.
+class NetworkConfig {
+  /// Option to configure network egress for the workers.
+  /// Possible string values are:
+  /// - "EGRESS_OPTION_UNSPECIFIED" : If set, defaults to PUBLIC_EGRESS.
+  /// - "NO_PUBLIC_EGRESS" : If set, workers are created without any public
+  /// address, which prevents network egress to public IPs unless a network
+  /// proxy is configured.
+  /// - "PUBLIC_EGRESS" : If set, workers are created with a public address
+  /// which allows for public internet egress.
+  core.String? egressOption;
+
+  /// The network definition that the workers are peered to.
   ///
-  /// Expected to be of the form of "/:". For example:
-  /// "gcr.io/my-project/notifiers/smtp:1.2.34".
-  core.String? notifier;
-
-  NotifierMetadata();
-
-  NotifierMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notifier')) {
-      notifier = _json['notifier'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-        if (notifier != null) 'notifier': notifier!,
-      };
-}
-
-/// NotifierSecret is the container that maps a secret name (reference) to its
-/// Google Cloud Secret Manager resource path.
-class NotifierSecret {
-  /// Name is the local name of the secret, such as the verbatim string
-  /// "my-smtp-password".
-  core.String? name;
-
-  /// Value is interpreted to be a resource path for fetching the actual
-  /// (versioned) secret data for this secret.
+  /// If this section is left empty, the workers will be peered to
+  /// `WorkerPool.project_id` on the service producer network. Must be in the
+  /// format `projects/{project}/global/networks/{network}`, where `{project}`
+  /// is a project number, such as `12345`, and `{network}` is the name of a VPC
+  /// network in the project. See
+  /// [Understanding network configuration options](https://cloud.google.com/build/docs/private-pools/set-up-private-pool-environment)
   ///
-  /// For example, this would be a Google Cloud Secret Manager secret version
-  /// resource path like:
-  /// "projects/my-project/secrets/my-secret/versions/latest".
-  core.String? value;
+  /// Required. Immutable.
+  core.String? peeredNetwork;
 
-  NotifierSecret();
+  NetworkConfig({
+    this.egressOption,
+    this.peeredNetwork,
+  });
 
-  NotifierSecret.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-        if (value != null) 'value': value!,
-      };
-}
-
-/// NotifierSecretRef contains the reference to a secret stored in the
-/// corresponding NotifierSpec.
-class NotifierSecretRef {
-  /// The value of `secret_ref` should be a `name` that is registered in a
-  /// `Secret` in the `secrets` list of the `Spec`.
-  core.String? secretRef;
-
-  NotifierSecretRef();
-
-  NotifierSecretRef.fromJson(core.Map _json) {
-    if (_json.containsKey('secretRef')) {
-      secretRef = _json['secretRef'] as core.String;
-    }
-  }
+  NetworkConfig.fromJson(core.Map _json)
+      : this(
+          egressOption: _json.containsKey('egressOption')
+              ? _json['egressOption'] as core.String
+              : null,
+          peeredNetwork: _json.containsKey('peeredNetwork')
+              ? _json['peeredNetwork'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (secretRef != null) 'secretRef': secretRef!,
-      };
-}
-
-/// NotifierSpec is the configuration container for notifications.
-class NotifierSpec {
-  /// The configuration of this particular notifier.
-  Notification? notification;
-
-  /// Configurations for secret resources used by this particular notifier.
-  core.List<NotifierSecret>? secrets;
-
-  NotifierSpec();
-
-  NotifierSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('notification')) {
-      notification = Notification.fromJson(
-          _json['notification'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('secrets')) {
-      secrets = (_json['secrets'] as core.List)
-          .map<NotifierSecret>((value) => NotifierSecret.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (notification != null) 'notification': notification!.toJson(),
-        if (secrets != null)
-          'secrets': secrets!.map((value) => value.toJson()).toList(),
+        if (egressOption != null) 'egressOption': egressOption!,
+        if (peeredNetwork != null) 'peeredNetwork': peeredNetwork!,
       };
 }
 
@@ -2746,7 +5691,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -2766,45 +5711,157 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
+      };
+}
+
+/// Details about how a build should be executed on a `WorkerPool`.
+///
+/// See
+/// [running builds in a private pool](https://cloud.google.com/build/docs/private-pools/run-builds-in-private-pool)
+/// for more information.
+class PoolOption {
+  /// The `WorkerPool` resource to execute the build on.
+  ///
+  /// You must have `cloudbuild.workerpools.use` on the project hosting the
+  /// WorkerPool. Format
+  /// projects/{project}/locations/{location}/workerPools/{workerPoolId}
+  core.String? name;
+
+  PoolOption({
+    this.name,
+  });
+
+  PoolOption.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (name != null) 'name': name!,
+      };
+}
+
+/// Configuration for a V1 `PrivatePool`.
+class PrivatePoolV1Config {
+  /// Network configuration for the pool.
+  NetworkConfig? networkConfig;
+
+  /// Machine configuration for the workers in the pool.
+  WorkerConfig? workerConfig;
+
+  PrivatePoolV1Config({
+    this.networkConfig,
+    this.workerConfig,
+  });
+
+  PrivatePoolV1Config.fromJson(core.Map _json)
+      : this(
+          networkConfig: _json.containsKey('networkConfig')
+              ? NetworkConfig.fromJson(
+                  _json['networkConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          workerConfig: _json.containsKey('workerConfig')
+              ? WorkerConfig.fromJson(
+                  _json['workerConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (networkConfig != null) 'networkConfig': networkConfig!,
+        if (workerConfig != null) 'workerConfig': workerConfig!,
+      };
+}
+
+/// PubsubConfig describes the configuration of a trigger that creates a build
+/// whenever a Pub/Sub message is published.
+class PubsubConfig {
+  /// Service account that will make the push request.
+  core.String? serviceAccountEmail;
+
+  /// Potential issues with the underlying Pub/Sub subscription configuration.
+  ///
+  /// Only populated on get requests.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : The subscription configuration has not been
+  /// checked.
+  /// - "OK" : The Pub/Sub subscription is properly configured.
+  /// - "SUBSCRIPTION_DELETED" : The subscription has been deleted.
+  /// - "TOPIC_DELETED" : The topic has been deleted.
+  /// - "SUBSCRIPTION_MISCONFIGURED" : Some of the subscription's field are
+  /// misconfigured.
+  core.String? state;
+
+  /// Name of the subscription.
+  ///
+  /// Format is `projects/{project}/subscriptions/{subscription}`.
+  ///
+  /// Output only.
+  core.String? subscription;
+
+  /// The name of the topic from which this subscription is receiving messages.
+  ///
+  /// Format is `projects/{project}/topics/{topic}`.
+  core.String? topic;
+
+  PubsubConfig({
+    this.serviceAccountEmail,
+    this.state,
+    this.subscription,
+    this.topic,
+  });
+
+  PubsubConfig.fromJson(core.Map _json)
+      : this(
+          serviceAccountEmail: _json.containsKey('serviceAccountEmail')
+              ? _json['serviceAccountEmail'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          subscription: _json.containsKey('subscription')
+              ? _json['subscription'] as core.String
+              : null,
+          topic:
+              _json.containsKey('topic') ? _json['topic'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (serviceAccountEmail != null)
+          'serviceAccountEmail': serviceAccountEmail!,
+        if (state != null) 'state': state!,
+        if (subscription != null) 'subscription': subscription!,
+        if (topic != null) 'topic': topic!,
       };
 }
 
@@ -2832,19 +5889,24 @@ class PullRequestFilter {
   /// If true, branches that do NOT match the git_ref will trigger a build.
   core.bool? invertRegex;
 
-  PullRequestFilter();
+  PullRequestFilter({
+    this.branch,
+    this.commentControl,
+    this.invertRegex,
+  });
 
-  PullRequestFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('branch')) {
-      branch = _json['branch'] as core.String;
-    }
-    if (_json.containsKey('commentControl')) {
-      commentControl = _json['commentControl'] as core.String;
-    }
-    if (_json.containsKey('invertRegex')) {
-      invertRegex = _json['invertRegex'] as core.bool;
-    }
-  }
+  PullRequestFilter.fromJson(core.Map _json)
+      : this(
+          branch: _json.containsKey('branch')
+              ? _json['branch'] as core.String
+              : null,
+          commentControl: _json.containsKey('commentControl')
+              ? _json['commentControl'] as core.String
+              : null,
+          invertRegex: _json.containsKey('invertRegex')
+              ? _json['invertRegex'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (branch != null) 'branch': branch!,
@@ -2871,19 +5933,22 @@ class PushFilter {
   /// RE2 and described at https://github.com/google/re2/wiki/Syntax
   core.String? tag;
 
-  PushFilter();
+  PushFilter({
+    this.branch,
+    this.invertRegex,
+    this.tag,
+  });
 
-  PushFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('branch')) {
-      branch = _json['branch'] as core.String;
-    }
-    if (_json.containsKey('invertRegex')) {
-      invertRegex = _json['invertRegex'] as core.bool;
-    }
-    if (_json.containsKey('tag')) {
-      tag = _json['tag'] as core.String;
-    }
-  }
+  PushFilter.fromJson(core.Map _json)
+      : this(
+          branch: _json.containsKey('branch')
+              ? _json['branch'] as core.String
+              : null,
+          invertRegex: _json.containsKey('invertRegex')
+              ? _json['invertRegex'] as core.bool
+              : null,
+          tag: _json.containsKey('tag') ? _json['tag'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (branch != null) 'branch': branch!,
@@ -2894,14 +5959,31 @@ class PushFilter {
 
 /// ReceiveTriggerWebhookResponse \[Experimental\] is the response object for
 /// the ReceiveTriggerWebhook method.
-class ReceiveTriggerWebhookResponse {
-  ReceiveTriggerWebhookResponse();
+typedef ReceiveTriggerWebhookResponse = $Empty;
 
-  ReceiveTriggerWebhookResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// RPC request object accepted by RemoveBitbucketServerConnectedRepository RPC
+/// method.
+class RemoveBitbucketServerConnectedRepositoryRequest {
+  /// The connected repository to remove.
+  BitbucketServerRepositoryId? connectedRepository;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  RemoveBitbucketServerConnectedRepositoryRequest({
+    this.connectedRepository,
+  });
+
+  RemoveBitbucketServerConnectedRepositoryRequest.fromJson(core.Map _json)
+      : this(
+          connectedRepository: _json.containsKey('connectedRepository')
+              ? BitbucketServerRepositoryId.fromJson(
+                  _json['connectedRepository']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (connectedRepository != null)
+          'connectedRepository': connectedRepository!,
+      };
 }
 
 /// Location of the source in a Google Cloud Source Repository.
@@ -2944,40 +6026,48 @@ class RepoSource {
   /// RE2 and described at https://github.com/google/re2/wiki/Syntax
   core.String? tagName;
 
-  RepoSource();
+  RepoSource({
+    this.branchName,
+    this.commitSha,
+    this.dir,
+    this.invertRegex,
+    this.projectId,
+    this.repoName,
+    this.substitutions,
+    this.tagName,
+  });
 
-  RepoSource.fromJson(core.Map _json) {
-    if (_json.containsKey('branchName')) {
-      branchName = _json['branchName'] as core.String;
-    }
-    if (_json.containsKey('commitSha')) {
-      commitSha = _json['commitSha'] as core.String;
-    }
-    if (_json.containsKey('dir')) {
-      dir = _json['dir'] as core.String;
-    }
-    if (_json.containsKey('invertRegex')) {
-      invertRegex = _json['invertRegex'] as core.bool;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('repoName')) {
-      repoName = _json['repoName'] as core.String;
-    }
-    if (_json.containsKey('substitutions')) {
-      substitutions =
-          (_json['substitutions'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('tagName')) {
-      tagName = _json['tagName'] as core.String;
-    }
-  }
+  RepoSource.fromJson(core.Map _json)
+      : this(
+          branchName: _json.containsKey('branchName')
+              ? _json['branchName'] as core.String
+              : null,
+          commitSha: _json.containsKey('commitSha')
+              ? _json['commitSha'] as core.String
+              : null,
+          dir: _json.containsKey('dir') ? _json['dir'] as core.String : null,
+          invertRegex: _json.containsKey('invertRegex')
+              ? _json['invertRegex'] as core.bool
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          repoName: _json.containsKey('repoName')
+              ? _json['repoName'] as core.String
+              : null,
+          substitutions: _json.containsKey('substitutions')
+              ? (_json['substitutions'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          tagName: _json.containsKey('tagName')
+              ? _json['tagName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (branchName != null) 'branchName': branchName!,
@@ -3021,44 +6111,51 @@ class Results {
   /// Only populated when artifacts are uploaded.
   core.String? numArtifacts;
 
-  Results();
+  Results({
+    this.artifactManifest,
+    this.artifactTiming,
+    this.buildStepImages,
+    this.buildStepOutputs,
+    this.images,
+    this.numArtifacts,
+  });
 
-  Results.fromJson(core.Map _json) {
-    if (_json.containsKey('artifactManifest')) {
-      artifactManifest = _json['artifactManifest'] as core.String;
-    }
-    if (_json.containsKey('artifactTiming')) {
-      artifactTiming = TimeSpan.fromJson(
-          _json['artifactTiming'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('buildStepImages')) {
-      buildStepImages = (_json['buildStepImages'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('buildStepOutputs')) {
-      buildStepOutputs = (_json['buildStepOutputs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('images')) {
-      images = (_json['images'] as core.List)
-          .map<BuiltImage>((value) =>
-              BuiltImage.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('numArtifacts')) {
-      numArtifacts = _json['numArtifacts'] as core.String;
-    }
-  }
+  Results.fromJson(core.Map _json)
+      : this(
+          artifactManifest: _json.containsKey('artifactManifest')
+              ? _json['artifactManifest'] as core.String
+              : null,
+          artifactTiming: _json.containsKey('artifactTiming')
+              ? TimeSpan.fromJson(_json['artifactTiming']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          buildStepImages: _json.containsKey('buildStepImages')
+              ? (_json['buildStepImages'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          buildStepOutputs: _json.containsKey('buildStepOutputs')
+              ? (_json['buildStepOutputs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          images: _json.containsKey('images')
+              ? (_json['images'] as core.List)
+                  .map((value) => BuiltImage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          numArtifacts: _json.containsKey('numArtifacts')
+              ? _json['numArtifacts'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (artifactManifest != null) 'artifactManifest': artifactManifest!,
-        if (artifactTiming != null) 'artifactTiming': artifactTiming!.toJson(),
+        if (artifactTiming != null) 'artifactTiming': artifactTiming!,
         if (buildStepImages != null) 'buildStepImages': buildStepImages!,
         if (buildStepOutputs != null) 'buildStepOutputs': buildStepOutputs!,
-        if (images != null)
-          'images': images!.map((value) => value.toJson()).toList(),
+        if (images != null) 'images': images!,
         if (numArtifacts != null) 'numArtifacts': numArtifacts!,
       };
 }
@@ -3080,19 +6177,20 @@ class RetryBuildRequest {
   /// Required.
   core.String? projectId;
 
-  RetryBuildRequest();
+  RetryBuildRequest({
+    this.id,
+    this.name,
+    this.projectId,
+  });
 
-  RetryBuildRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-  }
+  RetryBuildRequest.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -3101,63 +6199,47 @@ class RetryBuildRequest {
       };
 }
 
-/// SMTPDelivery is the delivery configuration for an SMTP (email) notification.
-class SMTPDelivery {
-  /// This is the SMTP account/email that appears in the `From:` of the email.
+/// Specifies a build trigger to run and the source to use.
+class RunBuildTriggerRequest {
+  /// ID of the project.
   ///
-  /// If empty, it is assumed to be sender.
-  core.String? fromAddress;
+  /// Required.
+  core.String? projectId;
 
-  /// The SMTP sender's password.
-  NotifierSecretRef? password;
+  /// Source to build against this trigger.
+  ///
+  /// Branch and tag names cannot consist of regular expressions.
+  RepoSource? source;
 
-  /// The SMTP port of the server.
-  core.String? port;
+  /// ID of the trigger.
+  ///
+  /// Required.
+  core.String? triggerId;
 
-  /// This is the list of addresses to which we send the email (i.e. in the
-  /// `To:` of the email).
-  core.List<core.String>? recipientAddresses;
+  RunBuildTriggerRequest({
+    this.projectId,
+    this.source,
+    this.triggerId,
+  });
 
-  /// This is the SMTP account/email that is used to send the message.
-  core.String? senderAddress;
-
-  /// The address of the SMTP server.
-  core.String? server;
-
-  SMTPDelivery();
-
-  SMTPDelivery.fromJson(core.Map _json) {
-    if (_json.containsKey('fromAddress')) {
-      fromAddress = _json['fromAddress'] as core.String;
-    }
-    if (_json.containsKey('password')) {
-      password = NotifierSecretRef.fromJson(
-          _json['password'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.String;
-    }
-    if (_json.containsKey('recipientAddresses')) {
-      recipientAddresses = (_json['recipientAddresses'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('senderAddress')) {
-      senderAddress = _json['senderAddress'] as core.String;
-    }
-    if (_json.containsKey('server')) {
-      server = _json['server'] as core.String;
-    }
-  }
+  RunBuildTriggerRequest.fromJson(core.Map _json)
+      : this(
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          source: _json.containsKey('source')
+              ? RepoSource.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+          triggerId: _json.containsKey('triggerId')
+              ? _json['triggerId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fromAddress != null) 'fromAddress': fromAddress!,
-        if (password != null) 'password': password!.toJson(),
-        if (port != null) 'port': port!,
-        if (recipientAddresses != null)
-          'recipientAddresses': recipientAddresses!,
-        if (senderAddress != null) 'senderAddress': senderAddress!,
-        if (server != null) 'server': server!,
+        if (projectId != null) 'projectId': projectId!,
+        if (source != null) 'source': source!,
+        if (triggerId != null) 'triggerId': triggerId!,
       };
 }
 
@@ -3179,22 +6261,25 @@ class Secret {
   /// build's secrets.
   core.Map<core.String, core.String>? secretEnv;
 
-  Secret();
+  Secret({
+    this.kmsKeyName,
+    this.secretEnv,
+  });
 
-  Secret.fromJson(core.Map _json) {
-    if (_json.containsKey('kmsKeyName')) {
-      kmsKeyName = _json['kmsKeyName'] as core.String;
-    }
-    if (_json.containsKey('secretEnv')) {
-      secretEnv =
-          (_json['secretEnv'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  Secret.fromJson(core.Map _json)
+      : this(
+          kmsKeyName: _json.containsKey('kmsKeyName')
+              ? _json['kmsKeyName'] as core.String
+              : null,
+          secretEnv: _json.containsKey('secretEnv')
+              ? (_json['secretEnv'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kmsKeyName != null) 'kmsKeyName': kmsKeyName!,
@@ -3215,16 +6300,18 @@ class SecretManagerSecret {
   /// In format: projects / * /secrets / * /versions / *
   core.String? versionName;
 
-  SecretManagerSecret();
+  SecretManagerSecret({
+    this.env,
+    this.versionName,
+  });
 
-  SecretManagerSecret.fromJson(core.Map _json) {
-    if (_json.containsKey('env')) {
-      env = _json['env'] as core.String;
-    }
-    if (_json.containsKey('versionName')) {
-      versionName = _json['versionName'] as core.String;
-    }
-  }
+  SecretManagerSecret.fromJson(core.Map _json)
+      : this(
+          env: _json.containsKey('env') ? _json['env'] as core.String : null,
+          versionName: _json.containsKey('versionName')
+              ? _json['versionName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (env != null) 'env': env!,
@@ -3241,53 +6328,30 @@ class Secrets {
   /// Secrets in Secret Manager and associated secret environment variable.
   core.List<SecretManagerSecret>? secretManager;
 
-  Secrets();
+  Secrets({
+    this.inline,
+    this.secretManager,
+  });
 
-  Secrets.fromJson(core.Map _json) {
-    if (_json.containsKey('inline')) {
-      inline = (_json['inline'] as core.List)
-          .map<InlineSecret>((value) => InlineSecret.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('secretManager')) {
-      secretManager = (_json['secretManager'] as core.List)
-          .map<SecretManagerSecret>((value) => SecretManagerSecret.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (inline != null)
-          'inline': inline!.map((value) => value.toJson()).toList(),
-        if (secretManager != null)
-          'secretManager':
-              secretManager!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// SlackDelivery is the delivery configuration for delivering Slack messages
-/// via webhooks.
-///
-/// See Slack webhook documentation at:
-/// https://api.slack.com/messaging/webhooks.
-class SlackDelivery {
-  /// The secret reference for the Slack webhook URI for sending messages to a
-  /// channel.
-  NotifierSecretRef? webhookUri;
-
-  SlackDelivery();
-
-  SlackDelivery.fromJson(core.Map _json) {
-    if (_json.containsKey('webhookUri')) {
-      webhookUri = NotifierSecretRef.fromJson(
-          _json['webhookUri'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Secrets.fromJson(core.Map _json)
+      : this(
+          inline: _json.containsKey('inline')
+              ? (_json['inline'] as core.List)
+                  .map((value) => InlineSecret.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          secretManager: _json.containsKey('secretManager')
+              ? (_json['secretManager'] as core.List)
+                  .map((value) => SecretManagerSecret.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (webhookUri != null) 'webhookUri': webhookUri!.toJson(),
+        if (inline != null) 'inline': inline!,
+        if (secretManager != null) 'secretManager': secretManager!,
       };
 }
 
@@ -3300,22 +6364,39 @@ class Source {
   /// If provided, get the source from this location in Google Cloud Storage.
   StorageSource? storageSource;
 
-  Source();
+  /// If provided, get the source from this manifest in Google Cloud Storage.
+  ///
+  /// This feature is in Preview; see description
+  /// [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).
+  StorageSourceManifest? storageSourceManifest;
 
-  Source.fromJson(core.Map _json) {
-    if (_json.containsKey('repoSource')) {
-      repoSource = RepoSource.fromJson(
-          _json['repoSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('storageSource')) {
-      storageSource = StorageSource.fromJson(
-          _json['storageSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Source({
+    this.repoSource,
+    this.storageSource,
+    this.storageSourceManifest,
+  });
+
+  Source.fromJson(core.Map _json)
+      : this(
+          repoSource: _json.containsKey('repoSource')
+              ? RepoSource.fromJson(
+                  _json['repoSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          storageSource: _json.containsKey('storageSource')
+              ? StorageSource.fromJson(
+                  _json['storageSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          storageSourceManifest: _json.containsKey('storageSourceManifest')
+              ? StorageSourceManifest.fromJson(_json['storageSourceManifest']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (repoSource != null) 'repoSource': repoSource!.toJson(),
-        if (storageSource != null) 'storageSource': storageSource!.toJson(),
+        if (repoSource != null) 'repoSource': repoSource!,
+        if (storageSource != null) 'storageSource': storageSource!,
+        if (storageSourceManifest != null)
+          'storageSourceManifest': storageSourceManifest!,
       };
 }
 
@@ -3345,37 +6426,55 @@ class SourceProvenance {
   /// generations resolved.
   StorageSource? resolvedStorageSource;
 
-  SourceProvenance();
+  /// A copy of the build's `source.storage_source_manifest`, if exists, with
+  /// any revisions resolved.
+  ///
+  /// This feature is in Preview.
+  StorageSourceManifest? resolvedStorageSourceManifest;
 
-  SourceProvenance.fromJson(core.Map _json) {
-    if (_json.containsKey('fileHashes')) {
-      fileHashes =
-          (_json['fileHashes'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          FileHashes.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('resolvedRepoSource')) {
-      resolvedRepoSource = RepoSource.fromJson(
-          _json['resolvedRepoSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resolvedStorageSource')) {
-      resolvedStorageSource = StorageSource.fromJson(
-          _json['resolvedStorageSource']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SourceProvenance({
+    this.fileHashes,
+    this.resolvedRepoSource,
+    this.resolvedStorageSource,
+    this.resolvedStorageSourceManifest,
+  });
+
+  SourceProvenance.fromJson(core.Map _json)
+      : this(
+          fileHashes: _json.containsKey('fileHashes')
+              ? (_json['fileHashes'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    FileHashes.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          resolvedRepoSource: _json.containsKey('resolvedRepoSource')
+              ? RepoSource.fromJson(_json['resolvedRepoSource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resolvedStorageSource: _json.containsKey('resolvedStorageSource')
+              ? StorageSource.fromJson(_json['resolvedStorageSource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resolvedStorageSourceManifest:
+              _json.containsKey('resolvedStorageSourceManifest')
+                  ? StorageSourceManifest.fromJson(
+                      _json['resolvedStorageSourceManifest']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fileHashes != null)
-          'fileHashes':
-              fileHashes!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (fileHashes != null) 'fileHashes': fileHashes!,
         if (resolvedRepoSource != null)
-          'resolvedRepoSource': resolvedRepoSource!.toJson(),
+          'resolvedRepoSource': resolvedRepoSource!,
         if (resolvedStorageSource != null)
-          'resolvedStorageSource': resolvedStorageSource!.toJson(),
+          'resolvedStorageSource': resolvedStorageSource!,
+        if (resolvedStorageSourceManifest != null)
+          'resolvedStorageSourceManifest': resolvedStorageSourceManifest!,
       };
 }
 
@@ -3386,52 +6485,7 @@ class SourceProvenance {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Location of the source in an archive file in Google Cloud Storage.
 class StorageSource {
@@ -3446,23 +6500,73 @@ class StorageSource {
 
   /// Google Cloud Storage object containing the source.
   ///
-  /// This object must be a gzipped archive file (`.tar.gz`) containing source
-  /// to build.
+  /// This object must be a zipped (`.zip`) or gzipped archive file (`.tar.gz`)
+  /// containing source to build.
   core.String? object;
 
-  StorageSource();
+  StorageSource({
+    this.bucket,
+    this.generation,
+    this.object,
+  });
 
-  StorageSource.fromJson(core.Map _json) {
-    if (_json.containsKey('bucket')) {
-      bucket = _json['bucket'] as core.String;
-    }
-    if (_json.containsKey('generation')) {
-      generation = _json['generation'] as core.String;
-    }
-    if (_json.containsKey('object')) {
-      object = _json['object'] as core.String;
-    }
-  }
+  StorageSource.fromJson(core.Map _json)
+      : this(
+          bucket: _json.containsKey('bucket')
+              ? _json['bucket'] as core.String
+              : null,
+          generation: _json.containsKey('generation')
+              ? _json['generation'] as core.String
+              : null,
+          object: _json.containsKey('object')
+              ? _json['object'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bucket != null) 'bucket': bucket!,
+        if (generation != null) 'generation': generation!,
+        if (object != null) 'object': object!,
+      };
+}
+
+/// Location of the source manifest in Google Cloud Storage.
+///
+/// This feature is in Preview; see description
+/// [here](https://github.com/GoogleCloudPlatform/cloud-builders/tree/master/gcs-fetcher).
+class StorageSourceManifest {
+  /// Google Cloud Storage bucket containing the source manifest (see
+  /// [Bucket Name Requirements](https://cloud.google.com/storage/docs/bucket-naming#requirements)).
+  core.String? bucket;
+
+  /// Google Cloud Storage generation for the object.
+  ///
+  /// If the generation is omitted, the latest generation will be used.
+  core.String? generation;
+
+  /// Google Cloud Storage object containing the source manifest.
+  ///
+  /// This object must be a JSON file.
+  core.String? object;
+
+  StorageSourceManifest({
+    this.bucket,
+    this.generation,
+    this.object,
+  });
+
+  StorageSourceManifest.fromJson(core.Map _json)
+      : this(
+          bucket: _json.containsKey('bucket')
+              ? _json['bucket'] as core.String
+              : null,
+          generation: _json.containsKey('generation')
+              ? _json['generation'] as core.String
+              : null,
+          object: _json.containsKey('object')
+              ? _json['object'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bucket != null) 'bucket': bucket!,
@@ -3479,16 +6583,20 @@ class TimeSpan {
   /// Start of time span.
   core.String? startTime;
 
-  TimeSpan();
+  TimeSpan({
+    this.endTime,
+    this.startTime,
+  });
 
-  TimeSpan.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  TimeSpan.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTime != null) 'endTime': endTime!,
@@ -3512,19 +6620,265 @@ class Volume {
   /// same build step or with certain reserved volume paths.
   core.String? path;
 
-  Volume();
+  Volume({
+    this.name,
+    this.path,
+  });
 
-  Volume.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-  }
+  Volume.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
         if (path != null) 'path': path!,
+      };
+}
+
+/// A non-fatal problem encountered during the execution of the build.
+class Warning {
+  /// The priority for this warning.
+  /// Possible string values are:
+  /// - "PRIORITY_UNSPECIFIED" : Should not be used.
+  /// - "INFO" : e.g. deprecation warnings and alternative feature highlights.
+  /// - "WARNING" : e.g. automated detection of possible issues with the build.
+  /// - "ALERT" : e.g. alerts that a feature used in the build is pending
+  /// removal
+  core.String? priority;
+
+  /// Explanation of the warning generated.
+  core.String? text;
+
+  Warning({
+    this.priority,
+    this.text,
+  });
+
+  Warning.fromJson(core.Map _json)
+      : this(
+          priority: _json.containsKey('priority')
+              ? _json['priority'] as core.String
+              : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (priority != null) 'priority': priority!,
+        if (text != null) 'text': text!,
+      };
+}
+
+/// WebhookConfig describes the configuration of a trigger that creates a build
+/// whenever a webhook is sent to a trigger's webhook URL.
+class WebhookConfig {
+  /// Resource name for the secret required as a URL parameter.
+  ///
+  /// Required.
+  core.String? secret;
+
+  /// Potential issues with the underlying Pub/Sub subscription configuration.
+  ///
+  /// Only populated on get requests.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : The webhook auth configuration not been checked.
+  /// - "OK" : The auth configuration is properly setup.
+  /// - "SECRET_DELETED" : The secret provided in auth_method has been deleted.
+  core.String? state;
+
+  WebhookConfig({
+    this.secret,
+    this.state,
+  });
+
+  WebhookConfig.fromJson(core.Map _json)
+      : this(
+          secret: _json.containsKey('secret')
+              ? _json['secret'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (secret != null) 'secret': secret!,
+        if (state != null) 'state': state!,
+      };
+}
+
+/// Defines the configuration to be used for creating workers in the pool.
+class WorkerConfig {
+  /// Size of the disk attached to the worker, in GB.
+  ///
+  /// See
+  /// [Worker pool config file](https://cloud.google.com/build/docs/private-pools/worker-pool-config-file-schema).
+  /// Specify a value of up to 1000. If `0` is specified, Cloud Build will use a
+  /// standard disk size.
+  core.String? diskSizeGb;
+
+  /// Machine type of a worker, such as `e2-medium`.
+  ///
+  /// See
+  /// [Worker pool config file](https://cloud.google.com/build/docs/private-pools/worker-pool-config-file-schema).
+  /// If left blank, Cloud Build will use a sensible default.
+  core.String? machineType;
+
+  WorkerConfig({
+    this.diskSizeGb,
+    this.machineType,
+  });
+
+  WorkerConfig.fromJson(core.Map _json)
+      : this(
+          diskSizeGb: _json.containsKey('diskSizeGb')
+              ? _json['diskSizeGb'] as core.String
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (diskSizeGb != null) 'diskSizeGb': diskSizeGb!,
+        if (machineType != null) 'machineType': machineType!,
+      };
+}
+
+/// Configuration for a `WorkerPool`.
+///
+/// Cloud Build owns and maintains a pool of workers for general use and have no
+/// access to a project's private network. By default, builds submitted to Cloud
+/// Build will use a worker from this pool. If your build needs access to
+/// resources on a private network, create and use a `WorkerPool` to run your
+/// builds. Private `WorkerPool`s give your builds access to any single VPC
+/// network that you administer, including any on-prem resources connected to
+/// that VPC network. For an overview of private pools, see
+/// [Private pools overview](https://cloud.google.com/build/docs/private-pools/private-pools-overview).
+class WorkerPool {
+  /// User specified annotations.
+  ///
+  /// See https://google.aip.dev/128#annotations for more details such as format
+  /// and size limitations.
+  core.Map<core.String, core.String>? annotations;
+
+  /// Time at which the request to create the `WorkerPool` was received.
+  ///
+  /// Output only.
+  core.String? createTime;
+
+  /// Time at which the request to delete the `WorkerPool` was received.
+  ///
+  /// Output only.
+  core.String? deleteTime;
+
+  /// A user-specified, human-readable name for the `WorkerPool`.
+  ///
+  /// If provided, this value must be 1-63 characters.
+  core.String? displayName;
+
+  /// Checksum computed by the server.
+  ///
+  /// May be sent on update and delete requests to ensure that the client has an
+  /// up-to-date value before proceeding.
+  ///
+  /// Output only.
+  core.String? etag;
+
+  /// The resource name of the `WorkerPool`, with format
+  /// `projects/{project}/locations/{location}/workerPools/{worker_pool}`.
+  ///
+  /// The value of `{worker_pool}` is provided by `worker_pool_id` in
+  /// `CreateWorkerPool` request and the value of `{location}` is determined by
+  /// the endpoint accessed.
+  ///
+  /// Output only.
+  core.String? name;
+
+  /// Legacy Private Pool configuration.
+  PrivatePoolV1Config? privatePoolV1Config;
+
+  /// `WorkerPool` state.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : State of the `WorkerPool` is unknown.
+  /// - "CREATING" : `WorkerPool` is being created.
+  /// - "RUNNING" : `WorkerPool` is running.
+  /// - "DELETING" : `WorkerPool` is being deleted: cancelling builds and
+  /// draining workers.
+  /// - "DELETED" : `WorkerPool` is deleted.
+  /// - "UPDATING" : `WorkerPool` is being updated; new builds cannot be run.
+  core.String? state;
+
+  /// A unique identifier for the `WorkerPool`.
+  ///
+  /// Output only.
+  core.String? uid;
+
+  /// Time at which the request to update the `WorkerPool` was received.
+  ///
+  /// Output only.
+  core.String? updateTime;
+
+  WorkerPool({
+    this.annotations,
+    this.createTime,
+    this.deleteTime,
+    this.displayName,
+    this.etag,
+    this.name,
+    this.privatePoolV1Config,
+    this.state,
+    this.uid,
+    this.updateTime,
+  });
+
+  WorkerPool.fromJson(core.Map _json)
+      : this(
+          annotations: _json.containsKey('annotations')
+              ? (_json['annotations'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          deleteTime: _json.containsKey('deleteTime')
+              ? _json['deleteTime'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          privatePoolV1Config: _json.containsKey('privatePoolV1Config')
+              ? PrivatePoolV1Config.fromJson(_json['privatePoolV1Config']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (annotations != null) 'annotations': annotations!,
+        if (createTime != null) 'createTime': createTime!,
+        if (deleteTime != null) 'deleteTime': deleteTime!,
+        if (displayName != null) 'displayName': displayName!,
+        if (etag != null) 'etag': etag!,
+        if (name != null) 'name': name!,
+        if (privatePoolV1Config != null)
+          'privatePoolV1Config': privatePoolV1Config!,
+        if (state != null) 'state': state!,
+        if (uid != null) 'uid': uid!,
+        if (updateTime != null) 'updateTime': updateTime!,
       };
 }

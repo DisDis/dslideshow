@@ -32,6 +32,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -40,9 +42,15 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// FCM send API that provides a cross-platform messaging solution to reliably
 /// deliver messages at no cost.
 class FirebaseCloudMessagingApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
+
+  /// Send messages and manage messaging subscriptions for your Firebase
+  /// applications
+  static const firebaseMessagingScope =
+      'https://www.googleapis.com/auth/firebase.messaging';
 
   final commons.ApiRequester _requester;
 
@@ -97,7 +105,7 @@ class ProjectsMessagesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -180,48 +188,56 @@ class AndroidConfig {
   /// to the nearest second.
   core.String? ttl;
 
-  AndroidConfig();
+  AndroidConfig({
+    this.collapseKey,
+    this.data,
+    this.directBootOk,
+    this.fcmOptions,
+    this.notification,
+    this.priority,
+    this.restrictedPackageName,
+    this.ttl,
+  });
 
-  AndroidConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('collapseKey')) {
-      collapseKey = _json['collapseKey'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = (_json['data'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('directBootOk')) {
-      directBootOk = _json['directBootOk'] as core.bool;
-    }
-    if (_json.containsKey('fcmOptions')) {
-      fcmOptions = AndroidFcmOptions.fromJson(
-          _json['fcmOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('notification')) {
-      notification = AndroidNotification.fromJson(
-          _json['notification'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('priority')) {
-      priority = _json['priority'] as core.String;
-    }
-    if (_json.containsKey('restrictedPackageName')) {
-      restrictedPackageName = _json['restrictedPackageName'] as core.String;
-    }
-    if (_json.containsKey('ttl')) {
-      ttl = _json['ttl'] as core.String;
-    }
-  }
+  AndroidConfig.fromJson(core.Map _json)
+      : this(
+          collapseKey: _json.containsKey('collapseKey')
+              ? _json['collapseKey'] as core.String
+              : null,
+          data: _json.containsKey('data')
+              ? (_json['data'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          directBootOk: _json.containsKey('directBootOk')
+              ? _json['directBootOk'] as core.bool
+              : null,
+          fcmOptions: _json.containsKey('fcmOptions')
+              ? AndroidFcmOptions.fromJson(
+                  _json['fcmOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          notification: _json.containsKey('notification')
+              ? AndroidNotification.fromJson(
+                  _json['notification'] as core.Map<core.String, core.dynamic>)
+              : null,
+          priority: _json.containsKey('priority')
+              ? _json['priority'] as core.String
+              : null,
+          restrictedPackageName: _json.containsKey('restrictedPackageName')
+              ? _json['restrictedPackageName'] as core.String
+              : null,
+          ttl: _json.containsKey('ttl') ? _json['ttl'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (collapseKey != null) 'collapseKey': collapseKey!,
         if (data != null) 'data': data!,
         if (directBootOk != null) 'directBootOk': directBootOk!,
-        if (fcmOptions != null) 'fcmOptions': fcmOptions!.toJson(),
-        if (notification != null) 'notification': notification!.toJson(),
+        if (fcmOptions != null) 'fcmOptions': fcmOptions!,
+        if (notification != null) 'notification': notification!,
         if (priority != null) 'priority': priority!,
         if (restrictedPackageName != null)
           'restrictedPackageName': restrictedPackageName!,
@@ -230,22 +246,7 @@ class AndroidConfig {
 }
 
 /// Options for features provided by the FCM SDK for Android.
-class AndroidFcmOptions {
-  /// Label associated with the message's analytics data.
-  core.String? analyticsLabel;
-
-  AndroidFcmOptions();
-
-  AndroidFcmOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('analyticsLabel')) {
-      analyticsLabel = _json['analyticsLabel'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (analyticsLabel != null) 'analyticsLabel': analyticsLabel!,
-      };
-}
+typedef AndroidFcmOptions = $FcmOptions;
 
 /// Notification to send to android devices.
 class AndroidNotification {
@@ -460,92 +461,108 @@ class AndroidNotification {
   /// lockscreen.
   core.String? visibility;
 
-  AndroidNotification();
+  AndroidNotification({
+    this.body,
+    this.bodyLocArgs,
+    this.bodyLocKey,
+    this.channelId,
+    this.clickAction,
+    this.color,
+    this.defaultLightSettings,
+    this.defaultSound,
+    this.defaultVibrateTimings,
+    this.eventTime,
+    this.icon,
+    this.image,
+    this.lightSettings,
+    this.localOnly,
+    this.notificationCount,
+    this.notificationPriority,
+    this.sound,
+    this.sticky,
+    this.tag,
+    this.ticker,
+    this.title,
+    this.titleLocArgs,
+    this.titleLocKey,
+    this.vibrateTimings,
+    this.visibility,
+  });
 
-  AndroidNotification.fromJson(core.Map _json) {
-    if (_json.containsKey('body')) {
-      body = _json['body'] as core.String;
-    }
-    if (_json.containsKey('bodyLocArgs')) {
-      bodyLocArgs = (_json['bodyLocArgs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('bodyLocKey')) {
-      bodyLocKey = _json['bodyLocKey'] as core.String;
-    }
-    if (_json.containsKey('channelId')) {
-      channelId = _json['channelId'] as core.String;
-    }
-    if (_json.containsKey('clickAction')) {
-      clickAction = _json['clickAction'] as core.String;
-    }
-    if (_json.containsKey('color')) {
-      color = _json['color'] as core.String;
-    }
-    if (_json.containsKey('defaultLightSettings')) {
-      defaultLightSettings = _json['defaultLightSettings'] as core.bool;
-    }
-    if (_json.containsKey('defaultSound')) {
-      defaultSound = _json['defaultSound'] as core.bool;
-    }
-    if (_json.containsKey('defaultVibrateTimings')) {
-      defaultVibrateTimings = _json['defaultVibrateTimings'] as core.bool;
-    }
-    if (_json.containsKey('eventTime')) {
-      eventTime = _json['eventTime'] as core.String;
-    }
-    if (_json.containsKey('icon')) {
-      icon = _json['icon'] as core.String;
-    }
-    if (_json.containsKey('image')) {
-      image = _json['image'] as core.String;
-    }
-    if (_json.containsKey('lightSettings')) {
-      lightSettings = LightSettings.fromJson(
-          _json['lightSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('localOnly')) {
-      localOnly = _json['localOnly'] as core.bool;
-    }
-    if (_json.containsKey('notificationCount')) {
-      notificationCount = _json['notificationCount'] as core.int;
-    }
-    if (_json.containsKey('notificationPriority')) {
-      notificationPriority = _json['notificationPriority'] as core.String;
-    }
-    if (_json.containsKey('sound')) {
-      sound = _json['sound'] as core.String;
-    }
-    if (_json.containsKey('sticky')) {
-      sticky = _json['sticky'] as core.bool;
-    }
-    if (_json.containsKey('tag')) {
-      tag = _json['tag'] as core.String;
-    }
-    if (_json.containsKey('ticker')) {
-      ticker = _json['ticker'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('titleLocArgs')) {
-      titleLocArgs = (_json['titleLocArgs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('titleLocKey')) {
-      titleLocKey = _json['titleLocKey'] as core.String;
-    }
-    if (_json.containsKey('vibrateTimings')) {
-      vibrateTimings = (_json['vibrateTimings'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('visibility')) {
-      visibility = _json['visibility'] as core.String;
-    }
-  }
+  AndroidNotification.fromJson(core.Map _json)
+      : this(
+          body: _json.containsKey('body') ? _json['body'] as core.String : null,
+          bodyLocArgs: _json.containsKey('bodyLocArgs')
+              ? (_json['bodyLocArgs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          bodyLocKey: _json.containsKey('bodyLocKey')
+              ? _json['bodyLocKey'] as core.String
+              : null,
+          channelId: _json.containsKey('channelId')
+              ? _json['channelId'] as core.String
+              : null,
+          clickAction: _json.containsKey('clickAction')
+              ? _json['clickAction'] as core.String
+              : null,
+          color:
+              _json.containsKey('color') ? _json['color'] as core.String : null,
+          defaultLightSettings: _json.containsKey('defaultLightSettings')
+              ? _json['defaultLightSettings'] as core.bool
+              : null,
+          defaultSound: _json.containsKey('defaultSound')
+              ? _json['defaultSound'] as core.bool
+              : null,
+          defaultVibrateTimings: _json.containsKey('defaultVibrateTimings')
+              ? _json['defaultVibrateTimings'] as core.bool
+              : null,
+          eventTime: _json.containsKey('eventTime')
+              ? _json['eventTime'] as core.String
+              : null,
+          icon: _json.containsKey('icon') ? _json['icon'] as core.String : null,
+          image:
+              _json.containsKey('image') ? _json['image'] as core.String : null,
+          lightSettings: _json.containsKey('lightSettings')
+              ? LightSettings.fromJson(
+                  _json['lightSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+          localOnly: _json.containsKey('localOnly')
+              ? _json['localOnly'] as core.bool
+              : null,
+          notificationCount: _json.containsKey('notificationCount')
+              ? _json['notificationCount'] as core.int
+              : null,
+          notificationPriority: _json.containsKey('notificationPriority')
+              ? _json['notificationPriority'] as core.String
+              : null,
+          sound:
+              _json.containsKey('sound') ? _json['sound'] as core.String : null,
+          sticky:
+              _json.containsKey('sticky') ? _json['sticky'] as core.bool : null,
+          tag: _json.containsKey('tag') ? _json['tag'] as core.String : null,
+          ticker: _json.containsKey('ticker')
+              ? _json['ticker'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          titleLocArgs: _json.containsKey('titleLocArgs')
+              ? (_json['titleLocArgs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          titleLocKey: _json.containsKey('titleLocKey')
+              ? _json['titleLocKey'] as core.String
+              : null,
+          vibrateTimings: _json.containsKey('vibrateTimings')
+              ? (_json['vibrateTimings'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          visibility: _json.containsKey('visibility')
+              ? _json['visibility'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (body != null) 'body': body!,
@@ -562,7 +579,7 @@ class AndroidNotification {
         if (eventTime != null) 'eventTime': eventTime!,
         if (icon != null) 'icon': icon!,
         if (image != null) 'image': image!,
-        if (lightSettings != null) 'lightSettings': lightSettings!.toJson(),
+        if (lightSettings != null) 'lightSettings': lightSettings!,
         if (localOnly != null) 'localOnly': localOnly!,
         if (notificationCount != null) 'notificationCount': notificationCount!,
         if (notificationPriority != null)
@@ -588,7 +605,7 @@ class ApnsConfig {
   ///
   /// Refer to
   /// [APNs request headers](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/sending_notification_requests_to_apns)
-  /// for supported headers, e.g. "apns-priority": "10".
+  /// for supported headers such as `apns-expiration` and `apns-priority`.
   core.Map<core.String, core.String>? headers;
 
   /// APNs payload as a JSON object, including both `aps` dictionary and custom
@@ -597,39 +614,41 @@ class ApnsConfig {
   /// See
   /// [Payload Key Reference](https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/generating_a_remote_notification).
   /// If present, it overrides google.firebase.fcm.v1.Notification.title and
-  /// google.firebase.fcm.v1.Notification.body.
+  /// google.firebase.fcm.v1.Notification.body. The backend sets a default value
+  /// for `apns-expiration` of 30 days and a default value for `apns-priority`
+  /// of 10 if not explicitly set.
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? payload;
+  core.Map<core.String, core.Object?>? payload;
 
-  ApnsConfig();
+  ApnsConfig({
+    this.fcmOptions,
+    this.headers,
+    this.payload,
+  });
 
-  ApnsConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('fcmOptions')) {
-      fcmOptions = ApnsFcmOptions.fromJson(
-          _json['fcmOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('payload')) {
-      payload = (_json['payload'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  ApnsConfig.fromJson(core.Map _json)
+      : this(
+          fcmOptions: _json.containsKey('fcmOptions')
+              ? ApnsFcmOptions.fromJson(
+                  _json['fcmOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fcmOptions != null) 'fcmOptions': fcmOptions!.toJson(),
+        if (fcmOptions != null) 'fcmOptions': fcmOptions!,
         if (headers != null) 'headers': headers!,
         if (payload != null) 'payload': payload!,
       };
@@ -646,16 +665,19 @@ class ApnsFcmOptions {
   /// If present, it will override google.firebase.fcm.v1.Notification.image.
   core.String? image;
 
-  ApnsFcmOptions();
+  ApnsFcmOptions({
+    this.analyticsLabel,
+    this.image,
+  });
 
-  ApnsFcmOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('analyticsLabel')) {
-      analyticsLabel = _json['analyticsLabel'] as core.String;
-    }
-    if (_json.containsKey('image')) {
-      image = _json['image'] as core.String;
-    }
-  }
+  ApnsFcmOptions.fromJson(core.Map _json)
+      : this(
+          analyticsLabel: _json.containsKey('analyticsLabel')
+              ? _json['analyticsLabel'] as core.String
+              : null,
+          image:
+              _json.containsKey('image') ? _json['image'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (analyticsLabel != null) 'analyticsLabel': analyticsLabel!,
@@ -666,18 +688,18 @@ class ApnsFcmOptions {
 /// Represents a color in the RGBA color space.
 ///
 /// This representation is designed for simplicity of conversion to/from color
-/// representations in various languages over compactness; for example, the
+/// representations in various languages over compactness. For example, the
 /// fields of this representation can be trivially provided to the constructor
-/// of "java.awt.Color" in Java; it can also be trivially provided to UIColor's
-/// "+colorWithRed:green:blue:alpha" method in iOS; and, with just a little
-/// work, it can be easily formatted into a CSS "rgba()" string in JavaScript,
-/// as well. Note: this proto does not carry information about the absolute
-/// color space that should be used to interpret the RGB value (e.g. sRGB, Adobe
-/// RGB, DCI-P3, BT.2020, etc.). By default, applications SHOULD assume the sRGB
-/// color space. Note: when color equality needs to be decided, implementations,
-/// unless documented otherwise, will treat two colors to be equal if all their
-/// red, green, blue and alpha values each differ by at most 1e-5. Example
-/// (Java): import com.google.type.Color; // ... public static java.awt.Color
+/// of `java.awt.Color` in Java; it can also be trivially provided to UIColor's
+/// `+colorWithRed:green:blue:alpha` method in iOS; and, with just a little
+/// work, it can be easily formatted into a CSS `rgba()` string in JavaScript.
+/// This reference page doesn't carry information about the absolute color space
+/// that should be used to interpret the RGB value (e.g. sRGB, Adobe RGB,
+/// DCI-P3, BT.2020, etc.). By default, applications should assume the sRGB
+/// color space. When color equality needs to be decided, implementations,
+/// unless documented otherwise, treat two colors as equal if all their red,
+/// green, blue, and alpha values each differ by at most 1e-5. Example (Java):
+/// import com.google.type.Color; // ... public static java.awt.Color
 /// fromProto(Color protocolor) { float alpha = protocolor.hasAlpha() ?
 /// protocolor.getAlpha().getValue() : 1.0; return new java.awt.Color(
 /// protocolor.getRed(), protocolor.getGreen(), protocolor.getBlue(), alpha); }
@@ -697,85 +719,25 @@ class ApnsFcmOptions {
 /// toProto(UIColor* color) { CGFloat red, green, blue, alpha; if (!\[color
 /// getRed:&red green:&green blue:&blue alpha:&alpha\]) { return nil; } Color*
 /// result = \[\[Color alloc\] init\]; \[result setRed:red\]; \[result
-/// setGreen:green\]; \[result setBlue:blue\]; if (alpha <= 0.9999) { \[result
+/// setGreen:green\]; \[result setBlue:blue\]; if (alpha \<= 0.9999) { \[result
 /// setAlpha:floatWrapperWithValue(alpha)\]; } \[result autorelease\]; return
 /// result; } // ... Example (JavaScript): // ... var protoToCssColor =
 /// function(rgb_color) { var redFrac = rgb_color.red || 0.0; var greenFrac =
 /// rgb_color.green || 0.0; var blueFrac = rgb_color.blue || 0.0; var red =
 /// Math.floor(redFrac * 255); var green = Math.floor(greenFrac * 255); var blue
 /// = Math.floor(blueFrac * 255); if (!('alpha' in rgb_color)) { return
-/// rgbToCssColor_(red, green, blue); } var alphaFrac = rgb_color.alpha.value ||
+/// rgbToCssColor(red, green, blue); } var alphaFrac = rgb_color.alpha.value ||
 /// 0.0; var rgbParams = \[red, green, blue\].join(','); return \['rgba(',
-/// rgbParams, ',', alphaFrac, ')'\].join(''); }; var rgbToCssColor_ =
-/// function(red, green, blue) { var rgbNumber = new Number((red << 16) | (green
-/// << 8) | blue); var hexString = rgbNumber.toString(16); var missingZeros = 6
-/// - hexString.length; var resultBuilder = \['#'\]; for (var i = 0; i <
-/// missingZeros; i++) { resultBuilder.push('0'); }
+/// rgbParams, ',', alphaFrac, ')'\].join(''); }; var rgbToCssColor =
+/// function(red, green, blue) { var rgbNumber = new Number((red \<\< 16) |
+/// (green \<\< 8) | blue); var hexString = rgbNumber.toString(16); var
+/// missingZeros = 6 - hexString.length; var resultBuilder = \['#'\]; for (var i
+/// = 0; i \< missingZeros; i++) { resultBuilder.push('0'); }
 /// resultBuilder.push(hexString); return resultBuilder.join(''); }; // ...
-class Color {
-  /// The fraction of this color that should be applied to the pixel.
-  ///
-  /// That is, the final pixel color is defined by the equation: pixel color =
-  /// alpha * (this color) + (1.0 - alpha) * (background color) This means that
-  /// a value of 1.0 corresponds to a solid color, whereas a value of 0.0
-  /// corresponds to a completely transparent color. This uses a wrapper message
-  /// rather than a simple float scalar so that it is possible to distinguish
-  /// between a default value and the value being unset. If omitted, this color
-  /// object is to be rendered as a solid color (as if the alpha value had been
-  /// explicitly given with a value of 1.0).
-  core.double? alpha;
-
-  /// The amount of blue in the color as a value in the interval \[0, 1\].
-  core.double? blue;
-
-  /// The amount of green in the color as a value in the interval \[0, 1\].
-  core.double? green;
-
-  /// The amount of red in the color as a value in the interval \[0, 1\].
-  core.double? red;
-
-  Color();
-
-  Color.fromJson(core.Map _json) {
-    if (_json.containsKey('alpha')) {
-      alpha = (_json['alpha'] as core.num).toDouble();
-    }
-    if (_json.containsKey('blue')) {
-      blue = (_json['blue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('green')) {
-      green = (_json['green'] as core.num).toDouble();
-    }
-    if (_json.containsKey('red')) {
-      red = (_json['red'] as core.num).toDouble();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (alpha != null) 'alpha': alpha!,
-        if (blue != null) 'blue': blue!,
-        if (green != null) 'green': green!,
-        if (red != null) 'red': red!,
-      };
-}
+typedef Color = $Color;
 
 /// Platform independent options for features provided by the FCM SDKs.
-class FcmOptions {
-  /// Label associated with the message's analytics data.
-  core.String? analyticsLabel;
-
-  FcmOptions();
-
-  FcmOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('analyticsLabel')) {
-      analyticsLabel = _json['analyticsLabel'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (analyticsLabel != null) 'analyticsLabel': analyticsLabel!,
-      };
-}
+typedef FcmOptions = $FcmOptions;
 
 /// Settings to control notification LED.
 class LightSettings {
@@ -801,23 +763,28 @@ class LightSettings {
   /// Required.
   core.String? lightOnDuration;
 
-  LightSettings();
+  LightSettings({
+    this.color,
+    this.lightOffDuration,
+    this.lightOnDuration,
+  });
 
-  LightSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('color')) {
-      color =
-          Color.fromJson(_json['color'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('lightOffDuration')) {
-      lightOffDuration = _json['lightOffDuration'] as core.String;
-    }
-    if (_json.containsKey('lightOnDuration')) {
-      lightOnDuration = _json['lightOnDuration'] as core.String;
-    }
-  }
+  LightSettings.fromJson(core.Map _json)
+      : this(
+          color: _json.containsKey('color')
+              ? Color.fromJson(
+                  _json['color'] as core.Map<core.String, core.dynamic>)
+              : null,
+          lightOffDuration: _json.containsKey('lightOffDuration')
+              ? _json['lightOffDuration'] as core.String
+              : null,
+          lightOnDuration: _json.containsKey('lightOnDuration')
+              ? _json['lightOnDuration'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (color != null) 'color': color!.toJson(),
+        if (color != null) 'color': color!,
         if (lightOffDuration != null) 'lightOffDuration': lightOffDuration!,
         if (lightOnDuration != null) 'lightOnDuration': lightOnDuration!,
       };
@@ -841,8 +808,11 @@ class Message {
 
   /// Input only.
   ///
-  /// Arbitrary key/value payload. The key should not be a reserved word
-  /// ("from", "message_type", or any word starting with "google" or "gcm").
+  /// Arbitrary key/value payload, which must be UTF-8 encoded. The key should
+  /// not be a reserved word ("from", "message_type", or any word starting with
+  /// "google" or "gcm"). When sending payloads containing only data fields to
+  /// iOS devices, only normal priority (`"apns-priority": "5"`) is allowed in
+  /// \[`ApnsConfig`\](/docs/reference/fcm/rest/v1/projects.messages#apnsconfig).
   core.Map<core.String, core.String>? data;
 
   /// Input only.
@@ -874,62 +844,70 @@ class Message {
   /// [Webpush protocol](https://tools.ietf.org/html/rfc8030) options.
   WebpushConfig? webpush;
 
-  Message();
+  Message({
+    this.android,
+    this.apns,
+    this.condition,
+    this.data,
+    this.fcmOptions,
+    this.name,
+    this.notification,
+    this.token,
+    this.topic,
+    this.webpush,
+  });
 
-  Message.fromJson(core.Map _json) {
-    if (_json.containsKey('android')) {
-      android = AndroidConfig.fromJson(
-          _json['android'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('apns')) {
-      apns = ApnsConfig.fromJson(
-          _json['apns'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('condition')) {
-      condition = _json['condition'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = (_json['data'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('fcmOptions')) {
-      fcmOptions = FcmOptions.fromJson(
-          _json['fcmOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notification')) {
-      notification = Notification.fromJson(
-          _json['notification'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('token')) {
-      token = _json['token'] as core.String;
-    }
-    if (_json.containsKey('topic')) {
-      topic = _json['topic'] as core.String;
-    }
-    if (_json.containsKey('webpush')) {
-      webpush = WebpushConfig.fromJson(
-          _json['webpush'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Message.fromJson(core.Map _json)
+      : this(
+          android: _json.containsKey('android')
+              ? AndroidConfig.fromJson(
+                  _json['android'] as core.Map<core.String, core.dynamic>)
+              : null,
+          apns: _json.containsKey('apns')
+              ? ApnsConfig.fromJson(
+                  _json['apns'] as core.Map<core.String, core.dynamic>)
+              : null,
+          condition: _json.containsKey('condition')
+              ? _json['condition'] as core.String
+              : null,
+          data: _json.containsKey('data')
+              ? (_json['data'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          fcmOptions: _json.containsKey('fcmOptions')
+              ? FcmOptions.fromJson(
+                  _json['fcmOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notification: _json.containsKey('notification')
+              ? Notification.fromJson(
+                  _json['notification'] as core.Map<core.String, core.dynamic>)
+              : null,
+          token:
+              _json.containsKey('token') ? _json['token'] as core.String : null,
+          topic:
+              _json.containsKey('topic') ? _json['topic'] as core.String : null,
+          webpush: _json.containsKey('webpush')
+              ? WebpushConfig.fromJson(
+                  _json['webpush'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (android != null) 'android': android!.toJson(),
-        if (apns != null) 'apns': apns!.toJson(),
+        if (android != null) 'android': android!,
+        if (apns != null) 'apns': apns!,
         if (condition != null) 'condition': condition!,
         if (data != null) 'data': data!,
-        if (fcmOptions != null) 'fcmOptions': fcmOptions!.toJson(),
+        if (fcmOptions != null) 'fcmOptions': fcmOptions!,
         if (name != null) 'name': name!,
-        if (notification != null) 'notification': notification!.toJson(),
+        if (notification != null) 'notification': notification!,
         if (token != null) 'token': token!,
         if (topic != null) 'topic': topic!,
-        if (webpush != null) 'webpush': webpush!.toJson(),
+        if (webpush != null) 'webpush': webpush!,
       };
 }
 
@@ -951,19 +929,20 @@ class Notification {
   /// The notification's title.
   core.String? title;
 
-  Notification();
+  Notification({
+    this.body,
+    this.image,
+    this.title,
+  });
 
-  Notification.fromJson(core.Map _json) {
-    if (_json.containsKey('body')) {
-      body = _json['body'] as core.String;
-    }
-    if (_json.containsKey('image')) {
-      image = _json['image'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Notification.fromJson(core.Map _json)
+      : this(
+          body: _json.containsKey('body') ? _json['body'] as core.String : null,
+          image:
+              _json.containsKey('image') ? _json['image'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (body != null) 'body': body!,
@@ -982,20 +961,24 @@ class SendMessageRequest {
   /// Flag for testing the request without actually delivering the message.
   core.bool? validateOnly;
 
-  SendMessageRequest();
+  SendMessageRequest({
+    this.message,
+    this.validateOnly,
+  });
 
-  SendMessageRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('message')) {
-      message = Message.fromJson(
-          _json['message'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('validateOnly')) {
-      validateOnly = _json['validateOnly'] as core.bool;
-    }
-  }
+  SendMessageRequest.fromJson(core.Map _json)
+      : this(
+          message: _json.containsKey('message')
+              ? Message.fromJson(
+                  _json['message'] as core.Map<core.String, core.dynamic>)
+              : null,
+          validateOnly: _json.containsKey('validateOnly')
+              ? _json['validateOnly'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (message != null) 'message': message!.toJson(),
+        if (message != null) 'message': message!,
         if (validateOnly != null) 'validateOnly': validateOnly!,
       };
 }
@@ -1026,45 +1009,45 @@ class WebpushConfig {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? notification;
+  core.Map<core.String, core.Object?>? notification;
 
-  WebpushConfig();
+  WebpushConfig({
+    this.data,
+    this.fcmOptions,
+    this.headers,
+    this.notification,
+  });
 
-  WebpushConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('data')) {
-      data = (_json['data'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('fcmOptions')) {
-      fcmOptions = WebpushFcmOptions.fromJson(
-          _json['fcmOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('notification')) {
-      notification =
-          (_json['notification'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  WebpushConfig.fromJson(core.Map _json)
+      : this(
+          data: _json.containsKey('data')
+              ? (_json['data'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          fcmOptions: _json.containsKey('fcmOptions')
+              ? WebpushFcmOptions.fromJson(
+                  _json['fcmOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          notification: _json.containsKey('notification')
+              ? _json['notification'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (data != null) 'data': data!,
-        if (fcmOptions != null) 'fcmOptions': fcmOptions!.toJson(),
+        if (fcmOptions != null) 'fcmOptions': fcmOptions!,
         if (headers != null) 'headers': headers!,
         if (notification != null) 'notification': notification!,
       };
@@ -1080,16 +1063,18 @@ class WebpushFcmOptions {
   /// For all URL values, HTTPS is required.
   core.String? link;
 
-  WebpushFcmOptions();
+  WebpushFcmOptions({
+    this.analyticsLabel,
+    this.link,
+  });
 
-  WebpushFcmOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('analyticsLabel')) {
-      analyticsLabel = _json['analyticsLabel'] as core.String;
-    }
-    if (_json.containsKey('link')) {
-      link = _json['link'] as core.String;
-    }
-  }
+  WebpushFcmOptions.fromJson(core.Map _json)
+      : this(
+          analyticsLabel: _json.containsKey('analyticsLabel')
+              ? _json['analyticsLabel'] as core.String
+              : null,
+          link: _json.containsKey('link') ? _json['link'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (analyticsLabel != null) 'analyticsLabel': analyticsLabel!,

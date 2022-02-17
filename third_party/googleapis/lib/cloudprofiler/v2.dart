@@ -38,7 +38,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Manages continuous profiling information.
 class CloudProfilerApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -108,7 +109,7 @@ class ProjectsProfilesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -151,7 +152,7 @@ class ProjectsProfilesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -203,7 +204,7 @@ class ProjectsProfilesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -228,27 +229,35 @@ class ProjectsProfilesResource {
 /// profile of one of these types needs to be collected.
 class CreateProfileRequest {
   /// Deployment details.
+  ///
+  /// Required.
   Deployment? deployment;
 
   /// One or more profile types that the agent is capable of providing.
+  ///
+  /// Required.
   core.List<core.String>? profileType;
 
-  CreateProfileRequest();
+  CreateProfileRequest({
+    this.deployment,
+    this.profileType,
+  });
 
-  CreateProfileRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('deployment')) {
-      deployment = Deployment.fromJson(
-          _json['deployment'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('profileType')) {
-      profileType = (_json['profileType'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  CreateProfileRequest.fromJson(core.Map _json)
+      : this(
+          deployment: _json.containsKey('deployment')
+              ? Deployment.fromJson(
+                  _json['deployment'] as core.Map<core.String, core.dynamic>)
+              : null,
+          profileType: _json.containsKey('profileType')
+              ? (_json['profileType'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deployment != null) 'deployment': deployment!.toJson(),
+        if (deployment != null) 'deployment': deployment!,
         if (profileType != null) 'profileType': profileType!,
       };
 }
@@ -258,8 +267,8 @@ class Deployment {
   /// Labels identify the deployment within the user universe and same target.
   ///
   /// Validation regex for label names: `^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$`.
-  /// Value for an individual label must be <= 512 bytes, the total size of all
-  /// label names and values must be <= 1024 bytes. Label named "language" can
+  /// Value for an individual label must be \<= 512 bytes, the total size of all
+  /// label names and values must be \<= 1024 bytes. Label named "language" can
   /// be used to record the programming language of the profiled deployment. The
   /// standard choices for the value include "java", "go", "python", "ruby",
   /// "nodejs", "php", "dotnet". For deployments running on Google Cloud
@@ -274,31 +283,36 @@ class Deployment {
   core.String? projectId;
 
   /// Target is the service name used to group related deployments: * Service
-  /// name for GAE Flex / Standard.
+  /// name for App Engine Flex / Standard.
   ///
   /// * Cluster and container name for GKE. * User-specified string for direct
-  /// GCE profiling (e.g. Java). * Job name for Dataflow. Validation regex:
-  /// `^[a-z]([-a-z0-9_.]{0,253}[a-z0-9])?$`.
+  /// Compute Engine profiling (e.g. Java). * Job name for Dataflow. Validation
+  /// regex: `^[a-z]([-a-z0-9_.]{0,253}[a-z0-9])?$`.
   core.String? target;
 
-  Deployment();
+  Deployment({
+    this.labels,
+    this.projectId,
+    this.target,
+  });
 
-  Deployment.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-  }
+  Deployment.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          target: _json.containsKey('target')
+              ? _json['target'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
@@ -367,37 +381,43 @@ class Profile {
   /// the garbage collection pressure to see if those can be optimized.
   core.String? profileType;
 
-  Profile();
+  Profile({
+    this.deployment,
+    this.duration,
+    this.labels,
+    this.name,
+    this.profileBytes,
+    this.profileType,
+  });
 
-  Profile.fromJson(core.Map _json) {
-    if (_json.containsKey('deployment')) {
-      deployment = Deployment.fromJson(
-          _json['deployment'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('profileBytes')) {
-      profileBytes = _json['profileBytes'] as core.String;
-    }
-    if (_json.containsKey('profileType')) {
-      profileType = _json['profileType'] as core.String;
-    }
-  }
+  Profile.fromJson(core.Map _json)
+      : this(
+          deployment: _json.containsKey('deployment')
+              ? Deployment.fromJson(
+                  _json['deployment'] as core.Map<core.String, core.dynamic>)
+              : null,
+          duration: _json.containsKey('duration')
+              ? _json['duration'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          profileBytes: _json.containsKey('profileBytes')
+              ? _json['profileBytes'] as core.String
+              : null,
+          profileType: _json.containsKey('profileType')
+              ? _json['profileType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deployment != null) 'deployment': deployment!.toJson(),
+        if (deployment != null) 'deployment': deployment!,
         if (duration != null) 'duration': duration!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,

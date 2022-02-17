@@ -14,8 +14,10 @@
 
 /// Binary Authorization API - v1
 ///
-/// The management interface for Binary Authorization, a system providing policy
-/// control for images deployed to Kubernetes Engine clusters.
+/// The management interface for Binary Authorization, a service that provides
+/// policy-based deployment validation and control for images deployed to Google
+/// Kubernetes Engine (GKE), Anthos Service Mesh, Anthos Clusters, and Cloud
+/// Run.
 ///
 /// For more information, see <https://cloud.google.com/binary-authorization/>
 ///
@@ -34,15 +36,20 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
-/// The management interface for Binary Authorization, a system providing policy
-/// control for images deployed to Kubernetes Engine clusters.
+/// The management interface for Binary Authorization, a service that provides
+/// policy-based deployment validation and control for images deployed to Google
+/// Kubernetes Engine (GKE), Anthos Service Mesh, Anthos Clusters, and Cloud
+/// Run.
 class BinaryAuthorizationApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -139,7 +146,7 @@ class ProjectsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -191,7 +198,7 @@ class ProjectsAttestorsResource {
     core.String? attestorId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (attestorId != null) 'attestorId': [attestorId],
       if ($fields != null) 'fields': [$fields],
@@ -296,12 +303,16 @@ class ProjectsAttestorsResource {
   /// this field.
   /// Value must have pattern `^projects/\[^/\]+/attestors/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -415,7 +426,7 @@ class ProjectsAttestorsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -462,7 +473,7 @@ class ProjectsAttestorsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -507,7 +518,7 @@ class ProjectsAttestorsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -550,7 +561,7 @@ class ProjectsAttestorsResource {
     core.String attestor, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -587,12 +598,16 @@ class ProjectsPolicyResource {
   /// this field.
   /// Value must have pattern `^projects/\[^/\]+/policy$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -655,7 +670,7 @@ class ProjectsPolicyResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -702,7 +717,7 @@ class ProjectsPolicyResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -789,7 +804,7 @@ class AdmissionRule {
   /// - "EVALUATION_MODE_UNSPECIFIED" : Do not use.
   /// - "ALWAYS_ALLOW" : This rule allows all all pod creations.
   /// - "REQUIRE_ATTESTATION" : This rule allows a pod creation if all the
-  /// attestors listed in 'require_attestations_by' have valid attestations for
+  /// attestors listed in `require_attestations_by` have valid attestations for
   /// all of the images in the pod spec.
   /// - "ALWAYS_DENY" : This rule denies all pod creations.
   core.String? evaluationMode;
@@ -806,21 +821,26 @@ class AdmissionRule {
   /// Optional.
   core.List<core.String>? requireAttestationsBy;
 
-  AdmissionRule();
+  AdmissionRule({
+    this.enforcementMode,
+    this.evaluationMode,
+    this.requireAttestationsBy,
+  });
 
-  AdmissionRule.fromJson(core.Map _json) {
-    if (_json.containsKey('enforcementMode')) {
-      enforcementMode = _json['enforcementMode'] as core.String;
-    }
-    if (_json.containsKey('evaluationMode')) {
-      evaluationMode = _json['evaluationMode'] as core.String;
-    }
-    if (_json.containsKey('requireAttestationsBy')) {
-      requireAttestationsBy = (_json['requireAttestationsBy'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  AdmissionRule.fromJson(core.Map _json)
+      : this(
+          enforcementMode: _json.containsKey('enforcementMode')
+              ? _json['enforcementMode'] as core.String
+              : null,
+          evaluationMode: _json.containsKey('evaluationMode')
+              ? _json['evaluationMode'] as core.String
+              : null,
+          requireAttestationsBy: _json.containsKey('requireAttestationsBy')
+              ? (_json['requireAttestationsBy'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enforcementMode != null) 'enforcementMode': enforcementMode!,
@@ -835,17 +855,21 @@ class AdmissionRule {
 class AdmissionWhitelistPattern {
   /// An image name pattern to allowlist, in the form `registry/path/to/image`.
   ///
-  /// This supports a trailing `*` as a wildcard, but this is allowed only in
-  /// text after the `registry/` part.
+  /// This supports a trailing `*` wildcard, but this is allowed only in text
+  /// after the `registry/` part. This also supports a trailing `**` wildcard
+  /// which matches subdirectories of a given entry.
   core.String? namePattern;
 
-  AdmissionWhitelistPattern();
+  AdmissionWhitelistPattern({
+    this.namePattern,
+  });
 
-  AdmissionWhitelistPattern.fromJson(core.Map _json) {
-    if (_json.containsKey('namePattern')) {
-      namePattern = _json['namePattern'] as core.String;
-    }
-  }
+  AdmissionWhitelistPattern.fromJson(core.Map _json)
+      : this(
+          namePattern: _json.containsKey('namePattern')
+              ? _json['namePattern'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (namePattern != null) 'namePattern': namePattern!,
@@ -892,31 +916,35 @@ class AttestationOccurrence {
   /// in common.proto for more details on signature structure and verification.
   core.List<Signature>? signatures;
 
-  AttestationOccurrence();
+  AttestationOccurrence({
+    this.jwts,
+    this.serializedPayload,
+    this.signatures,
+  });
 
-  AttestationOccurrence.fromJson(core.Map _json) {
-    if (_json.containsKey('jwts')) {
-      jwts = (_json['jwts'] as core.List)
-          .map<Jwt>((value) =>
-              Jwt.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serializedPayload')) {
-      serializedPayload = _json['serializedPayload'] as core.String;
-    }
-    if (_json.containsKey('signatures')) {
-      signatures = (_json['signatures'] as core.List)
-          .map<Signature>((value) =>
-              Signature.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  AttestationOccurrence.fromJson(core.Map _json)
+      : this(
+          jwts: _json.containsKey('jwts')
+              ? (_json['jwts'] as core.List)
+                  .map((value) => Jwt.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serializedPayload: _json.containsKey('serializedPayload')
+              ? _json['serializedPayload'] as core.String
+              : null,
+          signatures: _json.containsKey('signatures')
+              ? (_json['signatures'] as core.List)
+                  .map((value) => Signature.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (jwts != null) 'jwts': jwts!.map((value) => value.toJson()).toList(),
+        if (jwts != null) 'jwts': jwts!,
         if (serializedPayload != null) 'serializedPayload': serializedPayload!,
-        if (signatures != null)
-          'signatures': signatures!.map((value) => value.toJson()).toList(),
+        if (signatures != null) 'signatures': signatures!,
       };
 }
 
@@ -947,30 +975,34 @@ class Attestor {
   /// during policy enforcement.
   UserOwnedGrafeasNote? userOwnedGrafeasNote;
 
-  Attestor();
+  Attestor({
+    this.description,
+    this.name,
+    this.updateTime,
+    this.userOwnedGrafeasNote,
+  });
 
-  Attestor.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('userOwnedGrafeasNote')) {
-      userOwnedGrafeasNote = UserOwnedGrafeasNote.fromJson(
-          _json['userOwnedGrafeasNote'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Attestor.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          userOwnedGrafeasNote: _json.containsKey('userOwnedGrafeasNote')
+              ? UserOwnedGrafeasNote.fromJson(_json['userOwnedGrafeasNote']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (name != null) 'name': name!,
         if (updateTime != null) 'updateTime': updateTime!,
         if (userOwnedGrafeasNote != null)
-          'userOwnedGrafeasNote': userOwnedGrafeasNote!.toJson(),
+          'userOwnedGrafeasNote': userOwnedGrafeasNote!,
       };
 }
 
@@ -1012,47 +1044,52 @@ class AttestorPublicKey {
   /// the public key.
   PkixPublicKey? pkixPublicKey;
 
-  AttestorPublicKey();
+  AttestorPublicKey({
+    this.asciiArmoredPgpPublicKey,
+    this.comment,
+    this.id,
+    this.pkixPublicKey,
+  });
 
-  AttestorPublicKey.fromJson(core.Map _json) {
-    if (_json.containsKey('asciiArmoredPgpPublicKey')) {
-      asciiArmoredPgpPublicKey =
-          _json['asciiArmoredPgpPublicKey'] as core.String;
-    }
-    if (_json.containsKey('comment')) {
-      comment = _json['comment'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('pkixPublicKey')) {
-      pkixPublicKey = PkixPublicKey.fromJson(
-          _json['pkixPublicKey'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  AttestorPublicKey.fromJson(core.Map _json)
+      : this(
+          asciiArmoredPgpPublicKey:
+              _json.containsKey('asciiArmoredPgpPublicKey')
+                  ? _json['asciiArmoredPgpPublicKey'] as core.String
+                  : null,
+          comment: _json.containsKey('comment')
+              ? _json['comment'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          pkixPublicKey: _json.containsKey('pkixPublicKey')
+              ? PkixPublicKey.fromJson(
+                  _json['pkixPublicKey'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (asciiArmoredPgpPublicKey != null)
           'asciiArmoredPgpPublicKey': asciiArmoredPgpPublicKey!,
         if (comment != null) 'comment': comment!,
         if (id != null) 'id': id!,
-        if (pkixPublicKey != null) 'pkixPublicKey': pkixPublicKey!.toJson(),
+        if (pkixPublicKey != null) 'pkixPublicKey': pkixPublicKey!,
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -1084,30 +1121,33 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
@@ -1120,15 +1160,7 @@ class Binding {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -1136,7 +1168,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -1148,70 +1180,21 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// An Identity and Access Management (IAM) policy, which specifies access
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -1220,22 +1203,27 @@ class Expr {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class IamPolicy {
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -1277,50 +1265,34 @@ class IamPolicy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  IamPolicy();
+  IamPolicy({
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  IamPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  IamPolicy.fromJson(core.Map _json)
+      : this(
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
 }
 
-class Jwt {
-  /// The compact encoding of a JWS, which is always three base64 encoded
-  /// strings joined by periods.
-  ///
-  /// For details, see: https://tools.ietf.org/html/rfc7515.html#section-3.1
-  core.String? compactJwt;
-
-  Jwt();
-
-  Jwt.fromJson(core.Map _json) {
-    if (_json.containsKey('compactJwt')) {
-      compactJwt = _json['compactJwt'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (compactJwt != null) 'compactJwt': compactJwt!,
-      };
-}
+typedef Jwt = $Jwt;
 
 /// Response message for BinauthzManagementService.ListAttestors.
 class ListAttestorsResponse {
@@ -1334,23 +1306,26 @@ class ListAttestorsResponse {
   /// results.
   core.String? nextPageToken;
 
-  ListAttestorsResponse();
+  ListAttestorsResponse({
+    this.attestors,
+    this.nextPageToken,
+  });
 
-  ListAttestorsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('attestors')) {
-      attestors = (_json['attestors'] as core.List)
-          .map<Attestor>((value) =>
-              Attestor.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAttestorsResponse.fromJson(core.Map _json)
+      : this(
+          attestors: _json.containsKey('attestors')
+              ? (_json['attestors'] as core.List)
+                  .map((value) => Attestor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (attestors != null)
-          'attestors': attestors!.map((value) => value.toJson()).toList(),
+        if (attestors != null) 'attestors': attestors!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1399,16 +1374,20 @@ class PkixPublicKey {
   /// digest.
   core.String? signatureAlgorithm;
 
-  PkixPublicKey();
+  PkixPublicKey({
+    this.publicKeyPem,
+    this.signatureAlgorithm,
+  });
 
-  PkixPublicKey.fromJson(core.Map _json) {
-    if (_json.containsKey('publicKeyPem')) {
-      publicKeyPem = _json['publicKeyPem'] as core.String;
-    }
-    if (_json.containsKey('signatureAlgorithm')) {
-      signatureAlgorithm = _json['signatureAlgorithm'] as core.String;
-    }
-  }
+  PkixPublicKey.fromJson(core.Map _json)
+      : this(
+          publicKeyPem: _json.containsKey('publicKeyPem')
+              ? _json['publicKeyPem'] as core.String
+              : null,
+          signatureAlgorithm: _json.containsKey('signatureAlgorithm')
+              ? _json['signatureAlgorithm'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (publicKeyPem != null) 'publicKeyPem': publicKeyPem!,
@@ -1461,21 +1440,21 @@ class Policy {
   /// Possible string values are:
   /// - "GLOBAL_POLICY_EVALUATION_MODE_UNSPECIFIED" : Not specified: DISABLE is
   /// assumed.
-  /// - "ENABLE" : Enables global policy evaluation.
-  /// - "DISABLE" : Disables global policy evaluation.
+  /// - "ENABLE" : Enables system policy evaluation.
+  /// - "DISABLE" : Disables system policy evaluation.
   core.String? globalPolicyEvaluationMode;
 
   /// Per-istio-service-identity admission rules.
   ///
-  /// Istio service identity spec format: spiffe:///ns//sa/ or /ns//sa/ e.g.
-  /// spiffe://example.com/ns/test-ns/sa/default
+  /// Istio service identity spec format: `spiffe:///ns//sa/` or `/ns//sa/` e.g.
+  /// `spiffe://example.com/ns/test-ns/sa/default`
   ///
   /// Optional.
   core.Map<core.String, AdmissionRule>? istioServiceIdentityAdmissionRules;
 
   /// Per-kubernetes-namespace admission rules.
   ///
-  /// K8s namespace spec format: \[a-z.-\]+, e.g. 'some-namespace'
+  /// K8s namespace spec format: `[a-z.-]+`, e.g. `some-namespace`
   ///
   /// Optional.
   core.Map<core.String, AdmissionRule>? kubernetesNamespaceAdmissionRules;
@@ -1483,7 +1462,7 @@ class Policy {
   /// Per-kubernetes-service-account admission rules.
   ///
   /// Service account spec format: `namespace:serviceaccount`. e.g.
-  /// 'test-ns:default'
+  /// `test-ns:default`
   ///
   /// Optional.
   core.Map<core.String, AdmissionRule>? kubernetesServiceAccountAdmissionRules;
@@ -1500,104 +1479,111 @@ class Policy {
   /// Output only.
   core.String? updateTime;
 
-  Policy();
+  Policy({
+    this.admissionWhitelistPatterns,
+    this.clusterAdmissionRules,
+    this.defaultAdmissionRule,
+    this.description,
+    this.globalPolicyEvaluationMode,
+    this.istioServiceIdentityAdmissionRules,
+    this.kubernetesNamespaceAdmissionRules,
+    this.kubernetesServiceAccountAdmissionRules,
+    this.name,
+    this.updateTime,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('admissionWhitelistPatterns')) {
-      admissionWhitelistPatterns =
-          (_json['admissionWhitelistPatterns'] as core.List)
-              .map<AdmissionWhitelistPattern>((value) =>
-                  AdmissionWhitelistPattern.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('clusterAdmissionRules')) {
-      clusterAdmissionRules = (_json['clusterAdmissionRules']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          AdmissionRule.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('defaultAdmissionRule')) {
-      defaultAdmissionRule = AdmissionRule.fromJson(
-          _json['defaultAdmissionRule'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('globalPolicyEvaluationMode')) {
-      globalPolicyEvaluationMode =
-          _json['globalPolicyEvaluationMode'] as core.String;
-    }
-    if (_json.containsKey('istioServiceIdentityAdmissionRules')) {
-      istioServiceIdentityAdmissionRules =
-          (_json['istioServiceIdentityAdmissionRules']
+  Policy.fromJson(core.Map _json)
+      : this(
+          admissionWhitelistPatterns:
+              _json.containsKey('admissionWhitelistPatterns')
+                  ? (_json['admissionWhitelistPatterns'] as core.List)
+                      .map((value) => AdmissionWhitelistPattern.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          clusterAdmissionRules: _json.containsKey('clusterAdmissionRules')
+              ? (_json['clusterAdmissionRules']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    AdmissionRule.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          defaultAdmissionRule: _json.containsKey('defaultAdmissionRule')
+              ? AdmissionRule.fromJson(_json['defaultAdmissionRule']
                   as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          AdmissionRule.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('kubernetesNamespaceAdmissionRules')) {
-      kubernetesNamespaceAdmissionRules =
-          (_json['kubernetesNamespaceAdmissionRules']
-                  as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          AdmissionRule.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('kubernetesServiceAccountAdmissionRules')) {
-      kubernetesServiceAccountAdmissionRules =
-          (_json['kubernetesServiceAccountAdmissionRules']
-                  as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          AdmissionRule.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          globalPolicyEvaluationMode:
+              _json.containsKey('globalPolicyEvaluationMode')
+                  ? _json['globalPolicyEvaluationMode'] as core.String
+                  : null,
+          istioServiceIdentityAdmissionRules:
+              _json.containsKey('istioServiceIdentityAdmissionRules')
+                  ? (_json['istioServiceIdentityAdmissionRules']
+                          as core.Map<core.String, core.dynamic>)
+                      .map(
+                      (key, item) => core.MapEntry(
+                        key,
+                        AdmissionRule.fromJson(
+                            item as core.Map<core.String, core.dynamic>),
+                      ),
+                    )
+                  : null,
+          kubernetesNamespaceAdmissionRules:
+              _json.containsKey('kubernetesNamespaceAdmissionRules')
+                  ? (_json['kubernetesNamespaceAdmissionRules']
+                          as core.Map<core.String, core.dynamic>)
+                      .map(
+                      (key, item) => core.MapEntry(
+                        key,
+                        AdmissionRule.fromJson(
+                            item as core.Map<core.String, core.dynamic>),
+                      ),
+                    )
+                  : null,
+          kubernetesServiceAccountAdmissionRules:
+              _json.containsKey('kubernetesServiceAccountAdmissionRules')
+                  ? (_json['kubernetesServiceAccountAdmissionRules']
+                          as core.Map<core.String, core.dynamic>)
+                      .map(
+                      (key, item) => core.MapEntry(
+                        key,
+                        AdmissionRule.fromJson(
+                            item as core.Map<core.String, core.dynamic>),
+                      ),
+                    )
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (admissionWhitelistPatterns != null)
-          'admissionWhitelistPatterns': admissionWhitelistPatterns!
-              .map((value) => value.toJson())
-              .toList(),
+          'admissionWhitelistPatterns': admissionWhitelistPatterns!,
         if (clusterAdmissionRules != null)
-          'clusterAdmissionRules': clusterAdmissionRules!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
+          'clusterAdmissionRules': clusterAdmissionRules!,
         if (defaultAdmissionRule != null)
-          'defaultAdmissionRule': defaultAdmissionRule!.toJson(),
+          'defaultAdmissionRule': defaultAdmissionRule!,
         if (description != null) 'description': description!,
         if (globalPolicyEvaluationMode != null)
           'globalPolicyEvaluationMode': globalPolicyEvaluationMode!,
         if (istioServiceIdentityAdmissionRules != null)
           'istioServiceIdentityAdmissionRules':
-              istioServiceIdentityAdmissionRules!
-                  .map((key, item) => core.MapEntry(key, item.toJson())),
+              istioServiceIdentityAdmissionRules!,
         if (kubernetesNamespaceAdmissionRules != null)
           'kubernetesNamespaceAdmissionRules':
-              kubernetesNamespaceAdmissionRules!
-                  .map((key, item) => core.MapEntry(key, item.toJson())),
+              kubernetesNamespaceAdmissionRules!,
         if (kubernetesServiceAccountAdmissionRules != null)
           'kubernetesServiceAccountAdmissionRules':
-              kubernetesServiceAccountAdmissionRules!
-                  .map((key, item) => core.MapEntry(key, item.toJson())),
+              kubernetesServiceAccountAdmissionRules!,
         if (name != null) 'name': name!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
@@ -1612,17 +1598,20 @@ class SetIamPolicyRequest {
   /// reject them.
   IamPolicy? policy;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = IamPolicy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? IamPolicy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
       };
 }
 
@@ -1645,97 +1634,13 @@ class SetIamPolicyRequest {
 /// explicitly provided payload (e.g. a `payload` field on the proto message
 /// that holds this Signature, or the canonical serialization of the proto
 /// message that holds this signature).
-class Signature {
-  /// The identifier for the public key that verifies this signature.
-  ///
-  /// * The `public_key_id` is required. * The `public_key_id` SHOULD be an
-  /// RFC3986 conformant URI. * When possible, the `public_key_id` SHOULD be an
-  /// immutable reference, such as a cryptographic digest. Examples of valid
-  /// `public_key_id`s: OpenPGP V4 public key fingerprint: *
-  /// "openpgp4fpr:74FAF3B861BDA0870C7B6DEF607E48D2A663AEEA" See
-  /// https://www.iana.org/assignments/uri-schemes/prov/openpgp4fpr for more
-  /// details on this scheme. RFC6920 digest-named SubjectPublicKeyInfo (digest
-  /// of the DER serialization): *
-  /// "ni:///sha-256;cD9o9Cq6LG3jD0iKXqEi_vdjJGecm_iXkbqVoScViaU" *
-  /// "nih:///sha-256;703f68f42aba2c6de30f488a5ea122fef76324679c9bf89791ba95a1271589a5"
-  core.String? publicKeyId;
-
-  /// The content of the signature, an opaque bytestring.
-  ///
-  /// The payload that this signature verifies MUST be unambiguously provided
-  /// with the Signature during verification. A wrapper message might provide
-  /// the payload explicitly. Alternatively, a message might have a canonical
-  /// serialization that can always be unambiguously computed to derive the
-  /// payload.
-  core.String? signature;
-  core.List<core.int> get signatureAsBytes => convert.base64.decode(signature!);
-
-  set signatureAsBytes(core.List<core.int> _bytes) {
-    signature =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  Signature();
-
-  Signature.fromJson(core.Map _json) {
-    if (_json.containsKey('publicKeyId')) {
-      publicKeyId = _json['publicKeyId'] as core.String;
-    }
-    if (_json.containsKey('signature')) {
-      signature = _json['signature'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (publicKeyId != null) 'publicKeyId': publicKeyId!,
-        if (signature != null) 'signature': signature!,
-      };
-}
+typedef Signature = $Signature;
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// An user owned Grafeas note references a Grafeas Attestation.Authority Note
 /// created by the user.
@@ -1773,30 +1678,34 @@ class UserOwnedGrafeasNote {
   /// Optional.
   core.List<AttestorPublicKey>? publicKeys;
 
-  UserOwnedGrafeasNote();
+  UserOwnedGrafeasNote({
+    this.delegationServiceAccountEmail,
+    this.noteReference,
+    this.publicKeys,
+  });
 
-  UserOwnedGrafeasNote.fromJson(core.Map _json) {
-    if (_json.containsKey('delegationServiceAccountEmail')) {
-      delegationServiceAccountEmail =
-          _json['delegationServiceAccountEmail'] as core.String;
-    }
-    if (_json.containsKey('noteReference')) {
-      noteReference = _json['noteReference'] as core.String;
-    }
-    if (_json.containsKey('publicKeys')) {
-      publicKeys = (_json['publicKeys'] as core.List)
-          .map<AttestorPublicKey>((value) => AttestorPublicKey.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  UserOwnedGrafeasNote.fromJson(core.Map _json)
+      : this(
+          delegationServiceAccountEmail:
+              _json.containsKey('delegationServiceAccountEmail')
+                  ? _json['delegationServiceAccountEmail'] as core.String
+                  : null,
+          noteReference: _json.containsKey('noteReference')
+              ? _json['noteReference'] as core.String
+              : null,
+          publicKeys: _json.containsKey('publicKeys')
+              ? (_json['publicKeys'] as core.List)
+                  .map((value) => AttestorPublicKey.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (delegationServiceAccountEmail != null)
           'delegationServiceAccountEmail': delegationServiceAccountEmail!,
         if (noteReference != null) 'noteReference': noteReference!,
-        if (publicKeys != null)
-          'publicKeys': publicKeys!.map((value) => value.toJson()).toList(),
+        if (publicKeys != null) 'publicKeys': publicKeys!,
       };
 }
 
@@ -1823,23 +1732,28 @@ class ValidateAttestationOccurrenceRequest {
   /// Required.
   core.String? occurrenceResourceUri;
 
-  ValidateAttestationOccurrenceRequest();
+  ValidateAttestationOccurrenceRequest({
+    this.attestation,
+    this.occurrenceNote,
+    this.occurrenceResourceUri,
+  });
 
-  ValidateAttestationOccurrenceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('attestation')) {
-      attestation = AttestationOccurrence.fromJson(
-          _json['attestation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('occurrenceNote')) {
-      occurrenceNote = _json['occurrenceNote'] as core.String;
-    }
-    if (_json.containsKey('occurrenceResourceUri')) {
-      occurrenceResourceUri = _json['occurrenceResourceUri'] as core.String;
-    }
-  }
+  ValidateAttestationOccurrenceRequest.fromJson(core.Map _json)
+      : this(
+          attestation: _json.containsKey('attestation')
+              ? AttestationOccurrence.fromJson(
+                  _json['attestation'] as core.Map<core.String, core.dynamic>)
+              : null,
+          occurrenceNote: _json.containsKey('occurrenceNote')
+              ? _json['occurrenceNote'] as core.String
+              : null,
+          occurrenceResourceUri: _json.containsKey('occurrenceResourceUri')
+              ? _json['occurrenceResourceUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (attestation != null) 'attestation': attestation!.toJson(),
+        if (attestation != null) 'attestation': attestation!,
         if (occurrenceNote != null) 'occurrenceNote': occurrenceNote!,
         if (occurrenceResourceUri != null)
           'occurrenceResourceUri': occurrenceResourceUri!,
@@ -1859,16 +1773,20 @@ class ValidateAttestationOccurrenceResponse {
   /// by the Attestor.
   core.String? result;
 
-  ValidateAttestationOccurrenceResponse();
+  ValidateAttestationOccurrenceResponse({
+    this.denialReason,
+    this.result,
+  });
 
-  ValidateAttestationOccurrenceResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('denialReason')) {
-      denialReason = _json['denialReason'] as core.String;
-    }
-    if (_json.containsKey('result')) {
-      result = _json['result'] as core.String;
-    }
-  }
+  ValidateAttestationOccurrenceResponse.fromJson(core.Map _json)
+      : this(
+          denialReason: _json.containsKey('denialReason')
+              ? _json['denialReason'] as core.String
+              : null,
+          result: _json.containsKey('result')
+              ? _json['result'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (denialReason != null) 'denialReason': denialReason!,

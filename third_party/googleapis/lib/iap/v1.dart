@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -40,7 +42,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Controls access to cloud applications running on Google Cloud Platform.
 class CloudIAPApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -76,11 +79,12 @@ class ProjectsBrandsResource {
   /// Constructs a new OAuth brand for the project if one does not exist.
   ///
   /// The created brand is "internal only", meaning that OAuth clients created
-  /// under it only accept requests from users who belong to the same G Suite
-  /// organization as the project. The brand is created in an un-reviewed
-  /// status. NOTE: The "internal only" status can be manually changed in the
-  /// Google Cloud console. Requires that a brand does not already exist for the
-  /// project, and that the specified support email is owned by the caller.
+  /// under it only accept requests from users who belong to the same Google
+  /// Workspace organization as the project. The brand is created in an
+  /// un-reviewed status. NOTE: The "internal only" status can be manually
+  /// changed in the Google Cloud Console. Requires that a brand does not
+  /// already exist for the project, and that the specified support email is
+  /// owned by the caller.
   ///
   /// [request] - The metadata request object.
   ///
@@ -105,7 +109,7 @@ class ProjectsBrandsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -230,7 +234,7 @@ class ProjectsBrandsIdentityAwareProxyClientsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -414,7 +418,7 @@ class ProjectsBrandsIdentityAwareProxyClientsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -467,7 +471,7 @@ class V1Resource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -552,7 +556,7 @@ class V1Resource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -598,7 +602,7 @@ class V1Resource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -647,7 +651,7 @@ class V1Resource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -675,17 +679,31 @@ class AccessDeniedPageSettings {
   /// The URI to be redirected to when access is denied.
   core.String? accessDeniedPageUri;
 
-  AccessDeniedPageSettings();
+  /// Whether to generate a troubleshooting URL on access denied events to this
+  /// application.
+  core.bool? generateTroubleshootingUri;
 
-  AccessDeniedPageSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('accessDeniedPageUri')) {
-      accessDeniedPageUri = _json['accessDeniedPageUri'] as core.String;
-    }
-  }
+  AccessDeniedPageSettings({
+    this.accessDeniedPageUri,
+    this.generateTroubleshootingUri,
+  });
+
+  AccessDeniedPageSettings.fromJson(core.Map _json)
+      : this(
+          accessDeniedPageUri: _json.containsKey('accessDeniedPageUri')
+              ? _json['accessDeniedPageUri'] as core.String
+              : null,
+          generateTroubleshootingUri:
+              _json.containsKey('generateTroubleshootingUri')
+                  ? _json['generateTroubleshootingUri'] as core.bool
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessDeniedPageUri != null)
           'accessDeniedPageUri': accessDeniedPageUri!,
+        if (generateTroubleshootingUri != null)
+          'generateTroubleshootingUri': generateTroubleshootingUri!,
       };
 }
 
@@ -706,34 +724,50 @@ class AccessSettings {
   /// INTERNAL_ONLY.
   PolicyDelegationSettings? policyDelegationSettings;
 
-  AccessSettings();
+  /// Settings to configure reauthentication policies in IAP.
+  ReauthSettings? reauthSettings;
 
-  AccessSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('corsSettings')) {
-      corsSettings = CorsSettings.fromJson(
-          _json['corsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gcipSettings')) {
-      gcipSettings = GcipSettings.fromJson(
-          _json['gcipSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oauthSettings')) {
-      oauthSettings = OAuthSettings.fromJson(
-          _json['oauthSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('policyDelegationSettings')) {
-      policyDelegationSettings = PolicyDelegationSettings.fromJson(
-          _json['policyDelegationSettings']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  AccessSettings({
+    this.corsSettings,
+    this.gcipSettings,
+    this.oauthSettings,
+    this.policyDelegationSettings,
+    this.reauthSettings,
+  });
+
+  AccessSettings.fromJson(core.Map _json)
+      : this(
+          corsSettings: _json.containsKey('corsSettings')
+              ? CorsSettings.fromJson(
+                  _json['corsSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+          gcipSettings: _json.containsKey('gcipSettings')
+              ? GcipSettings.fromJson(
+                  _json['gcipSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oauthSettings: _json.containsKey('oauthSettings')
+              ? OAuthSettings.fromJson(
+                  _json['oauthSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+          policyDelegationSettings:
+              _json.containsKey('policyDelegationSettings')
+                  ? PolicyDelegationSettings.fromJson(
+                      _json['policyDelegationSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          reauthSettings: _json.containsKey('reauthSettings')
+              ? ReauthSettings.fromJson(_json['reauthSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (corsSettings != null) 'corsSettings': corsSettings!.toJson(),
-        if (gcipSettings != null) 'gcipSettings': gcipSettings!.toJson(),
-        if (oauthSettings != null) 'oauthSettings': oauthSettings!.toJson(),
+        if (corsSettings != null) 'corsSettings': corsSettings!,
+        if (gcipSettings != null) 'gcipSettings': gcipSettings!,
+        if (oauthSettings != null) 'oauthSettings': oauthSettings!,
         if (policyDelegationSettings != null)
-          'policyDelegationSettings': policyDelegationSettings!.toJson(),
+          'policyDelegationSettings': policyDelegationSettings!,
+        if (reauthSettings != null) 'reauthSettings': reauthSettings!,
       };
 }
 
@@ -751,44 +785,51 @@ class ApplicationSettings {
   /// Settings to configure IAP's behavior for a CSM mesh.
   CsmSettings? csmSettings;
 
-  ApplicationSettings();
+  ApplicationSettings({
+    this.accessDeniedPageSettings,
+    this.cookieDomain,
+    this.csmSettings,
+  });
 
-  ApplicationSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('accessDeniedPageSettings')) {
-      accessDeniedPageSettings = AccessDeniedPageSettings.fromJson(
-          _json['accessDeniedPageSettings']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('cookieDomain')) {
-      cookieDomain = _json['cookieDomain'] as core.String;
-    }
-    if (_json.containsKey('csmSettings')) {
-      csmSettings = CsmSettings.fromJson(
-          _json['csmSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ApplicationSettings.fromJson(core.Map _json)
+      : this(
+          accessDeniedPageSettings:
+              _json.containsKey('accessDeniedPageSettings')
+                  ? AccessDeniedPageSettings.fromJson(
+                      _json['accessDeniedPageSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          cookieDomain: _json.containsKey('cookieDomain')
+              ? _json['cookieDomain'] as core.String
+              : null,
+          csmSettings: _json.containsKey('csmSettings')
+              ? CsmSettings.fromJson(
+                  _json['csmSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessDeniedPageSettings != null)
-          'accessDeniedPageSettings': accessDeniedPageSettings!.toJson(),
+          'accessDeniedPageSettings': accessDeniedPageSettings!,
         if (cookieDomain != null) 'cookieDomain': cookieDomain!,
-        if (csmSettings != null) 'csmSettings': csmSettings!.toJson(),
+        if (csmSettings != null) 'csmSettings': csmSettings!,
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -820,30 +861,33 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
@@ -873,22 +917,26 @@ class Brand {
   /// Support email displayed on the OAuth consent screen.
   core.String? supportEmail;
 
-  Brand();
+  Brand({
+    this.applicationTitle,
+    this.name,
+    this.orgInternalOnly,
+    this.supportEmail,
+  });
 
-  Brand.fromJson(core.Map _json) {
-    if (_json.containsKey('applicationTitle')) {
-      applicationTitle = _json['applicationTitle'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('orgInternalOnly')) {
-      orgInternalOnly = _json['orgInternalOnly'] as core.bool;
-    }
-    if (_json.containsKey('supportEmail')) {
-      supportEmail = _json['supportEmail'] as core.String;
-    }
-  }
+  Brand.fromJson(core.Map _json)
+      : this(
+          applicationTitle: _json.containsKey('applicationTitle')
+              ? _json['applicationTitle'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          orgInternalOnly: _json.containsKey('orgInternalOnly')
+              ? _json['orgInternalOnly'] as core.bool
+              : null,
+          supportEmail: _json.containsKey('supportEmail')
+              ? _json['supportEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (applicationTitle != null) 'applicationTitle': applicationTitle!,
@@ -906,13 +954,16 @@ class CorsSettings {
   /// If undefined, IAP will not apply any special logic to OPTIONS requests.
   core.bool? allowHttpOptions;
 
-  CorsSettings();
+  CorsSettings({
+    this.allowHttpOptions,
+  });
 
-  CorsSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('allowHttpOptions')) {
-      allowHttpOptions = _json['allowHttpOptions'] as core.bool;
-    }
-  }
+  CorsSettings.fromJson(core.Map _json)
+      : this(
+          allowHttpOptions: _json.containsKey('allowHttpOptions')
+              ? _json['allowHttpOptions'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowHttpOptions != null) 'allowHttpOptions': allowHttpOptions!,
@@ -930,13 +981,16 @@ class CsmSettings {
   /// This value is not validated by IAP.
   core.String? rctokenAud;
 
-  CsmSettings();
+  CsmSettings({
+    this.rctokenAud,
+  });
 
-  CsmSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('rctokenAud')) {
-      rctokenAud = _json['rctokenAud'] as core.String;
-    }
-  }
+  CsmSettings.fromJson(core.Map _json)
+      : this(
+          rctokenAud: _json.containsKey('rctokenAud')
+              ? _json['rctokenAud'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (rctokenAud != null) 'rctokenAud': rctokenAud!,
@@ -950,15 +1004,7 @@ class CsmSettings {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -966,7 +1012,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -978,56 +1024,7 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Allows customers to configure tenant_id for GCIP instance per-app.
 class GcipSettings {
@@ -1046,18 +1043,22 @@ class GcipSettings {
   /// can contain multiple elements.
   core.List<core.String>? tenantIds;
 
-  GcipSettings();
+  GcipSettings({
+    this.loginPageUri,
+    this.tenantIds,
+  });
 
-  GcipSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('loginPageUri')) {
-      loginPageUri = _json['loginPageUri'] as core.String;
-    }
-    if (_json.containsKey('tenantIds')) {
-      tenantIds = (_json['tenantIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  GcipSettings.fromJson(core.Map _json)
+      : this(
+          loginPageUri: _json.containsKey('loginPageUri')
+              ? _json['loginPageUri'] as core.String
+              : null,
+          tenantIds: _json.containsKey('tenantIds')
+              ? (_json['tenantIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (loginPageUri != null) 'loginPageUri': loginPageUri!,
@@ -1071,47 +1072,25 @@ class GetIamPolicyRequest {
   /// `GetIamPolicy`.
   GetPolicyOptions? options;
 
-  GetIamPolicyRequest();
+  GetIamPolicyRequest({
+    this.options,
+  });
 
-  GetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = GetPolicyOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
 /// Encapsulates settings provided to GetIamPolicy.
-class GetPolicyOptions {
-  /// The policy format version to be returned.
-  ///
-  /// Valid values are 0, 1, and 3. Requests specifying an invalid value will be
-  /// rejected. Requests for policies with any conditional bindings must specify
-  /// version 3. Policies without any conditional bindings may specify any valid
-  /// value or leave the field unset. To learn which resources support
-  /// conditions in their IAM policies, see the
-  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
-  ///
-  /// Optional.
-  core.int? requestedPolicyVersion;
-
-  GetPolicyOptions();
-
-  GetPolicyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedPolicyVersion')) {
-      requestedPolicyVersion = _json['requestedPolicyVersion'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (requestedPolicyVersion != null)
-          'requestedPolicyVersion': requestedPolicyVersion!,
-      };
-}
+typedef GetPolicyOptions = $GetPolicyOptions;
 
 /// The IAP configurable settings.
 class IapSettings {
@@ -1126,26 +1105,29 @@ class IapSettings {
   /// Required.
   core.String? name;
 
-  IapSettings();
+  IapSettings({
+    this.accessSettings,
+    this.applicationSettings,
+    this.name,
+  });
 
-  IapSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('accessSettings')) {
-      accessSettings = AccessSettings.fromJson(
-          _json['accessSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('applicationSettings')) {
-      applicationSettings = ApplicationSettings.fromJson(
-          _json['applicationSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  IapSettings.fromJson(core.Map _json)
+      : this(
+          accessSettings: _json.containsKey('accessSettings')
+              ? AccessSettings.fromJson(_json['accessSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          applicationSettings: _json.containsKey('applicationSettings')
+              ? ApplicationSettings.fromJson(_json['applicationSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accessSettings != null) 'accessSettings': accessSettings!.toJson(),
+        if (accessSettings != null) 'accessSettings': accessSettings!,
         if (applicationSettings != null)
-          'applicationSettings': applicationSettings!.toJson(),
+          'applicationSettings': applicationSettings!,
         if (name != null) 'name': name!,
       };
 }
@@ -1165,19 +1147,22 @@ class IdentityAwareProxyClient {
   /// Output only.
   core.String? secret;
 
-  IdentityAwareProxyClient();
+  IdentityAwareProxyClient({
+    this.displayName,
+    this.name,
+    this.secret,
+  });
 
-  IdentityAwareProxyClient.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('secret')) {
-      secret = _json['secret'] as core.String;
-    }
-  }
+  IdentityAwareProxyClient.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          secret: _json.containsKey('secret')
+              ? _json['secret'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -1191,20 +1176,22 @@ class ListBrandsResponse {
   /// Brands existing in the project.
   core.List<Brand>? brands;
 
-  ListBrandsResponse();
+  ListBrandsResponse({
+    this.brands,
+  });
 
-  ListBrandsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('brands')) {
-      brands = (_json['brands'] as core.List)
-          .map<Brand>((value) =>
-              Brand.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListBrandsResponse.fromJson(core.Map _json)
+      : this(
+          brands: _json.containsKey('brands')
+              ? (_json['brands'] as core.List)
+                  .map((value) => Brand.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (brands != null)
-          'brands': brands!.map((value) => value.toJson()).toList(),
+        if (brands != null) 'brands': brands!,
       };
 }
 
@@ -1218,27 +1205,28 @@ class ListIdentityAwareProxyClientsResponse {
   /// If this field is omitted, there are no subsequent pages.
   core.String? nextPageToken;
 
-  ListIdentityAwareProxyClientsResponse();
+  ListIdentityAwareProxyClientsResponse({
+    this.identityAwareProxyClients,
+    this.nextPageToken,
+  });
 
-  ListIdentityAwareProxyClientsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('identityAwareProxyClients')) {
-      identityAwareProxyClients =
-          (_json['identityAwareProxyClients'] as core.List)
-              .map<IdentityAwareProxyClient>((value) =>
-                  IdentityAwareProxyClient.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListIdentityAwareProxyClientsResponse.fromJson(core.Map _json)
+      : this(
+          identityAwareProxyClients:
+              _json.containsKey('identityAwareProxyClients')
+                  ? (_json['identityAwareProxyClients'] as core.List)
+                      .map((value) => IdentityAwareProxyClient.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (identityAwareProxyClients != null)
-          'identityAwareProxyClients': identityAwareProxyClients!
-              .map((value) => value.toJson())
-              .toList(),
+          'identityAwareProxyClients': identityAwareProxyClients!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1254,13 +1242,16 @@ class OAuthSettings {
   /// since access behavior is managed by IAM policies.
   core.String? loginHint;
 
-  OAuthSettings();
+  OAuthSettings({
+    this.loginHint,
+  });
 
-  OAuthSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('loginHint')) {
-      loginHint = _json['loginHint'] as core.String;
-    }
-  }
+  OAuthSettings.fromJson(core.Map _json)
+      : this(
+          loginHint: _json.containsKey('loginHint')
+              ? _json['loginHint'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (loginHint != null) 'loginHint': loginHint!,
@@ -1271,15 +1262,15 @@ class OAuthSettings {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -1288,22 +1279,27 @@ class OAuthSettings {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -1345,26 +1341,28 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -1393,34 +1391,49 @@ class PolicyDelegationSettings {
   /// IAM resource to check permission on
   Resource? resource;
 
-  PolicyDelegationSettings();
+  PolicyDelegationSettings({
+    this.iamPermission,
+    this.iamServiceName,
+    this.policyName,
+    this.resource,
+  });
 
-  PolicyDelegationSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('iamPermission')) {
-      iamPermission = _json['iamPermission'] as core.String;
-    }
-    if (_json.containsKey('iamServiceName')) {
-      iamServiceName = _json['iamServiceName'] as core.String;
-    }
-    if (_json.containsKey('policyName')) {
-      policyName = PolicyName.fromJson(
-          _json['policyName'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resource')) {
-      resource = Resource.fromJson(
-          _json['resource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PolicyDelegationSettings.fromJson(core.Map _json)
+      : this(
+          iamPermission: _json.containsKey('iamPermission')
+              ? _json['iamPermission'] as core.String
+              : null,
+          iamServiceName: _json.containsKey('iamServiceName')
+              ? _json['iamServiceName'] as core.String
+              : null,
+          policyName: _json.containsKey('policyName')
+              ? PolicyName.fromJson(
+                  _json['policyName'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resource: _json.containsKey('resource')
+              ? Resource.fromJson(
+                  _json['resource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (iamPermission != null) 'iamPermission': iamPermission!,
         if (iamServiceName != null) 'iamServiceName': iamServiceName!,
-        if (policyName != null) 'policyName': policyName!.toJson(),
-        if (resource != null) 'resource': resource!.toJson(),
+        if (policyName != null) 'policyName': policyName!,
+        if (resource != null) 'resource': resource!,
       };
 }
 
+/// An internal name for an IAM policy, based on the resource to which the
+/// policy applies.
+///
+/// Not to be confused with a resource's external full resource name. For more
+/// information on this distinction, see go/iam-full-resource-names.
 class PolicyName {
+  /// Identifies an instance of the type.
+  ///
+  /// ID format varies by type. The ID format is defined in the IAM .service
+  /// file that defines the type, either in path_mapping or in a comment.
   core.String? id;
 
   /// For Cloud IAM: The location of the Policy.
@@ -1431,22 +1444,26 @@ class PolicyName {
   /// should be set to "local".
   core.String? region;
 
-  /// Valid values for type might be 'gce', 'gcs', 'project', 'account' etc.
+  /// Resource type.
+  ///
+  /// Types are defined in IAM's .service files. Valid values for type might be
+  /// 'gce', 'gcs', 'project', 'account' etc.
   core.String? type;
 
-  PolicyName();
+  PolicyName({
+    this.id,
+    this.region,
+    this.type,
+  });
 
-  PolicyName.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('region')) {
-      region = _json['region'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  PolicyName.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          region: _json.containsKey('region')
+              ? _json['region'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -1455,16 +1472,65 @@ class PolicyName {
       };
 }
 
-/// The request sent to ResetIdentityAwareProxyClientSecret.
-class ResetIdentityAwareProxyClientSecretRequest {
-  ResetIdentityAwareProxyClientSecretRequest();
+/// Configuration for IAP reauthentication policies.
+class ReauthSettings {
+  /// Reauth session lifetime, how long before a user has to reauthenticate
+  /// again.
+  core.String? maxAge;
 
-  ResetIdentityAwareProxyClientSecretRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  /// Reauth method required by the policy.
+  /// Possible string values are:
+  /// - "METHOD_UNSPECIFIED" : Reauthentication disabled.
+  /// - "LOGIN" : Mimicks the behavior as if the user had logged out and tried
+  /// to log in again. Users with 2SV (step verification) enabled will see their
+  /// 2SV challenges if they did not opt to have their second factor responses
+  /// saved. Apps Core (GSuites) admins can configure settings to disable 2SV
+  /// cookies and require 2-step verification for all Apps Core users in their
+  /// domains.
+  /// - "PASSWORD" : User must type their password.
+  /// - "SECURE_KEY" : User must use their secure key 2nd factor device.
+  core.String? method;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// How IAP determines the effective policy in cases of hierarchial policies.
+  ///
+  /// Policies are merged from higher in the hierarchy to lower in the
+  /// hierarchy.
+  /// Possible string values are:
+  /// - "POLICY_TYPE_UNSPECIFIED" : Default value. This value is unused/invalid.
+  /// - "MINIMUM" : This policy acts as a minimum to other policies, lower in
+  /// the hierarchy. Effective policy may only be the same or stricter.
+  /// - "DEFAULT" : This policy acts as a default if no other reauth policy is
+  /// set.
+  core.String? policyType;
+
+  ReauthSettings({
+    this.maxAge,
+    this.method,
+    this.policyType,
+  });
+
+  ReauthSettings.fromJson(core.Map _json)
+      : this(
+          maxAge: _json.containsKey('maxAge')
+              ? _json['maxAge'] as core.String
+              : null,
+          method: _json.containsKey('method')
+              ? _json['method'] as core.String
+              : null,
+          policyType: _json.containsKey('policyType')
+              ? _json['policyType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (maxAge != null) 'maxAge': maxAge!,
+        if (method != null) 'method': method!,
+        if (policyType != null) 'policyType': policyType!,
+      };
 }
+
+/// The request sent to ResetIdentityAwareProxyClientSecret.
+typedef ResetIdentityAwareProxyClientSecretRequest = $Empty;
 
 class Resource {
   /// The service defined labels of the resource on which the conditions will be
@@ -1515,27 +1581,29 @@ class Resource {
   /// details see go/iam-conditions-integration-guide.
   core.String? type;
 
-  Resource();
+  Resource({
+    this.labels,
+    this.name,
+    this.service,
+    this.type,
+  });
 
-  Resource.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Resource.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
@@ -1554,61 +1622,25 @@ class SetIamPolicyRequest {
   /// reject them.
   Policy? policy;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
       };
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;

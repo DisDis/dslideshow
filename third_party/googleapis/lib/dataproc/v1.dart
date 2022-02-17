@@ -23,6 +23,7 @@
 /// - [ProjectsResource]
 ///   - [ProjectsLocationsResource]
 ///     - [ProjectsLocationsAutoscalingPoliciesResource]
+///     - [ProjectsLocationsBatchesResource]
 ///     - [ProjectsLocationsWorkflowTemplatesResource]
 ///   - [ProjectsRegionsResource]
 ///     - [ProjectsRegionsAutoscalingPoliciesResource]
@@ -39,6 +40,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -46,7 +49,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Manages Hadoop-based clusters and jobs on Google Cloud Platform.
 class DataprocApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -76,6 +80,8 @@ class ProjectsLocationsResource {
 
   ProjectsLocationsAutoscalingPoliciesResource get autoscalingPolicies =>
       ProjectsLocationsAutoscalingPoliciesResource(_requester);
+  ProjectsLocationsBatchesResource get batches =>
+      ProjectsLocationsBatchesResource(_requester);
   ProjectsLocationsWorkflowTemplatesResource get workflowTemplates =>
       ProjectsLocationsWorkflowTemplatesResource(_requester);
 
@@ -118,7 +124,7 @@ class ProjectsLocationsAutoscalingPoliciesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -256,7 +262,7 @@ class ProjectsLocationsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -355,7 +361,7 @@ class ProjectsLocationsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -403,7 +409,7 @@ class ProjectsLocationsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -454,7 +460,7 @@ class ProjectsLocationsAutoscalingPoliciesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -468,6 +474,193 @@ class ProjectsLocationsAutoscalingPoliciesResource {
       queryParams: _queryParams,
     );
     return AutoscalingPolicy.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsBatchesResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsBatchesResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a batch workload that executes asynchronously.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent resource where this batch will be created.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [batchId] - Optional. The ID to use for the batch, which will become the
+  /// final component of the batch's resource name.This value must be 4-63
+  /// characters. Valid characters are /\[a-z\]\[0-9\]-/.
+  ///
+  /// [requestId] - Optional. A unique ID used to identify the request. If the
+  /// service receives two CreateBatchRequest
+  /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateBatchRequest)s
+  /// with the same request_id, the second request is ignored and the Operation
+  /// that corresponds to the first Batch created and stored in the backend is
+  /// returned.Recommendation: Set this value to a UUID
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The value
+  /// must contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
+  /// hyphens (-). The maximum length is 40 characters.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    Batch request,
+    core.String parent, {
+    core.String? batchId,
+    core.String? requestId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (batchId != null) 'batchId': [batchId],
+      if (requestId != null) 'requestId': [requestId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/batches';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the batch workload resource.
+  ///
+  /// If the batch is not in terminal state, the delete fails and the response
+  /// returns FAILED_PRECONDITION.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the batch resource to delete.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/batches/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the batch workload resource representation.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the batch to retrieve.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/batches/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Batch].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Batch> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Batch.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists batch workloads.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns this collection of batches.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - Optional. The maximum number of batches to return in each
+  /// response. The service may return fewer than this value. The default page
+  /// size is 20; the maximum page size is 1000.
+  ///
+  /// [pageToken] - Optional. A page token received from a previous ListBatches
+  /// call. Provide this token to retrieve the subsequent page.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListBatchesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListBatchesResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/batches';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListBatchesResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 }
@@ -486,7 +679,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
   ///
   /// [parent] - Required. The resource name of the region or location, as
   /// described in https://cloud.google.com/apis/design/resource_names. For
-  /// projects.regions.workflowTemplates,create, the resource name of the region
+  /// projects.regions.workflowTemplates.create, the resource name of the region
   /// has the following format: projects/{project_id}/regions/{region} For
   /// projects.locations.workflowTemplates.create, the resource name of the
   /// location has the following format:
@@ -508,7 +701,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -657,7 +850,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -715,7 +908,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -783,7 +976,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String? requestId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (requestId != null) 'requestId': [requestId],
       if ($fields != null) 'fields': [$fields],
@@ -884,7 +1077,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -932,7 +1125,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -985,7 +1178,7 @@ class ProjectsLocationsWorkflowTemplatesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1056,7 +1249,7 @@ class ProjectsRegionsAutoscalingPoliciesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1194,7 +1387,7 @@ class ProjectsRegionsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1293,7 +1486,7 @@ class ProjectsRegionsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1341,7 +1534,7 @@ class ProjectsRegionsAutoscalingPoliciesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1392,7 +1585,7 @@ class ProjectsRegionsAutoscalingPoliciesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1430,13 +1623,22 @@ class ProjectsRegionsClustersResource {
   ///
   /// [region] - Required. The Dataproc region in which to handle the request.
   ///
-  /// [requestId] - Optional. A unique id used to identify the request. If the
+  /// [actionOnFailedPrimaryWorkers] - Optional. Failure action when primary
+  /// worker creation fails.
+  /// Possible string values are:
+  /// - "FAILURE_ACTION_UNSPECIFIED" : When FailureAction is unspecified,
+  /// failure action defaults to NO_ACTION.
+  /// - "NO_ACTION" : Take no action on failure to create a cluster resource.
+  /// NO_ACTION is the default.
+  /// - "DELETE" : Delete the failed cluster resource.
+  ///
+  /// [requestId] - Optional. A unique ID used to identify the request. If the
   /// server receives two CreateClusterRequest
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.CreateClusterRequest)s
   /// with the same id, then the second request will be ignored and the first
   /// google.longrunning.Operation created and stored in the backend is
   /// returned.It is recommended to always set this value to a UUID
-  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The id must
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
   /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
   /// hyphens (-). The maximum length is 40 characters.
   ///
@@ -1454,11 +1656,14 @@ class ProjectsRegionsClustersResource {
     Cluster request,
     core.String projectId,
     core.String region, {
+    core.String? actionOnFailedPrimaryWorkers,
     core.String? requestId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (actionOnFailedPrimaryWorkers != null)
+        'actionOnFailedPrimaryWorkers': [actionOnFailedPrimaryWorkers],
       if (requestId != null) 'requestId': [requestId],
       if ($fields != null) 'fields': [$fields],
     };
@@ -1495,13 +1700,13 @@ class ProjectsRegionsClustersResource {
   /// [clusterUuid] - Optional. Specifying the cluster_uuid means the RPC should
   /// fail (with error NOT_FOUND) if cluster with specified UUID does not exist.
   ///
-  /// [requestId] - Optional. A unique id used to identify the request. If the
+  /// [requestId] - Optional. A unique ID used to identify the request. If the
   /// server receives two DeleteClusterRequest
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.DeleteClusterRequest)s
   /// with the same id, then the second request will be ignored and the first
   /// google.longrunning.Operation created and stored in the backend is
   /// returned.It is recommended to always set this value to a UUID
-  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The id must
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
   /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
   /// hyphens (-). The maximum length is 40 characters.
   ///
@@ -1580,7 +1785,7 @@ class ProjectsRegionsClustersResource {
     core.String clusterName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1678,7 +1883,7 @@ class ProjectsRegionsClustersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1730,7 +1935,7 @@ class ProjectsRegionsClustersResource {
     core.String cluster, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1822,6 +2027,7 @@ class ProjectsRegionsClustersResource {
   ///
   /// The returned Operation.metadata will be ClusterOperationMetadata
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#clusteroperationmetadata).
+  /// The cluster must be in a RUNNING state or an error is returned.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1844,13 +2050,13 @@ class ProjectsRegionsClustersResource {
   /// (https://developers.google.com/protocol-buffers/docs/proto3#json)).Only
   /// supported on Dataproc image versions 1.2 and higher.
   ///
-  /// [requestId] - Optional. A unique id used to identify the request. If the
+  /// [requestId] - Optional. A unique ID used to identify the request. If the
   /// server receives two UpdateClusterRequest
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.UpdateClusterRequest)s
   /// with the same id, then the second request will be ignored and the first
   /// google.longrunning.Operation created and stored in the backend is
   /// returned.It is recommended to always set this value to a UUID
-  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The id must
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
   /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
   /// hyphens (-). The maximum length is 40 characters.
   ///
@@ -1890,7 +2096,7 @@ class ProjectsRegionsClustersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (gracefulDecommissionTimeout != null)
         'gracefulDecommissionTimeout': [gracefulDecommissionTimeout],
@@ -1909,6 +2115,58 @@ class ProjectsRegionsClustersResource {
     final _response = await _requester.request(
       _url,
       'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Repairs a cluster.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [projectId] - Required. The ID of the Google Cloud Platform project the
+  /// cluster belongs to.
+  ///
+  /// [region] - Required. The Dataproc region in which to handle the request.
+  ///
+  /// [clusterName] - Required. The cluster name.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> repair(
+    RepairClusterRequest request,
+    core.String projectId,
+    core.String region,
+    core.String clusterName, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/projects/' +
+        commons.escapeVariable('$projectId') +
+        '/regions/' +
+        commons.escapeVariable('$region') +
+        '/clusters/' +
+        commons.escapeVariable('$clusterName') +
+        ':repair';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
       body: _body,
       queryParams: _queryParams,
     );
@@ -1945,7 +2203,7 @@ class ProjectsRegionsClustersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1991,7 +2249,7 @@ class ProjectsRegionsClustersResource {
     core.String clusterName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2043,7 +2301,7 @@ class ProjectsRegionsClustersResource {
     core.String clusterName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2097,7 +2355,7 @@ class ProjectsRegionsClustersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2158,7 +2416,7 @@ class ProjectsRegionsJobsResource {
     core.String jobId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2304,7 +2562,7 @@ class ProjectsRegionsJobsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2437,7 +2695,7 @@ class ProjectsRegionsJobsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -2488,7 +2746,7 @@ class ProjectsRegionsJobsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2531,7 +2789,7 @@ class ProjectsRegionsJobsResource {
     core.String region, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2578,7 +2836,7 @@ class ProjectsRegionsJobsResource {
     core.String region, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2629,7 +2887,7 @@ class ProjectsRegionsJobsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2808,7 +3066,7 @@ class ProjectsRegionsOperationsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2911,7 +3169,7 @@ class ProjectsRegionsOperationsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2959,7 +3217,7 @@ class ProjectsRegionsOperationsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2992,7 +3250,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
   ///
   /// [parent] - Required. The resource name of the region or location, as
   /// described in https://cloud.google.com/apis/design/resource_names. For
-  /// projects.regions.workflowTemplates,create, the resource name of the region
+  /// projects.regions.workflowTemplates.create, the resource name of the region
   /// has the following format: projects/{project_id}/regions/{region} For
   /// projects.locations.workflowTemplates.create, the resource name of the
   /// location has the following format:
@@ -3014,7 +3272,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3163,7 +3421,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3221,7 +3479,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3289,7 +3547,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String? requestId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (requestId != null) 'requestId': [requestId],
       if ($fields != null) 'fields': [$fields],
@@ -3390,7 +3648,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3438,7 +3696,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3491,7 +3749,7 @@ class ProjectsRegionsWorkflowTemplatesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3531,16 +3789,20 @@ class AcceleratorConfig {
   /// example, nvidia-tesla-k80.
   core.String? acceleratorTypeUri;
 
-  AcceleratorConfig();
+  AcceleratorConfig({
+    this.acceleratorCount,
+    this.acceleratorTypeUri,
+  });
 
-  AcceleratorConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('acceleratorCount')) {
-      acceleratorCount = _json['acceleratorCount'] as core.int;
-    }
-    if (_json.containsKey('acceleratorTypeUri')) {
-      acceleratorTypeUri = _json['acceleratorTypeUri'] as core.String;
-    }
-  }
+  AcceleratorConfig.fromJson(core.Map _json)
+      : this(
+          acceleratorCount: _json.containsKey('acceleratorCount')
+              ? _json['acceleratorCount'] as core.int
+              : null,
+          acceleratorTypeUri: _json.containsKey('acceleratorTypeUri')
+              ? _json['acceleratorTypeUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (acceleratorCount != null) 'acceleratorCount': acceleratorCount!,
@@ -3562,13 +3824,16 @@ class AutoscalingConfig {
   /// Optional.
   core.String? policyUri;
 
-  AutoscalingConfig();
+  AutoscalingConfig({
+    this.policyUri,
+  });
 
-  AutoscalingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('policyUri')) {
-      policyUri = _json['policyUri'] as core.String;
-    }
-  }
+  AutoscalingConfig.fromJson(core.Map _json)
+      : this(
+          policyUri: _json.containsKey('policyUri')
+              ? _json['policyUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (policyUri != null) 'policyUri': policyUri!,
@@ -3587,6 +3852,17 @@ class AutoscalingPolicy {
   ///
   /// Required.
   core.String? id;
+
+  /// The labels to associate with this autoscaling policy.
+  ///
+  /// Label keys must contain 1 to 63 characters, and must conform to RFC 1035
+  /// (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if
+  /// present, must contain 1 to 63 characters, and must conform to RFC 1035
+  /// (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be
+  /// associated with an autoscaling policy.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
 
   /// The "resource name" of the autoscaling policy, as described in
   /// https://cloud.google.com/apis/design/resource_names.
@@ -3611,37 +3887,50 @@ class AutoscalingPolicy {
   /// Required.
   InstanceGroupAutoscalingPolicyConfig? workerConfig;
 
-  AutoscalingPolicy();
+  AutoscalingPolicy({
+    this.basicAlgorithm,
+    this.id,
+    this.labels,
+    this.name,
+    this.secondaryWorkerConfig,
+    this.workerConfig,
+  });
 
-  AutoscalingPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('basicAlgorithm')) {
-      basicAlgorithm = BasicAutoscalingAlgorithm.fromJson(
-          _json['basicAlgorithm'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('secondaryWorkerConfig')) {
-      secondaryWorkerConfig = InstanceGroupAutoscalingPolicyConfig.fromJson(
-          _json['secondaryWorkerConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('workerConfig')) {
-      workerConfig = InstanceGroupAutoscalingPolicyConfig.fromJson(
-          _json['workerConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  AutoscalingPolicy.fromJson(core.Map _json)
+      : this(
+          basicAlgorithm: _json.containsKey('basicAlgorithm')
+              ? BasicAutoscalingAlgorithm.fromJson(_json['basicAlgorithm']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          secondaryWorkerConfig: _json.containsKey('secondaryWorkerConfig')
+              ? InstanceGroupAutoscalingPolicyConfig.fromJson(
+                  _json['secondaryWorkerConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          workerConfig: _json.containsKey('workerConfig')
+              ? InstanceGroupAutoscalingPolicyConfig.fromJson(
+                  _json['workerConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (basicAlgorithm != null) 'basicAlgorithm': basicAlgorithm!.toJson(),
+        if (basicAlgorithm != null) 'basicAlgorithm': basicAlgorithm!,
         if (id != null) 'id': id!,
+        if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (secondaryWorkerConfig != null)
-          'secondaryWorkerConfig': secondaryWorkerConfig!.toJson(),
-        if (workerConfig != null) 'workerConfig': workerConfig!.toJson(),
+          'secondaryWorkerConfig': secondaryWorkerConfig!,
+        if (workerConfig != null) 'workerConfig': workerConfig!,
       };
 }
 
@@ -3655,26 +3944,43 @@ class BasicAutoscalingAlgorithm {
   /// Optional.
   core.String? cooldownPeriod;
 
+  /// Spark Standalone autoscaling configuration
+  ///
+  /// Optional.
+  SparkStandaloneAutoscalingConfig? sparkStandaloneConfig;
+
   /// YARN autoscaling configuration.
   ///
-  /// Required.
+  /// Optional.
   BasicYarnAutoscalingConfig? yarnConfig;
 
-  BasicAutoscalingAlgorithm();
+  BasicAutoscalingAlgorithm({
+    this.cooldownPeriod,
+    this.sparkStandaloneConfig,
+    this.yarnConfig,
+  });
 
-  BasicAutoscalingAlgorithm.fromJson(core.Map _json) {
-    if (_json.containsKey('cooldownPeriod')) {
-      cooldownPeriod = _json['cooldownPeriod'] as core.String;
-    }
-    if (_json.containsKey('yarnConfig')) {
-      yarnConfig = BasicYarnAutoscalingConfig.fromJson(
-          _json['yarnConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BasicAutoscalingAlgorithm.fromJson(core.Map _json)
+      : this(
+          cooldownPeriod: _json.containsKey('cooldownPeriod')
+              ? _json['cooldownPeriod'] as core.String
+              : null,
+          sparkStandaloneConfig: _json.containsKey('sparkStandaloneConfig')
+              ? SparkStandaloneAutoscalingConfig.fromJson(
+                  _json['sparkStandaloneConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          yarnConfig: _json.containsKey('yarnConfig')
+              ? BasicYarnAutoscalingConfig.fromJson(
+                  _json['yarnConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cooldownPeriod != null) 'cooldownPeriod': cooldownPeriod!,
-        if (yarnConfig != null) 'yarnConfig': yarnConfig!.toJson(),
+        if (sparkStandaloneConfig != null)
+          'sparkStandaloneConfig': sparkStandaloneConfig!,
+        if (yarnConfig != null) 'yarnConfig': yarnConfig!,
       };
 }
 
@@ -3737,28 +4043,35 @@ class BasicYarnAutoscalingConfig {
   /// Optional.
   core.double? scaleUpMinWorkerFraction;
 
-  BasicYarnAutoscalingConfig();
+  BasicYarnAutoscalingConfig({
+    this.gracefulDecommissionTimeout,
+    this.scaleDownFactor,
+    this.scaleDownMinWorkerFraction,
+    this.scaleUpFactor,
+    this.scaleUpMinWorkerFraction,
+  });
 
-  BasicYarnAutoscalingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gracefulDecommissionTimeout')) {
-      gracefulDecommissionTimeout =
-          _json['gracefulDecommissionTimeout'] as core.String;
-    }
-    if (_json.containsKey('scaleDownFactor')) {
-      scaleDownFactor = (_json['scaleDownFactor'] as core.num).toDouble();
-    }
-    if (_json.containsKey('scaleDownMinWorkerFraction')) {
-      scaleDownMinWorkerFraction =
-          (_json['scaleDownMinWorkerFraction'] as core.num).toDouble();
-    }
-    if (_json.containsKey('scaleUpFactor')) {
-      scaleUpFactor = (_json['scaleUpFactor'] as core.num).toDouble();
-    }
-    if (_json.containsKey('scaleUpMinWorkerFraction')) {
-      scaleUpMinWorkerFraction =
-          (_json['scaleUpMinWorkerFraction'] as core.num).toDouble();
-    }
-  }
+  BasicYarnAutoscalingConfig.fromJson(core.Map _json)
+      : this(
+          gracefulDecommissionTimeout:
+              _json.containsKey('gracefulDecommissionTimeout')
+                  ? _json['gracefulDecommissionTimeout'] as core.String
+                  : null,
+          scaleDownFactor: _json.containsKey('scaleDownFactor')
+              ? (_json['scaleDownFactor'] as core.num).toDouble()
+              : null,
+          scaleDownMinWorkerFraction:
+              _json.containsKey('scaleDownMinWorkerFraction')
+                  ? (_json['scaleDownMinWorkerFraction'] as core.num).toDouble()
+                  : null,
+          scaleUpFactor: _json.containsKey('scaleUpFactor')
+              ? (_json['scaleUpFactor'] as core.num).toDouble()
+              : null,
+          scaleUpMinWorkerFraction:
+              _json.containsKey('scaleUpMinWorkerFraction')
+                  ? (_json['scaleUpMinWorkerFraction'] as core.num).toDouble()
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gracefulDecommissionTimeout != null)
@@ -3772,7 +4085,216 @@ class BasicYarnAutoscalingConfig {
       };
 }
 
-/// Associates members with a role.
+/// A representation of a batch workload in the service.
+class Batch {
+  /// The time when the batch was created.
+  ///
+  /// Output only.
+  core.String? createTime;
+
+  /// The email address of the user who created the batch.
+  ///
+  /// Output only.
+  core.String? creator;
+
+  /// Environment configuration for the batch execution.
+  ///
+  /// Optional.
+  EnvironmentConfig? environmentConfig;
+
+  /// The labels to associate with this batch.
+  ///
+  /// Label keys must contain 1 to 63 characters, and must conform to RFC 1035
+  /// (https://www.ietf.org/rfc/rfc1035.txt). Label values may be empty, but, if
+  /// present, must contain 1 to 63 characters, and must conform to RFC 1035
+  /// (https://www.ietf.org/rfc/rfc1035.txt). No more than 32 labels can be
+  /// associated with a batch.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
+
+  /// The resource name of the batch.
+  ///
+  /// Output only.
+  core.String? name;
+
+  /// The resource name of the operation associated with this batch.
+  ///
+  /// Output only.
+  core.String? operation;
+
+  /// PySpark batch config.
+  ///
+  /// Optional.
+  PySparkBatch? pysparkBatch;
+
+  /// Runtime configuration for the batch execution.
+  ///
+  /// Optional.
+  RuntimeConfig? runtimeConfig;
+
+  /// Runtime information about batch execution.
+  ///
+  /// Output only.
+  RuntimeInfo? runtimeInfo;
+
+  /// Spark batch config.
+  ///
+  /// Optional.
+  SparkBatch? sparkBatch;
+
+  /// SparkR batch config.
+  ///
+  /// Optional.
+  SparkRBatch? sparkRBatch;
+
+  /// SparkSql batch config.
+  ///
+  /// Optional.
+  SparkSqlBatch? sparkSqlBatch;
+
+  /// The state of the batch.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : The batch state is unknown.
+  /// - "PENDING" : The batch is created before running.
+  /// - "RUNNING" : The batch is running.
+  /// - "CANCELLING" : The batch is cancelling.
+  /// - "CANCELLED" : The batch cancellation was successful.
+  /// - "SUCCEEDED" : The batch completed successfully.
+  /// - "FAILED" : The batch is no longer running due to an error.
+  core.String? state;
+
+  /// Historical state information for the batch.
+  ///
+  /// Output only.
+  core.List<StateHistory>? stateHistory;
+
+  /// Batch state details, such as a failure description if the state is FAILED.
+  ///
+  /// Output only.
+  core.String? stateMessage;
+
+  /// The time when the batch entered a current state.
+  ///
+  /// Output only.
+  core.String? stateTime;
+
+  /// A batch UUID (Unique Universal Identifier).
+  ///
+  /// The service generates this value when it creates the batch.
+  ///
+  /// Output only.
+  core.String? uuid;
+
+  Batch({
+    this.createTime,
+    this.creator,
+    this.environmentConfig,
+    this.labels,
+    this.name,
+    this.operation,
+    this.pysparkBatch,
+    this.runtimeConfig,
+    this.runtimeInfo,
+    this.sparkBatch,
+    this.sparkRBatch,
+    this.sparkSqlBatch,
+    this.state,
+    this.stateHistory,
+    this.stateMessage,
+    this.stateTime,
+    this.uuid,
+  });
+
+  Batch.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          creator: _json.containsKey('creator')
+              ? _json['creator'] as core.String
+              : null,
+          environmentConfig: _json.containsKey('environmentConfig')
+              ? EnvironmentConfig.fromJson(_json['environmentConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          operation: _json.containsKey('operation')
+              ? _json['operation'] as core.String
+              : null,
+          pysparkBatch: _json.containsKey('pysparkBatch')
+              ? PySparkBatch.fromJson(
+                  _json['pysparkBatch'] as core.Map<core.String, core.dynamic>)
+              : null,
+          runtimeConfig: _json.containsKey('runtimeConfig')
+              ? RuntimeConfig.fromJson(
+                  _json['runtimeConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          runtimeInfo: _json.containsKey('runtimeInfo')
+              ? RuntimeInfo.fromJson(
+                  _json['runtimeInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkBatch: _json.containsKey('sparkBatch')
+              ? SparkBatch.fromJson(
+                  _json['sparkBatch'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkRBatch: _json.containsKey('sparkRBatch')
+              ? SparkRBatch.fromJson(
+                  _json['sparkRBatch'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkSqlBatch: _json.containsKey('sparkSqlBatch')
+              ? SparkSqlBatch.fromJson(
+                  _json['sparkSqlBatch'] as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          stateHistory: _json.containsKey('stateHistory')
+              ? (_json['stateHistory'] as core.List)
+                  .map((value) => StateHistory.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          stateMessage: _json.containsKey('stateMessage')
+              ? _json['stateMessage'] as core.String
+              : null,
+          stateTime: _json.containsKey('stateTime')
+              ? _json['stateTime'] as core.String
+              : null,
+          uuid: _json.containsKey('uuid') ? _json['uuid'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (createTime != null) 'createTime': createTime!,
+        if (creator != null) 'creator': creator!,
+        if (environmentConfig != null) 'environmentConfig': environmentConfig!,
+        if (labels != null) 'labels': labels!,
+        if (name != null) 'name': name!,
+        if (operation != null) 'operation': operation!,
+        if (pysparkBatch != null) 'pysparkBatch': pysparkBatch!,
+        if (runtimeConfig != null) 'runtimeConfig': runtimeConfig!,
+        if (runtimeInfo != null) 'runtimeInfo': runtimeInfo!,
+        if (sparkBatch != null) 'sparkBatch': sparkBatch!,
+        if (sparkRBatch != null) 'sparkRBatch': sparkRBatch!,
+        if (sparkSqlBatch != null) 'sparkSqlBatch': sparkSqlBatch!,
+        if (state != null) 'state': state!,
+        if (stateHistory != null) 'stateHistory': stateHistory!,
+        if (stateMessage != null) 'stateMessage': stateMessage!,
+        if (stateTime != null) 'stateTime': stateTime!,
+        if (uuid != null) 'uuid': uuid!,
+      };
+}
+
+/// Associates members, or principals, with a role.
 class Binding {
   /// The condition that is associated with this binding.If the condition
   /// evaluates to true, then this binding applies to the current request.If the
@@ -3780,12 +4302,12 @@ class Binding {
   /// current request.
   ///
   /// However, a different role binding might grant the same role to one or more
-  /// of the members in this binding.To learn which resources support conditions
-  /// in their IAM policies, see the IAM documentation
+  /// of the principals in this binding.To learn which resources support
+  /// conditions in their IAM policies, see the IAM documentation
   /// (https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// members can have the following values: allUsers: A special identifier that
   /// represents anyone who is on the internet; with or without a Google
@@ -3817,48 +4339,43 @@ class Binding {
   /// example.com.
   core.List<core.String>? members;
 
-  /// Role that is assigned to members.
+  /// Role that is assigned to the list of members, or principals.
   ///
   /// For example, roles/viewer, roles/editor, or roles/owner.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
 }
 
 /// A request to cancel a job.
-class CancelJobRequest {
-  CancelJobRequest();
+typedef CancelJobRequest = $Empty;
 
-  CancelJobRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// Describes the identifying information, config, and status of a cluster of
-/// Compute Engine instances.
+/// Describes the identifying information, config, and status of a Dataproc
+/// cluster
 class Cluster {
   /// The cluster name.
   ///
@@ -3875,12 +4392,12 @@ class Cluster {
   /// Output only.
   core.String? clusterUuid;
 
-  /// The cluster config.
+  /// The cluster config for a cluster of Compute Engine Instances.
   ///
   /// Note that Dataproc may set default values, and values may change when
   /// clusters are updated.
   ///
-  /// Required.
+  /// Optional.
   ClusterConfig? config;
 
   /// The labels to associate with this cluster.
@@ -3917,57 +4434,65 @@ class Cluster {
   /// Output only.
   core.List<ClusterStatus>? statusHistory;
 
-  Cluster();
+  Cluster({
+    this.clusterName,
+    this.clusterUuid,
+    this.config,
+    this.labels,
+    this.metrics,
+    this.projectId,
+    this.status,
+    this.statusHistory,
+  });
 
-  Cluster.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('config')) {
-      config = ClusterConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('metrics')) {
-      metrics = ClusterMetrics.fromJson(
-          _json['metrics'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = ClusterStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('statusHistory')) {
-      statusHistory = (_json['statusHistory'] as core.List)
-          .map<ClusterStatus>((value) => ClusterStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Cluster.fromJson(core.Map _json)
+      : this(
+          clusterName: _json.containsKey('clusterName')
+              ? _json['clusterName'] as core.String
+              : null,
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+          config: _json.containsKey('config')
+              ? ClusterConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          metrics: _json.containsKey('metrics')
+              ? ClusterMetrics.fromJson(
+                  _json['metrics'] as core.Map<core.String, core.dynamic>)
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? ClusterStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+          statusHistory: _json.containsKey('statusHistory')
+              ? (_json['statusHistory'] as core.List)
+                  .map((value) => ClusterStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterName != null) 'clusterName': clusterName!,
         if (clusterUuid != null) 'clusterUuid': clusterUuid!,
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (labels != null) 'labels': labels!,
-        if (metrics != null) 'metrics': metrics!.toJson(),
+        if (metrics != null) 'metrics': metrics!,
         if (projectId != null) 'projectId': projectId!,
-        if (status != null) 'status': status!.toJson(),
-        if (statusHistory != null)
-          'statusHistory':
-              statusHistory!.map((value) => value.toJson()).toList(),
+        if (status != null) 'status': status!,
+        if (statusHistory != null) 'statusHistory': statusHistory!,
       };
 }
 
@@ -3987,13 +4512,18 @@ class ClusterConfig {
   /// Cloud Storage location (US, ASIA, or EU) for your cluster's staging bucket
   /// according to the Compute Engine zone where your cluster is deployed, and
   /// then create and manage this project-level, per-location bucket (see
-  /// Dataproc staging bucket
+  /// Dataproc staging and temp buckets
   /// (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)).
-  /// This field requires a Cloud Storage bucket name, not a URI to a Cloud
-  /// Storage bucket.
+  /// This field requires a Cloud Storage bucket name, not a gs://... URI to a
+  /// Cloud Storage bucket.
   ///
   /// Optional.
   core.String? configBucket;
+
+  /// The configuration(s) for a dataproc metric(s).
+  ///
+  /// Optional.
+  DataprocMetricConfig? dataprocMetricConfig;
 
   /// Encryption settings for the cluster.
   ///
@@ -4009,6 +4539,16 @@ class ClusterConfig {
   ///
   /// Optional.
   GceClusterConfig? gceClusterConfig;
+
+  /// BETA.
+  ///
+  /// The Kubernetes Engine config for Dataproc clusters deployed to Kubernetes.
+  /// Setting this is considered mutually exclusive with Compute Engine-based
+  /// options such as gce_cluster_config, master_config, worker_config,
+  /// secondary_worker_config, and autoscaling_config.
+  ///
+  /// Optional.
+  GkeClusterConfig? gkeClusterConfig;
 
   /// Commands to execute on each node after config is completed.
   ///
@@ -4028,7 +4568,7 @@ class ClusterConfig {
   /// Optional.
   LifecycleConfig? lifecycleConfig;
 
-  /// The Compute Engine config settings for the master instance in a cluster.
+  /// The Compute Engine config settings for the cluster's master instance.
   ///
   /// Optional.
   InstanceGroupConfig? masterConfig;
@@ -4038,8 +4578,8 @@ class ClusterConfig {
   /// Optional.
   MetastoreConfig? metastoreConfig;
 
-  /// The Compute Engine config settings for additional worker instances in a
-  /// cluster.
+  /// The Compute Engine config settings for a cluster's secondary worker
+  /// instances
   ///
   /// Optional.
   InstanceGroupConfig? secondaryWorkerConfig;
@@ -4049,7 +4589,7 @@ class ClusterConfig {
   /// Optional.
   SecurityConfig? securityConfig;
 
-  /// The config settings for software inside the cluster.
+  /// The config settings for cluster software.
   ///
   /// Optional.
   SoftwareConfig? softwareConfig;
@@ -4062,103 +4602,126 @@ class ClusterConfig {
   /// according to the Compute Engine zone where your cluster is deployed, and
   /// then create and manage this project-level, per-location bucket. The
   /// default bucket has a TTL of 90 days, but you can use any TTL (or none) if
-  /// you specify a bucket. This field requires a Cloud Storage bucket name, not
-  /// a URI to a Cloud Storage bucket.
+  /// you specify a bucket (see Dataproc staging and temp buckets
+  /// (https://cloud.google.com/dataproc/docs/concepts/configuring-clusters/staging-bucket)).
+  /// This field requires a Cloud Storage bucket name, not a gs://... URI to a
+  /// Cloud Storage bucket.
   ///
   /// Optional.
   core.String? tempBucket;
 
-  /// The Compute Engine config settings for worker instances in a cluster.
+  /// The Compute Engine config settings for the cluster's worker instances.
   ///
   /// Optional.
   InstanceGroupConfig? workerConfig;
 
-  ClusterConfig();
+  ClusterConfig({
+    this.autoscalingConfig,
+    this.configBucket,
+    this.dataprocMetricConfig,
+    this.encryptionConfig,
+    this.endpointConfig,
+    this.gceClusterConfig,
+    this.gkeClusterConfig,
+    this.initializationActions,
+    this.lifecycleConfig,
+    this.masterConfig,
+    this.metastoreConfig,
+    this.secondaryWorkerConfig,
+    this.securityConfig,
+    this.softwareConfig,
+    this.tempBucket,
+    this.workerConfig,
+  });
 
-  ClusterConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('autoscalingConfig')) {
-      autoscalingConfig = AutoscalingConfig.fromJson(
-          _json['autoscalingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('configBucket')) {
-      configBucket = _json['configBucket'] as core.String;
-    }
-    if (_json.containsKey('encryptionConfig')) {
-      encryptionConfig = EncryptionConfig.fromJson(
-          _json['encryptionConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endpointConfig')) {
-      endpointConfig = EndpointConfig.fromJson(
-          _json['endpointConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gceClusterConfig')) {
-      gceClusterConfig = GceClusterConfig.fromJson(
-          _json['gceClusterConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('initializationActions')) {
-      initializationActions = (_json['initializationActions'] as core.List)
-          .map<NodeInitializationAction>((value) =>
-              NodeInitializationAction.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('lifecycleConfig')) {
-      lifecycleConfig = LifecycleConfig.fromJson(
-          _json['lifecycleConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('masterConfig')) {
-      masterConfig = InstanceGroupConfig.fromJson(
-          _json['masterConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metastoreConfig')) {
-      metastoreConfig = MetastoreConfig.fromJson(
-          _json['metastoreConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('secondaryWorkerConfig')) {
-      secondaryWorkerConfig = InstanceGroupConfig.fromJson(
-          _json['secondaryWorkerConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('securityConfig')) {
-      securityConfig = SecurityConfig.fromJson(
-          _json['securityConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('softwareConfig')) {
-      softwareConfig = SoftwareConfig.fromJson(
-          _json['softwareConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('tempBucket')) {
-      tempBucket = _json['tempBucket'] as core.String;
-    }
-    if (_json.containsKey('workerConfig')) {
-      workerConfig = InstanceGroupConfig.fromJson(
-          _json['workerConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ClusterConfig.fromJson(core.Map _json)
+      : this(
+          autoscalingConfig: _json.containsKey('autoscalingConfig')
+              ? AutoscalingConfig.fromJson(_json['autoscalingConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          configBucket: _json.containsKey('configBucket')
+              ? _json['configBucket'] as core.String
+              : null,
+          dataprocMetricConfig: _json.containsKey('dataprocMetricConfig')
+              ? DataprocMetricConfig.fromJson(_json['dataprocMetricConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          encryptionConfig: _json.containsKey('encryptionConfig')
+              ? EncryptionConfig.fromJson(_json['encryptionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          endpointConfig: _json.containsKey('endpointConfig')
+              ? EndpointConfig.fromJson(_json['endpointConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          gceClusterConfig: _json.containsKey('gceClusterConfig')
+              ? GceClusterConfig.fromJson(_json['gceClusterConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          gkeClusterConfig: _json.containsKey('gkeClusterConfig')
+              ? GkeClusterConfig.fromJson(_json['gkeClusterConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          initializationActions: _json.containsKey('initializationActions')
+              ? (_json['initializationActions'] as core.List)
+                  .map((value) => NodeInitializationAction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          lifecycleConfig: _json.containsKey('lifecycleConfig')
+              ? LifecycleConfig.fromJson(_json['lifecycleConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          masterConfig: _json.containsKey('masterConfig')
+              ? InstanceGroupConfig.fromJson(
+                  _json['masterConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metastoreConfig: _json.containsKey('metastoreConfig')
+              ? MetastoreConfig.fromJson(_json['metastoreConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          secondaryWorkerConfig: _json.containsKey('secondaryWorkerConfig')
+              ? InstanceGroupConfig.fromJson(_json['secondaryWorkerConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          securityConfig: _json.containsKey('securityConfig')
+              ? SecurityConfig.fromJson(_json['securityConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          softwareConfig: _json.containsKey('softwareConfig')
+              ? SoftwareConfig.fromJson(_json['softwareConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          tempBucket: _json.containsKey('tempBucket')
+              ? _json['tempBucket'] as core.String
+              : null,
+          workerConfig: _json.containsKey('workerConfig')
+              ? InstanceGroupConfig.fromJson(
+                  _json['workerConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (autoscalingConfig != null)
-          'autoscalingConfig': autoscalingConfig!.toJson(),
+        if (autoscalingConfig != null) 'autoscalingConfig': autoscalingConfig!,
         if (configBucket != null) 'configBucket': configBucket!,
-        if (encryptionConfig != null)
-          'encryptionConfig': encryptionConfig!.toJson(),
-        if (endpointConfig != null) 'endpointConfig': endpointConfig!.toJson(),
-        if (gceClusterConfig != null)
-          'gceClusterConfig': gceClusterConfig!.toJson(),
+        if (dataprocMetricConfig != null)
+          'dataprocMetricConfig': dataprocMetricConfig!,
+        if (encryptionConfig != null) 'encryptionConfig': encryptionConfig!,
+        if (endpointConfig != null) 'endpointConfig': endpointConfig!,
+        if (gceClusterConfig != null) 'gceClusterConfig': gceClusterConfig!,
+        if (gkeClusterConfig != null) 'gkeClusterConfig': gkeClusterConfig!,
         if (initializationActions != null)
-          'initializationActions':
-              initializationActions!.map((value) => value.toJson()).toList(),
-        if (lifecycleConfig != null)
-          'lifecycleConfig': lifecycleConfig!.toJson(),
-        if (masterConfig != null) 'masterConfig': masterConfig!.toJson(),
-        if (metastoreConfig != null)
-          'metastoreConfig': metastoreConfig!.toJson(),
+          'initializationActions': initializationActions!,
+        if (lifecycleConfig != null) 'lifecycleConfig': lifecycleConfig!,
+        if (masterConfig != null) 'masterConfig': masterConfig!,
+        if (metastoreConfig != null) 'metastoreConfig': metastoreConfig!,
         if (secondaryWorkerConfig != null)
-          'secondaryWorkerConfig': secondaryWorkerConfig!.toJson(),
-        if (securityConfig != null) 'securityConfig': securityConfig!.toJson(),
-        if (softwareConfig != null) 'softwareConfig': softwareConfig!.toJson(),
+          'secondaryWorkerConfig': secondaryWorkerConfig!,
+        if (securityConfig != null) 'securityConfig': securityConfig!,
+        if (softwareConfig != null) 'softwareConfig': softwareConfig!,
         if (tempBucket != null) 'tempBucket': tempBucket!,
-        if (workerConfig != null) 'workerConfig': workerConfig!.toJson(),
+        if (workerConfig != null) 'workerConfig': workerConfig!,
       };
 }
 
@@ -4173,219 +4736,36 @@ class ClusterMetrics {
   /// The YARN metrics.
   core.Map<core.String, core.String>? yarnMetrics;
 
-  ClusterMetrics();
+  ClusterMetrics({
+    this.hdfsMetrics,
+    this.yarnMetrics,
+  });
 
-  ClusterMetrics.fromJson(core.Map _json) {
-    if (_json.containsKey('hdfsMetrics')) {
-      hdfsMetrics =
-          (_json['hdfsMetrics'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('yarnMetrics')) {
-      yarnMetrics =
-          (_json['yarnMetrics'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  ClusterMetrics.fromJson(core.Map _json)
+      : this(
+          hdfsMetrics: _json.containsKey('hdfsMetrics')
+              ? (_json['hdfsMetrics'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          yarnMetrics: _json.containsKey('yarnMetrics')
+              ? (_json['yarnMetrics'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hdfsMetrics != null) 'hdfsMetrics': hdfsMetrics!,
         if (yarnMetrics != null) 'yarnMetrics': yarnMetrics!,
-      };
-}
-
-/// The cluster operation triggered by a workflow.
-class ClusterOperation {
-  /// Indicates the operation is done.
-  ///
-  /// Output only.
-  core.bool? done;
-
-  /// Error, if operation failed.
-  ///
-  /// Output only.
-  core.String? error;
-
-  /// The id of the cluster operation.
-  ///
-  /// Output only.
-  core.String? operationId;
-
-  ClusterOperation();
-
-  ClusterOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = _json['error'] as core.String;
-    }
-    if (_json.containsKey('operationId')) {
-      operationId = _json['operationId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (done != null) 'done': done!,
-        if (error != null) 'error': error!,
-        if (operationId != null) 'operationId': operationId!,
-      };
-}
-
-/// Metadata describing the operation.
-class ClusterOperationMetadata {
-  /// Name of the cluster for the operation.
-  ///
-  /// Output only.
-  core.String? clusterName;
-
-  /// Cluster UUID for the operation.
-  ///
-  /// Output only.
-  core.String? clusterUuid;
-
-  /// Short description of operation.
-  ///
-  /// Output only.
-  core.String? description;
-
-  /// Labels associated with the operation
-  ///
-  /// Output only.
-  core.Map<core.String, core.String>? labels;
-
-  /// The operation type.
-  ///
-  /// Output only.
-  core.String? operationType;
-
-  /// Current operation status.
-  ///
-  /// Output only.
-  ClusterOperationStatus? status;
-
-  /// The previous operation status.
-  ///
-  /// Output only.
-  core.List<ClusterOperationStatus>? statusHistory;
-
-  /// Errors encountered during operation execution.
-  ///
-  /// Output only.
-  core.List<core.String>? warnings;
-
-  ClusterOperationMetadata();
-
-  ClusterOperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('operationType')) {
-      operationType = _json['operationType'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = ClusterOperationStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('statusHistory')) {
-      statusHistory = (_json['statusHistory'] as core.List)
-          .map<ClusterOperationStatus>((value) =>
-              ClusterOperationStatus.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('warnings')) {
-      warnings = (_json['warnings'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (clusterName != null) 'clusterName': clusterName!,
-        if (clusterUuid != null) 'clusterUuid': clusterUuid!,
-        if (description != null) 'description': description!,
-        if (labels != null) 'labels': labels!,
-        if (operationType != null) 'operationType': operationType!,
-        if (status != null) 'status': status!.toJson(),
-        if (statusHistory != null)
-          'statusHistory':
-              statusHistory!.map((value) => value.toJson()).toList(),
-        if (warnings != null) 'warnings': warnings!,
-      };
-}
-
-/// The status of the operation.
-class ClusterOperationStatus {
-  /// A message containing any operation metadata details.
-  ///
-  /// Output only.
-  core.String? details;
-
-  /// A message containing the detailed operation state.
-  ///
-  /// Output only.
-  core.String? innerState;
-
-  /// A message containing the operation state.
-  ///
-  /// Output only.
-  /// Possible string values are:
-  /// - "UNKNOWN" : Unused.
-  /// - "PENDING" : The operation has been created.
-  /// - "RUNNING" : The operation is running.
-  /// - "DONE" : The operation is done; either cancelled or completed.
-  core.String? state;
-
-  /// The time this state was entered.
-  ///
-  /// Output only.
-  core.String? stateStartTime;
-
-  ClusterOperationStatus();
-
-  ClusterOperationStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('details')) {
-      details = _json['details'] as core.String;
-    }
-    if (_json.containsKey('innerState')) {
-      innerState = _json['innerState'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('stateStartTime')) {
-      stateStartTime = _json['stateStartTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (details != null) 'details': details!,
-        if (innerState != null) 'innerState': innerState!,
-        if (state != null) 'state': state!,
-        if (stateStartTime != null) 'stateStartTime': stateStartTime!,
       };
 }
 
@@ -4406,22 +4786,24 @@ class ClusterSelector {
   /// Optional.
   core.String? zone;
 
-  ClusterSelector();
+  ClusterSelector({
+    this.clusterLabels,
+    this.zone,
+  });
 
-  ClusterSelector.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterLabels')) {
-      clusterLabels =
-          (_json['clusterLabels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('zone')) {
-      zone = _json['zone'] as core.String;
-    }
-  }
+  ClusterSelector.fromJson(core.Map _json)
+      : this(
+          clusterLabels: _json.containsKey('clusterLabels')
+              ? (_json['clusterLabels'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          zone: _json.containsKey('zone') ? _json['zone'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterLabels != null) 'clusterLabels': clusterLabels!,
@@ -4444,11 +4826,19 @@ class ClusterStatus {
   /// - "CREATING" : The cluster is being created and set up. It is not ready
   /// for use.
   /// - "RUNNING" : The cluster is currently running and healthy. It is ready
-  /// for use.
+  /// for use.Note: The cluster state changes from "creating" to "running"
+  /// status after the master node(s), first two primary worker nodes (and the
+  /// last primary worker node if primary workers \> 2) are running.
   /// - "ERROR" : The cluster encountered an error. It is not ready for use.
+  /// - "ERROR_DUE_TO_UPDATE" : The cluster has encountered an error while being
+  /// updated. Jobs can be submitted to the cluster, but the cluster cannot be
+  /// updated.
   /// - "DELETING" : The cluster is being deleted. It cannot be used.
   /// - "UPDATING" : The cluster is being updated. It continues to accept and
   /// process jobs.
+  /// - "STOPPING" : The cluster is being stopped. It cannot be used.
+  /// - "STOPPED" : The cluster is currently stopped. It is not ready for use.
+  /// - "STARTING" : The cluster is being started. It is not ready for use.
   core.String? state;
 
   /// Time when this state was entered (see JSON representation of Timestamp
@@ -4469,22 +4859,27 @@ class ClusterStatus {
   /// Dataproc loses communication with Agent).Applies to RUNNING state.
   core.String? substate;
 
-  ClusterStatus();
+  ClusterStatus({
+    this.detail,
+    this.state,
+    this.stateStartTime,
+    this.substate,
+  });
 
-  ClusterStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('detail')) {
-      detail = _json['detail'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('stateStartTime')) {
-      stateStartTime = _json['stateStartTime'] as core.String;
-    }
-    if (_json.containsKey('substate')) {
-      substate = _json['substate'] as core.String;
-    }
-  }
+  ClusterStatus.fromJson(core.Map _json)
+      : this(
+          detail: _json.containsKey('detail')
+              ? _json['detail'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          stateStartTime: _json.containsKey('stateStartTime')
+              ? _json['stateStartTime'] as core.String
+              : null,
+          substate: _json.containsKey('substate')
+              ? _json['substate'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (detail != null) 'detail': detail!,
@@ -4494,39 +4889,60 @@ class ClusterStatus {
       };
 }
 
-/// A request to collect cluster diagnostic information.
-class DiagnoseClusterRequest {
-  DiagnoseClusterRequest();
-
-  DiagnoseClusterRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// The location of diagnostic output.
-class DiagnoseClusterResults {
-  /// The Cloud Storage URI of the diagnostic output.
+/// Confidential Instance Config for clusters using Confidential VMs
+/// (https://cloud.google.com/compute/confidential-vm/docs)
+class ConfidentialInstanceConfig {
+  /// Defines whether the instance should have confidential compute enabled.
   ///
-  /// The output report is a plain text file with a summary of collected
-  /// diagnostics.
-  ///
-  /// Output only.
-  core.String? outputUri;
+  /// Optional.
+  core.bool? enableConfidentialCompute;
 
-  DiagnoseClusterResults();
+  ConfidentialInstanceConfig({
+    this.enableConfidentialCompute,
+  });
 
-  DiagnoseClusterResults.fromJson(core.Map _json) {
-    if (_json.containsKey('outputUri')) {
-      outputUri = _json['outputUri'] as core.String;
-    }
-  }
+  ConfidentialInstanceConfig.fromJson(core.Map _json)
+      : this(
+          enableConfidentialCompute:
+              _json.containsKey('enableConfidentialCompute')
+                  ? _json['enableConfidentialCompute'] as core.bool
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (outputUri != null) 'outputUri': outputUri!,
+        if (enableConfidentialCompute != null)
+          'enableConfidentialCompute': enableConfidentialCompute!,
       };
 }
+
+/// Contains dataproc metric config.
+class DataprocMetricConfig {
+  /// Metrics to be enabled.
+  ///
+  /// Required.
+  core.List<Metric>? metrics;
+
+  DataprocMetricConfig({
+    this.metrics,
+  });
+
+  DataprocMetricConfig.fromJson(core.Map _json)
+      : this(
+          metrics: _json.containsKey('metrics')
+              ? (_json['metrics'] as core.List)
+                  .map((value) => Metric.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (metrics != null) 'metrics': metrics!,
+      };
+}
+
+/// A request to collect cluster diagnostic information.
+typedef DiagnoseClusterRequest = $Empty;
 
 /// Specifies the config of disk options for a group of VM instances.
 class DiskConfig {
@@ -4545,6 +4961,15 @@ class DiskConfig {
   /// Optional.
   core.String? bootDiskType;
 
+  /// Interface type of local SSDs (default is "scsi").
+  ///
+  /// Valid values: "scsi" (Small Computer System Interface), "nvme"
+  /// (Non-Volatile Memory Express). See local SSD performance
+  /// (https://cloud.google.com/compute/docs/disks/local-ssd#performance).
+  ///
+  /// Optional.
+  core.String? localSsdInterface;
+
   /// Number of attached SSDs, from 0 to 4 (default is 0).
   ///
   /// If SSDs are not attached, the boot disk is used to store runtime logs and
@@ -4555,23 +4980,33 @@ class DiskConfig {
   /// Optional.
   core.int? numLocalSsds;
 
-  DiskConfig();
+  DiskConfig({
+    this.bootDiskSizeGb,
+    this.bootDiskType,
+    this.localSsdInterface,
+    this.numLocalSsds,
+  });
 
-  DiskConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('bootDiskSizeGb')) {
-      bootDiskSizeGb = _json['bootDiskSizeGb'] as core.int;
-    }
-    if (_json.containsKey('bootDiskType')) {
-      bootDiskType = _json['bootDiskType'] as core.String;
-    }
-    if (_json.containsKey('numLocalSsds')) {
-      numLocalSsds = _json['numLocalSsds'] as core.int;
-    }
-  }
+  DiskConfig.fromJson(core.Map _json)
+      : this(
+          bootDiskSizeGb: _json.containsKey('bootDiskSizeGb')
+              ? _json['bootDiskSizeGb'] as core.int
+              : null,
+          bootDiskType: _json.containsKey('bootDiskType')
+              ? _json['bootDiskType'] as core.String
+              : null,
+          localSsdInterface: _json.containsKey('localSsdInterface')
+              ? _json['localSsdInterface'] as core.String
+              : null,
+          numLocalSsds: _json.containsKey('numLocalSsds')
+              ? _json['numLocalSsds'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bootDiskSizeGb != null) 'bootDiskSizeGb': bootDiskSizeGb!,
         if (bootDiskType != null) 'bootDiskType': bootDiskType!,
+        if (localSsdInterface != null) 'localSsdInterface': localSsdInterface!,
         if (numLocalSsds != null) 'numLocalSsds': numLocalSsds!,
       };
 }
@@ -4583,15 +5018,7 @@ class DiskConfig {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for Empty is empty JSON
 /// object {}.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Encryption settings for the cluster.
 class EncryptionConfig {
@@ -4601,13 +5028,16 @@ class EncryptionConfig {
   /// Optional.
   core.String? gcePdKmsKeyName;
 
-  EncryptionConfig();
+  EncryptionConfig({
+    this.gcePdKmsKeyName,
+  });
 
-  EncryptionConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcePdKmsKeyName')) {
-      gcePdKmsKeyName = _json['gcePdKmsKeyName'] as core.String;
-    }
-  }
+  EncryptionConfig.fromJson(core.Map _json)
+      : this(
+          gcePdKmsKeyName: _json.containsKey('gcePdKmsKeyName')
+              ? _json['gcePdKmsKeyName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gcePdKmsKeyName != null) 'gcePdKmsKeyName': gcePdKmsKeyName!,
@@ -4631,27 +5061,130 @@ class EndpointConfig {
   /// Output only.
   core.Map<core.String, core.String>? httpPorts;
 
-  EndpointConfig();
+  EndpointConfig({
+    this.enableHttpPortAccess,
+    this.httpPorts,
+  });
 
-  EndpointConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('enableHttpPortAccess')) {
-      enableHttpPortAccess = _json['enableHttpPortAccess'] as core.bool;
-    }
-    if (_json.containsKey('httpPorts')) {
-      httpPorts =
-          (_json['httpPorts'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  EndpointConfig.fromJson(core.Map _json)
+      : this(
+          enableHttpPortAccess: _json.containsKey('enableHttpPortAccess')
+              ? _json['enableHttpPortAccess'] as core.bool
+              : null,
+          httpPorts: _json.containsKey('httpPorts')
+              ? (_json['httpPorts'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enableHttpPortAccess != null)
           'enableHttpPortAccess': enableHttpPortAccess!,
         if (httpPorts != null) 'httpPorts': httpPorts!,
+      };
+}
+
+/// Environment configuration for a workload.
+class EnvironmentConfig {
+  /// Execution configuration for a workload.
+  ///
+  /// Optional.
+  ExecutionConfig? executionConfig;
+
+  /// Peripherals configuration that workload has access to.
+  ///
+  /// Optional.
+  PeripheralsConfig? peripheralsConfig;
+
+  EnvironmentConfig({
+    this.executionConfig,
+    this.peripheralsConfig,
+  });
+
+  EnvironmentConfig.fromJson(core.Map _json)
+      : this(
+          executionConfig: _json.containsKey('executionConfig')
+              ? ExecutionConfig.fromJson(_json['executionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          peripheralsConfig: _json.containsKey('peripheralsConfig')
+              ? PeripheralsConfig.fromJson(_json['peripheralsConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (executionConfig != null) 'executionConfig': executionConfig!,
+        if (peripheralsConfig != null) 'peripheralsConfig': peripheralsConfig!,
+      };
+}
+
+/// Execution configuration for a workload.
+class ExecutionConfig {
+  /// The Cloud KMS key to use for encryption.
+  ///
+  /// Optional.
+  core.String? kmsKey;
+
+  /// Tags used for network traffic control.
+  ///
+  /// Optional.
+  core.List<core.String>? networkTags;
+
+  /// Network URI to connect workload to.
+  ///
+  /// Optional.
+  core.String? networkUri;
+
+  /// Service account that used to execute workload.
+  ///
+  /// Optional.
+  core.String? serviceAccount;
+
+  /// Subnetwork URI to connect workload to.
+  ///
+  /// Optional.
+  core.String? subnetworkUri;
+
+  ExecutionConfig({
+    this.kmsKey,
+    this.networkTags,
+    this.networkUri,
+    this.serviceAccount,
+    this.subnetworkUri,
+  });
+
+  ExecutionConfig.fromJson(core.Map _json)
+      : this(
+          kmsKey: _json.containsKey('kmsKey')
+              ? _json['kmsKey'] as core.String
+              : null,
+          networkTags: _json.containsKey('networkTags')
+              ? (_json['networkTags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          networkUri: _json.containsKey('networkUri')
+              ? _json['networkUri'] as core.String
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          subnetworkUri: _json.containsKey('subnetworkUri')
+              ? _json['subnetworkUri'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kmsKey != null) 'kmsKey': kmsKey!,
+        if (networkTags != null) 'networkTags': networkTags!,
+        if (networkUri != null) 'networkUri': networkUri!,
+        if (serviceAccount != null) 'serviceAccount': serviceAccount!,
+        if (subnetworkUri != null) 'subnetworkUri': subnetworkUri!,
       };
 }
 
@@ -4661,7 +5194,7 @@ class EndpointConfig {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec.Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -4673,60 +5206,17 @@ class EndpointConfig {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Common config settings for resources of Compute Engine cluster instances,
 /// applicable to all instances in the cluster.
 class GceClusterConfig {
+  /// Confidential Instance Config for clusters using Confidential VMs
+  /// (https://cloud.google.com/compute/confidential-vm/docs).
+  ///
+  /// Optional.
+  ConfidentialInstanceConfig? confidentialInstanceConfig;
+
   /// If true, all instances in the cluster will only have internal IP
   /// addresses.
   ///
@@ -4843,75 +5333,96 @@ class GceClusterConfig {
   /// Optional.
   core.String? zoneUri;
 
-  GceClusterConfig();
+  GceClusterConfig({
+    this.confidentialInstanceConfig,
+    this.internalIpOnly,
+    this.metadata,
+    this.networkUri,
+    this.nodeGroupAffinity,
+    this.privateIpv6GoogleAccess,
+    this.reservationAffinity,
+    this.serviceAccount,
+    this.serviceAccountScopes,
+    this.shieldedInstanceConfig,
+    this.subnetworkUri,
+    this.tags,
+    this.zoneUri,
+  });
 
-  GceClusterConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('internalIpOnly')) {
-      internalIpOnly = _json['internalIpOnly'] as core.bool;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('networkUri')) {
-      networkUri = _json['networkUri'] as core.String;
-    }
-    if (_json.containsKey('nodeGroupAffinity')) {
-      nodeGroupAffinity = NodeGroupAffinity.fromJson(
-          _json['nodeGroupAffinity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('privateIpv6GoogleAccess')) {
-      privateIpv6GoogleAccess = _json['privateIpv6GoogleAccess'] as core.String;
-    }
-    if (_json.containsKey('reservationAffinity')) {
-      reservationAffinity = ReservationAffinity.fromJson(
-          _json['reservationAffinity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountScopes')) {
-      serviceAccountScopes = (_json['serviceAccountScopes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('shieldedInstanceConfig')) {
-      shieldedInstanceConfig = ShieldedInstanceConfig.fromJson(
-          _json['shieldedInstanceConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('subnetworkUri')) {
-      subnetworkUri = _json['subnetworkUri'] as core.String;
-    }
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('zoneUri')) {
-      zoneUri = _json['zoneUri'] as core.String;
-    }
-  }
+  GceClusterConfig.fromJson(core.Map _json)
+      : this(
+          confidentialInstanceConfig:
+              _json.containsKey('confidentialInstanceConfig')
+                  ? ConfidentialInstanceConfig.fromJson(
+                      _json['confidentialInstanceConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          internalIpOnly: _json.containsKey('internalIpOnly')
+              ? _json['internalIpOnly'] as core.bool
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          networkUri: _json.containsKey('networkUri')
+              ? _json['networkUri'] as core.String
+              : null,
+          nodeGroupAffinity: _json.containsKey('nodeGroupAffinity')
+              ? NodeGroupAffinity.fromJson(_json['nodeGroupAffinity']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          privateIpv6GoogleAccess: _json.containsKey('privateIpv6GoogleAccess')
+              ? _json['privateIpv6GoogleAccess'] as core.String
+              : null,
+          reservationAffinity: _json.containsKey('reservationAffinity')
+              ? ReservationAffinity.fromJson(_json['reservationAffinity']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          serviceAccountScopes: _json.containsKey('serviceAccountScopes')
+              ? (_json['serviceAccountScopes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          shieldedInstanceConfig: _json.containsKey('shieldedInstanceConfig')
+              ? ShieldedInstanceConfig.fromJson(_json['shieldedInstanceConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          subnetworkUri: _json.containsKey('subnetworkUri')
+              ? _json['subnetworkUri'] as core.String
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          zoneUri: _json.containsKey('zoneUri')
+              ? _json['zoneUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (confidentialInstanceConfig != null)
+          'confidentialInstanceConfig': confidentialInstanceConfig!,
         if (internalIpOnly != null) 'internalIpOnly': internalIpOnly!,
         if (metadata != null) 'metadata': metadata!,
         if (networkUri != null) 'networkUri': networkUri!,
-        if (nodeGroupAffinity != null)
-          'nodeGroupAffinity': nodeGroupAffinity!.toJson(),
+        if (nodeGroupAffinity != null) 'nodeGroupAffinity': nodeGroupAffinity!,
         if (privateIpv6GoogleAccess != null)
           'privateIpv6GoogleAccess': privateIpv6GoogleAccess!,
         if (reservationAffinity != null)
-          'reservationAffinity': reservationAffinity!.toJson(),
+          'reservationAffinity': reservationAffinity!,
         if (serviceAccount != null) 'serviceAccount': serviceAccount!,
         if (serviceAccountScopes != null)
           'serviceAccountScopes': serviceAccountScopes!,
         if (shieldedInstanceConfig != null)
-          'shieldedInstanceConfig': shieldedInstanceConfig!.toJson(),
+          'shieldedInstanceConfig': shieldedInstanceConfig!,
         if (subnetworkUri != null) 'subnetworkUri': subnetworkUri!,
         if (tags != null) 'tags': tags!,
         if (zoneUri != null) 'zoneUri': zoneUri!,
@@ -4924,45 +5435,82 @@ class GetIamPolicyRequest {
   /// GetIamPolicy.
   GetPolicyOptions? options;
 
-  GetIamPolicyRequest();
+  GetIamPolicyRequest({
+    this.options,
+  });
 
-  GetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = GetPolicyOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
 /// Encapsulates settings provided to GetIamPolicy.
 class GetPolicyOptions {
-  /// The policy format version to be returned.Valid values are 0, 1, and 3.
+  /// The maximum policy version that will be used to format the policy.Valid
+  /// values are 0, 1, and 3.
   ///
   /// Requests specifying an invalid value will be rejected.Requests for
-  /// policies with any conditional bindings must specify version 3. Policies
-  /// without any conditional bindings may specify any valid value or leave the
-  /// field unset.To learn which resources support conditions in their IAM
-  /// policies, see the IAM documentation
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset.The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1.To learn which resources support
+  /// conditions in their IAM policies, see the IAM documentation
   /// (https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// Optional.
   core.int? requestedPolicyVersion;
 
-  GetPolicyOptions();
+  GetPolicyOptions({
+    this.requestedPolicyVersion,
+  });
 
-  GetPolicyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedPolicyVersion')) {
-      requestedPolicyVersion = _json['requestedPolicyVersion'] as core.int;
-    }
-  }
+  GetPolicyOptions.fromJson(core.Map _json)
+      : this(
+          requestedPolicyVersion: _json.containsKey('requestedPolicyVersion')
+              ? _json['requestedPolicyVersion'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (requestedPolicyVersion != null)
           'requestedPolicyVersion': requestedPolicyVersion!,
+      };
+}
+
+/// The cluster's GKE config.
+class GkeClusterConfig {
+  /// A target for the deployment.
+  ///
+  /// Optional.
+  NamespacedGkeDeploymentTarget? namespacedGkeDeploymentTarget;
+
+  GkeClusterConfig({
+    this.namespacedGkeDeploymentTarget,
+  });
+
+  GkeClusterConfig.fromJson(core.Map _json)
+      : this(
+          namespacedGkeDeploymentTarget:
+              _json.containsKey('namespacedGkeDeploymentTarget')
+                  ? NamespacedGkeDeploymentTarget.fromJson(
+                      _json['namespacedGkeDeploymentTarget']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (namespacedGkeDeploymentTarget != null)
+          'namespacedGkeDeploymentTarget': namespacedGkeDeploymentTarget!,
       };
 }
 
@@ -5029,56 +5577,66 @@ class HadoopJob {
   /// Optional.
   core.Map<core.String, core.String>? properties;
 
-  HadoopJob();
+  HadoopJob({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.jarFileUris,
+    this.loggingConfig,
+    this.mainClass,
+    this.mainJarFileUri,
+    this.properties,
+  });
 
-  HadoopJob.fromJson(core.Map _json) {
-    if (_json.containsKey('archiveUris')) {
-      archiveUris = (_json['archiveUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('fileUris')) {
-      fileUris = (_json['fileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mainClass')) {
-      mainClass = _json['mainClass'] as core.String;
-    }
-    if (_json.containsKey('mainJarFileUri')) {
-      mainJarFileUri = _json['mainJarFileUri'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  HadoopJob.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mainClass: _json.containsKey('mainClass')
+              ? _json['mainClass'] as core.String
+              : null,
+          mainJarFileUri: _json.containsKey('mainJarFileUri')
+              ? _json['mainJarFileUri'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (archiveUris != null) 'archiveUris': archiveUris!,
         if (args != null) 'args': args!,
         if (fileUris != null) 'fileUris': fileUris!,
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (mainClass != null) 'mainClass': mainClass!,
         if (mainJarFileUri != null) 'mainJarFileUri': mainJarFileUri!,
         if (properties != null) 'properties': properties!,
@@ -5125,51 +5683,93 @@ class HiveJob {
   /// Optional.
   core.Map<core.String, core.String>? scriptVariables;
 
-  HiveJob();
+  HiveJob({
+    this.continueOnFailure,
+    this.jarFileUris,
+    this.properties,
+    this.queryFileUri,
+    this.queryList,
+    this.scriptVariables,
+  });
 
-  HiveJob.fromJson(core.Map _json) {
-    if (_json.containsKey('continueOnFailure')) {
-      continueOnFailure = _json['continueOnFailure'] as core.bool;
-    }
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('queryFileUri')) {
-      queryFileUri = _json['queryFileUri'] as core.String;
-    }
-    if (_json.containsKey('queryList')) {
-      queryList = QueryList.fromJson(
-          _json['queryList'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scriptVariables')) {
-      scriptVariables =
-          (_json['scriptVariables'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  HiveJob.fromJson(core.Map _json)
+      : this(
+          continueOnFailure: _json.containsKey('continueOnFailure')
+              ? _json['continueOnFailure'] as core.bool
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          queryFileUri: _json.containsKey('queryFileUri')
+              ? _json['queryFileUri'] as core.String
+              : null,
+          queryList: _json.containsKey('queryList')
+              ? QueryList.fromJson(
+                  _json['queryList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          scriptVariables: _json.containsKey('scriptVariables')
+              ? (_json['scriptVariables']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (continueOnFailure != null) 'continueOnFailure': continueOnFailure!,
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
         if (properties != null) 'properties': properties!,
         if (queryFileUri != null) 'queryFileUri': queryFileUri!,
-        if (queryList != null) 'queryList': queryList!.toJson(),
+        if (queryList != null) 'queryList': queryList!,
         if (scriptVariables != null) 'scriptVariables': scriptVariables!,
+      };
+}
+
+/// Identity related configuration, including service account based secure
+/// multi-tenancy user mappings.
+class IdentityConfig {
+  /// Map of user to service account.
+  ///
+  /// Required.
+  core.Map<core.String, core.String>? userServiceAccountMapping;
+
+  IdentityConfig({
+    this.userServiceAccountMapping,
+  });
+
+  IdentityConfig.fromJson(core.Map _json)
+      : this(
+          userServiceAccountMapping:
+              _json.containsKey('userServiceAccountMapping')
+                  ? (_json['userServiceAccountMapping']
+                          as core.Map<core.String, core.dynamic>)
+                      .map(
+                      (key, item) => core.MapEntry(
+                        key,
+                        item as core.String,
+                      ),
+                    )
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (userServiceAccountMapping != null)
+          'userServiceAccountMapping': userServiceAccountMapping!,
       };
 }
 
@@ -5188,16 +5788,20 @@ class InjectCredentialsRequest {
   /// Required.
   core.String? credentialsCiphertext;
 
-  InjectCredentialsRequest();
+  InjectCredentialsRequest({
+    this.clusterUuid,
+    this.credentialsCiphertext,
+  });
 
-  InjectCredentialsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('credentialsCiphertext')) {
-      credentialsCiphertext = _json['credentialsCiphertext'] as core.String;
-    }
-  }
+  InjectCredentialsRequest.fromJson(core.Map _json)
+      : this(
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+          credentialsCiphertext: _json.containsKey('credentialsCiphertext')
+              ? _json['credentialsCiphertext'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterUuid != null) 'clusterUuid': clusterUuid!,
@@ -5247,19 +5851,23 @@ class InstanceGroupAutoscalingPolicyConfig {
   /// Optional.
   core.int? weight;
 
-  InstanceGroupAutoscalingPolicyConfig();
+  InstanceGroupAutoscalingPolicyConfig({
+    this.maxInstances,
+    this.minInstances,
+    this.weight,
+  });
 
-  InstanceGroupAutoscalingPolicyConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('maxInstances')) {
-      maxInstances = _json['maxInstances'] as core.int;
-    }
-    if (_json.containsKey('minInstances')) {
-      minInstances = _json['minInstances'] as core.int;
-    }
-    if (_json.containsKey('weight')) {
-      weight = _json['weight'] as core.int;
-    }
-  }
+  InstanceGroupAutoscalingPolicyConfig.fromJson(core.Map _json)
+      : this(
+          maxInstances: _json.containsKey('maxInstances')
+              ? _json['maxInstances'] as core.int
+              : null,
+          minInstances: _json.containsKey('minInstances')
+              ? _json['minInstances'] as core.int
+              : null,
+          weight:
+              _json.containsKey('weight') ? _json['weight'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maxInstances != null) 'maxInstances': maxInstances!,
@@ -5339,7 +5947,7 @@ class InstanceGroupConfig {
 
   /// Specifies the minimum cpu platform for the Instance Group.
   ///
-  /// See Dataproc -> Minimum CPU Platform
+  /// See Dataproc -\> Minimum CPU Platform
   /// (https://cloud.google.com/dataproc/docs/concepts/compute/dataproc-min-cpu).
   ///
   /// Optional.
@@ -5347,7 +5955,8 @@ class InstanceGroupConfig {
 
   /// The number of VM instances in the instance group.
   ///
-  /// For master instance groups, must be set to 1.
+  /// For HA cluster master_config groups, must be set to 3. For standard
+  /// cluster master_config groups, must be set to 1.
   ///
   /// Optional.
   core.int? numInstances;
@@ -5369,67 +5978,78 @@ class InstanceGroupConfig {
   /// for secondary worker groups.
   core.String? preemptibility;
 
-  InstanceGroupConfig();
+  InstanceGroupConfig({
+    this.accelerators,
+    this.diskConfig,
+    this.imageUri,
+    this.instanceNames,
+    this.instanceReferences,
+    this.isPreemptible,
+    this.machineTypeUri,
+    this.managedGroupConfig,
+    this.minCpuPlatform,
+    this.numInstances,
+    this.preemptibility,
+  });
 
-  InstanceGroupConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('accelerators')) {
-      accelerators = (_json['accelerators'] as core.List)
-          .map<AcceleratorConfig>((value) => AcceleratorConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('diskConfig')) {
-      diskConfig = DiskConfig.fromJson(
-          _json['diskConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('imageUri')) {
-      imageUri = _json['imageUri'] as core.String;
-    }
-    if (_json.containsKey('instanceNames')) {
-      instanceNames = (_json['instanceNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('instanceReferences')) {
-      instanceReferences = (_json['instanceReferences'] as core.List)
-          .map<InstanceReference>((value) => InstanceReference.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('isPreemptible')) {
-      isPreemptible = _json['isPreemptible'] as core.bool;
-    }
-    if (_json.containsKey('machineTypeUri')) {
-      machineTypeUri = _json['machineTypeUri'] as core.String;
-    }
-    if (_json.containsKey('managedGroupConfig')) {
-      managedGroupConfig = ManagedGroupConfig.fromJson(
-          _json['managedGroupConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('minCpuPlatform')) {
-      minCpuPlatform = _json['minCpuPlatform'] as core.String;
-    }
-    if (_json.containsKey('numInstances')) {
-      numInstances = _json['numInstances'] as core.int;
-    }
-    if (_json.containsKey('preemptibility')) {
-      preemptibility = _json['preemptibility'] as core.String;
-    }
-  }
+  InstanceGroupConfig.fromJson(core.Map _json)
+      : this(
+          accelerators: _json.containsKey('accelerators')
+              ? (_json['accelerators'] as core.List)
+                  .map((value) => AcceleratorConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          diskConfig: _json.containsKey('diskConfig')
+              ? DiskConfig.fromJson(
+                  _json['diskConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          imageUri: _json.containsKey('imageUri')
+              ? _json['imageUri'] as core.String
+              : null,
+          instanceNames: _json.containsKey('instanceNames')
+              ? (_json['instanceNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          instanceReferences: _json.containsKey('instanceReferences')
+              ? (_json['instanceReferences'] as core.List)
+                  .map((value) => InstanceReference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          isPreemptible: _json.containsKey('isPreemptible')
+              ? _json['isPreemptible'] as core.bool
+              : null,
+          machineTypeUri: _json.containsKey('machineTypeUri')
+              ? _json['machineTypeUri'] as core.String
+              : null,
+          managedGroupConfig: _json.containsKey('managedGroupConfig')
+              ? ManagedGroupConfig.fromJson(_json['managedGroupConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          minCpuPlatform: _json.containsKey('minCpuPlatform')
+              ? _json['minCpuPlatform'] as core.String
+              : null,
+          numInstances: _json.containsKey('numInstances')
+              ? _json['numInstances'] as core.int
+              : null,
+          preemptibility: _json.containsKey('preemptibility')
+              ? _json['preemptibility'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accelerators != null)
-          'accelerators': accelerators!.map((value) => value.toJson()).toList(),
-        if (diskConfig != null) 'diskConfig': diskConfig!.toJson(),
+        if (accelerators != null) 'accelerators': accelerators!,
+        if (diskConfig != null) 'diskConfig': diskConfig!,
         if (imageUri != null) 'imageUri': imageUri!,
         if (instanceNames != null) 'instanceNames': instanceNames!,
         if (instanceReferences != null)
-          'instanceReferences':
-              instanceReferences!.map((value) => value.toJson()).toList(),
+          'instanceReferences': instanceReferences!,
         if (isPreemptible != null) 'isPreemptible': isPreemptible!,
         if (machineTypeUri != null) 'machineTypeUri': machineTypeUri!,
         if (managedGroupConfig != null)
-          'managedGroupConfig': managedGroupConfig!.toJson(),
+          'managedGroupConfig': managedGroupConfig!,
         if (minCpuPlatform != null) 'minCpuPlatform': minCpuPlatform!,
         if (numInstances != null) 'numInstances': numInstances!,
         if (preemptibility != null) 'preemptibility': preemptibility!,
@@ -5444,26 +6064,39 @@ class InstanceReference {
   /// The user-friendly name of the Compute Engine instance.
   core.String? instanceName;
 
-  /// The public key used for sharing data with this instance.
+  /// The public ECIES key used for sharing data with this instance.
+  core.String? publicEciesKey;
+
+  /// The public RSA key used for sharing data with this instance.
   core.String? publicKey;
 
-  InstanceReference();
+  InstanceReference({
+    this.instanceId,
+    this.instanceName,
+    this.publicEciesKey,
+    this.publicKey,
+  });
 
-  InstanceReference.fromJson(core.Map _json) {
-    if (_json.containsKey('instanceId')) {
-      instanceId = _json['instanceId'] as core.String;
-    }
-    if (_json.containsKey('instanceName')) {
-      instanceName = _json['instanceName'] as core.String;
-    }
-    if (_json.containsKey('publicKey')) {
-      publicKey = _json['publicKey'] as core.String;
-    }
-  }
+  InstanceReference.fromJson(core.Map _json)
+      : this(
+          instanceId: _json.containsKey('instanceId')
+              ? _json['instanceId'] as core.String
+              : null,
+          instanceName: _json.containsKey('instanceName')
+              ? _json['instanceName'] as core.String
+              : null,
+          publicEciesKey: _json.containsKey('publicEciesKey')
+              ? _json['publicEciesKey'] as core.String
+              : null,
+          publicKey: _json.containsKey('publicKey')
+              ? _json['publicKey'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (instanceId != null) 'instanceId': instanceId!,
         if (instanceName != null) 'instanceName': instanceName!,
+        if (publicEciesKey != null) 'publicEciesKey': publicEciesKey!,
         if (publicKey != null) 'publicKey': publicKey!,
       };
 }
@@ -5499,25 +6132,30 @@ class InstantiateWorkflowTemplateRequest {
   /// Optional.
   core.int? version;
 
-  InstantiateWorkflowTemplateRequest();
+  InstantiateWorkflowTemplateRequest({
+    this.parameters,
+    this.requestId,
+    this.version,
+  });
 
-  InstantiateWorkflowTemplateRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('parameters')) {
-      parameters =
-          (_json['parameters'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  InstantiateWorkflowTemplateRequest.fromJson(core.Map _json)
+      : this(
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (parameters != null) 'parameters': parameters!,
@@ -5650,90 +6288,109 @@ class Job {
   /// Output only.
   core.List<YarnApplication>? yarnApplications;
 
-  Job();
+  Job({
+    this.done,
+    this.driverControlFilesUri,
+    this.driverOutputResourceUri,
+    this.hadoopJob,
+    this.hiveJob,
+    this.jobUuid,
+    this.labels,
+    this.pigJob,
+    this.placement,
+    this.prestoJob,
+    this.pysparkJob,
+    this.reference,
+    this.scheduling,
+    this.sparkJob,
+    this.sparkRJob,
+    this.sparkSqlJob,
+    this.status,
+    this.statusHistory,
+    this.yarnApplications,
+  });
 
-  Job.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('driverControlFilesUri')) {
-      driverControlFilesUri = _json['driverControlFilesUri'] as core.String;
-    }
-    if (_json.containsKey('driverOutputResourceUri')) {
-      driverOutputResourceUri = _json['driverOutputResourceUri'] as core.String;
-    }
-    if (_json.containsKey('hadoopJob')) {
-      hadoopJob = HadoopJob.fromJson(
-          _json['hadoopJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('hiveJob')) {
-      hiveJob = HiveJob.fromJson(
-          _json['hiveJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('jobUuid')) {
-      jobUuid = _json['jobUuid'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('pigJob')) {
-      pigJob = PigJob.fromJson(
-          _json['pigJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('placement')) {
-      placement = JobPlacement.fromJson(
-          _json['placement'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('prestoJob')) {
-      prestoJob = PrestoJob.fromJson(
-          _json['prestoJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('pysparkJob')) {
-      pysparkJob = PySparkJob.fromJson(
-          _json['pysparkJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('reference')) {
-      reference = JobReference.fromJson(
-          _json['reference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scheduling')) {
-      scheduling = JobScheduling.fromJson(
-          _json['scheduling'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkJob')) {
-      sparkJob = SparkJob.fromJson(
-          _json['sparkJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkRJob')) {
-      sparkRJob = SparkRJob.fromJson(
-          _json['sparkRJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkSqlJob')) {
-      sparkSqlJob = SparkSqlJob.fromJson(
-          _json['sparkSqlJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = JobStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('statusHistory')) {
-      statusHistory = (_json['statusHistory'] as core.List)
-          .map<JobStatus>((value) =>
-              JobStatus.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('yarnApplications')) {
-      yarnApplications = (_json['yarnApplications'] as core.List)
-          .map<YarnApplication>((value) => YarnApplication.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Job.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          driverControlFilesUri: _json.containsKey('driverControlFilesUri')
+              ? _json['driverControlFilesUri'] as core.String
+              : null,
+          driverOutputResourceUri: _json.containsKey('driverOutputResourceUri')
+              ? _json['driverOutputResourceUri'] as core.String
+              : null,
+          hadoopJob: _json.containsKey('hadoopJob')
+              ? HadoopJob.fromJson(
+                  _json['hadoopJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          hiveJob: _json.containsKey('hiveJob')
+              ? HiveJob.fromJson(
+                  _json['hiveJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          jobUuid: _json.containsKey('jobUuid')
+              ? _json['jobUuid'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          pigJob: _json.containsKey('pigJob')
+              ? PigJob.fromJson(
+                  _json['pigJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          placement: _json.containsKey('placement')
+              ? JobPlacement.fromJson(
+                  _json['placement'] as core.Map<core.String, core.dynamic>)
+              : null,
+          prestoJob: _json.containsKey('prestoJob')
+              ? PrestoJob.fromJson(
+                  _json['prestoJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          pysparkJob: _json.containsKey('pysparkJob')
+              ? PySparkJob.fromJson(
+                  _json['pysparkJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          reference: _json.containsKey('reference')
+              ? JobReference.fromJson(
+                  _json['reference'] as core.Map<core.String, core.dynamic>)
+              : null,
+          scheduling: _json.containsKey('scheduling')
+              ? JobScheduling.fromJson(
+                  _json['scheduling'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkJob: _json.containsKey('sparkJob')
+              ? SparkJob.fromJson(
+                  _json['sparkJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkRJob: _json.containsKey('sparkRJob')
+              ? SparkRJob.fromJson(
+                  _json['sparkRJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkSqlJob: _json.containsKey('sparkSqlJob')
+              ? SparkSqlJob.fromJson(
+                  _json['sparkSqlJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? JobStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+          statusHistory: _json.containsKey('statusHistory')
+              ? (_json['statusHistory'] as core.List)
+                  .map((value) => JobStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          yarnApplications: _json.containsKey('yarnApplications')
+              ? (_json['yarnApplications'] as core.List)
+                  .map((value) => YarnApplication.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
@@ -5741,74 +6398,22 @@ class Job {
           'driverControlFilesUri': driverControlFilesUri!,
         if (driverOutputResourceUri != null)
           'driverOutputResourceUri': driverOutputResourceUri!,
-        if (hadoopJob != null) 'hadoopJob': hadoopJob!.toJson(),
-        if (hiveJob != null) 'hiveJob': hiveJob!.toJson(),
+        if (hadoopJob != null) 'hadoopJob': hadoopJob!,
+        if (hiveJob != null) 'hiveJob': hiveJob!,
         if (jobUuid != null) 'jobUuid': jobUuid!,
         if (labels != null) 'labels': labels!,
-        if (pigJob != null) 'pigJob': pigJob!.toJson(),
-        if (placement != null) 'placement': placement!.toJson(),
-        if (prestoJob != null) 'prestoJob': prestoJob!.toJson(),
-        if (pysparkJob != null) 'pysparkJob': pysparkJob!.toJson(),
-        if (reference != null) 'reference': reference!.toJson(),
-        if (scheduling != null) 'scheduling': scheduling!.toJson(),
-        if (sparkJob != null) 'sparkJob': sparkJob!.toJson(),
-        if (sparkRJob != null) 'sparkRJob': sparkRJob!.toJson(),
-        if (sparkSqlJob != null) 'sparkSqlJob': sparkSqlJob!.toJson(),
-        if (status != null) 'status': status!.toJson(),
-        if (statusHistory != null)
-          'statusHistory':
-              statusHistory!.map((value) => value.toJson()).toList(),
-        if (yarnApplications != null)
-          'yarnApplications':
-              yarnApplications!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// Job Operation metadata.
-class JobMetadata {
-  /// The job id.
-  ///
-  /// Output only.
-  core.String? jobId;
-
-  /// Operation type.
-  ///
-  /// Output only.
-  core.String? operationType;
-
-  /// Job submission time.
-  ///
-  /// Output only.
-  core.String? startTime;
-
-  /// Most recent job status.
-  ///
-  /// Output only.
-  JobStatus? status;
-
-  JobMetadata();
-
-  JobMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('jobId')) {
-      jobId = _json['jobId'] as core.String;
-    }
-    if (_json.containsKey('operationType')) {
-      operationType = _json['operationType'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = JobStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (jobId != null) 'jobId': jobId!,
-        if (operationType != null) 'operationType': operationType!,
-        if (startTime != null) 'startTime': startTime!,
-        if (status != null) 'status': status!.toJson(),
+        if (pigJob != null) 'pigJob': pigJob!,
+        if (placement != null) 'placement': placement!,
+        if (prestoJob != null) 'prestoJob': prestoJob!,
+        if (pysparkJob != null) 'pysparkJob': pysparkJob!,
+        if (reference != null) 'reference': reference!,
+        if (scheduling != null) 'scheduling': scheduling!,
+        if (sparkJob != null) 'sparkJob': sparkJob!,
+        if (sparkRJob != null) 'sparkRJob': sparkRJob!,
+        if (sparkSqlJob != null) 'sparkSqlJob': sparkSqlJob!,
+        if (status != null) 'status': status!,
+        if (statusHistory != null) 'statusHistory': statusHistory!,
+        if (yarnApplications != null) 'yarnApplications': yarnApplications!,
       };
 }
 
@@ -5830,25 +6435,30 @@ class JobPlacement {
   /// Output only.
   core.String? clusterUuid;
 
-  JobPlacement();
+  JobPlacement({
+    this.clusterLabels,
+    this.clusterName,
+    this.clusterUuid,
+  });
 
-  JobPlacement.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterLabels')) {
-      clusterLabels =
-          (_json['clusterLabels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-  }
+  JobPlacement.fromJson(core.Map _json)
+      : this(
+          clusterLabels: _json.containsKey('clusterLabels')
+              ? (_json['clusterLabels'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          clusterName: _json.containsKey('clusterName')
+              ? _json['clusterName'] as core.String
+              : null,
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterLabels != null) 'clusterLabels': clusterLabels!,
@@ -5875,16 +6485,19 @@ class JobReference {
   /// Optional.
   core.String? projectId;
 
-  JobReference();
+  JobReference({
+    this.jobId,
+    this.projectId,
+  });
 
-  JobReference.fromJson(core.Map _json) {
-    if (_json.containsKey('jobId')) {
-      jobId = _json['jobId'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-  }
+  JobReference.fromJson(core.Map _json)
+      : this(
+          jobId:
+              _json.containsKey('jobId') ? _json['jobId'] as core.String : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (jobId != null) 'jobId': jobId!,
@@ -5897,7 +6510,10 @@ class JobScheduling {
   /// Maximum number of times per hour a driver may be restarted as a result of
   /// driver exiting with non-zero code before job is reported failed.A job may
   /// be reported as thrashing if driver exits with non-zero code 4 times within
-  /// 10 minute window.Maximum value is 10.
+  /// 10 minute window.Maximum value is 10.Note: Currently, this restartable job
+  /// option is not supported in Dataproc workflow template
+  /// (https://cloud.google.com/dataproc/docs/concepts/workflows/using-workflows#adding_jobs_to_a_template)
+  /// jobs.
   ///
   /// Optional.
   core.int? maxFailuresPerHour;
@@ -5905,21 +6521,28 @@ class JobScheduling {
   /// Maximum number of times in total a driver may be restarted as a result of
   /// driver exiting with non-zero code before job is reported failed.
   ///
-  /// Maximum value is 240.
+  /// Maximum value is 240.Note: Currently, this restartable job option is not
+  /// supported in Dataproc workflow template
+  /// (https://cloud.google.com/dataproc/docs/concepts/workflows/using-workflows#adding_jobs_to_a_template)
+  /// jobs.
   ///
   /// Optional.
   core.int? maxFailuresTotal;
 
-  JobScheduling();
+  JobScheduling({
+    this.maxFailuresPerHour,
+    this.maxFailuresTotal,
+  });
 
-  JobScheduling.fromJson(core.Map _json) {
-    if (_json.containsKey('maxFailuresPerHour')) {
-      maxFailuresPerHour = _json['maxFailuresPerHour'] as core.int;
-    }
-    if (_json.containsKey('maxFailuresTotal')) {
-      maxFailuresTotal = _json['maxFailuresTotal'] as core.int;
-    }
-  }
+  JobScheduling.fromJson(core.Map _json)
+      : this(
+          maxFailuresPerHour: _json.containsKey('maxFailuresPerHour')
+              ? _json['maxFailuresPerHour'] as core.int
+              : null,
+          maxFailuresTotal: _json.containsKey('maxFailuresTotal')
+              ? _json['maxFailuresTotal'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maxFailuresPerHour != null)
@@ -5977,22 +6600,27 @@ class JobStatus {
   /// state.
   core.String? substate;
 
-  JobStatus();
+  JobStatus({
+    this.details,
+    this.state,
+    this.stateStartTime,
+    this.substate,
+  });
 
-  JobStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('details')) {
-      details = _json['details'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('stateStartTime')) {
-      stateStartTime = _json['stateStartTime'] as core.String;
-    }
-    if (_json.containsKey('substate')) {
-      substate = _json['substate'] as core.String;
-    }
-  }
+  JobStatus.fromJson(core.Map _json)
+      : this(
+          details: _json.containsKey('details')
+              ? _json['details'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          stateStartTime: _json.containsKey('stateStartTime')
+              ? _json['stateStartTime'] as core.String
+              : null,
+          substate: _json.containsKey('substate')
+              ? _json['substate'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (details != null) 'details': details!,
@@ -6105,58 +6733,74 @@ class KerberosConfig {
   /// Optional.
   core.String? truststoreUri;
 
-  KerberosConfig();
+  KerberosConfig({
+    this.crossRealmTrustAdminServer,
+    this.crossRealmTrustKdc,
+    this.crossRealmTrustRealm,
+    this.crossRealmTrustSharedPasswordUri,
+    this.enableKerberos,
+    this.kdcDbKeyUri,
+    this.keyPasswordUri,
+    this.keystorePasswordUri,
+    this.keystoreUri,
+    this.kmsKeyUri,
+    this.realm,
+    this.rootPrincipalPasswordUri,
+    this.tgtLifetimeHours,
+    this.truststorePasswordUri,
+    this.truststoreUri,
+  });
 
-  KerberosConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('crossRealmTrustAdminServer')) {
-      crossRealmTrustAdminServer =
-          _json['crossRealmTrustAdminServer'] as core.String;
-    }
-    if (_json.containsKey('crossRealmTrustKdc')) {
-      crossRealmTrustKdc = _json['crossRealmTrustKdc'] as core.String;
-    }
-    if (_json.containsKey('crossRealmTrustRealm')) {
-      crossRealmTrustRealm = _json['crossRealmTrustRealm'] as core.String;
-    }
-    if (_json.containsKey('crossRealmTrustSharedPasswordUri')) {
-      crossRealmTrustSharedPasswordUri =
-          _json['crossRealmTrustSharedPasswordUri'] as core.String;
-    }
-    if (_json.containsKey('enableKerberos')) {
-      enableKerberos = _json['enableKerberos'] as core.bool;
-    }
-    if (_json.containsKey('kdcDbKeyUri')) {
-      kdcDbKeyUri = _json['kdcDbKeyUri'] as core.String;
-    }
-    if (_json.containsKey('keyPasswordUri')) {
-      keyPasswordUri = _json['keyPasswordUri'] as core.String;
-    }
-    if (_json.containsKey('keystorePasswordUri')) {
-      keystorePasswordUri = _json['keystorePasswordUri'] as core.String;
-    }
-    if (_json.containsKey('keystoreUri')) {
-      keystoreUri = _json['keystoreUri'] as core.String;
-    }
-    if (_json.containsKey('kmsKeyUri')) {
-      kmsKeyUri = _json['kmsKeyUri'] as core.String;
-    }
-    if (_json.containsKey('realm')) {
-      realm = _json['realm'] as core.String;
-    }
-    if (_json.containsKey('rootPrincipalPasswordUri')) {
-      rootPrincipalPasswordUri =
-          _json['rootPrincipalPasswordUri'] as core.String;
-    }
-    if (_json.containsKey('tgtLifetimeHours')) {
-      tgtLifetimeHours = _json['tgtLifetimeHours'] as core.int;
-    }
-    if (_json.containsKey('truststorePasswordUri')) {
-      truststorePasswordUri = _json['truststorePasswordUri'] as core.String;
-    }
-    if (_json.containsKey('truststoreUri')) {
-      truststoreUri = _json['truststoreUri'] as core.String;
-    }
-  }
+  KerberosConfig.fromJson(core.Map _json)
+      : this(
+          crossRealmTrustAdminServer:
+              _json.containsKey('crossRealmTrustAdminServer')
+                  ? _json['crossRealmTrustAdminServer'] as core.String
+                  : null,
+          crossRealmTrustKdc: _json.containsKey('crossRealmTrustKdc')
+              ? _json['crossRealmTrustKdc'] as core.String
+              : null,
+          crossRealmTrustRealm: _json.containsKey('crossRealmTrustRealm')
+              ? _json['crossRealmTrustRealm'] as core.String
+              : null,
+          crossRealmTrustSharedPasswordUri:
+              _json.containsKey('crossRealmTrustSharedPasswordUri')
+                  ? _json['crossRealmTrustSharedPasswordUri'] as core.String
+                  : null,
+          enableKerberos: _json.containsKey('enableKerberos')
+              ? _json['enableKerberos'] as core.bool
+              : null,
+          kdcDbKeyUri: _json.containsKey('kdcDbKeyUri')
+              ? _json['kdcDbKeyUri'] as core.String
+              : null,
+          keyPasswordUri: _json.containsKey('keyPasswordUri')
+              ? _json['keyPasswordUri'] as core.String
+              : null,
+          keystorePasswordUri: _json.containsKey('keystorePasswordUri')
+              ? _json['keystorePasswordUri'] as core.String
+              : null,
+          keystoreUri: _json.containsKey('keystoreUri')
+              ? _json['keystoreUri'] as core.String
+              : null,
+          kmsKeyUri: _json.containsKey('kmsKeyUri')
+              ? _json['kmsKeyUri'] as core.String
+              : null,
+          realm:
+              _json.containsKey('realm') ? _json['realm'] as core.String : null,
+          rootPrincipalPasswordUri:
+              _json.containsKey('rootPrincipalPasswordUri')
+                  ? _json['rootPrincipalPasswordUri'] as core.String
+                  : null,
+          tgtLifetimeHours: _json.containsKey('tgtLifetimeHours')
+              ? _json['tgtLifetimeHours'] as core.int
+              : null,
+          truststorePasswordUri: _json.containsKey('truststorePasswordUri')
+              ? _json['truststorePasswordUri'] as core.String
+              : null,
+          truststoreUri: _json.containsKey('truststoreUri')
+              ? _json['truststoreUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (crossRealmTrustAdminServer != null)
@@ -6222,22 +6866,28 @@ class LifecycleConfig {
   /// Output only.
   core.String? idleStartTime;
 
-  LifecycleConfig();
+  LifecycleConfig({
+    this.autoDeleteTime,
+    this.autoDeleteTtl,
+    this.idleDeleteTtl,
+    this.idleStartTime,
+  });
 
-  LifecycleConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('autoDeleteTime')) {
-      autoDeleteTime = _json['autoDeleteTime'] as core.String;
-    }
-    if (_json.containsKey('autoDeleteTtl')) {
-      autoDeleteTtl = _json['autoDeleteTtl'] as core.String;
-    }
-    if (_json.containsKey('idleDeleteTtl')) {
-      idleDeleteTtl = _json['idleDeleteTtl'] as core.String;
-    }
-    if (_json.containsKey('idleStartTime')) {
-      idleStartTime = _json['idleStartTime'] as core.String;
-    }
-  }
+  LifecycleConfig.fromJson(core.Map _json)
+      : this(
+          autoDeleteTime: _json.containsKey('autoDeleteTime')
+              ? _json['autoDeleteTime'] as core.String
+              : null,
+          autoDeleteTtl: _json.containsKey('autoDeleteTtl')
+              ? _json['autoDeleteTtl'] as core.String
+              : null,
+          idleDeleteTtl: _json.containsKey('idleDeleteTtl')
+              ? _json['idleDeleteTtl'] as core.String
+              : null,
+          idleStartTime: _json.containsKey('idleStartTime')
+              ? _json['idleStartTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (autoDeleteTime != null) 'autoDeleteTime': autoDeleteTime!,
@@ -6259,24 +6909,61 @@ class ListAutoscalingPoliciesResponse {
   /// Output only.
   core.List<AutoscalingPolicy>? policies;
 
-  ListAutoscalingPoliciesResponse();
+  ListAutoscalingPoliciesResponse({
+    this.nextPageToken,
+    this.policies,
+  });
 
-  ListAutoscalingPoliciesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('policies')) {
-      policies = (_json['policies'] as core.List)
-          .map<AutoscalingPolicy>((value) => AutoscalingPolicy.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListAutoscalingPoliciesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          policies: _json.containsKey('policies')
+              ? (_json['policies'] as core.List)
+                  .map((value) => AutoscalingPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (policies != null)
-          'policies': policies!.map((value) => value.toJson()).toList(),
+        if (policies != null) 'policies': policies!,
+      };
+}
+
+/// A list of batch workloads.
+class ListBatchesResponse {
+  /// The batches from the specified collection.
+  core.List<Batch>? batches;
+
+  /// A token, which can be sent as page_token to retrieve the next page.
+  ///
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
+
+  ListBatchesResponse({
+    this.batches,
+    this.nextPageToken,
+  });
+
+  ListBatchesResponse.fromJson(core.Map _json)
+      : this(
+          batches: _json.containsKey('batches')
+              ? (_json['batches'] as core.List)
+                  .map((value) => Batch.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (batches != null) 'batches': batches!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
@@ -6295,23 +6982,26 @@ class ListClustersResponse {
   /// Output only.
   core.String? nextPageToken;
 
-  ListClustersResponse();
+  ListClustersResponse({
+    this.clusters,
+    this.nextPageToken,
+  });
 
-  ListClustersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('clusters')) {
-      clusters = (_json['clusters'] as core.List)
-          .map<Cluster>((value) =>
-              Cluster.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListClustersResponse.fromJson(core.Map _json)
+      : this(
+          clusters: _json.containsKey('clusters')
+              ? (_json['clusters'] as core.List)
+                  .map((value) => Cluster.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusters != null)
-          'clusters': clusters!.map((value) => value.toJson()).toList(),
+        if (clusters != null) 'clusters': clusters!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6331,22 +7021,26 @@ class ListJobsResponse {
   /// Optional.
   core.String? nextPageToken;
 
-  ListJobsResponse();
+  ListJobsResponse({
+    this.jobs,
+    this.nextPageToken,
+  });
 
-  ListJobsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('jobs')) {
-      jobs = (_json['jobs'] as core.List)
-          .map<Job>((value) =>
-              Job.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListJobsResponse.fromJson(core.Map _json)
+      : this(
+          jobs: _json.containsKey('jobs')
+              ? (_json['jobs'] as core.List)
+                  .map((value) => Job.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (jobs != null) 'jobs': jobs!.map((value) => value.toJson()).toList(),
+        if (jobs != null) 'jobs': jobs!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6359,24 +7053,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -6395,24 +7092,27 @@ class ListWorkflowTemplatesResponse {
   /// Output only.
   core.List<WorkflowTemplate>? templates;
 
-  ListWorkflowTemplatesResponse();
+  ListWorkflowTemplatesResponse({
+    this.nextPageToken,
+    this.templates,
+  });
 
-  ListWorkflowTemplatesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('templates')) {
-      templates = (_json['templates'] as core.List)
-          .map<WorkflowTemplate>((value) => WorkflowTemplate.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListWorkflowTemplatesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          templates: _json.containsKey('templates')
+              ? (_json['templates'] as core.List)
+                  .map((value) => WorkflowTemplate.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (templates != null)
-          'templates': templates!.map((value) => value.toJson()).toList(),
+        if (templates != null) 'templates': templates!,
       };
 }
 
@@ -6424,19 +7124,23 @@ class LoggingConfig {
   /// 'com.google = FATAL', 'root = INFO', 'org.apache = DEBUG'
   core.Map<core.String, core.String>? driverLogLevels;
 
-  LoggingConfig();
+  LoggingConfig({
+    this.driverLogLevels,
+  });
 
-  LoggingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('driverLogLevels')) {
-      driverLogLevels =
-          (_json['driverLogLevels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  LoggingConfig.fromJson(core.Map _json)
+      : this(
+          driverLogLevels: _json.containsKey('driverLogLevels')
+              ? (_json['driverLogLevels']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (driverLogLevels != null) 'driverLogLevels': driverLogLevels!,
@@ -6470,29 +7174,34 @@ class ManagedCluster {
   /// Optional.
   core.Map<core.String, core.String>? labels;
 
-  ManagedCluster();
+  ManagedCluster({
+    this.clusterName,
+    this.config,
+    this.labels,
+  });
 
-  ManagedCluster.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('config')) {
-      config = ClusterConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  ManagedCluster.fromJson(core.Map _json)
+      : this(
+          clusterName: _json.containsKey('clusterName')
+              ? _json['clusterName'] as core.String
+              : null,
+          config: _json.containsKey('config')
+              ? ClusterConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterName != null) 'clusterName': clusterName!,
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (labels != null) 'labels': labels!,
       };
 }
@@ -6509,17 +7218,21 @@ class ManagedGroupConfig {
   /// Output only.
   core.String? instanceTemplateName;
 
-  ManagedGroupConfig();
+  ManagedGroupConfig({
+    this.instanceGroupManagerName,
+    this.instanceTemplateName,
+  });
 
-  ManagedGroupConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('instanceGroupManagerName')) {
-      instanceGroupManagerName =
-          _json['instanceGroupManagerName'] as core.String;
-    }
-    if (_json.containsKey('instanceTemplateName')) {
-      instanceTemplateName = _json['instanceTemplateName'] as core.String;
-    }
-  }
+  ManagedGroupConfig.fromJson(core.Map _json)
+      : this(
+          instanceGroupManagerName:
+              _json.containsKey('instanceGroupManagerName')
+                  ? _json['instanceGroupManagerName'] as core.String
+                  : null,
+          instanceTemplateName: _json.containsKey('instanceTemplateName')
+              ? _json['instanceTemplateName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (instanceGroupManagerName != null)
@@ -6537,18 +7250,103 @@ class MetastoreConfig {
   /// Required.
   core.String? dataprocMetastoreService;
 
-  MetastoreConfig();
+  MetastoreConfig({
+    this.dataprocMetastoreService,
+  });
 
-  MetastoreConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('dataprocMetastoreService')) {
-      dataprocMetastoreService =
-          _json['dataprocMetastoreService'] as core.String;
-    }
-  }
+  MetastoreConfig.fromJson(core.Map _json)
+      : this(
+          dataprocMetastoreService:
+              _json.containsKey('dataprocMetastoreService')
+                  ? _json['dataprocMetastoreService'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataprocMetastoreService != null)
           'dataprocMetastoreService': dataprocMetastoreService!,
+      };
+}
+
+/// Metric source to enable along with any optional metrics for this source that
+/// override the dataproc defaults
+class Metric {
+  /// Optional Metrics to override the dataproc default metrics configured for
+  /// the metric source
+  ///
+  /// Optional.
+  core.List<core.String>? metricOverrides;
+
+  /// MetricSource that should be enabled
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "METRIC_SOURCE_UNSPECIFIED" : Required unspecified metric source
+  /// - "MONITORING_AGENT_DEFAULTS" : all default monitoring agent metrics that
+  /// are published with prefix "agent.googleapis.com" when we enable a
+  /// monitoring agent in Compute Engine
+  /// - "HDFS" : Hdfs metric source
+  /// - "SPARK" : Spark metric source
+  /// - "YARN" : Yarn metric source
+  /// - "SPARK_HISTORY_SERVER" : Spark history server metric source
+  /// - "HIVESERVER2" : hiveserver2 metric source
+  core.String? metricSource;
+
+  Metric({
+    this.metricOverrides,
+    this.metricSource,
+  });
+
+  Metric.fromJson(core.Map _json)
+      : this(
+          metricOverrides: _json.containsKey('metricOverrides')
+              ? (_json['metricOverrides'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          metricSource: _json.containsKey('metricSource')
+              ? _json['metricSource'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (metricOverrides != null) 'metricOverrides': metricOverrides!,
+        if (metricSource != null) 'metricSource': metricSource!,
+      };
+}
+
+/// A full, namespace-isolated deployment target for an existing GKE cluster.
+class NamespacedGkeDeploymentTarget {
+  /// A namespace within the GKE cluster to deploy into.
+  ///
+  /// Optional.
+  core.String? clusterNamespace;
+
+  /// The target GKE cluster to deploy to.
+  ///
+  /// Format: 'projects/{project}/locations/{location}/clusters/{cluster_id}'
+  ///
+  /// Optional.
+  core.String? targetGkeCluster;
+
+  NamespacedGkeDeploymentTarget({
+    this.clusterNamespace,
+    this.targetGkeCluster,
+  });
+
+  NamespacedGkeDeploymentTarget.fromJson(core.Map _json)
+      : this(
+          clusterNamespace: _json.containsKey('clusterNamespace')
+              ? _json['clusterNamespace'] as core.String
+              : null,
+          targetGkeCluster: _json.containsKey('targetGkeCluster')
+              ? _json['targetGkeCluster'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterNamespace != null) 'clusterNamespace': clusterNamespace!,
+        if (targetGkeCluster != null) 'targetGkeCluster': targetGkeCluster!,
       };
 }
 
@@ -6567,13 +7365,16 @@ class NodeGroupAffinity {
   /// Required.
   core.String? nodeGroupUri;
 
-  NodeGroupAffinity();
+  NodeGroupAffinity({
+    this.nodeGroupUri,
+  });
 
-  NodeGroupAffinity.fromJson(core.Map _json) {
-    if (_json.containsKey('nodeGroupUri')) {
-      nodeGroupUri = _json['nodeGroupUri'] as core.String;
-    }
-  }
+  NodeGroupAffinity.fromJson(core.Map _json)
+      : this(
+          nodeGroupUri: _json.containsKey('nodeGroupUri')
+              ? _json['nodeGroupUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nodeGroupUri != null) 'nodeGroupUri': nodeGroupUri!,
@@ -6599,16 +7400,20 @@ class NodeInitializationAction {
   /// Optional.
   core.String? executionTimeout;
 
-  NodeInitializationAction();
+  NodeInitializationAction({
+    this.executableFile,
+    this.executionTimeout,
+  });
 
-  NodeInitializationAction.fromJson(core.Map _json) {
-    if (_json.containsKey('executableFile')) {
-      executableFile = _json['executableFile'] as core.String;
-    }
-    if (_json.containsKey('executionTimeout')) {
-      executionTimeout = _json['executionTimeout'] as core.String;
-    }
-  }
+  NodeInitializationAction.fromJson(core.Map _json)
+      : this(
+          executableFile: _json.containsKey('executableFile')
+              ? _json['executableFile'] as core.String
+              : null,
+          executionTimeout: _json.containsKey('executionTimeout')
+              ? _json['executionTimeout'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (executableFile != null) 'executableFile': executableFile!,
@@ -6637,7 +7442,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -6657,42 +7462,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -6775,76 +7573,90 @@ class OrderedJob {
   /// Required.
   core.String? stepId;
 
-  OrderedJob();
+  OrderedJob({
+    this.hadoopJob,
+    this.hiveJob,
+    this.labels,
+    this.pigJob,
+    this.prerequisiteStepIds,
+    this.prestoJob,
+    this.pysparkJob,
+    this.scheduling,
+    this.sparkJob,
+    this.sparkRJob,
+    this.sparkSqlJob,
+    this.stepId,
+  });
 
-  OrderedJob.fromJson(core.Map _json) {
-    if (_json.containsKey('hadoopJob')) {
-      hadoopJob = HadoopJob.fromJson(
-          _json['hadoopJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('hiveJob')) {
-      hiveJob = HiveJob.fromJson(
-          _json['hiveJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('pigJob')) {
-      pigJob = PigJob.fromJson(
-          _json['pigJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('prerequisiteStepIds')) {
-      prerequisiteStepIds = (_json['prerequisiteStepIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('prestoJob')) {
-      prestoJob = PrestoJob.fromJson(
-          _json['prestoJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('pysparkJob')) {
-      pysparkJob = PySparkJob.fromJson(
-          _json['pysparkJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scheduling')) {
-      scheduling = JobScheduling.fromJson(
-          _json['scheduling'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkJob')) {
-      sparkJob = SparkJob.fromJson(
-          _json['sparkJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkRJob')) {
-      sparkRJob = SparkRJob.fromJson(
-          _json['sparkRJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sparkSqlJob')) {
-      sparkSqlJob = SparkSqlJob.fromJson(
-          _json['sparkSqlJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('stepId')) {
-      stepId = _json['stepId'] as core.String;
-    }
-  }
+  OrderedJob.fromJson(core.Map _json)
+      : this(
+          hadoopJob: _json.containsKey('hadoopJob')
+              ? HadoopJob.fromJson(
+                  _json['hadoopJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          hiveJob: _json.containsKey('hiveJob')
+              ? HiveJob.fromJson(
+                  _json['hiveJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          pigJob: _json.containsKey('pigJob')
+              ? PigJob.fromJson(
+                  _json['pigJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          prerequisiteStepIds: _json.containsKey('prerequisiteStepIds')
+              ? (_json['prerequisiteStepIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          prestoJob: _json.containsKey('prestoJob')
+              ? PrestoJob.fromJson(
+                  _json['prestoJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          pysparkJob: _json.containsKey('pysparkJob')
+              ? PySparkJob.fromJson(
+                  _json['pysparkJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          scheduling: _json.containsKey('scheduling')
+              ? JobScheduling.fromJson(
+                  _json['scheduling'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkJob: _json.containsKey('sparkJob')
+              ? SparkJob.fromJson(
+                  _json['sparkJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkRJob: _json.containsKey('sparkRJob')
+              ? SparkRJob.fromJson(
+                  _json['sparkRJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sparkSqlJob: _json.containsKey('sparkSqlJob')
+              ? SparkSqlJob.fromJson(
+                  _json['sparkSqlJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          stepId: _json.containsKey('stepId')
+              ? _json['stepId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (hadoopJob != null) 'hadoopJob': hadoopJob!.toJson(),
-        if (hiveJob != null) 'hiveJob': hiveJob!.toJson(),
+        if (hadoopJob != null) 'hadoopJob': hadoopJob!,
+        if (hiveJob != null) 'hiveJob': hiveJob!,
         if (labels != null) 'labels': labels!,
-        if (pigJob != null) 'pigJob': pigJob!.toJson(),
+        if (pigJob != null) 'pigJob': pigJob!,
         if (prerequisiteStepIds != null)
           'prerequisiteStepIds': prerequisiteStepIds!,
-        if (prestoJob != null) 'prestoJob': prestoJob!.toJson(),
-        if (pysparkJob != null) 'pysparkJob': pysparkJob!.toJson(),
-        if (scheduling != null) 'scheduling': scheduling!.toJson(),
-        if (sparkJob != null) 'sparkJob': sparkJob!.toJson(),
-        if (sparkRJob != null) 'sparkRJob': sparkRJob!.toJson(),
-        if (sparkSqlJob != null) 'sparkSqlJob': sparkSqlJob!.toJson(),
+        if (prestoJob != null) 'prestoJob': prestoJob!,
+        if (pysparkJob != null) 'pysparkJob': pysparkJob!,
+        if (scheduling != null) 'scheduling': scheduling!,
+        if (sparkJob != null) 'sparkJob': sparkJob!,
+        if (sparkRJob != null) 'sparkRJob': sparkRJob!,
+        if (sparkSqlJob != null) 'sparkSqlJob': sparkSqlJob!,
         if (stepId != null) 'stepId': stepId!,
       };
 }
@@ -6857,22 +7669,64 @@ class ParameterValidation {
   /// Validation based on a list of allowed values.
   ValueValidation? values;
 
-  ParameterValidation();
+  ParameterValidation({
+    this.regex,
+    this.values,
+  });
 
-  ParameterValidation.fromJson(core.Map _json) {
-    if (_json.containsKey('regex')) {
-      regex = RegexValidation.fromJson(
-          _json['regex'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('values')) {
-      values = ValueValidation.fromJson(
-          _json['values'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ParameterValidation.fromJson(core.Map _json)
+      : this(
+          regex: _json.containsKey('regex')
+              ? RegexValidation.fromJson(
+                  _json['regex'] as core.Map<core.String, core.dynamic>)
+              : null,
+          values: _json.containsKey('values')
+              ? ValueValidation.fromJson(
+                  _json['values'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (regex != null) 'regex': regex!.toJson(),
-        if (values != null) 'values': values!.toJson(),
+        if (regex != null) 'regex': regex!,
+        if (values != null) 'values': values!,
+      };
+}
+
+/// Auxiliary services configuration for a workload.
+class PeripheralsConfig {
+  /// Resource name of an existing Dataproc Metastore service.Example:
+  /// projects/\[project_id\]/locations/\[region\]/services/\[service_id\]
+  ///
+  /// Optional.
+  core.String? metastoreService;
+
+  /// The Spark History Server configuration for the workload.
+  ///
+  /// Optional.
+  SparkHistoryServerConfig? sparkHistoryServerConfig;
+
+  PeripheralsConfig({
+    this.metastoreService,
+    this.sparkHistoryServerConfig,
+  });
+
+  PeripheralsConfig.fromJson(core.Map _json)
+      : this(
+          metastoreService: _json.containsKey('metastoreService')
+              ? _json['metastoreService'] as core.String
+              : null,
+          sparkHistoryServerConfig:
+              _json.containsKey('sparkHistoryServerConfig')
+                  ? SparkHistoryServerConfig.fromJson(
+                      _json['sparkHistoryServerConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (metastoreService != null) 'metastoreService': metastoreService!,
+        if (sparkHistoryServerConfig != null)
+          'sparkHistoryServerConfig': sparkHistoryServerConfig!,
       };
 }
 
@@ -6921,55 +7775,65 @@ class PigJob {
   /// Optional.
   core.Map<core.String, core.String>? scriptVariables;
 
-  PigJob();
+  PigJob({
+    this.continueOnFailure,
+    this.jarFileUris,
+    this.loggingConfig,
+    this.properties,
+    this.queryFileUri,
+    this.queryList,
+    this.scriptVariables,
+  });
 
-  PigJob.fromJson(core.Map _json) {
-    if (_json.containsKey('continueOnFailure')) {
-      continueOnFailure = _json['continueOnFailure'] as core.bool;
-    }
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('queryFileUri')) {
-      queryFileUri = _json['queryFileUri'] as core.String;
-    }
-    if (_json.containsKey('queryList')) {
-      queryList = QueryList.fromJson(
-          _json['queryList'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scriptVariables')) {
-      scriptVariables =
-          (_json['scriptVariables'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  PigJob.fromJson(core.Map _json)
+      : this(
+          continueOnFailure: _json.containsKey('continueOnFailure')
+              ? _json['continueOnFailure'] as core.bool
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          queryFileUri: _json.containsKey('queryFileUri')
+              ? _json['queryFileUri'] as core.String
+              : null,
+          queryList: _json.containsKey('queryList')
+              ? QueryList.fromJson(
+                  _json['queryList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          scriptVariables: _json.containsKey('scriptVariables')
+              ? (_json['scriptVariables']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (continueOnFailure != null) 'continueOnFailure': continueOnFailure!,
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (properties != null) 'properties': properties!,
         if (queryFileUri != null) 'queryFileUri': queryFileUri!,
-        if (queryList != null) 'queryList': queryList!.toJson(),
+        if (queryList != null) 'queryList': queryList!,
         if (scriptVariables != null) 'scriptVariables': scriptVariables!,
       };
 }
@@ -6977,15 +7841,15 @@ class PigJob {
 /// An Identity and Access Management (IAM) policy, which specifies access
 /// controls for Google Cloud resources.A Policy is a collection of bindings.
 ///
-/// A binding binds one or more members to a single role. Members can be user
-/// accounts, service accounts, Google groups, and domains (such as G Suite). A
-/// role is a named list of permissions; each role can be an IAM predefined role
-/// or a user-created custom role.For some types of Google Cloud resources, a
-/// binding can also specify a condition, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to true. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the IAM documentation
+/// A binding binds one or more members, or principals, to a single role.
+/// Principals can be user accounts, service accounts, Google groups, and
+/// domains (such as G Suite). A role is a named list of permissions; each role
+/// can be an IAM predefined role or a user-created custom role.For some types
+/// of Google Cloud resources, a binding can also specify a condition, which is
+/// a logical expression that allows access to a resource only if the expression
+/// evaluates to true. A condition can add constraints based on attributes of
+/// the request, the resource, or both. To learn which resources support
+/// conditions in their IAM policies, see the IAM documentation
 /// (https://cloud.google.com/iam/help/conditions/resource-policies).JSON
 /// example: { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -6994,22 +7858,27 @@ class PigJob {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } YAML example: bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the IAM
 /// documentation (https://cloud.google.com/iam/docs/).
 class Policy {
-  /// Associates a list of members to a role.
+  /// Associates a list of members, or principals, with a role.
   ///
   /// Optionally, may specify a condition that determines how and when the
   /// bindings are applied. Each of the bindings must contain at least one
-  /// member.
+  /// principal.The bindings in a Policy can refer to up to 1,500 principals; up
+  /// to 250 of these principals can be Google groups. Each occurrence of a
+  /// principal counts towards these limits. For example, if the bindings grant
+  /// 50 different roles to user:alice@example.com, and not to any other
+  /// principal, then you can add another 1,450 principals to the bindings in
+  /// the Policy.
   core.List<Binding>? bindings;
 
   /// etag is used for optimistic concurrency control as a way to help prevent
@@ -7050,26 +7919,28 @@ class Policy {
   /// (https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -7121,50 +7992,156 @@ class PrestoJob {
   /// A list of queries.
   QueryList? queryList;
 
-  PrestoJob();
+  PrestoJob({
+    this.clientTags,
+    this.continueOnFailure,
+    this.loggingConfig,
+    this.outputFormat,
+    this.properties,
+    this.queryFileUri,
+    this.queryList,
+  });
 
-  PrestoJob.fromJson(core.Map _json) {
-    if (_json.containsKey('clientTags')) {
-      clientTags = (_json['clientTags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('continueOnFailure')) {
-      continueOnFailure = _json['continueOnFailure'] as core.bool;
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('outputFormat')) {
-      outputFormat = _json['outputFormat'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('queryFileUri')) {
-      queryFileUri = _json['queryFileUri'] as core.String;
-    }
-    if (_json.containsKey('queryList')) {
-      queryList = QueryList.fromJson(
-          _json['queryList'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PrestoJob.fromJson(core.Map _json)
+      : this(
+          clientTags: _json.containsKey('clientTags')
+              ? (_json['clientTags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          continueOnFailure: _json.containsKey('continueOnFailure')
+              ? _json['continueOnFailure'] as core.bool
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          outputFormat: _json.containsKey('outputFormat')
+              ? _json['outputFormat'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          queryFileUri: _json.containsKey('queryFileUri')
+              ? _json['queryFileUri'] as core.String
+              : null,
+          queryList: _json.containsKey('queryList')
+              ? QueryList.fromJson(
+                  _json['queryList'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clientTags != null) 'clientTags': clientTags!,
         if (continueOnFailure != null) 'continueOnFailure': continueOnFailure!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (outputFormat != null) 'outputFormat': outputFormat!,
         if (properties != null) 'properties': properties!,
         if (queryFileUri != null) 'queryFileUri': queryFileUri!,
-        if (queryList != null) 'queryList': queryList!.toJson(),
+        if (queryList != null) 'queryList': queryList!,
+      };
+}
+
+/// A configuration for running an Apache PySpark
+/// (https://spark.apache.org/docs/latest/api/python/getting_started/quickstart.html)
+/// batch workload.
+class PySparkBatch {
+  /// HCFS URIs of archives to be extracted into the working directory of each
+  /// executor.
+  ///
+  /// Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+  ///
+  /// Optional.
+  core.List<core.String>? archiveUris;
+
+  /// The arguments to pass to the driver.
+  ///
+  /// Do not include arguments that can be set as batch properties, such as
+  /// --conf, since a collision can occur that causes an incorrect batch
+  /// submission.
+  ///
+  /// Optional.
+  core.List<core.String>? args;
+
+  /// HCFS URIs of files to be placed in the working directory of each executor.
+  ///
+  /// Optional.
+  core.List<core.String>? fileUris;
+
+  /// HCFS URIs of jar files to add to the classpath of the Spark driver and
+  /// tasks.
+  ///
+  /// Optional.
+  core.List<core.String>? jarFileUris;
+
+  /// The HCFS URI of the main Python file to use as the Spark driver.
+  ///
+  /// Must be a .py file.
+  ///
+  /// Required.
+  core.String? mainPythonFileUri;
+
+  /// HCFS file URIs of Python files to pass to the PySpark framework.
+  ///
+  /// Supported file types: .py, .egg, and .zip.
+  ///
+  /// Optional.
+  core.List<core.String>? pythonFileUris;
+
+  PySparkBatch({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.jarFileUris,
+    this.mainPythonFileUri,
+    this.pythonFileUris,
+  });
+
+  PySparkBatch.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mainPythonFileUri: _json.containsKey('mainPythonFileUri')
+              ? _json['mainPythonFileUri'] as core.String
+              : null,
+          pythonFileUris: _json.containsKey('pythonFileUris')
+              ? (_json['pythonFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (archiveUris != null) 'archiveUris': archiveUris!,
+        if (args != null) 'args': args!,
+        if (fileUris != null) 'fileUris': fileUris!,
+        if (jarFileUris != null) 'jarFileUris': jarFileUris!,
+        if (mainPythonFileUri != null) 'mainPythonFileUri': mainPythonFileUri!,
+        if (pythonFileUris != null) 'pythonFileUris': pythonFileUris!,
       };
 }
 
@@ -7230,58 +8207,68 @@ class PySparkJob {
   /// Optional.
   core.List<core.String>? pythonFileUris;
 
-  PySparkJob();
+  PySparkJob({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.jarFileUris,
+    this.loggingConfig,
+    this.mainPythonFileUri,
+    this.properties,
+    this.pythonFileUris,
+  });
 
-  PySparkJob.fromJson(core.Map _json) {
-    if (_json.containsKey('archiveUris')) {
-      archiveUris = (_json['archiveUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('fileUris')) {
-      fileUris = (_json['fileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mainPythonFileUri')) {
-      mainPythonFileUri = _json['mainPythonFileUri'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('pythonFileUris')) {
-      pythonFileUris = (_json['pythonFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  PySparkJob.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mainPythonFileUri: _json.containsKey('mainPythonFileUri')
+              ? _json['mainPythonFileUri'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          pythonFileUris: _json.containsKey('pythonFileUris')
+              ? (_json['pythonFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (archiveUris != null) 'archiveUris': archiveUris!,
         if (args != null) 'args': args!,
         if (fileUris != null) 'fileUris': fileUris!,
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (mainPythonFileUri != null) 'mainPythonFileUri': mainPythonFileUri!,
         if (properties != null) 'properties': properties!,
         if (pythonFileUris != null) 'pythonFileUris': pythonFileUris!,
@@ -7301,15 +8288,18 @@ class QueryList {
   /// Required.
   core.List<core.String>? queries;
 
-  QueryList();
+  QueryList({
+    this.queries,
+  });
 
-  QueryList.fromJson(core.Map _json) {
-    if (_json.containsKey('queries')) {
-      queries = (_json['queries'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  QueryList.fromJson(core.Map _json)
+      : this(
+          queries: _json.containsKey('queries')
+              ? (_json['queries'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (queries != null) 'queries': queries!,
@@ -7326,18 +8316,63 @@ class RegexValidation {
   /// Required.
   core.List<core.String>? regexes;
 
-  RegexValidation();
+  RegexValidation({
+    this.regexes,
+  });
 
-  RegexValidation.fromJson(core.Map _json) {
-    if (_json.containsKey('regexes')) {
-      regexes = (_json['regexes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  RegexValidation.fromJson(core.Map _json)
+      : this(
+          regexes: _json.containsKey('regexes')
+              ? (_json['regexes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (regexes != null) 'regexes': regexes!,
+      };
+}
+
+/// A request to repair a cluster.
+class RepairClusterRequest {
+  /// Specifying the cluster_uuid means the RPC will fail (with error NOT_FOUND)
+  /// if a cluster with the specified UUID does not exist.
+  ///
+  /// Optional.
+  core.String? clusterUuid;
+
+  /// A unique ID used to identify the request.
+  ///
+  /// If the server receives two RepairClusterRequests with the same ID, the
+  /// second request is ignored, and the first google.longrunning.Operation
+  /// created and stored in the backend is returned.Recommendation: Set this
+  /// value to a UUID
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
+  /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
+  /// hyphens (-). The maximum length is 40 characters.
+  ///
+  /// Optional.
+  core.String? requestId;
+
+  RepairClusterRequest({
+    this.clusterUuid,
+    this.requestId,
+  });
+
+  RepairClusterRequest.fromJson(core.Map _json)
+      : this(
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterUuid != null) 'clusterUuid': clusterUuid!,
+        if (requestId != null) 'requestId': requestId!,
       };
 }
 
@@ -7364,21 +8399,24 @@ class ReservationAffinity {
   /// Optional.
   core.List<core.String>? values;
 
-  ReservationAffinity();
+  ReservationAffinity({
+    this.consumeReservationType,
+    this.key,
+    this.values,
+  });
 
-  ReservationAffinity.fromJson(core.Map _json) {
-    if (_json.containsKey('consumeReservationType')) {
-      consumeReservationType = _json['consumeReservationType'] as core.String;
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ReservationAffinity.fromJson(core.Map _json)
+      : this(
+          consumeReservationType: _json.containsKey('consumeReservationType')
+              ? _json['consumeReservationType'] as core.String
+              : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consumeReservationType != null)
@@ -7388,24 +8426,141 @@ class ReservationAffinity {
       };
 }
 
+/// Runtime configuration for a workload.
+class RuntimeConfig {
+  /// Optional custom container image for the job runtime environment.
+  ///
+  /// If not specified, a default container image will be used.
+  ///
+  /// Optional.
+  core.String? containerImage;
+
+  /// A mapping of property names to values, which are used to configure
+  /// workload execution.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? properties;
+
+  /// Version of the batch runtime.
+  ///
+  /// Optional.
+  core.String? version;
+
+  RuntimeConfig({
+    this.containerImage,
+    this.properties,
+    this.version,
+  });
+
+  RuntimeConfig.fromJson(core.Map _json)
+      : this(
+          containerImage: _json.containsKey('containerImage')
+              ? _json['containerImage'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (containerImage != null) 'containerImage': containerImage!,
+        if (properties != null) 'properties': properties!,
+        if (version != null) 'version': version!,
+      };
+}
+
+/// Runtime information about workload execution.
+class RuntimeInfo {
+  /// A URI pointing to the location of the diagnostics tarball.
+  ///
+  /// Output only.
+  core.String? diagnosticOutputUri;
+
+  /// Map of remote access endpoints (such as web interfaces and APIs) to their
+  /// URIs.
+  ///
+  /// Output only.
+  core.Map<core.String, core.String>? endpoints;
+
+  /// A URI pointing to the location of the stdout and stderr of the workload.
+  ///
+  /// Output only.
+  core.String? outputUri;
+
+  RuntimeInfo({
+    this.diagnosticOutputUri,
+    this.endpoints,
+    this.outputUri,
+  });
+
+  RuntimeInfo.fromJson(core.Map _json)
+      : this(
+          diagnosticOutputUri: _json.containsKey('diagnosticOutputUri')
+              ? _json['diagnosticOutputUri'] as core.String
+              : null,
+          endpoints: _json.containsKey('endpoints')
+              ? (_json['endpoints'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          outputUri: _json.containsKey('outputUri')
+              ? _json['outputUri'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (diagnosticOutputUri != null)
+          'diagnosticOutputUri': diagnosticOutputUri!,
+        if (endpoints != null) 'endpoints': endpoints!,
+        if (outputUri != null) 'outputUri': outputUri!,
+      };
+}
+
 /// Security related configuration, including encryption, Kerberos, etc.
 class SecurityConfig {
+  /// Identity related configuration, including service account based secure
+  /// multi-tenancy user mappings.
+  ///
+  /// Optional.
+  IdentityConfig? identityConfig;
+
   /// Kerberos related configuration.
   ///
   /// Optional.
   KerberosConfig? kerberosConfig;
 
-  SecurityConfig();
+  SecurityConfig({
+    this.identityConfig,
+    this.kerberosConfig,
+  });
 
-  SecurityConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kerberosConfig')) {
-      kerberosConfig = KerberosConfig.fromJson(
-          _json['kerberosConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SecurityConfig.fromJson(core.Map _json)
+      : this(
+          identityConfig: _json.containsKey('identityConfig')
+              ? IdentityConfig.fromJson(_json['identityConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          kerberosConfig: _json.containsKey('kerberosConfig')
+              ? KerberosConfig.fromJson(_json['kerberosConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (kerberosConfig != null) 'kerberosConfig': kerberosConfig!.toJson(),
+        if (identityConfig != null) 'identityConfig': identityConfig!,
+        if (kerberosConfig != null) 'kerberosConfig': kerberosConfig!,
       };
 }
 
@@ -7418,17 +8573,20 @@ class SetIamPolicyRequest {
   /// reject them.
   Policy? policy;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
       };
 }
 
@@ -7450,20 +8608,25 @@ class ShieldedInstanceConfig {
   /// Optional.
   core.bool? enableVtpm;
 
-  ShieldedInstanceConfig();
+  ShieldedInstanceConfig({
+    this.enableIntegrityMonitoring,
+    this.enableSecureBoot,
+    this.enableVtpm,
+  });
 
-  ShieldedInstanceConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('enableIntegrityMonitoring')) {
-      enableIntegrityMonitoring =
-          _json['enableIntegrityMonitoring'] as core.bool;
-    }
-    if (_json.containsKey('enableSecureBoot')) {
-      enableSecureBoot = _json['enableSecureBoot'] as core.bool;
-    }
-    if (_json.containsKey('enableVtpm')) {
-      enableVtpm = _json['enableVtpm'] as core.bool;
-    }
-  }
+  ShieldedInstanceConfig.fromJson(core.Map _json)
+      : this(
+          enableIntegrityMonitoring:
+              _json.containsKey('enableIntegrityMonitoring')
+                  ? _json['enableIntegrityMonitoring'] as core.bool
+                  : null,
+          enableSecureBoot: _json.containsKey('enableSecureBoot')
+              ? _json['enableSecureBoot'] as core.bool
+              : null,
+          enableVtpm: _json.containsKey('enableVtpm')
+              ? _json['enableVtpm'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enableIntegrityMonitoring != null)
@@ -7505,27 +8668,32 @@ class SoftwareConfig {
   /// Optional.
   core.Map<core.String, core.String>? properties;
 
-  SoftwareConfig();
+  SoftwareConfig({
+    this.imageVersion,
+    this.optionalComponents,
+    this.properties,
+  });
 
-  SoftwareConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('imageVersion')) {
-      imageVersion = _json['imageVersion'] as core.String;
-    }
-    if (_json.containsKey('optionalComponents')) {
-      optionalComponents = (_json['optionalComponents'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  SoftwareConfig.fromJson(core.Map _json)
+      : this(
+          imageVersion: _json.containsKey('imageVersion')
+              ? _json['imageVersion'] as core.String
+              : null,
+          optionalComponents: _json.containsKey('optionalComponents')
+              ? (_json['optionalComponents'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (imageVersion != null) 'imageVersion': imageVersion!,
@@ -7535,7 +8703,125 @@ class SoftwareConfig {
       };
 }
 
-/// A Dataproc job for running Apache Spark (http://spark.apache.org/)
+/// A configuration for running an Apache Spark (https://spark.apache.org/)
+/// batch workload.
+class SparkBatch {
+  /// HCFS URIs of archives to be extracted into the working directory of each
+  /// executor.
+  ///
+  /// Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+  ///
+  /// Optional.
+  core.List<core.String>? archiveUris;
+
+  /// The arguments to pass to the driver.
+  ///
+  /// Do not include arguments that can be set as batch properties, such as
+  /// --conf, since a collision can occur that causes an incorrect batch
+  /// submission.
+  ///
+  /// Optional.
+  core.List<core.String>? args;
+
+  /// HCFS URIs of files to be placed in the working directory of each executor.
+  ///
+  /// Optional.
+  core.List<core.String>? fileUris;
+
+  /// HCFS URIs of jar files to add to the classpath of the Spark driver and
+  /// tasks.
+  ///
+  /// Optional.
+  core.List<core.String>? jarFileUris;
+
+  /// The name of the driver main class.
+  ///
+  /// The jar file that contains the class must be in the classpath or specified
+  /// in jar_file_uris.
+  ///
+  /// Optional.
+  core.String? mainClass;
+
+  /// The HCFS URI of the jar file that contains the main class.
+  ///
+  /// Optional.
+  core.String? mainJarFileUri;
+
+  SparkBatch({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.jarFileUris,
+    this.mainClass,
+    this.mainJarFileUri,
+  });
+
+  SparkBatch.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mainClass: _json.containsKey('mainClass')
+              ? _json['mainClass'] as core.String
+              : null,
+          mainJarFileUri: _json.containsKey('mainJarFileUri')
+              ? _json['mainJarFileUri'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (archiveUris != null) 'archiveUris': archiveUris!,
+        if (args != null) 'args': args!,
+        if (fileUris != null) 'fileUris': fileUris!,
+        if (jarFileUris != null) 'jarFileUris': jarFileUris!,
+        if (mainClass != null) 'mainClass': mainClass!,
+        if (mainJarFileUri != null) 'mainJarFileUri': mainJarFileUri!,
+      };
+}
+
+/// Spark History Server configuration for the workload.
+class SparkHistoryServerConfig {
+  /// Resource name of an existing Dataproc Cluster to act as a Spark History
+  /// Server for the workload.Example:
+  /// projects/\[project_id\]/regions/\[region\]/clusters/\[cluster_name\]
+  ///
+  /// Optional.
+  core.String? dataprocCluster;
+
+  SparkHistoryServerConfig({
+    this.dataprocCluster,
+  });
+
+  SparkHistoryServerConfig.fromJson(core.Map _json)
+      : this(
+          dataprocCluster: _json.containsKey('dataprocCluster')
+              ? _json['dataprocCluster'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (dataprocCluster != null) 'dataprocCluster': dataprocCluster!,
+      };
+}
+
+/// A Dataproc job for running Apache Spark (https://spark.apache.org/)
 /// applications on YARN.
 class SparkJob {
   /// HCFS URIs of archives to be extracted into the working directory of each
@@ -7591,59 +8877,138 @@ class SparkJob {
   /// Optional.
   core.Map<core.String, core.String>? properties;
 
-  SparkJob();
+  SparkJob({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.jarFileUris,
+    this.loggingConfig,
+    this.mainClass,
+    this.mainJarFileUri,
+    this.properties,
+  });
 
-  SparkJob.fromJson(core.Map _json) {
-    if (_json.containsKey('archiveUris')) {
-      archiveUris = (_json['archiveUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('fileUris')) {
-      fileUris = (_json['fileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mainClass')) {
-      mainClass = _json['mainClass'] as core.String;
-    }
-    if (_json.containsKey('mainJarFileUri')) {
-      mainJarFileUri = _json['mainJarFileUri'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  SparkJob.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mainClass: _json.containsKey('mainClass')
+              ? _json['mainClass'] as core.String
+              : null,
+          mainJarFileUri: _json.containsKey('mainJarFileUri')
+              ? _json['mainJarFileUri'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (archiveUris != null) 'archiveUris': archiveUris!,
         if (args != null) 'args': args!,
         if (fileUris != null) 'fileUris': fileUris!,
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (mainClass != null) 'mainClass': mainClass!,
         if (mainJarFileUri != null) 'mainJarFileUri': mainJarFileUri!,
         if (properties != null) 'properties': properties!,
+      };
+}
+
+/// A configuration for running an Apache SparkR
+/// (https://spark.apache.org/docs/latest/sparkr.html) batch workload.
+class SparkRBatch {
+  /// HCFS URIs of archives to be extracted into the working directory of each
+  /// executor.
+  ///
+  /// Supported file types: .jar, .tar, .tar.gz, .tgz, and .zip.
+  ///
+  /// Optional.
+  core.List<core.String>? archiveUris;
+
+  /// The arguments to pass to the Spark driver.
+  ///
+  /// Do not include arguments that can be set as batch properties, such as
+  /// --conf, since a collision can occur that causes an incorrect batch
+  /// submission.
+  ///
+  /// Optional.
+  core.List<core.String>? args;
+
+  /// HCFS URIs of files to be placed in the working directory of each executor.
+  ///
+  /// Optional.
+  core.List<core.String>? fileUris;
+
+  /// The HCFS URI of the main R file to use as the driver.
+  ///
+  /// Must be a .R or .r file.
+  ///
+  /// Required.
+  core.String? mainRFileUri;
+
+  SparkRBatch({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.mainRFileUri,
+  });
+
+  SparkRBatch.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mainRFileUri: _json.containsKey('mainRFileUri')
+              ? _json['mainRFileUri'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (archiveUris != null) 'archiveUris': archiveUris!,
+        if (args != null) 'args': args!,
+        if (fileUris != null) 'fileUris': fileUris!,
+        if (mainRFileUri != null) 'mainRFileUri': mainRFileUri!,
       };
 }
 
@@ -7695,53 +9060,114 @@ class SparkRJob {
   /// Optional.
   core.Map<core.String, core.String>? properties;
 
-  SparkRJob();
+  SparkRJob({
+    this.archiveUris,
+    this.args,
+    this.fileUris,
+    this.loggingConfig,
+    this.mainRFileUri,
+    this.properties,
+  });
 
-  SparkRJob.fromJson(core.Map _json) {
-    if (_json.containsKey('archiveUris')) {
-      archiveUris = (_json['archiveUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('fileUris')) {
-      fileUris = (_json['fileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mainRFileUri')) {
-      mainRFileUri = _json['mainRFileUri'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  SparkRJob.fromJson(core.Map _json)
+      : this(
+          archiveUris: _json.containsKey('archiveUris')
+              ? (_json['archiveUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          fileUris: _json.containsKey('fileUris')
+              ? (_json['fileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mainRFileUri: _json.containsKey('mainRFileUri')
+              ? _json['mainRFileUri'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (archiveUris != null) 'archiveUris': archiveUris!,
         if (args != null) 'args': args!,
         if (fileUris != null) 'fileUris': fileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (mainRFileUri != null) 'mainRFileUri': mainRFileUri!,
         if (properties != null) 'properties': properties!,
       };
 }
 
-/// A Dataproc job for running Apache Spark SQL (http://spark.apache.org/sql/)
+/// A configuration for running Apache Spark SQL (https://spark.apache.org/sql/)
+/// queries as a batch workload.
+class SparkSqlBatch {
+  /// HCFS URIs of jar files to be added to the Spark CLASSPATH.
+  ///
+  /// Optional.
+  core.List<core.String>? jarFileUris;
+
+  /// The HCFS URI of the script that contains Spark SQL queries to execute.
+  ///
+  /// Required.
+  core.String? queryFileUri;
+
+  /// Mapping of query variable names to values (equivalent to the Spark SQL
+  /// command: SET name="value";).
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? queryVariables;
+
+  SparkSqlBatch({
+    this.jarFileUris,
+    this.queryFileUri,
+    this.queryVariables,
+  });
+
+  SparkSqlBatch.fromJson(core.Map _json)
+      : this(
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          queryFileUri: _json.containsKey('queryFileUri')
+              ? _json['queryFileUri'] as core.String
+              : null,
+          queryVariables: _json.containsKey('queryVariables')
+              ? (_json['queryVariables'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (jarFileUris != null) 'jarFileUris': jarFileUris!,
+        if (queryFileUri != null) 'queryFileUri': queryFileUri!,
+        if (queryVariables != null) 'queryVariables': queryVariables!,
+      };
+}
+
+/// A Dataproc job for running Apache Spark SQL (https://spark.apache.org/sql/)
 /// queries.
 class SparkSqlJob {
   /// HCFS URIs of jar files to be added to the Spark CLASSPATH.
@@ -7775,52 +9201,156 @@ class SparkSqlJob {
   /// Optional.
   core.Map<core.String, core.String>? scriptVariables;
 
-  SparkSqlJob();
+  SparkSqlJob({
+    this.jarFileUris,
+    this.loggingConfig,
+    this.properties,
+    this.queryFileUri,
+    this.queryList,
+    this.scriptVariables,
+  });
 
-  SparkSqlJob.fromJson(core.Map _json) {
-    if (_json.containsKey('jarFileUris')) {
-      jarFileUris = (_json['jarFileUris'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('loggingConfig')) {
-      loggingConfig = LoggingConfig.fromJson(
-          _json['loggingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('queryFileUri')) {
-      queryFileUri = _json['queryFileUri'] as core.String;
-    }
-    if (_json.containsKey('queryList')) {
-      queryList = QueryList.fromJson(
-          _json['queryList'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scriptVariables')) {
-      scriptVariables =
-          (_json['scriptVariables'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  SparkSqlJob.fromJson(core.Map _json)
+      : this(
+          jarFileUris: _json.containsKey('jarFileUris')
+              ? (_json['jarFileUris'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          queryFileUri: _json.containsKey('queryFileUri')
+              ? _json['queryFileUri'] as core.String
+              : null,
+          queryList: _json.containsKey('queryList')
+              ? QueryList.fromJson(
+                  _json['queryList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          scriptVariables: _json.containsKey('scriptVariables')
+              ? (_json['scriptVariables']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (jarFileUris != null) 'jarFileUris': jarFileUris!,
-        if (loggingConfig != null) 'loggingConfig': loggingConfig!.toJson(),
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (properties != null) 'properties': properties!,
         if (queryFileUri != null) 'queryFileUri': queryFileUri!,
-        if (queryList != null) 'queryList': queryList!.toJson(),
+        if (queryList != null) 'queryList': queryList!,
         if (scriptVariables != null) 'scriptVariables': scriptVariables!,
+      };
+}
+
+/// Basic autoscaling configurations for Spark Standalone.
+class SparkStandaloneAutoscalingConfig {
+  /// Timeout for Spark graceful decommissioning of spark workers.
+  ///
+  /// Specifies the duration to wait for spark worker to complete spark
+  /// decomissioning tasks before forcefully removing workers. Only applicable
+  /// to downscaling operations.Bounds: 0s, 1d.
+  ///
+  /// Required.
+  core.String? gracefulDecommissionTimeout;
+
+  /// Fraction of required executors to remove from Spark Serverless clusters.
+  ///
+  /// A scale-down factor of 1.0 will result in scaling down so that there are
+  /// no more executors for the Spark Job.(more aggressive scaling). A
+  /// scale-down factor closer to 0 will result in a smaller magnitude of
+  /// scaling donw (less aggressive scaling).Bounds: 0.0, 1.0.
+  ///
+  /// Required.
+  core.double? scaleDownFactor;
+
+  /// Minimum scale-down threshold as a fraction of total cluster size before
+  /// scaling occurs.
+  ///
+  /// For example, in a 20-worker cluster, a threshold of 0.1 means the
+  /// autoscaler must recommend at least a 2 worker scale-down for the cluster
+  /// to scale. A threshold of 0 means the autoscaler will scale down on any
+  /// recommended change.Bounds: 0.0, 1.0. Default: 0.0.
+  ///
+  /// Optional.
+  core.double? scaleDownMinWorkerFraction;
+
+  /// Fraction of required workers to add to Spark Standalone clusters.
+  ///
+  /// A scale-up factor of 1.0 will result in scaling up so that there are no
+  /// more required workers for the Spark Job (more aggressive scaling). A
+  /// scale-up factor closer to 0 will result in a smaller magnitude of scaling
+  /// up (less aggressive scaling).Bounds: 0.0, 1.0.
+  ///
+  /// Required.
+  core.double? scaleUpFactor;
+
+  /// Minimum scale-up threshold as a fraction of total cluster size before
+  /// scaling occurs.
+  ///
+  /// For example, in a 20-worker cluster, a threshold of 0.1 means the
+  /// autoscaler must recommend at least a 2-worker scale-up for the cluster to
+  /// scale. A threshold of 0 means the autoscaler will scale up on any
+  /// recommended change.Bounds: 0.0, 1.0. Default: 0.0.
+  ///
+  /// Optional.
+  core.double? scaleUpMinWorkerFraction;
+
+  SparkStandaloneAutoscalingConfig({
+    this.gracefulDecommissionTimeout,
+    this.scaleDownFactor,
+    this.scaleDownMinWorkerFraction,
+    this.scaleUpFactor,
+    this.scaleUpMinWorkerFraction,
+  });
+
+  SparkStandaloneAutoscalingConfig.fromJson(core.Map _json)
+      : this(
+          gracefulDecommissionTimeout:
+              _json.containsKey('gracefulDecommissionTimeout')
+                  ? _json['gracefulDecommissionTimeout'] as core.String
+                  : null,
+          scaleDownFactor: _json.containsKey('scaleDownFactor')
+              ? (_json['scaleDownFactor'] as core.num).toDouble()
+              : null,
+          scaleDownMinWorkerFraction:
+              _json.containsKey('scaleDownMinWorkerFraction')
+                  ? (_json['scaleDownMinWorkerFraction'] as core.num).toDouble()
+                  : null,
+          scaleUpFactor: _json.containsKey('scaleUpFactor')
+              ? (_json['scaleUpFactor'] as core.num).toDouble()
+              : null,
+          scaleUpMinWorkerFraction:
+              _json.containsKey('scaleUpMinWorkerFraction')
+                  ? (_json['scaleUpMinWorkerFraction'] as core.num).toDouble()
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (gracefulDecommissionTimeout != null)
+          'gracefulDecommissionTimeout': gracefulDecommissionTimeout!,
+        if (scaleDownFactor != null) 'scaleDownFactor': scaleDownFactor!,
+        if (scaleDownMinWorkerFraction != null)
+          'scaleDownMinWorkerFraction': scaleDownMinWorkerFraction!,
+        if (scaleUpFactor != null) 'scaleUpFactor': scaleUpFactor!,
+        if (scaleUpMinWorkerFraction != null)
+          'scaleUpMinWorkerFraction': scaleUpMinWorkerFraction!,
       };
 }
 
@@ -7832,34 +9362,88 @@ class StartClusterRequest {
   /// Optional.
   core.String? clusterUuid;
 
-  /// A unique id used to identify the request.
+  /// A unique ID used to identify the request.
   ///
   /// If the server receives two StartClusterRequest
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.StartClusterRequest)s
   /// with the same id, then the second request will be ignored and the first
   /// google.longrunning.Operation created and stored in the backend is
   /// returned.Recommendation: Set this value to a UUID
-  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The id must
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
   /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
   /// hyphens (-). The maximum length is 40 characters.
   ///
   /// Optional.
   core.String? requestId;
 
-  StartClusterRequest();
+  StartClusterRequest({
+    this.clusterUuid,
+    this.requestId,
+  });
 
-  StartClusterRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  StartClusterRequest.fromJson(core.Map _json)
+      : this(
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterUuid != null) 'clusterUuid': clusterUuid!,
         if (requestId != null) 'requestId': requestId!,
+      };
+}
+
+/// Historical state information.
+class StateHistory {
+  /// The state of the batch at this point in history.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : The batch state is unknown.
+  /// - "PENDING" : The batch is created before running.
+  /// - "RUNNING" : The batch is running.
+  /// - "CANCELLING" : The batch is cancelling.
+  /// - "CANCELLED" : The batch cancellation was successful.
+  /// - "SUCCEEDED" : The batch completed successfully.
+  /// - "FAILED" : The batch is no longer running due to an error.
+  core.String? state;
+
+  /// Details about the state at this point in history.
+  ///
+  /// Output only.
+  core.String? stateMessage;
+
+  /// The time when the batch entered the historical state.
+  ///
+  /// Output only.
+  core.String? stateStartTime;
+
+  StateHistory({
+    this.state,
+    this.stateMessage,
+    this.stateStartTime,
+  });
+
+  StateHistory.fromJson(core.Map _json)
+      : this(
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          stateMessage: _json.containsKey('stateMessage')
+              ? _json['stateMessage'] as core.String
+              : null,
+          stateStartTime: _json.containsKey('stateStartTime')
+              ? _json['stateStartTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (state != null) 'state': state!,
+        if (stateMessage != null) 'stateMessage': stateMessage!,
+        if (stateStartTime != null) 'stateStartTime': stateStartTime!,
       };
 }
 
@@ -7870,52 +9454,7 @@ class StartClusterRequest {
 /// three pieces of data: error code, error message, and error details.You can
 /// find out more about this error model and how to work with it in the API
 /// Design Guide (https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A request to stop a cluster.
 class StopClusterRequest {
@@ -7925,30 +9464,34 @@ class StopClusterRequest {
   /// Optional.
   core.String? clusterUuid;
 
-  /// A unique id used to identify the request.
+  /// A unique ID used to identify the request.
   ///
   /// If the server receives two StopClusterRequest
   /// (https://cloud.google.com/dataproc/docs/reference/rpc/google.cloud.dataproc.v1#google.cloud.dataproc.v1.StopClusterRequest)s
   /// with the same id, then the second request will be ignored and the first
   /// google.longrunning.Operation created and stored in the backend is
   /// returned.Recommendation: Set this value to a UUID
-  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The id must
+  /// (https://en.wikipedia.org/wiki/Universally_unique_identifier).The ID must
   /// contain only letters (a-z, A-Z), numbers (0-9), underscores (_), and
   /// hyphens (-). The maximum length is 40 characters.
   ///
   /// Optional.
   core.String? requestId;
 
-  StopClusterRequest();
+  StopClusterRequest({
+    this.clusterUuid,
+    this.requestId,
+  });
 
-  StopClusterRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  StopClusterRequest.fromJson(core.Map _json)
+      : this(
+          clusterUuid: _json.containsKey('clusterUuid')
+              ? _json['clusterUuid'] as core.String
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterUuid != null) 'clusterUuid': clusterUuid!,
@@ -7977,19 +9520,24 @@ class SubmitJobRequest {
   /// Optional.
   core.String? requestId;
 
-  SubmitJobRequest();
+  SubmitJobRequest({
+    this.job,
+    this.requestId,
+  });
 
-  SubmitJobRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('job')) {
-      job = Job.fromJson(_json['job'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  SubmitJobRequest.fromJson(core.Map _json)
+      : this(
+          job: _json.containsKey('job')
+              ? Job.fromJson(
+                  _json['job'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (job != null) 'job': job!.toJson(),
+        if (job != null) 'job': job!,
         if (requestId != null) 'requestId': requestId!,
       };
 }
@@ -8053,77 +9601,43 @@ class TemplateParameter {
   /// Optional.
   ParameterValidation? validation;
 
-  TemplateParameter();
+  TemplateParameter({
+    this.description,
+    this.fields,
+    this.name,
+    this.validation,
+  });
 
-  TemplateParameter.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('validation')) {
-      validation = ParameterValidation.fromJson(
-          _json['validation'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TemplateParameter.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          validation: _json.containsKey('validation')
+              ? ParameterValidation.fromJson(
+                  _json['validation'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (fields != null) 'fields': fields!,
         if (name != null) 'name': name!,
-        if (validation != null) 'validation': validation!.toJson(),
+        if (validation != null) 'validation': validation!,
       };
 }
 
 /// Request message for TestIamPermissions method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the resource.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see IAM Overview
-  /// (https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest01;
 
 /// Response message for TestIamPermissions method.
-class TestIamPermissionsResponse {
-  /// A subset of TestPermissionsRequest.permissions that the caller is allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $TestIamPermissionsResponse;
 
 /// Validation based on a list of allowed values.
 class ValueValidation {
@@ -8132,268 +9646,21 @@ class ValueValidation {
   /// Required.
   core.List<core.String>? values;
 
-  ValueValidation();
+  ValueValidation({
+    this.values,
+  });
 
-  ValueValidation.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ValueValidation.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
-      };
-}
-
-/// The workflow graph.
-class WorkflowGraph {
-  /// The workflow nodes.
-  ///
-  /// Output only.
-  core.List<WorkflowNode>? nodes;
-
-  WorkflowGraph();
-
-  WorkflowGraph.fromJson(core.Map _json) {
-    if (_json.containsKey('nodes')) {
-      nodes = (_json['nodes'] as core.List)
-          .map<WorkflowNode>((value) => WorkflowNode.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (nodes != null)
-          'nodes': nodes!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// A Dataproc workflow template resource.
-class WorkflowMetadata {
-  /// The name of the target cluster.
-  ///
-  /// Output only.
-  core.String? clusterName;
-
-  /// The UUID of target cluster.
-  ///
-  /// Output only.
-  core.String? clusterUuid;
-
-  /// The create cluster operation metadata.
-  ///
-  /// Output only.
-  ClusterOperation? createCluster;
-
-  /// DAG end time, only set for workflows with dag_timeout when DAG ends.
-  ///
-  /// Output only.
-  core.String? dagEndTime;
-
-  /// DAG start time, only set for workflows with dag_timeout when DAG begins.
-  ///
-  /// Output only.
-  core.String? dagStartTime;
-
-  /// The timeout duration for the DAG of jobs, expressed in seconds (see JSON
-  /// representation of duration
-  /// (https://developers.google.com/protocol-buffers/docs/proto3#json)).
-  ///
-  /// Output only.
-  core.String? dagTimeout;
-
-  /// The delete cluster operation metadata.
-  ///
-  /// Output only.
-  ClusterOperation? deleteCluster;
-
-  /// Workflow end time.
-  ///
-  /// Output only.
-  core.String? endTime;
-
-  /// The workflow graph.
-  ///
-  /// Output only.
-  WorkflowGraph? graph;
-
-  /// Map from parameter names to values that were used for those parameters.
-  core.Map<core.String, core.String>? parameters;
-
-  /// Workflow start time.
-  ///
-  /// Output only.
-  core.String? startTime;
-
-  /// The workflow state.
-  ///
-  /// Output only.
-  /// Possible string values are:
-  /// - "UNKNOWN" : Unused.
-  /// - "PENDING" : The operation has been created.
-  /// - "RUNNING" : The operation is running.
-  /// - "DONE" : The operation is done; either cancelled or completed.
-  core.String? state;
-
-  /// The resource name of the workflow template as described in
-  /// https://cloud.google.com/apis/design/resource_names.
-  ///
-  /// For projects.regions.workflowTemplates, the resource name of the template
-  /// has the following format:
-  /// projects/{project_id}/regions/{region}/workflowTemplates/{template_id} For
-  /// projects.locations.workflowTemplates, the resource name of the template
-  /// has the following format:
-  /// projects/{project_id}/locations/{location}/workflowTemplates/{template_id}
-  ///
-  /// Output only.
-  core.String? template;
-
-  /// The version of template at the time of workflow instantiation.
-  ///
-  /// Output only.
-  core.int? version;
-
-  WorkflowMetadata();
-
-  WorkflowMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('clusterUuid')) {
-      clusterUuid = _json['clusterUuid'] as core.String;
-    }
-    if (_json.containsKey('createCluster')) {
-      createCluster = ClusterOperation.fromJson(
-          _json['createCluster'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('dagEndTime')) {
-      dagEndTime = _json['dagEndTime'] as core.String;
-    }
-    if (_json.containsKey('dagStartTime')) {
-      dagStartTime = _json['dagStartTime'] as core.String;
-    }
-    if (_json.containsKey('dagTimeout')) {
-      dagTimeout = _json['dagTimeout'] as core.String;
-    }
-    if (_json.containsKey('deleteCluster')) {
-      deleteCluster = ClusterOperation.fromJson(
-          _json['deleteCluster'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('graph')) {
-      graph = WorkflowGraph.fromJson(
-          _json['graph'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('parameters')) {
-      parameters =
-          (_json['parameters'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('template')) {
-      template = _json['template'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (clusterName != null) 'clusterName': clusterName!,
-        if (clusterUuid != null) 'clusterUuid': clusterUuid!,
-        if (createCluster != null) 'createCluster': createCluster!.toJson(),
-        if (dagEndTime != null) 'dagEndTime': dagEndTime!,
-        if (dagStartTime != null) 'dagStartTime': dagStartTime!,
-        if (dagTimeout != null) 'dagTimeout': dagTimeout!,
-        if (deleteCluster != null) 'deleteCluster': deleteCluster!.toJson(),
-        if (endTime != null) 'endTime': endTime!,
-        if (graph != null) 'graph': graph!.toJson(),
-        if (parameters != null) 'parameters': parameters!,
-        if (startTime != null) 'startTime': startTime!,
-        if (state != null) 'state': state!,
-        if (template != null) 'template': template!,
-        if (version != null) 'version': version!,
-      };
-}
-
-/// The workflow node.
-class WorkflowNode {
-  /// The error detail.
-  ///
-  /// Output only.
-  core.String? error;
-
-  /// The job id; populated after the node enters RUNNING state.
-  ///
-  /// Output only.
-  core.String? jobId;
-
-  /// Node's prerequisite nodes.
-  ///
-  /// Output only.
-  core.List<core.String>? prerequisiteStepIds;
-
-  /// The node state.
-  ///
-  /// Output only.
-  /// Possible string values are:
-  /// - "NODE_STATE_UNSPECIFIED" : State is unspecified.
-  /// - "BLOCKED" : The node is awaiting prerequisite node to finish.
-  /// - "RUNNABLE" : The node is runnable but not running.
-  /// - "RUNNING" : The node is running.
-  /// - "COMPLETED" : The node completed successfully.
-  /// - "FAILED" : The node failed. A node can be marked FAILED because its
-  /// ancestor or peer failed.
-  core.String? state;
-
-  /// The name of the node.
-  ///
-  /// Output only.
-  core.String? stepId;
-
-  WorkflowNode();
-
-  WorkflowNode.fromJson(core.Map _json) {
-    if (_json.containsKey('error')) {
-      error = _json['error'] as core.String;
-    }
-    if (_json.containsKey('jobId')) {
-      jobId = _json['jobId'] as core.String;
-    }
-    if (_json.containsKey('prerequisiteStepIds')) {
-      prerequisiteStepIds = (_json['prerequisiteStepIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('stepId')) {
-      stepId = _json['stepId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (error != null) 'error': error!,
-        if (jobId != null) 'jobId': jobId!,
-        if (prerequisiteStepIds != null)
-          'prerequisiteStepIds': prerequisiteStepIds!,
-        if (state != null) 'state': state!,
-        if (stepId != null) 'stepId': stepId!,
       };
 }
 
@@ -8478,63 +9745,70 @@ class WorkflowTemplate {
   /// Optional.
   core.int? version;
 
-  WorkflowTemplate();
+  WorkflowTemplate({
+    this.createTime,
+    this.dagTimeout,
+    this.id,
+    this.jobs,
+    this.labels,
+    this.name,
+    this.parameters,
+    this.placement,
+    this.updateTime,
+    this.version,
+  });
 
-  WorkflowTemplate.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('dagTimeout')) {
-      dagTimeout = _json['dagTimeout'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('jobs')) {
-      jobs = (_json['jobs'] as core.List)
-          .map<OrderedJob>((value) =>
-              OrderedJob.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parameters')) {
-      parameters = (_json['parameters'] as core.List)
-          .map<TemplateParameter>((value) => TemplateParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('placement')) {
-      placement = WorkflowTemplatePlacement.fromJson(
-          _json['placement'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  WorkflowTemplate.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          dagTimeout: _json.containsKey('dagTimeout')
+              ? _json['dagTimeout'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          jobs: _json.containsKey('jobs')
+              ? (_json['jobs'] as core.List)
+                  .map((value) => OrderedJob.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.List)
+                  .map((value) => TemplateParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          placement: _json.containsKey('placement')
+              ? WorkflowTemplatePlacement.fromJson(
+                  _json['placement'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (dagTimeout != null) 'dagTimeout': dagTimeout!,
         if (id != null) 'id': id!,
-        if (jobs != null) 'jobs': jobs!.map((value) => value.toJson()).toList(),
+        if (jobs != null) 'jobs': jobs!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
-        if (parameters != null)
-          'parameters': parameters!.map((value) => value.toJson()).toList(),
-        if (placement != null) 'placement': placement!.toJson(),
+        if (parameters != null) 'parameters': parameters!,
+        if (placement != null) 'placement': placement!,
         if (updateTime != null) 'updateTime': updateTime!,
         if (version != null) 'version': version!,
       };
@@ -8552,23 +9826,26 @@ class WorkflowTemplatePlacement {
   /// A cluster that is managed by the workflow.
   ManagedCluster? managedCluster;
 
-  WorkflowTemplatePlacement();
+  WorkflowTemplatePlacement({
+    this.clusterSelector,
+    this.managedCluster,
+  });
 
-  WorkflowTemplatePlacement.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterSelector')) {
-      clusterSelector = ClusterSelector.fromJson(
-          _json['clusterSelector'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('managedCluster')) {
-      managedCluster = ManagedCluster.fromJson(
-          _json['managedCluster'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  WorkflowTemplatePlacement.fromJson(core.Map _json)
+      : this(
+          clusterSelector: _json.containsKey('clusterSelector')
+              ? ClusterSelector.fromJson(_json['clusterSelector']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          managedCluster: _json.containsKey('managedCluster')
+              ? ManagedCluster.fromJson(_json['managedCluster']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusterSelector != null)
-          'clusterSelector': clusterSelector!.toJson(),
-        if (managedCluster != null) 'managedCluster': managedCluster!.toJson(),
+        if (clusterSelector != null) 'clusterSelector': clusterSelector!,
+        if (managedCluster != null) 'managedCluster': managedCluster!,
       };
 }
 
@@ -8613,22 +9890,25 @@ class YarnApplication {
   /// Optional.
   core.String? trackingUrl;
 
-  YarnApplication();
+  YarnApplication({
+    this.name,
+    this.progress,
+    this.state,
+    this.trackingUrl,
+  });
 
-  YarnApplication.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('progress')) {
-      progress = (_json['progress'] as core.num).toDouble();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('trackingUrl')) {
-      trackingUrl = _json['trackingUrl'] as core.String;
-    }
-  }
+  YarnApplication.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          progress: _json.containsKey('progress')
+              ? (_json['progress'] as core.num).toDouble()
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          trackingUrl: _json.containsKey('trackingUrl')
+              ? _json['trackingUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,

@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -40,7 +42,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Manages lightweight user-provided functions executed in response to events.
 class CloudFunctionsApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -189,11 +192,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -266,7 +273,7 @@ class ProjectsLocationsFunctionsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -311,7 +318,7 @@ class ProjectsLocationsFunctionsResource {
     core.String location, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -396,7 +403,7 @@ class ProjectsLocationsFunctionsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -454,7 +461,7 @@ class ProjectsLocationsFunctionsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -523,12 +530,16 @@ class ProjectsLocationsFunctionsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/functions/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -625,7 +636,8 @@ class ProjectsLocationsFunctionsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/functions/\[^/\]+$`.
   ///
-  /// [updateMask] - Required list of fields to be updated in this request.
+  /// [updateMask] - Required. The list of fields in `CloudFunction` that have
+  /// to be updated.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -643,7 +655,7 @@ class ProjectsLocationsFunctionsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -689,7 +701,7 @@ class ProjectsLocationsFunctionsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -736,7 +748,7 @@ class ProjectsLocationsFunctionsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -782,24 +794,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -810,53 +824,22 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
+typedef AuditLogConfig = $AuditLogConfig;
 
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
-
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -888,30 +871,33 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
@@ -924,13 +910,14 @@ class CallFunctionRequest {
   /// Required.
   core.String? data;
 
-  CallFunctionRequest();
+  CallFunctionRequest({
+    this.data,
+  });
 
-  CallFunctionRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-  }
+  CallFunctionRequest.fromJson(core.Map _json)
+      : this(
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (data != null) 'data': data!,
@@ -953,19 +940,23 @@ class CallFunctionResponse {
   /// context.
   core.String? result;
 
-  CallFunctionResponse();
+  CallFunctionResponse({
+    this.error,
+    this.executionId,
+    this.result,
+  });
 
-  CallFunctionResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('error')) {
-      error = _json['error'] as core.String;
-    }
-    if (_json.containsKey('executionId')) {
-      executionId = _json['executionId'] as core.String;
-    }
-    if (_json.containsKey('result')) {
-      result = _json['result'] as core.String;
-    }
-  }
+  CallFunctionResponse.fromJson(core.Map _json)
+      : this(
+          error:
+              _json.containsKey('error') ? _json['error'] as core.String : null,
+          executionId: _json.containsKey('executionId')
+              ? _json['executionId'] as core.String
+              : null,
+          result: _json.containsKey('result')
+              ? _json['result'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (error != null) 'error': error!,
@@ -977,7 +968,7 @@ class CallFunctionResponse {
 /// Describes a Cloud Function that contains user computation executed in
 /// response to an event.
 ///
-/// It encapsulate function and triggers configurations.
+/// It encapsulate function and triggers configurations. Next tag: 36
 class CloudFunction {
   /// The amount of memory in MB available for a function.
   ///
@@ -992,22 +983,59 @@ class CloudFunction {
   /// Output only.
   core.String? buildId;
 
+  /// The Cloud Build Name of the function deployment.
+  ///
+  /// `projects//locations//builds/`.
+  ///
+  /// Output only.
+  core.String? buildName;
+
   /// Name of the Cloud Build Custom Worker Pool that should be used to build
   /// the function.
   ///
   /// The format of this field is
   /// `projects/{project}/locations/{region}/workerPools/{workerPool}` where
-  /// {project} and {region} are the project id and region respectively where
-  /// the worker pool is defined and {workerPool} is the short name of the
-  /// worker pool. If the project id is not the same as the function, then the
-  /// Cloud Functions Service Agent
-  /// (service-@gcf-admin-robot.iam.gserviceaccount.com) must be granted the
+  /// `{project}` and `{region}` are the project id and region respectively
+  /// where the worker pool is defined and `{workerPool}` is the short name of
+  /// the worker pool. If the project id is not the same as the function, then
+  /// the Cloud Functions Service Agent
+  /// (`service-@gcf-admin-robot.iam.gserviceaccount.com`) must be granted the
   /// role Cloud Build Custom Workers Builder
-  /// (roles/cloudbuild.customworkers.builder) in the project.
+  /// (`roles/cloudbuild.customworkers.builder`) in the project.
   core.String? buildWorkerPool;
 
   /// User-provided description of a function.
   core.String? description;
+
+  /// Docker Registry to use for this deployment.
+  ///
+  /// If `docker_repository` field is specified, this field will be
+  /// automatically set as `ARTIFACT_REGISTRY`. If unspecified, it currently
+  /// defaults to `CONTAINER_REGISTRY`. This field may be overridden by the
+  /// backend for eligible deployments.
+  /// Possible string values are:
+  /// - "DOCKER_REGISTRY_UNSPECIFIED" : Unspecified.
+  /// - "CONTAINER_REGISTRY" : Docker images will be stored in multi-regional
+  /// Container Registry repositories named `gcf`.
+  /// - "ARTIFACT_REGISTRY" : Docker images will be stored in regional Artifact
+  /// Registry repositories. By default, GCF will create and use repositories
+  /// named `gcf-artifacts` in every region in which a function is deployed. But
+  /// the repository to use can also be specified by the user using the
+  /// `docker_repository` field.
+  core.String? dockerRegistry;
+
+  /// User managed repository created in Artifact Registry optionally with a
+  /// customer managed encryption key.
+  ///
+  /// If specified, deployments will use Artifact Registry. If unspecified and
+  /// the deployment is eligible to use Artifact Registry, GCF will create and
+  /// use a repository named 'gcf-artifacts' for every deployed region. This is
+  /// the repository to which the function docker image will be pushed after it
+  /// is built by Cloud Build. It must match the pattern
+  /// `projects/{project}/locations/{location}/repositories/{repository}`.
+  /// Cross-project repositories are not supported. Cross-location repositories
+  /// are not supported. Repository format must be 'DOCKER'.
+  core.String? dockerRepository;
 
   /// The name of the function (as defined in source code) that will be
   /// executed.
@@ -1038,6 +1066,31 @@ class CloudFunction {
   /// and through GCLB.
   core.String? ingressSettings;
 
+  /// Resource name of a KMS crypto key (managed by the user) used to
+  /// encrypt/decrypt function resources.
+  ///
+  /// It must match the pattern
+  /// `projects/{project}/locations/{location}/keyRings/{key_ring}/cryptoKeys/{crypto_key}`.
+  /// If specified, you must also provide an artifact registry repository using
+  /// the `docker_repository` field that was created with the same KMS crypto
+  /// key. The following service accounts need to be granted the role 'Cloud KMS
+  /// CryptoKey Encrypter/Decrypter
+  /// (roles/cloudkms.cryptoKeyEncrypterDecrypter)' on the
+  /// Key/KeyRing/Project/Organization (least access preferred). 1. Google Cloud
+  /// Functions service account
+  /// (service-{project_number}@gcf-admin-robot.iam.gserviceaccount.com) -
+  /// Required to protect the function's image. 2. Google Storage service
+  /// account
+  /// (service-{project_number}@gs-project-accounts.iam.gserviceaccount.com) -
+  /// Required to protect the function's source code. If this service account
+  /// does not exist, deploying a function without a KMS key or retrieving the
+  /// service agent name provisions it. For more information, see
+  /// https://cloud.google.com/storage/docs/projects#service-agents and
+  /// https://cloud.google.com/storage/docs/getting-service-agent#gsutil. Google
+  /// Cloud Functions delegates access to service agents to protect function
+  /// resources in internal projects that are not accessible by the end user.
+  core.String? kmsKeyName;
+
   /// Labels associated with this Cloud Function.
   core.Map<core.String, core.String>? labels;
 
@@ -1053,6 +1106,10 @@ class CloudFunction {
   /// Guide for more details.
   core.int? maxInstances;
 
+  /// A lower bound for the number function instances that may coexist at a
+  /// given time.
+  core.int? minInstances;
+
   /// A user-defined name of the function.
   ///
   /// Function names must be unique globally and match pattern `projects / *
@@ -1066,8 +1123,8 @@ class CloudFunction {
   /// the same project. Otherwise, it must belong to a project within the same
   /// organization. The format of this field is either
   /// `projects/{project}/global/networks/{network}` or `{network}`, where
-  /// {project} is a project id where the network is defined, and {network} is
-  /// the short name of the network. This field is mutually exclusive with
+  /// `{project}` is a project id where the network is defined, and `{network}`
+  /// is the short name of the network. This field is mutually exclusive with
   /// `vpc_connector` and will be replaced by it. See
   /// [the VPC documentation](https://cloud.google.com/compute/docs/vpc) for
   /// more information on connecting Cloud projects.
@@ -1077,15 +1134,22 @@ class CloudFunction {
   ///
   /// Required when deploying a new function, optional when updating an existing
   /// function. For a complete list of possible choices, see the \[`gcloud`
-  /// command reference\](/sdk/gcloud/reference/functions/deploy#--runtime).
+  /// command
+  /// reference\](https://cloud.google.com/sdk/gcloud/reference/functions/deploy#--runtime).
   core.String? runtime;
+
+  /// Secret environment variables configuration.
+  core.List<SecretEnvVar>? secretEnvironmentVariables;
+
+  /// Secret volumes configuration.
+  core.List<SecretVolume>? secretVolumes;
 
   /// The email of the function's service account.
   ///
   /// If empty, defaults to `{project_id}@appspot.gserviceaccount.com`.
   core.String? serviceAccountEmail;
 
-  /// The Google Cloud Storage URL, starting with gs://, pointing to the zip
+  /// The Google Cloud Storage URL, starting with `gs://`, pointing to the zip
   /// archive which contains the function.
   core.String? sourceArchiveUrl;
 
@@ -1099,7 +1163,10 @@ class CloudFunction {
   core.String? sourceToken;
 
   /// The Google Cloud Storage signed URL used for source uploading, generated
-  /// by google.cloud.functions.v1.GenerateUploadUrl
+  /// by calling \[google.cloud.functions.v1.GenerateUploadUrl\].
+  ///
+  /// The signature is validated on write methods (Create, Update) The signature
+  /// is stripped from the Function object on read methods (Get, List)
   core.String? sourceUploadUrl;
 
   /// Status of the function deployment.
@@ -1155,135 +1222,204 @@ class CloudFunction {
   /// traffic from the function.
   core.String? vpcConnectorEgressSettings;
 
-  CloudFunction();
+  CloudFunction({
+    this.availableMemoryMb,
+    this.buildEnvironmentVariables,
+    this.buildId,
+    this.buildName,
+    this.buildWorkerPool,
+    this.description,
+    this.dockerRegistry,
+    this.dockerRepository,
+    this.entryPoint,
+    this.environmentVariables,
+    this.eventTrigger,
+    this.httpsTrigger,
+    this.ingressSettings,
+    this.kmsKeyName,
+    this.labels,
+    this.maxInstances,
+    this.minInstances,
+    this.name,
+    this.network,
+    this.runtime,
+    this.secretEnvironmentVariables,
+    this.secretVolumes,
+    this.serviceAccountEmail,
+    this.sourceArchiveUrl,
+    this.sourceRepository,
+    this.sourceToken,
+    this.sourceUploadUrl,
+    this.status,
+    this.timeout,
+    this.updateTime,
+    this.versionId,
+    this.vpcConnector,
+    this.vpcConnectorEgressSettings,
+  });
 
-  CloudFunction.fromJson(core.Map _json) {
-    if (_json.containsKey('availableMemoryMb')) {
-      availableMemoryMb = _json['availableMemoryMb'] as core.int;
-    }
-    if (_json.containsKey('buildEnvironmentVariables')) {
-      buildEnvironmentVariables = (_json['buildEnvironmentVariables']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('buildId')) {
-      buildId = _json['buildId'] as core.String;
-    }
-    if (_json.containsKey('buildWorkerPool')) {
-      buildWorkerPool = _json['buildWorkerPool'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('entryPoint')) {
-      entryPoint = _json['entryPoint'] as core.String;
-    }
-    if (_json.containsKey('environmentVariables')) {
-      environmentVariables =
-          (_json['environmentVariables'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('eventTrigger')) {
-      eventTrigger = EventTrigger.fromJson(
-          _json['eventTrigger'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('httpsTrigger')) {
-      httpsTrigger = HttpsTrigger.fromJson(
-          _json['httpsTrigger'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('ingressSettings')) {
-      ingressSettings = _json['ingressSettings'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('maxInstances')) {
-      maxInstances = _json['maxInstances'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('network')) {
-      network = _json['network'] as core.String;
-    }
-    if (_json.containsKey('runtime')) {
-      runtime = _json['runtime'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountEmail')) {
-      serviceAccountEmail = _json['serviceAccountEmail'] as core.String;
-    }
-    if (_json.containsKey('sourceArchiveUrl')) {
-      sourceArchiveUrl = _json['sourceArchiveUrl'] as core.String;
-    }
-    if (_json.containsKey('sourceRepository')) {
-      sourceRepository = SourceRepository.fromJson(
-          _json['sourceRepository'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceToken')) {
-      sourceToken = _json['sourceToken'] as core.String;
-    }
-    if (_json.containsKey('sourceUploadUrl')) {
-      sourceUploadUrl = _json['sourceUploadUrl'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('timeout')) {
-      timeout = _json['timeout'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('versionId')) {
-      versionId = _json['versionId'] as core.String;
-    }
-    if (_json.containsKey('vpcConnector')) {
-      vpcConnector = _json['vpcConnector'] as core.String;
-    }
-    if (_json.containsKey('vpcConnectorEgressSettings')) {
-      vpcConnectorEgressSettings =
-          _json['vpcConnectorEgressSettings'] as core.String;
-    }
-  }
+  CloudFunction.fromJson(core.Map _json)
+      : this(
+          availableMemoryMb: _json.containsKey('availableMemoryMb')
+              ? _json['availableMemoryMb'] as core.int
+              : null,
+          buildEnvironmentVariables:
+              _json.containsKey('buildEnvironmentVariables')
+                  ? (_json['buildEnvironmentVariables']
+                          as core.Map<core.String, core.dynamic>)
+                      .map(
+                      (key, item) => core.MapEntry(
+                        key,
+                        item as core.String,
+                      ),
+                    )
+                  : null,
+          buildId: _json.containsKey('buildId')
+              ? _json['buildId'] as core.String
+              : null,
+          buildName: _json.containsKey('buildName')
+              ? _json['buildName'] as core.String
+              : null,
+          buildWorkerPool: _json.containsKey('buildWorkerPool')
+              ? _json['buildWorkerPool'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          dockerRegistry: _json.containsKey('dockerRegistry')
+              ? _json['dockerRegistry'] as core.String
+              : null,
+          dockerRepository: _json.containsKey('dockerRepository')
+              ? _json['dockerRepository'] as core.String
+              : null,
+          entryPoint: _json.containsKey('entryPoint')
+              ? _json['entryPoint'] as core.String
+              : null,
+          environmentVariables: _json.containsKey('environmentVariables')
+              ? (_json['environmentVariables']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          eventTrigger: _json.containsKey('eventTrigger')
+              ? EventTrigger.fromJson(
+                  _json['eventTrigger'] as core.Map<core.String, core.dynamic>)
+              : null,
+          httpsTrigger: _json.containsKey('httpsTrigger')
+              ? HttpsTrigger.fromJson(
+                  _json['httpsTrigger'] as core.Map<core.String, core.dynamic>)
+              : null,
+          ingressSettings: _json.containsKey('ingressSettings')
+              ? _json['ingressSettings'] as core.String
+              : null,
+          kmsKeyName: _json.containsKey('kmsKeyName')
+              ? _json['kmsKeyName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          maxInstances: _json.containsKey('maxInstances')
+              ? _json['maxInstances'] as core.int
+              : null,
+          minInstances: _json.containsKey('minInstances')
+              ? _json['minInstances'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+          runtime: _json.containsKey('runtime')
+              ? _json['runtime'] as core.String
+              : null,
+          secretEnvironmentVariables:
+              _json.containsKey('secretEnvironmentVariables')
+                  ? (_json['secretEnvironmentVariables'] as core.List)
+                      .map((value) => SecretEnvVar.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          secretVolumes: _json.containsKey('secretVolumes')
+              ? (_json['secretVolumes'] as core.List)
+                  .map((value) => SecretVolume.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceAccountEmail: _json.containsKey('serviceAccountEmail')
+              ? _json['serviceAccountEmail'] as core.String
+              : null,
+          sourceArchiveUrl: _json.containsKey('sourceArchiveUrl')
+              ? _json['sourceArchiveUrl'] as core.String
+              : null,
+          sourceRepository: _json.containsKey('sourceRepository')
+              ? SourceRepository.fromJson(_json['sourceRepository']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceToken: _json.containsKey('sourceToken')
+              ? _json['sourceToken'] as core.String
+              : null,
+          sourceUploadUrl: _json.containsKey('sourceUploadUrl')
+              ? _json['sourceUploadUrl'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          timeout: _json.containsKey('timeout')
+              ? _json['timeout'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          versionId: _json.containsKey('versionId')
+              ? _json['versionId'] as core.String
+              : null,
+          vpcConnector: _json.containsKey('vpcConnector')
+              ? _json['vpcConnector'] as core.String
+              : null,
+          vpcConnectorEgressSettings:
+              _json.containsKey('vpcConnectorEgressSettings')
+                  ? _json['vpcConnectorEgressSettings'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (availableMemoryMb != null) 'availableMemoryMb': availableMemoryMb!,
         if (buildEnvironmentVariables != null)
           'buildEnvironmentVariables': buildEnvironmentVariables!,
         if (buildId != null) 'buildId': buildId!,
+        if (buildName != null) 'buildName': buildName!,
         if (buildWorkerPool != null) 'buildWorkerPool': buildWorkerPool!,
         if (description != null) 'description': description!,
+        if (dockerRegistry != null) 'dockerRegistry': dockerRegistry!,
+        if (dockerRepository != null) 'dockerRepository': dockerRepository!,
         if (entryPoint != null) 'entryPoint': entryPoint!,
         if (environmentVariables != null)
           'environmentVariables': environmentVariables!,
-        if (eventTrigger != null) 'eventTrigger': eventTrigger!.toJson(),
-        if (httpsTrigger != null) 'httpsTrigger': httpsTrigger!.toJson(),
+        if (eventTrigger != null) 'eventTrigger': eventTrigger!,
+        if (httpsTrigger != null) 'httpsTrigger': httpsTrigger!,
         if (ingressSettings != null) 'ingressSettings': ingressSettings!,
+        if (kmsKeyName != null) 'kmsKeyName': kmsKeyName!,
         if (labels != null) 'labels': labels!,
         if (maxInstances != null) 'maxInstances': maxInstances!,
+        if (minInstances != null) 'minInstances': minInstances!,
         if (name != null) 'name': name!,
         if (network != null) 'network': network!,
         if (runtime != null) 'runtime': runtime!,
+        if (secretEnvironmentVariables != null)
+          'secretEnvironmentVariables': secretEnvironmentVariables!,
+        if (secretVolumes != null) 'secretVolumes': secretVolumes!,
         if (serviceAccountEmail != null)
           'serviceAccountEmail': serviceAccountEmail!,
         if (sourceArchiveUrl != null) 'sourceArchiveUrl': sourceArchiveUrl!,
-        if (sourceRepository != null)
-          'sourceRepository': sourceRepository!.toJson(),
+        if (sourceRepository != null) 'sourceRepository': sourceRepository!,
         if (sourceToken != null) 'sourceToken': sourceToken!,
         if (sourceUploadUrl != null) 'sourceUploadUrl': sourceUploadUrl!,
         if (status != null) 'status': status!,
@@ -1339,27 +1475,33 @@ class EventTrigger {
   /// types in the `google.storage` namespace.
   core.String? service;
 
-  EventTrigger();
+  EventTrigger({
+    this.eventType,
+    this.failurePolicy,
+    this.resource,
+    this.service,
+  });
 
-  EventTrigger.fromJson(core.Map _json) {
-    if (_json.containsKey('eventType')) {
-      eventType = _json['eventType'] as core.String;
-    }
-    if (_json.containsKey('failurePolicy')) {
-      failurePolicy = FailurePolicy.fromJson(
-          _json['failurePolicy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resource')) {
-      resource = _json['resource'] as core.String;
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  EventTrigger.fromJson(core.Map _json)
+      : this(
+          eventType: _json.containsKey('eventType')
+              ? _json['eventType'] as core.String
+              : null,
+          failurePolicy: _json.containsKey('failurePolicy')
+              ? FailurePolicy.fromJson(
+                  _json['failurePolicy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resource: _json.containsKey('resource')
+              ? _json['resource'] as core.String
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (eventType != null) 'eventType': eventType!,
-        if (failurePolicy != null) 'failurePolicy': failurePolicy!.toJson(),
+        if (failurePolicy != null) 'failurePolicy': failurePolicy!,
         if (resource != null) 'resource': resource!,
         if (service != null) 'service': service!,
       };
@@ -1371,7 +1513,7 @@ class EventTrigger {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -1383,56 +1525,7 @@ class EventTrigger {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Describes the policy in case of function's execution failure.
 ///
@@ -1441,17 +1534,20 @@ class FailurePolicy {
   /// If specified, then the function will be retried in case of a failure.
   Retry? retry;
 
-  FailurePolicy();
+  FailurePolicy({
+    this.retry,
+  });
 
-  FailurePolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('retry')) {
-      retry =
-          Retry.fromJson(_json['retry'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  FailurePolicy.fromJson(core.Map _json)
+      : this(
+          retry: _json.containsKey('retry')
+              ? Retry.fromJson(
+                  _json['retry'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (retry != null) 'retry': retry!.toJson(),
+        if (retry != null) 'retry': retry!,
       };
 }
 
@@ -1462,13 +1558,16 @@ class GenerateDownloadUrlRequest {
   /// If not set, default, current version is used.
   core.String? versionId;
 
-  GenerateDownloadUrlRequest();
+  GenerateDownloadUrlRequest({
+    this.versionId,
+  });
 
-  GenerateDownloadUrlRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('versionId')) {
-      versionId = _json['versionId'] as core.String;
-    }
-  }
+  GenerateDownloadUrlRequest.fromJson(core.Map _json)
+      : this(
+          versionId: _json.containsKey('versionId')
+              ? _json['versionId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (versionId != null) 'versionId': versionId!,
@@ -1481,13 +1580,16 @@ class GenerateDownloadUrlResponse {
   /// function source code download.
   core.String? downloadUrl;
 
-  GenerateDownloadUrlResponse();
+  GenerateDownloadUrlResponse({
+    this.downloadUrl,
+  });
 
-  GenerateDownloadUrlResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('downloadUrl')) {
-      downloadUrl = _json['downloadUrl'] as core.String;
-    }
-  }
+  GenerateDownloadUrlResponse.fromJson(core.Map _json)
+      : this(
+          downloadUrl: _json.containsKey('downloadUrl')
+              ? _json['downloadUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (downloadUrl != null) 'downloadUrl': downloadUrl!,
@@ -1495,15 +1597,7 @@ class GenerateDownloadUrlResponse {
 }
 
 /// Request of `GenerateSourceUploadUrl` method.
-class GenerateUploadUrlRequest {
-  GenerateUploadUrlRequest();
-
-  GenerateUploadUrlRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef GenerateUploadUrlRequest = $Empty;
 
 /// Response of `GenerateSourceUploadUrl` method.
 class GenerateUploadUrlResponse {
@@ -1513,13 +1607,16 @@ class GenerateUploadUrlResponse {
   /// The uploaded file should be a zip archive which contains a function.
   core.String? uploadUrl;
 
-  GenerateUploadUrlResponse();
+  GenerateUploadUrlResponse({
+    this.uploadUrl,
+  });
 
-  GenerateUploadUrlResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('uploadUrl')) {
-      uploadUrl = _json['uploadUrl'] as core.String;
-    }
-  }
+  GenerateUploadUrlResponse.fromJson(core.Map _json)
+      : this(
+          uploadUrl: _json.containsKey('uploadUrl')
+              ? _json['uploadUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (uploadUrl != null) 'uploadUrl': uploadUrl!,
@@ -1544,16 +1641,18 @@ class HttpsTrigger {
   /// Output only.
   core.String? url;
 
-  HttpsTrigger();
+  HttpsTrigger({
+    this.securityLevel,
+    this.url,
+  });
 
-  HttpsTrigger.fromJson(core.Map _json) {
-    if (_json.containsKey('securityLevel')) {
-      securityLevel = _json['securityLevel'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  HttpsTrigger.fromJson(core.Map _json)
+      : this(
+          securityLevel: _json.containsKey('securityLevel')
+              ? _json['securityLevel'] as core.String
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (securityLevel != null) 'securityLevel': securityLevel!,
@@ -1576,28 +1675,32 @@ class ListFunctionsResponse {
   /// The response does not include any functions from these locations.
   core.List<core.String>? unreachable;
 
-  ListFunctionsResponse();
+  ListFunctionsResponse({
+    this.functions,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListFunctionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('functions')) {
-      functions = (_json['functions'] as core.List)
-          .map<CloudFunction>((value) => CloudFunction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListFunctionsResponse.fromJson(core.Map _json)
+      : this(
+          functions: _json.containsKey('functions')
+              ? (_json['functions'] as core.List)
+                  .map((value) => CloudFunction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (functions != null)
-          'functions': functions!.map((value) => value.toJson()).toList(),
+        if (functions != null) 'functions': functions!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -1611,23 +1714,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1640,95 +1746,32 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// This resource represents a long-running operation that is the result of a
 /// network API call.
@@ -1751,7 +1794,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1771,126 +1814,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Metadata describing an Operation
-class OperationMetadataV1 {
-  /// The Cloud Build ID of the function created or updated by an API call.
-  ///
-  /// This field is only populated for Create and Update operations.
-  core.String? buildId;
-
-  /// The original request that started the operation.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? request;
-
-  /// An identifier for Firebase function sources.
-  ///
-  /// Disclaimer: This field is only supported for Firebase function
-  /// deployments.
-  core.String? sourceToken;
-
-  /// Target of the operation - for example
-  /// projects/project-1/locations/region-1/functions/function-1
-  core.String? target;
-
-  /// Type of operation.
-  /// Possible string values are:
-  /// - "OPERATION_UNSPECIFIED" : Unknown operation type.
-  /// - "CREATE_FUNCTION" : Triggered by CreateFunction call
-  /// - "UPDATE_FUNCTION" : Triggered by UpdateFunction call
-  /// - "DELETE_FUNCTION" : Triggered by DeleteFunction call.
-  core.String? type;
-
-  /// The last update timestamp of the operation.
-  core.String? updateTime;
-
-  /// Version id of the function created or updated by an API call.
-  ///
-  /// This field is only populated for Create and Update operations.
-  core.String? versionId;
-
-  OperationMetadataV1();
-
-  OperationMetadataV1.fromJson(core.Map _json) {
-    if (_json.containsKey('buildId')) {
-      buildId = _json['buildId'] as core.String;
-    }
-    if (_json.containsKey('request')) {
-      request = (_json['request'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('sourceToken')) {
-      sourceToken = _json['sourceToken'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('versionId')) {
-      versionId = _json['versionId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (buildId != null) 'buildId': buildId!,
-        if (request != null) 'request': request!,
-        if (sourceToken != null) 'sourceToken': sourceToken!,
-        if (target != null) 'target': target!,
-        if (type != null) 'type': type!,
-        if (updateTime != null) 'updateTime': updateTime!,
-        if (versionId != null) 'versionId': versionId!,
       };
 }
 
@@ -1898,15 +1853,15 @@ class OperationMetadataV1 {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -1915,25 +1870,30 @@ class OperationMetadataV1 {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -1975,34 +1935,36 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -2013,14 +1975,164 @@ class Policy {
 /// A function execution will be retried on any failure. A failed execution will
 /// be retried up to 7 days with an exponential backoff (capped at 10 seconds).
 /// Retried execution is charged as any other execution.
-class Retry {
-  Retry();
+typedef Retry = $Empty;
 
-  Retry.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Configuration for a secret environment variable.
+///
+/// It has the information necessary to fetch the secret value from secret
+/// manager and expose it as an environment variable. Secret value is not a part
+/// of the configuration. Secret values are only fetched when a new clone
+/// starts.
+class SecretEnvVar {
+  /// Name of the environment variable.
+  core.String? key;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// Project identifier (preferrably project number but can also be the project
+  /// ID) of the project that contains the secret.
+  ///
+  /// If not set, it will be populated with the function's project assuming that
+  /// the secret exists in the same project as of the function.
+  core.String? projectId;
+
+  /// Name of the secret in secret manager (not the full resource name).
+  core.String? secret;
+
+  /// Version of the secret (version number or the string 'latest').
+  ///
+  /// It is recommended to use a numeric version for secret environment
+  /// variables as any updates to the secret value is not reflected until new
+  /// clones start.
+  core.String? version;
+
+  SecretEnvVar({
+    this.key,
+    this.projectId,
+    this.secret,
+    this.version,
+  });
+
+  SecretEnvVar.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          secret: _json.containsKey('secret')
+              ? _json['secret'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (key != null) 'key': key!,
+        if (projectId != null) 'projectId': projectId!,
+        if (secret != null) 'secret': secret!,
+        if (version != null) 'version': version!,
+      };
+}
+
+/// Configuration for a single version.
+class SecretVersion {
+  /// Relative path of the file under the mount path where the secret value for
+  /// this version will be fetched and made available.
+  ///
+  /// For example, setting the mount_path as '/etc/secrets' and path as
+  /// `/secret_foo` would mount the secret value file at
+  /// `/etc/secrets/secret_foo`.
+  core.String? path;
+
+  /// Version of the secret (version number or the string 'latest').
+  ///
+  /// It is preferrable to use `latest` version with secret volumes as secret
+  /// value changes are reflected immediately.
+  core.String? version;
+
+  SecretVersion({
+    this.path,
+    this.version,
+  });
+
+  SecretVersion.fromJson(core.Map _json)
+      : this(
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (path != null) 'path': path!,
+        if (version != null) 'version': version!,
+      };
+}
+
+/// Configuration for a secret volume.
+///
+/// It has the information necessary to fetch the secret value from secret
+/// manager and make it available as files mounted at the requested paths within
+/// the application container. Secret value is not a part of the configuration.
+/// Every filesystem read operation performs a lookup in secret manager to
+/// retrieve the secret value.
+class SecretVolume {
+  /// The path within the container to mount the secret volume.
+  ///
+  /// For example, setting the mount_path as `/etc/secrets` would mount the
+  /// secret value files under the `/etc/secrets` directory. This directory will
+  /// also be completely shadowed and unavailable to mount any other secrets.
+  /// Recommended mount paths: /etc/secrets Restricted mount paths: /cloudsql,
+  /// /dev/log, /pod, /proc, /var/log
+  core.String? mountPath;
+
+  /// Project identifier (preferrably project number but can also be the project
+  /// ID) of the project that contains the secret.
+  ///
+  /// If not set, it will be populated with the function's project assuming that
+  /// the secret exists in the same project as of the function.
+  core.String? projectId;
+
+  /// Name of the secret in secret manager (not the full resource name).
+  core.String? secret;
+
+  /// List of secret versions to mount for this secret.
+  ///
+  /// If empty, the `latest` version of the secret will be made available in a
+  /// file named after the secret under the mount point.
+  core.List<SecretVersion>? versions;
+
+  SecretVolume({
+    this.mountPath,
+    this.projectId,
+    this.secret,
+    this.versions,
+  });
+
+  SecretVolume.fromJson(core.Map _json)
+      : this(
+          mountPath: _json.containsKey('mountPath')
+              ? _json['mountPath'] as core.String
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          secret: _json.containsKey('secret')
+              ? _json['secret'] as core.String
+              : null,
+          versions: _json.containsKey('versions')
+              ? (_json['versions'] as core.List)
+                  .map((value) => SecretVersion.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mountPath != null) 'mountPath': mountPath!,
+        if (projectId != null) 'projectId': projectId!,
+        if (secret != null) 'secret': secret!,
+        if (versions != null) 'versions': versions!,
+      };
 }
 
 /// Request message for `SetIamPolicy` method.
@@ -2038,20 +2150,24 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -2081,16 +2197,18 @@ class SourceRepository {
   /// use the main directory.
   core.String? url;
 
-  SourceRepository();
+  SourceRepository({
+    this.deployedUrl,
+    this.url,
+  });
 
-  SourceRepository.fromJson(core.Map _json) {
-    if (_json.containsKey('deployedUrl')) {
-      deployedUrl = _json['deployedUrl'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  SourceRepository.fromJson(core.Map _json)
+      : this(
+          deployedUrl: _json.containsKey('deployedUrl')
+              ? _json['deployedUrl'] as core.String
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deployedUrl != null) 'deployedUrl': deployedUrl!,
@@ -2105,94 +2223,10 @@ class SourceRepository {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;

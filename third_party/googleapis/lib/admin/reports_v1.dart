@@ -18,7 +18,7 @@
 /// resources like user, groups etc. It also provides audit and usage reports of
 /// domain.
 ///
-/// For more information, see <http://developers.google.com/admin-sdk/>
+/// For more information, see <https://developers.google.com/admin-sdk/>
 ///
 /// Create an instance of [ReportsApi] to access these resources:
 ///
@@ -89,27 +89,30 @@ class ActivitiesResource {
   ///
   /// [userKey] - Represents the profile ID or the user email for which the data
   /// should be filtered. Can be `all` for all information, or `userKey` for a
-  /// user's unique G Suite profile ID or their primary email address.
+  /// user's unique Google Workspace profile ID or their primary email address.
+  /// Must not be a deleted user. For a deleted user, call `users.list` in
+  /// Directory API with `showDeleted=true`, then use the returned `ID` as the
+  /// `userKey`.
   ///
   /// [applicationName] - Application name for which the events are to be
   /// retrieved.
   /// Value must have pattern
-  /// `(access_transparency)|(admin)|(calendar)|(chat)|(chrome)|(context_aware_access)|(data_studio)|(drive)|(gcp)|(gplus)|(groups)|(groups_enterprise)|(jamboard)|(login)|(meet)|(mobile)|(rules)|(saml)|(token)|(user_accounts)`.
+  /// `(access_transparency)|(admin)|(calendar)|(chat)|(chrome)|(context_aware_access)|(data_studio)|(drive)|(gcp)|(gplus)|(groups)|(groups_enterprise)|(jamboard)|(keep)|(login)|(meet)|(mobile)|(rules)|(saml)|(token)|(user_accounts)`.
   /// Possible string values are:
-  /// - "application_name_undefined"
-  /// - "access_transparency" : The G Suite Access Transparency activity reports
-  /// return information about different types of Access Transparency activity
-  /// events.
+  /// - "access_transparency" : The Google Workspace Access Transparency
+  /// activity reports return information about different types of Access
+  /// Transparency activity events.
   /// - "admin" : The Admin console application's activity reports return
   /// account information about different types of administrator activity
   /// events.
-  /// - "calendar" : The G Suite Calendar application's activity reports return
+  /// - "calendar" : The Google Calendar application's activity reports return
   /// information about various Calendar activity events.
   /// - "chat" : The Chat activity reports return information about various Chat
   /// activity events.
   /// - "drive" : The Google Drive application's activity reports return
   /// information about various Google Drive activity events. The Drive activity
-  /// report is only available for G Suite Business customers.
+  /// report is only available for Google Workspace Business and Enterprise
+  /// customers.
   /// - "gcp" : The Google Cloud Platform application's activity reports return
   /// information about various GCP activity events.
   /// - "gplus" : The Google+ application's activity reports return information
@@ -122,13 +125,13 @@ class ActivitiesResource {
   /// various Jamboard activity events.
   /// - "login" : The Login application's activity reports return account
   /// information about different types of Login activity events.
-  /// - "meet" : The Meet Audit activity report return information about
+  /// - "meet" : The Meet Audit activity report returns information about
   /// different types of Meet Audit activity events.
-  /// - "mobile" : The Mobile Audit activity report return information about
-  /// different types of Mobile Audit activity events.
-  /// - "rules" : The Rules activity report return information about different
+  /// - "mobile" : The Device Audit activity report returns information about
+  /// different types of Device Audit activity events.
+  /// - "rules" : The Rules activity report returns information about different
   /// types of Rules activity events.
-  /// - "saml" : The SAML activity report return information about different
+  /// - "saml" : The SAML activity report returns information about different
   /// types of SAML activity events.
   /// - "token" : The Token application's activity reports return account
   /// information about different types of Token activity events.
@@ -138,10 +141,13 @@ class ActivitiesResource {
   /// - "context_aware_access" : The Context-aware access activity reports
   /// return information about users' access denied events due to Context-aware
   /// access rules.
-  /// - "chrome" : The Chrome activity reports return information about unsafe
-  /// events reported in the context of the WebProtect features of BeyondCorp.
+  /// - "chrome" : The Chrome activity reports return information about Chrome
+  /// browser and Chrome OS events.
   /// - "data_studio" : The Data Studio activity reports return information
   /// about various types of Data Studio activity events.
+  /// - "keep" : The Keep application's activity reports return information
+  /// about various Google Keep activity events. The Keep activity report is
+  /// only available for Google Workspace Business and Enterprise customers.
   ///
   /// [actorIpAddress] - The Internet Protocol (IP) Address of host where the
   /// event was performed. This is an additional way to filter a report's
@@ -172,12 +178,12 @@ class ActivitiesResource {
   /// `(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(?:\.(\d+))?(?:(Z)|(\[-+\])(\d\d):(\d\d))`.
   ///
   /// [eventName] - The name of the event being queried by the API. Each
-  /// `eventName` is related to a specific G Suite service or feature which the
-  /// API organizes into types of events. An example is the Google Calendar
-  /// events in the Admin console application's reports. The Calendar Settings
-  /// `type` structure has all of the Calendar `eventName` activities reported
-  /// by the API. When an administrator changes a Calendar setting, the API
-  /// reports this activity in the Calendar Settings `type` and `eventName`
+  /// `eventName` is related to a specific Google Workspace service or feature
+  /// which the API organizes into types of events. An example is the Google
+  /// Calendar events in the Admin console application's reports. The Calendar
+  /// Settings `type` structure has all of the Calendar `eventName` activities
+  /// reported by the API. When an administrator changes a Calendar setting, the
+  /// API reports this activity in the Calendar Settings `type` and `eventName`
   /// parameters. For more information about `eventName` query strings and
   /// parameters, see the list of event names for various applications above in
   /// `applicationName`.
@@ -190,16 +196,16 @@ class ActivitiesResource {
   /// filtered request's parameter does not belong to the `eventName`. For more
   /// information about `eventName` parameters, see the list of event names for
   /// various applications above in `applicationName`. In the following Admin
-  /// Activity example, the <> operator is URL-encoded in the request's query
+  /// Activity example, the \<\> operator is URL-encoded in the request's query
   /// string (%3C%3E): GET...&eventName=CHANGE_CALENDAR_SETTING
   /// &filters=NEW_VALUE%3C%3EREAD_ONLY_ACCESS In the following Drive example,
   /// the list can be a view or edit event's `doc_id` parameter with a value
-  /// that is manipulated by an 'equal to' (==) or 'not equal to' (<>)
+  /// that is manipulated by an 'equal to' (==) or 'not equal to' (\<\>)
   /// relational operator. In the first example, the report returns each edited
   /// document's `doc_id`. In the second example, the report returns each viewed
   /// document's `doc_id` that equals the value 12345 and does not return any
-  /// viewed document's which have a `doc_id` value of 98765. The <> operator is
-  /// URL-encoded in the request's query string (%3C%3E):
+  /// viewed document's which have a `doc_id` value of 98765. The \<\> operator
+  /// is URL-encoded in the request's query string (%3C%3E):
   /// GET...&eventName=edit&filters=doc_id
   /// GET...&eventName=view&filters=doc_id==12345,doc_id%3C%3E98765 The
   /// relational operators include: - `==` - 'equal to'. - `<>` - 'not equal
@@ -214,10 +220,10 @@ class ActivitiesResource {
   /// returns the response corresponding to the remaining valid request
   /// parameters. If no parameters are requested, all parameters are returned.
   /// Value must have pattern
-  /// `(.+\[<,<=,==,>=,>,<>\].+,)*(.+\[<,<=,==,>=,>,<>\].+)`.
+  /// `(.+\[\<,\<=,==,\>=,\>,\<\>\].+,)*(.+\[\<,\<=,==,\>=,\>,\<\>\].+)`.
   ///
   /// [groupIdFilter] - Comma separated group ids (obfuscated) on which user
-  /// activities are filtered, i.e, the response will contain activities for
+  /// activities are filtered, i.e. the response will contain activities for
   /// only those users that are a part of at least one of the group ids
   /// mentioned here. Format: "id:abc123,id:xyz456"
   /// Value must have pattern `(id:\[a-z0-9\]+(,id:\[a-z0-9\]+)*)`.
@@ -311,27 +317,30 @@ class ActivitiesResource {
   ///
   /// [userKey] - Represents the profile ID or the user email for which the data
   /// should be filtered. Can be `all` for all information, or `userKey` for a
-  /// user's unique G Suite profile ID or their primary email address.
+  /// user's unique Google Workspace profile ID or their primary email address.
+  /// Must not be a deleted user. For a deleted user, call `users.list` in
+  /// Directory API with `showDeleted=true`, then use the returned `ID` as the
+  /// `userKey`.
   ///
   /// [applicationName] - Application name for which the events are to be
   /// retrieved.
   /// Value must have pattern
-  /// `(access_transparency)|(admin)|(calendar)|(chat)|(chrome)|(context_aware_access)|(data_studio)|(drive)|(gcp)|(gplus)|(groups)|(groups_enterprise)|(jamboard)|(login)|(meet)|(mobile)|(rules)|(saml)|(token)|(user_accounts)`.
+  /// `(access_transparency)|(admin)|(calendar)|(chat)|(chrome)|(context_aware_access)|(data_studio)|(drive)|(gcp)|(gplus)|(groups)|(groups_enterprise)|(jamboard)|(keep)|(login)|(meet)|(mobile)|(rules)|(saml)|(token)|(user_accounts)`.
   /// Possible string values are:
-  /// - "application_name_unspecified"
-  /// - "access_transparency" : The G Suite Access Transparency activity reports
-  /// return information about different types of Access Transparency activity
-  /// events.
+  /// - "access_transparency" : The Google Workspace Access Transparency
+  /// activity reports return information about different types of Access
+  /// Transparency activity events.
   /// - "admin" : The Admin console application's activity reports return
   /// account information about different types of administrator activity
   /// events.
-  /// - "calendar" : The G Suite Calendar application's activity reports return
+  /// - "calendar" : The Google Calendar application's activity reports return
   /// information about various Calendar activity events.
   /// - "chat" : The Chat activity reports return information about various Chat
   /// activity events.
   /// - "drive" : The Google Drive application's activity reports return
   /// information about various Google Drive activity events. The Drive activity
-  /// report is only available for G Suite Business customers.
+  /// report is only available for Google Workspace Business and Google
+  /// Workspace Enterprise customers.
   /// - "gcp" : The Google Cloud Platform application's activity reports return
   /// information about various GCP activity events.
   /// - "gplus" : The Google+ application's activity reports return information
@@ -344,13 +353,13 @@ class ActivitiesResource {
   /// various Jamboard activity events.
   /// - "login" : The Login application's activity reports return account
   /// information about different types of Login activity events.
-  /// - "meet" : The Meet Audit activity report return information about
+  /// - "meet" : The Meet Audit activity report returns information about
   /// different types of Meet Audit activity events.
-  /// - "mobile" : The Mobile Audit activity report return information about
-  /// different types of Mobile Audit activity events.
-  /// - "rules" : The Rules activity report return information about different
+  /// - "mobile" : The Device Audit activity report returns information about
+  /// different types of Device Audit activity events.
+  /// - "rules" : The Rules activity report returns information about different
   /// types of Rules activity events.
-  /// - "saml" : The SAML activity report return information about different
+  /// - "saml" : The SAML activity report returns information about different
   /// types of SAML activity events.
   /// - "token" : The Token application's activity reports return account
   /// information about different types of Token activity events.
@@ -360,10 +369,13 @@ class ActivitiesResource {
   /// - "context_aware_access" : The Context-aware access activity reports
   /// return information about users' access denied events due to Context-aware
   /// access rules.
-  /// - "chrome" : The Chrome activity reports return information about unsafe
-  /// events reported in the context of the WebProtect features of BeyondCorp.
+  /// - "chrome" : The Chrome activity reports return information about Chrome
+  /// browser and Chrome OS events.
   /// - "data_studio" : The Data Studio activity reports return information
   /// about various types of Data Studio activity events.
+  /// - "keep" : The Keep application's activity reports return information
+  /// about various Google Keep activity events. The Keep activity report is
+  /// only available for Google Workspace Business and Enterprise customers.
   ///
   /// [actorIpAddress] - The Internet Protocol (IP) Address of host where the
   /// event was performed. This is an additional way to filter a report's
@@ -394,12 +406,12 @@ class ActivitiesResource {
   /// `(\d\d\d\d)-(\d\d)-(\d\d)T(\d\d):(\d\d):(\d\d)(?:\.(\d+))?(?:(Z)|(\[-+\])(\d\d):(\d\d))`.
   ///
   /// [eventName] - The name of the event being queried by the API. Each
-  /// `eventName` is related to a specific G Suite service or feature which the
-  /// API organizes into types of events. An example is the Google Calendar
-  /// events in the Admin console application's reports. The Calendar Settings
-  /// `type` structure has all of the Calendar `eventName` activities reported
-  /// by the API. When an administrator changes a Calendar setting, the API
-  /// reports this activity in the Calendar Settings `type` and `eventName`
+  /// `eventName` is related to a specific Google Workspace service or feature
+  /// which the API organizes into types of events. An example is the Google
+  /// Calendar events in the Admin console application's reports. The Calendar
+  /// Settings `type` structure has all of the Calendar `eventName` activities
+  /// reported by the API. When an administrator changes a Calendar setting, the
+  /// API reports this activity in the Calendar Settings `type` and `eventName`
   /// parameters. For more information about `eventName` query strings and
   /// parameters, see the list of event names for various applications above in
   /// `applicationName`.
@@ -412,16 +424,16 @@ class ActivitiesResource {
   /// filtered request's parameter does not belong to the `eventName`. For more
   /// information about `eventName` parameters, see the list of event names for
   /// various applications above in `applicationName`. In the following Admin
-  /// Activity example, the <> operator is URL-encoded in the request's query
+  /// Activity example, the \<\> operator is URL-encoded in the request's query
   /// string (%3C%3E): GET...&eventName=CHANGE_CALENDAR_SETTING
   /// &filters=NEW_VALUE%3C%3EREAD_ONLY_ACCESS In the following Drive example,
   /// the list can be a view or edit event's `doc_id` parameter with a value
-  /// that is manipulated by an 'equal to' (==) or 'not equal to' (<>)
+  /// that is manipulated by an 'equal to' (==) or 'not equal to' (\<\>)
   /// relational operator. In the first example, the report returns each edited
   /// document's `doc_id`. In the second example, the report returns each viewed
   /// document's `doc_id` that equals the value 12345 and does not return any
-  /// viewed document's which have a `doc_id` value of 98765. The <> operator is
-  /// URL-encoded in the request's query string (%3C%3E):
+  /// viewed document's which have a `doc_id` value of 98765. The \<\> operator
+  /// is URL-encoded in the request's query string (%3C%3E):
   /// GET...&eventName=edit&filters=doc_id
   /// GET...&eventName=view&filters=doc_id==12345,doc_id%3C%3E98765 The
   /// relational operators include: - `==` - 'equal to'. - `<>` - 'not equal
@@ -436,10 +448,10 @@ class ActivitiesResource {
   /// returns the response corresponding to the remaining valid request
   /// parameters. If no parameters are requested, all parameters are returned.
   /// Value must have pattern
-  /// `(.+\[<,<=,==,>=,>,<>\].+,)*(.+\[<,<=,==,>=,>,<>\].+)`.
+  /// `(.+\[\<,\<=,==,\>=,\>,\<\>\].+,)*(.+\[\<,\<=,==,\>=,\>,\<\>\].+)`.
   ///
   /// [groupIdFilter] - Comma separated group ids (obfuscated) on which user
-  /// activities are filtered, i.e, the response will contain activities for
+  /// activities are filtered, i.e. the response will contain activities for
   /// only those users that are a part of at least one of the group ids
   /// mentioned here. Format: "id:abc123,id:xyz456"
   /// Value must have pattern `(id:\[a-z0-9\]+(,id:\[a-z0-9\]+)*)`.
@@ -496,7 +508,7 @@ class ActivitiesResource {
     core.String? startTime,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (actorIpAddress != null) 'actorIpAddress': [actorIpAddress],
       if (customerId != null) 'customerId': [customerId],
@@ -550,7 +562,7 @@ class ChannelsResource {
     Channel request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -667,16 +679,13 @@ class EntityUsageReportsResource {
   /// [entityType] - Represents the type of entity for the report.
   /// Value must have pattern `(gplus_communities)`.
   /// Possible string values are:
-  /// - "entity_type_undefined"
   /// - "gplus_communities" : Returns a report on Google+ communities.
   ///
-  /// [entityKey] - Represents the key of the object to filter the data with.
-  /// Possible string values are:
-  /// - "entityKeyUndefined"
-  /// - "all" : Returns activity events for all users.
-  /// - "entityKey" : Represents an app-specific identifier for the entity. For
-  /// details on how to obtain the `entityKey` for a particular `entityType`,
-  /// see the Entities Usage parameters reference guides.
+  /// [entityKey] - Represents the key of the object to filter the data with. It
+  /// is a string which can take the value `all` to get activity events for all
+  /// users, or any other value for an app-specific entity. For details on how
+  /// to obtain the `entityKey` for a particular `entityType`, see the Entities
+  /// Usage parameters reference guides.
   ///
   /// [date] - Represents the date the usage occurred. The timestamp is in the
   /// ISO 8601 format, yyyy-mm-dd. We recommend you use your account's time zone
@@ -703,7 +712,7 @@ class EntityUsageReportsResource {
   /// (%3E). - `>=` - 'greater than or equal to'. It is URL-encoded (%3E=).
   /// Filters can only be applied to numeric parameters.
   /// Value must have pattern
-  /// `(((gplus)):\[a-z0-9_\]+\[<,<=,==,>=,>,!=\]\[^,\]+,)*(((gplus)):\[a-z0-9_\]+\[<,<=,==,>=,>,!=\]\[^,\]+)`.
+  /// `(((gplus)):\[a-z0-9_\]+\[\<,\<=,==,\>=,\>,!=\]\[^,\]+,)*(((gplus)):\[a-z0-9_\]+\[\<,\<=,==,\>=,\>,!=\]\[^,\]+)`.
   ///
   /// [maxResults] - Determines how many activity records are shown on each
   /// response page. For example, if the request sets `maxResults=1` and the
@@ -794,7 +803,10 @@ class UserUsageReportResource {
   ///
   /// [userKey] - Represents the profile ID or the user email for which the data
   /// should be filtered. Can be `all` for all information, or `userKey` for a
-  /// user's unique G Suite profile ID or their primary email address.
+  /// user's unique Google Workspace profile ID or their primary email address.
+  /// Must not be a deleted user. For a deleted user, call `users.list` in
+  /// Directory API with `showDeleted=true`, then use the returned `ID` as the
+  /// `userKey`.
   ///
   /// [date] - Represents the date the usage occurred. The timestamp is in the
   /// ISO 8601 format, yyyy-mm-dd. We recommend you use your account's time zone
@@ -821,10 +833,10 @@ class UserUsageReportResource {
   /// 'greater than'. It is URL-encoded (%3E). - `>=` - 'greater than or equal
   /// to'. It is URL-encoded (%3E=).
   /// Value must have pattern
-  /// `(((accounts)|(classroom)|(cros)|(gmail)|(calendar)|(docs)|(gplus)|(sites)|(device_management)|(drive)):\[a-z0-9_\]+\[<,<=,==,>=,>,!=\]\[^,\]+,)*(((accounts)|(classroom)|(cros)|(gmail)|(calendar)|(docs)|(gplus)|(sites)|(device_management)|(drive)):\[a-z0-9_\]+\[<,<=,==,>=,>,!=\]\[^,\]+)`.
+  /// `(((accounts)|(classroom)|(cros)|(gmail)|(calendar)|(docs)|(gplus)|(sites)|(device_management)|(drive)):\[a-z0-9_\]+\[\<,\<=,==,\>=,\>,!=\]\[^,\]+,)*(((accounts)|(classroom)|(cros)|(gmail)|(calendar)|(docs)|(gplus)|(sites)|(device_management)|(drive)):\[a-z0-9_\]+\[\<,\<=,==,\>=,\>,!=\]\[^,\]+)`.
   ///
   /// [groupIdFilter] - Comma separated group ids (obfuscated) on which user
-  /// activities are filtered, i.e, the response will contain activities for
+  /// activities are filtered, i.e. the response will contain activities for
   /// only those users that are a part of at least one of the group ids
   /// mentioned here. Format: "id:abc123,id:xyz456"
   /// Value must have pattern `(id:\[a-z0-9\]+(,id:\[a-z0-9\]+)*)`.
@@ -931,30 +943,31 @@ class Activities {
   /// string.
   core.String? nextPageToken;
 
-  Activities();
+  Activities({
+    this.etag,
+    this.items,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  Activities.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Activity>((value) =>
-              Activity.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  Activities.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Activity.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -976,27 +989,31 @@ class ActivityActor {
   /// an identifier for robot accounts.
   core.String? key;
 
-  /// The unique G Suite profile ID of the actor.
+  /// The unique Google Workspace profile ID of the actor.
   ///
-  /// May be absent if the actor is not a G Suite user.
+  /// This value might be absent if the actor is not a Google Workspace user, or
+  /// may be the number 105250506097979753968 which acts as a placeholder ID.
   core.String? profileId;
 
-  ActivityActor();
+  ActivityActor({
+    this.callerType,
+    this.email,
+    this.key,
+    this.profileId,
+  });
 
-  ActivityActor.fromJson(core.Map _json) {
-    if (_json.containsKey('callerType')) {
-      callerType = _json['callerType'] as core.String;
-    }
-    if (_json.containsKey('email')) {
-      email = _json['email'] as core.String;
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('profileId')) {
-      profileId = _json['profileId'] as core.String;
-    }
-  }
+  ActivityActor.fromJson(core.Map _json)
+      : this(
+          callerType: _json.containsKey('callerType')
+              ? _json['callerType'] as core.String
+              : null,
+          email:
+              _json.containsKey('email') ? _json['email'] as core.String : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          profileId: _json.containsKey('profileId')
+              ? _json['profileId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (callerType != null) 'callerType': callerType!,
@@ -1015,20 +1032,22 @@ class ActivityEventsParametersMessageValue {
   /// Parameter values
   core.List<NestedParameter>? parameter;
 
-  ActivityEventsParametersMessageValue();
+  ActivityEventsParametersMessageValue({
+    this.parameter,
+  });
 
-  ActivityEventsParametersMessageValue.fromJson(core.Map _json) {
-    if (_json.containsKey('parameter')) {
-      parameter = (_json['parameter'] as core.List)
-          .map<NestedParameter>((value) => NestedParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ActivityEventsParametersMessageValue.fromJson(core.Map _json)
+      : this(
+          parameter: _json.containsKey('parameter')
+              ? (_json['parameter'] as core.List)
+                  .map((value) => NestedParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (parameter != null)
-          'parameter': parameter!.map((value) => value.toJson()).toList(),
+        if (parameter != null) 'parameter': parameter!,
       };
 }
 
@@ -1036,20 +1055,22 @@ class ActivityEventsParametersMultiMessageValue {
   /// Parameter values
   core.List<NestedParameter>? parameter;
 
-  ActivityEventsParametersMultiMessageValue();
+  ActivityEventsParametersMultiMessageValue({
+    this.parameter,
+  });
 
-  ActivityEventsParametersMultiMessageValue.fromJson(core.Map _json) {
-    if (_json.containsKey('parameter')) {
-      parameter = (_json['parameter'] as core.List)
-          .map<NestedParameter>((value) => NestedParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ActivityEventsParametersMultiMessageValue.fromJson(core.Map _json)
+      : this(
+          parameter: _json.containsKey('parameter')
+              ? (_json['parameter'] as core.List)
+                  .map((value) => NestedParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (parameter != null)
-          'parameter': parameter!.map((value) => value.toJson()).toList(),
+        if (parameter != null) 'parameter': parameter!,
       };
 }
 
@@ -1082,52 +1103,57 @@ class ActivityEventsParameters {
   /// String value of the parameter.
   core.String? value;
 
-  ActivityEventsParameters();
+  ActivityEventsParameters({
+    this.boolValue,
+    this.intValue,
+    this.messageValue,
+    this.multiIntValue,
+    this.multiMessageValue,
+    this.multiValue,
+    this.name,
+    this.value,
+  });
 
-  ActivityEventsParameters.fromJson(core.Map _json) {
-    if (_json.containsKey('boolValue')) {
-      boolValue = _json['boolValue'] as core.bool;
-    }
-    if (_json.containsKey('intValue')) {
-      intValue = _json['intValue'] as core.String;
-    }
-    if (_json.containsKey('messageValue')) {
-      messageValue = ActivityEventsParametersMessageValue.fromJson(
-          _json['messageValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('multiIntValue')) {
-      multiIntValue = (_json['multiIntValue'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('multiMessageValue')) {
-      multiMessageValue = (_json['multiMessageValue'] as core.List)
-          .map<ActivityEventsParametersMultiMessageValue>((value) =>
-              ActivityEventsParametersMultiMessageValue.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('multiValue')) {
-      multiValue = (_json['multiValue'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  ActivityEventsParameters.fromJson(core.Map _json)
+      : this(
+          boolValue: _json.containsKey('boolValue')
+              ? _json['boolValue'] as core.bool
+              : null,
+          intValue: _json.containsKey('intValue')
+              ? _json['intValue'] as core.String
+              : null,
+          messageValue: _json.containsKey('messageValue')
+              ? ActivityEventsParametersMessageValue.fromJson(
+                  _json['messageValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          multiIntValue: _json.containsKey('multiIntValue')
+              ? (_json['multiIntValue'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          multiMessageValue: _json.containsKey('multiMessageValue')
+              ? (_json['multiMessageValue'] as core.List)
+                  .map((value) =>
+                      ActivityEventsParametersMultiMessageValue.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          multiValue: _json.containsKey('multiValue')
+              ? (_json['multiValue'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (boolValue != null) 'boolValue': boolValue!,
         if (intValue != null) 'intValue': intValue!,
-        if (messageValue != null) 'messageValue': messageValue!.toJson(),
+        if (messageValue != null) 'messageValue': messageValue!,
         if (multiIntValue != null) 'multiIntValue': multiIntValue!,
-        if (multiMessageValue != null)
-          'multiMessageValue':
-              multiMessageValue!.map((value) => value.toJson()).toList(),
+        if (multiMessageValue != null) 'multiMessageValue': multiMessageValue!,
         if (multiValue != null) 'multiValue': multiValue!,
         if (name != null) 'name': name!,
         if (value != null) 'value': value!,
@@ -1138,15 +1164,15 @@ class ActivityEvents {
   /// Name of the event.
   ///
   /// This is the specific name of the activity reported by the API. And each
-  /// `eventName` is related to a specific G Suite service or feature which the
-  /// API organizes into types of events. For `eventName` request parameters in
-  /// general: - If no `eventName` is given, the report returns all possible
-  /// instances of an `eventName`. - When you request an `eventName`, the API's
-  /// response returns all activities which contain that `eventName`. It is
-  /// possible that the returned activities will have other `eventName`
-  /// properties in addition to the one requested. For more information about
-  /// `eventName` properties, see the list of event names for various
-  /// applications above in `applicationName`.
+  /// `eventName` is related to a specific Google Workspace service or feature
+  /// which the API organizes into types of events. For `eventName` request
+  /// parameters in general: - If no `eventName` is given, the report returns
+  /// all possible instances of an `eventName`. - When you request an
+  /// `eventName`, the API's response returns all activities which contain that
+  /// `eventName`. It is possible that the returned activities will have other
+  /// `eventName` properties in addition to the one requested. For more
+  /// information about `eventName` properties, see the list of event names for
+  /// various applications above in `applicationName`.
   core.String? name;
 
   /// Parameter value pairs for various applications.
@@ -1157,34 +1183,34 @@ class ActivityEvents {
 
   /// Type of event.
   ///
-  /// The G Suite service or feature that an administrator changes is identified
-  /// in the `type` property which identifies an event using the `eventName`
-  /// property. For a full list of the API's `type` categories, see the list of
-  /// event names for various applications above in `applicationName`.
+  /// The Google Workspace service or feature that an administrator changes is
+  /// identified in the `type` property which identifies an event using the
+  /// `eventName` property. For a full list of the API's `type` categories, see
+  /// the list of event names for various applications above in
+  /// `applicationName`.
   core.String? type;
 
-  ActivityEvents();
+  ActivityEvents({
+    this.name,
+    this.parameters,
+    this.type,
+  });
 
-  ActivityEvents.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parameters')) {
-      parameters = (_json['parameters'] as core.List)
-          .map<ActivityEventsParameters>((value) =>
-              ActivityEventsParameters.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ActivityEvents.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.List)
+                  .map((value) => ActivityEventsParameters.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (parameters != null)
-          'parameters': parameters!.map((value) => value.toJson()).toList(),
+        if (parameters != null) 'parameters': parameters!,
         if (type != null) 'type': type!,
       };
 }
@@ -1197,7 +1223,7 @@ class ActivityId {
   /// `applicationName`.
   core.String? applicationName;
 
-  /// The unique identifier for a G suite account.
+  /// The unique identifier for a Google Workspace account.
   core.String? customerId;
 
   /// Time of occurrence of the activity.
@@ -1208,27 +1234,33 @@ class ActivityId {
   /// Unique qualifier if multiple events have the same time.
   core.String? uniqueQualifier;
 
-  ActivityId();
+  ActivityId({
+    this.applicationName,
+    this.customerId,
+    this.time,
+    this.uniqueQualifier,
+  });
 
-  ActivityId.fromJson(core.Map _json) {
-    if (_json.containsKey('applicationName')) {
-      applicationName = _json['applicationName'] as core.String;
-    }
-    if (_json.containsKey('customerId')) {
-      customerId = _json['customerId'] as core.String;
-    }
-    if (_json.containsKey('time')) {
-      time = core.DateTime.parse(_json['time'] as core.String);
-    }
-    if (_json.containsKey('uniqueQualifier')) {
-      uniqueQualifier = _json['uniqueQualifier'] as core.String;
-    }
-  }
+  ActivityId.fromJson(core.Map _json)
+      : this(
+          applicationName: _json.containsKey('applicationName')
+              ? _json['applicationName'] as core.String
+              : null,
+          customerId: _json.containsKey('customerId')
+              ? _json['customerId'] as core.String
+              : null,
+          time: _json.containsKey('time')
+              ? core.DateTime.parse(_json['time'] as core.String)
+              : null,
+          uniqueQualifier: _json.containsKey('uniqueQualifier')
+              ? _json['uniqueQualifier'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (applicationName != null) 'applicationName': applicationName!,
         if (customerId != null) 'customerId': customerId!,
-        if (time != null) 'time': time!.toIso8601String(),
+        if (time != null) 'time': time!.toUtc().toIso8601String(),
         if (uniqueQualifier != null) 'uniqueQualifier': uniqueQualifier!,
       };
 }
@@ -1249,10 +1281,11 @@ class Activity {
 
   /// IP address of the user doing the action.
   ///
-  /// This is the Internet Protocol (IP) address of the user when logging into G
-  /// Suite which may or may not reflect the user's physical location. For
-  /// example, the IP address can be the user's proxy server's address or a
-  /// virtual private network (VPN) address. The API supports IPv4 and IPv6.
+  /// This is the Internet Protocol (IP) address of the user when logging into
+  /// Google Workspace, which may or may not reflect the user's physical
+  /// location. For example, the IP address can be the user's proxy server's
+  /// address or a virtual private network (VPN) address. The API supports IPv4
+  /// and IPv6.
   core.String? ipAddress;
 
   /// The type of API resource.
@@ -1266,43 +1299,47 @@ class Activity {
   /// owner.
   core.String? ownerDomain;
 
-  Activity();
+  Activity({
+    this.actor,
+    this.etag,
+    this.events,
+    this.id,
+    this.ipAddress,
+    this.kind,
+    this.ownerDomain,
+  });
 
-  Activity.fromJson(core.Map _json) {
-    if (_json.containsKey('actor')) {
-      actor = ActivityActor.fromJson(
-          _json['actor'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('events')) {
-      events = (_json['events'] as core.List)
-          .map<ActivityEvents>((value) => ActivityEvents.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = ActivityId.fromJson(
-          _json['id'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('ipAddress')) {
-      ipAddress = _json['ipAddress'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('ownerDomain')) {
-      ownerDomain = _json['ownerDomain'] as core.String;
-    }
-  }
+  Activity.fromJson(core.Map _json)
+      : this(
+          actor: _json.containsKey('actor')
+              ? ActivityActor.fromJson(
+                  _json['actor'] as core.Map<core.String, core.dynamic>)
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          events: _json.containsKey('events')
+              ? (_json['events'] as core.List)
+                  .map((value) => ActivityEvents.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          id: _json.containsKey('id')
+              ? ActivityId.fromJson(
+                  _json['id'] as core.Map<core.String, core.dynamic>)
+              : null,
+          ipAddress: _json.containsKey('ipAddress')
+              ? _json['ipAddress'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          ownerDomain: _json.containsKey('ownerDomain')
+              ? _json['ownerDomain'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (actor != null) 'actor': actor!.toJson(),
+        if (actor != null) 'actor': actor!,
         if (etag != null) 'etag': etag!,
-        if (events != null)
-          'events': events!.map((value) => value.toJson()).toList(),
-        if (id != null) 'id': id!.toJson(),
+        if (events != null) 'events': events!,
+        if (id != null) 'id': id!,
         if (ipAddress != null) 'ipAddress': ipAddress!,
         if (kind != null) 'kind': kind!,
         if (ownerDomain != null) 'ownerDomain': ownerDomain!,
@@ -1356,45 +1393,50 @@ class Channel {
   /// The value should be set to `"web_hook"`.
   core.String? type;
 
-  Channel();
+  Channel({
+    this.address,
+    this.expiration,
+    this.id,
+    this.kind,
+    this.params,
+    this.payload,
+    this.resourceId,
+    this.resourceUri,
+    this.token,
+    this.type,
+  });
 
-  Channel.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = _json['address'] as core.String;
-    }
-    if (_json.containsKey('expiration')) {
-      expiration = _json['expiration'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('params')) {
-      params = (_json['params'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('payload')) {
-      payload = _json['payload'] as core.bool;
-    }
-    if (_json.containsKey('resourceId')) {
-      resourceId = _json['resourceId'] as core.String;
-    }
-    if (_json.containsKey('resourceUri')) {
-      resourceUri = _json['resourceUri'] as core.String;
-    }
-    if (_json.containsKey('token')) {
-      token = _json['token'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Channel.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? _json['address'] as core.String
+              : null,
+          expiration: _json.containsKey('expiration')
+              ? _json['expiration'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          params: _json.containsKey('params')
+              ? (_json['params'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.bool
+              : null,
+          resourceId: _json.containsKey('resourceId')
+              ? _json['resourceId'] as core.String
+              : null,
+          resourceUri: _json.containsKey('resourceUri')
+              ? _json['resourceUri'] as core.String
+              : null,
+          token:
+              _json.containsKey('token') ? _json['token'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (address != null) 'address': address!,
@@ -1433,37 +1475,43 @@ class NestedParameter {
   /// String value of the parameter.
   core.String? value;
 
-  NestedParameter();
+  NestedParameter({
+    this.boolValue,
+    this.intValue,
+    this.multiBoolValue,
+    this.multiIntValue,
+    this.multiValue,
+    this.name,
+    this.value,
+  });
 
-  NestedParameter.fromJson(core.Map _json) {
-    if (_json.containsKey('boolValue')) {
-      boolValue = _json['boolValue'] as core.bool;
-    }
-    if (_json.containsKey('intValue')) {
-      intValue = _json['intValue'] as core.String;
-    }
-    if (_json.containsKey('multiBoolValue')) {
-      multiBoolValue = (_json['multiBoolValue'] as core.List)
-          .map<core.bool>((value) => value as core.bool)
-          .toList();
-    }
-    if (_json.containsKey('multiIntValue')) {
-      multiIntValue = (_json['multiIntValue'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('multiValue')) {
-      multiValue = (_json['multiValue'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  NestedParameter.fromJson(core.Map _json)
+      : this(
+          boolValue: _json.containsKey('boolValue')
+              ? _json['boolValue'] as core.bool
+              : null,
+          intValue: _json.containsKey('intValue')
+              ? _json['intValue'] as core.String
+              : null,
+          multiBoolValue: _json.containsKey('multiBoolValue')
+              ? (_json['multiBoolValue'] as core.List)
+                  .map((value) => value as core.bool)
+                  .toList()
+              : null,
+          multiIntValue: _json.containsKey('multiIntValue')
+              ? (_json['multiIntValue'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          multiValue: _json.containsKey('multiValue')
+              ? (_json['multiValue'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (boolValue != null) 'boolValue': boolValue!,
@@ -1493,7 +1541,7 @@ class UsageReportEntity {
   /// Output only.
   core.String? entityId;
 
-  /// The user's immutable G Suite profile identifier.
+  /// The user's immutable Google Workspace profile identifier.
   ///
   /// Output only.
   core.String? profileId;
@@ -1512,25 +1560,30 @@ class UsageReportEntity {
   /// Output only.
   core.String? userEmail;
 
-  UsageReportEntity();
+  UsageReportEntity({
+    this.customerId,
+    this.entityId,
+    this.profileId,
+    this.type,
+    this.userEmail,
+  });
 
-  UsageReportEntity.fromJson(core.Map _json) {
-    if (_json.containsKey('customerId')) {
-      customerId = _json['customerId'] as core.String;
-    }
-    if (_json.containsKey('entityId')) {
-      entityId = _json['entityId'] as core.String;
-    }
-    if (_json.containsKey('profileId')) {
-      profileId = _json['profileId'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('userEmail')) {
-      userEmail = _json['userEmail'] as core.String;
-    }
-  }
+  UsageReportEntity.fromJson(core.Map _json)
+      : this(
+          customerId: _json.containsKey('customerId')
+              ? _json['customerId'] as core.String
+              : null,
+          entityId: _json.containsKey('entityId')
+              ? _json['entityId'] as core.String
+              : null,
+          profileId: _json.containsKey('profileId')
+              ? _json['profileId'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          userEmail: _json.containsKey('userEmail')
+              ? _json['userEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (customerId != null) 'customerId': customerId!,
@@ -1562,7 +1615,7 @@ class UsageReportParameters {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? msgValue;
+  core.List<core.Map<core.String, core.Object?>>? msgValue;
 
   /// The name of the parameter.
   ///
@@ -1575,42 +1628,41 @@ class UsageReportParameters {
   /// Output only.
   core.String? stringValue;
 
-  UsageReportParameters();
+  UsageReportParameters({
+    this.boolValue,
+    this.datetimeValue,
+    this.intValue,
+    this.msgValue,
+    this.name,
+    this.stringValue,
+  });
 
-  UsageReportParameters.fromJson(core.Map _json) {
-    if (_json.containsKey('boolValue')) {
-      boolValue = _json['boolValue'] as core.bool;
-    }
-    if (_json.containsKey('datetimeValue')) {
-      datetimeValue =
-          core.DateTime.parse(_json['datetimeValue'] as core.String);
-    }
-    if (_json.containsKey('intValue')) {
-      intValue = _json['intValue'] as core.String;
-    }
-    if (_json.containsKey('msgValue')) {
-      msgValue = (_json['msgValue'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-  }
+  UsageReportParameters.fromJson(core.Map _json)
+      : this(
+          boolValue: _json.containsKey('boolValue')
+              ? _json['boolValue'] as core.bool
+              : null,
+          datetimeValue: _json.containsKey('datetimeValue')
+              ? core.DateTime.parse(_json['datetimeValue'] as core.String)
+              : null,
+          intValue: _json.containsKey('intValue')
+              ? _json['intValue'] as core.String
+              : null,
+          msgValue: _json.containsKey('msgValue')
+              ? (_json['msgValue'] as core.List)
+                  .map((value) => value as core.Map<core.String, core.dynamic>)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (boolValue != null) 'boolValue': boolValue!,
         if (datetimeValue != null)
-          'datetimeValue': datetimeValue!.toIso8601String(),
+          'datetimeValue': datetimeValue!.toUtc().toIso8601String(),
         if (intValue != null) 'intValue': intValue!,
         if (msgValue != null) 'msgValue': msgValue!,
         if (name != null) 'name': name!,
@@ -1647,37 +1699,37 @@ class UsageReport {
   /// Output only.
   core.List<UsageReportParameters>? parameters;
 
-  UsageReport();
+  UsageReport({
+    this.date,
+    this.entity,
+    this.etag,
+    this.kind,
+    this.parameters,
+  });
 
-  UsageReport.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date = _json['date'] as core.String;
-    }
-    if (_json.containsKey('entity')) {
-      entity = UsageReportEntity.fromJson(
-          _json['entity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('parameters')) {
-      parameters = (_json['parameters'] as core.List)
-          .map<UsageReportParameters>((value) => UsageReportParameters.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  UsageReport.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date') ? _json['date'] as core.String : null,
+          entity: _json.containsKey('entity')
+              ? UsageReportEntity.fromJson(
+                  _json['entity'] as core.Map<core.String, core.dynamic>)
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.List)
+                  .map((value) => UsageReportParameters.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (date != null) 'date': date!,
-        if (entity != null) 'entity': entity!.toJson(),
+        if (entity != null) 'entity': entity!,
         if (etag != null) 'etag': etag!,
         if (kind != null) 'kind': kind!,
-        if (parameters != null)
-          'parameters': parameters!.map((value) => value.toJson()).toList(),
+        if (parameters != null) 'parameters': parameters!,
       };
 }
 
@@ -1690,16 +1742,17 @@ class UsageReportsWarningsData {
   /// warning.
   core.String? value;
 
-  UsageReportsWarningsData();
+  UsageReportsWarningsData({
+    this.key,
+    this.value,
+  });
 
-  UsageReportsWarningsData.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  UsageReportsWarningsData.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (key != null) 'key': key!,
@@ -1725,27 +1778,29 @@ class UsageReportsWarnings {
   /// again after a few hours.
   core.String? message;
 
-  UsageReportsWarnings();
+  UsageReportsWarnings({
+    this.code,
+    this.data,
+    this.message,
+  });
 
-  UsageReportsWarnings.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = (_json['data'] as core.List)
-          .map<UsageReportsWarningsData>((value) =>
-              UsageReportsWarningsData.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
+  UsageReportsWarnings.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          data: _json.containsKey('data')
+              ? (_json['data'] as core.List)
+                  .map((value) => UsageReportsWarningsData.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
-        if (data != null) 'data': data!.map((value) => value.toJson()).toList(),
+        if (data != null) 'data': data!,
         if (message != null) 'message': message!,
       };
 }
@@ -1772,39 +1827,40 @@ class UsageReports {
   /// Warnings, if any.
   core.List<UsageReportsWarnings>? warnings;
 
-  UsageReports();
+  UsageReports({
+    this.etag,
+    this.kind,
+    this.nextPageToken,
+    this.usageReports,
+    this.warnings,
+  });
 
-  UsageReports.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('usageReports')) {
-      usageReports = (_json['usageReports'] as core.List)
-          .map<UsageReport>((value) => UsageReport.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('warnings')) {
-      warnings = (_json['warnings'] as core.List)
-          .map<UsageReportsWarnings>((value) => UsageReportsWarnings.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  UsageReports.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          usageReports: _json.containsKey('usageReports')
+              ? (_json['usageReports'] as core.List)
+                  .map((value) => UsageReport.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          warnings: _json.containsKey('warnings')
+              ? (_json['warnings'] as core.List)
+                  .map((value) => UsageReportsWarnings.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (usageReports != null)
-          'usageReports': usageReports!.map((value) => value.toJson()).toList(),
-        if (warnings != null)
-          'warnings': warnings!.map((value) => value.toJson()).toList(),
+        if (usageReports != null) 'usageReports': usageReports!,
+        if (warnings != null) 'warnings': warnings!,
       };
 }

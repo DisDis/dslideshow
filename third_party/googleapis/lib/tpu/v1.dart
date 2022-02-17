@@ -35,6 +35,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -42,7 +44,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// TPU API provides customers with access to Google TPU technology.
 class TPUApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -122,11 +125,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -294,7 +301,7 @@ class ProjectsLocationsNodesResource {
     core.String? nodeId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (nodeId != null) 'nodeId': [nodeId],
       if ($fields != null) 'fields': [$fields],
@@ -453,7 +460,7 @@ class ProjectsLocationsNodesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -494,7 +501,7 @@ class ProjectsLocationsNodesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -510,7 +517,7 @@ class ProjectsLocationsNodesResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Stops a node.
+  /// Stops a node, this operation is only available with single TPU nodes.
   ///
   /// [request] - The metadata request object.
   ///
@@ -535,7 +542,7 @@ class ProjectsLocationsNodesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -845,16 +852,16 @@ class AcceleratorType {
   /// the accelerator type.
   core.String? type;
 
-  AcceleratorType();
+  AcceleratorType({
+    this.name,
+    this.type,
+  });
 
-  AcceleratorType.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  AcceleratorType.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -869,15 +876,7 @@ class AcceleratorType {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Response for ListAcceleratorTypes.
 class ListAcceleratorTypesResponse {
@@ -890,29 +889,32 @@ class ListAcceleratorTypesResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListAcceleratorTypesResponse();
+  ListAcceleratorTypesResponse({
+    this.acceleratorTypes,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListAcceleratorTypesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('acceleratorTypes')) {
-      acceleratorTypes = (_json['acceleratorTypes'] as core.List)
-          .map<AcceleratorType>((value) => AcceleratorType.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListAcceleratorTypesResponse.fromJson(core.Map _json)
+      : this(
+          acceleratorTypes: _json.containsKey('acceleratorTypes')
+              ? (_json['acceleratorTypes'] as core.List)
+                  .map((value) => AcceleratorType.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (acceleratorTypes != null)
-          'acceleratorTypes':
-              acceleratorTypes!.map((value) => value.toJson()).toList(),
+        if (acceleratorTypes != null) 'acceleratorTypes': acceleratorTypes!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -926,23 +928,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -958,29 +963,33 @@ class ListNodesResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListNodesResponse();
+  ListNodesResponse({
+    this.nextPageToken,
+    this.nodes,
+    this.unreachable,
+  });
 
-  ListNodesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('nodes')) {
-      nodes = (_json['nodes'] as core.List)
-          .map<Node>((value) =>
-              Node.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListNodesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          nodes: _json.containsKey('nodes')
+              ? (_json['nodes'] as core.List)
+                  .map((value) => Node.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (nodes != null)
-          'nodes': nodes!.map((value) => value.toJson()).toList(),
+        if (nodes != null) 'nodes': nodes!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
@@ -993,24 +1002,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -1025,102 +1037,40 @@ class ListTensorFlowVersionsResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListTensorFlowVersionsResponse();
+  ListTensorFlowVersionsResponse({
+    this.nextPageToken,
+    this.tensorflowVersions,
+    this.unreachable,
+  });
 
-  ListTensorFlowVersionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('tensorflowVersions')) {
-      tensorflowVersions = (_json['tensorflowVersions'] as core.List)
-          .map<TensorFlowVersion>((value) => TensorFlowVersion.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListTensorFlowVersionsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          tensorflowVersions: _json.containsKey('tensorflowVersions')
+              ? (_json['tensorflowVersions'] as core.List)
+                  .map((value) => TensorFlowVersion.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (tensorflowVersions != null)
-          'tensorflowVersions':
-              tensorflowVersions!.map((value) => value.toJson()).toList(),
+          'tensorflowVersions': tensorflowVersions!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// A network endpoint over which a TPU worker can be reached.
 class NetworkEndpoint {
@@ -1130,16 +1080,18 @@ class NetworkEndpoint {
   /// The port of this network endpoint.
   core.int? port;
 
-  NetworkEndpoint();
+  NetworkEndpoint({
+    this.ipAddress,
+    this.port,
+  });
 
-  NetworkEndpoint.fromJson(core.Map _json) {
-    if (_json.containsKey('ipAddress')) {
-      ipAddress = _json['ipAddress'] as core.String;
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.int;
-    }
-  }
+  NetworkEndpoint.fromJson(core.Map _json)
+      : this(
+          ipAddress: _json.containsKey('ipAddress')
+              ? _json['ipAddress'] as core.String
+              : null,
+          port: _json.containsKey('port') ? _json['port'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ipAddress != null) 'ipAddress': ipAddress!,
@@ -1153,6 +1105,16 @@ class Node {
   ///
   /// Required.
   core.String? acceleratorType;
+
+  /// The API version that created this Node.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "API_VERSION_UNSPECIFIED" : API version is unknown.
+  /// - "V1_ALPHA1" : TPU API V1Alpha1 version.
+  /// - "V1" : TPU API V1 version.
+  /// - "V2_ALPHA1" : TPU API V2Alpha1 version.
+  core.String? apiVersion;
 
   /// The CIDR block that the TPU node will use when selecting an IP address.
   ///
@@ -1249,7 +1211,7 @@ class Node {
   /// Possible string values are:
   /// - "STATE_UNSPECIFIED" : TPU node state is not known/set.
   /// - "CREATING" : TPU node is being created.
-  /// - "READY" : TPU node has been created and is fully usable.
+  /// - "READY" : TPU node has been created.
   /// - "RESTARTING" : TPU node is restarting.
   /// - "REIMAGING" : TPU node is undergoing reimaging.
   /// - "DELETING" : TPU node is being deleted.
@@ -1286,79 +1248,99 @@ class Node {
   /// must be created with this this field enabled.
   core.bool? useServiceNetworking;
 
-  Node();
+  Node({
+    this.acceleratorType,
+    this.apiVersion,
+    this.cidrBlock,
+    this.createTime,
+    this.description,
+    this.health,
+    this.healthDescription,
+    this.ipAddress,
+    this.labels,
+    this.name,
+    this.network,
+    this.networkEndpoints,
+    this.port,
+    this.schedulingConfig,
+    this.serviceAccount,
+    this.state,
+    this.symptoms,
+    this.tensorflowVersion,
+    this.useServiceNetworking,
+  });
 
-  Node.fromJson(core.Map _json) {
-    if (_json.containsKey('acceleratorType')) {
-      acceleratorType = _json['acceleratorType'] as core.String;
-    }
-    if (_json.containsKey('cidrBlock')) {
-      cidrBlock = _json['cidrBlock'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('health')) {
-      health = _json['health'] as core.String;
-    }
-    if (_json.containsKey('healthDescription')) {
-      healthDescription = _json['healthDescription'] as core.String;
-    }
-    if (_json.containsKey('ipAddress')) {
-      ipAddress = _json['ipAddress'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('network')) {
-      network = _json['network'] as core.String;
-    }
-    if (_json.containsKey('networkEndpoints')) {
-      networkEndpoints = (_json['networkEndpoints'] as core.List)
-          .map<NetworkEndpoint>((value) => NetworkEndpoint.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.String;
-    }
-    if (_json.containsKey('schedulingConfig')) {
-      schedulingConfig = SchedulingConfig.fromJson(
-          _json['schedulingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('symptoms')) {
-      symptoms = (_json['symptoms'] as core.List)
-          .map<Symptom>((value) =>
-              Symptom.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('tensorflowVersion')) {
-      tensorflowVersion = _json['tensorflowVersion'] as core.String;
-    }
-    if (_json.containsKey('useServiceNetworking')) {
-      useServiceNetworking = _json['useServiceNetworking'] as core.bool;
-    }
-  }
+  Node.fromJson(core.Map _json)
+      : this(
+          acceleratorType: _json.containsKey('acceleratorType')
+              ? _json['acceleratorType'] as core.String
+              : null,
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          cidrBlock: _json.containsKey('cidrBlock')
+              ? _json['cidrBlock'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          health: _json.containsKey('health')
+              ? _json['health'] as core.String
+              : null,
+          healthDescription: _json.containsKey('healthDescription')
+              ? _json['healthDescription'] as core.String
+              : null,
+          ipAddress: _json.containsKey('ipAddress')
+              ? _json['ipAddress'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+          networkEndpoints: _json.containsKey('networkEndpoints')
+              ? (_json['networkEndpoints'] as core.List)
+                  .map((value) => NetworkEndpoint.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          port: _json.containsKey('port') ? _json['port'] as core.String : null,
+          schedulingConfig: _json.containsKey('schedulingConfig')
+              ? SchedulingConfig.fromJson(_json['schedulingConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          symptoms: _json.containsKey('symptoms')
+              ? (_json['symptoms'] as core.List)
+                  .map((value) => Symptom.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          tensorflowVersion: _json.containsKey('tensorflowVersion')
+              ? _json['tensorflowVersion'] as core.String
+              : null,
+          useServiceNetworking: _json.containsKey('useServiceNetworking')
+              ? _json['useServiceNetworking'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (acceleratorType != null) 'acceleratorType': acceleratorType!,
+        if (apiVersion != null) 'apiVersion': apiVersion!,
         if (cidrBlock != null) 'cidrBlock': cidrBlock!,
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
@@ -1368,16 +1350,12 @@ class Node {
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (network != null) 'network': network!,
-        if (networkEndpoints != null)
-          'networkEndpoints':
-              networkEndpoints!.map((value) => value.toJson()).toList(),
+        if (networkEndpoints != null) 'networkEndpoints': networkEndpoints!,
         if (port != null) 'port': port!,
-        if (schedulingConfig != null)
-          'schedulingConfig': schedulingConfig!.toJson(),
+        if (schedulingConfig != null) 'schedulingConfig': schedulingConfig!,
         if (serviceAccount != null) 'serviceAccount': serviceAccount!,
         if (state != null) 'state': state!,
-        if (symptoms != null)
-          'symptoms': symptoms!.map((value) => value.toJson()).toList(),
+        if (symptoms != null) 'symptoms': symptoms!,
         if (tensorflowVersion != null) 'tensorflowVersion': tensorflowVersion!,
         if (useServiceNetworking != null)
           'useServiceNetworking': useServiceNetworking!,
@@ -1405,7 +1383,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1425,123 +1403,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Represents the metadata of the long-running operation.
-class OperationMetadata {
-  /// API version used to start the operation.
-  ///
-  /// Output only.
-  core.String? apiVersion;
-
-  /// Identifies whether the user has requested cancellation of the operation.
-  ///
-  /// Operations that have successfully been cancelled have Operation.error
-  /// value with a google.rpc.Status.code of 1, corresponding to
-  /// `Code.CANCELLED`.
-  ///
-  /// Output only.
-  core.bool? cancelRequested;
-
-  /// The time the operation was created.
-  ///
-  /// Output only.
-  core.String? createTime;
-
-  /// The time the operation finished running.
-  ///
-  /// Output only.
-  core.String? endTime;
-
-  /// Human-readable status of the operation, if any.
-  ///
-  /// Output only.
-  core.String? statusDetail;
-
-  /// Server-defined resource path for the target of the operation.
-  ///
-  /// Output only.
-  core.String? target;
-
-  /// Name of the verb executed by the operation.
-  ///
-  /// Output only.
-  core.String? verb;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('cancelRequested')) {
-      cancelRequested = _json['cancelRequested'] as core.bool;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('statusDetail')) {
-      statusDetail = _json['statusDetail'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-    if (_json.containsKey('verb')) {
-      verb = _json['verb'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (cancelRequested != null) 'cancelRequested': cancelRequested!,
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (statusDetail != null) 'statusDetail': statusDetail!,
-        if (target != null) 'target': target!,
-        if (verb != null) 'verb': verb!,
       };
 }
 
@@ -1550,13 +1443,16 @@ class ReimageNodeRequest {
   /// The version for reimage to create.
   core.String? tensorflowVersion;
 
-  ReimageNodeRequest();
+  ReimageNodeRequest({
+    this.tensorflowVersion,
+  });
 
-  ReimageNodeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('tensorflowVersion')) {
-      tensorflowVersion = _json['tensorflowVersion'] as core.String;
-    }
-  }
+  ReimageNodeRequest.fromJson(core.Map _json)
+      : this(
+          tensorflowVersion: _json.containsKey('tensorflowVersion')
+              ? _json['tensorflowVersion'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (tensorflowVersion != null) 'tensorflowVersion': tensorflowVersion!,
@@ -1571,16 +1467,20 @@ class SchedulingConfig {
   /// Whether the node is created under a reservation.
   core.bool? reserved;
 
-  SchedulingConfig();
+  SchedulingConfig({
+    this.preemptible,
+    this.reserved,
+  });
 
-  SchedulingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('preemptible')) {
-      preemptible = _json['preemptible'] as core.bool;
-    }
-    if (_json.containsKey('reserved')) {
-      reserved = _json['reserved'] as core.bool;
-    }
-  }
+  SchedulingConfig.fromJson(core.Map _json)
+      : this(
+          preemptible: _json.containsKey('preemptible')
+              ? _json['preemptible'] as core.bool
+              : null,
+          reserved: _json.containsKey('reserved')
+              ? _json['reserved'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (preemptible != null) 'preemptible': preemptible!,
@@ -1589,15 +1489,7 @@ class SchedulingConfig {
 }
 
 /// Request for StartNode.
-class StartNodeRequest {
-  StartNodeRequest();
-
-  StartNodeRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef StartNodeRequest = $Empty;
 
 /// The `Status` type defines a logical error model that is suitable for
 /// different programming environments, including REST APIs and RPC APIs.
@@ -1606,63 +1498,10 @@ class StartNodeRequest {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Request for StopNode.
-class StopNodeRequest {
-  StopNodeRequest();
-
-  StopNodeRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef StopNodeRequest = $Empty;
 
 /// A Symptom instance.
 class Symptom {
@@ -1681,27 +1520,35 @@ class Symptom {
   /// - "MESH_BUILD_FAIL" : TPU runtime fails to construct a mesh that
   /// recognizes each TPU device's neighbors.
   /// - "HBM_OUT_OF_MEMORY" : TPU HBM is out of memory.
+  /// - "PROJECT_ABUSE" : Abusive behaviors have been identified on the current
+  /// project.
   core.String? symptomType;
 
   /// A string used to uniquely distinguish a worker within a TPU node.
   core.String? workerId;
 
-  Symptom();
+  Symptom({
+    this.createTime,
+    this.details,
+    this.symptomType,
+    this.workerId,
+  });
 
-  Symptom.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('details')) {
-      details = _json['details'] as core.String;
-    }
-    if (_json.containsKey('symptomType')) {
-      symptomType = _json['symptomType'] as core.String;
-    }
-    if (_json.containsKey('workerId')) {
-      workerId = _json['workerId'] as core.String;
-    }
-  }
+  Symptom.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          details: _json.containsKey('details')
+              ? _json['details'] as core.String
+              : null,
+          symptomType: _json.containsKey('symptomType')
+              ? _json['symptomType'] as core.String
+              : null,
+          workerId: _json.containsKey('workerId')
+              ? _json['workerId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -1719,16 +1566,18 @@ class TensorFlowVersion {
   /// the tensorflow version.
   core.String? version;
 
-  TensorFlowVersion();
+  TensorFlowVersion({
+    this.name,
+    this.version,
+  });
 
-  TensorFlowVersion.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  TensorFlowVersion.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,

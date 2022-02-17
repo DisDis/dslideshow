@@ -32,12 +32,15 @@
 library firestore.v1;
 
 import 'dart:async' as async;
+import 'dart:collection' as collection;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -46,7 +49,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Accesses the NoSQL document database built for automatic scaling, high
 /// performance, and ease of application development.
 class FirestoreApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -95,7 +99,9 @@ class ProjectsDatabasesResource {
   /// the Operation resource that is created. The output of an export may only
   /// be used once the associated operation is done. If an export operation is
   /// cancelled before completion it may leave partial data behind in Google
-  /// Cloud Storage.
+  /// Cloud Storage. For more details on export behavior and output format,
+  /// refer to:
+  /// https://cloud.google.com/firestore/docs/manage-data/export-import
   ///
   /// [request] - The metadata request object.
   ///
@@ -120,7 +126,7 @@ class ProjectsDatabasesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -134,6 +140,43 @@ class ProjectsDatabasesResource {
       queryParams: _queryParams,
     );
     return GoogleLongrunningOperation.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets information about a database.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. A name of the form
+  /// `projects/{project_id}/databases/{database_id}`
+  /// Value must have pattern `^projects/\[^/\]+/databases/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleFirestoreAdminV1Database].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleFirestoreAdminV1Database> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GoogleFirestoreAdminV1Database.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 
@@ -168,7 +211,7 @@ class ProjectsDatabasesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -178,6 +221,88 @@ class ProjectsDatabasesResource {
     final _response = await _requester.request(
       _url,
       'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleLongrunningOperation.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List all the databases in the project.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. A parent name of the form `projects/{project_id}`
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleFirestoreAdminV1ListDatabasesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleFirestoreAdminV1ListDatabasesResponse> list(
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/databases';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GoogleFirestoreAdminV1ListDatabasesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a database.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The resource name of the Database. Format:
+  /// `projects/{project}/databases/{database}`
+  /// Value must have pattern `^projects/\[^/\]+/databases/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleLongrunningOperation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleLongrunningOperation> patch(
+    GoogleFirestoreAdminV1Database request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
       body: _body,
       queryParams: _queryParams,
     );
@@ -247,7 +372,7 @@ class ProjectsDatabasesCollectionGroupsFieldsResource {
   /// Currently, FirestoreAdmin.ListFields only supports listing fields that
   /// have been explicitly overridden. To issue this query, call
   /// FirestoreAdmin.ListFields with the filter set to
-  /// `indexConfig.usesAncestorConfig:false`.
+  /// `indexConfig.usesAncestorConfig:false` .
   ///
   /// Request parameters:
   ///
@@ -259,7 +384,7 @@ class ProjectsDatabasesCollectionGroupsFieldsResource {
   /// [filter] - The filter to apply to list results. Currently,
   /// FirestoreAdmin.ListFields only supports listing fields that have been
   /// explicitly overridden. To issue this query, call FirestoreAdmin.ListFields
-  /// with the filter set to `indexConfig.usesAncestorConfig:false`.
+  /// with a filter that includes `indexConfig.usesAncestorConfig:false` .
   ///
   /// [pageSize] - The number of results to return.
   ///
@@ -319,7 +444,7 @@ class ProjectsDatabasesCollectionGroupsFieldsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - A field name of the form
+  /// [name] - Required. A field name of the form
   /// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_path}`
   /// A field path may be a simple field name, e.g. `address` or a path to
   /// fields within map_value , e.g. `address.city`, or a special field path.
@@ -359,7 +484,7 @@ class ProjectsDatabasesCollectionGroupsFieldsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -414,7 +539,7 @@ class ProjectsDatabasesCollectionGroupsIndexesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -593,7 +718,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -642,7 +767,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -685,7 +810,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -729,7 +854,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -785,7 +910,7 @@ class ProjectsDatabasesDocumentsResource {
     core.List<core.String>? mask_fieldPaths,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (documentId != null) 'documentId': [documentId],
       if (mask_fieldPaths != null) 'mask.fieldPaths': mask_fieldPaths,
@@ -820,7 +945,8 @@ class ProjectsDatabasesDocumentsResource {
   /// exist. When set to `false`, the target document must not exist.
   ///
   /// [currentDocument_updateTime] - When set, the target document must exist
-  /// and have been last updated at that time.
+  /// and have been last updated at that time. Timestamp must be microsecond
+  /// aligned.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1020,7 +1146,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1034,48 +1160,6 @@ class ProjectsDatabasesDocumentsResource {
       queryParams: _queryParams,
     );
     return ListCollectionIdsResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
-  }
-
-  /// Listens to changes.
-  ///
-  /// [request] - The metadata request object.
-  ///
-  /// Request parameters:
-  ///
-  /// [database] - Required. The database name. In the format:
-  /// `projects/{project_id}/databases/{database_id}`.
-  /// Value must have pattern `^projects/\[^/\]+/databases/\[^/\]+$`.
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [ListenResponse].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<ListenResponse> listen(
-    ListenRequest request,
-    core.String database, {
-    core.String? $fields,
-  }) async {
-    final _body = convert.json.encode(request.toJson());
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    final _url = 'v1/' + core.Uri.encodeFull('$database') + '/documents:listen';
-
-    final _response = await _requester.request(
-      _url,
-      'POST',
-      body: _body,
-      queryParams: _queryParams,
-    );
-    return ListenResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 
@@ -1111,7 +1195,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1143,7 +1227,8 @@ class ProjectsDatabasesDocumentsResource {
   /// exist. When set to `false`, the target document must not exist.
   ///
   /// [currentDocument_updateTime] - When set, the target document must exist
-  /// and have been last updated at that time.
+  /// and have been last updated at that time. Timestamp must be microsecond
+  /// aligned.
   ///
   /// [mask_fieldPaths] - The list of field paths in the mask. See
   /// Document.fields for a field path syntax reference.
@@ -1170,7 +1255,7 @@ class ProjectsDatabasesDocumentsResource {
     core.List<core.String>? updateMask_fieldPaths,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (currentDocument_exists != null)
         'currentDocument.exists': ['${currentDocument_exists}'],
@@ -1218,7 +1303,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1264,7 +1349,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1277,8 +1362,7 @@ class ProjectsDatabasesDocumentsResource {
       body: _body,
       queryParams: _queryParams,
     );
-    return RunQueryResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
+    return RunQueryResponse.fromJson(_response as core.List);
   }
 
   /// Streams batches of document updates and deletes, in order.
@@ -1307,7 +1391,7 @@ class ProjectsDatabasesDocumentsResource {
     core.String database, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1365,7 +1449,7 @@ class ProjectsDatabasesOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1566,11 +1650,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1613,20 +1701,22 @@ class ArrayValue {
   /// Values in the array.
   core.List<Value>? values;
 
-  ArrayValue();
+  ArrayValue({
+    this.values,
+  });
 
-  ArrayValue.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<Value>((value) =>
-              Value.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ArrayValue.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => Value.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (values != null)
-          'values': values!.map((value) => value.toJson()).toList(),
+        if (values != null) 'values': values!,
       };
 }
 
@@ -1667,34 +1757,41 @@ class BatchGetDocumentsRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  BatchGetDocumentsRequest();
+  BatchGetDocumentsRequest({
+    this.documents,
+    this.mask,
+    this.newTransaction,
+    this.readTime,
+    this.transaction,
+  });
 
-  BatchGetDocumentsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('documents')) {
-      documents = (_json['documents'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('mask')) {
-      mask = DocumentMask.fromJson(
-          _json['mask'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('newTransaction')) {
-      newTransaction = TransactionOptions.fromJson(
-          _json['newTransaction'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  BatchGetDocumentsRequest.fromJson(core.Map _json)
+      : this(
+          documents: _json.containsKey('documents')
+              ? (_json['documents'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mask: _json.containsKey('mask')
+              ? DocumentMask.fromJson(
+                  _json['mask'] as core.Map<core.String, core.dynamic>)
+              : null,
+          newTransaction: _json.containsKey('newTransaction')
+              ? TransactionOptions.fromJson(_json['newTransaction']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (documents != null) 'documents': documents!,
-        if (mask != null) 'mask': mask!.toJson(),
-        if (newTransaction != null) 'newTransaction': newTransaction!.toJson(),
+        if (mask != null) 'mask': mask!,
+        if (newTransaction != null) 'newTransaction': newTransaction!,
         if (readTime != null) 'readTime': readTime!,
         if (transaction != null) 'transaction': transaction!,
       };
@@ -1731,26 +1828,32 @@ class BatchGetDocumentsResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  BatchGetDocumentsResponse();
+  BatchGetDocumentsResponse({
+    this.found,
+    this.missing,
+    this.readTime,
+    this.transaction,
+  });
 
-  BatchGetDocumentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('found')) {
-      found = Document.fromJson(
-          _json['found'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('missing')) {
-      missing = _json['missing'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  BatchGetDocumentsResponse.fromJson(core.Map _json)
+      : this(
+          found: _json.containsKey('found')
+              ? Document.fromJson(
+                  _json['found'] as core.Map<core.String, core.dynamic>)
+              : null,
+          missing: _json.containsKey('missing')
+              ? _json['missing'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (found != null) 'found': found!.toJson(),
+        if (found != null) 'found': found!,
         if (missing != null) 'missing': missing!,
         if (readTime != null) 'readTime': readTime!,
         if (transaction != null) 'transaction': transaction!,
@@ -1769,29 +1872,32 @@ class BatchWriteRequest {
   /// document more than once per request.
   core.List<Write>? writes;
 
-  BatchWriteRequest();
+  BatchWriteRequest({
+    this.labels,
+    this.writes,
+  });
 
-  BatchWriteRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('writes')) {
-      writes = (_json['writes'] as core.List)
-          .map<Write>((value) =>
-              Write.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  BatchWriteRequest.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          writes: _json.containsKey('writes')
+              ? (_json['writes'] as core.List)
+                  .map((value) => Write.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
-        if (writes != null)
-          'writes': writes!.map((value) => value.toJson()).toList(),
+        if (writes != null) 'writes': writes!,
       };
 }
 
@@ -1807,28 +1913,30 @@ class BatchWriteResponse {
   /// This i-th write result corresponds to the i-th write in the request.
   core.List<WriteResult>? writeResults;
 
-  BatchWriteResponse();
+  BatchWriteResponse({
+    this.status,
+    this.writeResults,
+  });
 
-  BatchWriteResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('status')) {
-      status = (_json['status'] as core.List)
-          .map<Status>((value) =>
-              Status.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('writeResults')) {
-      writeResults = (_json['writeResults'] as core.List)
-          .map<WriteResult>((value) => WriteResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  BatchWriteResponse.fromJson(core.Map _json)
+      : this(
+          status: _json.containsKey('status')
+              ? (_json['status'] as core.List)
+                  .map((value) => Status.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          writeResults: _json.containsKey('writeResults')
+              ? (_json['writeResults'] as core.List)
+                  .map((value) => WriteResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (status != null)
-          'status': status!.map((value) => value.toJson()).toList(),
-        if (writeResults != null)
-          'writeResults': writeResults!.map((value) => value.toJson()).toList(),
+        if (status != null) 'status': status!,
+        if (writeResults != null) 'writeResults': writeResults!,
       };
 }
 
@@ -1839,17 +1947,20 @@ class BeginTransactionRequest {
   /// Defaults to a read-write transaction.
   TransactionOptions? options;
 
-  BeginTransactionRequest();
+  BeginTransactionRequest({
+    this.options,
+  });
 
-  BeginTransactionRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = TransactionOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BeginTransactionRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? TransactionOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
@@ -1865,13 +1976,16 @@ class BeginTransactionResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  BeginTransactionResponse();
+  BeginTransactionResponse({
+    this.transaction,
+  });
 
-  BeginTransactionResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  BeginTransactionResponse.fromJson(core.Map _json)
+      : this(
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transaction != null) 'transaction': transaction!,
@@ -1891,16 +2005,20 @@ class CollectionSelector {
   /// When set, selects only collections with this ID.
   core.String? collectionId;
 
-  CollectionSelector();
+  CollectionSelector({
+    this.allDescendants,
+    this.collectionId,
+  });
 
-  CollectionSelector.fromJson(core.Map _json) {
-    if (_json.containsKey('allDescendants')) {
-      allDescendants = _json['allDescendants'] as core.bool;
-    }
-    if (_json.containsKey('collectionId')) {
-      collectionId = _json['collectionId'] as core.String;
-    }
-  }
+  CollectionSelector.fromJson(core.Map _json)
+      : this(
+          allDescendants: _json.containsKey('allDescendants')
+              ? _json['allDescendants'] as core.bool
+              : null,
+          collectionId: _json.containsKey('collectionId')
+              ? _json['collectionId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allDescendants != null) 'allDescendants': allDescendants!,
@@ -1925,24 +2043,27 @@ class CommitRequest {
   /// Always executed atomically and in order.
   core.List<Write>? writes;
 
-  CommitRequest();
+  CommitRequest({
+    this.transaction,
+    this.writes,
+  });
 
-  CommitRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-    if (_json.containsKey('writes')) {
-      writes = (_json['writes'] as core.List)
-          .map<Write>((value) =>
-              Write.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CommitRequest.fromJson(core.Map _json)
+      : this(
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+          writes: _json.containsKey('writes')
+              ? (_json['writes'] as core.List)
+                  .map((value) => Write.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transaction != null) 'transaction': transaction!,
-        if (writes != null)
-          'writes': writes!.map((value) => value.toJson()).toList(),
+        if (writes != null) 'writes': writes!,
       };
 }
 
@@ -1959,24 +2080,27 @@ class CommitResponse {
   /// This i-th write result corresponds to the i-th write in the request.
   core.List<WriteResult>? writeResults;
 
-  CommitResponse();
+  CommitResponse({
+    this.commitTime,
+    this.writeResults,
+  });
 
-  CommitResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('commitTime')) {
-      commitTime = _json['commitTime'] as core.String;
-    }
-    if (_json.containsKey('writeResults')) {
-      writeResults = (_json['writeResults'] as core.List)
-          .map<WriteResult>((value) => WriteResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CommitResponse.fromJson(core.Map _json)
+      : this(
+          commitTime: _json.containsKey('commitTime')
+              ? _json['commitTime'] as core.String
+              : null,
+          writeResults: _json.containsKey('writeResults')
+              ? (_json['writeResults'] as core.List)
+                  .map((value) => WriteResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commitTime != null) 'commitTime': commitTime!,
-        if (writeResults != null)
-          'writeResults': writeResults!.map((value) => value.toJson()).toList(),
+        if (writeResults != null) 'writeResults': writeResults!,
       };
 }
 
@@ -1994,23 +2118,24 @@ class CompositeFilter {
   /// filters.
   core.String? op;
 
-  CompositeFilter();
+  CompositeFilter({
+    this.filters,
+    this.op,
+  });
 
-  CompositeFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('filters')) {
-      filters = (_json['filters'] as core.List)
-          .map<Filter>((value) =>
-              Filter.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-  }
+  CompositeFilter.fromJson(core.Map _json)
+      : this(
+          filters: _json.containsKey('filters')
+              ? (_json['filters'] as core.List)
+                  .map((value) => Filter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filters != null)
-          'filters': filters!.map((value) => value.toJson()).toList(),
+        if (filters != null) 'filters': filters!,
         if (op != null) 'op': op!,
       };
 }
@@ -2027,24 +2152,26 @@ class Cursor {
   /// Can contain fewer values than specified in the order by clause.
   core.List<Value>? values;
 
-  Cursor();
+  Cursor({
+    this.before,
+    this.values,
+  });
 
-  Cursor.fromJson(core.Map _json) {
-    if (_json.containsKey('before')) {
-      before = _json['before'] as core.bool;
-    }
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<Value>((value) =>
-              Value.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Cursor.fromJson(core.Map _json)
+      : this(
+          before:
+              _json.containsKey('before') ? _json['before'] as core.bool : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => Value.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (before != null) 'before': before!,
-        if (values != null)
-          'values': values!.map((value) => value.toJson()).toList(),
+        if (values != null) 'values': values!,
       };
 }
 
@@ -2093,119 +2220,37 @@ class Document {
   /// Output only.
   core.String? updateTime;
 
-  Document();
+  Document({
+    this.createTime,
+    this.fields,
+    this.name,
+    this.updateTime,
+  });
 
-  Document.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          Value.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Document.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    Value.fromJson(item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
-        if (fields != null)
-          'fields':
-              fields!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (fields != null) 'fields': fields!,
         if (name != null) 'name': name!,
         if (updateTime != null) 'updateTime': updateTime!,
-      };
-}
-
-/// A Document has changed.
-///
-/// May be the result of multiple writes, including deletes, that ultimately
-/// resulted in a new value for the Document. Multiple DocumentChange messages
-/// may be returned for the same logical change, if multiple targets are
-/// affected.
-class DocumentChange {
-  /// The new state of the Document.
-  ///
-  /// If `mask` is set, contains only fields that were updated or added.
-  Document? document;
-
-  /// A set of target IDs for targets that no longer match this document.
-  core.List<core.int>? removedTargetIds;
-
-  /// A set of target IDs of targets that match this document.
-  core.List<core.int>? targetIds;
-
-  DocumentChange();
-
-  DocumentChange.fromJson(core.Map _json) {
-    if (_json.containsKey('document')) {
-      document = Document.fromJson(
-          _json['document'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('removedTargetIds')) {
-      removedTargetIds = (_json['removedTargetIds'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-    if (_json.containsKey('targetIds')) {
-      targetIds = (_json['targetIds'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (document != null) 'document': document!.toJson(),
-        if (removedTargetIds != null) 'removedTargetIds': removedTargetIds!,
-        if (targetIds != null) 'targetIds': targetIds!,
-      };
-}
-
-/// A Document has been deleted.
-///
-/// May be the result of multiple writes, including updates, the last of which
-/// deleted the Document. Multiple DocumentDelete messages may be returned for
-/// the same logical delete, if multiple targets are affected.
-class DocumentDelete {
-  /// The resource name of the Document that was deleted.
-  core.String? document;
-
-  /// The read timestamp at which the delete was observed.
-  ///
-  /// Greater or equal to the `commit_time` of the delete.
-  core.String? readTime;
-
-  /// A set of target IDs for targets that previously matched this entity.
-  core.List<core.int>? removedTargetIds;
-
-  DocumentDelete();
-
-  DocumentDelete.fromJson(core.Map _json) {
-    if (_json.containsKey('document')) {
-      document = _json['document'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('removedTargetIds')) {
-      removedTargetIds = (_json['removedTargetIds'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (document != null) 'document': document!,
-        if (readTime != null) 'readTime': readTime!,
-        if (removedTargetIds != null) 'removedTargetIds': removedTargetIds!,
       };
 }
 
@@ -2220,60 +2265,21 @@ class DocumentMask {
   /// See Document.fields for a field path syntax reference.
   core.List<core.String>? fieldPaths;
 
-  DocumentMask();
+  DocumentMask({
+    this.fieldPaths,
+  });
 
-  DocumentMask.fromJson(core.Map _json) {
-    if (_json.containsKey('fieldPaths')) {
-      fieldPaths = (_json['fieldPaths'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  DocumentMask.fromJson(core.Map _json)
+      : this(
+          fieldPaths: _json.containsKey('fieldPaths')
+              ? (_json['fieldPaths'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fieldPaths != null) 'fieldPaths': fieldPaths!,
-      };
-}
-
-/// A Document has been removed from the view of the targets.
-///
-/// Sent if the document is no longer relevant to a target and is out of view.
-/// Can be sent instead of a DocumentDelete or a DocumentChange if the server
-/// can not send the new value of the document. Multiple DocumentRemove messages
-/// may be returned for the same logical write or delete, if multiple targets
-/// are affected.
-class DocumentRemove {
-  /// The resource name of the Document that has gone out of view.
-  core.String? document;
-
-  /// The read timestamp at which the remove was observed.
-  ///
-  /// Greater or equal to the `commit_time` of the change/delete/remove.
-  core.String? readTime;
-
-  /// A set of target IDs for targets that previously matched this document.
-  core.List<core.int>? removedTargetIds;
-
-  DocumentRemove();
-
-  DocumentRemove.fromJson(core.Map _json) {
-    if (_json.containsKey('document')) {
-      document = _json['document'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('removedTargetIds')) {
-      removedTargetIds = (_json['removedTargetIds'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (document != null) 'document': document!,
-        if (readTime != null) 'readTime': readTime!,
-        if (removedTargetIds != null) 'removedTargetIds': removedTargetIds!,
       };
 }
 
@@ -2288,50 +2294,27 @@ class DocumentTransform {
   /// This must not be empty.
   core.List<FieldTransform>? fieldTransforms;
 
-  DocumentTransform();
+  DocumentTransform({
+    this.document,
+    this.fieldTransforms,
+  });
 
-  DocumentTransform.fromJson(core.Map _json) {
-    if (_json.containsKey('document')) {
-      document = _json['document'] as core.String;
-    }
-    if (_json.containsKey('fieldTransforms')) {
-      fieldTransforms = (_json['fieldTransforms'] as core.List)
-          .map<FieldTransform>((value) => FieldTransform.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DocumentTransform.fromJson(core.Map _json)
+      : this(
+          document: _json.containsKey('document')
+              ? _json['document'] as core.String
+              : null,
+          fieldTransforms: _json.containsKey('fieldTransforms')
+              ? (_json['fieldTransforms'] as core.List)
+                  .map((value) => FieldTransform.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (document != null) 'document': document!,
-        if (fieldTransforms != null)
-          'fieldTransforms':
-              fieldTransforms!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// A target specified by a set of documents names.
-class DocumentsTarget {
-  /// The names of the documents to retrieve.
-  ///
-  /// In the format:
-  /// `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
-  /// The request will fail if any of the document is not a child resource of
-  /// the given `database`. Duplicate names will be elided.
-  core.List<core.String>? documents;
-
-  DocumentsTarget();
-
-  DocumentsTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('documents')) {
-      documents = (_json['documents'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (documents != null) 'documents': documents!,
+        if (fieldTransforms != null) 'fieldTransforms': fieldTransforms!,
       };
 }
 
@@ -2342,43 +2325,7 @@ class DocumentsTarget {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// A digest of all the documents that match a given target.
-class ExistenceFilter {
-  /// The total count of documents that match target_id.
-  ///
-  /// If different from the count of documents in the client that match, the
-  /// client must manually determine which documents no longer match the target.
-  core.int? count;
-
-  /// The target ID to which this filter applies.
-  core.int? targetId;
-
-  ExistenceFilter();
-
-  ExistenceFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.int;
-    }
-    if (_json.containsKey('targetId')) {
-      targetId = _json['targetId'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (count != null) 'count': count!,
-        if (targetId != null) 'targetId': targetId!,
-      };
-}
+typedef Empty = $Empty;
 
 /// A filter on a specific field.
 class FieldFilter {
@@ -2418,26 +2365,29 @@ class FieldFilter {
   /// The value to compare to.
   Value? value;
 
-  FieldFilter();
+  FieldFilter({
+    this.field,
+    this.op,
+    this.value,
+  });
 
-  FieldFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('field')) {
-      field = FieldReference.fromJson(
-          _json['field'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value =
-          Value.fromJson(_json['value'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  FieldFilter.fromJson(core.Map _json)
+      : this(
+          field: _json.containsKey('field')
+              ? FieldReference.fromJson(
+                  _json['field'] as core.Map<core.String, core.dynamic>)
+              : null,
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+          value: _json.containsKey('value')
+              ? Value.fromJson(
+                  _json['value'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (field != null) 'field': field!.toJson(),
+        if (field != null) 'field': field!,
         if (op != null) 'op': op!,
-        if (value != null) 'value': value!.toJson(),
+        if (value != null) 'value': value!,
       };
 }
 
@@ -2445,13 +2395,16 @@ class FieldFilter {
 class FieldReference {
   core.String? fieldPath;
 
-  FieldReference();
+  FieldReference({
+    this.fieldPath,
+  });
 
-  FieldReference.fromJson(core.Map _json) {
-    if (_json.containsKey('fieldPath')) {
-      fieldPath = _json['fieldPath'] as core.String;
-    }
-  }
+  FieldReference.fromJson(core.Map _json)
+      : this(
+          fieldPath: _json.containsKey('fieldPath')
+              ? _json['fieldPath'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fieldPath != null) 'fieldPath': fieldPath!,
@@ -2532,46 +2485,55 @@ class FieldTransform {
   /// timestamp.
   core.String? setToServerValue;
 
-  FieldTransform();
+  FieldTransform({
+    this.appendMissingElements,
+    this.fieldPath,
+    this.increment,
+    this.maximum,
+    this.minimum,
+    this.removeAllFromArray,
+    this.setToServerValue,
+  });
 
-  FieldTransform.fromJson(core.Map _json) {
-    if (_json.containsKey('appendMissingElements')) {
-      appendMissingElements = ArrayValue.fromJson(_json['appendMissingElements']
-          as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fieldPath')) {
-      fieldPath = _json['fieldPath'] as core.String;
-    }
-    if (_json.containsKey('increment')) {
-      increment = Value.fromJson(
-          _json['increment'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('maximum')) {
-      maximum = Value.fromJson(
-          _json['maximum'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('minimum')) {
-      minimum = Value.fromJson(
-          _json['minimum'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('removeAllFromArray')) {
-      removeAllFromArray = ArrayValue.fromJson(
-          _json['removeAllFromArray'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('setToServerValue')) {
-      setToServerValue = _json['setToServerValue'] as core.String;
-    }
-  }
+  FieldTransform.fromJson(core.Map _json)
+      : this(
+          appendMissingElements: _json.containsKey('appendMissingElements')
+              ? ArrayValue.fromJson(_json['appendMissingElements']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          fieldPath: _json.containsKey('fieldPath')
+              ? _json['fieldPath'] as core.String
+              : null,
+          increment: _json.containsKey('increment')
+              ? Value.fromJson(
+                  _json['increment'] as core.Map<core.String, core.dynamic>)
+              : null,
+          maximum: _json.containsKey('maximum')
+              ? Value.fromJson(
+                  _json['maximum'] as core.Map<core.String, core.dynamic>)
+              : null,
+          minimum: _json.containsKey('minimum')
+              ? Value.fromJson(
+                  _json['minimum'] as core.Map<core.String, core.dynamic>)
+              : null,
+          removeAllFromArray: _json.containsKey('removeAllFromArray')
+              ? ArrayValue.fromJson(_json['removeAllFromArray']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          setToServerValue: _json.containsKey('setToServerValue')
+              ? _json['setToServerValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (appendMissingElements != null)
-          'appendMissingElements': appendMissingElements!.toJson(),
+          'appendMissingElements': appendMissingElements!,
         if (fieldPath != null) 'fieldPath': fieldPath!,
-        if (increment != null) 'increment': increment!.toJson(),
-        if (maximum != null) 'maximum': maximum!.toJson(),
-        if (minimum != null) 'minimum': minimum!.toJson(),
+        if (increment != null) 'increment': increment!,
+        if (maximum != null) 'maximum': maximum!,
+        if (minimum != null) 'minimum': minimum!,
         if (removeAllFromArray != null)
-          'removeAllFromArray': removeAllFromArray!.toJson(),
+          'removeAllFromArray': removeAllFromArray!,
         if (setToServerValue != null) 'setToServerValue': setToServerValue!,
       };
 }
@@ -2587,109 +2549,108 @@ class Filter {
   /// A filter that takes exactly one argument.
   UnaryFilter? unaryFilter;
 
-  Filter();
+  Filter({
+    this.compositeFilter,
+    this.fieldFilter,
+    this.unaryFilter,
+  });
 
-  Filter.fromJson(core.Map _json) {
-    if (_json.containsKey('compositeFilter')) {
-      compositeFilter = CompositeFilter.fromJson(
-          _json['compositeFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fieldFilter')) {
-      fieldFilter = FieldFilter.fromJson(
-          _json['fieldFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unaryFilter')) {
-      unaryFilter = UnaryFilter.fromJson(
-          _json['unaryFilter'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Filter.fromJson(core.Map _json)
+      : this(
+          compositeFilter: _json.containsKey('compositeFilter')
+              ? CompositeFilter.fromJson(_json['compositeFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          fieldFilter: _json.containsKey('fieldFilter')
+              ? FieldFilter.fromJson(
+                  _json['fieldFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unaryFilter: _json.containsKey('unaryFilter')
+              ? UnaryFilter.fromJson(
+                  _json['unaryFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (compositeFilter != null)
-          'compositeFilter': compositeFilter!.toJson(),
-        if (fieldFilter != null) 'fieldFilter': fieldFilter!.toJson(),
-        if (unaryFilter != null) 'unaryFilter': unaryFilter!.toJson(),
+        if (compositeFilter != null) 'compositeFilter': compositeFilter!,
+        if (fieldFilter != null) 'fieldFilter': fieldFilter!,
+        if (unaryFilter != null) 'unaryFilter': unaryFilter!,
       };
 }
 
-/// Metadata for google.longrunning.Operation results from
-/// FirestoreAdmin.ExportDocuments.
-class GoogleFirestoreAdminV1ExportDocumentsMetadata {
-  /// Which collection ids are being exported.
-  core.List<core.String>? collectionIds;
-
-  /// The time this operation completed.
-  ///
-  /// Will be unset if operation still in progress.
-  core.String? endTime;
-
-  /// The state of the export operation.
+/// A Cloud Firestore Database.
+///
+/// Currently only one database is allowed per cloud project; this database must
+/// have a `database_id` of '(default)'.
+class GoogleFirestoreAdminV1Database {
+  /// The concurrency control mode to use for this database.
   /// Possible string values are:
-  /// - "OPERATION_STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? operationState;
+  /// - "CONCURRENCY_MODE_UNSPECIFIED" : Not used.
+  /// - "OPTIMISTIC" : Use optimistic concurrency control by default. This
+  /// setting is available for Cloud Firestore customers.
+  /// - "PESSIMISTIC" : Use pessimistic concurrency control by default. This
+  /// setting is available for Cloud Firestore customers. This is the default
+  /// setting for Cloud Firestore.
+  /// - "OPTIMISTIC_WITH_ENTITY_GROUPS" : Use optimistic concurrency control
+  /// with entity groups by default. This is the only available setting for
+  /// Cloud Datastore customers. This is the default setting for Cloud
+  /// Datastore.
+  core.String? concurrencyMode;
 
-  /// Where the entities are being exported to.
-  core.String? outputUriPrefix;
+  /// This checksum is computed by the server based on the value of other
+  /// fields, and may be sent on update and delete requests to ensure the client
+  /// has an up-to-date value before proceeding.
+  core.String? etag;
 
-  /// The progress, in bytes, of this operation.
-  GoogleFirestoreAdminV1Progress? progressBytes;
+  /// The location of the database.
+  ///
+  /// Available databases are listed at
+  /// https://cloud.google.com/firestore/docs/locations.
+  core.String? locationId;
 
-  /// The progress, in documents, of this operation.
-  GoogleFirestoreAdminV1Progress? progressDocuments;
+  /// The resource name of the Database.
+  ///
+  /// Format: `projects/{project}/databases/{database}`
+  core.String? name;
 
-  /// The time this operation started.
-  core.String? startTime;
+  /// The type of the database.
+  ///
+  /// See https://cloud.google.com/datastore/docs/firestore-or-datastore for
+  /// information about how to choose.
+  /// Possible string values are:
+  /// - "DATABASE_TYPE_UNSPECIFIED" : The default value. This value is used if
+  /// the database type is omitted.
+  /// - "FIRESTORE_NATIVE" : Firestore Native Mode
+  /// - "DATASTORE_MODE" : Firestore in Datastore Mode.
+  core.String? type;
 
-  GoogleFirestoreAdminV1ExportDocumentsMetadata();
+  GoogleFirestoreAdminV1Database({
+    this.concurrencyMode,
+    this.etag,
+    this.locationId,
+    this.name,
+    this.type,
+  });
 
-  GoogleFirestoreAdminV1ExportDocumentsMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('collectionIds')) {
-      collectionIds = (_json['collectionIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('operationState')) {
-      operationState = _json['operationState'] as core.String;
-    }
-    if (_json.containsKey('outputUriPrefix')) {
-      outputUriPrefix = _json['outputUriPrefix'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressDocuments')) {
-      progressDocuments = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressDocuments'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1Database.fromJson(core.Map _json)
+      : this(
+          concurrencyMode: _json.containsKey('concurrencyMode')
+              ? _json['concurrencyMode'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          locationId: _json.containsKey('locationId')
+              ? _json['locationId'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (collectionIds != null) 'collectionIds': collectionIds!,
-        if (endTime != null) 'endTime': endTime!,
-        if (operationState != null) 'operationState': operationState!,
-        if (outputUriPrefix != null) 'outputUriPrefix': outputUriPrefix!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressDocuments != null)
-          'progressDocuments': progressDocuments!.toJson(),
-        if (startTime != null) 'startTime': startTime!,
+        if (concurrencyMode != null) 'concurrencyMode': concurrencyMode!,
+        if (etag != null) 'etag': etag!,
+        if (locationId != null) 'locationId': locationId!,
+        if (name != null) 'name': name!,
+        if (type != null) 'type': type!,
       };
 }
 
@@ -2712,42 +2673,25 @@ class GoogleFirestoreAdminV1ExportDocumentsRequest {
   /// time.
   core.String? outputUriPrefix;
 
-  GoogleFirestoreAdminV1ExportDocumentsRequest();
+  GoogleFirestoreAdminV1ExportDocumentsRequest({
+    this.collectionIds,
+    this.outputUriPrefix,
+  });
 
-  GoogleFirestoreAdminV1ExportDocumentsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('collectionIds')) {
-      collectionIds = (_json['collectionIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('outputUriPrefix')) {
-      outputUriPrefix = _json['outputUriPrefix'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1ExportDocumentsRequest.fromJson(core.Map _json)
+      : this(
+          collectionIds: _json.containsKey('collectionIds')
+              ? (_json['collectionIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          outputUriPrefix: _json.containsKey('outputUriPrefix')
+              ? _json['outputUriPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (collectionIds != null) 'collectionIds': collectionIds!,
-        if (outputUriPrefix != null) 'outputUriPrefix': outputUriPrefix!,
-      };
-}
-
-/// Returned in the google.longrunning.Operation response field.
-class GoogleFirestoreAdminV1ExportDocumentsResponse {
-  /// Location of the output files.
-  ///
-  /// This can be used to begin an import into Cloud Firestore (this project or
-  /// another project) after the operation completes successfully.
-  core.String? outputUriPrefix;
-
-  GoogleFirestoreAdminV1ExportDocumentsResponse();
-
-  GoogleFirestoreAdminV1ExportDocumentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('outputUriPrefix')) {
-      outputUriPrefix = _json['outputUriPrefix'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
         if (outputUriPrefix != null) 'outputUriPrefix': outputUriPrefix!,
       };
 }
@@ -2783,192 +2727,27 @@ class GoogleFirestoreAdminV1Field {
   /// `projects/{project_id}/databases/{database_id}/collectionGroups/__default__/fields
   /// / * ` Indexes defined on this `Field` will be applied to all fields which
   /// do not have their own `Field` index configuration.
+  ///
+  /// Required.
   core.String? name;
 
-  GoogleFirestoreAdminV1Field();
+  GoogleFirestoreAdminV1Field({
+    this.indexConfig,
+    this.name,
+  });
 
-  GoogleFirestoreAdminV1Field.fromJson(core.Map _json) {
-    if (_json.containsKey('indexConfig')) {
-      indexConfig = GoogleFirestoreAdminV1IndexConfig.fromJson(
-          _json['indexConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1Field.fromJson(core.Map _json)
+      : this(
+          indexConfig: _json.containsKey('indexConfig')
+              ? GoogleFirestoreAdminV1IndexConfig.fromJson(
+                  _json['indexConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (indexConfig != null) 'indexConfig': indexConfig!.toJson(),
+        if (indexConfig != null) 'indexConfig': indexConfig!,
         if (name != null) 'name': name!,
-      };
-}
-
-/// Metadata for google.longrunning.Operation results from
-/// FirestoreAdmin.UpdateField.
-class GoogleFirestoreAdminV1FieldOperationMetadata {
-  /// The time this operation completed.
-  ///
-  /// Will be unset if operation still in progress.
-  core.String? endTime;
-
-  /// The field resource that this operation is acting on.
-  ///
-  /// For example:
-  /// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/fields/{field_path}`
-  core.String? field;
-
-  /// A list of IndexConfigDelta, which describe the intent of this operation.
-  core.List<GoogleFirestoreAdminV1IndexConfigDelta>? indexConfigDeltas;
-
-  /// The progress, in bytes, of this operation.
-  GoogleFirestoreAdminV1Progress? progressBytes;
-
-  /// The progress, in documents, of this operation.
-  GoogleFirestoreAdminV1Progress? progressDocuments;
-
-  /// The time this operation started.
-  core.String? startTime;
-
-  /// The state of the operation.
-  /// Possible string values are:
-  /// - "OPERATION_STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? state;
-
-  GoogleFirestoreAdminV1FieldOperationMetadata();
-
-  GoogleFirestoreAdminV1FieldOperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('field')) {
-      field = _json['field'] as core.String;
-    }
-    if (_json.containsKey('indexConfigDeltas')) {
-      indexConfigDeltas = (_json['indexConfigDeltas'] as core.List)
-          .map<GoogleFirestoreAdminV1IndexConfigDelta>((value) =>
-              GoogleFirestoreAdminV1IndexConfigDelta.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressDocuments')) {
-      progressDocuments = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressDocuments'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (field != null) 'field': field!,
-        if (indexConfigDeltas != null)
-          'indexConfigDeltas':
-              indexConfigDeltas!.map((value) => value.toJson()).toList(),
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressDocuments != null)
-          'progressDocuments': progressDocuments!.toJson(),
-        if (startTime != null) 'startTime': startTime!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// Metadata for google.longrunning.Operation results from
-/// FirestoreAdmin.ImportDocuments.
-class GoogleFirestoreAdminV1ImportDocumentsMetadata {
-  /// Which collection ids are being imported.
-  core.List<core.String>? collectionIds;
-
-  /// The time this operation completed.
-  ///
-  /// Will be unset if operation still in progress.
-  core.String? endTime;
-
-  /// The location of the documents being imported.
-  core.String? inputUriPrefix;
-
-  /// The state of the import operation.
-  /// Possible string values are:
-  /// - "OPERATION_STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? operationState;
-
-  /// The progress, in bytes, of this operation.
-  GoogleFirestoreAdminV1Progress? progressBytes;
-
-  /// The progress, in documents, of this operation.
-  GoogleFirestoreAdminV1Progress? progressDocuments;
-
-  /// The time this operation started.
-  core.String? startTime;
-
-  GoogleFirestoreAdminV1ImportDocumentsMetadata();
-
-  GoogleFirestoreAdminV1ImportDocumentsMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('collectionIds')) {
-      collectionIds = (_json['collectionIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('inputUriPrefix')) {
-      inputUriPrefix = _json['inputUriPrefix'] as core.String;
-    }
-    if (_json.containsKey('operationState')) {
-      operationState = _json['operationState'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressDocuments')) {
-      progressDocuments = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressDocuments'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (collectionIds != null) 'collectionIds': collectionIds!,
-        if (endTime != null) 'endTime': endTime!,
-        if (inputUriPrefix != null) 'inputUriPrefix': inputUriPrefix!,
-        if (operationState != null) 'operationState': operationState!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressDocuments != null)
-          'progressDocuments': progressDocuments!.toJson(),
-        if (startTime != null) 'startTime': startTime!,
       };
 }
 
@@ -2986,18 +2765,22 @@ class GoogleFirestoreAdminV1ImportDocumentsRequest {
   /// google.firestore.admin.v1.ExportDocumentsResponse.output_uri_prefix.
   core.String? inputUriPrefix;
 
-  GoogleFirestoreAdminV1ImportDocumentsRequest();
+  GoogleFirestoreAdminV1ImportDocumentsRequest({
+    this.collectionIds,
+    this.inputUriPrefix,
+  });
 
-  GoogleFirestoreAdminV1ImportDocumentsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('collectionIds')) {
-      collectionIds = (_json['collectionIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('inputUriPrefix')) {
-      inputUriPrefix = _json['inputUriPrefix'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1ImportDocumentsRequest.fromJson(core.Map _json)
+      : this(
+          collectionIds: _json.containsKey('collectionIds')
+              ? (_json['collectionIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          inputUriPrefix: _json.containsKey('inputUriPrefix')
+              ? _json['inputUriPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (collectionIds != null) 'collectionIds': collectionIds!,
@@ -3067,30 +2850,31 @@ class GoogleFirestoreAdminV1Index {
   /// attempted to create this index failed, then re-create the index.
   core.String? state;
 
-  GoogleFirestoreAdminV1Index();
+  GoogleFirestoreAdminV1Index({
+    this.fields,
+    this.name,
+    this.queryScope,
+    this.state,
+  });
 
-  GoogleFirestoreAdminV1Index.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<GoogleFirestoreAdminV1IndexField>((value) =>
-              GoogleFirestoreAdminV1IndexField.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('queryScope')) {
-      queryScope = _json['queryScope'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1Index.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => GoogleFirestoreAdminV1IndexField.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          queryScope: _json.containsKey('queryScope')
+              ? _json['queryScope'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (fields != null) 'fields': fields!,
         if (name != null) 'name': name!,
         if (queryScope != null) 'queryScope': queryScope!,
         if (state != null) 'state': state!,
@@ -3126,65 +2910,38 @@ class GoogleFirestoreAdminV1IndexConfig {
   /// Output only.
   core.bool? usesAncestorConfig;
 
-  GoogleFirestoreAdminV1IndexConfig();
+  GoogleFirestoreAdminV1IndexConfig({
+    this.ancestorField,
+    this.indexes,
+    this.reverting,
+    this.usesAncestorConfig,
+  });
 
-  GoogleFirestoreAdminV1IndexConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('ancestorField')) {
-      ancestorField = _json['ancestorField'] as core.String;
-    }
-    if (_json.containsKey('indexes')) {
-      indexes = (_json['indexes'] as core.List)
-          .map<GoogleFirestoreAdminV1Index>((value) =>
-              GoogleFirestoreAdminV1Index.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('reverting')) {
-      reverting = _json['reverting'] as core.bool;
-    }
-    if (_json.containsKey('usesAncestorConfig')) {
-      usesAncestorConfig = _json['usesAncestorConfig'] as core.bool;
-    }
-  }
+  GoogleFirestoreAdminV1IndexConfig.fromJson(core.Map _json)
+      : this(
+          ancestorField: _json.containsKey('ancestorField')
+              ? _json['ancestorField'] as core.String
+              : null,
+          indexes: _json.containsKey('indexes')
+              ? (_json['indexes'] as core.List)
+                  .map((value) => GoogleFirestoreAdminV1Index.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          reverting: _json.containsKey('reverting')
+              ? _json['reverting'] as core.bool
+              : null,
+          usesAncestorConfig: _json.containsKey('usesAncestorConfig')
+              ? _json['usesAncestorConfig'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ancestorField != null) 'ancestorField': ancestorField!,
-        if (indexes != null)
-          'indexes': indexes!.map((value) => value.toJson()).toList(),
+        if (indexes != null) 'indexes': indexes!,
         if (reverting != null) 'reverting': reverting!,
         if (usesAncestorConfig != null)
           'usesAncestorConfig': usesAncestorConfig!,
-      };
-}
-
-/// Information about an index configuration change.
-class GoogleFirestoreAdminV1IndexConfigDelta {
-  /// Specifies how the index is changing.
-  /// Possible string values are:
-  /// - "CHANGE_TYPE_UNSPECIFIED" : The type of change is not specified or
-  /// known.
-  /// - "ADD" : The single field index is being added.
-  /// - "REMOVE" : The single field index is being removed.
-  core.String? changeType;
-
-  /// The index being changed.
-  GoogleFirestoreAdminV1Index? index;
-
-  GoogleFirestoreAdminV1IndexConfigDelta();
-
-  GoogleFirestoreAdminV1IndexConfigDelta.fromJson(core.Map _json) {
-    if (_json.containsKey('changeType')) {
-      changeType = _json['changeType'] as core.String;
-    }
-    if (_json.containsKey('index')) {
-      index = GoogleFirestoreAdminV1Index.fromJson(
-          _json['index'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (changeType != null) 'changeType': changeType!,
-        if (index != null) 'index': index!.toJson(),
       };
 }
 
@@ -3207,26 +2964,30 @@ class GoogleFirestoreAdminV1IndexField {
   core.String? fieldPath;
 
   /// Indicates that this field supports ordering by the specified order or
-  /// comparing using =, <, <=, >, >=.
+  /// comparing using =, !=, \<, \<=, \>, \>=.
   /// Possible string values are:
   /// - "ORDER_UNSPECIFIED" : The ordering is unspecified. Not a valid option.
   /// - "ASCENDING" : The field is ordered by ascending field value.
   /// - "DESCENDING" : The field is ordered by descending field value.
   core.String? order;
 
-  GoogleFirestoreAdminV1IndexField();
+  GoogleFirestoreAdminV1IndexField({
+    this.arrayConfig,
+    this.fieldPath,
+    this.order,
+  });
 
-  GoogleFirestoreAdminV1IndexField.fromJson(core.Map _json) {
-    if (_json.containsKey('arrayConfig')) {
-      arrayConfig = _json['arrayConfig'] as core.String;
-    }
-    if (_json.containsKey('fieldPath')) {
-      fieldPath = _json['fieldPath'] as core.String;
-    }
-    if (_json.containsKey('order')) {
-      order = _json['order'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1IndexField.fromJson(core.Map _json)
+      : this(
+          arrayConfig: _json.containsKey('arrayConfig')
+              ? _json['arrayConfig'] as core.String
+              : null,
+          fieldPath: _json.containsKey('fieldPath')
+              ? _json['fieldPath'] as core.String
+              : null,
+          order:
+              _json.containsKey('order') ? _json['order'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (arrayConfig != null) 'arrayConfig': arrayConfig!,
@@ -3235,78 +2996,27 @@ class GoogleFirestoreAdminV1IndexField {
       };
 }
 
-/// Metadata for google.longrunning.Operation results from
-/// FirestoreAdmin.CreateIndex.
-class GoogleFirestoreAdminV1IndexOperationMetadata {
-  /// The time this operation completed.
-  ///
-  /// Will be unset if operation still in progress.
-  core.String? endTime;
+/// The list of databases for a project.
+class GoogleFirestoreAdminV1ListDatabasesResponse {
+  /// The databases in the project.
+  core.List<GoogleFirestoreAdminV1Database>? databases;
 
-  /// The index resource that this operation is acting on.
-  ///
-  /// For example:
-  /// `projects/{project_id}/databases/{database_id}/collectionGroups/{collection_id}/indexes/{index_id}`
-  core.String? index;
+  GoogleFirestoreAdminV1ListDatabasesResponse({
+    this.databases,
+  });
 
-  /// The progress, in bytes, of this operation.
-  GoogleFirestoreAdminV1Progress? progressBytes;
-
-  /// The progress, in documents, of this operation.
-  GoogleFirestoreAdminV1Progress? progressDocuments;
-
-  /// The time this operation started.
-  core.String? startTime;
-
-  /// The state of the operation.
-  /// Possible string values are:
-  /// - "OPERATION_STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? state;
-
-  GoogleFirestoreAdminV1IndexOperationMetadata();
-
-  GoogleFirestoreAdminV1IndexOperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('index')) {
-      index = _json['index'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressDocuments')) {
-      progressDocuments = GoogleFirestoreAdminV1Progress.fromJson(
-          _json['progressDocuments'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1ListDatabasesResponse.fromJson(core.Map _json)
+      : this(
+          databases: _json.containsKey('databases')
+              ? (_json['databases'] as core.List)
+                  .map((value) => GoogleFirestoreAdminV1Database.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (index != null) 'index': index!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressDocuments != null)
-          'progressDocuments': progressDocuments!.toJson(),
-        if (startTime != null) 'startTime': startTime!,
-        if (state != null) 'state': state!,
+        if (databases != null) 'databases': databases!,
       };
 }
 
@@ -3320,24 +3030,26 @@ class GoogleFirestoreAdminV1ListFieldsResponse {
   /// If blank, this is the last page.
   core.String? nextPageToken;
 
-  GoogleFirestoreAdminV1ListFieldsResponse();
+  GoogleFirestoreAdminV1ListFieldsResponse({
+    this.fields,
+    this.nextPageToken,
+  });
 
-  GoogleFirestoreAdminV1ListFieldsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<GoogleFirestoreAdminV1Field>((value) =>
-              GoogleFirestoreAdminV1Field.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1ListFieldsResponse.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => GoogleFirestoreAdminV1Field.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (fields != null) 'fields': fields!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3352,77 +3064,32 @@ class GoogleFirestoreAdminV1ListIndexesResponse {
   /// If blank, this is the last page.
   core.String? nextPageToken;
 
-  GoogleFirestoreAdminV1ListIndexesResponse();
+  GoogleFirestoreAdminV1ListIndexesResponse({
+    this.indexes,
+    this.nextPageToken,
+  });
 
-  GoogleFirestoreAdminV1ListIndexesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('indexes')) {
-      indexes = (_json['indexes'] as core.List)
-          .map<GoogleFirestoreAdminV1Index>((value) =>
-              GoogleFirestoreAdminV1Index.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleFirestoreAdminV1ListIndexesResponse.fromJson(core.Map _json)
+      : this(
+          indexes: _json.containsKey('indexes')
+              ? (_json['indexes'] as core.List)
+                  .map((value) => GoogleFirestoreAdminV1Index.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (indexes != null)
-          'indexes': indexes!.map((value) => value.toJson()).toList(),
+        if (indexes != null) 'indexes': indexes!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
-/// The metadata message for google.cloud.location.Location.metadata.
-class GoogleFirestoreAdminV1LocationMetadata {
-  GoogleFirestoreAdminV1LocationMetadata();
-
-  GoogleFirestoreAdminV1LocationMetadata.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// Describes the progress of the operation.
-///
-/// Unit of work is generic and must be interpreted based on where Progress is
-/// used.
-class GoogleFirestoreAdminV1Progress {
-  /// The amount of work completed.
-  core.String? completedWork;
-
-  /// The amount of work estimated.
-  core.String? estimatedWork;
-
-  GoogleFirestoreAdminV1Progress();
-
-  GoogleFirestoreAdminV1Progress.fromJson(core.Map _json) {
-    if (_json.containsKey('completedWork')) {
-      completedWork = _json['completedWork'] as core.String;
-    }
-    if (_json.containsKey('estimatedWork')) {
-      estimatedWork = _json['estimatedWork'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (completedWork != null) 'completedWork': completedWork!,
-        if (estimatedWork != null) 'estimatedWork': estimatedWork!,
-      };
-}
-
 /// The request message for Operations.CancelOperation.
-class GoogleLongrunningCancelOperationRequest {
-  GoogleLongrunningCancelOperationRequest();
-
-  GoogleLongrunningCancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef GoogleLongrunningCancelOperationRequest = $Empty;
 
 /// The response message for Operations.ListOperations.
 class GoogleLongrunningListOperationsResponse {
@@ -3432,25 +3099,27 @@ class GoogleLongrunningListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<GoogleLongrunningOperation>? operations;
 
-  GoogleLongrunningListOperationsResponse();
+  GoogleLongrunningListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<GoogleLongrunningOperation>((value) =>
-              GoogleLongrunningOperation.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => GoogleLongrunningOperation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -3475,7 +3144,7 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3495,80 +3164,47 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  GoogleLongrunningOperation();
+  GoogleLongrunningOperation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  GoogleLongrunningOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleLongrunningOperation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
       };
 }
 
-/// An object representing a latitude/longitude pair.
+/// An object that represents a latitude/longitude pair.
 ///
-/// This is expressed as a pair of doubles representing degrees latitude and
-/// degrees longitude. Unless specified otherwise, this must conform to the
-/// WGS84 standard. Values must be within normalized ranges.
-class LatLng {
-  /// The latitude in degrees.
-  ///
-  /// It must be in the range \[-90.0, +90.0\].
-  core.double? latitude;
-
-  /// The longitude in degrees.
-  ///
-  /// It must be in the range \[-180.0, +180.0\].
-  core.double? longitude;
-
-  LatLng();
-
-  LatLng.fromJson(core.Map _json) {
-    if (_json.containsKey('latitude')) {
-      latitude = (_json['latitude'] as core.num).toDouble();
-    }
-    if (_json.containsKey('longitude')) {
-      longitude = (_json['longitude'] as core.num).toDouble();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (latitude != null) 'latitude': latitude!,
-        if (longitude != null) 'longitude': longitude!,
-      };
-}
+/// This is expressed as a pair of doubles to represent degrees latitude and
+/// degrees longitude. Unless specified otherwise, this object must conform to
+/// the WGS84 standard. Values must be within normalized ranges.
+typedef LatLng = $LatLng;
 
 /// The request for Firestore.ListCollectionIds.
 class ListCollectionIdsRequest {
@@ -3580,16 +3216,20 @@ class ListCollectionIdsRequest {
   /// Must be a value from ListCollectionIdsResponse.
   core.String? pageToken;
 
-  ListCollectionIdsRequest();
+  ListCollectionIdsRequest({
+    this.pageSize,
+    this.pageToken,
+  });
 
-  ListCollectionIdsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-  }
+  ListCollectionIdsRequest.fromJson(core.Map _json)
+      : this(
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (pageSize != null) 'pageSize': pageSize!,
@@ -3605,18 +3245,22 @@ class ListCollectionIdsResponse {
   /// A page token that may be used to continue the list.
   core.String? nextPageToken;
 
-  ListCollectionIdsResponse();
+  ListCollectionIdsResponse({
+    this.collectionIds,
+    this.nextPageToken,
+  });
 
-  ListCollectionIdsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('collectionIds')) {
-      collectionIds = (_json['collectionIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListCollectionIdsResponse.fromJson(core.Map _json)
+      : this(
+          collectionIds: _json.containsKey('collectionIds')
+              ? (_json['collectionIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (collectionIds != null) 'collectionIds': collectionIds!,
@@ -3632,23 +3276,26 @@ class ListDocumentsResponse {
   /// The next page token.
   core.String? nextPageToken;
 
-  ListDocumentsResponse();
+  ListDocumentsResponse({
+    this.documents,
+    this.nextPageToken,
+  });
 
-  ListDocumentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('documents')) {
-      documents = (_json['documents'] as core.List)
-          .map<Document>((value) =>
-              Document.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListDocumentsResponse.fromJson(core.Map _json)
+      : this(
+          documents: _json.containsKey('documents')
+              ? (_json['documents'] as core.List)
+                  .map((value) => Document.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (documents != null)
-          'documents': documents!.map((value) => value.toJson()).toList(),
+        if (documents != null) 'documents': documents!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3661,189 +3308,32 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
-/// A request for Firestore.Listen
-class ListenRequest {
-  /// A target to add to this stream.
-  Target? addTarget;
-
-  /// Labels associated with this target change.
-  core.Map<core.String, core.String>? labels;
-
-  /// The ID of a target to remove from this stream.
-  core.int? removeTarget;
-
-  ListenRequest();
-
-  ListenRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('addTarget')) {
-      addTarget = Target.fromJson(
-          _json['addTarget'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('removeTarget')) {
-      removeTarget = _json['removeTarget'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (addTarget != null) 'addTarget': addTarget!.toJson(),
-        if (labels != null) 'labels': labels!,
-        if (removeTarget != null) 'removeTarget': removeTarget!,
-      };
-}
-
-/// The response for Firestore.Listen.
-class ListenResponse {
-  /// A Document has changed.
-  DocumentChange? documentChange;
-
-  /// A Document has been deleted.
-  DocumentDelete? documentDelete;
-
-  /// A Document has been removed from a target (because it is no longer
-  /// relevant to that target).
-  DocumentRemove? documentRemove;
-
-  /// A filter to apply to the set of documents previously returned for the
-  /// given target.
-  ///
-  /// Returned when documents may have been removed from the given target, but
-  /// the exact documents are unknown.
-  ExistenceFilter? filter;
-
-  /// Targets have changed.
-  TargetChange? targetChange;
-
-  ListenResponse();
-
-  ListenResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('documentChange')) {
-      documentChange = DocumentChange.fromJson(
-          _json['documentChange'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('documentDelete')) {
-      documentDelete = DocumentDelete.fromJson(
-          _json['documentDelete'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('documentRemove')) {
-      documentRemove = DocumentRemove.fromJson(
-          _json['documentRemove'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('filter')) {
-      filter = ExistenceFilter.fromJson(
-          _json['filter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('targetChange')) {
-      targetChange = TargetChange.fromJson(
-          _json['targetChange'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (documentChange != null) 'documentChange': documentChange!.toJson(),
-        if (documentDelete != null) 'documentDelete': documentDelete!.toJson(),
-        if (documentRemove != null) 'documentRemove': documentRemove!.toJson(),
-        if (filter != null) 'filter': filter!.toJson(),
-        if (targetChange != null) 'targetChange': targetChange!.toJson(),
-      };
-}
-
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// A map value.
 class MapValue {
@@ -3855,23 +3345,24 @@ class MapValue {
   /// must not exceed 1,500 bytes and cannot be empty.
   core.Map<core.String, Value>? fields;
 
-  MapValue();
+  MapValue({
+    this.fields,
+  });
 
-  MapValue.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          Value.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
+  MapValue.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    Value.fromJson(item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields':
-              fields!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (fields != null) 'fields': fields!,
       };
 }
 
@@ -3889,21 +3380,25 @@ class Order {
   /// The field to order by.
   FieldReference? field;
 
-  Order();
+  Order({
+    this.direction,
+    this.field,
+  });
 
-  Order.fromJson(core.Map _json) {
-    if (_json.containsKey('direction')) {
-      direction = _json['direction'] as core.String;
-    }
-    if (_json.containsKey('field')) {
-      field = FieldReference.fromJson(
-          _json['field'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Order.fromJson(core.Map _json)
+      : this(
+          direction: _json.containsKey('direction')
+              ? _json['direction'] as core.String
+              : null,
+          field: _json.containsKey('field')
+              ? FieldReference.fromJson(
+                  _json['field'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (direction != null) 'direction': direction!,
-        if (field != null) 'field': field!.toJson(),
+        if (field != null) 'field': field!,
       };
 }
 
@@ -3946,30 +3441,35 @@ class PartitionQueryRequest {
   /// cursors are not supported.
   StructuredQuery? structuredQuery;
 
-  PartitionQueryRequest();
+  PartitionQueryRequest({
+    this.pageSize,
+    this.pageToken,
+    this.partitionCount,
+    this.structuredQuery,
+  });
 
-  PartitionQueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-    if (_json.containsKey('partitionCount')) {
-      partitionCount = _json['partitionCount'] as core.String;
-    }
-    if (_json.containsKey('structuredQuery')) {
-      structuredQuery = StructuredQuery.fromJson(
-          _json['structuredQuery'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PartitionQueryRequest.fromJson(core.Map _json)
+      : this(
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          partitionCount: _json.containsKey('partitionCount')
+              ? _json['partitionCount'] as core.String
+              : null,
+          structuredQuery: _json.containsKey('structuredQuery')
+              ? StructuredQuery.fromJson(_json['structuredQuery']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (pageSize != null) 'pageSize': pageSize!,
         if (pageToken != null) 'pageToken': pageToken!,
         if (partitionCount != null) 'partitionCount': partitionCount!,
-        if (structuredQuery != null)
-          'structuredQuery': structuredQuery!.toJson(),
+        if (structuredQuery != null) 'structuredQuery': structuredQuery!,
       };
 }
 
@@ -3995,24 +3495,27 @@ class PartitionQueryResponse {
   /// indicate that the query has too few results to be partitioned.
   core.List<Cursor>? partitions;
 
-  PartitionQueryResponse();
+  PartitionQueryResponse({
+    this.nextPageToken,
+    this.partitions,
+  });
 
-  PartitionQueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('partitions')) {
-      partitions = (_json['partitions'] as core.List)
-          .map<Cursor>((value) =>
-              Cursor.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  PartitionQueryResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          partitions: _json.containsKey('partitions')
+              ? (_json['partitions'] as core.List)
+                  .map((value) => Cursor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (partitions != null)
-          'partitions': partitions!.map((value) => value.toJson()).toList(),
+        if (partitions != null) 'partitions': partitions!,
       };
 }
 
@@ -4025,18 +3528,23 @@ class Precondition {
 
   /// When set, the target document must exist and have been last updated at
   /// that time.
+  ///
+  /// Timestamp must be microsecond aligned.
   core.String? updateTime;
 
-  Precondition();
+  Precondition({
+    this.exists,
+    this.updateTime,
+  });
 
-  Precondition.fromJson(core.Map _json) {
-    if (_json.containsKey('exists')) {
-      exists = _json['exists'] as core.bool;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Precondition.fromJson(core.Map _json)
+      : this(
+          exists:
+              _json.containsKey('exists') ? _json['exists'] as core.bool : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (exists != null) 'exists': exists!,
@@ -4052,53 +3560,22 @@ class Projection {
   /// document, use `['__name__']`.
   core.List<FieldReference>? fields;
 
-  Projection();
+  Projection({
+    this.fields,
+  });
 
-  Projection.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<FieldReference>((value) => FieldReference.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// A target specified by a query.
-class QueryTarget {
-  /// The parent resource name.
-  ///
-  /// In the format: `projects/{project_id}/databases/{database_id}/documents`
-  /// or
-  /// `projects/{project_id}/databases/{database_id}/documents/{document_path}`.
-  /// For example: `projects/my-project/databases/my-database/documents` or
-  /// `projects/my-project/databases/my-database/documents/chatrooms/my-chatroom`
-  core.String? parent;
-
-  /// A structured query.
-  StructuredQuery? structuredQuery;
-
-  QueryTarget();
-
-  QueryTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('structuredQuery')) {
-      structuredQuery = StructuredQuery.fromJson(
-          _json['structuredQuery'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Projection.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => FieldReference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (parent != null) 'parent': parent!,
-        if (structuredQuery != null)
-          'structuredQuery': structuredQuery!.toJson(),
+        if (fields != null) 'fields': fields!,
       };
 }
 
@@ -4109,13 +3586,16 @@ class ReadOnly {
   /// This may not be older than 60 seconds.
   core.String? readTime;
 
-  ReadOnly();
+  ReadOnly({
+    this.readTime,
+  });
 
-  ReadOnly.fromJson(core.Map _json) {
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-  }
+  ReadOnly.fromJson(core.Map _json)
+      : this(
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (readTime != null) 'readTime': readTime!,
@@ -4134,13 +3614,16 @@ class ReadWrite {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  ReadWrite();
+  ReadWrite({
+    this.retryTransaction,
+  });
 
-  ReadWrite.fromJson(core.Map _json) {
-    if (_json.containsKey('retryTransaction')) {
-      retryTransaction = _json['retryTransaction'] as core.String;
-    }
-  }
+  ReadWrite.fromJson(core.Map _json)
+      : this(
+          retryTransaction: _json.containsKey('retryTransaction')
+              ? _json['retryTransaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (retryTransaction != null) 'retryTransaction': retryTransaction!,
@@ -4161,13 +3644,16 @@ class RollbackRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  RollbackRequest();
+  RollbackRequest({
+    this.transaction,
+  });
 
-  RollbackRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  RollbackRequest.fromJson(core.Map _json)
+      : this(
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transaction != null) 'transaction': transaction!,
@@ -4200,36 +3686,40 @@ class RunQueryRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  RunQueryRequest();
+  RunQueryRequest({
+    this.newTransaction,
+    this.readTime,
+    this.structuredQuery,
+    this.transaction,
+  });
 
-  RunQueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('newTransaction')) {
-      newTransaction = TransactionOptions.fromJson(
-          _json['newTransaction'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('structuredQuery')) {
-      structuredQuery = StructuredQuery.fromJson(
-          _json['structuredQuery'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  RunQueryRequest.fromJson(core.Map _json)
+      : this(
+          newTransaction: _json.containsKey('newTransaction')
+              ? TransactionOptions.fromJson(_json['newTransaction']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          structuredQuery: _json.containsKey('structuredQuery')
+              ? StructuredQuery.fromJson(_json['structuredQuery']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (newTransaction != null) 'newTransaction': newTransaction!.toJson(),
+        if (newTransaction != null) 'newTransaction': newTransaction!,
         if (readTime != null) 'readTime': readTime!,
-        if (structuredQuery != null)
-          'structuredQuery': structuredQuery!.toJson(),
+        if (structuredQuery != null) 'structuredQuery': structuredQuery!,
         if (transaction != null) 'transaction': transaction!,
       };
 }
 
-/// The response for Firestore.RunQuery.
-class RunQueryResponse {
+class RunQueryResponseElement {
   /// A query result.
   ///
   /// Not set when reporting partial progress.
@@ -4262,30 +3752,70 @@ class RunQueryResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  RunQueryResponse();
+  RunQueryResponseElement({
+    this.document,
+    this.readTime,
+    this.skippedResults,
+    this.transaction,
+  });
 
-  RunQueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('document')) {
-      document = Document.fromJson(
-          _json['document'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('skippedResults')) {
-      skippedResults = _json['skippedResults'] as core.int;
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  RunQueryResponseElement.fromJson(core.Map _json)
+      : this(
+          document: _json.containsKey('document')
+              ? Document.fromJson(
+                  _json['document'] as core.Map<core.String, core.dynamic>)
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          skippedResults: _json.containsKey('skippedResults')
+              ? _json['skippedResults'] as core.int
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (document != null) 'document': document!.toJson(),
+        if (document != null) 'document': document!,
         if (readTime != null) 'readTime': readTime!,
         if (skippedResults != null) 'skippedResults': skippedResults!,
         if (transaction != null) 'transaction': transaction!,
       };
+}
+
+/// The response for Firestore.RunQuery.
+class RunQueryResponse extends collection.ListBase<RunQueryResponseElement> {
+  final core.List<RunQueryResponseElement> _inner;
+
+  RunQueryResponse() : _inner = [];
+
+  RunQueryResponse.fromJson(core.List json)
+      : _inner = json
+            .map((value) => RunQueryResponseElement.fromJson(
+                value as core.Map<core.String, core.dynamic>))
+            .toList();
+
+  @core.override
+  RunQueryResponseElement operator [](core.int key) => _inner[key];
+
+  @core.override
+  void operator []=(core.int key, RunQueryResponseElement value) {
+    _inner[key] = value;
+  }
+
+  @core.override
+  core.int get length => _inner.length;
+
+  @core.override
+  set length(core.int newLength) {
+    _inner.length = newLength;
+  }
+
+  @core.override
+  void add(RunQueryResponseElement element) {
+    _inner.add(element);
+  }
 }
 
 /// The `Status` type defines a logical error model that is suitable for
@@ -4295,52 +3825,7 @@ class RunQueryResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A Firestore query.
 class StructuredQuery {
@@ -4352,12 +3837,12 @@ class StructuredQuery {
 
   /// The maximum number of results to return.
   ///
-  /// Applies after all other constraints. Must be >= 0 if specified.
+  /// Applies after all other constraints. Must be \>= 0 if specified.
   core.int? limit;
 
   /// The number of results to skip.
   ///
-  /// Applies before limit, but after all other constraints. Must be >= 0 if
+  /// Applies before limit, but after all other constraints. Must be \>= 0 if
   /// specified.
   core.int? offset;
 
@@ -4384,206 +3869,61 @@ class StructuredQuery {
   /// The filter to apply.
   Filter? where;
 
-  StructuredQuery();
+  StructuredQuery({
+    this.endAt,
+    this.from,
+    this.limit,
+    this.offset,
+    this.orderBy,
+    this.select,
+    this.startAt,
+    this.where,
+  });
 
-  StructuredQuery.fromJson(core.Map _json) {
-    if (_json.containsKey('endAt')) {
-      endAt = Cursor.fromJson(
-          _json['endAt'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('from')) {
-      from = (_json['from'] as core.List)
-          .map<CollectionSelector>((value) => CollectionSelector.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('limit')) {
-      limit = _json['limit'] as core.int;
-    }
-    if (_json.containsKey('offset')) {
-      offset = _json['offset'] as core.int;
-    }
-    if (_json.containsKey('orderBy')) {
-      orderBy = (_json['orderBy'] as core.List)
-          .map<Order>((value) =>
-              Order.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('select')) {
-      select = Projection.fromJson(
-          _json['select'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startAt')) {
-      startAt = Cursor.fromJson(
-          _json['startAt'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('where')) {
-      where = Filter.fromJson(
-          _json['where'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  StructuredQuery.fromJson(core.Map _json)
+      : this(
+          endAt: _json.containsKey('endAt')
+              ? Cursor.fromJson(
+                  _json['endAt'] as core.Map<core.String, core.dynamic>)
+              : null,
+          from: _json.containsKey('from')
+              ? (_json['from'] as core.List)
+                  .map((value) => CollectionSelector.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          limit: _json.containsKey('limit') ? _json['limit'] as core.int : null,
+          offset:
+              _json.containsKey('offset') ? _json['offset'] as core.int : null,
+          orderBy: _json.containsKey('orderBy')
+              ? (_json['orderBy'] as core.List)
+                  .map((value) => Order.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          select: _json.containsKey('select')
+              ? Projection.fromJson(
+                  _json['select'] as core.Map<core.String, core.dynamic>)
+              : null,
+          startAt: _json.containsKey('startAt')
+              ? Cursor.fromJson(
+                  _json['startAt'] as core.Map<core.String, core.dynamic>)
+              : null,
+          where: _json.containsKey('where')
+              ? Filter.fromJson(
+                  _json['where'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endAt != null) 'endAt': endAt!.toJson(),
-        if (from != null) 'from': from!.map((value) => value.toJson()).toList(),
+        if (endAt != null) 'endAt': endAt!,
+        if (from != null) 'from': from!,
         if (limit != null) 'limit': limit!,
         if (offset != null) 'offset': offset!,
-        if (orderBy != null)
-          'orderBy': orderBy!.map((value) => value.toJson()).toList(),
-        if (select != null) 'select': select!.toJson(),
-        if (startAt != null) 'startAt': startAt!.toJson(),
-        if (where != null) 'where': where!.toJson(),
-      };
-}
-
-/// A specification of a set of documents to listen to.
-class Target {
-  /// A target specified by a set of document names.
-  DocumentsTarget? documents;
-
-  /// If the target should be removed once it is current and consistent.
-  core.bool? once;
-
-  /// A target specified by a query.
-  QueryTarget? query;
-
-  /// Start listening after a specific `read_time`.
-  ///
-  /// The client must know the state of matching documents at this time.
-  core.String? readTime;
-
-  /// A resume token from a prior TargetChange for an identical target.
-  ///
-  /// Using a resume token with a different target is unsupported and may fail.
-  core.String? resumeToken;
-  core.List<core.int> get resumeTokenAsBytes =>
-      convert.base64.decode(resumeToken!);
-
-  set resumeTokenAsBytes(core.List<core.int> _bytes) {
-    resumeToken =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  /// The target ID that identifies the target on the stream.
-  ///
-  /// Must be a positive number and non-zero.
-  core.int? targetId;
-
-  Target();
-
-  Target.fromJson(core.Map _json) {
-    if (_json.containsKey('documents')) {
-      documents = DocumentsTarget.fromJson(
-          _json['documents'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('once')) {
-      once = _json['once'] as core.bool;
-    }
-    if (_json.containsKey('query')) {
-      query = QueryTarget.fromJson(
-          _json['query'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('resumeToken')) {
-      resumeToken = _json['resumeToken'] as core.String;
-    }
-    if (_json.containsKey('targetId')) {
-      targetId = _json['targetId'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (documents != null) 'documents': documents!.toJson(),
-        if (once != null) 'once': once!,
-        if (query != null) 'query': query!.toJson(),
-        if (readTime != null) 'readTime': readTime!,
-        if (resumeToken != null) 'resumeToken': resumeToken!,
-        if (targetId != null) 'targetId': targetId!,
-      };
-}
-
-/// Targets being watched have changed.
-class TargetChange {
-  /// The error that resulted in this change, if applicable.
-  Status? cause;
-
-  /// The consistent `read_time` for the given `target_ids` (omitted when the
-  /// target_ids are not at a consistent snapshot).
-  ///
-  /// The stream is guaranteed to send a `read_time` with `target_ids` empty
-  /// whenever the entire stream reaches a new consistent snapshot. ADD,
-  /// CURRENT, and RESET messages are guaranteed to (eventually) result in a new
-  /// consistent snapshot (while NO_CHANGE and REMOVE messages are not). For a
-  /// given stream, `read_time` is guaranteed to be monotonically increasing.
-  core.String? readTime;
-
-  /// A token that can be used to resume the stream for the given `target_ids`,
-  /// or all targets if `target_ids` is empty.
-  ///
-  /// Not set on every target change.
-  core.String? resumeToken;
-  core.List<core.int> get resumeTokenAsBytes =>
-      convert.base64.decode(resumeToken!);
-
-  set resumeTokenAsBytes(core.List<core.int> _bytes) {
-    resumeToken =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  /// The type of change that occurred.
-  /// Possible string values are:
-  /// - "NO_CHANGE" : No change has occurred. Used only to send an updated
-  /// `resume_token`.
-  /// - "ADD" : The targets have been added.
-  /// - "REMOVE" : The targets have been removed.
-  /// - "CURRENT" : The targets reflect all changes committed before the targets
-  /// were added to the stream. This will be sent after or with a `read_time`
-  /// that is greater than or equal to the time at which the targets were added.
-  /// Listeners can wait for this change if read-after-write semantics are
-  /// desired.
-  /// - "RESET" : The targets have been reset, and a new initial state for the
-  /// targets will be returned in subsequent changes. After the initial state is
-  /// complete, `CURRENT` will be returned even if the target was previously
-  /// indicated to be `CURRENT`.
-  core.String? targetChangeType;
-
-  /// The target IDs of targets that have changed.
-  ///
-  /// If empty, the change applies to all targets. The order of the target IDs
-  /// is not defined.
-  core.List<core.int>? targetIds;
-
-  TargetChange();
-
-  TargetChange.fromJson(core.Map _json) {
-    if (_json.containsKey('cause')) {
-      cause = Status.fromJson(
-          _json['cause'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('resumeToken')) {
-      resumeToken = _json['resumeToken'] as core.String;
-    }
-    if (_json.containsKey('targetChangeType')) {
-      targetChangeType = _json['targetChangeType'] as core.String;
-    }
-    if (_json.containsKey('targetIds')) {
-      targetIds = (_json['targetIds'] as core.List)
-          .map<core.int>((value) => value as core.int)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (cause != null) 'cause': cause!.toJson(),
-        if (readTime != null) 'readTime': readTime!,
-        if (resumeToken != null) 'resumeToken': resumeToken!,
-        if (targetChangeType != null) 'targetChangeType': targetChangeType!,
-        if (targetIds != null) 'targetIds': targetIds!,
+        if (orderBy != null) 'orderBy': orderBy!,
+        if (select != null) 'select': select!,
+        if (startAt != null) 'startAt': startAt!,
+        if (where != null) 'where': where!,
       };
 }
 
@@ -4595,22 +3935,26 @@ class TransactionOptions {
   /// The transaction can be used for both read and write operations.
   ReadWrite? readWrite;
 
-  TransactionOptions();
+  TransactionOptions({
+    this.readOnly,
+    this.readWrite,
+  });
 
-  TransactionOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('readOnly')) {
-      readOnly = ReadOnly.fromJson(
-          _json['readOnly'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readWrite')) {
-      readWrite = ReadWrite.fromJson(
-          _json['readWrite'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TransactionOptions.fromJson(core.Map _json)
+      : this(
+          readOnly: _json.containsKey('readOnly')
+              ? ReadOnly.fromJson(
+                  _json['readOnly'] as core.Map<core.String, core.dynamic>)
+              : null,
+          readWrite: _json.containsKey('readWrite')
+              ? ReadWrite.fromJson(
+                  _json['readWrite'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (readOnly != null) 'readOnly': readOnly!.toJson(),
-        if (readWrite != null) 'readWrite': readWrite!.toJson(),
+        if (readOnly != null) 'readOnly': readOnly!,
+        if (readWrite != null) 'readWrite': readWrite!,
       };
 }
 
@@ -4632,20 +3976,22 @@ class UnaryFilter {
   /// `field` comes first in the `order_by`.
   core.String? op;
 
-  UnaryFilter();
+  UnaryFilter({
+    this.field,
+    this.op,
+  });
 
-  UnaryFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('field')) {
-      field = FieldReference.fromJson(
-          _json['field'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-  }
+  UnaryFilter.fromJson(core.Map _json)
+      : this(
+          field: _json.containsKey('field')
+              ? FieldReference.fromJson(
+                  _json['field'] as core.Map<core.String, core.dynamic>)
+              : null,
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (field != null) 'field': field!.toJson(),
+        if (field != null) 'field': field!,
         if (op != null) 'op': op!,
       };
 }
@@ -4710,55 +4056,66 @@ class Value {
   /// rounded down.
   core.String? timestampValue;
 
-  Value();
+  Value({
+    this.arrayValue,
+    this.booleanValue,
+    this.bytesValue,
+    this.doubleValue,
+    this.geoPointValue,
+    this.integerValue,
+    this.mapValue,
+    this.nullValue,
+    this.referenceValue,
+    this.stringValue,
+    this.timestampValue,
+  });
 
-  Value.fromJson(core.Map _json) {
-    if (_json.containsKey('arrayValue')) {
-      arrayValue = ArrayValue.fromJson(
-          _json['arrayValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('booleanValue')) {
-      booleanValue = _json['booleanValue'] as core.bool;
-    }
-    if (_json.containsKey('bytesValue')) {
-      bytesValue = _json['bytesValue'] as core.String;
-    }
-    if (_json.containsKey('doubleValue')) {
-      doubleValue = (_json['doubleValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('geoPointValue')) {
-      geoPointValue = LatLng.fromJson(
-          _json['geoPointValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('integerValue')) {
-      integerValue = _json['integerValue'] as core.String;
-    }
-    if (_json.containsKey('mapValue')) {
-      mapValue = MapValue.fromJson(
-          _json['mapValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('nullValue')) {
-      nullValue = _json['nullValue'] as core.String;
-    }
-    if (_json.containsKey('referenceValue')) {
-      referenceValue = _json['referenceValue'] as core.String;
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-    if (_json.containsKey('timestampValue')) {
-      timestampValue = _json['timestampValue'] as core.String;
-    }
-  }
+  Value.fromJson(core.Map _json)
+      : this(
+          arrayValue: _json.containsKey('arrayValue')
+              ? ArrayValue.fromJson(
+                  _json['arrayValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          booleanValue: _json.containsKey('booleanValue')
+              ? _json['booleanValue'] as core.bool
+              : null,
+          bytesValue: _json.containsKey('bytesValue')
+              ? _json['bytesValue'] as core.String
+              : null,
+          doubleValue: _json.containsKey('doubleValue')
+              ? (_json['doubleValue'] as core.num).toDouble()
+              : null,
+          geoPointValue: _json.containsKey('geoPointValue')
+              ? LatLng.fromJson(
+                  _json['geoPointValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          integerValue: _json.containsKey('integerValue')
+              ? _json['integerValue'] as core.String
+              : null,
+          mapValue: _json.containsKey('mapValue')
+              ? MapValue.fromJson(
+                  _json['mapValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          nullValue: _json.containsKey('nullValue') ? 'NULL_VALUE' : null,
+          referenceValue: _json.containsKey('referenceValue')
+              ? _json['referenceValue'] as core.String
+              : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+          timestampValue: _json.containsKey('timestampValue')
+              ? _json['timestampValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (arrayValue != null) 'arrayValue': arrayValue!.toJson(),
+        if (arrayValue != null) 'arrayValue': arrayValue!,
         if (booleanValue != null) 'booleanValue': booleanValue!,
         if (bytesValue != null) 'bytesValue': bytesValue!,
         if (doubleValue != null) 'doubleValue': doubleValue!,
-        if (geoPointValue != null) 'geoPointValue': geoPointValue!.toJson(),
+        if (geoPointValue != null) 'geoPointValue': geoPointValue!,
         if (integerValue != null) 'integerValue': integerValue!,
-        if (mapValue != null) 'mapValue': mapValue!.toJson(),
+        if (mapValue != null) 'mapValue': mapValue!,
         if (nullValue != null) 'nullValue': nullValue!,
         if (referenceValue != null) 'referenceValue': referenceValue!,
         if (stringValue != null) 'stringValue': stringValue!,
@@ -4803,46 +4160,51 @@ class Write {
   /// same document atomically and in order.
   core.List<FieldTransform>? updateTransforms;
 
-  Write();
+  Write({
+    this.currentDocument,
+    this.delete,
+    this.transform,
+    this.update,
+    this.updateMask,
+    this.updateTransforms,
+  });
 
-  Write.fromJson(core.Map _json) {
-    if (_json.containsKey('currentDocument')) {
-      currentDocument = Precondition.fromJson(
-          _json['currentDocument'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('delete')) {
-      delete = _json['delete'] as core.String;
-    }
-    if (_json.containsKey('transform')) {
-      transform = DocumentTransform.fromJson(
-          _json['transform'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('update')) {
-      update = Document.fromJson(
-          _json['update'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = DocumentMask.fromJson(
-          _json['updateMask'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateTransforms')) {
-      updateTransforms = (_json['updateTransforms'] as core.List)
-          .map<FieldTransform>((value) => FieldTransform.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Write.fromJson(core.Map _json)
+      : this(
+          currentDocument: _json.containsKey('currentDocument')
+              ? Precondition.fromJson(_json['currentDocument']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          delete: _json.containsKey('delete')
+              ? _json['delete'] as core.String
+              : null,
+          transform: _json.containsKey('transform')
+              ? DocumentTransform.fromJson(
+                  _json['transform'] as core.Map<core.String, core.dynamic>)
+              : null,
+          update: _json.containsKey('update')
+              ? Document.fromJson(
+                  _json['update'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? DocumentMask.fromJson(
+                  _json['updateMask'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateTransforms: _json.containsKey('updateTransforms')
+              ? (_json['updateTransforms'] as core.List)
+                  .map((value) => FieldTransform.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (currentDocument != null)
-          'currentDocument': currentDocument!.toJson(),
+        if (currentDocument != null) 'currentDocument': currentDocument!,
         if (delete != null) 'delete': delete!,
-        if (transform != null) 'transform': transform!.toJson(),
-        if (update != null) 'update': update!.toJson(),
-        if (updateMask != null) 'updateMask': updateMask!.toJson(),
-        if (updateTransforms != null)
-          'updateTransforms':
-              updateTransforms!.map((value) => value.toJson()).toList(),
+        if (transform != null) 'transform': transform!,
+        if (update != null) 'update': update!,
+        if (updateMask != null) 'updateMask': updateMask!,
+        if (updateTransforms != null) 'updateTransforms': updateTransforms!,
       };
 }
 
@@ -4889,37 +4251,42 @@ class WriteRequest {
   /// all other requests.
   core.List<Write>? writes;
 
-  WriteRequest();
+  WriteRequest({
+    this.labels,
+    this.streamId,
+    this.streamToken,
+    this.writes,
+  });
 
-  WriteRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('streamId')) {
-      streamId = _json['streamId'] as core.String;
-    }
-    if (_json.containsKey('streamToken')) {
-      streamToken = _json['streamToken'] as core.String;
-    }
-    if (_json.containsKey('writes')) {
-      writes = (_json['writes'] as core.List)
-          .map<Write>((value) =>
-              Write.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  WriteRequest.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          streamId: _json.containsKey('streamId')
+              ? _json['streamId'] as core.String
+              : null,
+          streamToken: _json.containsKey('streamToken')
+              ? _json['streamToken'] as core.String
+              : null,
+          writes: _json.containsKey('writes')
+              ? (_json['writes'] as core.List)
+                  .map((value) => Write.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
         if (streamId != null) 'streamId': streamId!,
         if (streamToken != null) 'streamToken': streamToken!,
-        if (writes != null)
-          'writes': writes!.map((value) => value.toJson()).toList(),
+        if (writes != null) 'writes': writes!,
       };
 }
 
@@ -4954,32 +4321,37 @@ class WriteResponse {
   /// This i-th write result corresponds to the i-th write in the request.
   core.List<WriteResult>? writeResults;
 
-  WriteResponse();
+  WriteResponse({
+    this.commitTime,
+    this.streamId,
+    this.streamToken,
+    this.writeResults,
+  });
 
-  WriteResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('commitTime')) {
-      commitTime = _json['commitTime'] as core.String;
-    }
-    if (_json.containsKey('streamId')) {
-      streamId = _json['streamId'] as core.String;
-    }
-    if (_json.containsKey('streamToken')) {
-      streamToken = _json['streamToken'] as core.String;
-    }
-    if (_json.containsKey('writeResults')) {
-      writeResults = (_json['writeResults'] as core.List)
-          .map<WriteResult>((value) => WriteResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  WriteResponse.fromJson(core.Map _json)
+      : this(
+          commitTime: _json.containsKey('commitTime')
+              ? _json['commitTime'] as core.String
+              : null,
+          streamId: _json.containsKey('streamId')
+              ? _json['streamId'] as core.String
+              : null,
+          streamToken: _json.containsKey('streamToken')
+              ? _json['streamToken'] as core.String
+              : null,
+          writeResults: _json.containsKey('writeResults')
+              ? (_json['writeResults'] as core.List)
+                  .map((value) => WriteResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commitTime != null) 'commitTime': commitTime!,
         if (streamId != null) 'streamId': streamId!,
         if (streamToken != null) 'streamToken': streamToken!,
-        if (writeResults != null)
-          'writeResults': writeResults!.map((value) => value.toJson()).toList(),
+        if (writeResults != null) 'writeResults': writeResults!,
       };
 }
 
@@ -4995,24 +4367,26 @@ class WriteResult {
   /// document, this will be the previous update_time.
   core.String? updateTime;
 
-  WriteResult();
+  WriteResult({
+    this.transformResults,
+    this.updateTime,
+  });
 
-  WriteResult.fromJson(core.Map _json) {
-    if (_json.containsKey('transformResults')) {
-      transformResults = (_json['transformResults'] as core.List)
-          .map<Value>((value) =>
-              Value.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  WriteResult.fromJson(core.Map _json)
+      : this(
+          transformResults: _json.containsKey('transformResults')
+              ? (_json['transformResults'] as core.List)
+                  .map((value) => Value.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (transformResults != null)
-          'transformResults':
-              transformResults!.map((value) => value.toJson()).toList(),
+        if (transformResults != null) 'transformResults': transformResults!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
 }

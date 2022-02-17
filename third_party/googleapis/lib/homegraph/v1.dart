@@ -30,13 +30,15 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
 class HomeGraphServiceApi {
-  /// New Service: https://www.googleapis.com/auth/homegraph
+  /// Private Service: https://www.googleapis.com/auth/homegraph
   static const homegraphScope = 'https://www.googleapis.com/auth/homegraph';
 
   final commons.ApiRequester _requester;
@@ -133,7 +135,7 @@ class DevicesResource {
     QueryRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -182,7 +184,7 @@ class DevicesResource {
     ReportStateAndNotificationRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -225,7 +227,7 @@ class DevicesResource {
     RequestSyncDevicesRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -266,7 +268,7 @@ class DevicesResource {
     SyncRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -289,13 +291,14 @@ class AgentDeviceId {
   /// Third-party device ID.
   core.String? id;
 
-  AgentDeviceId();
+  AgentDeviceId({
+    this.id,
+  });
 
-  AgentDeviceId.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-  }
+  AgentDeviceId.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -310,16 +313,20 @@ class AgentOtherDeviceId {
   /// Unique third-party device ID.
   core.String? deviceId;
 
-  AgentOtherDeviceId();
+  AgentOtherDeviceId({
+    this.agentId,
+    this.deviceId,
+  });
 
-  AgentOtherDeviceId.fromJson(core.Map _json) {
-    if (_json.containsKey('agentId')) {
-      agentId = _json['agentId'] as core.String;
-    }
-    if (_json.containsKey('deviceId')) {
-      deviceId = _json['deviceId'] as core.String;
-    }
-  }
+  AgentOtherDeviceId.fromJson(core.Map _json)
+      : this(
+          agentId: _json.containsKey('agentId')
+              ? _json['agentId'] as core.String
+              : null,
+          deviceId: _json.containsKey('deviceId')
+              ? _json['deviceId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentId != null) 'agentId': agentId!,
@@ -335,7 +342,7 @@ class Device {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? attributes;
+  core.Map<core.String, core.Object?>? attributes;
 
   /// Custom device attributes stored in Home Graph and provided to your smart
   /// home Action in each
@@ -349,7 +356,7 @@ class Device {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? customData;
+  core.Map<core.String, core.Object?>? customData;
 
   /// Device manufacturer, model, hardware version, and software version.
   DeviceInfo? deviceInfo;
@@ -359,14 +366,6 @@ class Device {
 
   /// Names given to this device by your smart home Action.
   DeviceNames? name;
-
-  /// See description for "traits".
-  ///
-  /// For Smart Home Entertainment Devices (SHED) devices, some traits can only
-  /// be executed on 3P cloud, e.g. "non_local_traits": \[ { "trait":
-  /// "action.devices.traits.MediaInitiation" }, { "trait":
-  /// "action.devices.traits.Channel" } \] go/shed-per-trait-routing.
-  core.List<NonLocalTrait>? nonLocalTraits;
 
   /// Indicates whether your smart home Action will report notifications to
   /// Google for this device via ReportStateAndNotification.
@@ -407,87 +406,74 @@ class Device {
   /// to Google via ReportStateAndNotification.
   core.bool? willReportState;
 
-  Device();
+  Device({
+    this.attributes,
+    this.customData,
+    this.deviceInfo,
+    this.id,
+    this.name,
+    this.notificationSupportedByAgent,
+    this.otherDeviceIds,
+    this.roomHint,
+    this.structureHint,
+    this.traits,
+    this.type,
+    this.willReportState,
+  });
 
-  Device.fromJson(core.Map _json) {
-    if (_json.containsKey('attributes')) {
-      attributes =
-          (_json['attributes'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('customData')) {
-      customData =
-          (_json['customData'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('deviceInfo')) {
-      deviceInfo = DeviceInfo.fromJson(
-          _json['deviceInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = DeviceNames.fromJson(
-          _json['name'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('nonLocalTraits')) {
-      nonLocalTraits = (_json['nonLocalTraits'] as core.List)
-          .map<NonLocalTrait>((value) => NonLocalTrait.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('notificationSupportedByAgent')) {
-      notificationSupportedByAgent =
-          _json['notificationSupportedByAgent'] as core.bool;
-    }
-    if (_json.containsKey('otherDeviceIds')) {
-      otherDeviceIds = (_json['otherDeviceIds'] as core.List)
-          .map<AgentOtherDeviceId>((value) => AgentOtherDeviceId.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('roomHint')) {
-      roomHint = _json['roomHint'] as core.String;
-    }
-    if (_json.containsKey('structureHint')) {
-      structureHint = _json['structureHint'] as core.String;
-    }
-    if (_json.containsKey('traits')) {
-      traits = (_json['traits'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('willReportState')) {
-      willReportState = _json['willReportState'] as core.bool;
-    }
-  }
+  Device.fromJson(core.Map _json)
+      : this(
+          attributes: _json.containsKey('attributes')
+              ? _json['attributes'] as core.Map<core.String, core.dynamic>
+              : null,
+          customData: _json.containsKey('customData')
+              ? _json['customData'] as core.Map<core.String, core.dynamic>
+              : null,
+          deviceInfo: _json.containsKey('deviceInfo')
+              ? DeviceInfo.fromJson(
+                  _json['deviceInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name')
+              ? DeviceNames.fromJson(
+                  _json['name'] as core.Map<core.String, core.dynamic>)
+              : null,
+          notificationSupportedByAgent:
+              _json.containsKey('notificationSupportedByAgent')
+                  ? _json['notificationSupportedByAgent'] as core.bool
+                  : null,
+          otherDeviceIds: _json.containsKey('otherDeviceIds')
+              ? (_json['otherDeviceIds'] as core.List)
+                  .map((value) => AgentOtherDeviceId.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          roomHint: _json.containsKey('roomHint')
+              ? _json['roomHint'] as core.String
+              : null,
+          structureHint: _json.containsKey('structureHint')
+              ? _json['structureHint'] as core.String
+              : null,
+          traits: _json.containsKey('traits')
+              ? (_json['traits'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          willReportState: _json.containsKey('willReportState')
+              ? _json['willReportState'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (attributes != null) 'attributes': attributes!,
         if (customData != null) 'customData': customData!,
-        if (deviceInfo != null) 'deviceInfo': deviceInfo!.toJson(),
+        if (deviceInfo != null) 'deviceInfo': deviceInfo!,
         if (id != null) 'id': id!,
-        if (name != null) 'name': name!.toJson(),
-        if (nonLocalTraits != null)
-          'nonLocalTraits':
-              nonLocalTraits!.map((value) => value.toJson()).toList(),
+        if (name != null) 'name': name!,
         if (notificationSupportedByAgent != null)
           'notificationSupportedByAgent': notificationSupportedByAgent!,
-        if (otherDeviceIds != null)
-          'otherDeviceIds':
-              otherDeviceIds!.map((value) => value.toJson()).toList(),
+        if (otherDeviceIds != null) 'otherDeviceIds': otherDeviceIds!,
         if (roomHint != null) 'roomHint': roomHint!,
         if (structureHint != null) 'structureHint': structureHint!,
         if (traits != null) 'traits': traits!,
@@ -510,22 +496,27 @@ class DeviceInfo {
   /// Device software version.
   core.String? swVersion;
 
-  DeviceInfo();
+  DeviceInfo({
+    this.hwVersion,
+    this.manufacturer,
+    this.model,
+    this.swVersion,
+  });
 
-  DeviceInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('hwVersion')) {
-      hwVersion = _json['hwVersion'] as core.String;
-    }
-    if (_json.containsKey('manufacturer')) {
-      manufacturer = _json['manufacturer'] as core.String;
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('swVersion')) {
-      swVersion = _json['swVersion'] as core.String;
-    }
-  }
+  DeviceInfo.fromJson(core.Map _json)
+      : this(
+          hwVersion: _json.containsKey('hwVersion')
+              ? _json['hwVersion'] as core.String
+              : null,
+          manufacturer: _json.containsKey('manufacturer')
+              ? _json['manufacturer'] as core.String
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          swVersion: _json.containsKey('swVersion')
+              ? _json['swVersion'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hwVersion != null) 'hwVersion': hwVersion!,
@@ -547,23 +538,26 @@ class DeviceNames {
   /// Additional names provided by the user for the device.
   core.List<core.String>? nicknames;
 
-  DeviceNames();
+  DeviceNames({
+    this.defaultNames,
+    this.name,
+    this.nicknames,
+  });
 
-  DeviceNames.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultNames')) {
-      defaultNames = (_json['defaultNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('nicknames')) {
-      nicknames = (_json['nicknames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  DeviceNames.fromJson(core.Map _json)
+      : this(
+          defaultNames: _json.containsKey('defaultNames')
+              ? (_json['defaultNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          nicknames: _json.containsKey('nicknames')
+              ? (_json['nicknames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultNames != null) 'defaultNames': defaultNames!,
@@ -579,39 +573,7 @@ class DeviceNames {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// LINT.IfChange go/shed-per-trait-routing.
-///
-/// Making it object to allow for extendible design, where we can add attributes
-/// in future.
-class NonLocalTrait {
-  /// Trait name, e.g., "action.devices.traits.MediaInitiation".
-  ///
-  /// See
-  /// [device traits](https://developers.google.com/assistant/smarthome/traits).
-  core.String? trait;
-
-  NonLocalTrait();
-
-  NonLocalTrait.fromJson(core.Map _json) {
-    if (_json.containsKey('trait')) {
-      trait = _json['trait'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (trait != null) 'trait': trait!,
-      };
-}
+typedef Empty = $Empty;
 
 /// Request type for the
 /// \[`Query`\](#google.home.graph.v1.HomeGraphApiService.Query) call.
@@ -630,27 +592,31 @@ class QueryRequest {
   /// Request ID used for debugging.
   core.String? requestId;
 
-  QueryRequest();
+  QueryRequest({
+    this.agentUserId,
+    this.inputs,
+    this.requestId,
+  });
 
-  QueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('agentUserId')) {
-      agentUserId = _json['agentUserId'] as core.String;
-    }
-    if (_json.containsKey('inputs')) {
-      inputs = (_json['inputs'] as core.List)
-          .map<QueryRequestInput>((value) => QueryRequestInput.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  QueryRequest.fromJson(core.Map _json)
+      : this(
+          agentUserId: _json.containsKey('agentUserId')
+              ? _json['agentUserId'] as core.String
+              : null,
+          inputs: _json.containsKey('inputs')
+              ? (_json['inputs'] as core.List)
+                  .map((value) => QueryRequestInput.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentUserId != null) 'agentUserId': agentUserId!,
-        if (inputs != null)
-          'inputs': inputs!.map((value) => value.toJson()).toList(),
+        if (inputs != null) 'inputs': inputs!,
         if (requestId != null) 'requestId': requestId!,
       };
 }
@@ -660,17 +626,20 @@ class QueryRequestInput {
   /// Payload containing third-party device IDs.
   QueryRequestPayload? payload;
 
-  QueryRequestInput();
+  QueryRequestInput({
+    this.payload,
+  });
 
-  QueryRequestInput.fromJson(core.Map _json) {
-    if (_json.containsKey('payload')) {
-      payload = QueryRequestPayload.fromJson(
-          _json['payload'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  QueryRequestInput.fromJson(core.Map _json)
+      : this(
+          payload: _json.containsKey('payload')
+              ? QueryRequestPayload.fromJson(
+                  _json['payload'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (payload != null) 'payload': payload!.toJson(),
+        if (payload != null) 'payload': payload!,
       };
 }
 
@@ -679,20 +648,22 @@ class QueryRequestPayload {
   /// Third-party device IDs for which to get the device states.
   core.List<AgentDeviceId>? devices;
 
-  QueryRequestPayload();
+  QueryRequestPayload({
+    this.devices,
+  });
 
-  QueryRequestPayload.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.List)
-          .map<AgentDeviceId>((value) => AgentDeviceId.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  QueryRequestPayload.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.List)
+                  .map((value) => AgentDeviceId.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devices != null)
-          'devices': devices!.map((value) => value.toJson()).toList(),
+        if (devices != null) 'devices': devices!,
       };
 }
 
@@ -715,20 +686,24 @@ class QueryResponse {
   /// Copied from the request.
   core.String? requestId;
 
-  QueryResponse();
+  QueryResponse({
+    this.payload,
+    this.requestId,
+  });
 
-  QueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('payload')) {
-      payload = QueryResponsePayload.fromJson(
-          _json['payload'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  QueryResponse.fromJson(core.Map _json)
+      : this(
+          payload: _json.containsKey('payload')
+              ? QueryResponsePayload.fromJson(
+                  _json['payload'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (payload != null) 'payload': payload!.toJson(),
+        if (payload != null) 'payload': payload!,
         if (requestId != null) 'requestId': requestId!,
       };
 }
@@ -741,25 +716,23 @@ class QueryResponsePayload {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Map<core.String, core.Object>>? devices;
+  core.Map<core.String, core.Map<core.String, core.Object?>>? devices;
 
-  QueryResponsePayload();
+  QueryResponsePayload({
+    this.devices,
+  });
 
-  QueryResponsePayload.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          (item as core.Map<core.String, core.dynamic>).map(
-            (key, item) => core.MapEntry(
-              key,
-              item as core.Object,
-            ),
-          ),
-        ),
-      );
-    }
-  }
+  QueryResponsePayload.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.Map<core.String, core.dynamic>,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (devices != null) 'devices': devices!,
@@ -775,7 +748,7 @@ class ReportStateAndNotificationDevice {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? notifications;
+  core.Map<core.String, core.Object?>? notifications;
 
   /// States of devices to update.
   ///
@@ -784,29 +757,22 @@ class ReportStateAndNotificationDevice {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? states;
+  core.Map<core.String, core.Object?>? states;
 
-  ReportStateAndNotificationDevice();
+  ReportStateAndNotificationDevice({
+    this.notifications,
+    this.states,
+  });
 
-  ReportStateAndNotificationDevice.fromJson(core.Map _json) {
-    if (_json.containsKey('notifications')) {
-      notifications =
-          (_json['notifications'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('states')) {
-      states = (_json['states'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  ReportStateAndNotificationDevice.fromJson(core.Map _json)
+      : this(
+          notifications: _json.containsKey('notifications')
+              ? _json['notifications'] as core.Map<core.String, core.dynamic>
+              : null,
+          states: _json.containsKey('states')
+              ? _json['states'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (notifications != null) 'notifications': notifications!,
@@ -833,11 +799,7 @@ class ReportStateAndNotificationRequest {
   /// Unique identifier per event (for example, a doorbell press).
   core.String? eventId;
 
-  /// Token to maintain state in the follow up notification response.
-  ///
-  /// Deprecated. See the
-  /// [notifications guide](https://developers.google.com/assistant/smarthome/develop/notifications)
-  /// for details on implementing follow up notifications.
+  /// Deprecated.
   core.String? followUpToken;
 
   /// State of devices to update and notification metadata for devices.
@@ -848,32 +810,39 @@ class ReportStateAndNotificationRequest {
   /// Request ID used for debugging.
   core.String? requestId;
 
-  ReportStateAndNotificationRequest();
+  ReportStateAndNotificationRequest({
+    this.agentUserId,
+    this.eventId,
+    this.followUpToken,
+    this.payload,
+    this.requestId,
+  });
 
-  ReportStateAndNotificationRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('agentUserId')) {
-      agentUserId = _json['agentUserId'] as core.String;
-    }
-    if (_json.containsKey('eventId')) {
-      eventId = _json['eventId'] as core.String;
-    }
-    if (_json.containsKey('followUpToken')) {
-      followUpToken = _json['followUpToken'] as core.String;
-    }
-    if (_json.containsKey('payload')) {
-      payload = StateAndNotificationPayload.fromJson(
-          _json['payload'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  ReportStateAndNotificationRequest.fromJson(core.Map _json)
+      : this(
+          agentUserId: _json.containsKey('agentUserId')
+              ? _json['agentUserId'] as core.String
+              : null,
+          eventId: _json.containsKey('eventId')
+              ? _json['eventId'] as core.String
+              : null,
+          followUpToken: _json.containsKey('followUpToken')
+              ? _json['followUpToken'] as core.String
+              : null,
+          payload: _json.containsKey('payload')
+              ? StateAndNotificationPayload.fromJson(
+                  _json['payload'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentUserId != null) 'agentUserId': agentUserId!,
         if (eventId != null) 'eventId': eventId!,
         if (followUpToken != null) 'followUpToken': followUpToken!,
-        if (payload != null) 'payload': payload!.toJson(),
+        if (payload != null) 'payload': payload!,
         if (requestId != null) 'requestId': requestId!,
       };
 }
@@ -885,13 +854,16 @@ class ReportStateAndNotificationResponse {
   /// Request ID copied from ReportStateAndNotificationRequest.
   core.String? requestId;
 
-  ReportStateAndNotificationResponse();
+  ReportStateAndNotificationResponse({
+    this.requestId,
+  });
 
-  ReportStateAndNotificationResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  ReportStateAndNotificationResponse.fromJson(core.Map _json)
+      : this(
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (requestId != null) 'requestId': requestId!,
@@ -916,16 +888,19 @@ class RequestSyncDevicesRequest {
   /// Optional.
   core.bool? async;
 
-  RequestSyncDevicesRequest();
+  RequestSyncDevicesRequest({
+    this.agentUserId,
+    this.async,
+  });
 
-  RequestSyncDevicesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('agentUserId')) {
-      agentUserId = _json['agentUserId'] as core.String;
-    }
-    if (_json.containsKey('async')) {
-      async = _json['async'] as core.bool;
-    }
-  }
+  RequestSyncDevicesRequest.fromJson(core.Map _json)
+      : this(
+          agentUserId: _json.containsKey('agentUserId')
+              ? _json['agentUserId'] as core.String
+              : null,
+          async:
+              _json.containsKey('async') ? _json['async'] as core.bool : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentUserId != null) 'agentUserId': agentUserId!,
@@ -939,32 +914,27 @@ class RequestSyncDevicesRequest {
 ///
 /// Intentionally empty upon success. An HTTP response code is returned with
 /// more details upon failure.
-class RequestSyncDevicesResponse {
-  RequestSyncDevicesResponse();
-
-  RequestSyncDevicesResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef RequestSyncDevicesResponse = $Empty;
 
 /// Payload containing the state and notification information for devices.
 class StateAndNotificationPayload {
   /// The devices for updating state and sending notifications.
   ReportStateAndNotificationDevice? devices;
 
-  StateAndNotificationPayload();
+  StateAndNotificationPayload({
+    this.devices,
+  });
 
-  StateAndNotificationPayload.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = ReportStateAndNotificationDevice.fromJson(
-          _json['devices'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  StateAndNotificationPayload.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? ReportStateAndNotificationDevice.fromJson(
+                  _json['devices'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devices != null) 'devices': devices!.toJson(),
+        if (devices != null) 'devices': devices!,
       };
 }
 
@@ -979,16 +949,20 @@ class SyncRequest {
   /// Request ID used for debugging.
   core.String? requestId;
 
-  SyncRequest();
+  SyncRequest({
+    this.agentUserId,
+    this.requestId,
+  });
 
-  SyncRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('agentUserId')) {
-      agentUserId = _json['agentUserId'] as core.String;
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  SyncRequest.fromJson(core.Map _json)
+      : this(
+          agentUserId: _json.containsKey('agentUserId')
+              ? _json['agentUserId'] as core.String
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentUserId != null) 'agentUserId': agentUserId!,
@@ -1019,20 +993,24 @@ class SyncResponse {
   /// Copied from the request.
   core.String? requestId;
 
-  SyncResponse();
+  SyncResponse({
+    this.payload,
+    this.requestId,
+  });
 
-  SyncResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('payload')) {
-      payload = SyncResponsePayload.fromJson(
-          _json['payload'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestId')) {
-      requestId = _json['requestId'] as core.String;
-    }
-  }
+  SyncResponse.fromJson(core.Map _json)
+      : this(
+          payload: _json.containsKey('payload')
+              ? SyncResponsePayload.fromJson(
+                  _json['payload'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requestId: _json.containsKey('requestId')
+              ? _json['requestId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (payload != null) 'payload': payload!.toJson(),
+        if (payload != null) 'payload': payload!,
         if (requestId != null) 'requestId': requestId!,
       };
 }
@@ -1045,23 +1023,26 @@ class SyncResponsePayload {
   /// Devices associated with the third-party user.
   core.List<Device>? devices;
 
-  SyncResponsePayload();
+  SyncResponsePayload({
+    this.agentUserId,
+    this.devices,
+  });
 
-  SyncResponsePayload.fromJson(core.Map _json) {
-    if (_json.containsKey('agentUserId')) {
-      agentUserId = _json['agentUserId'] as core.String;
-    }
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.List)
-          .map<Device>((value) =>
-              Device.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SyncResponsePayload.fromJson(core.Map _json)
+      : this(
+          agentUserId: _json.containsKey('agentUserId')
+              ? _json['agentUserId'] as core.String
+              : null,
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.List)
+                  .map((value) => Device.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (agentUserId != null) 'agentUserId': agentUserId!,
-        if (devices != null)
-          'devices': devices!.map((value) => value.toJson()).toList(),
+        if (devices != null) 'devices': devices!,
       };
 }

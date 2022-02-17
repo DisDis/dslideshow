@@ -36,6 +36,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -43,7 +45,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Deploy and manage infrastructure for global multiplayer gaming experiences.
 class GameServicesApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -121,14 +124,18 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
   /// [includeUnrevealedLocations] - If true, the returned list will include
   /// locations which are not yet revealed.
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -207,7 +214,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String? deploymentId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (deploymentId != null) 'deploymentId': [deploymentId],
       if ($fields != null) 'fields': [$fields],
@@ -294,7 +301,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -363,12 +370,16 @@ class ProjectsLocationsGameServerDeploymentsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/gameServerDeployments/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -535,7 +546,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -592,7 +603,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (previewTime != null) 'previewTime': [previewTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -641,7 +652,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -689,7 +700,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -747,7 +758,7 @@ class ProjectsLocationsGameServerDeploymentsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -806,7 +817,7 @@ class ProjectsLocationsGameServerDeploymentsConfigsResource {
     core.String? configId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (configId != null) 'configId': [configId],
       if ($fields != null) 'fields': [$fields],
@@ -1006,7 +1017,7 @@ class ProjectsLocationsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1196,7 +1207,7 @@ class ProjectsLocationsRealmsResource {
     core.String? realmId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (realmId != null) 'realmId': [realmId],
       if ($fields != null) 'fields': [$fields],
@@ -1377,7 +1388,7 @@ class ProjectsLocationsRealmsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1429,7 +1440,7 @@ class ProjectsLocationsRealmsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (previewTime != null) 'previewTime': [previewTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -1485,7 +1496,7 @@ class ProjectsLocationsRealmsGameServerClustersResource {
     core.String? gameServerClusterId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (gameServerClusterId != null)
         'gameServerClusterId': [gameServerClusterId],
@@ -1551,6 +1562,21 @@ class ProjectsLocationsRealmsGameServerClustersResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/realms/\[^/\]+/gameServerClusters/\[^/\]+$`.
   ///
+  /// [view] - Optional. View for the returned GameServerCluster objects. When
+  /// `FULL` is specified, the `cluster_state` field is also returned in the
+  /// GameServerCluster object, which includes the state of the referenced
+  /// Kubernetes cluster such as versions and provider info. The default/unset
+  /// value is GAME_SERVER_CLUSTER_VIEW_UNSPECIFIED, same as BASIC, which does
+  /// not return the `cluster_state` field.
+  /// Possible string values are:
+  /// - "GAME_SERVER_CLUSTER_VIEW_UNSPECIFIED" : The default / unset value. The
+  /// API will default to the BASIC view.
+  /// - "BASIC" : Include basic information of a GameServerCluster resource and
+  /// omit `cluster_state`. This is the default value (for
+  /// ListGameServerClusters, GetGameServerCluster and
+  /// PreviewCreateGameServerCluster).
+  /// - "FULL" : Include everything.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1563,9 +1589,11 @@ class ProjectsLocationsRealmsGameServerClustersResource {
   /// this method will complete with the same error.
   async.Future<GameServerCluster> get(
     core.String name, {
+    core.String? view,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (view != null) 'view': [view],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1603,6 +1631,21 @@ class ProjectsLocationsRealmsGameServerClustersResource {
   /// [pageToken] - Optional. The next_page_token value returned from a previous
   /// List request, if any.
   ///
+  /// [view] - Optional. View for the returned GameServerCluster objects. When
+  /// `FULL` is specified, the `cluster_state` field is also returned in the
+  /// GameServerCluster object, which includes the state of the referenced
+  /// Kubernetes cluster such as versions and provider info. The default/unset
+  /// value is GAME_SERVER_CLUSTER_VIEW_UNSPECIFIED, same as BASIC, which does
+  /// not return the `cluster_state` field.
+  /// Possible string values are:
+  /// - "GAME_SERVER_CLUSTER_VIEW_UNSPECIFIED" : The default / unset value. The
+  /// API will default to the BASIC view.
+  /// - "BASIC" : Include basic information of a GameServerCluster resource and
+  /// omit `cluster_state`. This is the default value (for
+  /// ListGameServerClusters, GetGameServerCluster and
+  /// PreviewCreateGameServerCluster).
+  /// - "FULL" : Include everything.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1619,6 +1662,7 @@ class ProjectsLocationsRealmsGameServerClustersResource {
     core.String? orderBy,
     core.int? pageSize,
     core.String? pageToken,
+    core.String? view,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
@@ -1626,6 +1670,7 @@ class ProjectsLocationsRealmsGameServerClustersResource {
       if (orderBy != null) 'orderBy': [orderBy],
       if (pageSize != null) 'pageSize': ['${pageSize}'],
       if (pageToken != null) 'pageToken': [pageToken],
+      if (view != null) 'view': [view],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1674,7 +1719,7 @@ class ProjectsLocationsRealmsGameServerClustersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1708,6 +1753,17 @@ class ProjectsLocationsRealmsGameServerClustersResource {
   ///
   /// [previewTime] - Optional. The target timestamp to compute the preview.
   ///
+  /// [view] - Optional. This field is deprecated, preview will always return
+  /// KubernetesClusterState.
+  /// Possible string values are:
+  /// - "GAME_SERVER_CLUSTER_VIEW_UNSPECIFIED" : The default / unset value. The
+  /// API will default to the BASIC view.
+  /// - "BASIC" : Include basic information of a GameServerCluster resource and
+  /// omit `cluster_state`. This is the default value (for
+  /// ListGameServerClusters, GetGameServerCluster and
+  /// PreviewCreateGameServerCluster).
+  /// - "FULL" : Include everything.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1723,13 +1779,15 @@ class ProjectsLocationsRealmsGameServerClustersResource {
     core.String parent, {
     core.String? gameServerClusterId,
     core.String? previewTime,
+    core.String? view,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (gameServerClusterId != null)
         'gameServerClusterId': [gameServerClusterId],
       if (previewTime != null) 'previewTime': [previewTime],
+      if (view != null) 'view': [view],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1827,7 +1885,7 @@ class ProjectsLocationsRealmsGameServerClustersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (previewTime != null) 'previewTime': [previewTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -1867,7 +1925,6 @@ class ProjectsLocationsRealmsGameServerClustersResource {
 class AuditConfig {
   /// The configuration for logging of each type of permission.
   core.List<AuditLogConfig>? auditLogConfigs;
-  core.List<core.String>? exemptedMembers;
 
   /// Specifies a service that will be enabled for audit logging.
   ///
@@ -1875,30 +1932,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -1925,21 +1978,26 @@ class AuditLogConfig {
   /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
   core.String? logType;
 
-  AuditLogConfig();
+  AuditLogConfig({
+    this.exemptedMembers,
+    this.ignoreChildExemptions,
+    this.logType,
+  });
 
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('ignoreChildExemptions')) {
-      ignoreChildExemptions = _json['ignoreChildExemptions'] as core.bool;
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
+  AuditLogConfig.fromJson(core.Map _json)
+      : this(
+          exemptedMembers: _json.containsKey('exemptedMembers')
+              ? (_json['exemptedMembers'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          ignoreChildExemptions: _json.containsKey('ignoreChildExemptions')
+              ? _json['ignoreChildExemptions'] as core.bool
+              : null,
+          logType: _json.containsKey('logType')
+              ? _json['logType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
@@ -1960,20 +2018,23 @@ class AuthorizationLoggingOptions {
   /// - "DATA_WRITE" : A write of standard data.
   core.String? permissionType;
 
-  AuthorizationLoggingOptions();
+  AuthorizationLoggingOptions({
+    this.permissionType,
+  });
 
-  AuthorizationLoggingOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('permissionType')) {
-      permissionType = _json['permissionType'] as core.String;
-    }
-  }
+  AuthorizationLoggingOptions.fromJson(core.Map _json)
+      : this(
+          permissionType: _json.containsKey('permissionType')
+              ? _json['permissionType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (permissionType != null) 'permissionType': permissionType!,
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   core.String? bindingId;
 
@@ -1982,12 +2043,13 @@ class Binding {
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -2019,49 +2081,45 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.bindingId,
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('bindingId')) {
-      bindingId = _json['bindingId'] as core.String;
-    }
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          bindingId: _json.containsKey('bindingId')
+              ? _json['bindingId'] as core.String
+              : null,
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bindingId != null) 'bindingId': bindingId!,
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
-
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelOperationRequest = $Empty;
 
 /// Write a Cloud Audit log
 class CloudAuditOptions {
@@ -2075,22 +2133,27 @@ class CloudAuditOptions {
   /// - "DATA_ACCESS" : Corresponds to "cloudaudit.googleapis.com/data_access"
   core.String? logName;
 
-  CloudAuditOptions();
+  CloudAuditOptions({
+    this.authorizationLoggingOptions,
+    this.logName,
+  });
 
-  CloudAuditOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('authorizationLoggingOptions')) {
-      authorizationLoggingOptions = AuthorizationLoggingOptions.fromJson(
-          _json['authorizationLoggingOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('logName')) {
-      logName = _json['logName'] as core.String;
-    }
-  }
+  CloudAuditOptions.fromJson(core.Map _json)
+      : this(
+          authorizationLoggingOptions:
+              _json.containsKey('authorizationLoggingOptions')
+                  ? AuthorizationLoggingOptions.fromJson(
+                      _json['authorizationLoggingOptions']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          logName: _json.containsKey('logName')
+              ? _json['logName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (authorizationLoggingOptions != null)
-          'authorizationLoggingOptions': authorizationLoggingOptions!.toJson(),
+          'authorizationLoggingOptions': authorizationLoggingOptions!,
         if (logName != null) 'logName': logName!,
       };
 }
@@ -2108,16 +2171,19 @@ class Condition {
   /// the request's realms match one of the given values; with NOT_IN, "none of
   /// the realms match any of the given values". Note that a value can be: -
   /// 'self' (i.e., allow connections from clients that are in the same security
-  /// realm) - 'self:metro' (i.e., clients that are in the same metro) -
+  /// realm, which is currently but not guaranteed to be campus-sized) -
+  /// 'self:metro' (i.e., clients that are in the same metro) -
   /// 'self:cloud-region' (i.e., allow connections from clients that are in the
-  /// same cloud region) - 'guardians' (i.e., allow connections from its
-  /// guardian realms. See go/security-realms-glossary#guardian for more
-  /// information.) - a realm (e.g., 'campus-abc') - a realm group (e.g.,
-  /// 'realms-for-borg-cell-xx', see: go/realm-groups) A match is determined by
-  /// a realm group membership check performed by a RealmAclRep object
-  /// (go/realm-acl-howto). It is not permitted to grant access based on the
-  /// *absence* of a realm, so realm conditions can only be used in a "positive"
-  /// context (e.g., ALLOW/IN or DENY/NOT_IN).
+  /// same cloud region) - 'self:prod-region' (i.e., allow connections from
+  /// clients that are in the same prod region) - 'guardians' (i.e., allow
+  /// connections from its guardian realms. See
+  /// go/security-realms-glossary#guardian for more information.) - a realm
+  /// (e.g., 'campus-abc') - a realm group (e.g., 'realms-for-borg-cell-xx',
+  /// see: go/realm-groups) A match is determined by a realm group membership
+  /// check performed by a RealmAclRep object (go/realm-acl-howto). It is not
+  /// permitted to grant access based on the *absence* of a realm, so realm
+  /// conditions can only be used in a "positive" context (e.g., ALLOW/IN or
+  /// DENY/NOT_IN).
   /// - "APPROVER" : An approver (distinct from the requester) that has
   /// authorized this request. When used with IN, the condition indicates that
   /// one of the approvers associated with the request matches the specified
@@ -2169,27 +2235,26 @@ class Condition {
   /// The objects of the condition.
   core.List<core.String>? values;
 
-  Condition();
+  Condition({
+    this.iam,
+    this.op,
+    this.svc,
+    this.sys,
+    this.values,
+  });
 
-  Condition.fromJson(core.Map _json) {
-    if (_json.containsKey('iam')) {
-      iam = _json['iam'] as core.String;
-    }
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-    if (_json.containsKey('svc')) {
-      svc = _json['svc'] as core.String;
-    }
-    if (_json.containsKey('sys')) {
-      sys = _json['sys'] as core.String;
-    }
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Condition.fromJson(core.Map _json)
+      : this(
+          iam: _json.containsKey('iam') ? _json['iam'] as core.String : null,
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+          svc: _json.containsKey('svc') ? _json['svc'] as core.String : null,
+          sys: _json.containsKey('sys') ? _json['sys'] as core.String : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (iam != null) 'iam': iam!,
@@ -2212,7 +2277,7 @@ class Condition {
 /// IAMContext.principal; or - "iam_principal", a representation of
 /// IAMContext.principal even if a token or authority selector is present; or -
 /// "" (empty string), resulting in a counter with no fields. Examples: counter
-/// { metric: "/debug_access_count" field: "iam_principal" } ==> increment
+/// { metric: "/debug_access_count" field: "iam_principal" } ==\> increment
 /// counter /iam/policy/debug_access_count {iam_principal=\[value of
 /// IAMContext.principal\]}
 class CounterOptions {
@@ -2225,26 +2290,29 @@ class CounterOptions {
   /// The metric to update.
   core.String? metric;
 
-  CounterOptions();
+  CounterOptions({
+    this.customFields,
+    this.field,
+    this.metric,
+  });
 
-  CounterOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('customFields')) {
-      customFields = (_json['customFields'] as core.List)
-          .map<CustomField>((value) => CustomField.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('field')) {
-      field = _json['field'] as core.String;
-    }
-    if (_json.containsKey('metric')) {
-      metric = _json['metric'] as core.String;
-    }
-  }
+  CounterOptions.fromJson(core.Map _json)
+      : this(
+          customFields: _json.containsKey('customFields')
+              ? (_json['customFields'] as core.List)
+                  .map((value) => CustomField.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          field:
+              _json.containsKey('field') ? _json['field'] as core.String : null,
+          metric: _json.containsKey('metric')
+              ? _json['metric'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (customFields != null)
-          'customFields': customFields!.map((value) => value.toJson()).toList(),
+        if (customFields != null) 'customFields': customFields!,
         if (field != null) 'field': field!,
         if (metric != null) 'metric': metric!,
       };
@@ -2264,16 +2332,17 @@ class CustomField {
   /// here is a constant that is not derived from the IAMContext.
   core.String? value;
 
-  CustomField();
+  CustomField({
+    this.name,
+    this.value,
+  });
 
-  CustomField.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  CustomField.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -2299,13 +2368,16 @@ class DataAccessOptions {
   /// authorization failure by setting CheckPolicyResponse.success=false.
   core.String? logMode;
 
-  DataAccessOptions();
+  DataAccessOptions({
+    this.logMode,
+  });
 
-  DataAccessOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('logMode')) {
-      logMode = _json['logMode'] as core.String;
-    }
-  }
+  DataAccessOptions.fromJson(core.Map _json)
+      : this(
+          logMode: _json.containsKey('logMode')
+              ? _json['logMode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (logMode != null) 'logMode': logMode!,
@@ -2321,24 +2393,27 @@ class DeployedClusterState {
   /// server cluster.
   core.List<DeployedFleetDetails>? fleetDetails;
 
-  DeployedClusterState();
+  DeployedClusterState({
+    this.cluster,
+    this.fleetDetails,
+  });
 
-  DeployedClusterState.fromJson(core.Map _json) {
-    if (_json.containsKey('cluster')) {
-      cluster = _json['cluster'] as core.String;
-    }
-    if (_json.containsKey('fleetDetails')) {
-      fleetDetails = (_json['fleetDetails'] as core.List)
-          .map<DeployedFleetDetails>((value) => DeployedFleetDetails.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DeployedClusterState.fromJson(core.Map _json)
+      : this(
+          cluster: _json.containsKey('cluster')
+              ? _json['cluster'] as core.String
+              : null,
+          fleetDetails: _json.containsKey('fleetDetails')
+              ? (_json['fleetDetails'] as core.List)
+                  .map((value) => DeployedFleetDetails.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cluster != null) 'cluster': cluster!,
-        if (fleetDetails != null)
-          'fleetDetails': fleetDetails!.map((value) => value.toJson()).toList(),
+        if (fleetDetails != null) 'fleetDetails': fleetDetails!,
       };
 }
 
@@ -2360,30 +2435,35 @@ class DeployedFleet {
   /// Includes count of game servers in various states.
   DeployedFleetStatus? status;
 
-  DeployedFleet();
+  DeployedFleet({
+    this.fleet,
+    this.fleetSpec,
+    this.specSource,
+    this.status,
+  });
 
-  DeployedFleet.fromJson(core.Map _json) {
-    if (_json.containsKey('fleet')) {
-      fleet = _json['fleet'] as core.String;
-    }
-    if (_json.containsKey('fleetSpec')) {
-      fleetSpec = _json['fleetSpec'] as core.String;
-    }
-    if (_json.containsKey('specSource')) {
-      specSource = SpecSource.fromJson(
-          _json['specSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = DeployedFleetStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeployedFleet.fromJson(core.Map _json)
+      : this(
+          fleet:
+              _json.containsKey('fleet') ? _json['fleet'] as core.String : null,
+          fleetSpec: _json.containsKey('fleetSpec')
+              ? _json['fleetSpec'] as core.String
+              : null,
+          specSource: _json.containsKey('specSource')
+              ? SpecSource.fromJson(
+                  _json['specSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? DeployedFleetStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fleet != null) 'fleet': fleet!,
         if (fleetSpec != null) 'fleetSpec': fleetSpec!,
-        if (specSource != null) 'specSource': specSource!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (specSource != null) 'specSource': specSource!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -2400,26 +2480,31 @@ class DeployedFleetAutoscaler {
   /// The GameServerConfig resource may no longer exist in the system.
   SpecSource? specSource;
 
-  DeployedFleetAutoscaler();
+  DeployedFleetAutoscaler({
+    this.autoscaler,
+    this.fleetAutoscalerSpec,
+    this.specSource,
+  });
 
-  DeployedFleetAutoscaler.fromJson(core.Map _json) {
-    if (_json.containsKey('autoscaler')) {
-      autoscaler = _json['autoscaler'] as core.String;
-    }
-    if (_json.containsKey('fleetAutoscalerSpec')) {
-      fleetAutoscalerSpec = _json['fleetAutoscalerSpec'] as core.String;
-    }
-    if (_json.containsKey('specSource')) {
-      specSource = SpecSource.fromJson(
-          _json['specSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeployedFleetAutoscaler.fromJson(core.Map _json)
+      : this(
+          autoscaler: _json.containsKey('autoscaler')
+              ? _json['autoscaler'] as core.String
+              : null,
+          fleetAutoscalerSpec: _json.containsKey('fleetAutoscalerSpec')
+              ? _json['fleetAutoscalerSpec'] as core.String
+              : null,
+          specSource: _json.containsKey('specSource')
+              ? SpecSource.fromJson(
+                  _json['specSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (autoscaler != null) 'autoscaler': autoscaler!,
         if (fleetAutoscalerSpec != null)
           'fleetAutoscalerSpec': fleetAutoscalerSpec!,
-        if (specSource != null) 'specSource': specSource!.toJson(),
+        if (specSource != null) 'specSource': specSource!,
       };
 }
 
@@ -2431,23 +2516,27 @@ class DeployedFleetDetails {
   /// Information about the Agones fleet.
   DeployedFleet? deployedFleet;
 
-  DeployedFleetDetails();
+  DeployedFleetDetails({
+    this.deployedAutoscaler,
+    this.deployedFleet,
+  });
 
-  DeployedFleetDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('deployedAutoscaler')) {
-      deployedAutoscaler = DeployedFleetAutoscaler.fromJson(
-          _json['deployedAutoscaler'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('deployedFleet')) {
-      deployedFleet = DeployedFleet.fromJson(
-          _json['deployedFleet'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeployedFleetDetails.fromJson(core.Map _json)
+      : this(
+          deployedAutoscaler: _json.containsKey('deployedAutoscaler')
+              ? DeployedFleetAutoscaler.fromJson(_json['deployedAutoscaler']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          deployedFleet: _json.containsKey('deployedFleet')
+              ? DeployedFleet.fromJson(
+                  _json['deployedFleet'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deployedAutoscaler != null)
-          'deployedAutoscaler': deployedAutoscaler!.toJson(),
-        if (deployedFleet != null) 'deployedFleet': deployedFleet!.toJson(),
+          'deployedAutoscaler': deployedAutoscaler!,
+        if (deployedFleet != null) 'deployedFleet': deployedFleet!,
       };
 }
 
@@ -2469,22 +2558,28 @@ class DeployedFleetStatus {
   /// autoscaler to scale up.
   core.String? reservedReplicas;
 
-  DeployedFleetStatus();
+  DeployedFleetStatus({
+    this.allocatedReplicas,
+    this.readyReplicas,
+    this.replicas,
+    this.reservedReplicas,
+  });
 
-  DeployedFleetStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('allocatedReplicas')) {
-      allocatedReplicas = _json['allocatedReplicas'] as core.String;
-    }
-    if (_json.containsKey('readyReplicas')) {
-      readyReplicas = _json['readyReplicas'] as core.String;
-    }
-    if (_json.containsKey('replicas')) {
-      replicas = _json['replicas'] as core.String;
-    }
-    if (_json.containsKey('reservedReplicas')) {
-      reservedReplicas = _json['reservedReplicas'] as core.String;
-    }
-  }
+  DeployedFleetStatus.fromJson(core.Map _json)
+      : this(
+          allocatedReplicas: _json.containsKey('allocatedReplicas')
+              ? _json['allocatedReplicas'] as core.String
+              : null,
+          readyReplicas: _json.containsKey('readyReplicas')
+              ? _json['readyReplicas'] as core.String
+              : null,
+          replicas: _json.containsKey('replicas')
+              ? _json['replicas'] as core.String
+              : null,
+          reservedReplicas: _json.containsKey('reservedReplicas')
+              ? _json['reservedReplicas'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allocatedReplicas != null) 'allocatedReplicas': allocatedReplicas!,
@@ -2501,15 +2596,7 @@ class DeployedFleetStatus {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -2517,7 +2604,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -2529,67 +2616,10 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Request message for GameServerDeploymentsService.FetchDeploymentState.
-class FetchDeploymentStateRequest {
-  FetchDeploymentStateRequest();
-
-  FetchDeploymentStateRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef FetchDeploymentStateRequest = $Empty;
 
 /// Response message for GameServerDeploymentsService.FetchDeploymentState.
 class FetchDeploymentStateResponse {
@@ -2599,25 +2629,28 @@ class FetchDeploymentStateResponse {
   /// List of locations that could not be reached.
   core.List<core.String>? unavailable;
 
-  FetchDeploymentStateResponse();
+  FetchDeploymentStateResponse({
+    this.clusterState,
+    this.unavailable,
+  });
 
-  FetchDeploymentStateResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterState')) {
-      clusterState = (_json['clusterState'] as core.List)
-          .map<DeployedClusterState>((value) => DeployedClusterState.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('unavailable')) {
-      unavailable = (_json['unavailable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  FetchDeploymentStateResponse.fromJson(core.Map _json)
+      : this(
+          clusterState: _json.containsKey('clusterState')
+              ? (_json['clusterState'] as core.List)
+                  .map((value) => DeployedClusterState.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unavailable: _json.containsKey('unavailable')
+              ? (_json['unavailable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusterState != null)
-          'clusterState': clusterState!.map((value) => value.toJson()).toList(),
+        if (clusterState != null) 'clusterState': clusterState!,
         if (unavailable != null) 'unavailable': unavailable!,
       };
 }
@@ -2632,16 +2665,18 @@ class FleetConfig {
   /// The name of the FleetConfig.
   core.String? name;
 
-  FleetConfig();
+  FleetConfig({
+    this.fleetSpec,
+    this.name,
+  });
 
-  FleetConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('fleetSpec')) {
-      fleetSpec = _json['fleetSpec'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  FleetConfig.fromJson(core.Map _json)
+      : this(
+          fleetSpec: _json.containsKey('fleetSpec')
+              ? _json['fleetSpec'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fleetSpec != null) 'fleetSpec': fleetSpec!,
@@ -2651,6 +2686,12 @@ class FleetConfig {
 
 /// A game server cluster resource.
 class GameServerCluster {
+  /// The state of the Kubernetes cluster, this will be available if 'view' is
+  /// set to `FULL` in the relevant List/Get/Preview request.
+  ///
+  /// Output only.
+  KubernetesClusterState? clusterState;
+
   /// The game server cluster connection information.
   ///
   /// This information is used to manage game server clusters.
@@ -2686,40 +2727,51 @@ class GameServerCluster {
   /// Output only.
   core.String? updateTime;
 
-  GameServerCluster();
+  GameServerCluster({
+    this.clusterState,
+    this.connectionInfo,
+    this.createTime,
+    this.description,
+    this.etag,
+    this.labels,
+    this.name,
+    this.updateTime,
+  });
 
-  GameServerCluster.fromJson(core.Map _json) {
-    if (_json.containsKey('connectionInfo')) {
-      connectionInfo = GameServerClusterConnectionInfo.fromJson(
-          _json['connectionInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  GameServerCluster.fromJson(core.Map _json)
+      : this(
+          clusterState: _json.containsKey('clusterState')
+              ? KubernetesClusterState.fromJson(
+                  _json['clusterState'] as core.Map<core.String, core.dynamic>)
+              : null,
+          connectionInfo: _json.containsKey('connectionInfo')
+              ? GameServerClusterConnectionInfo.fromJson(_json['connectionInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (connectionInfo != null) 'connectionInfo': connectionInfo!.toJson(),
+        if (clusterState != null) 'clusterState': clusterState!,
+        if (connectionInfo != null) 'connectionInfo': connectionInfo!,
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
         if (etag != null) 'etag': etag!,
@@ -2740,21 +2792,25 @@ class GameServerClusterConnectionInfo {
   /// Existence of the namespace will be validated during creation.
   core.String? namespace;
 
-  GameServerClusterConnectionInfo();
+  GameServerClusterConnectionInfo({
+    this.gkeClusterReference,
+    this.namespace,
+  });
 
-  GameServerClusterConnectionInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('gkeClusterReference')) {
-      gkeClusterReference = GkeClusterReference.fromJson(
-          _json['gkeClusterReference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('namespace')) {
-      namespace = _json['namespace'] as core.String;
-    }
-  }
+  GameServerClusterConnectionInfo.fromJson(core.Map _json)
+      : this(
+          gkeClusterReference: _json.containsKey('gkeClusterReference')
+              ? GkeClusterReference.fromJson(_json['gkeClusterReference']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          namespace: _json.containsKey('namespace')
+              ? _json['namespace'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gkeClusterReference != null)
-          'gkeClusterReference': gkeClusterReference!.toJson(),
+          'gkeClusterReference': gkeClusterReference!,
         if (namespace != null) 'namespace': namespace!,
       };
 }
@@ -2794,53 +2850,57 @@ class GameServerConfig {
   /// Output only.
   core.String? updateTime;
 
-  GameServerConfig();
+  GameServerConfig({
+    this.createTime,
+    this.description,
+    this.fleetConfigs,
+    this.labels,
+    this.name,
+    this.scalingConfigs,
+    this.updateTime,
+  });
 
-  GameServerConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('fleetConfigs')) {
-      fleetConfigs = (_json['fleetConfigs'] as core.List)
-          .map<FleetConfig>((value) => FleetConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('scalingConfigs')) {
-      scalingConfigs = (_json['scalingConfigs'] as core.List)
-          .map<ScalingConfig>((value) => ScalingConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  GameServerConfig.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          fleetConfigs: _json.containsKey('fleetConfigs')
+              ? (_json['fleetConfigs'] as core.List)
+                  .map((value) => FleetConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          scalingConfigs: _json.containsKey('scalingConfigs')
+              ? (_json['scalingConfigs'] as core.List)
+                  .map((value) => ScalingConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
-        if (fleetConfigs != null)
-          'fleetConfigs': fleetConfigs!.map((value) => value.toJson()).toList(),
+        if (fleetConfigs != null) 'fleetConfigs': fleetConfigs!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
-        if (scalingConfigs != null)
-          'scalingConfigs':
-              scalingConfigs!.map((value) => value.toJson()).toList(),
+        if (scalingConfigs != null) 'scalingConfigs': scalingConfigs!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
 }
@@ -2853,21 +2913,25 @@ class GameServerConfigOverride {
   /// Selector for choosing applicable realms.
   RealmSelector? realmsSelector;
 
-  GameServerConfigOverride();
+  GameServerConfigOverride({
+    this.configVersion,
+    this.realmsSelector,
+  });
 
-  GameServerConfigOverride.fromJson(core.Map _json) {
-    if (_json.containsKey('configVersion')) {
-      configVersion = _json['configVersion'] as core.String;
-    }
-    if (_json.containsKey('realmsSelector')) {
-      realmsSelector = RealmSelector.fromJson(
-          _json['realmsSelector'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GameServerConfigOverride.fromJson(core.Map _json)
+      : this(
+          configVersion: _json.containsKey('configVersion')
+              ? _json['configVersion'] as core.String
+              : null,
+          realmsSelector: _json.containsKey('realmsSelector')
+              ? RealmSelector.fromJson(_json['realmsSelector']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (configVersion != null) 'configVersion': configVersion!,
-        if (realmsSelector != null) 'realmsSelector': realmsSelector!.toJson(),
+        if (realmsSelector != null) 'realmsSelector': realmsSelector!,
       };
 }
 
@@ -2901,33 +2965,37 @@ class GameServerDeployment {
   /// Output only.
   core.String? updateTime;
 
-  GameServerDeployment();
+  GameServerDeployment({
+    this.createTime,
+    this.description,
+    this.etag,
+    this.labels,
+    this.name,
+    this.updateTime,
+  });
 
-  GameServerDeployment.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  GameServerDeployment.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -2976,33 +3044,36 @@ class GameServerDeploymentRollout {
   /// Output only.
   core.String? updateTime;
 
-  GameServerDeploymentRollout();
+  GameServerDeploymentRollout({
+    this.createTime,
+    this.defaultGameServerConfig,
+    this.etag,
+    this.gameServerConfigOverrides,
+    this.name,
+    this.updateTime,
+  });
 
-  GameServerDeploymentRollout.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('defaultGameServerConfig')) {
-      defaultGameServerConfig = _json['defaultGameServerConfig'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('gameServerConfigOverrides')) {
-      gameServerConfigOverrides =
-          (_json['gameServerConfigOverrides'] as core.List)
-              .map<GameServerConfigOverride>((value) =>
-                  GameServerConfigOverride.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  GameServerDeploymentRollout.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          defaultGameServerConfig: _json.containsKey('defaultGameServerConfig')
+              ? _json['defaultGameServerConfig'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          gameServerConfigOverrides:
+              _json.containsKey('gameServerConfigOverrides')
+                  ? (_json['gameServerConfigOverrides'] as core.List)
+                      .map((value) => GameServerConfigOverride.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -3010,9 +3081,7 @@ class GameServerDeploymentRollout {
           'defaultGameServerConfig': defaultGameServerConfig!,
         if (etag != null) 'etag': etag!,
         if (gameServerConfigOverrides != null)
-          'gameServerConfigOverrides': gameServerConfigOverrides!
-              .map((value) => value.toJson())
-              .toList(),
+          'gameServerConfigOverrides': gameServerConfigOverrides!,
         if (name != null) 'name': name!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
@@ -3028,16 +3097,125 @@ class GkeClusterReference {
   /// cluster.
   core.String? cluster;
 
-  GkeClusterReference();
+  GkeClusterReference({
+    this.cluster,
+  });
 
-  GkeClusterReference.fromJson(core.Map _json) {
-    if (_json.containsKey('cluster')) {
-      cluster = _json['cluster'] as core.String;
-    }
-  }
+  GkeClusterReference.fromJson(core.Map _json)
+      : this(
+          cluster: _json.containsKey('cluster')
+              ? _json['cluster'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cluster != null) 'cluster': cluster!,
+      };
+}
+
+/// The state of the Kubernetes cluster.
+class KubernetesClusterState {
+  /// The version of Agones currently installed in the registered Kubernetes
+  /// cluster.
+  ///
+  /// Output only.
+  core.String? agonesVersionInstalled;
+
+  /// The version of Agones that is targeted to be installed in the cluster.
+  ///
+  /// Output only.
+  core.String? agonesVersionTargeted;
+
+  /// The state for the installed versions of Agones/Kubernetes.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "INSTALLATION_STATE_UNSPECIFIED" : The default value. This value is used
+  /// if the state is omitted.
+  /// - "AGONES_KUBERNETES_VERSION_SUPPORTED" : The combination of Agones and
+  /// Kubernetes versions is supported by Google Cloud Game Servers.
+  /// - "AGONES_VERSION_UNSUPPORTED" : The installed version of Agones is not
+  /// supported by Google Cloud Game Servers.
+  /// - "AGONES_KUBERNETES_VERSION_UNSUPPORTED" : The installed version of
+  /// Agones is supported by Google Cloud Game Servers, but the installed
+  /// version of Kubernetes is not recommended or supported by the version of
+  /// Agones.
+  /// - "AGONES_VERSION_UNRECOGNIZED" : The installed version of Agones is not
+  /// recognized because the Agones controller's image name does not have a
+  /// version string reported as {major}.{minor}(.{patch}).
+  /// - "KUBERNETES_VERSION_UNRECOGNIZED" : The server version of Kubernetes
+  /// cluster is not recognized because the API server didn't return parsable
+  /// version info on path/version.
+  /// - "VERSION_VERIFICATION_FAILED" : Failed to read or verify the version of
+  /// Agones or Kubernetes. See version_installed_error_message for details.
+  /// - "AGONES_NOT_INSTALLED" : Agones is not installed.
+  core.String? installationState;
+
+  /// The version of Kubernetes that is currently used in the registered
+  /// Kubernetes cluster (as detected by the Cloud Game Servers service).
+  ///
+  /// Output only.
+  core.String? kubernetesVersionInstalled;
+
+  /// The cloud provider type reported by the first node's providerID in the
+  /// list of nodes on the Kubernetes endpoint.
+  ///
+  /// On Kubernetes platforms that support zero-node clusters (like GKE-on-GCP),
+  /// the provider type will be empty.
+  ///
+  /// Output only.
+  core.String? provider;
+
+  /// The detailed error message for the installed versions of
+  /// Agones/Kubernetes.
+  ///
+  /// Output only.
+  core.String? versionInstalledErrorMessage;
+
+  KubernetesClusterState({
+    this.agonesVersionInstalled,
+    this.agonesVersionTargeted,
+    this.installationState,
+    this.kubernetesVersionInstalled,
+    this.provider,
+    this.versionInstalledErrorMessage,
+  });
+
+  KubernetesClusterState.fromJson(core.Map _json)
+      : this(
+          agonesVersionInstalled: _json.containsKey('agonesVersionInstalled')
+              ? _json['agonesVersionInstalled'] as core.String
+              : null,
+          agonesVersionTargeted: _json.containsKey('agonesVersionTargeted')
+              ? _json['agonesVersionTargeted'] as core.String
+              : null,
+          installationState: _json.containsKey('installationState')
+              ? _json['installationState'] as core.String
+              : null,
+          kubernetesVersionInstalled:
+              _json.containsKey('kubernetesVersionInstalled')
+                  ? _json['kubernetesVersionInstalled'] as core.String
+                  : null,
+          provider: _json.containsKey('provider')
+              ? _json['provider'] as core.String
+              : null,
+          versionInstalledErrorMessage:
+              _json.containsKey('versionInstalledErrorMessage')
+                  ? _json['versionInstalledErrorMessage'] as core.String
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (agonesVersionInstalled != null)
+          'agonesVersionInstalled': agonesVersionInstalled!,
+        if (agonesVersionTargeted != null)
+          'agonesVersionTargeted': agonesVersionTargeted!,
+        if (installationState != null) 'installationState': installationState!,
+        if (kubernetesVersionInstalled != null)
+          'kubernetesVersionInstalled': kubernetesVersionInstalled!,
+        if (provider != null) 'provider': provider!,
+        if (versionInstalledErrorMessage != null)
+          'versionInstalledErrorMessage': versionInstalledErrorMessage!,
       };
 }
 
@@ -3046,18 +3224,21 @@ class LabelSelector {
   /// Resource labels for this selector.
   core.Map<core.String, core.String>? labels;
 
-  LabelSelector();
+  LabelSelector({
+    this.labels,
+  });
 
-  LabelSelector.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  LabelSelector.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
@@ -3076,29 +3257,33 @@ class ListGameServerClustersResponse {
   /// List of locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListGameServerClustersResponse();
+  ListGameServerClustersResponse({
+    this.gameServerClusters,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListGameServerClustersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('gameServerClusters')) {
-      gameServerClusters = (_json['gameServerClusters'] as core.List)
-          .map<GameServerCluster>((value) => GameServerCluster.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListGameServerClustersResponse.fromJson(core.Map _json)
+      : this(
+          gameServerClusters: _json.containsKey('gameServerClusters')
+              ? (_json['gameServerClusters'] as core.List)
+                  .map((value) => GameServerCluster.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gameServerClusters != null)
-          'gameServerClusters':
-              gameServerClusters!.map((value) => value.toJson()).toList(),
+          'gameServerClusters': gameServerClusters!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3116,29 +3301,32 @@ class ListGameServerConfigsResponse {
   /// List of locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListGameServerConfigsResponse();
+  ListGameServerConfigsResponse({
+    this.gameServerConfigs,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListGameServerConfigsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('gameServerConfigs')) {
-      gameServerConfigs = (_json['gameServerConfigs'] as core.List)
-          .map<GameServerConfig>((value) => GameServerConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListGameServerConfigsResponse.fromJson(core.Map _json)
+      : this(
+          gameServerConfigs: _json.containsKey('gameServerConfigs')
+              ? (_json['gameServerConfigs'] as core.List)
+                  .map((value) => GameServerConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gameServerConfigs != null)
-          'gameServerConfigs':
-              gameServerConfigs!.map((value) => value.toJson()).toList(),
+        if (gameServerConfigs != null) 'gameServerConfigs': gameServerConfigs!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3156,29 +3344,33 @@ class ListGameServerDeploymentsResponse {
   /// List of locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListGameServerDeploymentsResponse();
+  ListGameServerDeploymentsResponse({
+    this.gameServerDeployments,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListGameServerDeploymentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('gameServerDeployments')) {
-      gameServerDeployments = (_json['gameServerDeployments'] as core.List)
-          .map<GameServerDeployment>((value) => GameServerDeployment.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListGameServerDeploymentsResponse.fromJson(core.Map _json)
+      : this(
+          gameServerDeployments: _json.containsKey('gameServerDeployments')
+              ? (_json['gameServerDeployments'] as core.List)
+                  .map((value) => GameServerDeployment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gameServerDeployments != null)
-          'gameServerDeployments':
-              gameServerDeployments!.map((value) => value.toJson()).toList(),
+          'gameServerDeployments': gameServerDeployments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3192,23 +3384,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3221,24 +3416,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -3254,101 +3452,39 @@ class ListRealmsResponse {
   /// List of locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListRealmsResponse();
+  ListRealmsResponse({
+    this.nextPageToken,
+    this.realms,
+    this.unreachable,
+  });
 
-  ListRealmsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('realms')) {
-      realms = (_json['realms'] as core.List)
-          .map<Realm>((value) =>
-              Realm.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListRealmsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          realms: _json.containsKey('realms')
+              ? (_json['realms'] as core.List)
+                  .map((value) => Realm.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (realms != null)
-          'realms': realms!.map((value) => value.toJson()).toList(),
+        if (realms != null) 'realms': realms!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// Specifies what kind of log the caller must write
 class LogConfig {
@@ -3361,27 +3497,32 @@ class LogConfig {
   /// Data access options.
   DataAccessOptions? dataAccess;
 
-  LogConfig();
+  LogConfig({
+    this.cloudAudit,
+    this.counter,
+    this.dataAccess,
+  });
 
-  LogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('cloudAudit')) {
-      cloudAudit = CloudAuditOptions.fromJson(
-          _json['cloudAudit'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('counter')) {
-      counter = CounterOptions.fromJson(
-          _json['counter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('dataAccess')) {
-      dataAccess = DataAccessOptions.fromJson(
-          _json['dataAccess'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  LogConfig.fromJson(core.Map _json)
+      : this(
+          cloudAudit: _json.containsKey('cloudAudit')
+              ? CloudAuditOptions.fromJson(
+                  _json['cloudAudit'] as core.Map<core.String, core.dynamic>)
+              : null,
+          counter: _json.containsKey('counter')
+              ? CounterOptions.fromJson(
+                  _json['counter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          dataAccess: _json.containsKey('dataAccess')
+              ? DataAccessOptions.fromJson(
+                  _json['dataAccess'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (cloudAudit != null) 'cloudAudit': cloudAudit!.toJson(),
-        if (counter != null) 'counter': counter!.toJson(),
-        if (dataAccess != null) 'dataAccess': dataAccess!.toJson(),
+        if (cloudAudit != null) 'cloudAudit': cloudAudit!,
+        if (counter != null) 'counter': counter!,
+        if (dataAccess != null) 'dataAccess': dataAccess!,
       };
 }
 
@@ -3406,7 +3547,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3426,194 +3567,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Represents the metadata of the long-running operation.
-class OperationMetadata {
-  /// API version used to start the operation.
-  ///
-  /// Output only.
-  core.String? apiVersion;
-
-  /// The time the operation was created.
-  ///
-  /// Output only.
-  core.String? createTime;
-
-  /// The time the operation finished running.
-  ///
-  /// Output only.
-  core.String? endTime;
-
-  /// Operation status for Game Services API operations.
-  ///
-  /// Operation status is in the form of key-value pairs where keys are resource
-  /// IDs and the values show the status of the operation. In case of failures,
-  /// the value includes an error code and error message.
-  ///
-  /// Output only.
-  core.Map<core.String, OperationStatus>? operationStatus;
-
-  /// Identifies whether the user has requested cancellation of the operation.
-  ///
-  /// Operations that have successfully been cancelled have Operation.error
-  /// value with a google.rpc.Status.code of 1, corresponding to
-  /// `Code.CANCELLED`.
-  ///
-  /// Output only.
-  core.bool? requestedCancellation;
-
-  /// Human-readable status of the operation, if any.
-  ///
-  /// Output only.
-  core.String? statusMessage;
-
-  /// Server-defined resource path for the target of the operation.
-  ///
-  /// Output only.
-  core.String? target;
-
-  /// List of Locations that could not be reached.
-  ///
-  /// Output only.
-  core.List<core.String>? unreachable;
-
-  /// Name of the verb executed by the operation.
-  ///
-  /// Output only.
-  core.String? verb;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('operationStatus')) {
-      operationStatus =
-          (_json['operationStatus'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          OperationStatus.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('requestedCancellation')) {
-      requestedCancellation = _json['requestedCancellation'] as core.bool;
-    }
-    if (_json.containsKey('statusMessage')) {
-      statusMessage = _json['statusMessage'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('verb')) {
-      verb = _json['verb'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (operationStatus != null)
-          'operationStatus': operationStatus!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
-        if (requestedCancellation != null)
-          'requestedCancellation': requestedCancellation!,
-        if (statusMessage != null) 'statusMessage': statusMessage!,
-        if (target != null) 'target': target!,
-        if (unreachable != null) 'unreachable': unreachable!,
-        if (verb != null) 'verb': verb!,
-      };
-}
-
-class OperationStatus {
-  /// Whether the operation is done or still in progress.
-  ///
-  /// Output only.
-  core.bool? done;
-
-  /// The error code in case of failures.
-  /// Possible string values are:
-  /// - "ERROR_CODE_UNSPECIFIED"
-  /// - "INTERNAL_ERROR"
-  /// - "PERMISSION_DENIED"
-  /// - "CLUSTER_CONNECTION"
-  core.String? errorCode;
-
-  /// The human-readable error message.
-  core.String? errorMessage;
-
-  OperationStatus();
-
-  OperationStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('errorCode')) {
-      errorCode = _json['errorCode'] as core.String;
-    }
-    if (_json.containsKey('errorMessage')) {
-      errorMessage = _json['errorMessage'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (done != null) 'done': done!,
-        if (errorCode != null) 'errorCode': errorCode!,
-        if (errorMessage != null) 'errorMessage': errorMessage!,
       };
 }
 
@@ -3621,15 +3606,15 @@ class OperationStatus {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -3638,25 +3623,30 @@ class OperationStatus {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -3678,8 +3668,6 @@ class Policy {
     etag =
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
-
-  core.bool? iamOwned;
 
   /// If more than one rule is specified, the rules are applied in the following
   /// manner: - All matching LOG rules are always applied.
@@ -3710,47 +3698,45 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.rules,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('iamOwned')) {
-      iamOwned = _json['iamOwned'] as core.bool;
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<Rule>((value) =>
-              Rule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => Rule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
-        if (iamOwned != null) 'iamOwned': iamOwned!,
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
         if (version != null) 'version': version!,
       };
 }
@@ -3758,27 +3744,41 @@ class Policy {
 /// Response message for
 /// GameServerClustersService.PreviewCreateGameServerCluster.
 class PreviewCreateGameServerClusterResponse {
+  /// The state of the Kubernetes cluster in preview, this will be available if
+  /// 'view' is set to `FULL` in the relevant List/Get/Preview request.
+  ///
+  /// Output only.
+  KubernetesClusterState? clusterState;
+
   /// The ETag of the game server cluster.
   core.String? etag;
 
   /// The target state.
   TargetState? targetState;
 
-  PreviewCreateGameServerClusterResponse();
+  PreviewCreateGameServerClusterResponse({
+    this.clusterState,
+    this.etag,
+    this.targetState,
+  });
 
-  PreviewCreateGameServerClusterResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('targetState')) {
-      targetState = TargetState.fromJson(
-          _json['targetState'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PreviewCreateGameServerClusterResponse.fromJson(core.Map _json)
+      : this(
+          clusterState: _json.containsKey('clusterState')
+              ? KubernetesClusterState.fromJson(
+                  _json['clusterState'] as core.Map<core.String, core.dynamic>)
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          targetState: _json.containsKey('targetState')
+              ? TargetState.fromJson(
+                  _json['targetState'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterState != null) 'clusterState': clusterState!,
         if (etag != null) 'etag': etag!,
-        if (targetState != null) 'targetState': targetState!.toJson(),
+        if (targetState != null) 'targetState': targetState!,
       };
 }
 
@@ -3791,21 +3791,23 @@ class PreviewDeleteGameServerClusterResponse {
   /// The target state.
   TargetState? targetState;
 
-  PreviewDeleteGameServerClusterResponse();
+  PreviewDeleteGameServerClusterResponse({
+    this.etag,
+    this.targetState,
+  });
 
-  PreviewDeleteGameServerClusterResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('targetState')) {
-      targetState = TargetState.fromJson(
-          _json['targetState'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PreviewDeleteGameServerClusterResponse.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          targetState: _json.containsKey('targetState')
+              ? TargetState.fromJson(
+                  _json['targetState'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (targetState != null) 'targetState': targetState!.toJson(),
+        if (targetState != null) 'targetState': targetState!,
       };
 }
 
@@ -3822,26 +3824,29 @@ class PreviewGameServerDeploymentRolloutResponse {
   /// Locations that could not be reached on this request.
   core.List<core.String>? unavailable;
 
-  PreviewGameServerDeploymentRolloutResponse();
+  PreviewGameServerDeploymentRolloutResponse({
+    this.etag,
+    this.targetState,
+    this.unavailable,
+  });
 
-  PreviewGameServerDeploymentRolloutResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('targetState')) {
-      targetState = TargetState.fromJson(
-          _json['targetState'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unavailable')) {
-      unavailable = (_json['unavailable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  PreviewGameServerDeploymentRolloutResponse.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          targetState: _json.containsKey('targetState')
+              ? TargetState.fromJson(
+                  _json['targetState'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unavailable: _json.containsKey('unavailable')
+              ? (_json['unavailable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (targetState != null) 'targetState': targetState!.toJson(),
+        if (targetState != null) 'targetState': targetState!,
         if (unavailable != null) 'unavailable': unavailable!,
       };
 }
@@ -3854,21 +3859,23 @@ class PreviewRealmUpdateResponse {
   /// The target state.
   TargetState? targetState;
 
-  PreviewRealmUpdateResponse();
+  PreviewRealmUpdateResponse({
+    this.etag,
+    this.targetState,
+  });
 
-  PreviewRealmUpdateResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('targetState')) {
-      targetState = TargetState.fromJson(
-          _json['targetState'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PreviewRealmUpdateResponse.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          targetState: _json.containsKey('targetState')
+              ? TargetState.fromJson(
+                  _json['targetState'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (targetState != null) 'targetState': targetState!.toJson(),
+        if (targetState != null) 'targetState': targetState!,
       };
 }
 
@@ -3881,21 +3888,23 @@ class PreviewUpdateGameServerClusterResponse {
   /// The target state.
   TargetState? targetState;
 
-  PreviewUpdateGameServerClusterResponse();
+  PreviewUpdateGameServerClusterResponse({
+    this.etag,
+    this.targetState,
+  });
 
-  PreviewUpdateGameServerClusterResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('targetState')) {
-      targetState = TargetState.fromJson(
-          _json['targetState'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PreviewUpdateGameServerClusterResponse.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          targetState: _json.containsKey('targetState')
+              ? TargetState.fromJson(
+                  _json['targetState'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (targetState != null) 'targetState': targetState!.toJson(),
+        if (targetState != null) 'targetState': targetState!,
       };
 }
 
@@ -3936,36 +3945,41 @@ class Realm {
   /// Output only.
   core.String? updateTime;
 
-  Realm();
+  Realm({
+    this.createTime,
+    this.description,
+    this.etag,
+    this.labels,
+    this.name,
+    this.timeZone,
+    this.updateTime,
+  });
 
-  Realm.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('timeZone')) {
-      timeZone = _json['timeZone'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Realm.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          timeZone: _json.containsKey('timeZone')
+              ? _json['timeZone'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -3983,15 +3997,18 @@ class RealmSelector {
   /// List of realms to match.
   core.List<core.String>? realms;
 
-  RealmSelector();
+  RealmSelector({
+    this.realms,
+  });
 
-  RealmSelector.fromJson(core.Map _json) {
-    if (_json.containsKey('realms')) {
-      realms = (_json['realms'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  RealmSelector.fromJson(core.Map _json)
+      : this(
+          realms: _json.containsKey('realms')
+              ? (_json['realms'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (realms != null) 'realms': realms!,
@@ -4024,8 +4041,8 @@ class Rule {
   /// PRINCIPAL/AUTHORITY_SELECTOR is in at least one of these entries.
   core.List<core.String>? in_;
 
-  /// The config returned to callers of tech.iam.IAM.CheckPolicy for any entries
-  /// that match the LOG action.
+  /// The config returned to callers of CheckPolicy for any entries that match
+  /// the LOG action.
   core.List<LogConfig>? logConfig;
 
   /// If one or more 'not_in' clauses are specified, the rule matches if the
@@ -4041,52 +4058,59 @@ class Rule {
   /// 'storage.buckets.*') matches all verbs.
   core.List<core.String>? permissions;
 
-  Rule();
+  Rule({
+    this.action,
+    this.conditions,
+    this.description,
+    this.in_,
+    this.logConfig,
+    this.notIn,
+    this.permissions,
+  });
 
-  Rule.fromJson(core.Map _json) {
-    if (_json.containsKey('action')) {
-      action = _json['action'] as core.String;
-    }
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<Condition>((value) =>
-              Condition.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('in')) {
-      in_ = (_json['in'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logConfig')) {
-      logConfig = (_json['logConfig'] as core.List)
-          .map<LogConfig>((value) =>
-              LogConfig.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('notIn')) {
-      notIn = (_json['notIn'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Rule.fromJson(core.Map _json)
+      : this(
+          action: _json.containsKey('action')
+              ? _json['action'] as core.String
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          in_: _json.containsKey('in')
+              ? (_json['in'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          logConfig: _json.containsKey('logConfig')
+              ? (_json['logConfig'] as core.List)
+                  .map((value) => LogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          notIn: _json.containsKey('notIn')
+              ? (_json['notIn'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          permissions: _json.containsKey('permissions')
+              ? (_json['permissions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (action != null) 'action': action!,
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (conditions != null) 'conditions': conditions!,
         if (description != null) 'description': description!,
         if (in_ != null) 'in': in_!,
-        if (logConfig != null)
-          'logConfig': logConfig!.map((value) => value.toJson()).toList(),
+        if (logConfig != null) 'logConfig': logConfig!,
         if (notIn != null) 'notIn': notIn!,
         if (permissions != null) 'permissions': permissions!,
       };
@@ -4116,37 +4140,39 @@ class ScalingConfig {
   /// labels match any of the selector entries.
   core.List<LabelSelector>? selectors;
 
-  ScalingConfig();
+  ScalingConfig({
+    this.fleetAutoscalerSpec,
+    this.name,
+    this.schedules,
+    this.selectors,
+  });
 
-  ScalingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('fleetAutoscalerSpec')) {
-      fleetAutoscalerSpec = _json['fleetAutoscalerSpec'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('schedules')) {
-      schedules = (_json['schedules'] as core.List)
-          .map<Schedule>((value) =>
-              Schedule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('selectors')) {
-      selectors = (_json['selectors'] as core.List)
-          .map<LabelSelector>((value) => LabelSelector.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ScalingConfig.fromJson(core.Map _json)
+      : this(
+          fleetAutoscalerSpec: _json.containsKey('fleetAutoscalerSpec')
+              ? _json['fleetAutoscalerSpec'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          schedules: _json.containsKey('schedules')
+              ? (_json['schedules'] as core.List)
+                  .map((value) => Schedule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          selectors: _json.containsKey('selectors')
+              ? (_json['selectors'] as core.List)
+                  .map((value) => LabelSelector.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fleetAutoscalerSpec != null)
           'fleetAutoscalerSpec': fleetAutoscalerSpec!,
         if (name != null) 'name': name!,
-        if (schedules != null)
-          'schedules': schedules!.map((value) => value.toJson()).toList(),
-        if (selectors != null)
-          'selectors': selectors!.map((value) => value.toJson()).toList(),
+        if (schedules != null) 'schedules': schedules!,
+        if (selectors != null) 'selectors': selectors!,
       };
 }
 
@@ -4156,9 +4182,9 @@ class ScalingConfig {
 /// scheduled event's timespan is larger than the cron_spec + cron_job_duration,
 /// the event will be recurring. If only cron_spec + cron_job_duration are
 /// specified, the event is effective starting at the local time specified by
-/// cron_spec, and is recurring. start_time|-------\[cron job\]-------\[cron
-/// job\]-------\[cron job\]---|end_time cron job: cron spec start time +
-/// duration
+/// cron_spec, and is recurring. ``` start_time|-------[cron job]-------[cron
+/// job]-------[cron job]---|end_time cron job: cron spec start time + duration
+/// ```
 class Schedule {
   /// The duration for the cron job event.
   ///
@@ -4177,22 +4203,28 @@ class Schedule {
   /// The start time of the event.
   core.String? startTime;
 
-  Schedule();
+  Schedule({
+    this.cronJobDuration,
+    this.cronSpec,
+    this.endTime,
+    this.startTime,
+  });
 
-  Schedule.fromJson(core.Map _json) {
-    if (_json.containsKey('cronJobDuration')) {
-      cronJobDuration = _json['cronJobDuration'] as core.String;
-    }
-    if (_json.containsKey('cronSpec')) {
-      cronSpec = _json['cronSpec'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  Schedule.fromJson(core.Map _json)
+      : this(
+          cronJobDuration: _json.containsKey('cronJobDuration')
+              ? _json['cronJobDuration'] as core.String
+              : null,
+          cronSpec: _json.containsKey('cronSpec')
+              ? _json['cronSpec'] as core.String
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cronJobDuration != null) 'cronJobDuration': cronJobDuration!,
@@ -4217,20 +4249,24 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -4247,16 +4283,18 @@ class SpecSource {
   /// the Agones fleet or Agones autoscaler spec.
   core.String? name;
 
-  SpecSource();
+  SpecSource({
+    this.gameServerConfigName,
+    this.name,
+  });
 
-  SpecSource.fromJson(core.Map _json) {
-    if (_json.containsKey('gameServerConfigName')) {
-      gameServerConfigName = _json['gameServerConfigName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  SpecSource.fromJson(core.Map _json)
+      : this(
+          gameServerConfigName: _json.containsKey('gameServerConfigName')
+              ? _json['gameServerConfigName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gameServerConfigName != null)
@@ -4272,52 +4310,7 @@ class SpecSource {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Details about the Agones resources.
 class TargetDetails {
@@ -4336,27 +4329,31 @@ class TargetDetails {
   /// `projects/{project}/locations/{location}/gameServerDeployments/{deployment_id}`.
   core.String? gameServerDeploymentName;
 
-  TargetDetails();
+  TargetDetails({
+    this.fleetDetails,
+    this.gameServerClusterName,
+    this.gameServerDeploymentName,
+  });
 
-  TargetDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('fleetDetails')) {
-      fleetDetails = (_json['fleetDetails'] as core.List)
-          .map<TargetFleetDetails>((value) => TargetFleetDetails.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('gameServerClusterName')) {
-      gameServerClusterName = _json['gameServerClusterName'] as core.String;
-    }
-    if (_json.containsKey('gameServerDeploymentName')) {
-      gameServerDeploymentName =
-          _json['gameServerDeploymentName'] as core.String;
-    }
-  }
+  TargetDetails.fromJson(core.Map _json)
+      : this(
+          fleetDetails: _json.containsKey('fleetDetails')
+              ? (_json['fleetDetails'] as core.List)
+                  .map((value) => TargetFleetDetails.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          gameServerClusterName: _json.containsKey('gameServerClusterName')
+              ? _json['gameServerClusterName'] as core.String
+              : null,
+          gameServerDeploymentName:
+              _json.containsKey('gameServerDeploymentName')
+                  ? _json['gameServerDeploymentName'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fleetDetails != null)
-          'fleetDetails': fleetDetails!.map((value) => value.toJson()).toList(),
+        if (fleetDetails != null) 'fleetDetails': fleetDetails!,
         if (gameServerClusterName != null)
           'gameServerClusterName': gameServerClusterName!,
         if (gameServerDeploymentName != null)
@@ -4374,21 +4371,23 @@ class TargetFleet {
   /// The Agones fleet spec source.
   SpecSource? specSource;
 
-  TargetFleet();
+  TargetFleet({
+    this.name,
+    this.specSource,
+  });
 
-  TargetFleet.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('specSource')) {
-      specSource = SpecSource.fromJson(
-          _json['specSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TargetFleet.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          specSource: _json.containsKey('specSource')
+              ? SpecSource.fromJson(
+                  _json['specSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (specSource != null) 'specSource': specSource!.toJson(),
+        if (specSource != null) 'specSource': specSource!,
       };
 }
 
@@ -4402,21 +4401,23 @@ class TargetFleetAutoscaler {
   /// Details about the Agones autoscaler spec.
   SpecSource? specSource;
 
-  TargetFleetAutoscaler();
+  TargetFleetAutoscaler({
+    this.name,
+    this.specSource,
+  });
 
-  TargetFleetAutoscaler.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('specSource')) {
-      specSource = SpecSource.fromJson(
-          _json['specSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TargetFleetAutoscaler.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          specSource: _json.containsKey('specSource')
+              ? SpecSource.fromJson(
+                  _json['specSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (specSource != null) 'specSource': specSource!.toJson(),
+        if (specSource != null) 'specSource': specSource!,
       };
 }
 
@@ -4428,22 +4429,26 @@ class TargetFleetDetails {
   /// Reference to target Agones fleet.
   TargetFleet? fleet;
 
-  TargetFleetDetails();
+  TargetFleetDetails({
+    this.autoscaler,
+    this.fleet,
+  });
 
-  TargetFleetDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('autoscaler')) {
-      autoscaler = TargetFleetAutoscaler.fromJson(
-          _json['autoscaler'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fleet')) {
-      fleet = TargetFleet.fromJson(
-          _json['fleet'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TargetFleetDetails.fromJson(core.Map _json)
+      : this(
+          autoscaler: _json.containsKey('autoscaler')
+              ? TargetFleetAutoscaler.fromJson(
+                  _json['autoscaler'] as core.Map<core.String, core.dynamic>)
+              : null,
+          fleet: _json.containsKey('fleet')
+              ? TargetFleet.fromJson(
+                  _json['fleet'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (autoscaler != null) 'autoscaler': autoscaler!.toJson(),
-        if (fleet != null) 'fleet': fleet!.toJson(),
+        if (autoscaler != null) 'autoscaler': autoscaler!,
+        if (fleet != null) 'fleet': fleet!,
       };
 }
 
@@ -4452,64 +4457,27 @@ class TargetState {
   /// Details about Agones fleets.
   core.List<TargetDetails>? details;
 
-  TargetState();
+  TargetState({
+    this.details,
+  });
 
-  TargetState.fromJson(core.Map _json) {
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<TargetDetails>((value) => TargetDetails.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  TargetState.fromJson(core.Map _json)
+      : this(
+          details: _json.containsKey('details')
+              ? (_json['details'] as core.List)
+                  .map((value) => TargetDetails.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (details != null)
-          'details': details!.map((value) => value.toJson()).toList(),
+        if (details != null) 'details': details!,
       };
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;

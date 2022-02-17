@@ -14,8 +14,9 @@
 
 /// Cloud Search API - v1
 ///
-/// Cloud Search provides cloud-based search capabilities over G Suite data. The
-/// Cloud Search API allows indexing of non-G Suite data into Cloud Search.
+/// Cloud Search provides cloud-based search capabilities over Google Workspace
+/// data. The Cloud Search API allows indexing of non-Google Workspace data into
+/// Cloud Search.
 ///
 /// For more information, see
 /// <https://developers.google.com/cloud-search/docs/guides/>
@@ -49,6 +50,7 @@
 ///     - [StatsSessionSearchapplicationsResource]
 ///   - [StatsUserResource]
 ///     - [StatsUserSearchapplicationsResource]
+/// - [V1Resource]
 library cloudsearch.v1;
 
 import 'dart:async' as async;
@@ -58,6 +60,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -71,9 +75,11 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
         PartialDownloadOptions,
         ByteRange;
 
-/// Cloud Search provides cloud-based search capabilities over G Suite data.
+/// Cloud Search provides cloud-based search capabilities over Google Workspace
+/// data.
 ///
-/// The Cloud Search API allows indexing of non-G Suite data into Cloud Search.
+/// The Cloud Search API allows indexing of non-Google Workspace data into Cloud
+/// Search.
 class CloudSearchApi {
   /// Index and serve your organization's data with Cloud Search
   static const cloudSearchScope =
@@ -120,6 +126,7 @@ class CloudSearchApi {
   QueryResource get query => QueryResource(_requester);
   SettingsResource get settings => SettingsResource(_requester);
   StatsResource get stats => StatsResource(_requester);
+  V1Resource get v1 => V1Resource(_requester);
 
   CloudSearchApi(http.Client client,
       {core.String rootUrl = 'https://cloudsearch.googleapis.com/',
@@ -187,7 +194,7 @@ class DebugDatasourcesItemsResource {
     core.bool? debugOptions_enableDebugging,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (debugOptions_enableDebugging != null)
         'debugOptions.enableDebugging': ['${debugOptions_enableDebugging}'],
@@ -233,7 +240,7 @@ class DebugDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -613,7 +620,7 @@ class IndexingDatasourcesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -667,7 +674,9 @@ class IndexingDatasourcesItemsResource {
   /// the queued Item using lexical ordering. Cloud Search Indexing won't delete
   /// any queued item with a version value that is less than or equal to the
   /// version of the currently indexed item. The maximum length for this field
-  /// is 1024 bytes.
+  /// is 1024 bytes. For information on how item version affects the deletion
+  /// process, refer to
+  /// [Handle revisions after manual deletes](https://developers.google.com/cloud-search/docs/guides/operations).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -735,7 +744,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -834,7 +843,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -958,7 +967,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1004,7 +1013,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1050,7 +1059,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1097,7 +1106,7 @@ class IndexingDatasourcesItemsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1161,7 +1170,7 @@ class MediaResource {
     core.String? $fields,
     commons.Media? uploadMedia,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1304,11 +1313,11 @@ class QueryResource {
   /// The Cloud Search Query API provides the search method, which returns the
   /// most relevant results from a user query.
   ///
-  /// The results can come from G Suite Apps, such as Gmail or Google Drive, or
-  /// they can come from data that you have indexed from a third party.
-  /// **Note:** This API requires a standard end user account to execute. A
-  /// service account can't perform Query API requests directly; to use a
-  /// service account to perform queries, set up \[G Suite domain-wide
+  /// The results can come from Google Workspace apps, such as Gmail or Google
+  /// Drive, or they can come from data that you have indexed from a third
+  /// party. **Note:** This API requires a standard end user account to execute.
+  /// A service account can't perform Query API requests directly; to use a
+  /// service account to perform queries, set up \[Google Workspace domain-wide
   /// delegation of
   /// authority\](https://developers.google.com/cloud-search/docs/guides/delegation/).
   ///
@@ -1330,7 +1339,7 @@ class QueryResource {
     SearchRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1351,7 +1360,7 @@ class QueryResource {
   ///
   /// **Note:** This API requires a standard end user account to execute. A
   /// service account can't perform Query API requests directly; to use a
-  /// service account to perform queries, set up \[G Suite domain-wide
+  /// service account to perform queries, set up \[Google Workspace domain-wide
   /// delegation of
   /// authority\](https://developers.google.com/cloud-search/docs/guides/delegation/).
   ///
@@ -1373,7 +1382,7 @@ class QueryResource {
     SuggestRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1400,7 +1409,7 @@ class QuerySourcesResource {
   ///
   /// **Note:** This API requires a standard end user account to execute. A
   /// service account can't perform Query API requests directly; to use a
-  /// service account to perform queries, set up \[G Suite domain-wide
+  /// service account to perform queries, set up \[Google Workspace domain-wide
   /// delegation of
   /// authority\](https://developers.google.com/cloud-search/docs/guides/delegation/).
   ///
@@ -1489,6 +1498,86 @@ class SettingsResource {
       SettingsSearchapplicationsResource(_requester);
 
   SettingsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Get customer settings.
+  ///
+  /// **Note:** This API requires an admin account to execute.
+  ///
+  /// Request parameters:
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CustomerSettings].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CustomerSettings> getCustomer({
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/settings/customer';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return CustomerSettings.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update customer settings.
+  ///
+  /// **Note:** This API requires an admin account to execute.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [updateMask] - Update mask to control which fields get updated. If you
+  /// specify a field in the update_mask but don't specify its value here, that
+  /// field will be cleared. If the mask is not present or empty, all fields
+  /// will be updated. Currently supported field paths: vpc_settings and
+  /// audit_logging_settings
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> updateCustomer(
+    CustomerSettings request, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/settings/customer';
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class SettingsDatasourcesResource {
@@ -1519,7 +1608,7 @@ class SettingsDatasourcesResource {
     DataSource request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1698,7 +1787,7 @@ class SettingsDatasourcesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1743,7 +1832,7 @@ class SettingsSearchapplicationsResource {
     SearchApplication request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1925,7 +2014,7 @@ class SettingsSearchapplicationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1968,7 +2057,7 @@ class SettingsSearchapplicationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2114,6 +2203,66 @@ class StatsResource {
       queryParams: _queryParams,
     );
     return GetCustomerQueryStatsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Get search application stats for customer.
+  ///
+  /// **Note:** This API requires a standard end user account to execute.
+  ///
+  /// Request parameters:
+  ///
+  /// [endDate_day] - Day of month. Must be from 1 to 31 and valid for the year
+  /// and month.
+  ///
+  /// [endDate_month] - Month of date. Must be from 1 to 12.
+  ///
+  /// [endDate_year] - Year of date. Must be from 1 to 9999.
+  ///
+  /// [startDate_day] - Day of month. Must be from 1 to 31 and valid for the
+  /// year and month.
+  ///
+  /// [startDate_month] - Month of date. Must be from 1 to 12.
+  ///
+  /// [startDate_year] - Year of date. Must be from 1 to 9999.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GetCustomerSearchApplicationStatsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GetCustomerSearchApplicationStatsResponse> getSearchapplication({
+    core.int? endDate_day,
+    core.int? endDate_month,
+    core.int? endDate_year,
+    core.int? startDate_day,
+    core.int? startDate_month,
+    core.int? startDate_year,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (endDate_day != null) 'endDate.day': ['${endDate_day}'],
+      if (endDate_month != null) 'endDate.month': ['${endDate_month}'],
+      if (endDate_year != null) 'endDate.year': ['${endDate_year}'],
+      if (startDate_day != null) 'startDate.day': ['${startDate_day}'],
+      if (startDate_month != null) 'startDate.month': ['${startDate_month}'],
+      if (startDate_year != null) 'startDate.year': ['${startDate_year}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1/stats/searchapplication';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GetCustomerSearchApplicationStatsResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 
@@ -2564,6 +2713,104 @@ class StatsUserSearchapplicationsResource {
   }
 }
 
+class V1Resource {
+  final commons.ApiRequester _requester;
+
+  V1Resource(commons.ApiRequester client) : _requester = client;
+
+  /// Enables `third party` support in Google Cloud Search.
+  ///
+  /// **Note:** This API requires an admin account to execute.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> initializeCustomer(
+    InitializeCustomerRequest request, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    const _url = 'v1:initializeCustomer';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+/// Represents the settings for Cloud audit logging
+class AuditLoggingSettings {
+  /// Indicates whether audit logging is on/off for admin activity read APIs
+  /// i.e. Get/List DataSources, Get/List SearchApplications etc.
+  core.bool? logAdminReadActions;
+
+  /// Indicates whether audit logging is on/off for data access read APIs i.e.
+  /// ListItems, GetItem etc.
+  core.bool? logDataReadActions;
+
+  /// Indicates whether audit logging is on/off for data access write APIs i.e.
+  /// IndexItem etc.
+  core.bool? logDataWriteActions;
+
+  /// The resource name of the GCP Project to store audit logs.
+  ///
+  /// Cloud audit logging will be enabled after project_name has been updated
+  /// through CustomerService. Format: projects/{project_id}
+  core.String? project;
+
+  AuditLoggingSettings({
+    this.logAdminReadActions,
+    this.logDataReadActions,
+    this.logDataWriteActions,
+    this.project,
+  });
+
+  AuditLoggingSettings.fromJson(core.Map _json)
+      : this(
+          logAdminReadActions: _json.containsKey('logAdminReadActions')
+              ? _json['logAdminReadActions'] as core.bool
+              : null,
+          logDataReadActions: _json.containsKey('logDataReadActions')
+              ? _json['logDataReadActions'] as core.bool
+              : null,
+          logDataWriteActions: _json.containsKey('logDataWriteActions')
+              ? _json['logDataWriteActions'] as core.bool
+              : null,
+          project: _json.containsKey('project')
+              ? _json['project'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (logAdminReadActions != null)
+          'logAdminReadActions': logAdminReadActions!,
+        if (logDataReadActions != null)
+          'logDataReadActions': logDataReadActions!,
+        if (logDataWriteActions != null)
+          'logDataWriteActions': logDataWriteActions!,
+        if (project != null) 'project': project!,
+      };
+}
+
 /// Used to provide a search operator for boolean properties.
 ///
 /// This is optional. Search operators let users restrict the query to specific
@@ -2573,21 +2820,25 @@ class BooleanOperatorOptions {
   /// boolean property.
   ///
   /// For example, if operatorName is *closed* and the property's name is
-  /// *isClosed*, then queries like *closed:<value>* show results only where the
-  /// value of the property named *isClosed* matches *<value>*. By contrast, a
-  /// search that uses the same *<value>* without an operator returns all items
-  /// where *<value>* matches the value of any String properties or text within
-  /// the content field for the item. The operator name can only contain
-  /// lowercase letters (a-z). The maximum length is 32 characters.
+  /// *isClosed*, then queries like *closed:\<value\>* show results only where
+  /// the value of the property named *isClosed* matches *\<value\>*. By
+  /// contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any String
+  /// properties or text within the content field for the item. The operator
+  /// name can only contain lowercase letters (a-z). The maximum length is 32
+  /// characters.
   core.String? operatorName;
 
-  BooleanOperatorOptions();
+  BooleanOperatorOptions({
+    this.operatorName,
+  });
 
-  BooleanOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  BooleanOperatorOptions.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
@@ -2599,18 +2850,20 @@ class BooleanPropertyOptions {
   /// If set, describes how the boolean should be used as a search operator.
   BooleanOperatorOptions? operatorOptions;
 
-  BooleanPropertyOptions();
+  BooleanPropertyOptions({
+    this.operatorOptions,
+  });
 
-  BooleanPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = BooleanOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BooleanPropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? BooleanOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
       };
 }
 
@@ -2620,13 +2873,16 @@ class CheckAccessResponse {
   /// Returns false otherwise.
   core.bool? hasAccess;
 
-  CheckAccessResponse();
+  CheckAccessResponse({
+    this.hasAccess,
+  });
 
-  CheckAccessResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hasAccess')) {
-      hasAccess = _json['hasAccess'] as core.bool;
-    }
-  }
+  CheckAccessResponse.fromJson(core.Map _json)
+      : this(
+          hasAccess: _json.containsKey('hasAccess')
+              ? _json['hasAccess'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hasAccess != null) 'hasAccess': hasAccess!,
@@ -2644,24 +2900,65 @@ class CompositeFilter {
   /// Sub filters.
   core.List<Filter>? subFilters;
 
-  CompositeFilter();
+  CompositeFilter({
+    this.logicOperator,
+    this.subFilters,
+  });
 
-  CompositeFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('logicOperator')) {
-      logicOperator = _json['logicOperator'] as core.String;
-    }
-    if (_json.containsKey('subFilters')) {
-      subFilters = (_json['subFilters'] as core.List)
-          .map<Filter>((value) =>
-              Filter.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CompositeFilter.fromJson(core.Map _json)
+      : this(
+          logicOperator: _json.containsKey('logicOperator')
+              ? _json['logicOperator'] as core.String
+              : null,
+          subFilters: _json.containsKey('subFilters')
+              ? (_json['subFilters'] as core.List)
+                  .map((value) => Filter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (logicOperator != null) 'logicOperator': logicOperator!,
-        if (subFilters != null)
-          'subFilters': subFilters!.map((value) => value.toJson()).toList(),
+        if (subFilters != null) 'subFilters': subFilters!,
+      };
+}
+
+/// A named attribute associated with an item which can be used for influencing
+/// the ranking of the item based on the context in the request.
+class ContextAttribute {
+  /// The name of the attribute.
+  ///
+  /// It should not be empty. The maximum length is 32 characters. The name must
+  /// start with a letter and can only contain letters (A-Z, a-z) or numbers
+  /// (0-9). The name will be normalized (lower-cased) before being matched.
+  core.String? name;
+
+  /// Text values of the attribute.
+  ///
+  /// The maximum number of elements is 10. The maximum length of an element in
+  /// the array is 32 characters. The value will be normalized (lower-cased)
+  /// before being matched.
+  core.List<core.String>? values;
+
+  ContextAttribute({
+    this.name,
+    this.values,
+  });
+
+  ContextAttribute.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (name != null) 'name': name!,
+        if (values != null) 'values': values!,
       };
 }
 
@@ -2673,26 +2970,28 @@ class CustomerIndexStats {
   /// Number of items aggregrated by status code.
   core.List<ItemCountByStatus>? itemCountByStatus;
 
-  CustomerIndexStats();
+  CustomerIndexStats({
+    this.date,
+    this.itemCountByStatus,
+  });
 
-  CustomerIndexStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('itemCountByStatus')) {
-      itemCountByStatus = (_json['itemCountByStatus'] as core.List)
-          .map<ItemCountByStatus>((value) => ItemCountByStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CustomerIndexStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          itemCountByStatus: _json.containsKey('itemCountByStatus')
+              ? (_json['itemCountByStatus'] as core.List)
+                  .map((value) => ItemCountByStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
-        if (itemCountByStatus != null)
-          'itemCountByStatus':
-              itemCountByStatus!.map((value) => value.toJson()).toList(),
+        if (date != null) 'date': date!,
+        if (itemCountByStatus != null) 'itemCountByStatus': itemCountByStatus!,
       };
 }
 
@@ -2703,54 +3002,129 @@ class CustomerQueryStats {
   Date? date;
   core.List<QueryCountByStatus>? queryCountByStatus;
 
-  CustomerQueryStats();
+  CustomerQueryStats({
+    this.date,
+    this.queryCountByStatus,
+  });
 
-  CustomerQueryStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('queryCountByStatus')) {
-      queryCountByStatus = (_json['queryCountByStatus'] as core.List)
-          .map<QueryCountByStatus>((value) => QueryCountByStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CustomerQueryStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          queryCountByStatus: _json.containsKey('queryCountByStatus')
+              ? (_json['queryCountByStatus'] as core.List)
+                  .map((value) => QueryCountByStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (queryCountByStatus != null)
-          'queryCountByStatus':
-              queryCountByStatus!.map((value) => value.toJson()).toList(),
+          'queryCountByStatus': queryCountByStatus!,
+      };
+}
+
+/// Search application stats for a customer for the given date.
+class CustomerSearchApplicationStats {
+  /// The count of search applications for the date.
+  core.String? count;
+
+  /// Date for which search application stats were calculated.
+  Date? date;
+
+  CustomerSearchApplicationStats({
+    this.count,
+    this.date,
+  });
+
+  CustomerSearchApplicationStats.fromJson(core.Map _json)
+      : this(
+          count:
+              _json.containsKey('count') ? _json['count'] as core.String : null,
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (count != null) 'count': count!,
+        if (date != null) 'date': date!,
       };
 }
 
 class CustomerSessionStats {
   /// Date for which session stats were calculated.
   ///
-  /// Stats calculated on the next day close to midnight are returned.
+  /// Stats are calculated on the following day, close to midnight PST, and then
+  /// returned.
   Date? date;
 
   /// The count of search sessions on the day
   core.String? searchSessionsCount;
 
-  CustomerSessionStats();
+  CustomerSessionStats({
+    this.date,
+    this.searchSessionsCount,
+  });
 
-  CustomerSessionStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('searchSessionsCount')) {
-      searchSessionsCount = _json['searchSessionsCount'] as core.String;
-    }
-  }
+  CustomerSessionStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          searchSessionsCount: _json.containsKey('searchSessionsCount')
+              ? _json['searchSessionsCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (searchSessionsCount != null)
           'searchSessionsCount': searchSessionsCount!,
+      };
+}
+
+/// Represents settings at a customer level.
+class CustomerSettings {
+  /// Audit Logging settings for the customer.
+  ///
+  /// If update_mask is empty then this field will be updated based on
+  /// UpdateCustomerSettings request.
+  AuditLoggingSettings? auditLoggingSettings;
+
+  /// VPC SC settings for the customer.
+  ///
+  /// If update_mask is empty then this field will be updated based on
+  /// UpdateCustomerSettings request.
+  VPCSettings? vpcSettings;
+
+  CustomerSettings({
+    this.auditLoggingSettings,
+    this.vpcSettings,
+  });
+
+  CustomerSettings.fromJson(core.Map _json)
+      : this(
+          auditLoggingSettings: _json.containsKey('auditLoggingSettings')
+              ? AuditLoggingSettings.fromJson(_json['auditLoggingSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          vpcSettings: _json.containsKey('vpcSettings')
+              ? VPCSettings.fromJson(
+                  _json['vpcSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (auditLoggingSettings != null)
+          'auditLoggingSettings': auditLoggingSettings!,
+        if (vpcSettings != null) 'vpcSettings': vpcSettings!,
       };
 }
 
@@ -2769,28 +3143,34 @@ class CustomerUserStats {
   /// The count of unique active users in the past thirty days
   core.String? thirtyDaysActiveUsersCount;
 
-  CustomerUserStats();
+  CustomerUserStats({
+    this.date,
+    this.oneDayActiveUsersCount,
+    this.sevenDaysActiveUsersCount,
+    this.thirtyDaysActiveUsersCount,
+  });
 
-  CustomerUserStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oneDayActiveUsersCount')) {
-      oneDayActiveUsersCount = _json['oneDayActiveUsersCount'] as core.String;
-    }
-    if (_json.containsKey('sevenDaysActiveUsersCount')) {
-      sevenDaysActiveUsersCount =
-          _json['sevenDaysActiveUsersCount'] as core.String;
-    }
-    if (_json.containsKey('thirtyDaysActiveUsersCount')) {
-      thirtyDaysActiveUsersCount =
-          _json['thirtyDaysActiveUsersCount'] as core.String;
-    }
-  }
+  CustomerUserStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oneDayActiveUsersCount: _json.containsKey('oneDayActiveUsersCount')
+              ? _json['oneDayActiveUsersCount'] as core.String
+              : null,
+          sevenDaysActiveUsersCount:
+              _json.containsKey('sevenDaysActiveUsersCount')
+                  ? _json['sevenDaysActiveUsersCount'] as core.String
+                  : null,
+          thirtyDaysActiveUsersCount:
+              _json.containsKey('thirtyDaysActiveUsersCount')
+                  ? _json['thirtyDaysActiveUsersCount'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (oneDayActiveUsersCount != null)
           'oneDayActiveUsersCount': oneDayActiveUsersCount!,
         if (sevenDaysActiveUsersCount != null)
@@ -2842,52 +3222,68 @@ class DataSource {
   /// schema.
   core.List<core.String>? operationIds;
 
+  /// Can a user request to get thumbnail URI for Items indexed in this data
+  /// source.
+  core.bool? returnThumbnailUrls;
+
   /// A short name or alias for the source.
   ///
   /// This value will be used to match the 'source' operator. For example, if
-  /// the short name is *<value>* then queries like *source:<value>* will only
-  /// return results for this source. The value must be unique across all
+  /// the short name is *\<value\>* then queries like *source:\<value\>* will
+  /// only return results for this source. The value must be unique across all
   /// datasources. The value must only contain alphanumeric characters
   /// (a-zA-Z0-9). The value cannot start with 'google' and cannot be one of the
   /// following: mail, gmail, docs, drive, groups, sites, calendar, hangouts,
   /// gplus, keep, people, teams. Its maximum length is 32 characters.
   core.String? shortName;
 
-  DataSource();
+  DataSource({
+    this.disableModifications,
+    this.disableServing,
+    this.displayName,
+    this.indexingServiceAccounts,
+    this.itemsVisibility,
+    this.name,
+    this.operationIds,
+    this.returnThumbnailUrls,
+    this.shortName,
+  });
 
-  DataSource.fromJson(core.Map _json) {
-    if (_json.containsKey('disableModifications')) {
-      disableModifications = _json['disableModifications'] as core.bool;
-    }
-    if (_json.containsKey('disableServing')) {
-      disableServing = _json['disableServing'] as core.bool;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('indexingServiceAccounts')) {
-      indexingServiceAccounts = (_json['indexingServiceAccounts'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('itemsVisibility')) {
-      itemsVisibility = (_json['itemsVisibility'] as core.List)
-          .map<GSuitePrincipal>((value) => GSuitePrincipal.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('operationIds')) {
-      operationIds = (_json['operationIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('shortName')) {
-      shortName = _json['shortName'] as core.String;
-    }
-  }
+  DataSource.fromJson(core.Map _json)
+      : this(
+          disableModifications: _json.containsKey('disableModifications')
+              ? _json['disableModifications'] as core.bool
+              : null,
+          disableServing: _json.containsKey('disableServing')
+              ? _json['disableServing'] as core.bool
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          indexingServiceAccounts: _json.containsKey('indexingServiceAccounts')
+              ? (_json['indexingServiceAccounts'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          itemsVisibility: _json.containsKey('itemsVisibility')
+              ? (_json['itemsVisibility'] as core.List)
+                  .map((value) => GSuitePrincipal.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          operationIds: _json.containsKey('operationIds')
+              ? (_json['operationIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          returnThumbnailUrls: _json.containsKey('returnThumbnailUrls')
+              ? _json['returnThumbnailUrls'] as core.bool
+              : null,
+          shortName: _json.containsKey('shortName')
+              ? _json['shortName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disableModifications != null)
@@ -2896,11 +3292,11 @@ class DataSource {
         if (displayName != null) 'displayName': displayName!,
         if (indexingServiceAccounts != null)
           'indexingServiceAccounts': indexingServiceAccounts!,
-        if (itemsVisibility != null)
-          'itemsVisibility':
-              itemsVisibility!.map((value) => value.toJson()).toList(),
+        if (itemsVisibility != null) 'itemsVisibility': itemsVisibility!,
         if (name != null) 'name': name!,
         if (operationIds != null) 'operationIds': operationIds!,
+        if (returnThumbnailUrls != null)
+          'returnThumbnailUrls': returnThumbnailUrls!,
         if (shortName != null) 'shortName': shortName!,
       };
 }
@@ -2918,26 +3314,28 @@ class DataSourceIndexStats {
   /// Number of items aggregrated by status code.
   core.List<ItemCountByStatus>? itemCountByStatus;
 
-  DataSourceIndexStats();
+  DataSourceIndexStats({
+    this.date,
+    this.itemCountByStatus,
+  });
 
-  DataSourceIndexStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('itemCountByStatus')) {
-      itemCountByStatus = (_json['itemCountByStatus'] as core.List)
-          .map<ItemCountByStatus>((value) => ItemCountByStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DataSourceIndexStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          itemCountByStatus: _json.containsKey('itemCountByStatus')
+              ? (_json['itemCountByStatus'] as core.List)
+                  .map((value) => ItemCountByStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
-        if (itemCountByStatus != null)
-          'itemCountByStatus':
-              itemCountByStatus!.map((value) => value.toJson()).toList(),
+        if (date != null) 'date': date!,
+        if (itemCountByStatus != null) 'itemCountByStatus': itemCountByStatus!,
       };
 }
 
@@ -2956,26 +3354,28 @@ class DataSourceRestriction {
   /// The source of restriction.
   Source? source;
 
-  DataSourceRestriction();
+  DataSourceRestriction({
+    this.filterOptions,
+    this.source,
+  });
 
-  DataSourceRestriction.fromJson(core.Map _json) {
-    if (_json.containsKey('filterOptions')) {
-      filterOptions = (_json['filterOptions'] as core.List)
-          .map<FilterOptions>((value) => FilterOptions.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DataSourceRestriction.fromJson(core.Map _json)
+      : this(
+          filterOptions: _json.containsKey('filterOptions')
+              ? (_json['filterOptions'] as core.List)
+                  .map((value) => FilterOptions.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filterOptions != null)
-          'filterOptions':
-              filterOptions!.map((value) => value.toJson()).toList(),
-        if (source != null) 'source': source!.toJson(),
+        if (filterOptions != null) 'filterOptions': filterOptions!,
+        if (source != null) 'source': source!,
       };
 }
 
@@ -3001,19 +3401,18 @@ class Date {
   /// Must be from 1 to 9999.
   core.int? year;
 
-  Date();
+  Date({
+    this.day,
+    this.month,
+    this.year,
+  });
 
-  Date.fromJson(core.Map _json) {
-    if (_json.containsKey('day')) {
-      day = _json['day'] as core.int;
-    }
-    if (_json.containsKey('month')) {
-      month = _json['month'] as core.int;
-    }
-    if (_json.containsKey('year')) {
-      year = _json['year'] as core.int;
-    }
-  }
+  Date.fromJson(core.Map _json)
+      : this(
+          day: _json.containsKey('day') ? _json['day'] as core.int : null,
+          month: _json.containsKey('month') ? _json['month'] as core.int : null,
+          year: _json.containsKey('year') ? _json['year'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (day != null) 'day': day!,
@@ -3033,20 +3432,20 @@ class DateOperatorOptions {
   /// date property using the greater-than operator.
   ///
   /// For example, if greaterThanOperatorName is *closedafter* and the
-  /// property's name is *closeDate*, then queries like *closedafter:<value>*
+  /// property's name is *closeDate*, then queries like *closedafter:\<value\>*
   /// show results only where the value of the property named *closeDate* is
-  /// later than *<value>*. The operator name can only contain lowercase letters
-  /// (a-z). The maximum length is 32 characters.
+  /// later than *\<value\>*. The operator name can only contain lowercase
+  /// letters (a-z). The maximum length is 32 characters.
   core.String? greaterThanOperatorName;
 
   /// Indicates the operator name required in the query in order to isolate the
   /// date property using the less-than operator.
   ///
   /// For example, if lessThanOperatorName is *closedbefore* and the property's
-  /// name is *closeDate*, then queries like *closedbefore:<value>* show results
-  /// only where the value of the property named *closeDate* is earlier than
-  /// *<value>*. The operator name can only contain lowercase letters (a-z). The
-  /// maximum length is 32 characters.
+  /// name is *closeDate*, then queries like *closedbefore:\<value\>* show
+  /// results only where the value of the property named *closeDate* is earlier
+  /// than *\<value\>*. The operator name can only contain lowercase letters
+  /// (a-z). The maximum length is 32 characters.
   core.String? lessThanOperatorName;
 
   /// Indicates the actual string required in the query in order to isolate the
@@ -3054,28 +3453,33 @@ class DateOperatorOptions {
   ///
   /// For example, suppose an issue tracking schema object has a property named
   /// *closeDate* that specifies an operator with an operatorName of *closedon*.
-  /// For searches on that data, queries like *closedon:<value>* show results
-  /// only where the value of the *closeDate* property matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator
-  /// returns all items where *<value>* matches the value of any String
+  /// For searches on that data, queries like *closedon:\<value\>* show results
+  /// only where the value of the *closeDate* property matches *\<value\>*. By
+  /// contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any String
   /// properties or text within the content field for the indexed datasource.
   /// The operator name can only contain lowercase letters (a-z). The maximum
   /// length is 32 characters.
   core.String? operatorName;
 
-  DateOperatorOptions();
+  DateOperatorOptions({
+    this.greaterThanOperatorName,
+    this.lessThanOperatorName,
+    this.operatorName,
+  });
 
-  DateOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('greaterThanOperatorName')) {
-      greaterThanOperatorName = _json['greaterThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('lessThanOperatorName')) {
-      lessThanOperatorName = _json['lessThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  DateOperatorOptions.fromJson(core.Map _json)
+      : this(
+          greaterThanOperatorName: _json.containsKey('greaterThanOperatorName')
+              ? _json['greaterThanOperatorName'] as core.String
+              : null,
+          lessThanOperatorName: _json.containsKey('lessThanOperatorName')
+              ? _json['lessThanOperatorName'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (greaterThanOperatorName != null)
@@ -3091,18 +3495,20 @@ class DatePropertyOptions {
   /// If set, describes how the date should be used as a search operator.
   DateOperatorOptions? operatorOptions;
 
-  DatePropertyOptions();
+  DatePropertyOptions({
+    this.operatorOptions,
+  });
 
-  DatePropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = DateOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DatePropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? DateOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
       };
 }
 
@@ -3110,20 +3516,22 @@ class DatePropertyOptions {
 class DateValues {
   core.List<Date>? values;
 
-  DateValues();
+  DateValues({
+    this.values,
+  });
 
-  DateValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<Date>((value) =>
-              Date.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DateValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => Date.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (values != null)
-          'values': values!.map((value) => value.toJson()).toList(),
+        if (values != null) 'values': values!,
       };
 }
 
@@ -3134,13 +3542,16 @@ class DebugOptions {
   /// Otherwise, ignore this field.
   core.bool? enableDebugging;
 
-  DebugOptions();
+  DebugOptions({
+    this.enableDebugging,
+  });
 
-  DebugOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('enableDebugging')) {
-      enableDebugging = _json['enableDebugging'] as core.bool;
-    }
-  }
+  DebugOptions.fromJson(core.Map _json)
+      : this(
+          enableDebugging: _json.containsKey('enableDebugging')
+              ? _json['enableDebugging'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enableDebugging != null) 'enableDebugging': enableDebugging!,
@@ -3159,24 +3570,28 @@ class DeleteQueueItemsRequest {
   /// Name of a queue to delete items from.
   core.String? queue;
 
-  DeleteQueueItemsRequest();
+  DeleteQueueItemsRequest({
+    this.connectorName,
+    this.debugOptions,
+    this.queue,
+  });
 
-  DeleteQueueItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('queue')) {
-      queue = _json['queue'] as core.String;
-    }
-  }
+  DeleteQueueItemsRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          queue:
+              _json.containsKey('queue') ? _json['queue'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
         if (queue != null) 'queue': queue!,
       };
 }
@@ -3195,13 +3610,16 @@ class DisplayedProperty {
   /// when attempting to update the schema.
   core.String? propertyName;
 
-  DisplayedProperty();
+  DisplayedProperty({
+    this.propertyName,
+  });
 
-  DisplayedProperty.fromJson(core.Map _json) {
-    if (_json.containsKey('propertyName')) {
-      propertyName = _json['propertyName'] as core.String;
-    }
-  }
+  DisplayedProperty.fromJson(core.Map _json)
+      : this(
+          propertyName: _json.containsKey('propertyName')
+              ? _json['propertyName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (propertyName != null) 'propertyName': propertyName!,
@@ -3220,13 +3638,16 @@ class DoubleOperatorOptions {
   /// length is 32 characters.
   core.String? operatorName;
 
-  DoubleOperatorOptions();
+  DoubleOperatorOptions({
+    this.operatorName,
+  });
 
-  DoubleOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  DoubleOperatorOptions.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
@@ -3238,18 +3659,20 @@ class DoublePropertyOptions {
   /// If set, describes how the double should be used as a search operator.
   DoubleOperatorOptions? operatorOptions;
 
-  DoublePropertyOptions();
+  DoublePropertyOptions({
+    this.operatorOptions,
+  });
 
-  DoublePropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = DoubleOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DoublePropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? DoubleOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
       };
 }
 
@@ -3257,121 +3680,21 @@ class DoublePropertyOptions {
 class DoubleValues {
   core.List<core.double>? values;
 
-  DoubleValues();
+  DoubleValues({
+    this.values,
+  });
 
-  DoubleValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-  }
+  DoubleValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
-      };
-}
-
-/// Drive follow-up search restricts (e.g. "followup:suggestions").
-class DriveFollowUpRestrict {
-  ///
-  /// Possible string values are:
-  /// - "UNSPECIFIED"
-  /// - "FOLLOWUP_SUGGESTIONS"
-  /// - "FOLLOWUP_ACTION_ITEMS"
-  core.String? type;
-
-  DriveFollowUpRestrict();
-
-  DriveFollowUpRestrict.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (type != null) 'type': type!,
-      };
-}
-
-/// Drive location search restricts (e.g. "is:starred").
-class DriveLocationRestrict {
-  ///
-  /// Possible string values are:
-  /// - "UNSPECIFIED"
-  /// - "TRASHED"
-  /// - "STARRED"
-  core.String? type;
-
-  DriveLocationRestrict();
-
-  DriveLocationRestrict.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (type != null) 'type': type!,
-      };
-}
-
-/// Drive mime-type search restricts (e.g. "type:pdf").
-class DriveMimeTypeRestrict {
-  ///
-  /// Possible string values are:
-  /// - "UNSPECIFIED"
-  /// - "PDF"
-  /// - "DOCUMENT"
-  /// - "PRESENTATION"
-  /// - "SPREADSHEET"
-  /// - "FORM"
-  /// - "DRAWING"
-  /// - "SCRIPT"
-  /// - "MAP"
-  /// - "IMAGE"
-  /// - "AUDIO"
-  /// - "VIDEO"
-  /// - "FOLDER"
-  /// - "ARCHIVE"
-  /// - "SITE"
-  core.String? type;
-
-  DriveMimeTypeRestrict();
-
-  DriveMimeTypeRestrict.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (type != null) 'type': type!,
-      };
-}
-
-/// The time span search restrict (e.g. "after:2017-09-11 before:2017-09-12").
-class DriveTimeSpanRestrict {
-  ///
-  /// Possible string values are:
-  /// - "UNSPECIFIED"
-  /// - "TODAY"
-  /// - "YESTERDAY"
-  /// - "LAST_7_DAYS"
-  /// - "LAST_30_DAYS" : Not Enabled
-  /// - "LAST_90_DAYS" : Not Enabled
-  core.String? type;
-
-  DriveTimeSpanRestrict();
-
-  DriveTimeSpanRestrict.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (type != null) 'type': type!,
       };
 }
 
@@ -3380,13 +3703,16 @@ class EmailAddress {
   /// The email address.
   core.String? emailAddress;
 
-  EmailAddress();
+  EmailAddress({
+    this.emailAddress,
+  });
 
-  EmailAddress.fromJson(core.Map _json) {
-    if (_json.containsKey('emailAddress')) {
-      emailAddress = _json['emailAddress'] as core.String;
-    }
-  }
+  EmailAddress.fromJson(core.Map _json)
+      : this(
+          emailAddress: _json.containsKey('emailAddress')
+              ? _json['emailAddress'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (emailAddress != null) 'emailAddress': emailAddress!,
@@ -3409,22 +3735,25 @@ class EnumOperatorOptions {
   /// enum property.
   ///
   /// For example, if operatorName is *priority* and the property's name is
-  /// *priorityVal*, then queries like *priority:<value>* show results only
-  /// where the value of the property named *priorityVal* matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator
-  /// returns all items where *<value>* matches the value of any String
+  /// *priorityVal*, then queries like *priority:\<value\>* show results only
+  /// where the value of the property named *priorityVal* matches *\<value\>*.
+  /// By contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any String
   /// properties or text within the content field for the item. The operator
   /// name can only contain lowercase letters (a-z). The maximum length is 32
   /// characters.
   core.String? operatorName;
 
-  EnumOperatorOptions();
+  EnumOperatorOptions({
+    this.operatorName,
+  });
 
-  EnumOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  EnumOperatorOptions.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
@@ -3473,31 +3802,33 @@ class EnumPropertyOptions {
   /// The maximum number of elements is 100.
   core.List<EnumValuePair>? possibleValues;
 
-  EnumPropertyOptions();
+  EnumPropertyOptions({
+    this.operatorOptions,
+    this.orderedRanking,
+    this.possibleValues,
+  });
 
-  EnumPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = EnumOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('orderedRanking')) {
-      orderedRanking = _json['orderedRanking'] as core.String;
-    }
-    if (_json.containsKey('possibleValues')) {
-      possibleValues = (_json['possibleValues'] as core.List)
-          .map<EnumValuePair>((value) => EnumValuePair.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  EnumPropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? EnumOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          orderedRanking: _json.containsKey('orderedRanking')
+              ? _json['orderedRanking'] as core.String
+              : null,
+          possibleValues: _json.containsKey('possibleValues')
+              ? (_json['possibleValues'] as core.List)
+                  .map((value) => EnumValuePair.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
         if (orderedRanking != null) 'orderedRanking': orderedRanking!,
-        if (possibleValues != null)
-          'possibleValues':
-              possibleValues!.map((value) => value.toJson()).toList(),
+        if (possibleValues != null) 'possibleValues': possibleValues!,
       };
 }
 
@@ -3526,16 +3857,20 @@ class EnumValuePair {
   /// The maximum length is 32 characters.
   core.String? stringValue;
 
-  EnumValuePair();
+  EnumValuePair({
+    this.integerValue,
+    this.stringValue,
+  });
 
-  EnumValuePair.fromJson(core.Map _json) {
-    if (_json.containsKey('integerValue')) {
-      integerValue = _json['integerValue'] as core.int;
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-  }
+  EnumValuePair.fromJson(core.Map _json)
+      : this(
+          integerValue: _json.containsKey('integerValue')
+              ? _json['integerValue'] as core.int
+              : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (integerValue != null) 'integerValue': integerValue!,
@@ -3548,15 +3883,18 @@ class EnumValues {
   /// The maximum allowable length for string values is 32 characters.
   core.List<core.String>? values;
 
-  EnumValues();
+  EnumValues({
+    this.values,
+  });
 
-  EnumValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  EnumValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
@@ -3567,21 +3905,22 @@ class EnumValues {
 class ErrorInfo {
   core.List<ErrorMessage>? errorMessages;
 
-  ErrorInfo();
+  ErrorInfo({
+    this.errorMessages,
+  });
 
-  ErrorInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('errorMessages')) {
-      errorMessages = (_json['errorMessages'] as core.List)
-          .map<ErrorMessage>((value) => ErrorMessage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ErrorInfo.fromJson(core.Map _json)
+      : this(
+          errorMessages: _json.containsKey('errorMessages')
+              ? (_json['errorMessages'] as core.List)
+                  .map((value) => ErrorMessage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (errorMessages != null)
-          'errorMessages':
-              errorMessages!.map((value) => value.toJson()).toList(),
+        if (errorMessages != null) 'errorMessages': errorMessages!,
       };
 }
 
@@ -3590,21 +3929,25 @@ class ErrorMessage {
   core.String? errorMessage;
   Source? source;
 
-  ErrorMessage();
+  ErrorMessage({
+    this.errorMessage,
+    this.source,
+  });
 
-  ErrorMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('errorMessage')) {
-      errorMessage = _json['errorMessage'] as core.String;
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ErrorMessage.fromJson(core.Map _json)
+      : this(
+          errorMessage: _json.containsKey('errorMessage')
+              ? _json['errorMessage'] as core.String
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (errorMessage != null) 'errorMessage': errorMessage!,
-        if (source != null) 'source': source!.toJson(),
+        if (source != null) 'source': source!,
       };
 }
 
@@ -3616,8 +3959,11 @@ class ErrorMessage {
 class FacetBucket {
   /// Number of results that match the bucket value.
   ///
-  /// Counts are only returned for searches when count accuracy is ensured. Can
-  /// be empty.
+  /// Counts are only returned for searches when count accuracy is ensured.
+  /// Cloud Search does not guarantee facet counts for any query and facet
+  /// counts might be present only intermittently, even for identical queries.
+  /// Do not build dependencies on facet count existence; instead use facet ount
+  /// percentages which are always returned.
   core.int? count;
 
   /// Percent of results that match the bucket value.
@@ -3630,25 +3976,28 @@ class FacetBucket {
   core.int? percentage;
   Value? value;
 
-  FacetBucket();
+  FacetBucket({
+    this.count,
+    this.percentage,
+    this.value,
+  });
 
-  FacetBucket.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.int;
-    }
-    if (_json.containsKey('percentage')) {
-      percentage = _json['percentage'] as core.int;
-    }
-    if (_json.containsKey('value')) {
-      value =
-          Value.fromJson(_json['value'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  FacetBucket.fromJson(core.Map _json)
+      : this(
+          count: _json.containsKey('count') ? _json['count'] as core.int : null,
+          percentage: _json.containsKey('percentage')
+              ? _json['percentage'] as core.int
+              : null,
+          value: _json.containsKey('value')
+              ? Value.fromJson(
+                  _json['value'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
         if (percentage != null) 'percentage': percentage!,
-        if (value != null) 'value': value!.toJson(),
+        if (value != null) 'value': value!,
       };
 }
 
@@ -3678,22 +4027,28 @@ class FacetOptions {
   /// Format: datasources/{source_id} If empty, all data sources will be used.
   core.String? sourceName;
 
-  FacetOptions();
+  FacetOptions({
+    this.numFacetBuckets,
+    this.objectType,
+    this.operatorName,
+    this.sourceName,
+  });
 
-  FacetOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('numFacetBuckets')) {
-      numFacetBuckets = _json['numFacetBuckets'] as core.int;
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('sourceName')) {
-      sourceName = _json['sourceName'] as core.String;
-    }
-  }
+  FacetOptions.fromJson(core.Map _json)
+      : this(
+          numFacetBuckets: _json.containsKey('numFacetBuckets')
+              ? _json['numFacetBuckets'] as core.int
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          sourceName: _json.containsKey('sourceName')
+              ? _json['sourceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (numFacetBuckets != null) 'numFacetBuckets': numFacetBuckets!,
@@ -3723,29 +4078,34 @@ class FacetResult {
   /// Will not be empty.
   core.String? sourceName;
 
-  FacetResult();
+  FacetResult({
+    this.buckets,
+    this.objectType,
+    this.operatorName,
+    this.sourceName,
+  });
 
-  FacetResult.fromJson(core.Map _json) {
-    if (_json.containsKey('buckets')) {
-      buckets = (_json['buckets'] as core.List)
-          .map<FacetBucket>((value) => FacetBucket.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('sourceName')) {
-      sourceName = _json['sourceName'] as core.String;
-    }
-  }
+  FacetResult.fromJson(core.Map _json)
+      : this(
+          buckets: _json.containsKey('buckets')
+              ? (_json['buckets'] as core.List)
+                  .map((value) => FacetBucket.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          sourceName: _json.containsKey('sourceName')
+              ? _json['sourceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (buckets != null)
-          'buckets': buckets!.map((value) => value.toJson()).toList(),
+        if (buckets != null) 'buckets': buckets!,
         if (objectType != null) 'objectType': objectType!,
         if (operatorName != null) 'operatorName': operatorName!,
         if (sourceName != null) 'sourceName': sourceName!,
@@ -3759,16 +4119,19 @@ class FieldViolation {
   /// Path of field with violation.
   core.String? field;
 
-  FieldViolation();
+  FieldViolation({
+    this.description,
+    this.field,
+  });
 
-  FieldViolation.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('field')) {
-      field = _json['field'] as core.String;
-    }
-  }
+  FieldViolation.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          field:
+              _json.containsKey('field') ? _json['field'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -3788,23 +4151,26 @@ class Filter {
   CompositeFilter? compositeFilter;
   ValueFilter? valueFilter;
 
-  Filter();
+  Filter({
+    this.compositeFilter,
+    this.valueFilter,
+  });
 
-  Filter.fromJson(core.Map _json) {
-    if (_json.containsKey('compositeFilter')) {
-      compositeFilter = CompositeFilter.fromJson(
-          _json['compositeFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('valueFilter')) {
-      valueFilter = ValueFilter.fromJson(
-          _json['valueFilter'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Filter.fromJson(core.Map _json)
+      : this(
+          compositeFilter: _json.containsKey('compositeFilter')
+              ? CompositeFilter.fromJson(_json['compositeFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          valueFilter: _json.containsKey('valueFilter')
+              ? ValueFilter.fromJson(
+                  _json['valueFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (compositeFilter != null)
-          'compositeFilter': compositeFilter!.toJson(),
-        if (valueFilter != null) 'valueFilter': valueFilter!.toJson(),
+        if (compositeFilter != null) 'compositeFilter': compositeFilter!,
+        if (valueFilter != null) 'valueFilter': valueFilter!,
       };
 }
 
@@ -3819,20 +4185,24 @@ class FilterOptions {
   /// within the definition of schema. The maximum length is 256 characters.
   core.String? objectType;
 
-  FilterOptions();
+  FilterOptions({
+    this.filter,
+    this.objectType,
+  });
 
-  FilterOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('filter')) {
-      filter = Filter.fromJson(
-          _json['filter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-  }
+  FilterOptions.fromJson(core.Map _json)
+      : this(
+          filter: _json.containsKey('filter')
+              ? Filter.fromJson(
+                  _json['filter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filter != null) 'filter': filter!.toJson(),
+        if (filter != null) 'filter': filter!,
         if (objectType != null) 'objectType': objectType!,
       };
 }
@@ -3861,16 +4231,20 @@ class FreshnessOptions {
   /// the value defaults to 2 years from the current time.
   core.String? freshnessProperty;
 
-  FreshnessOptions();
+  FreshnessOptions({
+    this.freshnessDuration,
+    this.freshnessProperty,
+  });
 
-  FreshnessOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('freshnessDuration')) {
-      freshnessDuration = _json['freshnessDuration'] as core.String;
-    }
-    if (_json.containsKey('freshnessProperty')) {
-      freshnessProperty = _json['freshnessProperty'] as core.String;
-    }
-  }
+  FreshnessOptions.fromJson(core.Map _json)
+      : this(
+          freshnessDuration: _json.containsKey('freshnessDuration')
+              ? _json['freshnessDuration'] as core.String
+              : null,
+          freshnessProperty: _json.containsKey('freshnessProperty')
+              ? _json['freshnessProperty'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (freshnessDuration != null) 'freshnessDuration': freshnessDuration!,
@@ -3888,19 +4262,24 @@ class GSuitePrincipal {
   /// This principal references a G Suite user account
   core.String? gsuiteUserEmail;
 
-  GSuitePrincipal();
+  GSuitePrincipal({
+    this.gsuiteDomain,
+    this.gsuiteGroupEmail,
+    this.gsuiteUserEmail,
+  });
 
-  GSuitePrincipal.fromJson(core.Map _json) {
-    if (_json.containsKey('gsuiteDomain')) {
-      gsuiteDomain = _json['gsuiteDomain'] as core.bool;
-    }
-    if (_json.containsKey('gsuiteGroupEmail')) {
-      gsuiteGroupEmail = _json['gsuiteGroupEmail'] as core.String;
-    }
-    if (_json.containsKey('gsuiteUserEmail')) {
-      gsuiteUserEmail = _json['gsuiteUserEmail'] as core.String;
-    }
-  }
+  GSuitePrincipal.fromJson(core.Map _json)
+      : this(
+          gsuiteDomain: _json.containsKey('gsuiteDomain')
+              ? _json['gsuiteDomain'] as core.bool
+              : null,
+          gsuiteGroupEmail: _json.containsKey('gsuiteGroupEmail')
+              ? _json['gsuiteGroupEmail'] as core.String
+              : null,
+          gsuiteUserEmail: _json.containsKey('gsuiteUserEmail')
+              ? _json['gsuiteUserEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gsuiteDomain != null) 'gsuiteDomain': gsuiteDomain!,
@@ -3910,167 +4289,251 @@ class GSuitePrincipal {
 }
 
 class GetCustomerIndexStatsResponse {
+  /// Average item count for the given date range for which billing is done.
+  core.String? averageIndexedItemCount;
+
   /// Summary of indexed item counts, one for each day in the requested range.
   core.List<CustomerIndexStats>? stats;
 
-  GetCustomerIndexStatsResponse();
+  GetCustomerIndexStatsResponse({
+    this.averageIndexedItemCount,
+    this.stats,
+  });
 
-  GetCustomerIndexStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<CustomerIndexStats>((value) => CustomerIndexStats.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetCustomerIndexStatsResponse.fromJson(core.Map _json)
+      : this(
+          averageIndexedItemCount: _json.containsKey('averageIndexedItemCount')
+              ? _json['averageIndexedItemCount'] as core.String
+              : null,
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => CustomerIndexStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (averageIndexedItemCount != null)
+          'averageIndexedItemCount': averageIndexedItemCount!,
+        if (stats != null) 'stats': stats!,
       };
 }
 
 class GetCustomerQueryStatsResponse {
   core.List<CustomerQueryStats>? stats;
 
-  GetCustomerQueryStatsResponse();
+  /// Total successful query count (status code 200) for the given date range.
+  core.String? totalQueryCount;
 
-  GetCustomerQueryStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<CustomerQueryStats>((value) => CustomerQueryStats.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetCustomerQueryStatsResponse({
+    this.stats,
+    this.totalQueryCount,
+  });
+
+  GetCustomerQueryStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => CustomerQueryStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          totalQueryCount: _json.containsKey('totalQueryCount')
+              ? _json['totalQueryCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
+        if (totalQueryCount != null) 'totalQueryCount': totalQueryCount!,
+      };
+}
+
+/// Response format for search application stats for a customer.
+class GetCustomerSearchApplicationStatsResponse {
+  /// Average search application count for the given date range.
+  core.String? averageSearchApplicationCount;
+
+  /// Search application stats by date.
+  core.List<CustomerSearchApplicationStats>? stats;
+
+  GetCustomerSearchApplicationStatsResponse({
+    this.averageSearchApplicationCount,
+    this.stats,
+  });
+
+  GetCustomerSearchApplicationStatsResponse.fromJson(core.Map _json)
+      : this(
+          averageSearchApplicationCount:
+              _json.containsKey('averageSearchApplicationCount')
+                  ? _json['averageSearchApplicationCount'] as core.String
+                  : null,
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => CustomerSearchApplicationStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (averageSearchApplicationCount != null)
+          'averageSearchApplicationCount': averageSearchApplicationCount!,
+        if (stats != null) 'stats': stats!,
       };
 }
 
 class GetCustomerSessionStatsResponse {
   core.List<CustomerSessionStats>? stats;
 
-  GetCustomerSessionStatsResponse();
+  GetCustomerSessionStatsResponse({
+    this.stats,
+  });
 
-  GetCustomerSessionStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<CustomerSessionStats>((value) => CustomerSessionStats.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetCustomerSessionStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => CustomerSessionStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
       };
 }
 
 class GetCustomerUserStatsResponse {
   core.List<CustomerUserStats>? stats;
 
-  GetCustomerUserStatsResponse();
+  GetCustomerUserStatsResponse({
+    this.stats,
+  });
 
-  GetCustomerUserStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<CustomerUserStats>((value) => CustomerUserStats.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetCustomerUserStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => CustomerUserStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
       };
 }
 
 class GetDataSourceIndexStatsResponse {
+  /// Average item count for the given date range for which billing is done.
+  core.String? averageIndexedItemCount;
+
   /// Summary of indexed item counts, one for each day in the requested range.
   core.List<DataSourceIndexStats>? stats;
 
-  GetDataSourceIndexStatsResponse();
+  GetDataSourceIndexStatsResponse({
+    this.averageIndexedItemCount,
+    this.stats,
+  });
 
-  GetDataSourceIndexStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<DataSourceIndexStats>((value) => DataSourceIndexStats.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetDataSourceIndexStatsResponse.fromJson(core.Map _json)
+      : this(
+          averageIndexedItemCount: _json.containsKey('averageIndexedItemCount')
+              ? _json['averageIndexedItemCount'] as core.String
+              : null,
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => DataSourceIndexStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (averageIndexedItemCount != null)
+          'averageIndexedItemCount': averageIndexedItemCount!,
+        if (stats != null) 'stats': stats!,
       };
 }
 
+/// Response format for getting query stats for a search application between
+/// given dates.
 class GetSearchApplicationQueryStatsResponse {
+  /// Query stats per date for a search application.
   core.List<SearchApplicationQueryStats>? stats;
 
-  GetSearchApplicationQueryStatsResponse();
+  /// Total successful query count (status code 200) for the given date range.
+  core.String? totalQueryCount;
 
-  GetSearchApplicationQueryStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<SearchApplicationQueryStats>((value) =>
-              SearchApplicationQueryStats.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetSearchApplicationQueryStatsResponse({
+    this.stats,
+    this.totalQueryCount,
+  });
+
+  GetSearchApplicationQueryStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => SearchApplicationQueryStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          totalQueryCount: _json.containsKey('totalQueryCount')
+              ? _json['totalQueryCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
+        if (totalQueryCount != null) 'totalQueryCount': totalQueryCount!,
       };
 }
 
 class GetSearchApplicationSessionStatsResponse {
   core.List<SearchApplicationSessionStats>? stats;
 
-  GetSearchApplicationSessionStatsResponse();
+  GetSearchApplicationSessionStatsResponse({
+    this.stats,
+  });
 
-  GetSearchApplicationSessionStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<SearchApplicationSessionStats>((value) =>
-              SearchApplicationSessionStats.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetSearchApplicationSessionStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => SearchApplicationSessionStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
       };
 }
 
 class GetSearchApplicationUserStatsResponse {
   core.List<SearchApplicationUserStats>? stats;
 
-  GetSearchApplicationUserStatsResponse();
+  GetSearchApplicationUserStatsResponse({
+    this.stats,
+  });
 
-  GetSearchApplicationUserStatsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('stats')) {
-      stats = (_json['stats'] as core.List)
-          .map<SearchApplicationUserStats>((value) =>
-              SearchApplicationUserStats.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GetSearchApplicationUserStatsResponse.fromJson(core.Map _json)
+      : this(
+          stats: _json.containsKey('stats')
+              ? (_json['stats'] as core.List)
+                  .map((value) => SearchApplicationUserStats.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (stats != null)
-          'stats': stats!.map((value) => value.toJson()).toList(),
+        if (stats != null) 'stats': stats!,
       };
 }
 
@@ -4083,21 +4546,25 @@ class HtmlOperatorOptions {
   /// html property.
   ///
   /// For example, if operatorName is *subject* and the property's name is
-  /// *subjectLine*, then queries like *subject:<value>* show results only where
-  /// the value of the property named *subjectLine* matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator return
-  /// all items where *<value>* matches the value of any html properties or text
-  /// within the content field for the item. The operator name can only contain
-  /// lowercase letters (a-z). The maximum length is 32 characters.
+  /// *subjectLine*, then queries like *subject:\<value\>* show results only
+  /// where the value of the property named *subjectLine* matches *\<value\>*.
+  /// By contrast, a search that uses the same *\<value\>* without an operator
+  /// return all items where *\<value\>* matches the value of any html
+  /// properties or text within the content field for the item. The operator
+  /// name can only contain lowercase letters (a-z). The maximum length is 32
+  /// characters.
   core.String? operatorName;
 
-  HtmlOperatorOptions();
+  HtmlOperatorOptions({
+    this.operatorName,
+  });
 
-  HtmlOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  HtmlOperatorOptions.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
@@ -4115,24 +4582,27 @@ class HtmlPropertyOptions {
   /// Can only be set to DEFAULT or NONE.
   RetrievalImportance? retrievalImportance;
 
-  HtmlPropertyOptions();
+  HtmlPropertyOptions({
+    this.operatorOptions,
+    this.retrievalImportance,
+  });
 
-  HtmlPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = HtmlOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('retrievalImportance')) {
-      retrievalImportance = RetrievalImportance.fromJson(
-          _json['retrievalImportance'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  HtmlPropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? HtmlOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          retrievalImportance: _json.containsKey('retrievalImportance')
+              ? RetrievalImportance.fromJson(_json['retrievalImportance']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
         if (retrievalImportance != null)
-          'retrievalImportance': retrievalImportance!.toJson(),
+          'retrievalImportance': retrievalImportance!,
       };
 }
 
@@ -4141,15 +4611,18 @@ class HtmlValues {
   /// The maximum allowable length for html values is 2048 characters.
   core.List<core.String>? values;
 
-  HtmlValues();
+  HtmlValues({
+    this.values,
+  });
 
-  HtmlValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  HtmlValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
@@ -4161,14 +4634,17 @@ class IndexItemOptions {
   /// exist or are deleted in the index request.
   core.bool? allowUnknownGsuitePrincipals;
 
-  IndexItemOptions();
+  IndexItemOptions({
+    this.allowUnknownGsuitePrincipals,
+  });
 
-  IndexItemOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('allowUnknownGsuitePrincipals')) {
-      allowUnknownGsuitePrincipals =
-          _json['allowUnknownGsuitePrincipals'] as core.bool;
-    }
-  }
+  IndexItemOptions.fromJson(core.Map _json)
+      : this(
+          allowUnknownGsuitePrincipals:
+              _json.containsKey('allowUnknownGsuitePrincipals')
+                  ? _json['allowUnknownGsuitePrincipals'] as core.bool
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowUnknownGsuitePrincipals != null)
@@ -4202,38 +4678,45 @@ class IndexItemRequest {
   /// sent back to the caller.
   core.String? mode;
 
-  IndexItemRequest();
+  IndexItemRequest({
+    this.connectorName,
+    this.debugOptions,
+    this.indexItemOptions,
+    this.item,
+    this.mode,
+  });
 
-  IndexItemRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('indexItemOptions')) {
-      indexItemOptions = IndexItemOptions.fromJson(
-          _json['indexItemOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('item')) {
-      item =
-          Item.fromJson(_json['item'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mode')) {
-      mode = _json['mode'] as core.String;
-    }
-  }
+  IndexItemRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          indexItemOptions: _json.containsKey('indexItemOptions')
+              ? IndexItemOptions.fromJson(_json['indexItemOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          item: _json.containsKey('item')
+              ? Item.fromJson(
+                  _json['item'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mode: _json.containsKey('mode') ? _json['mode'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
-        if (indexItemOptions != null)
-          'indexItemOptions': indexItemOptions!.toJson(),
-        if (item != null) 'item': item!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
+        if (indexItemOptions != null) 'indexItemOptions': indexItemOptions!,
+        if (item != null) 'item': item!,
         if (mode != null) 'mode': mode!,
       };
 }
+
+/// Request message for `InitializeCustomer` method.
+typedef InitializeCustomerRequest = $Empty;
 
 /// Used to provide a search operator for integer properties.
 ///
@@ -4245,18 +4728,19 @@ class IntegerOperatorOptions {
   ///
   /// For example, if greaterThanOperatorName is *priorityabove* and the
   /// property's name is *priorityVal*, then queries like
-  /// *priorityabove:<value>* show results only where the value of the property
-  /// named *priorityVal* is greater than *<value>*. The operator name can only
-  /// contain lowercase letters (a-z). The maximum length is 32 characters.
+  /// *priorityabove:\<value\>* show results only where the value of the
+  /// property named *priorityVal* is greater than *\<value\>*. The operator
+  /// name can only contain lowercase letters (a-z). The maximum length is 32
+  /// characters.
   core.String? greaterThanOperatorName;
 
   /// Indicates the operator name required in the query in order to isolate the
   /// integer property using the less-than operator.
   ///
   /// For example, if lessThanOperatorName is *prioritybelow* and the property's
-  /// name is *priorityVal*, then queries like *prioritybelow:<value>* show
+  /// name is *priorityVal*, then queries like *prioritybelow:\<value\>* show
   /// results only where the value of the property named *priorityVal* is less
-  /// than *<value>*. The operator name can only contain lowercase letters
+  /// than *\<value\>*. The operator name can only contain lowercase letters
   /// (a-z). The maximum length is 32 characters.
   core.String? lessThanOperatorName;
 
@@ -4264,28 +4748,33 @@ class IntegerOperatorOptions {
   /// integer property.
   ///
   /// For example, if operatorName is *priority* and the property's name is
-  /// *priorityVal*, then queries like *priority:<value>* show results only
-  /// where the value of the property named *priorityVal* matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator
-  /// returns all items where *<value>* matches the value of any String
+  /// *priorityVal*, then queries like *priority:\<value\>* show results only
+  /// where the value of the property named *priorityVal* matches *\<value\>*.
+  /// By contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any String
   /// properties or text within the content field for the item. The operator
   /// name can only contain lowercase letters (a-z). The maximum length is 32
   /// characters.
   core.String? operatorName;
 
-  IntegerOperatorOptions();
+  IntegerOperatorOptions({
+    this.greaterThanOperatorName,
+    this.lessThanOperatorName,
+    this.operatorName,
+  });
 
-  IntegerOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('greaterThanOperatorName')) {
-      greaterThanOperatorName = _json['greaterThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('lessThanOperatorName')) {
-      lessThanOperatorName = _json['lessThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  IntegerOperatorOptions.fromJson(core.Map _json)
+      : this(
+          greaterThanOperatorName: _json.containsKey('greaterThanOperatorName')
+              ? _json['greaterThanOperatorName'] as core.String
+              : null,
+          lessThanOperatorName: _json.containsKey('lessThanOperatorName')
+              ? _json['lessThanOperatorName'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (greaterThanOperatorName != null)
@@ -4329,29 +4818,34 @@ class IntegerPropertyOptions {
   /// indicate higher ranking.
   core.String? orderedRanking;
 
-  IntegerPropertyOptions();
+  IntegerPropertyOptions({
+    this.maximumValue,
+    this.minimumValue,
+    this.operatorOptions,
+    this.orderedRanking,
+  });
 
-  IntegerPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('maximumValue')) {
-      maximumValue = _json['maximumValue'] as core.String;
-    }
-    if (_json.containsKey('minimumValue')) {
-      minimumValue = _json['minimumValue'] as core.String;
-    }
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = IntegerOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('orderedRanking')) {
-      orderedRanking = _json['orderedRanking'] as core.String;
-    }
-  }
+  IntegerPropertyOptions.fromJson(core.Map _json)
+      : this(
+          maximumValue: _json.containsKey('maximumValue')
+              ? _json['maximumValue'] as core.String
+              : null,
+          minimumValue: _json.containsKey('minimumValue')
+              ? _json['minimumValue'] as core.String
+              : null,
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? IntegerOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          orderedRanking: _json.containsKey('orderedRanking')
+              ? _json['orderedRanking'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maximumValue != null) 'maximumValue': maximumValue!,
         if (minimumValue != null) 'minimumValue': minimumValue!,
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
         if (orderedRanking != null) 'orderedRanking': orderedRanking!,
       };
 }
@@ -4360,15 +4854,18 @@ class IntegerPropertyOptions {
 class IntegerValues {
   core.List<core.String>? values;
 
-  IntegerValues();
+  IntegerValues({
+    this.values,
+  });
 
-  IntegerValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  IntegerValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
@@ -4393,24 +4890,27 @@ class Interaction {
   /// - "EDIT" : This interaction indicates the user edited the item.
   core.String? type;
 
-  Interaction();
+  Interaction({
+    this.interactionTime,
+    this.principal,
+    this.type,
+  });
 
-  Interaction.fromJson(core.Map _json) {
-    if (_json.containsKey('interactionTime')) {
-      interactionTime = _json['interactionTime'] as core.String;
-    }
-    if (_json.containsKey('principal')) {
-      principal = Principal.fromJson(
-          _json['principal'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Interaction.fromJson(core.Map _json)
+      : this(
+          interactionTime: _json.containsKey('interactionTime')
+              ? _json['interactionTime'] as core.String
+              : null,
+          principal: _json.containsKey('principal')
+              ? Principal.fromJson(
+                  _json['principal'] as core.Map<core.String, core.dynamic>)
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (interactionTime != null) 'interactionTime': interactionTime!,
-        if (principal != null) 'principal': principal!.toJson(),
+        if (principal != null) 'principal': principal!,
         if (type != null) 'type': type!,
       };
 }
@@ -4476,7 +4976,9 @@ class Item {
   ///
   /// Cloud Search Indexing won't index or delete any queued item with a version
   /// value that is less than or equal to the version of the currently indexed
-  /// item. The maximum length for this field is 1024 bytes.
+  /// item. The maximum length for this field is 1024 bytes. For information on
+  /// how item version affects the deletion process, refer to
+  /// [Handle revisions after manual deletes](https://developers.google.com/cloud-search/docs/guides/operations).
   ///
   /// Required.
   core.String? version;
@@ -4487,56 +4989,65 @@ class Item {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  Item();
+  Item({
+    this.acl,
+    this.content,
+    this.itemType,
+    this.metadata,
+    this.name,
+    this.payload,
+    this.queue,
+    this.status,
+    this.structuredData,
+    this.version,
+  });
 
-  Item.fromJson(core.Map _json) {
-    if (_json.containsKey('acl')) {
-      acl =
-          ItemAcl.fromJson(_json['acl'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('content')) {
-      content = ItemContent.fromJson(
-          _json['content'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('itemType')) {
-      itemType = _json['itemType'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ItemMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('payload')) {
-      payload = _json['payload'] as core.String;
-    }
-    if (_json.containsKey('queue')) {
-      queue = _json['queue'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = ItemStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('structuredData')) {
-      structuredData = ItemStructuredData.fromJson(
-          _json['structuredData'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  Item.fromJson(core.Map _json)
+      : this(
+          acl: _json.containsKey('acl')
+              ? ItemAcl.fromJson(
+                  _json['acl'] as core.Map<core.String, core.dynamic>)
+              : null,
+          content: _json.containsKey('content')
+              ? ItemContent.fromJson(
+                  _json['content'] as core.Map<core.String, core.dynamic>)
+              : null,
+          itemType: _json.containsKey('itemType')
+              ? _json['itemType'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? ItemMetadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.String
+              : null,
+          queue:
+              _json.containsKey('queue') ? _json['queue'] as core.String : null,
+          status: _json.containsKey('status')
+              ? ItemStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+          structuredData: _json.containsKey('structuredData')
+              ? ItemStructuredData.fromJson(_json['structuredData']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (acl != null) 'acl': acl!.toJson(),
-        if (content != null) 'content': content!.toJson(),
+        if (acl != null) 'acl': acl!,
+        if (content != null) 'content': content!,
         if (itemType != null) 'itemType': itemType!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (payload != null) 'payload': payload!,
         if (queue != null) 'queue': queue!,
-        if (status != null) 'status': status!.toJson(),
-        if (structuredData != null) 'structuredData': structuredData!.toJson(),
+        if (status != null) 'status': status!,
+        if (structuredData != null) 'structuredData': structuredData!,
         if (version != null) 'version': version!,
       };
 }
@@ -4600,46 +5111,49 @@ class ItemAcl {
   /// elements is 1000.
   core.List<Principal>? readers;
 
-  ItemAcl();
+  ItemAcl({
+    this.aclInheritanceType,
+    this.deniedReaders,
+    this.inheritAclFrom,
+    this.owners,
+    this.readers,
+  });
 
-  ItemAcl.fromJson(core.Map _json) {
-    if (_json.containsKey('aclInheritanceType')) {
-      aclInheritanceType = _json['aclInheritanceType'] as core.String;
-    }
-    if (_json.containsKey('deniedReaders')) {
-      deniedReaders = (_json['deniedReaders'] as core.List)
-          .map<Principal>((value) =>
-              Principal.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('inheritAclFrom')) {
-      inheritAclFrom = _json['inheritAclFrom'] as core.String;
-    }
-    if (_json.containsKey('owners')) {
-      owners = (_json['owners'] as core.List)
-          .map<Principal>((value) =>
-              Principal.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('readers')) {
-      readers = (_json['readers'] as core.List)
-          .map<Principal>((value) =>
-              Principal.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ItemAcl.fromJson(core.Map _json)
+      : this(
+          aclInheritanceType: _json.containsKey('aclInheritanceType')
+              ? _json['aclInheritanceType'] as core.String
+              : null,
+          deniedReaders: _json.containsKey('deniedReaders')
+              ? (_json['deniedReaders'] as core.List)
+                  .map((value) => Principal.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          inheritAclFrom: _json.containsKey('inheritAclFrom')
+              ? _json['inheritAclFrom'] as core.String
+              : null,
+          owners: _json.containsKey('owners')
+              ? (_json['owners'] as core.List)
+                  .map((value) => Principal.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          readers: _json.containsKey('readers')
+              ? (_json['readers'] as core.List)
+                  .map((value) => Principal.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (aclInheritanceType != null)
           'aclInheritanceType': aclInheritanceType!,
-        if (deniedReaders != null)
-          'deniedReaders':
-              deniedReaders!.map((value) => value.toJson()).toList(),
+        if (deniedReaders != null) 'deniedReaders': deniedReaders!,
         if (inheritAclFrom != null) 'inheritAclFrom': inheritAclFrom!,
-        if (owners != null)
-          'owners': owners!.map((value) => value.toJson()).toList(),
-        if (readers != null)
-          'readers': readers!.map((value) => value.toJson()).toList(),
+        if (owners != null) 'owners': owners!,
+        if (readers != null) 'readers': readers!,
       };
 }
 
@@ -4677,26 +5191,30 @@ class ItemContent {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  ItemContent();
+  ItemContent({
+    this.contentDataRef,
+    this.contentFormat,
+    this.hash,
+    this.inlineContent,
+  });
 
-  ItemContent.fromJson(core.Map _json) {
-    if (_json.containsKey('contentDataRef')) {
-      contentDataRef = UploadItemRef.fromJson(
-          _json['contentDataRef'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('contentFormat')) {
-      contentFormat = _json['contentFormat'] as core.String;
-    }
-    if (_json.containsKey('hash')) {
-      hash = _json['hash'] as core.String;
-    }
-    if (_json.containsKey('inlineContent')) {
-      inlineContent = _json['inlineContent'] as core.String;
-    }
-  }
+  ItemContent.fromJson(core.Map _json)
+      : this(
+          contentDataRef: _json.containsKey('contentDataRef')
+              ? UploadItemRef.fromJson(_json['contentDataRef']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          contentFormat: _json.containsKey('contentFormat')
+              ? _json['contentFormat'] as core.String
+              : null,
+          hash: _json.containsKey('hash') ? _json['hash'] as core.String : null,
+          inlineContent: _json.containsKey('inlineContent')
+              ? _json['inlineContent'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (contentDataRef != null) 'contentDataRef': contentDataRef!.toJson(),
+        if (contentDataRef != null) 'contentDataRef': contentDataRef!,
         if (contentFormat != null) 'contentFormat': contentFormat!,
         if (hash != null) 'hash': hash!,
         if (inlineContent != null) 'inlineContent': inlineContent!,
@@ -4706,6 +5224,12 @@ class ItemContent {
 class ItemCountByStatus {
   /// Number of items matching the status code.
   core.String? count;
+
+  /// Number of items matching the status code for which billing is done.
+  ///
+  /// This excludes virtual container items from the total count. This count
+  /// would not be applicable for items with ERROR or NEW_ITEM status code.
+  core.String? indexedItemsCount;
 
   /// Status of the items.
   /// Possible string values are:
@@ -4721,19 +5245,27 @@ class ItemCountByStatus {
   /// - "ACCEPTED" : API has accepted the up-to-date data of this item.
   core.String? statusCode;
 
-  ItemCountByStatus();
+  ItemCountByStatus({
+    this.count,
+    this.indexedItemsCount,
+    this.statusCode,
+  });
 
-  ItemCountByStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.String;
-    }
-    if (_json.containsKey('statusCode')) {
-      statusCode = _json['statusCode'] as core.String;
-    }
-  }
+  ItemCountByStatus.fromJson(core.Map _json)
+      : this(
+          count:
+              _json.containsKey('count') ? _json['count'] as core.String : null,
+          indexedItemsCount: _json.containsKey('indexedItemsCount')
+              ? _json['indexedItemsCount'] as core.String
+              : null,
+          statusCode: _json.containsKey('statusCode')
+              ? _json['statusCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
+        if (indexedItemsCount != null) 'indexedItemsCount': indexedItemsCount!,
         if (statusCode != null) 'statusCode': statusCode!,
       };
 }
@@ -4754,6 +5286,12 @@ class ItemMetadata {
   /// http://www.unicode.org/reports/tr35/#Unicode_locale_identifier. The
   /// maximum length is 32 characters.
   core.String? contentLanguage;
+
+  /// A set of named attributes associated with the item.
+  ///
+  /// This can be used for influencing the ranking of the item based on the
+  /// context in the request. The maximum number of elements is 10.
+  core.List<ContextAttribute>? contextAttributes;
 
   /// The time when the item was created in the source repository.
   core.String? createTime;
@@ -4795,8 +5333,8 @@ class ItemMetadata {
 
   /// Link to the source repository serving the data.
   ///
-  /// Search results apply this link to the title. Whitespace or special
-  /// characters may cause Cloud Search result links to trigger a redirect
+  /// Seach results apply this link to the title. Whitespace or special
+  /// characters may cause Cloud Seach result links to trigger a redirect
   /// notice; to avoid this, encode the URL. The maximum length is 2048
   /// characters.
   core.String? sourceRepositoryUrl;
@@ -4810,66 +5348,83 @@ class ItemMetadata {
   /// The time when the item was last modified in the source repository.
   core.String? updateTime;
 
-  ItemMetadata();
+  ItemMetadata({
+    this.containerName,
+    this.contentLanguage,
+    this.contextAttributes,
+    this.createTime,
+    this.hash,
+    this.interactions,
+    this.keywords,
+    this.mimeType,
+    this.objectType,
+    this.searchQualityMetadata,
+    this.sourceRepositoryUrl,
+    this.title,
+    this.updateTime,
+  });
 
-  ItemMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('containerName')) {
-      containerName = _json['containerName'] as core.String;
-    }
-    if (_json.containsKey('contentLanguage')) {
-      contentLanguage = _json['contentLanguage'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('hash')) {
-      hash = _json['hash'] as core.String;
-    }
-    if (_json.containsKey('interactions')) {
-      interactions = (_json['interactions'] as core.List)
-          .map<Interaction>((value) => Interaction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('keywords')) {
-      keywords = (_json['keywords'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-    if (_json.containsKey('searchQualityMetadata')) {
-      searchQualityMetadata = SearchQualityMetadata.fromJson(
-          _json['searchQualityMetadata']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceRepositoryUrl')) {
-      sourceRepositoryUrl = _json['sourceRepositoryUrl'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  ItemMetadata.fromJson(core.Map _json)
+      : this(
+          containerName: _json.containsKey('containerName')
+              ? _json['containerName'] as core.String
+              : null,
+          contentLanguage: _json.containsKey('contentLanguage')
+              ? _json['contentLanguage'] as core.String
+              : null,
+          contextAttributes: _json.containsKey('contextAttributes')
+              ? (_json['contextAttributes'] as core.List)
+                  .map((value) => ContextAttribute.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          hash: _json.containsKey('hash') ? _json['hash'] as core.String : null,
+          interactions: _json.containsKey('interactions')
+              ? (_json['interactions'] as core.List)
+                  .map((value) => Interaction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          keywords: _json.containsKey('keywords')
+              ? (_json['keywords'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+          searchQualityMetadata: _json.containsKey('searchQualityMetadata')
+              ? SearchQualityMetadata.fromJson(_json['searchQualityMetadata']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceRepositoryUrl: _json.containsKey('sourceRepositoryUrl')
+              ? _json['sourceRepositoryUrl'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (containerName != null) 'containerName': containerName!,
         if (contentLanguage != null) 'contentLanguage': contentLanguage!,
+        if (contextAttributes != null) 'contextAttributes': contextAttributes!,
         if (createTime != null) 'createTime': createTime!,
         if (hash != null) 'hash': hash!,
-        if (interactions != null)
-          'interactions': interactions!.map((value) => value.toJson()).toList(),
+        if (interactions != null) 'interactions': interactions!,
         if (keywords != null) 'keywords': keywords!,
         if (mimeType != null) 'mimeType': mimeType!,
         if (objectType != null) 'objectType': objectType!,
         if (searchQualityMetadata != null)
-          'searchQualityMetadata': searchQualityMetadata!.toJson(),
+          'searchQualityMetadata': searchQualityMetadata!,
         if (sourceRepositoryUrl != null)
           'sourceRepositoryUrl': sourceRepositoryUrl!,
         if (title != null) 'title': title!,
@@ -4899,34 +5454,33 @@ class ItemStatus {
   /// Repository error reported by connector.
   core.List<RepositoryError>? repositoryErrors;
 
-  ItemStatus();
+  ItemStatus({
+    this.code,
+    this.processingErrors,
+    this.repositoryErrors,
+  });
 
-  ItemStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('processingErrors')) {
-      processingErrors = (_json['processingErrors'] as core.List)
-          .map<ProcessingError>((value) => ProcessingError.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('repositoryErrors')) {
-      repositoryErrors = (_json['repositoryErrors'] as core.List)
-          .map<RepositoryError>((value) => RepositoryError.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ItemStatus.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          processingErrors: _json.containsKey('processingErrors')
+              ? (_json['processingErrors'] as core.List)
+                  .map((value) => ProcessingError.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          repositoryErrors: _json.containsKey('repositoryErrors')
+              ? (_json['repositoryErrors'] as core.List)
+                  .map((value) => RepositoryError.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
-        if (processingErrors != null)
-          'processingErrors':
-              processingErrors!.map((value) => value.toJson()).toList(),
-        if (repositoryErrors != null)
-          'repositoryErrors':
-              repositoryErrors!.map((value) => value.toJson()).toList(),
+        if (processingErrors != null) 'processingErrors': processingErrors!,
+        if (repositoryErrors != null) 'repositoryErrors': repositoryErrors!,
       };
 }
 
@@ -4942,21 +5496,23 @@ class ItemStructuredData {
   /// definition in the schema for the data source.
   StructuredDataObject? object;
 
-  ItemStructuredData();
+  ItemStructuredData({
+    this.hash,
+    this.object,
+  });
 
-  ItemStructuredData.fromJson(core.Map _json) {
-    if (_json.containsKey('hash')) {
-      hash = _json['hash'] as core.String;
-    }
-    if (_json.containsKey('object')) {
-      object = StructuredDataObject.fromJson(
-          _json['object'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ItemStructuredData.fromJson(core.Map _json)
+      : this(
+          hash: _json.containsKey('hash') ? _json['hash'] as core.String : null,
+          object: _json.containsKey('object')
+              ? StructuredDataObject.fromJson(
+                  _json['object'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hash != null) 'hash': hash!,
-        if (object != null) 'object': object!.toJson(),
+        if (object != null) 'object': object!,
       };
 }
 
@@ -4966,24 +5522,27 @@ class ListDataSourceResponse {
   core.String? nextPageToken;
   core.List<DataSource>? sources;
 
-  ListDataSourceResponse();
+  ListDataSourceResponse({
+    this.nextPageToken,
+    this.sources,
+  });
 
-  ListDataSourceResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<DataSource>((value) =>
-              DataSource.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListDataSourceResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => DataSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
       };
 }
 
@@ -4994,18 +5553,22 @@ class ListItemNamesForUnmappedIdentityResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListItemNamesForUnmappedIdentityResponse();
+  ListItemNamesForUnmappedIdentityResponse({
+    this.itemNames,
+    this.nextPageToken,
+  });
 
-  ListItemNamesForUnmappedIdentityResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('itemNames')) {
-      itemNames = (_json['itemNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListItemNamesForUnmappedIdentityResponse.fromJson(core.Map _json)
+      : this(
+          itemNames: _json.containsKey('itemNames')
+              ? (_json['itemNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (itemNames != null) 'itemNames': itemNames!,
@@ -5020,23 +5583,26 @@ class ListItemsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListItemsResponse();
+  ListItemsResponse({
+    this.items,
+    this.nextPageToken,
+  });
 
-  ListItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Item>((value) =>
-              Item.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListItemsResponse.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Item.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -5049,24 +5615,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -5075,24 +5644,27 @@ class ListQuerySourcesResponse {
   core.String? nextPageToken;
   core.List<QuerySource>? sources;
 
-  ListQuerySourcesResponse();
+  ListQuerySourcesResponse({
+    this.nextPageToken,
+    this.sources,
+  });
 
-  ListQuerySourcesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<QuerySource>((value) => QuerySource.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListQuerySourcesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => QuerySource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
       };
 }
 
@@ -5102,25 +5674,28 @@ class ListSearchApplicationsResponse {
   core.String? nextPageToken;
   core.List<SearchApplication>? searchApplications;
 
-  ListSearchApplicationsResponse();
+  ListSearchApplicationsResponse({
+    this.nextPageToken,
+    this.searchApplications,
+  });
 
-  ListSearchApplicationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('searchApplications')) {
-      searchApplications = (_json['searchApplications'] as core.List)
-          .map<SearchApplication>((value) => SearchApplication.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListSearchApplicationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          searchApplications: _json.containsKey('searchApplications')
+              ? (_json['searchApplications'] as core.List)
+                  .map((value) => SearchApplication.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (searchApplications != null)
-          'searchApplications':
-              searchApplications!.map((value) => value.toJson()).toList(),
+          'searchApplications': searchApplications!,
       };
 }
 
@@ -5130,25 +5705,28 @@ class ListUnmappedIdentitiesResponse {
   core.String? nextPageToken;
   core.List<UnmappedIdentity>? unmappedIdentities;
 
-  ListUnmappedIdentitiesResponse();
+  ListUnmappedIdentitiesResponse({
+    this.nextPageToken,
+    this.unmappedIdentities,
+  });
 
-  ListUnmappedIdentitiesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unmappedIdentities')) {
-      unmappedIdentities = (_json['unmappedIdentities'] as core.List)
-          .map<UnmappedIdentity>((value) => UnmappedIdentity.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListUnmappedIdentitiesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unmappedIdentities: _json.containsKey('unmappedIdentities')
+              ? (_json['unmappedIdentities'] as core.List)
+                  .map((value) => UnmappedIdentity.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unmappedIdentities != null)
-          'unmappedIdentities':
-              unmappedIdentities!.map((value) => value.toJson()).toList(),
+          'unmappedIdentities': unmappedIdentities!,
       };
 }
 
@@ -5160,16 +5738,16 @@ class MatchRange {
   /// Starting position of the match in the snippet.
   core.int? start;
 
-  MatchRange();
+  MatchRange({
+    this.end,
+    this.start,
+  });
 
-  MatchRange.fromJson(core.Map _json) {
-    if (_json.containsKey('end')) {
-      end = _json['end'] as core.int;
-    }
-    if (_json.containsKey('start')) {
-      start = _json['start'] as core.int;
-    }
-  }
+  MatchRange.fromJson(core.Map _json)
+      : this(
+          end: _json.containsKey('end') ? _json['end'] as core.int : null,
+          start: _json.containsKey('start') ? _json['start'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (end != null) 'end': end!,
@@ -5178,22 +5756,7 @@ class MatchRange {
 }
 
 /// Media resource.
-class Media {
-  /// Name of the media resource.
-  core.String? resourceName;
-
-  Media();
-
-  Media.fromJson(core.Map _json) {
-    if (_json.containsKey('resourceName')) {
-      resourceName = _json['resourceName'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (resourceName != null) 'resourceName': resourceName!,
-      };
-}
+typedef Media = $Media;
 
 /// Metadata of a matched search result.
 class Metadata {
@@ -5218,6 +5781,9 @@ class Metadata {
   /// The named source for the result, such as Gmail.
   Source? source;
 
+  /// The thumbnail URL of the result.
+  core.String? thumbnailUrl;
+
   /// The last modified date for the object in the search result.
   ///
   /// If not set in the item, the value returned here is empty. When
@@ -5225,50 +5791,64 @@ class Metadata {
   /// defaults to 2 years from the current time.
   core.String? updateTime;
 
-  Metadata();
+  Metadata({
+    this.createTime,
+    this.displayOptions,
+    this.fields,
+    this.mimeType,
+    this.objectType,
+    this.owner,
+    this.source,
+    this.thumbnailUrl,
+    this.updateTime,
+  });
 
-  Metadata.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('displayOptions')) {
-      displayOptions = ResultDisplayMetadata.fromJson(
-          _json['displayOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<NamedProperty>((value) => NamedProperty.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-    if (_json.containsKey('owner')) {
-      owner = Person.fromJson(
-          _json['owner'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Metadata.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          displayOptions: _json.containsKey('displayOptions')
+              ? ResultDisplayMetadata.fromJson(_json['displayOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => NamedProperty.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+          owner: _json.containsKey('owner')
+              ? Person.fromJson(
+                  _json['owner'] as core.Map<core.String, core.dynamic>)
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+          thumbnailUrl: _json.containsKey('thumbnailUrl')
+              ? _json['thumbnailUrl'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
-        if (displayOptions != null) 'displayOptions': displayOptions!.toJson(),
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (displayOptions != null) 'displayOptions': displayOptions!,
+        if (fields != null) 'fields': fields!,
         if (mimeType != null) 'mimeType': mimeType!,
         if (objectType != null) 'objectType': objectType!,
-        if (owner != null) 'owner': owner!.toJson(),
-        if (source != null) 'source': source!.toJson(),
+        if (owner != null) 'owner': owner!,
+        if (source != null) 'source': source!,
+        if (thumbnailUrl != null) 'thumbnailUrl': thumbnailUrl!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
 }
@@ -5281,20 +5861,22 @@ class Metaline {
   /// The maximum number of properties is 5.
   core.List<DisplayedProperty>? properties;
 
-  Metaline();
+  Metaline({
+    this.properties,
+  });
 
-  Metaline.fromJson(core.Map _json) {
-    if (_json.containsKey('properties')) {
-      properties = (_json['properties'] as core.List)
-          .map<DisplayedProperty>((value) => DisplayedProperty.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Metaline.fromJson(core.Map _json)
+      : this(
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.List)
+                  .map((value) => DisplayedProperty.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (properties != null)
-          'properties': properties!.map((value) => value.toJson()).toList(),
+        if (properties != null) 'properties': properties!,
       };
 }
 
@@ -5304,13 +5886,16 @@ class Name {
   /// the viewer's account or the Accept-Language HTTP header.
   core.String? displayName;
 
-  Name();
+  Name({
+    this.displayName,
+  });
 
-  Name.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-  }
+  Name.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -5339,61 +5924,70 @@ class NamedProperty {
   TextValues? textValues;
   TimestampValues? timestampValues;
 
-  NamedProperty();
+  NamedProperty({
+    this.booleanValue,
+    this.dateValues,
+    this.doubleValues,
+    this.enumValues,
+    this.htmlValues,
+    this.integerValues,
+    this.name,
+    this.objectValues,
+    this.textValues,
+    this.timestampValues,
+  });
 
-  NamedProperty.fromJson(core.Map _json) {
-    if (_json.containsKey('booleanValue')) {
-      booleanValue = _json['booleanValue'] as core.bool;
-    }
-    if (_json.containsKey('dateValues')) {
-      dateValues = DateValues.fromJson(
-          _json['dateValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('doubleValues')) {
-      doubleValues = DoubleValues.fromJson(
-          _json['doubleValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('enumValues')) {
-      enumValues = EnumValues.fromJson(
-          _json['enumValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('htmlValues')) {
-      htmlValues = HtmlValues.fromJson(
-          _json['htmlValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('integerValues')) {
-      integerValues = IntegerValues.fromJson(
-          _json['integerValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('objectValues')) {
-      objectValues = ObjectValues.fromJson(
-          _json['objectValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('textValues')) {
-      textValues = TextValues.fromJson(
-          _json['textValues'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('timestampValues')) {
-      timestampValues = TimestampValues.fromJson(
-          _json['timestampValues'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  NamedProperty.fromJson(core.Map _json)
+      : this(
+          booleanValue: _json.containsKey('booleanValue')
+              ? _json['booleanValue'] as core.bool
+              : null,
+          dateValues: _json.containsKey('dateValues')
+              ? DateValues.fromJson(
+                  _json['dateValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          doubleValues: _json.containsKey('doubleValues')
+              ? DoubleValues.fromJson(
+                  _json['doubleValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          enumValues: _json.containsKey('enumValues')
+              ? EnumValues.fromJson(
+                  _json['enumValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          htmlValues: _json.containsKey('htmlValues')
+              ? HtmlValues.fromJson(
+                  _json['htmlValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          integerValues: _json.containsKey('integerValues')
+              ? IntegerValues.fromJson(
+                  _json['integerValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          objectValues: _json.containsKey('objectValues')
+              ? ObjectValues.fromJson(
+                  _json['objectValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          textValues: _json.containsKey('textValues')
+              ? TextValues.fromJson(
+                  _json['textValues'] as core.Map<core.String, core.dynamic>)
+              : null,
+          timestampValues: _json.containsKey('timestampValues')
+              ? TimestampValues.fromJson(_json['timestampValues']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (booleanValue != null) 'booleanValue': booleanValue!,
-        if (dateValues != null) 'dateValues': dateValues!.toJson(),
-        if (doubleValues != null) 'doubleValues': doubleValues!.toJson(),
-        if (enumValues != null) 'enumValues': enumValues!.toJson(),
-        if (htmlValues != null) 'htmlValues': htmlValues!.toJson(),
-        if (integerValues != null) 'integerValues': integerValues!.toJson(),
+        if (dateValues != null) 'dateValues': dateValues!,
+        if (doubleValues != null) 'doubleValues': doubleValues!,
+        if (enumValues != null) 'enumValues': enumValues!,
+        if (htmlValues != null) 'htmlValues': htmlValues!,
+        if (integerValues != null) 'integerValues': integerValues!,
         if (name != null) 'name': name!,
-        if (objectValues != null) 'objectValues': objectValues!.toJson(),
-        if (textValues != null) 'textValues': textValues!.toJson(),
-        if (timestampValues != null)
-          'timestampValues': timestampValues!.toJson(),
+        if (objectValues != null) 'objectValues': objectValues!,
+        if (textValues != null) 'textValues': textValues!,
+        if (timestampValues != null) 'timestampValues': timestampValues!,
       };
 }
 
@@ -5417,30 +6011,32 @@ class ObjectDefinition {
   /// The maximum number of elements is 1000.
   core.List<PropertyDefinition>? propertyDefinitions;
 
-  ObjectDefinition();
+  ObjectDefinition({
+    this.name,
+    this.options,
+    this.propertyDefinitions,
+  });
 
-  ObjectDefinition.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = ObjectOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('propertyDefinitions')) {
-      propertyDefinitions = (_json['propertyDefinitions'] as core.List)
-          .map<PropertyDefinition>((value) => PropertyDefinition.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ObjectDefinition.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          options: _json.containsKey('options')
+              ? ObjectOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+          propertyDefinitions: _json.containsKey('propertyDefinitions')
+              ? (_json['propertyDefinitions'] as core.List)
+                  .map((value) => PropertyDefinition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
         if (propertyDefinitions != null)
-          'propertyDefinitions':
-              propertyDefinitions!.map((value) => value.toJson()).toList(),
+          'propertyDefinitions': propertyDefinitions!,
       };
 }
 
@@ -5463,23 +6059,26 @@ class ObjectDisplayOptions {
   /// context line of the search results. The maximum length is 64 characters.
   core.String? objectDisplayLabel;
 
-  ObjectDisplayOptions();
+  ObjectDisplayOptions({
+    this.metalines,
+    this.objectDisplayLabel,
+  });
 
-  ObjectDisplayOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('metalines')) {
-      metalines = (_json['metalines'] as core.List)
-          .map<Metaline>((value) =>
-              Metaline.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('objectDisplayLabel')) {
-      objectDisplayLabel = _json['objectDisplayLabel'] as core.String;
-    }
-  }
+  ObjectDisplayOptions.fromJson(core.Map _json)
+      : this(
+          metalines: _json.containsKey('metalines')
+              ? (_json['metalines'] as core.List)
+                  .map((value) => Metaline.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          objectDisplayLabel: _json.containsKey('objectDisplayLabel')
+              ? _json['objectDisplayLabel'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (metalines != null)
-          'metalines': metalines!.map((value) => value.toJson()).toList(),
+        if (metalines != null) 'metalines': metalines!,
         if (objectDisplayLabel != null)
           'objectDisplayLabel': objectDisplayLabel!,
       };
@@ -5494,23 +6093,26 @@ class ObjectOptions {
   /// The freshness options for an object.
   FreshnessOptions? freshnessOptions;
 
-  ObjectOptions();
+  ObjectOptions({
+    this.displayOptions,
+    this.freshnessOptions,
+  });
 
-  ObjectOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('displayOptions')) {
-      displayOptions = ObjectDisplayOptions.fromJson(
-          _json['displayOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('freshnessOptions')) {
-      freshnessOptions = FreshnessOptions.fromJson(
-          _json['freshnessOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ObjectOptions.fromJson(core.Map _json)
+      : this(
+          displayOptions: _json.containsKey('displayOptions')
+              ? ObjectDisplayOptions.fromJson(_json['displayOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          freshnessOptions: _json.containsKey('freshnessOptions')
+              ? FreshnessOptions.fromJson(_json['freshnessOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (displayOptions != null) 'displayOptions': displayOptions!.toJson(),
-        if (freshnessOptions != null)
-          'freshnessOptions': freshnessOptions!.toJson(),
+        if (displayOptions != null) 'displayOptions': displayOptions!,
+        if (freshnessOptions != null) 'freshnessOptions': freshnessOptions!,
       };
 }
 
@@ -5523,21 +6125,23 @@ class ObjectPropertyOptions {
   /// *street*, *city*, and *state*. The maximum number of elements is 1000.
   core.List<PropertyDefinition>? subobjectProperties;
 
-  ObjectPropertyOptions();
+  ObjectPropertyOptions({
+    this.subobjectProperties,
+  });
 
-  ObjectPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('subobjectProperties')) {
-      subobjectProperties = (_json['subobjectProperties'] as core.List)
-          .map<PropertyDefinition>((value) => PropertyDefinition.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ObjectPropertyOptions.fromJson(core.Map _json)
+      : this(
+          subobjectProperties: _json.containsKey('subobjectProperties')
+              ? (_json['subobjectProperties'] as core.List)
+                  .map((value) => PropertyDefinition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (subobjectProperties != null)
-          'subobjectProperties':
-              subobjectProperties!.map((value) => value.toJson()).toList(),
+          'subobjectProperties': subobjectProperties!,
       };
 }
 
@@ -5545,20 +6149,22 @@ class ObjectPropertyOptions {
 class ObjectValues {
   core.List<StructuredDataObject>? values;
 
-  ObjectValues();
+  ObjectValues({
+    this.values,
+  });
 
-  ObjectValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<StructuredDataObject>((value) => StructuredDataObject.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ObjectValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => StructuredDataObject.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (values != null)
-          'values': values!.map((value) => value.toJson()).toList(),
+        if (values != null) 'values': values!,
       };
 }
 
@@ -5583,7 +6189,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -5603,42 +6209,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -5652,17 +6251,20 @@ class PeopleSuggestion {
   /// All fields of the person object might not be populated.
   Person? person;
 
-  PeopleSuggestion();
+  PeopleSuggestion({
+    this.person,
+  });
 
-  PeopleSuggestion.fromJson(core.Map _json) {
-    if (_json.containsKey('person')) {
-      person = Person.fromJson(
-          _json['person'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PeopleSuggestion.fromJson(core.Map _json)
+      : this(
+          person: _json.containsKey('person')
+              ? Person.fromJson(
+                  _json['person'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (person != null) 'person': person!.toJson(),
+        if (person != null) 'person': person!,
       };
 }
 
@@ -5688,45 +6290,46 @@ class Person {
   /// person in search results.
   core.List<Photo>? photos;
 
-  Person();
+  Person({
+    this.emailAddresses,
+    this.name,
+    this.obfuscatedId,
+    this.personNames,
+    this.photos,
+  });
 
-  Person.fromJson(core.Map _json) {
-    if (_json.containsKey('emailAddresses')) {
-      emailAddresses = (_json['emailAddresses'] as core.List)
-          .map<EmailAddress>((value) => EmailAddress.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('obfuscatedId')) {
-      obfuscatedId = _json['obfuscatedId'] as core.String;
-    }
-    if (_json.containsKey('personNames')) {
-      personNames = (_json['personNames'] as core.List)
-          .map<Name>((value) =>
-              Name.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('photos')) {
-      photos = (_json['photos'] as core.List)
-          .map<Photo>((value) =>
-              Photo.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Person.fromJson(core.Map _json)
+      : this(
+          emailAddresses: _json.containsKey('emailAddresses')
+              ? (_json['emailAddresses'] as core.List)
+                  .map((value) => EmailAddress.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          obfuscatedId: _json.containsKey('obfuscatedId')
+              ? _json['obfuscatedId'] as core.String
+              : null,
+          personNames: _json.containsKey('personNames')
+              ? (_json['personNames'] as core.List)
+                  .map((value) => Name.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          photos: _json.containsKey('photos')
+              ? (_json['photos'] as core.List)
+                  .map((value) => Photo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (emailAddresses != null)
-          'emailAddresses':
-              emailAddresses!.map((value) => value.toJson()).toList(),
+        if (emailAddresses != null) 'emailAddresses': emailAddresses!,
         if (name != null) 'name': name!,
         if (obfuscatedId != null) 'obfuscatedId': obfuscatedId!,
-        if (personNames != null)
-          'personNames': personNames!.map((value) => value.toJson()).toList(),
-        if (photos != null)
-          'photos': photos!.map((value) => value.toJson()).toList(),
+        if (personNames != null) 'personNames': personNames!,
+        if (photos != null) 'photos': photos!,
       };
 }
 
@@ -5735,13 +6338,14 @@ class Photo {
   /// The URL of the photo.
   core.String? url;
 
-  Photo();
+  Photo({
+    this.url,
+  });
 
-  Photo.fromJson(core.Map _json) {
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  Photo.fromJson(core.Map _json)
+      : this(
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (url != null) 'url': url!,
@@ -5771,32 +6375,36 @@ class PollItemsRequest {
   /// Limit the items polled to the ones with these statuses.
   core.List<core.String>? statusCodes;
 
-  PollItemsRequest();
+  PollItemsRequest({
+    this.connectorName,
+    this.debugOptions,
+    this.limit,
+    this.queue,
+    this.statusCodes,
+  });
 
-  PollItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('limit')) {
-      limit = _json['limit'] as core.int;
-    }
-    if (_json.containsKey('queue')) {
-      queue = _json['queue'] as core.String;
-    }
-    if (_json.containsKey('statusCodes')) {
-      statusCodes = (_json['statusCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  PollItemsRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          limit: _json.containsKey('limit') ? _json['limit'] as core.int : null,
+          queue:
+              _json.containsKey('queue') ? _json['queue'] as core.String : null,
+          statusCodes: _json.containsKey('statusCodes')
+              ? (_json['statusCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
         if (limit != null) 'limit': limit!,
         if (queue != null) 'queue': queue!,
         if (statusCodes != null) 'statusCodes': statusCodes!,
@@ -5810,20 +6418,22 @@ class PollItemsResponse {
   /// metadata.hash structured_data.hash content.hash payload status queue
   core.List<Item>? items;
 
-  PollItemsResponse();
+  PollItemsResponse({
+    this.items,
+  });
 
-  PollItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Item>((value) =>
-              Item.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  PollItemsResponse.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Item.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
       };
 }
 
@@ -5844,25 +6454,29 @@ class Principal {
   /// identitysources/{source_id}/users/{ID}
   core.String? userResourceName;
 
-  Principal();
+  Principal({
+    this.groupResourceName,
+    this.gsuitePrincipal,
+    this.userResourceName,
+  });
 
-  Principal.fromJson(core.Map _json) {
-    if (_json.containsKey('groupResourceName')) {
-      groupResourceName = _json['groupResourceName'] as core.String;
-    }
-    if (_json.containsKey('gsuitePrincipal')) {
-      gsuitePrincipal = GSuitePrincipal.fromJson(
-          _json['gsuitePrincipal'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('userResourceName')) {
-      userResourceName = _json['userResourceName'] as core.String;
-    }
-  }
+  Principal.fromJson(core.Map _json)
+      : this(
+          groupResourceName: _json.containsKey('groupResourceName')
+              ? _json['groupResourceName'] as core.String
+              : null,
+          gsuitePrincipal: _json.containsKey('gsuitePrincipal')
+              ? GSuitePrincipal.fromJson(_json['gsuitePrincipal']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          userResourceName: _json.containsKey('userResourceName')
+              ? _json['userResourceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (groupResourceName != null) 'groupResourceName': groupResourceName!,
-        if (gsuitePrincipal != null)
-          'gsuitePrincipal': gsuitePrincipal!.toJson(),
+        if (gsuitePrincipal != null) 'gsuitePrincipal': gsuitePrincipal!,
         if (userResourceName != null) 'userResourceName': userResourceName!,
       };
 }
@@ -5889,29 +6503,30 @@ class ProcessingError {
   /// the validation errors.
   core.List<FieldViolation>? fieldViolations;
 
-  ProcessingError();
+  ProcessingError({
+    this.code,
+    this.errorMessage,
+    this.fieldViolations,
+  });
 
-  ProcessingError.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('errorMessage')) {
-      errorMessage = _json['errorMessage'] as core.String;
-    }
-    if (_json.containsKey('fieldViolations')) {
-      fieldViolations = (_json['fieldViolations'] as core.List)
-          .map<FieldViolation>((value) => FieldViolation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ProcessingError.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          errorMessage: _json.containsKey('errorMessage')
+              ? _json['errorMessage'] as core.String
+              : null,
+          fieldViolations: _json.containsKey('fieldViolations')
+              ? (_json['fieldViolations'] as core.List)
+                  .map((value) => FieldViolation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
         if (errorMessage != null) 'errorMessage': errorMessage!,
-        if (fieldViolations != null)
-          'fieldViolations':
-              fieldViolations!.map((value) => value.toJson()).toList(),
+        if (fieldViolations != null) 'fieldViolations': fieldViolations!,
       };
 }
 
@@ -5957,9 +6572,9 @@ class PropertyDefinition {
   /// Indicates that the property can be used for sorting.
   ///
   /// Cannot be true for properties that are repeatable. Cannot be true for
-  /// properties whose type is object or user identifier. IsReturnable must be
-  /// true to set this option. Only supported for Boolean, Date, Double,
-  /// Integer, and Timestamp properties.
+  /// properties whose type is object. IsReturnable must be true to set this
+  /// option. Only supported for Boolean, Date, Double, Integer, and Timestamp
+  /// properties.
   core.bool? isSortable;
 
   /// Indicates that the property can be used for generating query suggestions.
@@ -5987,91 +6602,105 @@ class PropertyDefinition {
   TextPropertyOptions? textPropertyOptions;
   TimestampPropertyOptions? timestampPropertyOptions;
 
-  PropertyDefinition();
+  PropertyDefinition({
+    this.booleanPropertyOptions,
+    this.datePropertyOptions,
+    this.displayOptions,
+    this.doublePropertyOptions,
+    this.enumPropertyOptions,
+    this.htmlPropertyOptions,
+    this.integerPropertyOptions,
+    this.isFacetable,
+    this.isRepeatable,
+    this.isReturnable,
+    this.isSortable,
+    this.isSuggestable,
+    this.isWildcardSearchable,
+    this.name,
+    this.objectPropertyOptions,
+    this.textPropertyOptions,
+    this.timestampPropertyOptions,
+  });
 
-  PropertyDefinition.fromJson(core.Map _json) {
-    if (_json.containsKey('booleanPropertyOptions')) {
-      booleanPropertyOptions = BooleanPropertyOptions.fromJson(
-          _json['booleanPropertyOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('datePropertyOptions')) {
-      datePropertyOptions = DatePropertyOptions.fromJson(
-          _json['datePropertyOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('displayOptions')) {
-      displayOptions = PropertyDisplayOptions.fromJson(
-          _json['displayOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('doublePropertyOptions')) {
-      doublePropertyOptions = DoublePropertyOptions.fromJson(
-          _json['doublePropertyOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('enumPropertyOptions')) {
-      enumPropertyOptions = EnumPropertyOptions.fromJson(
-          _json['enumPropertyOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('htmlPropertyOptions')) {
-      htmlPropertyOptions = HtmlPropertyOptions.fromJson(
-          _json['htmlPropertyOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('integerPropertyOptions')) {
-      integerPropertyOptions = IntegerPropertyOptions.fromJson(
-          _json['integerPropertyOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('isFacetable')) {
-      isFacetable = _json['isFacetable'] as core.bool;
-    }
-    if (_json.containsKey('isRepeatable')) {
-      isRepeatable = _json['isRepeatable'] as core.bool;
-    }
-    if (_json.containsKey('isReturnable')) {
-      isReturnable = _json['isReturnable'] as core.bool;
-    }
-    if (_json.containsKey('isSortable')) {
-      isSortable = _json['isSortable'] as core.bool;
-    }
-    if (_json.containsKey('isSuggestable')) {
-      isSuggestable = _json['isSuggestable'] as core.bool;
-    }
-    if (_json.containsKey('isWildcardSearchable')) {
-      isWildcardSearchable = _json['isWildcardSearchable'] as core.bool;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('objectPropertyOptions')) {
-      objectPropertyOptions = ObjectPropertyOptions.fromJson(
-          _json['objectPropertyOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('textPropertyOptions')) {
-      textPropertyOptions = TextPropertyOptions.fromJson(
-          _json['textPropertyOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('timestampPropertyOptions')) {
-      timestampPropertyOptions = TimestampPropertyOptions.fromJson(
-          _json['timestampPropertyOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PropertyDefinition.fromJson(core.Map _json)
+      : this(
+          booleanPropertyOptions: _json.containsKey('booleanPropertyOptions')
+              ? BooleanPropertyOptions.fromJson(_json['booleanPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          datePropertyOptions: _json.containsKey('datePropertyOptions')
+              ? DatePropertyOptions.fromJson(_json['datePropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          displayOptions: _json.containsKey('displayOptions')
+              ? PropertyDisplayOptions.fromJson(_json['displayOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          doublePropertyOptions: _json.containsKey('doublePropertyOptions')
+              ? DoublePropertyOptions.fromJson(_json['doublePropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          enumPropertyOptions: _json.containsKey('enumPropertyOptions')
+              ? EnumPropertyOptions.fromJson(_json['enumPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          htmlPropertyOptions: _json.containsKey('htmlPropertyOptions')
+              ? HtmlPropertyOptions.fromJson(_json['htmlPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          integerPropertyOptions: _json.containsKey('integerPropertyOptions')
+              ? IntegerPropertyOptions.fromJson(_json['integerPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          isFacetable: _json.containsKey('isFacetable')
+              ? _json['isFacetable'] as core.bool
+              : null,
+          isRepeatable: _json.containsKey('isRepeatable')
+              ? _json['isRepeatable'] as core.bool
+              : null,
+          isReturnable: _json.containsKey('isReturnable')
+              ? _json['isReturnable'] as core.bool
+              : null,
+          isSortable: _json.containsKey('isSortable')
+              ? _json['isSortable'] as core.bool
+              : null,
+          isSuggestable: _json.containsKey('isSuggestable')
+              ? _json['isSuggestable'] as core.bool
+              : null,
+          isWildcardSearchable: _json.containsKey('isWildcardSearchable')
+              ? _json['isWildcardSearchable'] as core.bool
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          objectPropertyOptions: _json.containsKey('objectPropertyOptions')
+              ? ObjectPropertyOptions.fromJson(_json['objectPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          textPropertyOptions: _json.containsKey('textPropertyOptions')
+              ? TextPropertyOptions.fromJson(_json['textPropertyOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          timestampPropertyOptions:
+              _json.containsKey('timestampPropertyOptions')
+                  ? TimestampPropertyOptions.fromJson(
+                      _json['timestampPropertyOptions']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (booleanPropertyOptions != null)
-          'booleanPropertyOptions': booleanPropertyOptions!.toJson(),
+          'booleanPropertyOptions': booleanPropertyOptions!,
         if (datePropertyOptions != null)
-          'datePropertyOptions': datePropertyOptions!.toJson(),
-        if (displayOptions != null) 'displayOptions': displayOptions!.toJson(),
+          'datePropertyOptions': datePropertyOptions!,
+        if (displayOptions != null) 'displayOptions': displayOptions!,
         if (doublePropertyOptions != null)
-          'doublePropertyOptions': doublePropertyOptions!.toJson(),
+          'doublePropertyOptions': doublePropertyOptions!,
         if (enumPropertyOptions != null)
-          'enumPropertyOptions': enumPropertyOptions!.toJson(),
+          'enumPropertyOptions': enumPropertyOptions!,
         if (htmlPropertyOptions != null)
-          'htmlPropertyOptions': htmlPropertyOptions!.toJson(),
+          'htmlPropertyOptions': htmlPropertyOptions!,
         if (integerPropertyOptions != null)
-          'integerPropertyOptions': integerPropertyOptions!.toJson(),
+          'integerPropertyOptions': integerPropertyOptions!,
         if (isFacetable != null) 'isFacetable': isFacetable!,
         if (isRepeatable != null) 'isRepeatable': isRepeatable!,
         if (isReturnable != null) 'isReturnable': isReturnable!,
@@ -6081,11 +6710,11 @@ class PropertyDefinition {
           'isWildcardSearchable': isWildcardSearchable!,
         if (name != null) 'name': name!,
         if (objectPropertyOptions != null)
-          'objectPropertyOptions': objectPropertyOptions!.toJson(),
+          'objectPropertyOptions': objectPropertyOptions!,
         if (textPropertyOptions != null)
-          'textPropertyOptions': textPropertyOptions!.toJson(),
+          'textPropertyOptions': textPropertyOptions!,
         if (timestampPropertyOptions != null)
-          'timestampPropertyOptions': timestampPropertyOptions!.toJson(),
+          'timestampPropertyOptions': timestampPropertyOptions!,
       };
 }
 
@@ -6103,13 +6732,16 @@ class PropertyDisplayOptions {
   /// displayed. The maximum length is 64 characters.
   core.String? displayLabel;
 
-  PropertyDisplayOptions();
+  PropertyDisplayOptions({
+    this.displayLabel,
+  });
 
-  PropertyDisplayOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('displayLabel')) {
-      displayLabel = _json['displayLabel'] as core.String;
-    }
-  }
+  PropertyDisplayOptions.fromJson(core.Map _json)
+      : this(
+          displayLabel: _json.containsKey('displayLabel')
+              ? _json['displayLabel'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayLabel != null) 'displayLabel': displayLabel!,
@@ -6181,40 +6813,45 @@ class PushItem {
   /// the wall clock time.
   core.String? type;
 
-  PushItem();
+  PushItem({
+    this.contentHash,
+    this.metadataHash,
+    this.payload,
+    this.queue,
+    this.repositoryError,
+    this.structuredDataHash,
+    this.type,
+  });
 
-  PushItem.fromJson(core.Map _json) {
-    if (_json.containsKey('contentHash')) {
-      contentHash = _json['contentHash'] as core.String;
-    }
-    if (_json.containsKey('metadataHash')) {
-      metadataHash = _json['metadataHash'] as core.String;
-    }
-    if (_json.containsKey('payload')) {
-      payload = _json['payload'] as core.String;
-    }
-    if (_json.containsKey('queue')) {
-      queue = _json['queue'] as core.String;
-    }
-    if (_json.containsKey('repositoryError')) {
-      repositoryError = RepositoryError.fromJson(
-          _json['repositoryError'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('structuredDataHash')) {
-      structuredDataHash = _json['structuredDataHash'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  PushItem.fromJson(core.Map _json)
+      : this(
+          contentHash: _json.containsKey('contentHash')
+              ? _json['contentHash'] as core.String
+              : null,
+          metadataHash: _json.containsKey('metadataHash')
+              ? _json['metadataHash'] as core.String
+              : null,
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.String
+              : null,
+          queue:
+              _json.containsKey('queue') ? _json['queue'] as core.String : null,
+          repositoryError: _json.containsKey('repositoryError')
+              ? RepositoryError.fromJson(_json['repositoryError']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          structuredDataHash: _json.containsKey('structuredDataHash')
+              ? _json['structuredDataHash'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (contentHash != null) 'contentHash': contentHash!,
         if (metadataHash != null) 'metadataHash': metadataHash!,
         if (payload != null) 'payload': payload!,
         if (queue != null) 'queue': queue!,
-        if (repositoryError != null)
-          'repositoryError': repositoryError!.toJson(),
+        if (repositoryError != null) 'repositoryError': repositoryError!,
         if (structuredDataHash != null)
           'structuredDataHash': structuredDataHash!,
         if (type != null) 'type': type!,
@@ -6233,26 +6870,31 @@ class PushItemRequest {
   /// Item to push onto the queue.
   PushItem? item;
 
-  PushItemRequest();
+  PushItemRequest({
+    this.connectorName,
+    this.debugOptions,
+    this.item,
+  });
 
-  PushItemRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('item')) {
-      item = PushItem.fromJson(
-          _json['item'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PushItemRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          item: _json.containsKey('item')
+              ? PushItem.fromJson(
+                  _json['item'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
-        if (item != null) 'item': item!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
+        if (item != null) 'item': item!,
       };
 }
 
@@ -6262,16 +6904,19 @@ class QueryCountByStatus {
   /// This represents the http status code.
   core.int? statusCode;
 
-  QueryCountByStatus();
+  QueryCountByStatus({
+    this.count,
+    this.statusCode,
+  });
 
-  QueryCountByStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.String;
-    }
-    if (_json.containsKey('statusCode')) {
-      statusCode = _json['statusCode'] as core.int;
-    }
-  }
+  QueryCountByStatus.fromJson(core.Map _json)
+      : this(
+          count:
+              _json.containsKey('count') ? _json['count'] as core.String : null,
+          statusCode: _json.containsKey('statusCode')
+              ? _json['statusCode'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
@@ -6312,25 +6957,73 @@ class QueryInterpretation {
   /// Interpreted query will be empty for this case.
   core.String? reason;
 
-  QueryInterpretation();
+  QueryInterpretation({
+    this.interpretationType,
+    this.interpretedQuery,
+    this.reason,
+  });
 
-  QueryInterpretation.fromJson(core.Map _json) {
-    if (_json.containsKey('interpretationType')) {
-      interpretationType = _json['interpretationType'] as core.String;
-    }
-    if (_json.containsKey('interpretedQuery')) {
-      interpretedQuery = _json['interpretedQuery'] as core.String;
-    }
-    if (_json.containsKey('reason')) {
-      reason = _json['reason'] as core.String;
-    }
-  }
+  QueryInterpretation.fromJson(core.Map _json)
+      : this(
+          interpretationType: _json.containsKey('interpretationType')
+              ? _json['interpretationType'] as core.String
+              : null,
+          interpretedQuery: _json.containsKey('interpretedQuery')
+              ? _json['interpretedQuery'] as core.String
+              : null,
+          reason: _json.containsKey('reason')
+              ? _json['reason'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (interpretationType != null)
           'interpretationType': interpretationType!,
         if (interpretedQuery != null) 'interpretedQuery': interpretedQuery!,
         if (reason != null) 'reason': reason!,
+      };
+}
+
+/// Default options to interpret user query.
+class QueryInterpretationConfig {
+  /// Set this flag to disable supplemental results retrieval, setting a flag
+  /// here will not retrieve supplemental results for queries associated with a
+  /// given search application.
+  ///
+  /// If this flag is set to True, it will take precedence over the option set
+  /// at Query level. For the default value of False, query level flag will set
+  /// the correct interpretation for supplemental results.
+  core.bool? forceDisableSupplementalResults;
+
+  /// Enable this flag to turn off all internal optimizations like natural
+  /// language (NL) interpretation of queries, supplemental results retrieval,
+  /// and usage of synonyms including custom ones.
+  ///
+  /// If this flag is set to True, it will take precedence over the option set
+  /// at Query level. For the default value of False, query level flag will set
+  /// the correct interpretation for verbatim mode.
+  core.bool? forceVerbatimMode;
+
+  QueryInterpretationConfig({
+    this.forceDisableSupplementalResults,
+    this.forceVerbatimMode,
+  });
+
+  QueryInterpretationConfig.fromJson(core.Map _json)
+      : this(
+          forceDisableSupplementalResults:
+              _json.containsKey('forceDisableSupplementalResults')
+                  ? _json['forceDisableSupplementalResults'] as core.bool
+                  : null,
+          forceVerbatimMode: _json.containsKey('forceVerbatimMode')
+              ? _json['forceVerbatimMode'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (forceDisableSupplementalResults != null)
+          'forceDisableSupplementalResults': forceDisableSupplementalResults!,
+        if (forceVerbatimMode != null) 'forceVerbatimMode': forceVerbatimMode!,
       };
 }
 
@@ -6342,6 +7035,12 @@ class QueryInterpretationOptions {
   /// NL interpretation only applies to predefined datasources.
   core.bool? disableNlInterpretation;
 
+  /// Use this flag to disable supplemental results for a query.
+  ///
+  /// Supplemental results setting chosen at SearchApplication level will take
+  /// precedence if set to True.
+  core.bool? disableSupplementalResults;
+
   /// Enable this flag to turn off all internal optimizations like natural
   /// language (NL) interpretation of queries, supplemental result retrieval,
   /// and usage of synonyms including custom ones.
@@ -6349,40 +7048,33 @@ class QueryInterpretationOptions {
   /// Nl interpretation will be disabled if either one of the two flags is true.
   core.bool? enableVerbatimMode;
 
-  QueryInterpretationOptions();
+  QueryInterpretationOptions({
+    this.disableNlInterpretation,
+    this.disableSupplementalResults,
+    this.enableVerbatimMode,
+  });
 
-  QueryInterpretationOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('disableNlInterpretation')) {
-      disableNlInterpretation = _json['disableNlInterpretation'] as core.bool;
-    }
-    if (_json.containsKey('enableVerbatimMode')) {
-      enableVerbatimMode = _json['enableVerbatimMode'] as core.bool;
-    }
-  }
+  QueryInterpretationOptions.fromJson(core.Map _json)
+      : this(
+          disableNlInterpretation: _json.containsKey('disableNlInterpretation')
+              ? _json['disableNlInterpretation'] as core.bool
+              : null,
+          disableSupplementalResults:
+              _json.containsKey('disableSupplementalResults')
+                  ? _json['disableSupplementalResults'] as core.bool
+                  : null,
+          enableVerbatimMode: _json.containsKey('enableVerbatimMode')
+              ? _json['enableVerbatimMode'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disableNlInterpretation != null)
           'disableNlInterpretation': disableNlInterpretation!,
+        if (disableSupplementalResults != null)
+          'disableSupplementalResults': disableSupplementalResults!,
         if (enableVerbatimMode != null)
           'enableVerbatimMode': enableVerbatimMode!,
-      };
-}
-
-/// Information relevant only to a query entry.
-class QueryItem {
-  /// True if the text was generated by means other than a previous user search.
-  core.bool? isSynthetic;
-
-  QueryItem();
-
-  QueryItem.fromJson(core.Map _json) {
-    if (_json.containsKey('isSynthetic')) {
-      isSynthetic = _json['isSynthetic'] as core.bool;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (isSynthetic != null) 'isSynthetic': isSynthetic!,
       };
 }
 
@@ -6443,48 +7135,60 @@ class QueryOperator {
   /// - "HTML"
   core.String? type;
 
-  QueryOperator();
+  QueryOperator({
+    this.displayName,
+    this.enumValues,
+    this.greaterThanOperatorName,
+    this.isFacetable,
+    this.isRepeatable,
+    this.isReturnable,
+    this.isSortable,
+    this.isSuggestable,
+    this.lessThanOperatorName,
+    this.objectType,
+    this.operatorName,
+    this.type,
+  });
 
-  QueryOperator.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('enumValues')) {
-      enumValues = (_json['enumValues'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('greaterThanOperatorName')) {
-      greaterThanOperatorName = _json['greaterThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('isFacetable')) {
-      isFacetable = _json['isFacetable'] as core.bool;
-    }
-    if (_json.containsKey('isRepeatable')) {
-      isRepeatable = _json['isRepeatable'] as core.bool;
-    }
-    if (_json.containsKey('isReturnable')) {
-      isReturnable = _json['isReturnable'] as core.bool;
-    }
-    if (_json.containsKey('isSortable')) {
-      isSortable = _json['isSortable'] as core.bool;
-    }
-    if (_json.containsKey('isSuggestable')) {
-      isSuggestable = _json['isSuggestable'] as core.bool;
-    }
-    if (_json.containsKey('lessThanOperatorName')) {
-      lessThanOperatorName = _json['lessThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('objectType')) {
-      objectType = _json['objectType'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  QueryOperator.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          enumValues: _json.containsKey('enumValues')
+              ? (_json['enumValues'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          greaterThanOperatorName: _json.containsKey('greaterThanOperatorName')
+              ? _json['greaterThanOperatorName'] as core.String
+              : null,
+          isFacetable: _json.containsKey('isFacetable')
+              ? _json['isFacetable'] as core.bool
+              : null,
+          isRepeatable: _json.containsKey('isRepeatable')
+              ? _json['isRepeatable'] as core.bool
+              : null,
+          isReturnable: _json.containsKey('isReturnable')
+              ? _json['isReturnable'] as core.bool
+              : null,
+          isSortable: _json.containsKey('isSortable')
+              ? _json['isSortable'] as core.bool
+              : null,
+          isSuggestable: _json.containsKey('isSuggestable')
+              ? _json['isSuggestable'] as core.bool
+              : null,
+          lessThanOperatorName: _json.containsKey('lessThanOperatorName')
+              ? _json['lessThanOperatorName'] as core.String
+              : null,
+          objectType: _json.containsKey('objectType')
+              ? _json['objectType'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -6520,47 +7224,44 @@ class QuerySource {
   /// Name of the source
   Source? source;
 
-  QuerySource();
+  QuerySource({
+    this.displayName,
+    this.operators,
+    this.shortName,
+    this.source,
+  });
 
-  QuerySource.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('operators')) {
-      operators = (_json['operators'] as core.List)
-          .map<QueryOperator>((value) => QueryOperator.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('shortName')) {
-      shortName = _json['shortName'] as core.String;
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  QuerySource.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          operators: _json.containsKey('operators')
+              ? (_json['operators'] as core.List)
+                  .map((value) => QueryOperator.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          shortName: _json.containsKey('shortName')
+              ? _json['shortName'] as core.String
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
-        if (operators != null)
-          'operators': operators!.map((value) => value.toJson()).toList(),
+        if (operators != null) 'operators': operators!,
         if (shortName != null) 'shortName': shortName!,
-        if (source != null) 'source': source!.toJson(),
+        if (source != null) 'source': source!,
       };
 }
 
 /// This field does not contain anything as of now and is just used as an
 /// indicator that the suggest result was a phrase completion.
-class QuerySuggestion {
-  QuerySuggestion();
-
-  QuerySuggestion.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef QuerySuggestion = $Empty;
 
 /// Errors when the connector is communicating to the source repository.
 class RepositoryError {
@@ -6591,19 +7292,22 @@ class RepositoryError {
   /// the connector to the repository server.
   core.String? type;
 
-  RepositoryError();
+  RepositoryError({
+    this.errorMessage,
+    this.httpStatusCode,
+    this.type,
+  });
 
-  RepositoryError.fromJson(core.Map _json) {
-    if (_json.containsKey('errorMessage')) {
-      errorMessage = _json['errorMessage'] as core.String;
-    }
-    if (_json.containsKey('httpStatusCode')) {
-      httpStatusCode = _json['httpStatusCode'] as core.int;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  RepositoryError.fromJson(core.Map _json)
+      : this(
+          errorMessage: _json.containsKey('errorMessage')
+              ? _json['errorMessage'] as core.String
+              : null,
+          httpStatusCode: _json.containsKey('httpStatusCode')
+              ? _json['httpStatusCode'] as core.int
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (errorMessage != null) 'errorMessage': errorMessage!,
@@ -6644,26 +7348,32 @@ class RequestOptions {
   /// field is not specified, the default time zone (UTC) is used.
   core.String? timeZone;
 
-  RequestOptions();
+  RequestOptions({
+    this.debugOptions,
+    this.languageCode,
+    this.searchApplicationId,
+    this.timeZone,
+  });
 
-  RequestOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('searchApplicationId')) {
-      searchApplicationId = _json['searchApplicationId'] as core.String;
-    }
-    if (_json.containsKey('timeZone')) {
-      timeZone = _json['timeZone'] as core.String;
-    }
-  }
+  RequestOptions.fromJson(core.Map _json)
+      : this(
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          searchApplicationId: _json.containsKey('searchApplicationId')
+              ? _json['searchApplicationId'] as core.String
+              : null,
+          timeZone: _json.containsKey('timeZone')
+              ? _json['timeZone'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
         if (languageCode != null) 'languageCode': languageCode!,
         if (searchApplicationId != null)
           'searchApplicationId': searchApplicationId!,
@@ -6675,136 +7385,53 @@ class ResetSearchApplicationRequest {
   /// Common debug options.
   DebugOptions? debugOptions;
 
-  ResetSearchApplicationRequest();
+  ResetSearchApplicationRequest({
+    this.debugOptions,
+  });
 
-  ResetSearchApplicationRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ResetSearchApplicationRequest.fromJson(core.Map _json)
+      : this(
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
       };
 }
 
 /// Debugging information about the response.
-class ResponseDebugInfo {
-  /// General debug info formatted for display.
-  core.String? formattedDebugInfo;
-
-  ResponseDebugInfo();
-
-  ResponseDebugInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('formattedDebugInfo')) {
-      formattedDebugInfo = _json['formattedDebugInfo'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (formattedDebugInfo != null)
-          'formattedDebugInfo': formattedDebugInfo!,
-      };
-}
-
-/// Information relevant only to a restrict entry.
-///
-/// NextId: 12
-class RestrictItem {
-  /// LINT.ThenChange(//depot/google3/java/com/google/apps/search/quality/itemsuggest/utils/SubtypeRerankingUtils.java)
-  DriveFollowUpRestrict? driveFollowUpRestrict;
-  DriveLocationRestrict? driveLocationRestrict;
-
-  /// LINT.IfChange Drive Types.
-  DriveMimeTypeRestrict? driveMimeTypeRestrict;
-  DriveTimeSpanRestrict? driveTimeSpanRestrict;
-
-  /// The search restrict (e.g. "after:2017-09-11 before:2017-09-12").
-  core.String? searchOperator;
-
-  RestrictItem();
-
-  RestrictItem.fromJson(core.Map _json) {
-    if (_json.containsKey('driveFollowUpRestrict')) {
-      driveFollowUpRestrict = DriveFollowUpRestrict.fromJson(
-          _json['driveFollowUpRestrict']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('driveLocationRestrict')) {
-      driveLocationRestrict = DriveLocationRestrict.fromJson(
-          _json['driveLocationRestrict']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('driveMimeTypeRestrict')) {
-      driveMimeTypeRestrict = DriveMimeTypeRestrict.fromJson(
-          _json['driveMimeTypeRestrict']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('driveTimeSpanRestrict')) {
-      driveTimeSpanRestrict = DriveTimeSpanRestrict.fromJson(
-          _json['driveTimeSpanRestrict']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('searchOperator')) {
-      searchOperator = _json['searchOperator'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (driveFollowUpRestrict != null)
-          'driveFollowUpRestrict': driveFollowUpRestrict!.toJson(),
-        if (driveLocationRestrict != null)
-          'driveLocationRestrict': driveLocationRestrict!.toJson(),
-        if (driveMimeTypeRestrict != null)
-          'driveMimeTypeRestrict': driveMimeTypeRestrict!.toJson(),
-        if (driveTimeSpanRestrict != null)
-          'driveTimeSpanRestrict': driveTimeSpanRestrict!.toJson(),
-        if (searchOperator != null) 'searchOperator': searchOperator!,
-      };
-}
+typedef ResponseDebugInfo = $DebugInfo;
 
 /// Result count information
 class ResultCounts {
   /// Result count information for each source with results.
   core.List<SourceResultCount>? sourceResultCounts;
 
-  ResultCounts();
+  ResultCounts({
+    this.sourceResultCounts,
+  });
 
-  ResultCounts.fromJson(core.Map _json) {
-    if (_json.containsKey('sourceResultCounts')) {
-      sourceResultCounts = (_json['sourceResultCounts'] as core.List)
-          .map<SourceResultCount>((value) => SourceResultCount.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ResultCounts.fromJson(core.Map _json)
+      : this(
+          sourceResultCounts: _json.containsKey('sourceResultCounts')
+              ? (_json['sourceResultCounts'] as core.List)
+                  .map((value) => SourceResultCount.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sourceResultCounts != null)
-          'sourceResultCounts':
-              sourceResultCounts!.map((value) => value.toJson()).toList(),
+          'sourceResultCounts': sourceResultCounts!,
       };
 }
 
 /// Debugging information about the result.
-class ResultDebugInfo {
-  /// General debug info formatted for display.
-  core.String? formattedDebugInfo;
-
-  ResultDebugInfo();
-
-  ResultDebugInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('formattedDebugInfo')) {
-      formattedDebugInfo = _json['formattedDebugInfo'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (formattedDebugInfo != null)
-          'formattedDebugInfo': formattedDebugInfo!,
-      };
-}
+typedef ResultDebugInfo = $DebugInfo;
 
 /// Display Fields for Search Results
 class ResultDisplayField {
@@ -6817,25 +7444,29 @@ class ResultDisplayField {
   /// The name value pair for the property.
   NamedProperty? property;
 
-  ResultDisplayField();
+  ResultDisplayField({
+    this.label,
+    this.operatorName,
+    this.property,
+  });
 
-  ResultDisplayField.fromJson(core.Map _json) {
-    if (_json.containsKey('label')) {
-      label = _json['label'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('property')) {
-      property = NamedProperty.fromJson(
-          _json['property'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ResultDisplayField.fromJson(core.Map _json)
+      : this(
+          label:
+              _json.containsKey('label') ? _json['label'] as core.String : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          property: _json.containsKey('property')
+              ? NamedProperty.fromJson(
+                  _json['property'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (label != null) 'label': label!,
         if (operatorName != null) 'operatorName': operatorName!,
-        if (property != null) 'property': property!.toJson(),
+        if (property != null) 'property': property!,
       };
 }
 
@@ -6843,20 +7474,22 @@ class ResultDisplayField {
 class ResultDisplayLine {
   core.List<ResultDisplayField>? fields;
 
-  ResultDisplayLine();
+  ResultDisplayLine({
+    this.fields,
+  });
 
-  ResultDisplayLine.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<ResultDisplayField>((value) => ResultDisplayField.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ResultDisplayLine.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => ResultDisplayField.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (fields != null) 'fields': fields!,
       };
 }
 
@@ -6867,23 +7500,26 @@ class ResultDisplayMetadata {
   /// The display label for the object.
   core.String? objectTypeLabel;
 
-  ResultDisplayMetadata();
+  ResultDisplayMetadata({
+    this.metalines,
+    this.objectTypeLabel,
+  });
 
-  ResultDisplayMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('metalines')) {
-      metalines = (_json['metalines'] as core.List)
-          .map<ResultDisplayLine>((value) => ResultDisplayLine.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('objectTypeLabel')) {
-      objectTypeLabel = _json['objectTypeLabel'] as core.String;
-    }
-  }
+  ResultDisplayMetadata.fromJson(core.Map _json)
+      : this(
+          metalines: _json.containsKey('metalines')
+              ? (_json['metalines'] as core.List)
+                  .map((value) => ResultDisplayLine.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          objectTypeLabel: _json.containsKey('objectTypeLabel')
+              ? _json['objectTypeLabel'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (metalines != null)
-          'metalines': metalines!.map((value) => value.toJson()).toList(),
+        if (metalines != null) 'metalines': metalines!,
         if (objectTypeLabel != null) 'objectTypeLabel': objectTypeLabel!,
       };
 }
@@ -6902,13 +7538,16 @@ class RetrievalImportance {
   /// can still be used for operator matching, faceting, and suggest if desired.
   core.String? importance;
 
-  RetrievalImportance();
+  RetrievalImportance({
+    this.importance,
+  });
 
-  RetrievalImportance.fromJson(core.Map _json) {
-    if (_json.containsKey('importance')) {
-      importance = _json['importance'] as core.String;
-    }
-  }
+  RetrievalImportance.fromJson(core.Map _json)
+      : this(
+          importance: _json.containsKey('importance')
+              ? _json['importance'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (importance != null) 'importance': importance!,
@@ -6929,26 +7568,28 @@ class Schema {
   /// indexing additional content.
   core.List<core.String>? operationIds;
 
-  Schema();
+  Schema({
+    this.objectDefinitions,
+    this.operationIds,
+  });
 
-  Schema.fromJson(core.Map _json) {
-    if (_json.containsKey('objectDefinitions')) {
-      objectDefinitions = (_json['objectDefinitions'] as core.List)
-          .map<ObjectDefinition>((value) => ObjectDefinition.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('operationIds')) {
-      operationIds = (_json['operationIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Schema.fromJson(core.Map _json)
+      : this(
+          objectDefinitions: _json.containsKey('objectDefinitions')
+              ? (_json['objectDefinitions'] as core.List)
+                  .map((value) => ObjectDefinition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          operationIds: _json.containsKey('operationIds')
+              ? (_json['operationIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (objectDefinitions != null)
-          'objectDefinitions':
-              objectDefinitions!.map((value) => value.toJson()).toList(),
+        if (objectDefinitions != null) 'objectDefinitions': objectDefinitions!,
         if (operationIds != null) 'operationIds': operationIds!,
       };
 }
@@ -6967,16 +7608,20 @@ class ScoringConfig {
   /// By default, personal signals will be used to boost results.
   core.bool? disablePersonalization;
 
-  ScoringConfig();
+  ScoringConfig({
+    this.disableFreshness,
+    this.disablePersonalization,
+  });
 
-  ScoringConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('disableFreshness')) {
-      disableFreshness = _json['disableFreshness'] as core.bool;
-    }
-    if (_json.containsKey('disablePersonalization')) {
-      disablePersonalization = _json['disablePersonalization'] as core.bool;
-    }
-  }
+  ScoringConfig.fromJson(core.Map _json)
+      : this(
+          disableFreshness: _json.containsKey('disableFreshness')
+              ? _json['disableFreshness'] as core.bool
+              : null,
+          disablePersonalization: _json.containsKey('disablePersonalization')
+              ? _json['disablePersonalization'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disableFreshness != null) 'disableFreshness': disableFreshness!,
@@ -7006,6 +7651,10 @@ class SearchApplication {
   /// The maximum length is 300 characters.
   core.String? displayName;
 
+  /// Indicates whether audit logging is on/off for requests made for the search
+  /// application in query APIs.
+  core.bool? enableAuditLog;
+
   /// Name of the Search Application.
   ///
   /// Format: searchapplications/{application_id}.
@@ -7019,72 +7668,106 @@ class SearchApplication {
   /// Output only.
   core.List<core.String>? operationIds;
 
+  /// The default options for query interpretation
+  QueryInterpretationConfig? queryInterpretationConfig;
+
+  /// With each result we should return the URI for its thumbnail (when
+  /// applicable)
+  core.bool? returnResultThumbnailUrls;
+
   /// Configuration for ranking results.
   ScoringConfig? scoringConfig;
 
   /// Configuration for a sources specified in data_source_restrictions.
   core.List<SourceConfig>? sourceConfig;
 
-  SearchApplication();
+  SearchApplication({
+    this.dataSourceRestrictions,
+    this.defaultFacetOptions,
+    this.defaultSortOptions,
+    this.displayName,
+    this.enableAuditLog,
+    this.name,
+    this.operationIds,
+    this.queryInterpretationConfig,
+    this.returnResultThumbnailUrls,
+    this.scoringConfig,
+    this.sourceConfig,
+  });
 
-  SearchApplication.fromJson(core.Map _json) {
-    if (_json.containsKey('dataSourceRestrictions')) {
-      dataSourceRestrictions = (_json['dataSourceRestrictions'] as core.List)
-          .map<DataSourceRestriction>((value) => DataSourceRestriction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('defaultFacetOptions')) {
-      defaultFacetOptions = (_json['defaultFacetOptions'] as core.List)
-          .map<FacetOptions>((value) => FacetOptions.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('defaultSortOptions')) {
-      defaultSortOptions = SortOptions.fromJson(
-          _json['defaultSortOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('operationIds')) {
-      operationIds = (_json['operationIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('scoringConfig')) {
-      scoringConfig = ScoringConfig.fromJson(
-          _json['scoringConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceConfig')) {
-      sourceConfig = (_json['sourceConfig'] as core.List)
-          .map<SourceConfig>((value) => SourceConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SearchApplication.fromJson(core.Map _json)
+      : this(
+          dataSourceRestrictions: _json.containsKey('dataSourceRestrictions')
+              ? (_json['dataSourceRestrictions'] as core.List)
+                  .map((value) => DataSourceRestriction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          defaultFacetOptions: _json.containsKey('defaultFacetOptions')
+              ? (_json['defaultFacetOptions'] as core.List)
+                  .map((value) => FacetOptions.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          defaultSortOptions: _json.containsKey('defaultSortOptions')
+              ? SortOptions.fromJson(_json['defaultSortOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          enableAuditLog: _json.containsKey('enableAuditLog')
+              ? _json['enableAuditLog'] as core.bool
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          operationIds: _json.containsKey('operationIds')
+              ? (_json['operationIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          queryInterpretationConfig:
+              _json.containsKey('queryInterpretationConfig')
+                  ? QueryInterpretationConfig.fromJson(
+                      _json['queryInterpretationConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          returnResultThumbnailUrls:
+              _json.containsKey('returnResultThumbnailUrls')
+                  ? _json['returnResultThumbnailUrls'] as core.bool
+                  : null,
+          scoringConfig: _json.containsKey('scoringConfig')
+              ? ScoringConfig.fromJson(
+                  _json['scoringConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceConfig: _json.containsKey('sourceConfig')
+              ? (_json['sourceConfig'] as core.List)
+                  .map((value) => SourceConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataSourceRestrictions != null)
-          'dataSourceRestrictions':
-              dataSourceRestrictions!.map((value) => value.toJson()).toList(),
+          'dataSourceRestrictions': dataSourceRestrictions!,
         if (defaultFacetOptions != null)
-          'defaultFacetOptions':
-              defaultFacetOptions!.map((value) => value.toJson()).toList(),
+          'defaultFacetOptions': defaultFacetOptions!,
         if (defaultSortOptions != null)
-          'defaultSortOptions': defaultSortOptions!.toJson(),
+          'defaultSortOptions': defaultSortOptions!,
         if (displayName != null) 'displayName': displayName!,
+        if (enableAuditLog != null) 'enableAuditLog': enableAuditLog!,
         if (name != null) 'name': name!,
         if (operationIds != null) 'operationIds': operationIds!,
-        if (scoringConfig != null) 'scoringConfig': scoringConfig!.toJson(),
-        if (sourceConfig != null)
-          'sourceConfig': sourceConfig!.map((value) => value.toJson()).toList(),
+        if (queryInterpretationConfig != null)
+          'queryInterpretationConfig': queryInterpretationConfig!,
+        if (returnResultThumbnailUrls != null)
+          'returnResultThumbnailUrls': returnResultThumbnailUrls!,
+        if (scoringConfig != null) 'scoringConfig': scoringConfig!,
+        if (sourceConfig != null) 'sourceConfig': sourceConfig!,
       };
 }
 
+/// Search application level query stats per date
 class SearchApplicationQueryStats {
   /// Date for which query stats were calculated.
   ///
@@ -7092,52 +7775,60 @@ class SearchApplicationQueryStats {
   Date? date;
   core.List<QueryCountByStatus>? queryCountByStatus;
 
-  SearchApplicationQueryStats();
+  SearchApplicationQueryStats({
+    this.date,
+    this.queryCountByStatus,
+  });
 
-  SearchApplicationQueryStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('queryCountByStatus')) {
-      queryCountByStatus = (_json['queryCountByStatus'] as core.List)
-          .map<QueryCountByStatus>((value) => QueryCountByStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SearchApplicationQueryStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          queryCountByStatus: _json.containsKey('queryCountByStatus')
+              ? (_json['queryCountByStatus'] as core.List)
+                  .map((value) => QueryCountByStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (queryCountByStatus != null)
-          'queryCountByStatus':
-              queryCountByStatus!.map((value) => value.toJson()).toList(),
+          'queryCountByStatus': queryCountByStatus!,
       };
 }
 
 class SearchApplicationSessionStats {
   /// Date for which session stats were calculated.
   ///
-  /// Stats calculated on the next day close to midnight are returned.
+  /// Stats are calculated on the following day, close to midnight PST, and then
+  /// returned.
   Date? date;
 
   /// The count of search sessions on the day
   core.String? searchSessionsCount;
 
-  SearchApplicationSessionStats();
+  SearchApplicationSessionStats({
+    this.date,
+    this.searchSessionsCount,
+  });
 
-  SearchApplicationSessionStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('searchSessionsCount')) {
-      searchSessionsCount = _json['searchSessionsCount'] as core.String;
-    }
-  }
+  SearchApplicationSessionStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          searchSessionsCount: _json.containsKey('searchSessionsCount')
+              ? _json['searchSessionsCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (searchSessionsCount != null)
           'searchSessionsCount': searchSessionsCount!,
       };
@@ -7158,28 +7849,34 @@ class SearchApplicationUserStats {
   /// The count of unique active users in the past thirty days
   core.String? thirtyDaysActiveUsersCount;
 
-  SearchApplicationUserStats();
+  SearchApplicationUserStats({
+    this.date,
+    this.oneDayActiveUsersCount,
+    this.sevenDaysActiveUsersCount,
+    this.thirtyDaysActiveUsersCount,
+  });
 
-  SearchApplicationUserStats.fromJson(core.Map _json) {
-    if (_json.containsKey('date')) {
-      date =
-          Date.fromJson(_json['date'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oneDayActiveUsersCount')) {
-      oneDayActiveUsersCount = _json['oneDayActiveUsersCount'] as core.String;
-    }
-    if (_json.containsKey('sevenDaysActiveUsersCount')) {
-      sevenDaysActiveUsersCount =
-          _json['sevenDaysActiveUsersCount'] as core.String;
-    }
-    if (_json.containsKey('thirtyDaysActiveUsersCount')) {
-      thirtyDaysActiveUsersCount =
-          _json['thirtyDaysActiveUsersCount'] as core.String;
-    }
-  }
+  SearchApplicationUserStats.fromJson(core.Map _json)
+      : this(
+          date: _json.containsKey('date')
+              ? Date.fromJson(
+                  _json['date'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oneDayActiveUsersCount: _json.containsKey('oneDayActiveUsersCount')
+              ? _json['oneDayActiveUsersCount'] as core.String
+              : null,
+          sevenDaysActiveUsersCount:
+              _json.containsKey('sevenDaysActiveUsersCount')
+                  ? _json['sevenDaysActiveUsersCount'] as core.String
+                  : null,
+          thirtyDaysActiveUsersCount:
+              _json.containsKey('thirtyDaysActiveUsersCount')
+                  ? _json['thirtyDaysActiveUsersCount'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (date != null) 'date': date!.toJson(),
+        if (date != null) 'date': date!,
         if (oneDayActiveUsersCount != null)
           'oneDayActiveUsersCount': oneDayActiveUsersCount!,
         if (sevenDaysActiveUsersCount != null)
@@ -7201,23 +7898,28 @@ class SearchItemsByViewUrlRequest {
   /// The maximum length is 2048 characters.
   core.String? viewUrl;
 
-  SearchItemsByViewUrlRequest();
+  SearchItemsByViewUrlRequest({
+    this.debugOptions,
+    this.pageToken,
+    this.viewUrl,
+  });
 
-  SearchItemsByViewUrlRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-    if (_json.containsKey('viewUrl')) {
-      viewUrl = _json['viewUrl'] as core.String;
-    }
-  }
+  SearchItemsByViewUrlRequest.fromJson(core.Map _json)
+      : this(
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          viewUrl: _json.containsKey('viewUrl')
+              ? _json['viewUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
         if (pageToken != null) 'pageToken': pageToken!,
         if (viewUrl != null) 'viewUrl': viewUrl!,
       };
@@ -7230,23 +7932,26 @@ class SearchItemsByViewUrlResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  SearchItemsByViewUrlResponse();
+  SearchItemsByViewUrlResponse({
+    this.items,
+    this.nextPageToken,
+  });
 
-  SearchItemsByViewUrlResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Item>((value) =>
-              Item.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchItemsByViewUrlResponse.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Item.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -7260,13 +7965,16 @@ class SearchQualityMetadata {
   /// The default value is 0.0.
   core.double? quality;
 
-  SearchQualityMetadata();
+  SearchQualityMetadata({
+    this.quality,
+  });
 
-  SearchQualityMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('quality')) {
-      quality = (_json['quality'] as core.num).toDouble();
-    }
-  }
+  SearchQualityMetadata.fromJson(core.Map _json)
+      : this(
+          quality: _json.containsKey('quality')
+              ? (_json['quality'] as core.num).toDouble()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (quality != null) 'quality': quality!,
@@ -7275,6 +7983,12 @@ class SearchQualityMetadata {
 
 /// The search API request.
 class SearchRequest {
+  /// Context attributes for the request which will be used to adjust ranking of
+  /// search results.
+  ///
+  /// The maximum number of elements is 10.
+  core.List<ContextAttribute>? contextAttributes;
+
   /// The sources to use for querying.
   ///
   /// If not specified, all data sources from the current search application are
@@ -7291,7 +8005,7 @@ class SearchRequest {
   /// The raw query string.
   ///
   /// See supported search operators in the
-  /// [Cloud search Cheat Sheet](https://support.google.com/a/users/answer/9299929)
+  /// [Narrow your search with operators](https://support.google.com/cloudsearch/answer/6172299)
   core.String? query;
 
   /// Options to interpret the user query.
@@ -7306,57 +8020,71 @@ class SearchRequest {
   /// Starting index of the results.
   core.int? start;
 
-  SearchRequest();
+  SearchRequest({
+    this.contextAttributes,
+    this.dataSourceRestrictions,
+    this.facetOptions,
+    this.pageSize,
+    this.query,
+    this.queryInterpretationOptions,
+    this.requestOptions,
+    this.sortOptions,
+    this.start,
+  });
 
-  SearchRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dataSourceRestrictions')) {
-      dataSourceRestrictions = (_json['dataSourceRestrictions'] as core.List)
-          .map<DataSourceRestriction>((value) => DataSourceRestriction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('facetOptions')) {
-      facetOptions = (_json['facetOptions'] as core.List)
-          .map<FacetOptions>((value) => FacetOptions.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('query')) {
-      query = _json['query'] as core.String;
-    }
-    if (_json.containsKey('queryInterpretationOptions')) {
-      queryInterpretationOptions = QueryInterpretationOptions.fromJson(
-          _json['queryInterpretationOptions']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestOptions')) {
-      requestOptions = RequestOptions.fromJson(
-          _json['requestOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sortOptions')) {
-      sortOptions = SortOptions.fromJson(
-          _json['sortOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('start')) {
-      start = _json['start'] as core.int;
-    }
-  }
+  SearchRequest.fromJson(core.Map _json)
+      : this(
+          contextAttributes: _json.containsKey('contextAttributes')
+              ? (_json['contextAttributes'] as core.List)
+                  .map((value) => ContextAttribute.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          dataSourceRestrictions: _json.containsKey('dataSourceRestrictions')
+              ? (_json['dataSourceRestrictions'] as core.List)
+                  .map((value) => DataSourceRestriction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          facetOptions: _json.containsKey('facetOptions')
+              ? (_json['facetOptions'] as core.List)
+                  .map((value) => FacetOptions.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          query:
+              _json.containsKey('query') ? _json['query'] as core.String : null,
+          queryInterpretationOptions:
+              _json.containsKey('queryInterpretationOptions')
+                  ? QueryInterpretationOptions.fromJson(
+                      _json['queryInterpretationOptions']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          requestOptions: _json.containsKey('requestOptions')
+              ? RequestOptions.fromJson(_json['requestOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          sortOptions: _json.containsKey('sortOptions')
+              ? SortOptions.fromJson(
+                  _json['sortOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          start: _json.containsKey('start') ? _json['start'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (contextAttributes != null) 'contextAttributes': contextAttributes!,
         if (dataSourceRestrictions != null)
-          'dataSourceRestrictions':
-              dataSourceRestrictions!.map((value) => value.toJson()).toList(),
-        if (facetOptions != null)
-          'facetOptions': facetOptions!.map((value) => value.toJson()).toList(),
+          'dataSourceRestrictions': dataSourceRestrictions!,
+        if (facetOptions != null) 'facetOptions': facetOptions!,
         if (pageSize != null) 'pageSize': pageSize!,
         if (query != null) 'query': query!,
         if (queryInterpretationOptions != null)
-          'queryInterpretationOptions': queryInterpretationOptions!.toJson(),
-        if (requestOptions != null) 'requestOptions': requestOptions!.toJson(),
-        if (sortOptions != null) 'sortOptions': sortOptions!.toJson(),
+          'queryInterpretationOptions': queryInterpretationOptions!,
+        if (requestOptions != null) 'requestOptions': requestOptions!,
+        if (sortOptions != null) 'sortOptions': sortOptions!,
         if (start != null) 'start': start!,
       };
 }
@@ -7400,79 +8128,87 @@ class SearchResponse {
   /// These results are not counted against the page_size.
   core.List<StructuredResult>? structuredResults;
 
-  SearchResponse();
+  SearchResponse({
+    this.debugInfo,
+    this.errorInfo,
+    this.facetResults,
+    this.hasMoreResults,
+    this.queryInterpretation,
+    this.resultCountEstimate,
+    this.resultCountExact,
+    this.resultCounts,
+    this.results,
+    this.spellResults,
+    this.structuredResults,
+  });
 
-  SearchResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('debugInfo')) {
-      debugInfo = ResponseDebugInfo.fromJson(
-          _json['debugInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('errorInfo')) {
-      errorInfo = ErrorInfo.fromJson(
-          _json['errorInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('facetResults')) {
-      facetResults = (_json['facetResults'] as core.List)
-          .map<FacetResult>((value) => FacetResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('hasMoreResults')) {
-      hasMoreResults = _json['hasMoreResults'] as core.bool;
-    }
-    if (_json.containsKey('queryInterpretation')) {
-      queryInterpretation = QueryInterpretation.fromJson(
-          _json['queryInterpretation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resultCountEstimate')) {
-      resultCountEstimate = _json['resultCountEstimate'] as core.String;
-    }
-    if (_json.containsKey('resultCountExact')) {
-      resultCountExact = _json['resultCountExact'] as core.String;
-    }
-    if (_json.containsKey('resultCounts')) {
-      resultCounts = ResultCounts.fromJson(
-          _json['resultCounts'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('results')) {
-      results = (_json['results'] as core.List)
-          .map<SearchResult>((value) => SearchResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('spellResults')) {
-      spellResults = (_json['spellResults'] as core.List)
-          .map<SpellResult>((value) => SpellResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('structuredResults')) {
-      structuredResults = (_json['structuredResults'] as core.List)
-          .map<StructuredResult>((value) => StructuredResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SearchResponse.fromJson(core.Map _json)
+      : this(
+          debugInfo: _json.containsKey('debugInfo')
+              ? ResponseDebugInfo.fromJson(
+                  _json['debugInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          errorInfo: _json.containsKey('errorInfo')
+              ? ErrorInfo.fromJson(
+                  _json['errorInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          facetResults: _json.containsKey('facetResults')
+              ? (_json['facetResults'] as core.List)
+                  .map((value) => FacetResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          hasMoreResults: _json.containsKey('hasMoreResults')
+              ? _json['hasMoreResults'] as core.bool
+              : null,
+          queryInterpretation: _json.containsKey('queryInterpretation')
+              ? QueryInterpretation.fromJson(_json['queryInterpretation']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resultCountEstimate: _json.containsKey('resultCountEstimate')
+              ? _json['resultCountEstimate'] as core.String
+              : null,
+          resultCountExact: _json.containsKey('resultCountExact')
+              ? _json['resultCountExact'] as core.String
+              : null,
+          resultCounts: _json.containsKey('resultCounts')
+              ? ResultCounts.fromJson(
+                  _json['resultCounts'] as core.Map<core.String, core.dynamic>)
+              : null,
+          results: _json.containsKey('results')
+              ? (_json['results'] as core.List)
+                  .map((value) => SearchResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          spellResults: _json.containsKey('spellResults')
+              ? (_json['spellResults'] as core.List)
+                  .map((value) => SpellResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          structuredResults: _json.containsKey('structuredResults')
+              ? (_json['structuredResults'] as core.List)
+                  .map((value) => StructuredResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugInfo != null) 'debugInfo': debugInfo!.toJson(),
-        if (errorInfo != null) 'errorInfo': errorInfo!.toJson(),
-        if (facetResults != null)
-          'facetResults': facetResults!.map((value) => value.toJson()).toList(),
+        if (debugInfo != null) 'debugInfo': debugInfo!,
+        if (errorInfo != null) 'errorInfo': errorInfo!,
+        if (facetResults != null) 'facetResults': facetResults!,
         if (hasMoreResults != null) 'hasMoreResults': hasMoreResults!,
         if (queryInterpretation != null)
-          'queryInterpretation': queryInterpretation!.toJson(),
+          'queryInterpretation': queryInterpretation!,
         if (resultCountEstimate != null)
           'resultCountEstimate': resultCountEstimate!,
         if (resultCountExact != null) 'resultCountExact': resultCountExact!,
-        if (resultCounts != null) 'resultCounts': resultCounts!.toJson(),
-        if (results != null)
-          'results': results!.map((value) => value.toJson()).toList(),
-        if (spellResults != null)
-          'spellResults': spellResults!.map((value) => value.toJson()).toList(),
-        if (structuredResults != null)
-          'structuredResults':
-              structuredResults!.map((value) => value.toJson()).toList(),
+        if (resultCounts != null) 'resultCounts': resultCounts!,
+        if (results != null) 'results': results!,
+        if (spellResults != null) 'spellResults': spellResults!,
+        if (structuredResults != null) 'structuredResults': structuredResults!,
       };
 }
 
@@ -7502,42 +8238,45 @@ class SearchResult {
   /// and shouldn't be changed.
   core.String? url;
 
-  SearchResult();
+  SearchResult({
+    this.clusteredResults,
+    this.debugInfo,
+    this.metadata,
+    this.snippet,
+    this.title,
+    this.url,
+  });
 
-  SearchResult.fromJson(core.Map _json) {
-    if (_json.containsKey('clusteredResults')) {
-      clusteredResults = (_json['clusteredResults'] as core.List)
-          .map<SearchResult>((value) => SearchResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('debugInfo')) {
-      debugInfo = ResultDebugInfo.fromJson(
-          _json['debugInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = Metadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('snippet')) {
-      snippet = Snippet.fromJson(
-          _json['snippet'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  SearchResult.fromJson(core.Map _json)
+      : this(
+          clusteredResults: _json.containsKey('clusteredResults')
+              ? (_json['clusteredResults'] as core.List)
+                  .map((value) => SearchResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          debugInfo: _json.containsKey('debugInfo')
+              ? ResultDebugInfo.fromJson(
+                  _json['debugInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? Metadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          snippet: _json.containsKey('snippet')
+              ? Snippet.fromJson(
+                  _json['snippet'] as core.Map<core.String, core.dynamic>)
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusteredResults != null)
-          'clusteredResults':
-              clusteredResults!.map((value) => value.toJson()).toList(),
-        if (debugInfo != null) 'debugInfo': debugInfo!.toJson(),
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (snippet != null) 'snippet': snippet!.toJson(),
+        if (clusteredResults != null) 'clusteredResults': clusteredResults!,
+        if (debugInfo != null) 'debugInfo': debugInfo!,
+        if (metadata != null) 'metadata': metadata!,
+        if (snippet != null) 'snippet': snippet!,
         if (title != null) 'title': title!,
         if (url != null) 'url': url!,
       };
@@ -7555,23 +8294,26 @@ class Snippet {
   /// should be unescaped prior to rendering.
   core.String? snippet;
 
-  Snippet();
+  Snippet({
+    this.matchRanges,
+    this.snippet,
+  });
 
-  Snippet.fromJson(core.Map _json) {
-    if (_json.containsKey('matchRanges')) {
-      matchRanges = (_json['matchRanges'] as core.List)
-          .map<MatchRange>((value) =>
-              MatchRange.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('snippet')) {
-      snippet = _json['snippet'] as core.String;
-    }
-  }
+  Snippet.fromJson(core.Map _json)
+      : this(
+          matchRanges: _json.containsKey('matchRanges')
+              ? (_json['matchRanges'] as core.List)
+                  .map((value) => MatchRange.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          snippet: _json.containsKey('snippet')
+              ? _json['snippet'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (matchRanges != null)
-          'matchRanges': matchRanges!.map((value) => value.toJson()).toList(),
+        if (matchRanges != null) 'matchRanges': matchRanges!,
         if (snippet != null) 'snippet': snippet!,
       };
 }
@@ -7588,16 +8330,20 @@ class SortOptions {
   /// - "DESCENDING"
   core.String? sortOrder;
 
-  SortOptions();
+  SortOptions({
+    this.operatorName,
+    this.sortOrder,
+  });
 
-  SortOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('sortOrder')) {
-      sortOrder = _json['sortOrder'] as core.String;
-    }
-  }
+  SortOptions.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          sortOrder: _json.containsKey('sortOrder')
+              ? _json['sortOrder'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
@@ -7625,16 +8371,18 @@ class Source {
   /// - "GOOGLE_KEEP"
   core.String? predefinedSource;
 
-  Source();
+  Source({
+    this.name,
+    this.predefinedSource,
+  });
 
-  Source.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('predefinedSource')) {
-      predefinedSource = _json['predefinedSource'] as core.String;
-    }
-  }
+  Source.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          predefinedSource: _json.containsKey('predefinedSource')
+              ? _json['predefinedSource'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -7653,27 +8401,32 @@ class SourceConfig {
   /// The source for which this configuration is to be used.
   Source? source;
 
-  SourceConfig();
+  SourceConfig({
+    this.crowdingConfig,
+    this.scoringConfig,
+    this.source,
+  });
 
-  SourceConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('crowdingConfig')) {
-      crowdingConfig = SourceCrowdingConfig.fromJson(
-          _json['crowdingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scoringConfig')) {
-      scoringConfig = SourceScoringConfig.fromJson(
-          _json['scoringConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SourceConfig.fromJson(core.Map _json)
+      : this(
+          crowdingConfig: _json.containsKey('crowdingConfig')
+              ? SourceCrowdingConfig.fromJson(_json['crowdingConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          scoringConfig: _json.containsKey('scoringConfig')
+              ? SourceScoringConfig.fromJson(
+                  _json['scoringConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (crowdingConfig != null) 'crowdingConfig': crowdingConfig!.toJson(),
-        if (scoringConfig != null) 'scoringConfig': scoringConfig!.toJson(),
-        if (source != null) 'source': source!.toJson(),
+        if (crowdingConfig != null) 'crowdingConfig': crowdingConfig!,
+        if (scoringConfig != null) 'scoringConfig': scoringConfig!,
+        if (source != null) 'source': source!,
       };
 }
 
@@ -7684,9 +8437,11 @@ class SourceConfig {
 /// To foster better search quality and source diversity in search results, you
 /// can set a condition to reduce repetitive results by source.
 class SourceCrowdingConfig {
-  /// Maximum number of results allowed from a source.
+  /// Maximum number of results allowed from a datasource in a result page as
+  /// long as results from other sources are not exhausted.
   ///
-  /// No limits will be set on results if this value is less than or equal to 0.
+  /// Value specified must not be negative. A default value is used if this
+  /// value is equal to 0. To disable crowding, set the value greater than 100.
   core.int? numResults;
 
   /// Maximum number of suggestions allowed from a source.
@@ -7694,16 +8449,20 @@ class SourceCrowdingConfig {
   /// No limits will be set on results if this value is less than or equal to 0.
   core.int? numSuggestions;
 
-  SourceCrowdingConfig();
+  SourceCrowdingConfig({
+    this.numResults,
+    this.numSuggestions,
+  });
 
-  SourceCrowdingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('numResults')) {
-      numResults = _json['numResults'] as core.int;
-    }
-    if (_json.containsKey('numSuggestions')) {
-      numSuggestions = _json['numSuggestions'] as core.int;
-    }
-  }
+  SourceCrowdingConfig.fromJson(core.Map _json)
+      : this(
+          numResults: _json.containsKey('numResults')
+              ? _json['numResults'] as core.int
+              : null,
+          numSuggestions: _json.containsKey('numSuggestions')
+              ? _json['numSuggestions'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (numResults != null) 'numResults': numResults!,
@@ -7725,30 +8484,36 @@ class SourceResultCount {
   /// The source the result count information is associated with.
   Source? source;
 
-  SourceResultCount();
+  SourceResultCount({
+    this.hasMoreResults,
+    this.resultCountEstimate,
+    this.resultCountExact,
+    this.source,
+  });
 
-  SourceResultCount.fromJson(core.Map _json) {
-    if (_json.containsKey('hasMoreResults')) {
-      hasMoreResults = _json['hasMoreResults'] as core.bool;
-    }
-    if (_json.containsKey('resultCountEstimate')) {
-      resultCountEstimate = _json['resultCountEstimate'] as core.String;
-    }
-    if (_json.containsKey('resultCountExact')) {
-      resultCountExact = _json['resultCountExact'] as core.String;
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SourceResultCount.fromJson(core.Map _json)
+      : this(
+          hasMoreResults: _json.containsKey('hasMoreResults')
+              ? _json['hasMoreResults'] as core.bool
+              : null,
+          resultCountEstimate: _json.containsKey('resultCountEstimate')
+              ? _json['resultCountEstimate'] as core.String
+              : null,
+          resultCountExact: _json.containsKey('resultCountExact')
+              ? _json['resultCountExact'] as core.String
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hasMoreResults != null) 'hasMoreResults': hasMoreResults!,
         if (resultCountEstimate != null)
           'resultCountEstimate': resultCountEstimate!,
         if (resultCountExact != null) 'resultCountExact': resultCountExact!,
-        if (source != null) 'source': source!.toJson(),
+        if (source != null) 'source': source!,
       };
 }
 
@@ -7763,13 +8528,16 @@ class SourceScoringConfig {
   /// - "HIGH"
   core.String? sourceImportance;
 
-  SourceScoringConfig();
+  SourceScoringConfig({
+    this.sourceImportance,
+  });
 
-  SourceScoringConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('sourceImportance')) {
-      sourceImportance = _json['sourceImportance'] as core.String;
-    }
-  }
+  SourceScoringConfig.fromJson(core.Map _json)
+      : this(
+          sourceImportance: _json.containsKey('sourceImportance')
+              ? _json['sourceImportance'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sourceImportance != null) 'sourceImportance': sourceImportance!,
@@ -7780,13 +8548,16 @@ class SpellResult {
   /// The suggested spelling of the query.
   core.String? suggestedQuery;
 
-  SpellResult();
+  SpellResult({
+    this.suggestedQuery,
+  });
 
-  SpellResult.fromJson(core.Map _json) {
-    if (_json.containsKey('suggestedQuery')) {
-      suggestedQuery = _json['suggestedQuery'] as core.String;
-    }
-  }
+  SpellResult.fromJson(core.Map _json)
+      : this(
+          suggestedQuery: _json.containsKey('suggestedQuery')
+              ? _json['suggestedQuery'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (suggestedQuery != null) 'suggestedQuery': suggestedQuery!,
@@ -7803,21 +8574,25 @@ class StartUploadItemRequest {
   /// Common debug options.
   DebugOptions? debugOptions;
 
-  StartUploadItemRequest();
+  StartUploadItemRequest({
+    this.connectorName,
+    this.debugOptions,
+  });
 
-  StartUploadItemRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  StartUploadItemRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
       };
 }
 
@@ -7828,52 +8603,7 @@ class StartUploadItemRequest {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A structured data object consisting of named properties.
 class StructuredDataObject {
@@ -7882,20 +8612,22 @@ class StructuredDataObject {
   /// The maximum number of elements is 1000.
   core.List<NamedProperty>? properties;
 
-  StructuredDataObject();
+  StructuredDataObject({
+    this.properties,
+  });
 
-  StructuredDataObject.fromJson(core.Map _json) {
-    if (_json.containsKey('properties')) {
-      properties = (_json['properties'] as core.List)
-          .map<NamedProperty>((value) => NamedProperty.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  StructuredDataObject.fromJson(core.Map _json)
+      : this(
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.List)
+                  .map((value) => NamedProperty.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (properties != null)
-          'properties': properties!.map((value) => value.toJson()).toList(),
+        if (properties != null) 'properties': properties!,
       };
 }
 
@@ -7904,17 +8636,20 @@ class StructuredResult {
   /// Representation of a person
   Person? person;
 
-  StructuredResult();
+  StructuredResult({
+    this.person,
+  });
 
-  StructuredResult.fromJson(core.Map _json) {
-    if (_json.containsKey('person')) {
-      person = Person.fromJson(
-          _json['person'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  StructuredResult.fromJson(core.Map _json)
+      : this(
+          person: _json.containsKey('person')
+              ? Person.fromJson(
+                  _json['person'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (person != null) 'person': person!.toJson(),
+        if (person != null) 'person': person!,
       };
 }
 
@@ -7937,30 +8672,33 @@ class SuggestRequest {
   /// Request options, such as the search application and user timezone.
   RequestOptions? requestOptions;
 
-  SuggestRequest();
+  SuggestRequest({
+    this.dataSourceRestrictions,
+    this.query,
+    this.requestOptions,
+  });
 
-  SuggestRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dataSourceRestrictions')) {
-      dataSourceRestrictions = (_json['dataSourceRestrictions'] as core.List)
-          .map<DataSourceRestriction>((value) => DataSourceRestriction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('query')) {
-      query = _json['query'] as core.String;
-    }
-    if (_json.containsKey('requestOptions')) {
-      requestOptions = RequestOptions.fromJson(
-          _json['requestOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SuggestRequest.fromJson(core.Map _json)
+      : this(
+          dataSourceRestrictions: _json.containsKey('dataSourceRestrictions')
+              ? (_json['dataSourceRestrictions'] as core.List)
+                  .map((value) => DataSourceRestriction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          query:
+              _json.containsKey('query') ? _json['query'] as core.String : null,
+          requestOptions: _json.containsKey('requestOptions')
+              ? RequestOptions.fromJson(_json['requestOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataSourceRestrictions != null)
-          'dataSourceRestrictions':
-              dataSourceRestrictions!.map((value) => value.toJson()).toList(),
+          'dataSourceRestrictions': dataSourceRestrictions!,
         if (query != null) 'query': query!,
-        if (requestOptions != null) 'requestOptions': requestOptions!.toJson(),
+        if (requestOptions != null) 'requestOptions': requestOptions!,
       };
 }
 
@@ -7969,21 +8707,22 @@ class SuggestResponse {
   /// List of suggestions.
   core.List<SuggestResult>? suggestResults;
 
-  SuggestResponse();
+  SuggestResponse({
+    this.suggestResults,
+  });
 
-  SuggestResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('suggestResults')) {
-      suggestResults = (_json['suggestResults'] as core.List)
-          .map<SuggestResult>((value) => SuggestResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SuggestResponse.fromJson(core.Map _json)
+      : this(
+          suggestResults: _json.containsKey('suggestResults')
+              ? (_json['suggestResults'] as core.List)
+                  .map((value) => SuggestResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (suggestResults != null)
-          'suggestResults':
-              suggestResults!.map((value) => value.toJson()).toList(),
+        if (suggestResults != null) 'suggestResults': suggestResults!,
       };
 }
 
@@ -8006,32 +8745,36 @@ class SuggestResult {
   /// the suggestion
   core.String? suggestedQuery;
 
-  SuggestResult();
+  SuggestResult({
+    this.peopleSuggestion,
+    this.querySuggestion,
+    this.source,
+    this.suggestedQuery,
+  });
 
-  SuggestResult.fromJson(core.Map _json) {
-    if (_json.containsKey('peopleSuggestion')) {
-      peopleSuggestion = PeopleSuggestion.fromJson(
-          _json['peopleSuggestion'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('querySuggestion')) {
-      querySuggestion = QuerySuggestion.fromJson(
-          _json['querySuggestion'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('source')) {
-      source = Source.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('suggestedQuery')) {
-      suggestedQuery = _json['suggestedQuery'] as core.String;
-    }
-  }
+  SuggestResult.fromJson(core.Map _json)
+      : this(
+          peopleSuggestion: _json.containsKey('peopleSuggestion')
+              ? PeopleSuggestion.fromJson(_json['peopleSuggestion']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          querySuggestion: _json.containsKey('querySuggestion')
+              ? QuerySuggestion.fromJson(_json['querySuggestion']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          source: _json.containsKey('source')
+              ? Source.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+          suggestedQuery: _json.containsKey('suggestedQuery')
+              ? _json['suggestedQuery'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (peopleSuggestion != null)
-          'peopleSuggestion': peopleSuggestion!.toJson(),
-        if (querySuggestion != null)
-          'querySuggestion': querySuggestion!.toJson(),
-        if (source != null) 'source': source!.toJson(),
+        if (peopleSuggestion != null) 'peopleSuggestion': peopleSuggestion!,
+        if (querySuggestion != null) 'querySuggestion': querySuggestion!,
+        if (source != null) 'source': source!,
         if (suggestedQuery != null) 'suggestedQuery': suggestedQuery!,
       };
 }
@@ -8057,24 +8800,29 @@ class TextOperatorOptions {
   /// text property.
   ///
   /// For example, if operatorName is *subject* and the property's name is
-  /// *subjectLine*, then queries like *subject:<value>* show results only where
-  /// the value of the property named *subjectLine* matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator
-  /// returns all items where *<value>* matches the value of any text properties
-  /// or text within the content field for the item. The operator name can only
-  /// contain lowercase letters (a-z). The maximum length is 32 characters.
+  /// *subjectLine*, then queries like *subject:\<value\>* show results only
+  /// where the value of the property named *subjectLine* matches *\<value\>*.
+  /// By contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any text
+  /// properties or text within the content field for the item. The operator
+  /// name can only contain lowercase letters (a-z). The maximum length is 32
+  /// characters.
   core.String? operatorName;
 
-  TextOperatorOptions();
+  TextOperatorOptions({
+    this.exactMatchWithOperator,
+    this.operatorName,
+  });
 
-  TextOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('exactMatchWithOperator')) {
-      exactMatchWithOperator = _json['exactMatchWithOperator'] as core.bool;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  TextOperatorOptions.fromJson(core.Map _json)
+      : this(
+          exactMatchWithOperator: _json.containsKey('exactMatchWithOperator')
+              ? _json['exactMatchWithOperator'] as core.bool
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (exactMatchWithOperator != null)
@@ -8092,24 +8840,27 @@ class TextPropertyOptions {
   /// when used for retrieval.
   RetrievalImportance? retrievalImportance;
 
-  TextPropertyOptions();
+  TextPropertyOptions({
+    this.operatorOptions,
+    this.retrievalImportance,
+  });
 
-  TextPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = TextOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('retrievalImportance')) {
-      retrievalImportance = RetrievalImportance.fromJson(
-          _json['retrievalImportance'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TextPropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? TextOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          retrievalImportance: _json.containsKey('retrievalImportance')
+              ? RetrievalImportance.fromJson(_json['retrievalImportance']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
         if (retrievalImportance != null)
-          'retrievalImportance': retrievalImportance!.toJson(),
+          'retrievalImportance': retrievalImportance!,
       };
 }
 
@@ -8118,15 +8869,18 @@ class TextValues {
   /// The maximum allowable length for text values is 2048 characters.
   core.List<core.String>? values;
 
-  TextValues();
+  TextValues({
+    this.values,
+  });
 
-  TextValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  TextValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
@@ -8142,48 +8896,53 @@ class TimestampOperatorOptions {
   /// timestamp property using the greater-than operator.
   ///
   /// For example, if greaterThanOperatorName is *closedafter* and the
-  /// property's name is *closeDate*, then queries like *closedafter:<value>*
+  /// property's name is *closeDate*, then queries like *closedafter:\<value\>*
   /// show results only where the value of the property named *closeDate* is
-  /// later than *<value>*. The operator name can only contain lowercase letters
-  /// (a-z). The maximum length is 32 characters.
+  /// later than *\<value\>*. The operator name can only contain lowercase
+  /// letters (a-z). The maximum length is 32 characters.
   core.String? greaterThanOperatorName;
 
   /// Indicates the operator name required in the query in order to isolate the
   /// timestamp property using the less-than operator.
   ///
   /// For example, if lessThanOperatorName is *closedbefore* and the property's
-  /// name is *closeDate*, then queries like *closedbefore:<value>* show results
-  /// only where the value of the property named *closeDate* is earlier than
-  /// *<value>*. The operator name can only contain lowercase letters (a-z). The
-  /// maximum length is 32 characters.
+  /// name is *closeDate*, then queries like *closedbefore:\<value\>* show
+  /// results only where the value of the property named *closeDate* is earlier
+  /// than *\<value\>*. The operator name can only contain lowercase letters
+  /// (a-z). The maximum length is 32 characters.
   core.String? lessThanOperatorName;
 
   /// Indicates the operator name required in the query in order to isolate the
   /// timestamp property.
   ///
   /// For example, if operatorName is *closedon* and the property's name is
-  /// *closeDate*, then queries like *closedon:<value>* show results only where
-  /// the value of the property named *closeDate* matches *<value>*. By
-  /// contrast, a search that uses the same *<value>* without an operator
-  /// returns all items where *<value>* matches the value of any String
+  /// *closeDate*, then queries like *closedon:\<value\>* show results only
+  /// where the value of the property named *closeDate* matches *\<value\>*. By
+  /// contrast, a search that uses the same *\<value\>* without an operator
+  /// returns all items where *\<value\>* matches the value of any String
   /// properties or text within the content field for the item. The operator
   /// name can only contain lowercase letters (a-z). The maximum length is 32
   /// characters.
   core.String? operatorName;
 
-  TimestampOperatorOptions();
+  TimestampOperatorOptions({
+    this.greaterThanOperatorName,
+    this.lessThanOperatorName,
+    this.operatorName,
+  });
 
-  TimestampOperatorOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('greaterThanOperatorName')) {
-      greaterThanOperatorName = _json['greaterThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('lessThanOperatorName')) {
-      lessThanOperatorName = _json['lessThanOperatorName'] as core.String;
-    }
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-  }
+  TimestampOperatorOptions.fromJson(core.Map _json)
+      : this(
+          greaterThanOperatorName: _json.containsKey('greaterThanOperatorName')
+              ? _json['greaterThanOperatorName'] as core.String
+              : null,
+          lessThanOperatorName: _json.containsKey('lessThanOperatorName')
+              ? _json['lessThanOperatorName'] as core.String
+              : null,
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (greaterThanOperatorName != null)
@@ -8199,18 +8958,20 @@ class TimestampPropertyOptions {
   /// If set, describes how the timestamp should be used as a search operator.
   TimestampOperatorOptions? operatorOptions;
 
-  TimestampPropertyOptions();
+  TimestampPropertyOptions({
+    this.operatorOptions,
+  });
 
-  TimestampPropertyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorOptions')) {
-      operatorOptions = TimestampOperatorOptions.fromJson(
-          _json['operatorOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TimestampPropertyOptions.fromJson(core.Map _json)
+      : this(
+          operatorOptions: _json.containsKey('operatorOptions')
+              ? TimestampOperatorOptions.fromJson(_json['operatorOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operatorOptions != null)
-          'operatorOptions': operatorOptions!.toJson(),
+        if (operatorOptions != null) 'operatorOptions': operatorOptions!,
       };
 }
 
@@ -8218,15 +8979,18 @@ class TimestampPropertyOptions {
 class TimestampValues {
   core.List<core.String>? values;
 
-  TimestampValues();
+  TimestampValues({
+    this.values,
+  });
 
-  TimestampValues.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  TimestampValues.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (values != null) 'values': values!,
@@ -8252,21 +9016,24 @@ class UnmappedIdentity {
   /// - "INTERNAL_ERROR" : Internal error.
   core.String? resolutionStatusCode;
 
-  UnmappedIdentity();
+  UnmappedIdentity({
+    this.externalIdentity,
+    this.resolutionStatusCode,
+  });
 
-  UnmappedIdentity.fromJson(core.Map _json) {
-    if (_json.containsKey('externalIdentity')) {
-      externalIdentity = Principal.fromJson(
-          _json['externalIdentity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resolutionStatusCode')) {
-      resolutionStatusCode = _json['resolutionStatusCode'] as core.String;
-    }
-  }
+  UnmappedIdentity.fromJson(core.Map _json)
+      : this(
+          externalIdentity: _json.containsKey('externalIdentity')
+              ? Principal.fromJson(_json['externalIdentity']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resolutionStatusCode: _json.containsKey('resolutionStatusCode')
+              ? _json['resolutionStatusCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (externalIdentity != null)
-          'externalIdentity': externalIdentity!.toJson(),
+        if (externalIdentity != null) 'externalIdentity': externalIdentity!,
         if (resolutionStatusCode != null)
           'resolutionStatusCode': resolutionStatusCode!,
       };
@@ -8284,24 +9051,28 @@ class UnreserveItemsRequest {
   /// Name of a queue to unreserve items from.
   core.String? queue;
 
-  UnreserveItemsRequest();
+  UnreserveItemsRequest({
+    this.connectorName,
+    this.debugOptions,
+    this.queue,
+  });
 
-  UnreserveItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('connectorName')) {
-      connectorName = _json['connectorName'] as core.String;
-    }
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('queue')) {
-      queue = _json['queue'] as core.String;
-    }
-  }
+  UnreserveItemsRequest.fromJson(core.Map _json)
+      : this(
+          connectorName: _json.containsKey('connectorName')
+              ? _json['connectorName'] as core.String
+              : null,
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          queue:
+              _json.containsKey('queue') ? _json['queue'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (connectorName != null) 'connectorName': connectorName!,
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
         if (queue != null) 'queue': queue!,
       };
 }
@@ -8311,22 +9082,26 @@ class UpdateDataSourceRequest {
   DebugOptions? debugOptions;
   DataSource? source;
 
-  UpdateDataSourceRequest();
+  UpdateDataSourceRequest({
+    this.debugOptions,
+    this.source,
+  });
 
-  UpdateDataSourceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('source')) {
-      source = DataSource.fromJson(
-          _json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  UpdateDataSourceRequest.fromJson(core.Map _json)
+      : this(
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          source: _json.containsKey('source')
+              ? DataSource.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
-        if (source != null) 'source': source!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
+        if (source != null) 'source': source!,
       };
 }
 
@@ -8341,49 +9116,80 @@ class UpdateSchemaRequest {
   /// registered with the data source, even if valid.
   core.bool? validateOnly;
 
-  UpdateSchemaRequest();
+  UpdateSchemaRequest({
+    this.debugOptions,
+    this.schema,
+    this.validateOnly,
+  });
 
-  UpdateSchemaRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('debugOptions')) {
-      debugOptions = DebugOptions.fromJson(
-          _json['debugOptions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('schema')) {
-      schema = Schema.fromJson(
-          _json['schema'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('validateOnly')) {
-      validateOnly = _json['validateOnly'] as core.bool;
-    }
-  }
+  UpdateSchemaRequest.fromJson(core.Map _json)
+      : this(
+          debugOptions: _json.containsKey('debugOptions')
+              ? DebugOptions.fromJson(
+                  _json['debugOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+          schema: _json.containsKey('schema')
+              ? Schema.fromJson(
+                  _json['schema'] as core.Map<core.String, core.dynamic>)
+              : null,
+          validateOnly: _json.containsKey('validateOnly')
+              ? _json['validateOnly'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (debugOptions != null) 'debugOptions': debugOptions!.toJson(),
-        if (schema != null) 'schema': schema!.toJson(),
+        if (debugOptions != null) 'debugOptions': debugOptions!,
+        if (schema != null) 'schema': schema!,
         if (validateOnly != null) 'validateOnly': validateOnly!,
       };
 }
 
 /// Represents an upload session reference.
 ///
-/// This reference is created via upload method. Updating of item content may
-/// refer to this uploaded content via contentDataRef.
+/// This reference is created via upload method. This reference is valid for 30
+/// days after its creation. Updating of item content may refer to this uploaded
+/// content via contentDataRef.
 class UploadItemRef {
   /// Name of the content reference.
   ///
   /// The maximum length is 2048 characters.
   core.String? name;
 
-  UploadItemRef();
+  UploadItemRef({
+    this.name,
+  });
 
-  UploadItemRef.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  UploadItemRef.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
+      };
+}
+
+class VPCSettings {
+  /// The resource name of the GCP Project to be used for VPC SC policy check.
+  ///
+  /// VPC security settings on this project will be honored for Cloud Search
+  /// APIs after project_name has been updated through CustomerService. Format:
+  /// projects/{project_id}
+  core.String? project;
+
+  VPCSettings({
+    this.project,
+  });
+
+  VPCSettings.fromJson(core.Map _json)
+      : this(
+          project: _json.containsKey('project')
+              ? _json['project'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (project != null) 'project': project!,
       };
 }
 
@@ -8396,33 +9202,41 @@ class Value {
   core.String? stringValue;
   core.String? timestampValue;
 
-  Value();
+  Value({
+    this.booleanValue,
+    this.dateValue,
+    this.doubleValue,
+    this.integerValue,
+    this.stringValue,
+    this.timestampValue,
+  });
 
-  Value.fromJson(core.Map _json) {
-    if (_json.containsKey('booleanValue')) {
-      booleanValue = _json['booleanValue'] as core.bool;
-    }
-    if (_json.containsKey('dateValue')) {
-      dateValue = Date.fromJson(
-          _json['dateValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('doubleValue')) {
-      doubleValue = (_json['doubleValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('integerValue')) {
-      integerValue = _json['integerValue'] as core.String;
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-    if (_json.containsKey('timestampValue')) {
-      timestampValue = _json['timestampValue'] as core.String;
-    }
-  }
+  Value.fromJson(core.Map _json)
+      : this(
+          booleanValue: _json.containsKey('booleanValue')
+              ? _json['booleanValue'] as core.bool
+              : null,
+          dateValue: _json.containsKey('dateValue')
+              ? Date.fromJson(
+                  _json['dateValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          doubleValue: _json.containsKey('doubleValue')
+              ? (_json['doubleValue'] as core.num).toDouble()
+              : null,
+          integerValue: _json.containsKey('integerValue')
+              ? _json['integerValue'] as core.String
+              : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+          timestampValue: _json.containsKey('timestampValue')
+              ? _json['timestampValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (booleanValue != null) 'booleanValue': booleanValue!,
-        if (dateValue != null) 'dateValue': dateValue!.toJson(),
+        if (dateValue != null) 'dateValue': dateValue!,
         if (doubleValue != null) 'doubleValue': doubleValue!,
         if (integerValue != null) 'integerValue': integerValue!,
         if (stringValue != null) 'stringValue': stringValue!,
@@ -8444,20 +9258,24 @@ class ValueFilter {
   /// The value to be compared with.
   Value? value;
 
-  ValueFilter();
+  ValueFilter({
+    this.operatorName,
+    this.value,
+  });
 
-  ValueFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('operatorName')) {
-      operatorName = _json['operatorName'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value =
-          Value.fromJson(_json['value'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ValueFilter.fromJson(core.Map _json)
+      : this(
+          operatorName: _json.containsKey('operatorName')
+              ? _json['operatorName'] as core.String
+              : null,
+          value: _json.containsKey('value')
+              ? Value.fromJson(
+                  _json['value'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operatorName != null) 'operatorName': operatorName!,
-        if (value != null) 'value': value!.toJson(),
+        if (value != null) 'value': value!,
       };
 }

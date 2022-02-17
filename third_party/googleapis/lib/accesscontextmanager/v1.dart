@@ -37,6 +37,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -45,7 +47,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// An API for setting attribute based access control to requests to GCP
 /// services.
 class AccessContextManagerApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -73,12 +76,12 @@ class AccessPoliciesResource {
 
   AccessPoliciesResource(commons.ApiRequester client) : _requester = client;
 
-  /// Create an `AccessPolicy`.
+  /// Creates an access policy.
   ///
-  /// Fails if this organization already has a `AccessPolicy`. The longrunning
-  /// Operation will have a successful status once the `AccessPolicy` has
-  /// propagated to long-lasting storage. Syntactic and basic semantic errors
-  /// will be returned in `metadata` as a BadRequest proto.
+  /// This method fails if the organization already has an access policy. The
+  /// long-running operation has a successful status after the access policy
+  /// propagates to long-lasting storage. Syntactic and basic semantic errors
+  /// are returned in `metadata` as a BadRequest proto.
   ///
   /// [request] - The metadata request object.
   ///
@@ -98,7 +101,7 @@ class AccessPoliciesResource {
     AccessPolicy request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -114,10 +117,10 @@ class AccessPoliciesResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Delete an AccessPolicy by resource name.
+  /// Deletes an access policy based on the resource name.
   ///
-  /// The longrunning Operation will have a successful status once the
-  /// AccessPolicy has been removed from long-lasting storage.
+  /// The long-running operation has a successful status after the access policy
+  /// is removed from long-lasting storage.
   ///
   /// Request parameters:
   ///
@@ -153,7 +156,7 @@ class AccessPoliciesResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Get an AccessPolicy by name.
+  /// Returns an access policy based on the name.
   ///
   /// Request parameters:
   ///
@@ -190,7 +193,50 @@ class AccessPoliciesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// List all AccessPolicies under a container.
+  /// Gets the IAM policy for the specified Access Context Manager access
+  /// policy.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern `^accessPolicies/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> getIamPolicy(
+    GetIamPolicyRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':getIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists all access policies in an organization.
   ///
   /// Request parameters:
   ///
@@ -237,19 +283,17 @@ class AccessPoliciesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update an AccessPolicy.
+  /// Updates an access policy.
   ///
-  /// The longrunning Operation from this RPC will have a successful status once
-  /// the changes to the AccessPolicy have propagated to long-lasting storage.
-  /// Syntactic and basic semantic errors will be returned in `metadata` as a
-  /// BadRequest proto.
+  /// The long-running operation from this RPC has a successful status after the
+  /// changes to the access policy propagate to long-lasting storage.
   ///
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
   ///
   /// [name] - Output only. Resource name of the `AccessPolicy`. Format:
-  /// `accessPolicies/{policy_id}`
+  /// `accessPolicies/{access_policy}`
   /// Value must have pattern `^accessPolicies/\[^/\]+$`.
   ///
   /// [updateMask] - Required. Mask to control which fields get updated. Must be
@@ -271,7 +315,7 @@ class AccessPoliciesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -287,6 +331,101 @@ class AccessPoliciesResource {
     );
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
+
+  /// Sets the IAM policy for the specified Access Context Manager access
+  /// policy.
+  ///
+  /// This method replaces the existing IAM policy on the access policy. The IAM
+  /// policy controls the set of users who can perform specific operations on
+  /// the Access Context Manager access policy.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// specified. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern `^accessPolicies/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> setIamPolicy(
+    SetIamPolicyRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':setIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns the IAM permissions that the caller has on the specified Access
+  /// Context Manager resource.
+  ///
+  /// The resource can be an AccessPolicy, AccessLevel, or ServicePerimeter.
+  /// This method does not support other resources.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy detail is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern `^accessPolicies/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TestIamPermissionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TestIamPermissionsResponse> testIamPermissions(
+    TestIamPermissionsRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$resource') + ':testIamPermissions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class AccessPoliciesAccessLevelsResource {
@@ -295,12 +434,11 @@ class AccessPoliciesAccessLevelsResource {
   AccessPoliciesAccessLevelsResource(commons.ApiRequester client)
       : _requester = client;
 
-  /// Create an Access Level.
+  /// Creates an access level.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the Access Level has propagated to long-lasting storage. Access Levels
-  /// containing errors will result in an error response for the first error
-  /// encountered.
+  /// The long-running operation from this RPC has a successful status after the
+  /// access level propagates to long-lasting storage. If access levels contain
+  /// errors, an error response is returned for the first error encountered.
   ///
   /// [request] - The metadata request object.
   ///
@@ -325,7 +463,7 @@ class AccessPoliciesAccessLevelsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -341,10 +479,10 @@ class AccessPoliciesAccessLevelsResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Delete an Access Level by resource name.
+  /// Deletes an access level based on the resource name.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the Access Level has been removed from long-lasting storage.
+  /// The long-running operation from this RPC has a successful status after the
+  /// access level has been removed from long-lasting storage.
   ///
   /// Request parameters:
   ///
@@ -380,7 +518,7 @@ class AccessPoliciesAccessLevelsResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Get an Access Level by resource name.
+  /// Gets an access level based on the resource name.
   ///
   /// Request parameters:
   ///
@@ -432,7 +570,7 @@ class AccessPoliciesAccessLevelsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// List all Access Levels for an access policy.
+  /// Lists all access levels for an access policy.
   ///
   /// Request parameters:
   ///
@@ -490,12 +628,12 @@ class AccessPoliciesAccessLevelsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update an Access Level.
+  /// Updates an access level.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the changes to the Access Level have propagated to long-lasting storage.
-  /// Access Levels containing errors will result in an error response for the
-  /// first error encountered.
+  /// The long-running operation from this RPC has a successful status after the
+  /// changes to the access level propagate to long-lasting storage. If access
+  /// levels contain errors, an error response is returned for the first error
+  /// encountered.
   ///
   /// [request] - The metadata request object.
   ///
@@ -503,8 +641,8 @@ class AccessPoliciesAccessLevelsResource {
   ///
   /// [name] - Required. Resource name for the Access Level. The `short_name`
   /// component must begin with a letter and only include alphanumeric and '_'.
-  /// Format: `accessPolicies/{policy_id}/accessLevels/{short_name}`. The
-  /// maximum length of the `short_name` component is 50 characters.
+  /// Format: `accessPolicies/{access_policy}/accessLevels/{access_level}`. The
+  /// maximum length of the `access_level` component is 50 characters.
   /// Value must have pattern `^accessPolicies/\[^/\]+/accessLevels/\[^/\]+$`.
   ///
   /// [updateMask] - Required. Mask to control which fields get updated. Must be
@@ -526,7 +664,7 @@ class AccessPoliciesAccessLevelsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -543,16 +681,16 @@ class AccessPoliciesAccessLevelsResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Replace all existing Access Levels in an Access Policy with the Access
-  /// Levels provided.
+  /// Replaces all existing access levels in an access policy with the access
+  /// levels provided.
   ///
-  /// This is done atomically. The longrunning operation from this RPC will have
-  /// a successful status once all replacements have propagated to long-lasting
-  /// storage. Replacements containing errors will result in an error response
-  /// for the first error encountered. Replacement will be cancelled on error,
-  /// existing Access Levels will not be affected. Operation.response field will
-  /// contain ReplaceAccessLevelsResponse. Removing Access Levels contained in
-  /// existing Service Perimeters will result in error.
+  /// This is done atomically. The long-running operation from this RPC has a
+  /// successful status after all replacements propagate to long-lasting
+  /// storage. If the replacement contains errors, an error response is returned
+  /// for the first error encountered. Upon error, the replacement is cancelled,
+  /// and existing access levels are not affected. The Operation.response field
+  /// contains ReplaceAccessLevelsResponse. Removing access levels contained in
+  /// existing service perimeters result in an error.
   ///
   /// [request] - The metadata request object.
   ///
@@ -577,7 +715,7 @@ class AccessPoliciesAccessLevelsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -593,6 +731,54 @@ class AccessPoliciesAccessLevelsResource {
     );
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
+
+  /// Returns the IAM permissions that the caller has on the specified Access
+  /// Context Manager resource.
+  ///
+  /// The resource can be an AccessPolicy, AccessLevel, or ServicePerimeter.
+  /// This method does not support other resources.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy detail is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern `^accessPolicies/\[^/\]+/accessLevels/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TestIamPermissionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TestIamPermissionsResponse> testIamPermissions(
+    TestIamPermissionsRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$resource') + ':testIamPermissions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class AccessPoliciesServicePerimetersResource {
@@ -601,19 +787,19 @@ class AccessPoliciesServicePerimetersResource {
   AccessPoliciesServicePerimetersResource(commons.ApiRequester client)
       : _requester = client;
 
-  /// Commit the dry-run spec for all the Service Perimeters in an Access
-  /// Policy.
+  /// Commits the dry-run specification for all the service perimeters in an
+  /// access policy.
   ///
-  /// A commit operation on a Service Perimeter involves copying its `spec`
-  /// field to that Service Perimeter's `status` field. Only Service Perimeters
-  /// with `use_explicit_dry_run_spec` field set to true are affected by a
-  /// commit operation. The longrunning operation from this RPC will have a
-  /// successful status once the dry-run specs for all the Service Perimeters
-  /// have been committed. If a commit fails, it will cause the longrunning
-  /// operation to return an error response and the entire commit operation will
-  /// be cancelled. When successful, Operation.response field will contain
-  /// CommitServicePerimetersResponse. The `dry_run` and the `spec` fields will
-  /// be cleared after a successful commit operation.
+  /// A commit operation on a service perimeter involves copying its `spec`
+  /// field to the `status` field of the service perimeter. Only service
+  /// perimeters with `use_explicit_dry_run_spec` field set to true are affected
+  /// by a commit operation. The long-running operation from this RPC has a
+  /// successful status after the dry-run specifications for all the service
+  /// perimeters have been committed. If a commit fails, it causes the
+  /// long-running operation to return an error response and the entire commit
+  /// operation is cancelled. When successful, the Operation.response field
+  /// contains CommitServicePerimetersResponse. The `dry_run` and the `spec`
+  /// fields are cleared after a successful commit operation.
   ///
   /// [request] - The metadata request object.
   ///
@@ -639,7 +825,7 @@ class AccessPoliciesServicePerimetersResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -656,12 +842,12 @@ class AccessPoliciesServicePerimetersResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Create a Service Perimeter.
+  /// Creates a service perimeter.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the Service Perimeter has propagated to long-lasting storage. Service
-  /// Perimeters containing errors will result in an error response for the
-  /// first error encountered.
+  /// The long-running operation from this RPC has a successful status after the
+  /// service perimeter propagates to long-lasting storage. If a service
+  /// perimeter contains errors, an error response is returned for the first
+  /// error encountered.
   ///
   /// [request] - The metadata request object.
   ///
@@ -686,7 +872,7 @@ class AccessPoliciesServicePerimetersResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -702,10 +888,10 @@ class AccessPoliciesServicePerimetersResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Delete a Service Perimeter by resource name.
+  /// Deletes a service perimeter based on the resource name.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the Service Perimeter has been removed from long-lasting storage.
+  /// The long-running operation from this RPC has a successful status after the
+  /// service perimeter is removed from long-lasting storage.
   ///
   /// Request parameters:
   ///
@@ -742,7 +928,7 @@ class AccessPoliciesServicePerimetersResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Get a Service Perimeter by resource name.
+  /// Gets a service perimeter based on the resource name.
   ///
   /// Request parameters:
   ///
@@ -780,7 +966,7 @@ class AccessPoliciesServicePerimetersResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// List all Service Perimeters for an access policy.
+  /// Lists all service perimeters for an access policy.
   ///
   /// Request parameters:
   ///
@@ -827,12 +1013,12 @@ class AccessPoliciesServicePerimetersResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a Service Perimeter.
+  /// Updates a service perimeter.
   ///
-  /// The longrunning operation from this RPC will have a successful status once
-  /// the changes to the Service Perimeter have propagated to long-lasting
-  /// storage. Service Perimeter containing errors will result in an error
-  /// response for the first error encountered.
+  /// The long-running operation from this RPC has a successful status after the
+  /// service perimeter propagates to long-lasting storage. If a service
+  /// perimeter contains errors, an error response is returned for the first
+  /// error encountered.
   ///
   /// [request] - The metadata request object.
   ///
@@ -841,7 +1027,7 @@ class AccessPoliciesServicePerimetersResource {
   /// [name] - Required. Resource name for the ServicePerimeter. The
   /// `short_name` component must begin with a letter and only include
   /// alphanumeric and '_'. Format:
-  /// `accessPolicies/{policy_id}/servicePerimeters/{short_name}`
+  /// `accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}`
   /// Value must have pattern
   /// `^accessPolicies/\[^/\]+/servicePerimeters/\[^/\]+$`.
   ///
@@ -864,7 +1050,7 @@ class AccessPoliciesServicePerimetersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -881,15 +1067,15 @@ class AccessPoliciesServicePerimetersResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Replace all existing Service Perimeters in an Access Policy with the
-  /// Service Perimeters provided.
+  /// Replace all existing service perimeters in an access policy with the
+  /// service perimeters provided.
   ///
-  /// This is done atomically. The longrunning operation from this RPC will have
-  /// a successful status once all replacements have propagated to long-lasting
-  /// storage. Replacements containing errors will result in an error response
-  /// for the first error encountered. Replacement will be cancelled on error,
-  /// existing Service Perimeters will not be affected. Operation.response field
-  /// will contain ReplaceServicePerimetersResponse.
+  /// This is done atomically. The long-running operation from this RPC has a
+  /// successful status after all replacements propagate to long-lasting
+  /// storage. Replacements containing errors result in an error response for
+  /// the first error encountered. Upon an error, replacement are cancelled and
+  /// existing service perimeters are not affected. The Operation.response field
+  /// contains ReplaceServicePerimetersResponse.
   ///
   /// [request] - The metadata request object.
   ///
@@ -914,7 +1100,7 @@ class AccessPoliciesServicePerimetersResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -930,6 +1116,55 @@ class AccessPoliciesServicePerimetersResource {
       queryParams: _queryParams,
     );
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns the IAM permissions that the caller has on the specified Access
+  /// Context Manager resource.
+  ///
+  /// The resource can be an AccessPolicy, AccessLevel, or ServicePerimeter.
+  /// This method does not support other resources.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy detail is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^accessPolicies/\[^/\]+/servicePerimeters/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TestIamPermissionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TestIamPermissionsResponse> testIamPermissions(
+    TestIamPermissionsRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$resource') + ':testIamPermissions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -971,7 +1206,7 @@ class OperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1139,10 +1374,10 @@ class OrganizationsGcpUserAccessBindingsResource {
 
   /// Creates a GcpUserAccessBinding.
   ///
-  /// If the client specifies a name, the server will ignore it. Fails if a
-  /// resource already exists with the same group_key. Completion of this
-  /// long-running operation does not necessarily signify that the new binding
-  /// is deployed onto all affected users, which may take more time.
+  /// If the client specifies a name, the server ignores it. Fails if a resource
+  /// already exists with the same group_key. Completion of this long-running
+  /// operation does not necessarily signify that the new binding is deployed
+  /// onto all affected users, which may take more time.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1166,7 +1401,7 @@ class OrganizationsGcpUserAccessBindingsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1350,7 +1585,7 @@ class OrganizationsGcpUserAccessBindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1387,8 +1622,8 @@ class AccessLevel {
   ///
   /// The `short_name` component must begin with a letter and only include
   /// alphanumeric and '_'. Format:
-  /// `accessPolicies/{policy_id}/accessLevels/{short_name}`. The maximum length
-  /// of the `short_name` component is 50 characters.
+  /// `accessPolicies/{access_policy}/accessLevels/{access_level}`. The maximum
+  /// length of the `access_level` component is 50 characters.
   ///
   /// Required.
   core.String? name;
@@ -1398,31 +1633,35 @@ class AccessLevel {
   /// Must be unique within the Policy.
   core.String? title;
 
-  AccessLevel();
+  AccessLevel({
+    this.basic,
+    this.custom,
+    this.description,
+    this.name,
+    this.title,
+  });
 
-  AccessLevel.fromJson(core.Map _json) {
-    if (_json.containsKey('basic')) {
-      basic = BasicLevel.fromJson(
-          _json['basic'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('custom')) {
-      custom = CustomLevel.fromJson(
-          _json['custom'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  AccessLevel.fromJson(core.Map _json)
+      : this(
+          basic: _json.containsKey('basic')
+              ? BasicLevel.fromJson(
+                  _json['basic'] as core.Map<core.String, core.dynamic>)
+              : null,
+          custom: _json.containsKey('custom')
+              ? CustomLevel.fromJson(
+                  _json['custom'] as core.Map<core.String, core.dynamic>)
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (basic != null) 'basic': basic!.toJson(),
-        if (custom != null) 'custom': custom!.toJson(),
+        if (basic != null) 'basic': basic!,
+        if (custom != null) 'custom': custom!,
         if (description != null) 'description': description!,
         if (name != null) 'name': name!,
         if (title != null) 'title': title!,
@@ -1435,62 +1674,7 @@ class AccessLevel {
 ///
 /// An access policy is globally visible within an organization, and the
 /// restrictions it specifies apply to all projects within an organization.
-class AccessPolicy {
-  /// An opaque identifier for the current version of the `AccessPolicy`.
-  ///
-  /// This will always be a strongly validated etag, meaning that two Access
-  /// Polices will be identical if and only if their etags are identical.
-  /// Clients should not expect this to be in any specific format.
-  ///
-  /// Output only.
-  core.String? etag;
-
-  /// Resource name of the `AccessPolicy`.
-  ///
-  /// Format: `accessPolicies/{policy_id}`
-  ///
-  /// Output only.
-  core.String? name;
-
-  /// The parent of this `AccessPolicy` in the Cloud Resource Hierarchy.
-  ///
-  /// Currently immutable once created. Format:
-  /// `organizations/{organization_id}`
-  ///
-  /// Required.
-  core.String? parent;
-
-  /// Human readable title.
-  ///
-  /// Does not affect behavior.
-  ///
-  /// Required.
-  core.String? title;
-
-  AccessPolicy();
-
-  AccessPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (etag != null) 'etag': etag!,
-        if (name != null) 'name': name!,
-        if (parent != null) 'parent': parent!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef AccessPolicy = $AccessPolicy;
 
 /// Identification for an API Operation.
 class ApiOperation {
@@ -1509,27 +1693,88 @@ class ApiOperation {
   /// methods AND permissions for all services.
   core.String? serviceName;
 
-  ApiOperation();
+  ApiOperation({
+    this.methodSelectors,
+    this.serviceName,
+  });
 
-  ApiOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('methodSelectors')) {
-      methodSelectors = (_json['methodSelectors'] as core.List)
-          .map<MethodSelector>((value) => MethodSelector.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-  }
+  ApiOperation.fromJson(core.Map _json)
+      : this(
+          methodSelectors: _json.containsKey('methodSelectors')
+              ? (_json['methodSelectors'] as core.List)
+                  .map((value) => MethodSelector.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (methodSelectors != null)
-          'methodSelectors':
-              methodSelectors!.map((value) => value.toJson()).toList(),
+        if (methodSelectors != null) 'methodSelectors': methodSelectors!,
         if (serviceName != null) 'serviceName': serviceName!,
       };
 }
+
+/// Specifies the audit configuration for a service.
+///
+/// The configuration determines which permission types are logged, and what
+/// identities, if any, are exempted from logging. An AuditConfig must have one
+/// or more AuditLogConfigs. If there are AuditConfigs for both `allServices`
+/// and a specific service, the union of the two AuditConfigs is used for that
+/// service: the log_types specified in each AuditConfig are enabled, and the
+/// exempted_members in each AuditLogConfig are exempted. Example Policy with
+/// multiple AuditConfigs: { "audit_configs": \[ { "service": "allServices",
+/// "audit_log_configs": \[ { "log_type": "DATA_READ", "exempted_members": \[
+/// "user:jose@example.com" \] }, { "log_type": "DATA_WRITE" }, { "log_type":
+/// "ADMIN_READ" } \] }, { "service": "sampleservice.googleapis.com",
+/// "audit_log_configs": \[ { "log_type": "DATA_READ" }, { "log_type":
+/// "DATA_WRITE", "exempted_members": \[ "user:aliya@example.com" \] } \] } \] }
+/// For sampleservice, this policy enables DATA_READ, DATA_WRITE and ADMIN_READ
+/// logging. It also exempts jose@example.com from DATA_READ logging, and
+/// aliya@example.com from DATA_WRITE logging.
+class AuditConfig {
+  /// The configuration for logging of each type of permission.
+  core.List<AuditLogConfig>? auditLogConfigs;
+
+  /// Specifies a service that will be enabled for audit logging.
+  ///
+  /// For example, `storage.googleapis.com`, `cloudsql.googleapis.com`.
+  /// `allServices` is a special value that covers all services.
+  core.String? service;
+
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
+
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
+        if (service != null) 'service': service!,
+      };
+}
+
+/// Provides the configuration for logging a type of permissions.
+///
+/// Example: { "audit_log_configs": \[ { "log_type": "DATA_READ",
+/// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
+/// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
+/// exempting jose@example.com from DATA_READ logging.
+typedef AuditLogConfig = $AuditLogConfig;
 
 /// `BasicLevel` is an `AccessLevel` using a set of recommended features.
 class BasicLevel {
@@ -1551,37 +1796,109 @@ class BasicLevel {
   /// Required.
   core.List<Condition>? conditions;
 
-  BasicLevel();
+  BasicLevel({
+    this.combiningFunction,
+    this.conditions,
+  });
 
-  BasicLevel.fromJson(core.Map _json) {
-    if (_json.containsKey('combiningFunction')) {
-      combiningFunction = _json['combiningFunction'] as core.String;
-    }
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<Condition>((value) =>
-              Condition.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  BasicLevel.fromJson(core.Map _json)
+      : this(
+          combiningFunction: _json.containsKey('combiningFunction')
+              ? _json['combiningFunction'] as core.String
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (combiningFunction != null) 'combiningFunction': combiningFunction!,
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (conditions != null) 'conditions': conditions!,
+      };
+}
+
+/// Associates `members`, or principals, with a `role`.
+class Binding {
+  /// The condition that is associated with this binding.
+  ///
+  /// If the condition evaluates to `true`, then this binding applies to the
+  /// current request. If the condition evaluates to `false`, then this binding
+  /// does not apply to the current request. However, a different role binding
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
+  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
+  Expr? condition;
+
+  /// Specifies the principals requesting access for a Cloud Platform resource.
+  ///
+  /// `members` can have the following values: * `allUsers`: A special
+  /// identifier that represents anyone who is on the internet; with or without
+  /// a Google account. * `allAuthenticatedUsers`: A special identifier that
+  /// represents anyone who is authenticated with a Google account or a service
+  /// account. * `user:{emailid}`: An email address that represents a specific
+  /// Google account. For example, `alice@example.com` . *
+  /// `serviceAccount:{emailid}`: An email address that represents a service
+  /// account. For example, `my-other-app@appspot.gserviceaccount.com`. *
+  /// `group:{emailid}`: An email address that represents a Google group. For
+  /// example, `admins@example.com`. * `deleted:user:{emailid}?uid={uniqueid}`:
+  /// An email address (plus unique identifier) representing a user that has
+  /// been recently deleted. For example,
+  /// `alice@example.com?uid=123456789012345678901`. If the user is recovered,
+  /// this value reverts to `user:{emailid}` and the recovered user retains the
+  /// role in the binding. * `deleted:serviceAccount:{emailid}?uid={uniqueid}`:
+  /// An email address (plus unique identifier) representing a service account
+  /// that has been recently deleted. For example,
+  /// `my-other-app@appspot.gserviceaccount.com?uid=123456789012345678901`. If
+  /// the service account is undeleted, this value reverts to
+  /// `serviceAccount:{emailid}` and the undeleted service account retains the
+  /// role in the binding. * `deleted:group:{emailid}?uid={uniqueid}`: An email
+  /// address (plus unique identifier) representing a Google group that has been
+  /// recently deleted. For example,
+  /// `admins@example.com?uid=123456789012345678901`. If the group is recovered,
+  /// this value reverts to `group:{emailid}` and the recovered group retains
+  /// the role in the binding. * `domain:{domain}`: The G Suite domain (primary)
+  /// that represents all the users of that domain. For example, `google.com` or
+  /// `example.com`.
+  core.List<core.String>? members;
+
+  /// Role that is assigned to the list of `members`, or principals.
+  ///
+  /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
+  core.String? role;
+
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
+
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (condition != null) 'condition': condition!,
+        if (members != null) 'members': members!,
+        if (role != null) 'role': role!,
       };
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
-
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelOperationRequest = $Empty;
 
 /// A request to commit dry-run specs in all Service Perimeters belonging to an
 /// Access Policy.
@@ -1598,41 +1915,17 @@ class CommitServicePerimetersRequest {
   /// Optional.
   core.String? etag;
 
-  CommitServicePerimetersRequest();
+  CommitServicePerimetersRequest({
+    this.etag,
+  });
 
-  CommitServicePerimetersRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-  }
+  CommitServicePerimetersRequest.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-      };
-}
-
-/// A response to CommitServicePerimetersRequest.
-///
-/// This will be put inside of Operation.response field.
-class CommitServicePerimetersResponse {
-  /// List of all the Service Perimeter instances in the Access Policy.
-  core.List<ServicePerimeter>? servicePerimeters;
-
-  CommitServicePerimetersResponse();
-
-  CommitServicePerimetersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('servicePerimeters')) {
-      servicePerimeters = (_json['servicePerimeters'] as core.List)
-          .map<ServicePerimeter>((value) => ServicePerimeter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (servicePerimeters != null)
-          'servicePerimeters':
-              servicePerimeters!.map((value) => value.toJson()).toList(),
       };
 }
 
@@ -1688,40 +1981,47 @@ class Condition {
   /// "`accessPolicies/MY_POLICY/accessLevels/LEVEL_NAME"`
   core.List<core.String>? requiredAccessLevels;
 
-  Condition();
+  Condition({
+    this.devicePolicy,
+    this.ipSubnetworks,
+    this.members,
+    this.negate,
+    this.regions,
+    this.requiredAccessLevels,
+  });
 
-  Condition.fromJson(core.Map _json) {
-    if (_json.containsKey('devicePolicy')) {
-      devicePolicy = DevicePolicy.fromJson(
-          _json['devicePolicy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('ipSubnetworks')) {
-      ipSubnetworks = (_json['ipSubnetworks'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('negate')) {
-      negate = _json['negate'] as core.bool;
-    }
-    if (_json.containsKey('regions')) {
-      regions = (_json['regions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('requiredAccessLevels')) {
-      requiredAccessLevels = (_json['requiredAccessLevels'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Condition.fromJson(core.Map _json)
+      : this(
+          devicePolicy: _json.containsKey('devicePolicy')
+              ? DevicePolicy.fromJson(
+                  _json['devicePolicy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          ipSubnetworks: _json.containsKey('ipSubnetworks')
+              ? (_json['ipSubnetworks'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          negate:
+              _json.containsKey('negate') ? _json['negate'] as core.bool : null,
+          regions: _json.containsKey('regions')
+              ? (_json['regions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          requiredAccessLevels: _json.containsKey('requiredAccessLevels')
+              ? (_json['requiredAccessLevels'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devicePolicy != null) 'devicePolicy': devicePolicy!.toJson(),
+        if (devicePolicy != null) 'devicePolicy': devicePolicy!,
         if (ipSubnetworks != null) 'ipSubnetworks': ipSubnetworks!,
         if (members != null) 'members': members!,
         if (negate != null) 'negate': negate!,
@@ -1741,17 +2041,20 @@ class CustomLevel {
   /// Required.
   Expr? expr;
 
-  CustomLevel();
+  CustomLevel({
+    this.expr,
+  });
 
-  CustomLevel.fromJson(core.Map _json) {
-    if (_json.containsKey('expr')) {
-      expr =
-          Expr.fromJson(_json['expr'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  CustomLevel.fromJson(core.Map _json)
+      : this(
+          expr: _json.containsKey('expr')
+              ? Expr.fromJson(
+                  _json['expr'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (expr != null) 'expr': expr!.toJson(),
+        if (expr != null) 'expr': expr!,
       };
 }
 
@@ -1788,46 +2091,52 @@ class DevicePolicy {
   /// Defaults to `false`.
   core.bool? requireScreenlock;
 
-  DevicePolicy();
+  DevicePolicy({
+    this.allowedDeviceManagementLevels,
+    this.allowedEncryptionStatuses,
+    this.osConstraints,
+    this.requireAdminApproval,
+    this.requireCorpOwned,
+    this.requireScreenlock,
+  });
 
-  DevicePolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedDeviceManagementLevels')) {
-      allowedDeviceManagementLevels =
-          (_json['allowedDeviceManagementLevels'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('allowedEncryptionStatuses')) {
-      allowedEncryptionStatuses =
-          (_json['allowedEncryptionStatuses'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('osConstraints')) {
-      osConstraints = (_json['osConstraints'] as core.List)
-          .map<OsConstraint>((value) => OsConstraint.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('requireAdminApproval')) {
-      requireAdminApproval = _json['requireAdminApproval'] as core.bool;
-    }
-    if (_json.containsKey('requireCorpOwned')) {
-      requireCorpOwned = _json['requireCorpOwned'] as core.bool;
-    }
-    if (_json.containsKey('requireScreenlock')) {
-      requireScreenlock = _json['requireScreenlock'] as core.bool;
-    }
-  }
+  DevicePolicy.fromJson(core.Map _json)
+      : this(
+          allowedDeviceManagementLevels:
+              _json.containsKey('allowedDeviceManagementLevels')
+                  ? (_json['allowedDeviceManagementLevels'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          allowedEncryptionStatuses:
+              _json.containsKey('allowedEncryptionStatuses')
+                  ? (_json['allowedEncryptionStatuses'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          osConstraints: _json.containsKey('osConstraints')
+              ? (_json['osConstraints'] as core.List)
+                  .map((value) => OsConstraint.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          requireAdminApproval: _json.containsKey('requireAdminApproval')
+              ? _json['requireAdminApproval'] as core.bool
+              : null,
+          requireCorpOwned: _json.containsKey('requireCorpOwned')
+              ? _json['requireCorpOwned'] as core.bool
+              : null,
+          requireScreenlock: _json.containsKey('requireScreenlock')
+              ? _json['requireScreenlock'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowedDeviceManagementLevels != null)
           'allowedDeviceManagementLevels': allowedDeviceManagementLevels!,
         if (allowedEncryptionStatuses != null)
           'allowedEncryptionStatuses': allowedEncryptionStatuses!,
-        if (osConstraints != null)
-          'osConstraints':
-              osConstraints!.map((value) => value.toJson()).toList(),
+        if (osConstraints != null) 'osConstraints': osConstraints!,
         if (requireAdminApproval != null)
           'requireAdminApproval': requireAdminApproval!,
         if (requireCorpOwned != null) 'requireCorpOwned': requireCorpOwned!,
@@ -1838,50 +2147,10 @@ class DevicePolicy {
 /// Defines the conditions under which an EgressPolicy matches a request.
 ///
 /// Conditions based on information about the source of the request. Note that
-/// if the destination of the request is protected by a ServicePerimeter, then
-/// that ServicePerimeter must have an IngressPolicy which allows access in
+/// if the destination of the request is also protected by a ServicePerimeter,
+/// then that ServicePerimeter must have an IngressPolicy which allows access in
 /// order for this request to succeed.
-class EgressFrom {
-  /// A list of identities that are allowed access through this
-  /// \[EgressPolicy\].
-  ///
-  /// Should be in the format of email address. The email address should
-  /// represent individual user or service account only.
-  core.List<core.String>? identities;
-
-  /// Specifies the type of identities that are allowed access to outside the
-  /// perimeter.
-  ///
-  /// If left unspecified, then members of `identities` field will be allowed
-  /// access.
-  /// Possible string values are:
-  /// - "IDENTITY_TYPE_UNSPECIFIED" : No blanket identity group specified.
-  /// - "ANY_IDENTITY" : Authorize access from all identities outside the
-  /// perimeter.
-  /// - "ANY_USER_ACCOUNT" : Authorize access from all human users outside the
-  /// perimeter.
-  /// - "ANY_SERVICE_ACCOUNT" : Authorize access from all service accounts
-  /// outside the perimeter.
-  core.String? identityType;
-
-  EgressFrom();
-
-  EgressFrom.fromJson(core.Map _json) {
-    if (_json.containsKey('identities')) {
-      identities = (_json['identities'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('identityType')) {
-      identityType = _json['identityType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (identities != null) 'identities': identities!,
-        if (identityType != null) 'identityType': identityType!,
-      };
-}
+typedef EgressFrom = $EgressFrom;
 
 /// Policy for egress from perimeter.
 ///
@@ -1906,22 +2175,26 @@ class EgressPolicy {
   /// cause this EgressPolicy to apply.
   EgressTo? egressTo;
 
-  EgressPolicy();
+  EgressPolicy({
+    this.egressFrom,
+    this.egressTo,
+  });
 
-  EgressPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('egressFrom')) {
-      egressFrom = EgressFrom.fromJson(
-          _json['egressFrom'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('egressTo')) {
-      egressTo = EgressTo.fromJson(
-          _json['egressTo'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EgressPolicy.fromJson(core.Map _json)
+      : this(
+          egressFrom: _json.containsKey('egressFrom')
+              ? EgressFrom.fromJson(
+                  _json['egressFrom'] as core.Map<core.String, core.dynamic>)
+              : null,
+          egressTo: _json.containsKey('egressTo')
+              ? EgressTo.fromJson(
+                  _json['egressTo'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (egressFrom != null) 'egressFrom': egressFrom!.toJson(),
-        if (egressTo != null) 'egressTo': egressTo!.toJson(),
+        if (egressFrom != null) 'egressFrom': egressFrom!,
+        if (egressTo != null) 'egressTo': egressTo!,
       };
 }
 
@@ -1929,42 +2202,48 @@ class EgressPolicy {
 ///
 /// Conditions are based on information about the ApiOperation intended to be
 /// performed on the `resources` specified. Note that if the destination of the
-/// request is protected by a ServicePerimeter, then that ServicePerimeter must
-/// have an IngressPolicy which allows access in order for this request to
-/// succeed.
+/// request is also protected by a ServicePerimeter, then that ServicePerimeter
+/// must have an IngressPolicy which allows access in order for this request to
+/// succeed. The request must match `operations` AND `resources` fields in order
+/// to be allowed egress out of the perimeter.
 class EgressTo {
-  /// A list of ApiOperations that this egress rule applies to.
+  /// A list of ApiOperations allowed to be performed by the sources specified
+  /// in the corresponding EgressFrom.
   ///
-  /// A request matches if it contains an operation/service in this list.
+  /// A request matches if it uses an operation/service in this list.
   core.List<ApiOperation>? operations;
 
   /// A list of resources, currently only projects in the form `projects/`, that
-  /// match this to stanza.
+  /// are allowed to be accessed by sources defined in the corresponding
+  /// EgressFrom.
   ///
   /// A request matches if it contains a resource in this list. If `*` is
-  /// specified for resources, then this EgressTo rule will authorize access to
-  /// all resources outside the perimeter.
+  /// specified for `resources`, then this EgressTo rule will authorize access
+  /// to all resources outside the perimeter.
   core.List<core.String>? resources;
 
-  EgressTo();
+  EgressTo({
+    this.operations,
+    this.resources,
+  });
 
-  EgressTo.fromJson(core.Map _json) {
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<ApiOperation>((value) => ApiOperation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  EgressTo.fromJson(core.Map _json)
+      : this(
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => ApiOperation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
         if (resources != null) 'resources': resources!,
       };
 }
@@ -1976,15 +2255,7 @@ class EgressTo {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -1992,7 +2263,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -2004,56 +2275,7 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Restricts access to Cloud Console and Google Cloud APIs for a set of users
 /// using Context-Aware Access.
@@ -2089,21 +2311,24 @@ class GcpUserAccessBinding {
   /// Immutable.
   core.String? name;
 
-  GcpUserAccessBinding();
+  GcpUserAccessBinding({
+    this.accessLevels,
+    this.groupKey,
+    this.name,
+  });
 
-  GcpUserAccessBinding.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('groupKey')) {
-      groupKey = _json['groupKey'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  GcpUserAccessBinding.fromJson(core.Map _json)
+      : this(
+          accessLevels: _json.containsKey('accessLevels')
+              ? (_json['accessLevels'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          groupKey: _json.containsKey('groupKey')
+              ? _json['groupKey'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessLevels != null) 'accessLevels': accessLevels!,
@@ -2112,9 +2337,37 @@ class GcpUserAccessBinding {
       };
 }
 
+/// Request message for `GetIamPolicy` method.
+class GetIamPolicyRequest {
+  /// OPTIONAL: A `GetPolicyOptions` object for specifying options to
+  /// `GetIamPolicy`.
+  GetPolicyOptions? options;
+
+  GetIamPolicyRequest({
+    this.options,
+  });
+
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (options != null) 'options': options!,
+      };
+}
+
+/// Encapsulates settings provided to GetIamPolicy.
+typedef GetPolicyOptions = $GetPolicyOptions;
+
 /// Defines the conditions under which an IngressPolicy matches a request.
 ///
-/// Conditions are based on information about the source of the request.
+/// Conditions are based on information about the source of the request. The
+/// request must satisfy what is defined in `sources` AND identity related
+/// fields in order to match.
 class IngressFrom {
   /// A list of identities that are allowed access through this ingress policy.
   ///
@@ -2140,30 +2393,34 @@ class IngressFrom {
   /// Sources that this IngressPolicy authorizes access from.
   core.List<IngressSource>? sources;
 
-  IngressFrom();
+  IngressFrom({
+    this.identities,
+    this.identityType,
+    this.sources,
+  });
 
-  IngressFrom.fromJson(core.Map _json) {
-    if (_json.containsKey('identities')) {
-      identities = (_json['identities'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('identityType')) {
-      identityType = _json['identityType'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<IngressSource>((value) => IngressSource.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  IngressFrom.fromJson(core.Map _json)
+      : this(
+          identities: _json.containsKey('identities')
+              ? (_json['identities'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          identityType: _json.containsKey('identityType')
+              ? _json['identityType'] as core.String
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => IngressSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (identities != null) 'identities': identities!,
         if (identityType != null) 'identityType': identityType!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
       };
 }
 
@@ -2188,102 +2445,72 @@ class IngressPolicy {
   /// cause this IngressPolicy to apply.
   IngressTo? ingressTo;
 
-  IngressPolicy();
+  IngressPolicy({
+    this.ingressFrom,
+    this.ingressTo,
+  });
 
-  IngressPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('ingressFrom')) {
-      ingressFrom = IngressFrom.fromJson(
-          _json['ingressFrom'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('ingressTo')) {
-      ingressTo = IngressTo.fromJson(
-          _json['ingressTo'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  IngressPolicy.fromJson(core.Map _json)
+      : this(
+          ingressFrom: _json.containsKey('ingressFrom')
+              ? IngressFrom.fromJson(
+                  _json['ingressFrom'] as core.Map<core.String, core.dynamic>)
+              : null,
+          ingressTo: _json.containsKey('ingressTo')
+              ? IngressTo.fromJson(
+                  _json['ingressTo'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (ingressFrom != null) 'ingressFrom': ingressFrom!.toJson(),
-        if (ingressTo != null) 'ingressTo': ingressTo!.toJson(),
+        if (ingressFrom != null) 'ingressFrom': ingressFrom!,
+        if (ingressTo != null) 'ingressTo': ingressTo!,
       };
 }
 
 /// The source that IngressPolicy authorizes access from.
-class IngressSource {
-  /// An AccessLevel resource name that allow resources within the
-  /// ServicePerimeters to be accessed from the internet.
-  ///
-  /// AccessLevels listed must be in the same policy as this ServicePerimeter.
-  /// Referencing a nonexistent AccessLevel will cause an error. If no
-  /// AccessLevel names are listed, resources within the perimeter can only be
-  /// accessed via Google Cloud calls with request origins within the perimeter.
-  /// Example: `accessPolicies/MY_POLICY/accessLevels/MY_LEVEL`. If `*` is
-  /// specified, then all IngressSources will be allowed.
-  core.String? accessLevel;
-
-  /// A Google Cloud resource that is allowed to ingress the perimeter.
-  ///
-  /// Requests from these resources will be allowed to access perimeter data.
-  /// Currently only projects are allowed. Format: `projects/{project_number}`
-  /// The project may be in any Google Cloud organization, not just the
-  /// organization that the perimeter is defined in. `*` is not allowed, the
-  /// case of allowing all Google Cloud resources only is not supported.
-  core.String? resource;
-
-  IngressSource();
-
-  IngressSource.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevel')) {
-      accessLevel = _json['accessLevel'] as core.String;
-    }
-    if (_json.containsKey('resource')) {
-      resource = _json['resource'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (accessLevel != null) 'accessLevel': accessLevel!,
-        if (resource != null) 'resource': resource!,
-      };
-}
+typedef IngressSource = $IngressSource;
 
 /// Defines the conditions under which an IngressPolicy matches a request.
 ///
 /// Conditions are based on information about the ApiOperation intended to be
-/// performed on the destination of the request.
+/// performed on the target resource of the request. The request must satisfy
+/// what is defined in `operations` AND `resources` in order to match.
 class IngressTo {
-  /// A list of ApiOperations the sources specified in corresponding IngressFrom
-  /// are allowed to perform in this ServicePerimeter.
+  /// A list of ApiOperations allowed to be performed by the sources specified
+  /// in corresponding IngressFrom in this ServicePerimeter.
   core.List<ApiOperation>? operations;
 
   /// A list of resources, currently only projects in the form `projects/`,
   /// protected by this ServicePerimeter that are allowed to be accessed by
   /// sources defined in the corresponding IngressFrom.
   ///
-  /// A request matches if it contains a resource in this list. If `*` is
-  /// specified for resources, then this IngressTo rule will authorize access to
-  /// all resources inside the perimeter, provided that the request also matches
-  /// the `operations` field.
+  /// If a single `*` is specified, then access to all resources inside the
+  /// perimeter are allowed.
   core.List<core.String>? resources;
 
-  IngressTo();
+  IngressTo({
+    this.operations,
+    this.resources,
+  });
 
-  IngressTo.fromJson(core.Map _json) {
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<ApiOperation>((value) => ApiOperation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  IngressTo.fromJson(core.Map _json)
+      : this(
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => ApiOperation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
         if (resources != null) 'resources': resources!,
       };
 }
@@ -2298,23 +2525,26 @@ class ListAccessLevelsResponse {
   /// If the value is empty, no further results remain.
   core.String? nextPageToken;
 
-  ListAccessLevelsResponse();
+  ListAccessLevelsResponse({
+    this.accessLevels,
+    this.nextPageToken,
+  });
 
-  ListAccessLevelsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<AccessLevel>((value) => AccessLevel.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAccessLevelsResponse.fromJson(core.Map _json)
+      : this(
+          accessLevels: _json.containsKey('accessLevels')
+              ? (_json['accessLevels'] as core.List)
+                  .map((value) => AccessLevel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accessLevels != null)
-          'accessLevels': accessLevels!.map((value) => value.toJson()).toList(),
+        if (accessLevels != null) 'accessLevels': accessLevels!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2329,24 +2559,26 @@ class ListAccessPoliciesResponse {
   /// If the value is empty, no further results remain.
   core.String? nextPageToken;
 
-  ListAccessPoliciesResponse();
+  ListAccessPoliciesResponse({
+    this.accessPolicies,
+    this.nextPageToken,
+  });
 
-  ListAccessPoliciesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accessPolicies')) {
-      accessPolicies = (_json['accessPolicies'] as core.List)
-          .map<AccessPolicy>((value) => AccessPolicy.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAccessPoliciesResponse.fromJson(core.Map _json)
+      : this(
+          accessPolicies: _json.containsKey('accessPolicies')
+              ? (_json['accessPolicies'] as core.List)
+                  .map((value) => AccessPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accessPolicies != null)
-          'accessPolicies':
-              accessPolicies!.map((value) => value.toJson()).toList(),
+        if (accessPolicies != null) 'accessPolicies': accessPolicies!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2361,24 +2593,27 @@ class ListGcpUserAccessBindingsResponse {
   /// If blank, there are no more items.
   core.String? nextPageToken;
 
-  ListGcpUserAccessBindingsResponse();
+  ListGcpUserAccessBindingsResponse({
+    this.gcpUserAccessBindings,
+    this.nextPageToken,
+  });
 
-  ListGcpUserAccessBindingsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('gcpUserAccessBindings')) {
-      gcpUserAccessBindings = (_json['gcpUserAccessBindings'] as core.List)
-          .map<GcpUserAccessBinding>((value) => GcpUserAccessBinding.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListGcpUserAccessBindingsResponse.fromJson(core.Map _json)
+      : this(
+          gcpUserAccessBindings: _json.containsKey('gcpUserAccessBindings')
+              ? (_json['gcpUserAccessBindings'] as core.List)
+                  .map((value) => GcpUserAccessBinding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (gcpUserAccessBindings != null)
-          'gcpUserAccessBindings':
-              gcpUserAccessBindings!.map((value) => value.toJson()).toList(),
+          'gcpUserAccessBindings': gcpUserAccessBindings!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2391,24 +2626,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -2422,57 +2660,32 @@ class ListServicePerimetersResponse {
   /// List of the Service Perimeter instances.
   core.List<ServicePerimeter>? servicePerimeters;
 
-  ListServicePerimetersResponse();
+  ListServicePerimetersResponse({
+    this.nextPageToken,
+    this.servicePerimeters,
+  });
 
-  ListServicePerimetersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('servicePerimeters')) {
-      servicePerimeters = (_json['servicePerimeters'] as core.List)
-          .map<ServicePerimeter>((value) => ServicePerimeter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListServicePerimetersResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          servicePerimeters: _json.containsKey('servicePerimeters')
+              ? (_json['servicePerimeters'] as core.List)
+                  .map((value) => ServicePerimeter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (servicePerimeters != null)
-          'servicePerimeters':
-              servicePerimeters!.map((value) => value.toJson()).toList(),
+        if (servicePerimeters != null) 'servicePerimeters': servicePerimeters!,
       };
 }
 
 /// An allowed method or permission of a service specified in ApiOperation.
-class MethodSelector {
-  /// Value for `method` should be a valid method name for the corresponding
-  /// `service_name` in ApiOperation.
-  ///
-  /// If `*` used as value for `method`, then ALL methods and permissions are
-  /// allowed.
-  core.String? method;
-
-  /// Value for `permission` should be a valid Cloud IAM permission for the
-  /// corresponding `service_name` in ApiOperation.
-  core.String? permission;
-
-  MethodSelector();
-
-  MethodSelector.fromJson(core.Map _json) {
-    if (_json.containsKey('method')) {
-      method = _json['method'] as core.String;
-    }
-    if (_json.containsKey('permission')) {
-      permission = _json['permission'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (method != null) 'method': method!,
-        if (permission != null) 'permission': permission!,
-      };
-}
+typedef MethodSelector = $MethodSelector;
 
 /// This resource represents a long-running operation that is the result of a
 /// network API call.
@@ -2495,7 +2708,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -2515,42 +2728,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -2558,53 +2764,126 @@ class Operation {
 }
 
 /// A restriction on the OS type and version of devices making requests.
-class OsConstraint {
-  /// The minimum allowed OS version.
+typedef OsConstraint = $OsConstraint;
+
+/// An Identity and Access Management (IAM) policy, which specifies access
+/// controls for Google Cloud resources.
+///
+/// A `Policy` is a collection of `bindings`. A `binding` binds one or more
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
+/// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
+/// **JSON example:** { "bindings": \[ { "role":
+/// "roles/resourcemanager.organizationAdmin", "members": \[
+/// "user:mike@example.com", "group:admins@example.com", "domain:google.com",
+/// "serviceAccount:my-project-id@appspot.gserviceaccount.com" \] }, { "role":
+/// "roles/resourcemanager.organizationViewer", "members": \[
+/// "user:eve@example.com" \], "condition": { "title": "expirable access",
+/// "description": "Does not grant access after Sep 2020", "expression":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
+/// user:mike@example.com - group:admins@example.com - domain:google.com -
+/// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
+/// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
+/// role: roles/resourcemanager.organizationViewer condition: title: expirable
+/// access description: Does not grant access after Sep 2020 expression:
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
+/// version: 3 For a description of IAM and its features, see the
+/// [IAM documentation](https://cloud.google.com/iam/docs/).
+class Policy {
+  /// Specifies cloud audit logging configuration for this policy.
+  core.List<AuditConfig>? auditConfigs;
+
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
-  /// If not set, any version of this OS satisfies the constraint. Format:
-  /// `"major.minor.patch"`. Examples: `"10.5.301"`, `"9.2.1"`.
-  core.String? minimumVersion;
+  /// Optionally, may specify a `condition` that determines how and when the
+  /// `bindings` are applied. Each of the `bindings` must contain at least one
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
+  core.List<Binding>? bindings;
 
-  /// The allowed OS type.
+  /// `etag` is used for optimistic concurrency control as a way to help prevent
+  /// simultaneous updates of a policy from overwriting each other.
   ///
-  /// Required.
-  /// Possible string values are:
-  /// - "OS_UNSPECIFIED" : The operating system of the device is not specified
-  /// or not known.
-  /// - "DESKTOP_MAC" : A desktop Mac operating system.
-  /// - "DESKTOP_WINDOWS" : A desktop Windows operating system.
-  /// - "DESKTOP_LINUX" : A desktop Linux operating system.
-  /// - "DESKTOP_CHROME_OS" : A desktop ChromeOS operating system.
-  /// - "ANDROID" : An Android operating system.
-  /// - "IOS" : An iOS operating system.
-  core.String? osType;
+  /// It is strongly suggested that systems make use of the `etag` in the
+  /// read-modify-write cycle to perform policy updates in order to avoid race
+  /// conditions: An `etag` is returned in the response to `getIamPolicy`, and
+  /// systems are expected to put that etag in the request to `setIamPolicy` to
+  /// ensure that their change will be applied to the same version of the
+  /// policy. **Important:** If you use IAM Conditions, you must include the
+  /// `etag` field whenever you call `setIamPolicy`. If you omit this field,
+  /// then IAM allows you to overwrite a version `3` policy with a version `1`
+  /// policy, and all of the conditions in the version `3` policy are lost.
+  core.String? etag;
+  core.List<core.int> get etagAsBytes => convert.base64.decode(etag!);
 
-  /// Only allows requests from devices with a verified Chrome OS.
-  ///
-  /// Verifications includes requirements that the device is enterprise-managed,
-  /// conformant to domain policies, and the caller has permission to call the
-  /// API targeted by the request.
-  core.bool? requireVerifiedChromeOs;
-
-  OsConstraint();
-
-  OsConstraint.fromJson(core.Map _json) {
-    if (_json.containsKey('minimumVersion')) {
-      minimumVersion = _json['minimumVersion'] as core.String;
-    }
-    if (_json.containsKey('osType')) {
-      osType = _json['osType'] as core.String;
-    }
-    if (_json.containsKey('requireVerifiedChromeOs')) {
-      requireVerifiedChromeOs = _json['requireVerifiedChromeOs'] as core.bool;
-    }
+  set etagAsBytes(core.List<core.int> _bytes) {
+    etag =
+        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
+  /// Specifies the format of the policy.
+  ///
+  /// Valid values are `0`, `1`, and `3`. Requests that specify an invalid value
+  /// are rejected. Any operation that affects conditional role bindings must
+  /// specify version `3`. This requirement applies to the following operations:
+  /// * Getting a policy that includes a conditional role binding * Adding a
+  /// conditional role binding to a policy * Changing a conditional role binding
+  /// in a policy * Removing any role binding, with or without a condition, from
+  /// a policy that includes conditions **Important:** If you use IAM
+  /// Conditions, you must include the `etag` field whenever you call
+  /// `setIamPolicy`. If you omit this field, then IAM allows you to overwrite a
+  /// version `3` policy with a version `1` policy, and all of the conditions in
+  /// the version `3` policy are lost. If a policy does not include any
+  /// conditions, operations on that policy may specify any valid version or
+  /// leave the field unset. To learn which resources support conditions in
+  /// their IAM policies, see the
+  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
+  core.int? version;
+
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
+
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
+
   core.Map<core.String, core.dynamic> toJson() => {
-        if (minimumVersion != null) 'minimumVersion': minimumVersion!,
-        if (osType != null) 'osType': osType!,
-        if (requireVerifiedChromeOs != null)
-          'requireVerifiedChromeOs': requireVerifiedChromeOs!,
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
+        if (etag != null) 'etag': etag!,
+        if (version != null) 'version': version!,
       };
 }
 
@@ -2631,48 +2910,25 @@ class ReplaceAccessLevelsRequest {
   /// Optional.
   core.String? etag;
 
-  ReplaceAccessLevelsRequest();
+  ReplaceAccessLevelsRequest({
+    this.accessLevels,
+    this.etag,
+  });
 
-  ReplaceAccessLevelsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<AccessLevel>((value) => AccessLevel.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-  }
+  ReplaceAccessLevelsRequest.fromJson(core.Map _json)
+      : this(
+          accessLevels: _json.containsKey('accessLevels')
+              ? (_json['accessLevels'] as core.List)
+                  .map((value) => AccessLevel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accessLevels != null)
-          'accessLevels': accessLevels!.map((value) => value.toJson()).toList(),
+        if (accessLevels != null) 'accessLevels': accessLevels!,
         if (etag != null) 'etag': etag!,
-      };
-}
-
-/// A response to ReplaceAccessLevelsRequest.
-///
-/// This will be put inside of Operation.response field.
-class ReplaceAccessLevelsResponse {
-  /// List of the Access Level instances.
-  core.List<AccessLevel>? accessLevels;
-
-  ReplaceAccessLevelsResponse();
-
-  ReplaceAccessLevelsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<AccessLevel>((value) => AccessLevel.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (accessLevels != null)
-          'accessLevels': accessLevels!.map((value) => value.toJson()).toList(),
       };
 }
 
@@ -2699,50 +2955,25 @@ class ReplaceServicePerimetersRequest {
   /// Required.
   core.List<ServicePerimeter>? servicePerimeters;
 
-  ReplaceServicePerimetersRequest();
+  ReplaceServicePerimetersRequest({
+    this.etag,
+    this.servicePerimeters,
+  });
 
-  ReplaceServicePerimetersRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('servicePerimeters')) {
-      servicePerimeters = (_json['servicePerimeters'] as core.List)
-          .map<ServicePerimeter>((value) => ServicePerimeter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ReplaceServicePerimetersRequest.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          servicePerimeters: _json.containsKey('servicePerimeters')
+              ? (_json['servicePerimeters'] as core.List)
+                  .map((value) => ServicePerimeter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (servicePerimeters != null)
-          'servicePerimeters':
-              servicePerimeters!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// A response to ReplaceServicePerimetersRequest.
-///
-/// This will be put inside of Operation.response field.
-class ReplaceServicePerimetersResponse {
-  /// List of the Service Perimeter instances.
-  core.List<ServicePerimeter>? servicePerimeters;
-
-  ReplaceServicePerimetersResponse();
-
-  ReplaceServicePerimetersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('servicePerimeters')) {
-      servicePerimeters = (_json['servicePerimeters'] as core.List)
-          .map<ServicePerimeter>((value) => ServicePerimeter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (servicePerimeters != null)
-          'servicePerimeters':
-              servicePerimeters!.map((value) => value.toJson()).toList(),
+        if (servicePerimeters != null) 'servicePerimeters': servicePerimeters!,
       };
 }
 
@@ -2768,7 +2999,7 @@ class ServicePerimeter {
   ///
   /// The `short_name` component must begin with a letter and only include
   /// alphanumeric and '_'. Format:
-  /// `accessPolicies/{policy_id}/servicePerimeters/{short_name}`
+  /// `accessPolicies/{access_policy}/servicePerimeters/{service_perimeter}`
   ///
   /// Required.
   core.String? name;
@@ -2817,40 +3048,46 @@ class ServicePerimeter {
   /// spec are set to non-default values.
   core.bool? useExplicitDryRunSpec;
 
-  ServicePerimeter();
+  ServicePerimeter({
+    this.description,
+    this.name,
+    this.perimeterType,
+    this.spec,
+    this.status,
+    this.title,
+    this.useExplicitDryRunSpec,
+  });
 
-  ServicePerimeter.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('perimeterType')) {
-      perimeterType = _json['perimeterType'] as core.String;
-    }
-    if (_json.containsKey('spec')) {
-      spec = ServicePerimeterConfig.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = ServicePerimeterConfig.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('useExplicitDryRunSpec')) {
-      useExplicitDryRunSpec = _json['useExplicitDryRunSpec'] as core.bool;
-    }
-  }
+  ServicePerimeter.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          perimeterType: _json.containsKey('perimeterType')
+              ? _json['perimeterType'] as core.String
+              : null,
+          spec: _json.containsKey('spec')
+              ? ServicePerimeterConfig.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? ServicePerimeterConfig.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          useExplicitDryRunSpec: _json.containsKey('useExplicitDryRunSpec')
+              ? _json['useExplicitDryRunSpec'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (name != null) 'name': name!,
         if (perimeterType != null) 'perimeterType': perimeterType!,
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
         if (title != null) 'title': title!,
         if (useExplicitDryRunSpec != null)
           'useExplicitDryRunSpec': useExplicitDryRunSpec!,
@@ -2902,56 +3139,96 @@ class ServicePerimeterConfig {
   /// Configuration for APIs allowed within Perimeter.
   VpcAccessibleServices? vpcAccessibleServices;
 
-  ServicePerimeterConfig();
+  ServicePerimeterConfig({
+    this.accessLevels,
+    this.egressPolicies,
+    this.ingressPolicies,
+    this.resources,
+    this.restrictedServices,
+    this.vpcAccessibleServices,
+  });
 
-  ServicePerimeterConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('egressPolicies')) {
-      egressPolicies = (_json['egressPolicies'] as core.List)
-          .map<EgressPolicy>((value) => EgressPolicy.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('ingressPolicies')) {
-      ingressPolicies = (_json['ingressPolicies'] as core.List)
-          .map<IngressPolicy>((value) => IngressPolicy.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('restrictedServices')) {
-      restrictedServices = (_json['restrictedServices'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('vpcAccessibleServices')) {
-      vpcAccessibleServices = VpcAccessibleServices.fromJson(
-          _json['vpcAccessibleServices']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ServicePerimeterConfig.fromJson(core.Map _json)
+      : this(
+          accessLevels: _json.containsKey('accessLevels')
+              ? (_json['accessLevels'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          egressPolicies: _json.containsKey('egressPolicies')
+              ? (_json['egressPolicies'] as core.List)
+                  .map((value) => EgressPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          ingressPolicies: _json.containsKey('ingressPolicies')
+              ? (_json['ingressPolicies'] as core.List)
+                  .map((value) => IngressPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          restrictedServices: _json.containsKey('restrictedServices')
+              ? (_json['restrictedServices'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          vpcAccessibleServices: _json.containsKey('vpcAccessibleServices')
+              ? VpcAccessibleServices.fromJson(_json['vpcAccessibleServices']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessLevels != null) 'accessLevels': accessLevels!,
-        if (egressPolicies != null)
-          'egressPolicies':
-              egressPolicies!.map((value) => value.toJson()).toList(),
-        if (ingressPolicies != null)
-          'ingressPolicies':
-              ingressPolicies!.map((value) => value.toJson()).toList(),
+        if (egressPolicies != null) 'egressPolicies': egressPolicies!,
+        if (ingressPolicies != null) 'ingressPolicies': ingressPolicies!,
         if (resources != null) 'resources': resources!,
         if (restrictedServices != null)
           'restrictedServices': restrictedServices!,
         if (vpcAccessibleServices != null)
-          'vpcAccessibleServices': vpcAccessibleServices!.toJson(),
+          'vpcAccessibleServices': vpcAccessibleServices!,
+      };
+}
+
+/// Request message for `SetIamPolicy` method.
+class SetIamPolicyRequest {
+  /// REQUIRED: The complete policy to be applied to the `resource`.
+  ///
+  /// The size of the policy is limited to a few 10s of KB. An empty policy is a
+  /// valid policy but certain Cloud Platform services (such as Projects) might
+  /// reject them.
+  Policy? policy;
+
+  /// OPTIONAL: A FieldMask specifying which fields of the policy to modify.
+  ///
+  /// Only the fields in the mask will be modified. If no mask is provided, the
+  /// following default mask is used: `paths: "bindings, etag"`
+  core.String? updateMask;
+
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
+
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (policy != null) 'policy': policy!,
+        if (updateMask != null) 'updateMask': updateMask!,
       };
 }
 
@@ -2962,82 +3239,13 @@ class ServicePerimeterConfig {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
+typedef Status = $Status;
 
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
+/// Request message for `TestIamPermissions` method.
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+/// Response message for `TestIamPermissions` method.
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// Specifies how APIs are allowed to communicate within the Service Perimeter.
-class VpcAccessibleServices {
-  /// The list of APIs usable within the Service Perimeter.
-  ///
-  /// Must be empty unless 'enable_restriction' is True. You can specify a list
-  /// of individual services, as well as include the 'RESTRICTED-SERVICES'
-  /// value, which automatically includes all of the services protected by the
-  /// perimeter.
-  core.List<core.String>? allowedServices;
-
-  /// Whether to restrict API calls within the Service Perimeter to the list of
-  /// APIs specified in 'allowed_services'.
-  core.bool? enableRestriction;
-
-  VpcAccessibleServices();
-
-  VpcAccessibleServices.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedServices')) {
-      allowedServices = (_json['allowedServices'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('enableRestriction')) {
-      enableRestriction = _json['enableRestriction'] as core.bool;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (allowedServices != null) 'allowedServices': allowedServices!,
-        if (enableRestriction != null) 'enableRestriction': enableRestriction!,
-      };
-}
+typedef VpcAccessibleServices = $VpcAccessibleServices;

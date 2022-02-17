@@ -31,13 +31,16 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
 class AssuredworkloadsApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -214,7 +217,7 @@ class OrganizationsLocationsWorkloadsResource {
     core.String? externalId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (externalId != null) 'externalId': [externalId],
       if ($fields != null) 'fields': [$fields],
@@ -406,7 +409,7 @@ class OrganizationsLocationsWorkloadsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -425,63 +428,6 @@ class OrganizationsLocationsWorkloadsResource {
   }
 }
 
-/// Operation metadata to give request details of CreateWorkload.
-class GoogleCloudAssuredworkloadsV1CreateWorkloadOperationMetadata {
-  /// Compliance controls that should be applied to the resources managed by the
-  /// workload.
-  ///
-  /// Optional.
-  /// Possible string values are:
-  /// - "COMPLIANCE_REGIME_UNSPECIFIED" : Unknown compliance regime.
-  /// - "IL4" : Information protection as per DoD IL4 requirements.
-  /// - "CJIS" : Criminal Justice Information Services (CJIS) Security policies.
-  /// - "FEDRAMP_HIGH" : FedRAMP High data protection controls
-  /// - "FEDRAMP_MODERATE" : FedRAMP Moderate data protection controls
-  /// - "US_REGIONAL_ACCESS" : Assured Workloads For US Regions data protection
-  /// controls
-  core.String? complianceRegime;
-
-  /// Time when the operation was created.
-  ///
-  /// Optional.
-  core.String? createTime;
-
-  /// The display name of the workload.
-  ///
-  /// Optional.
-  core.String? displayName;
-
-  /// The parent of the workload.
-  ///
-  /// Optional.
-  core.String? parent;
-
-  GoogleCloudAssuredworkloadsV1CreateWorkloadOperationMetadata();
-
-  GoogleCloudAssuredworkloadsV1CreateWorkloadOperationMetadata.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('complianceRegime')) {
-      complianceRegime = _json['complianceRegime'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (complianceRegime != null) 'complianceRegime': complianceRegime!,
-        if (createTime != null) 'createTime': createTime!,
-        if (displayName != null) 'displayName': displayName!,
-        if (parent != null) 'parent': parent!,
-      };
-}
-
 /// Response of ListWorkloads endpoint.
 class GoogleCloudAssuredworkloadsV1ListWorkloadsResponse {
   /// The next page token.
@@ -492,41 +438,44 @@ class GoogleCloudAssuredworkloadsV1ListWorkloadsResponse {
   /// List of Workloads under a given parent.
   core.List<GoogleCloudAssuredworkloadsV1Workload>? workloads;
 
-  GoogleCloudAssuredworkloadsV1ListWorkloadsResponse();
+  GoogleCloudAssuredworkloadsV1ListWorkloadsResponse({
+    this.nextPageToken,
+    this.workloads,
+  });
 
-  GoogleCloudAssuredworkloadsV1ListWorkloadsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('workloads')) {
-      workloads = (_json['workloads'] as core.List)
-          .map<GoogleCloudAssuredworkloadsV1Workload>((value) =>
-              GoogleCloudAssuredworkloadsV1Workload.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleCloudAssuredworkloadsV1ListWorkloadsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          workloads: _json.containsKey('workloads')
+              ? (_json['workloads'] as core.List)
+                  .map((value) =>
+                      GoogleCloudAssuredworkloadsV1Workload.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (workloads != null)
-          'workloads': workloads!.map((value) => value.toJson()).toList(),
+        if (workloads != null) 'workloads': workloads!,
       };
 }
 
 /// An Workload object for managing highly regulated workloads of cloud
 /// customers.
 class GoogleCloudAssuredworkloadsV1Workload {
-  /// Input only.
-  ///
   /// The billing account used for the resources which are direct children of
-  /// workload. This billing account is initially associated with the resources
-  /// created as part of Workload creation. After the initial creation of these
-  /// resources, the customer can change the assigned billing account. The
-  /// resource name has the form `billingAccounts/{billing_account_id}`. For
-  /// example, `billingAccounts/012345-567890-ABCDEF`.
+  /// workload.
   ///
-  /// Required.
+  /// This billing account is initially associated with the resources created as
+  /// part of Workload creation. After the initial creation of these resources,
+  /// the customer can change the assigned billing account. The resource name
+  /// has the form `billingAccounts/{billing_account_id}`. For example,
+  /// `billingAccounts/012345-567890-ABCDEF`.
+  ///
+  /// Optional.
   core.String? billingAccount;
 
   /// Compliance Regime associated with this workload.
@@ -540,6 +489,12 @@ class GoogleCloudAssuredworkloadsV1Workload {
   /// - "FEDRAMP_MODERATE" : FedRAMP Moderate data protection controls
   /// - "US_REGIONAL_ACCESS" : Assured Workloads For US Regions data protection
   /// controls
+  /// - "HIPAA" : Health Insurance Portability and Accountability Act controls
+  /// - "HITRUST" : Health Information Trust Alliance controls
+  /// - "EU_REGIONS_AND_SUPPORT" : Assured Workloads For EU Regions and Support
+  /// controls
+  /// - "CA_REGIONS_AND_SUPPORT" : Assured Workloads For Canada Regions and
+  /// Support controls
   core.String? complianceRegime;
 
   /// The Workload creation timestamp.
@@ -556,6 +511,13 @@ class GoogleCloudAssuredworkloadsV1Workload {
   /// Required.
   core.String? displayName;
 
+  /// Indicates the sovereignty status of the given workload.
+  ///
+  /// Currently meant to be used by Europe/Canada customers.
+  ///
+  /// Optional.
+  core.bool? enableSovereignControls;
+
   /// ETag of the workload, it is calculated on the basis of the Workload
   /// contents.
   ///
@@ -563,6 +525,15 @@ class GoogleCloudAssuredworkloadsV1Workload {
   ///
   /// Optional.
   core.String? etag;
+
+  /// Represents the KAJ enrollment state of the given workload.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "KAJ_ENROLLMENT_STATE_UNSPECIFIED" : Default State for KAJ Enrollment.
+  /// - "KAJ_ENROLLMENT_STATE_PENDING" : Pending State for KAJ Enrollment.
+  /// - "KAJ_ENROLLMENT_STATE_COMPLETE" : Complete State for KAJ Enrollment.
+  core.String? kajEnrollmentState;
 
   /// Input only.
   ///
@@ -588,11 +559,18 @@ class GoogleCloudAssuredworkloadsV1Workload {
   /// Input only.
   ///
   /// The parent resource for the resources managed by this Assured Workload.
-  /// May be either an organization or a folder. Must be the same or a child of
-  /// the Workload parent. If not specified all resources are created under the
-  /// Workload parent. Formats: folders/{folder_id}
-  /// organizations/{organization_id}
+  /// May be either empty or a folder resource which is a child of the Workload
+  /// parent. If not specified all resources are created under the parent
+  /// organization. Format: folders/{folder_id}
   core.String? provisionedResourcesParent;
+
+  /// Input only.
+  ///
+  /// Resource properties that are used to customize workload resources. These
+  /// properties (such as custom project id) will be used to create workload
+  /// resources if possible. This field is optional.
+  core.List<GoogleCloudAssuredworkloadsV1WorkloadResourceSettings>?
+      resourceSettings;
 
   /// The resources associated with this workload.
   ///
@@ -602,65 +580,112 @@ class GoogleCloudAssuredworkloadsV1Workload {
   /// Output only.
   core.List<GoogleCloudAssuredworkloadsV1WorkloadResourceInfo>? resources;
 
-  GoogleCloudAssuredworkloadsV1Workload();
+  /// Represents the SAA enrollment response of the given workload.
+  ///
+  /// SAA enrollment response is queried during GetWorkload call. In failure
+  /// cases, user friendly error message is shown in SAA details page.
+  ///
+  /// Output only.
+  GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse?
+      saaEnrollmentResponse;
 
-  GoogleCloudAssuredworkloadsV1Workload.fromJson(core.Map _json) {
-    if (_json.containsKey('billingAccount')) {
-      billingAccount = _json['billingAccount'] as core.String;
-    }
-    if (_json.containsKey('complianceRegime')) {
-      complianceRegime = _json['complianceRegime'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings = GoogleCloudAssuredworkloadsV1WorkloadKMSSettings.fromJson(
-          _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('provisionedResourcesParent')) {
-      provisionedResourcesParent =
-          _json['provisionedResourcesParent'] as core.String;
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<GoogleCloudAssuredworkloadsV1WorkloadResourceInfo>((value) =>
-              GoogleCloudAssuredworkloadsV1WorkloadResourceInfo.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleCloudAssuredworkloadsV1Workload({
+    this.billingAccount,
+    this.complianceRegime,
+    this.createTime,
+    this.displayName,
+    this.enableSovereignControls,
+    this.etag,
+    this.kajEnrollmentState,
+    this.kmsSettings,
+    this.labels,
+    this.name,
+    this.provisionedResourcesParent,
+    this.resourceSettings,
+    this.resources,
+    this.saaEnrollmentResponse,
+  });
+
+  GoogleCloudAssuredworkloadsV1Workload.fromJson(core.Map _json)
+      : this(
+          billingAccount: _json.containsKey('billingAccount')
+              ? _json['billingAccount'] as core.String
+              : null,
+          complianceRegime: _json.containsKey('complianceRegime')
+              ? _json['complianceRegime'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          enableSovereignControls: _json.containsKey('enableSovereignControls')
+              ? _json['enableSovereignControls'] as core.bool
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          kajEnrollmentState: _json.containsKey('kajEnrollmentState')
+              ? _json['kajEnrollmentState'] as core.String
+              : null,
+          kmsSettings: _json.containsKey('kmsSettings')
+              ? GoogleCloudAssuredworkloadsV1WorkloadKMSSettings.fromJson(
+                  _json['kmsSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          provisionedResourcesParent:
+              _json.containsKey('provisionedResourcesParent')
+                  ? _json['provisionedResourcesParent'] as core.String
+                  : null,
+          resourceSettings: _json.containsKey('resourceSettings')
+              ? (_json['resourceSettings'] as core.List)
+                  .map((value) =>
+                      GoogleCloudAssuredworkloadsV1WorkloadResourceSettings
+                          .fromJson(
+                              value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) =>
+                      GoogleCloudAssuredworkloadsV1WorkloadResourceInfo
+                          .fromJson(
+                              value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          saaEnrollmentResponse: _json.containsKey('saaEnrollmentResponse')
+              ? GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse
+                  .fromJson(_json['saaEnrollmentResponse']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (billingAccount != null) 'billingAccount': billingAccount!,
         if (complianceRegime != null) 'complianceRegime': complianceRegime!,
         if (createTime != null) 'createTime': createTime!,
         if (displayName != null) 'displayName': displayName!,
+        if (enableSovereignControls != null)
+          'enableSovereignControls': enableSovereignControls!,
         if (etag != null) 'etag': etag!,
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
+        if (kajEnrollmentState != null)
+          'kajEnrollmentState': kajEnrollmentState!,
+        if (kmsSettings != null) 'kmsSettings': kmsSettings!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (provisionedResourcesParent != null)
           'provisionedResourcesParent': provisionedResourcesParent!,
-        if (resources != null)
-          'resources': resources!.map((value) => value.toJson()).toList(),
+        if (resourceSettings != null) 'resourceSettings': resourceSettings!,
+        if (resources != null) 'resources': resources!,
+        if (saaEnrollmentResponse != null)
+          'saaEnrollmentResponse': saaEnrollmentResponse!,
       };
 }
 
@@ -683,16 +708,20 @@ class GoogleCloudAssuredworkloadsV1WorkloadKMSSettings {
   /// Required.
   core.String? rotationPeriod;
 
-  GoogleCloudAssuredworkloadsV1WorkloadKMSSettings();
+  GoogleCloudAssuredworkloadsV1WorkloadKMSSettings({
+    this.nextRotationTime,
+    this.rotationPeriod,
+  });
 
-  GoogleCloudAssuredworkloadsV1WorkloadKMSSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('nextRotationTime')) {
-      nextRotationTime = _json['nextRotationTime'] as core.String;
-    }
-    if (_json.containsKey('rotationPeriod')) {
-      rotationPeriod = _json['rotationPeriod'] as core.String;
-    }
-  }
+  GoogleCloudAssuredworkloadsV1WorkloadKMSSettings.fromJson(core.Map _json)
+      : this(
+          nextRotationTime: _json.containsKey('nextRotationTime')
+              ? _json['nextRotationTime'] as core.String
+              : null,
+          rotationPeriod: _json.containsKey('rotationPeriod')
+              ? _json['rotationPeriod'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextRotationTime != null) 'nextRotationTime': nextRotationTime!,
@@ -710,20 +739,29 @@ class GoogleCloudAssuredworkloadsV1WorkloadResourceInfo {
   /// Indicates the type of resource.
   /// Possible string values are:
   /// - "RESOURCE_TYPE_UNSPECIFIED" : Unknown resource type.
-  /// - "CONSUMER_PROJECT" : Consumer project.
+  /// - "CONSUMER_PROJECT" : Consumer project. AssuredWorkloads Projects are no
+  /// longer supported. This field will be ignored only in CreateWorkload
+  /// requests. ListWorkloads and GetWorkload will continue to provide projects
+  /// information. Use CONSUMER_FOLDER instead.
+  /// - "CONSUMER_FOLDER" : Consumer Folder.
   /// - "ENCRYPTION_KEYS_PROJECT" : Consumer project containing encryption keys.
+  /// - "KEYRING" : Keyring resource that hosts encryption keys.
   core.String? resourceType;
 
-  GoogleCloudAssuredworkloadsV1WorkloadResourceInfo();
+  GoogleCloudAssuredworkloadsV1WorkloadResourceInfo({
+    this.resourceId,
+    this.resourceType,
+  });
 
-  GoogleCloudAssuredworkloadsV1WorkloadResourceInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('resourceId')) {
-      resourceId = _json['resourceId'] as core.String;
-    }
-    if (_json.containsKey('resourceType')) {
-      resourceType = _json['resourceType'] as core.String;
-    }
-  }
+  GoogleCloudAssuredworkloadsV1WorkloadResourceInfo.fromJson(core.Map _json)
+      : this(
+          resourceId: _json.containsKey('resourceId')
+              ? _json['resourceId'] as core.String
+              : null,
+          resourceType: _json.containsKey('resourceType')
+              ? _json['resourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (resourceId != null) 'resourceId': resourceId!,
@@ -731,438 +769,93 @@ class GoogleCloudAssuredworkloadsV1WorkloadResourceInfo {
       };
 }
 
-/// Operation metadata to give request details of CreateWorkload.
-class GoogleCloudAssuredworkloadsV1beta1CreateWorkloadOperationMetadata {
-  /// Compliance controls that should be applied to the resources managed by the
-  /// workload.
+/// Represent the custom settings for the resources to be created.
+class GoogleCloudAssuredworkloadsV1WorkloadResourceSettings {
+  /// User-assigned resource display name.
   ///
-  /// Optional.
-  /// Possible string values are:
-  /// - "COMPLIANCE_REGIME_UNSPECIFIED" : Unknown compliance regime.
-  /// - "IL4" : Information protection as per DoD IL4 requirements.
-  /// - "CJIS" : Criminal Justice Information Services (CJIS) Security policies.
-  /// - "FEDRAMP_HIGH" : FedRAMP High data protection controls
-  /// - "FEDRAMP_MODERATE" : FedRAMP Moderate data protection controls
-  /// - "US_REGIONAL_ACCESS" : Assured Workloads For US Regions data protection
-  /// controls
-  core.String? complianceRegime;
-
-  /// Time when the operation was created.
-  ///
-  /// Optional.
-  core.String? createTime;
-
-  /// The display name of the workload.
-  ///
-  /// Optional.
+  /// If not empty it will be used to create a resource with the specified name.
   core.String? displayName;
 
-  /// The parent of the workload.
-  ///
-  /// Optional.
-  core.String? parent;
-
-  GoogleCloudAssuredworkloadsV1beta1CreateWorkloadOperationMetadata();
-
-  GoogleCloudAssuredworkloadsV1beta1CreateWorkloadOperationMetadata.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('complianceRegime')) {
-      complianceRegime = _json['complianceRegime'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (complianceRegime != null) 'complianceRegime': complianceRegime!,
-        if (createTime != null) 'createTime': createTime!,
-        if (displayName != null) 'displayName': displayName!,
-        if (parent != null) 'parent': parent!,
-      };
-}
-
-/// An Workload object for managing highly regulated workloads of cloud
-/// customers.
-class GoogleCloudAssuredworkloadsV1beta1Workload {
-  /// Input only.
-  ///
-  /// The billing account used for the resources which are direct children of
-  /// workload. This billing account is initially associated with the resources
-  /// created as part of Workload creation. After the initial creation of these
-  /// resources, the customer can change the assigned billing account. The
-  /// resource name has the form `billingAccounts/{billing_account_id}`. For
-  /// example, `billingAccounts/012345-567890-ABCDEF`.
-  ///
-  /// Required.
-  core.String? billingAccount;
-
-  /// Input only.
-  ///
-  /// Immutable. Settings specific to resources needed for CJIS.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadCJISSettings? cjisSettings;
-
-  /// Compliance Regime associated with this workload.
-  ///
-  /// Required. Immutable.
-  /// Possible string values are:
-  /// - "COMPLIANCE_REGIME_UNSPECIFIED" : Unknown compliance regime.
-  /// - "IL4" : Information protection as per DoD IL4 requirements.
-  /// - "CJIS" : Criminal Justice Information Services (CJIS) Security policies.
-  /// - "FEDRAMP_HIGH" : FedRAMP High data protection controls
-  /// - "FEDRAMP_MODERATE" : FedRAMP Moderate data protection controls
-  /// - "US_REGIONAL_ACCESS" : Assured Workloads For US Regions data protection
-  /// controls
-  core.String? complianceRegime;
-
-  /// The Workload creation timestamp.
-  ///
-  /// Output only. Immutable.
-  core.String? createTime;
-
-  /// The user-assigned display name of the Workload.
-  ///
-  /// When present it must be between 4 to 30 characters. Allowed characters
-  /// are: lowercase and uppercase letters, numbers, hyphen, and spaces.
-  /// Example: My Workload
-  ///
-  /// Required.
-  core.String? displayName;
-
-  /// ETag of the workload, it is calculated on the basis of the Workload
-  /// contents.
-  ///
-  /// It will be used in Update & Delete operations.
-  ///
-  /// Optional.
-  core.String? etag;
-
-  /// Input only.
-  ///
-  /// Immutable. Settings specific to resources needed for FedRAMP High.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampHighSettings?
-      fedrampHighSettings;
-
-  /// Input only.
-  ///
-  /// Immutable. Settings specific to resources needed for FedRAMP Moderate.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampModerateSettings?
-      fedrampModerateSettings;
-
-  /// Input only.
-  ///
-  /// Immutable. Settings specific to resources needed for IL4.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadIL4Settings? il4Settings;
-
-  /// Input only.
-  ///
-  /// Settings used to create a CMEK crypto key. When set a project with a KMS
-  /// CMEK key is provisioned. This field is mandatory for a subset of
-  /// Compliance Regimes.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings? kmsSettings;
-
-  /// Labels applied to the workload.
-  ///
-  /// Optional.
-  core.Map<core.String, core.String>? labels;
-
-  /// The resource name of the workload.
-  ///
-  /// Format:
-  /// organizations/{organization}/locations/{location}/workloads/{workload}
-  /// Read-only.
-  ///
-  /// Optional.
-  core.String? name;
-
-  /// Input only.
-  ///
-  /// The parent resource for the resources managed by this Assured Workload.
-  /// May be either an organization or a folder. Must be the same or a child of
-  /// the Workload parent. If not specified all resources are created under the
-  /// Workload parent. Formats: folders/{folder_id}
-  /// organizations/{organization_id}
-  core.String? provisionedResourcesParent;
-
-  /// The resources associated with this workload.
-  ///
-  /// These resources will be created when creating the workload. If any of the
-  /// projects already exist, the workload creation will fail. Always read only.
-  ///
-  /// Output only.
-  core.List<GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo>? resources;
-
-  GoogleCloudAssuredworkloadsV1beta1Workload();
-
-  GoogleCloudAssuredworkloadsV1beta1Workload.fromJson(core.Map _json) {
-    if (_json.containsKey('billingAccount')) {
-      billingAccount = _json['billingAccount'] as core.String;
-    }
-    if (_json.containsKey('cjisSettings')) {
-      cjisSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadCJISSettings.fromJson(
-              _json['cjisSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('complianceRegime')) {
-      complianceRegime = _json['complianceRegime'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('fedrampHighSettings')) {
-      fedrampHighSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampHighSettings
-              .fromJson(_json['fedrampHighSettings']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fedrampModerateSettings')) {
-      fedrampModerateSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampModerateSettings
-              .fromJson(_json['fedrampModerateSettings']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('il4Settings')) {
-      il4Settings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadIL4Settings.fromJson(
-              _json['il4Settings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-              _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('provisionedResourcesParent')) {
-      provisionedResourcesParent =
-          _json['provisionedResourcesParent'] as core.String;
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo>(
-              (value) => GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo
-                  .fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (billingAccount != null) 'billingAccount': billingAccount!,
-        if (cjisSettings != null) 'cjisSettings': cjisSettings!.toJson(),
-        if (complianceRegime != null) 'complianceRegime': complianceRegime!,
-        if (createTime != null) 'createTime': createTime!,
-        if (displayName != null) 'displayName': displayName!,
-        if (etag != null) 'etag': etag!,
-        if (fedrampHighSettings != null)
-          'fedrampHighSettings': fedrampHighSettings!.toJson(),
-        if (fedrampModerateSettings != null)
-          'fedrampModerateSettings': fedrampModerateSettings!.toJson(),
-        if (il4Settings != null) 'il4Settings': il4Settings!.toJson(),
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
-        if (labels != null) 'labels': labels!,
-        if (name != null) 'name': name!,
-        if (provisionedResourcesParent != null)
-          'provisionedResourcesParent': provisionedResourcesParent!,
-        if (resources != null)
-          'resources': resources!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// Settings specific to resources needed for CJIS.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadCJISSettings {
-  /// Input only.
-  ///
-  /// Immutable. Settings used to create a CMEK crypto key.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings? kmsSettings;
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadCJISSettings();
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadCJISSettings.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-              _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
-      };
-}
-
-/// Settings specific to resources needed for FedRAMP High.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampHighSettings {
-  /// Input only.
-  ///
-  /// Immutable. Settings used to create a CMEK crypto key.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings? kmsSettings;
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampHighSettings();
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampHighSettings.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-              _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
-      };
-}
-
-/// Settings specific to resources needed for FedRAMP Moderate.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampModerateSettings {
-  /// Input only.
-  ///
-  /// Immutable. Settings used to create a CMEK crypto key.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings? kmsSettings;
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampModerateSettings();
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadFedrampModerateSettings.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-              _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
-      };
-}
-
-/// Settings specific to resources needed for IL4.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadIL4Settings {
-  /// Input only.
-  ///
-  /// Immutable. Settings used to create a CMEK crypto key.
-  ///
-  /// Required.
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings? kmsSettings;
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadIL4Settings();
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadIL4Settings.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('kmsSettings')) {
-      kmsSettings =
-          GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-              _json['kmsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (kmsSettings != null) 'kmsSettings': kmsSettings!.toJson(),
-      };
-}
-
-/// Settings specific to the Key Management Service.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings {
-  /// Input only.
-  ///
-  /// Immutable. The time at which the Key Management Service will automatically
-  /// create a new version of the crypto key and mark it as the primary.
-  ///
-  /// Required.
-  core.String? nextRotationTime;
-
-  /// Input only.
-  ///
-  /// Immutable. \[next_rotation_time\] will be advanced by this period when the
-  /// Key Management Service automatically rotates a key. Must be at least 24
-  /// hours and at most 876,000 hours.
-  ///
-  /// Required.
-  core.String? rotationPeriod;
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings();
-
-  GoogleCloudAssuredworkloadsV1beta1WorkloadKMSSettings.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('nextRotationTime')) {
-      nextRotationTime = _json['nextRotationTime'] as core.String;
-    }
-    if (_json.containsKey('rotationPeriod')) {
-      rotationPeriod = _json['rotationPeriod'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (nextRotationTime != null) 'nextRotationTime': nextRotationTime!,
-        if (rotationPeriod != null) 'rotationPeriod': rotationPeriod!,
-      };
-}
-
-/// Represent the resources that are children of this Workload.
-class GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo {
   /// Resource identifier.
   ///
-  /// For a project this represents project_number.
+  /// For a project this represents project_id. If the project is already taken,
+  /// the workload creation will fail.
   core.String? resourceId;
 
   /// Indicates the type of resource.
+  ///
+  /// This field should be specified to correspond the id to the right project
+  /// type (CONSUMER_PROJECT or ENCRYPTION_KEYS_PROJECT)
   /// Possible string values are:
   /// - "RESOURCE_TYPE_UNSPECIFIED" : Unknown resource type.
-  /// - "CONSUMER_PROJECT" : Consumer project.
+  /// - "CONSUMER_PROJECT" : Consumer project. AssuredWorkloads Projects are no
+  /// longer supported. This field will be ignored only in CreateWorkload
+  /// requests. ListWorkloads and GetWorkload will continue to provide projects
+  /// information. Use CONSUMER_FOLDER instead.
+  /// - "CONSUMER_FOLDER" : Consumer Folder.
   /// - "ENCRYPTION_KEYS_PROJECT" : Consumer project containing encryption keys.
+  /// - "KEYRING" : Keyring resource that hosts encryption keys.
   core.String? resourceType;
 
-  GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo();
+  GoogleCloudAssuredworkloadsV1WorkloadResourceSettings({
+    this.displayName,
+    this.resourceId,
+    this.resourceType,
+  });
 
-  GoogleCloudAssuredworkloadsV1beta1WorkloadResourceInfo.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('resourceId')) {
-      resourceId = _json['resourceId'] as core.String;
-    }
-    if (_json.containsKey('resourceType')) {
-      resourceType = _json['resourceType'] as core.String;
-    }
-  }
+  GoogleCloudAssuredworkloadsV1WorkloadResourceSettings.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          resourceId: _json.containsKey('resourceId')
+              ? _json['resourceId'] as core.String
+              : null,
+          resourceType: _json.containsKey('resourceType')
+              ? _json['resourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (displayName != null) 'displayName': displayName!,
         if (resourceId != null) 'resourceId': resourceId!,
         if (resourceType != null) 'resourceType': resourceType!,
+      };
+}
+
+/// Signed Access Approvals (SAA) enrollment response.
+class GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse {
+  /// Indicates SAA enrollment setup error if any.
+  core.List<core.String>? setupErrors;
+
+  /// Indicates SAA enrollment status of a given workload.
+  /// Possible string values are:
+  /// - "SETUP_STATE_UNSPECIFIED" : Unspecified.
+  /// - "STATUS_PENDING" : SAA enrollment pending.
+  /// - "STATUS_COMPLETE" : SAA enrollment comopleted.
+  core.String? setupStatus;
+
+  GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse({
+    this.setupErrors,
+    this.setupStatus,
+  });
+
+  GoogleCloudAssuredworkloadsV1WorkloadSaaEnrollmentResponse.fromJson(
+      core.Map _json)
+      : this(
+          setupErrors: _json.containsKey('setupErrors')
+              ? (_json['setupErrors'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          setupStatus: _json.containsKey('setupStatus')
+              ? _json['setupStatus'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (setupErrors != null) 'setupErrors': setupErrors!,
+        if (setupStatus != null) 'setupStatus': setupStatus!,
       };
 }
 
@@ -1174,25 +867,27 @@ class GoogleLongrunningListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<GoogleLongrunningOperation>? operations;
 
-  GoogleLongrunningListOperationsResponse();
+  GoogleLongrunningListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<GoogleLongrunningOperation>((value) =>
-              GoogleLongrunningOperation.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => GoogleLongrunningOperation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -1217,7 +912,7 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1237,42 +932,35 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  GoogleLongrunningOperation();
+  GoogleLongrunningOperation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  GoogleLongrunningOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = GoogleRpcStatus.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleLongrunningOperation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? GoogleRpcStatus.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -1286,15 +974,7 @@ class GoogleLongrunningOperation {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class GoogleProtobufEmpty {
-  GoogleProtobufEmpty();
-
-  GoogleProtobufEmpty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef GoogleProtobufEmpty = $Empty;
 
 /// The `Status` type defines a logical error model that is suitable for
 /// different programming environments, including REST APIs and RPC APIs.
@@ -1303,49 +983,4 @@ class GoogleProtobufEmpty {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class GoogleRpcStatus {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  GoogleRpcStatus();
-
-  GoogleRpcStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef GoogleRpcStatus = $Status;

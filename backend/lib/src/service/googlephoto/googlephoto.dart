@@ -153,7 +153,7 @@ class GooglePhotoService {
       var albumsRes = await gphoto.albums.list();
       var slideShowAlbum = albumsRes.albums!.firstWhereOrNull((item) => item.title == albumName);
       if (slideShowAlbum != null) {
-        _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.totalMediaItems}');
+        _log.info('Album: "${slideShowAlbum.title}" count: ${slideShowAlbum.mediaItemsCount}');
         String? nextPageToken;
         while (true) {
           final smiRequest = new SearchMediaItemsRequest()

@@ -26,6 +26,8 @@ Hardware:
 
 1 * 10K Ohm resistor
 
+4 * 33K Ohm resistor
+
 1 * PIR sensor - AM312 (https://aliexpress.com/item/32862878941.html?&sku_id=65345259272)
 
 1 * 2560*1600 Display (TFTMD089030 + Driver TC358870XBG) (https://aliexpress.com/item/1005002008224190.html)

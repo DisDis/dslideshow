@@ -34,6 +34,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -41,7 +43,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Integrates text translation into your website or application.
 class TranslateApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -99,7 +102,7 @@ class ProjectsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -138,9 +141,8 @@ class ProjectsResource {
   /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
   /// - General (built-in) models:
   /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
-  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/base`
   /// Returns languages supported by the specified model. If missing, we get
-  /// supported languages of Google general base (PBMT) model.
+  /// supported languages of Google general NMT model.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -207,7 +209,7 @@ class ProjectsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -234,6 +236,57 @@ class ProjectsLocationsResource {
       ProjectsLocationsOperationsResource(_requester);
 
   ProjectsLocationsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Translates a large volume of document in asynchronous batch mode.
+  ///
+  /// This function provides real-time output as the inputs are being processed.
+  /// If caller cancels a request, the partial results (for an input file, it's
+  /// all or nothing) may still be available on the specified output location.
+  /// This call returns immediately and you can use
+  /// google.longrunning.Operation.name to poll the status of the call.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Location to make a regional call. Format:
+  /// `projects/{project-number-or-id}/locations/{location-id}`. The `global`
+  /// location is not supported for batch translation. Only AutoML Translation
+  /// models or glossaries within the same region (have the same location-id)
+  /// can be used, otherwise an INVALID_ARGUMENT (400) error is returned.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> batchTranslateDocument(
+    BatchTranslateDocumentRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v3/' + core.Uri.encodeFull('$parent') + ':batchTranslateDocument';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 
   /// Translates a large volume of text in asynchronous batch mode.
   ///
@@ -270,7 +323,7 @@ class ProjectsLocationsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -317,7 +370,7 @@ class ProjectsLocationsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -391,9 +444,8 @@ class ProjectsLocationsResource {
   /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
   /// - General (built-in) models:
   /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
-  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/base`
   /// Returns languages supported by the specified model. If missing, we get
-  /// supported languages of Google general base (PBMT) model.
+  /// supported languages of Google general NMT model.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -436,11 +488,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -477,6 +533,53 @@ class ProjectsLocationsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Translates documents in synchronous mode.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Location to make a regional call. Format:
+  /// `projects/{project-number-or-id}/locations/{location-id}`. For global
+  /// calls, use `projects/{project-number-or-id}/locations/global` or
+  /// `projects/{project-number-or-id}`. Non-global location is required for
+  /// requests using AutoML models or custom glossaries. Models and glossaries
+  /// must be within the same region (have the same location-id), otherwise an
+  /// INVALID_ARGUMENT (400) error is returned.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TranslateDocumentResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TranslateDocumentResponse> translateDocument(
+    TranslateDocumentRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v3/' + core.Uri.encodeFull('$parent') + ':translateDocument';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TranslateDocumentResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Translates input text and returns translated text.
   ///
   /// [request] - The metadata request object.
@@ -508,7 +611,7 @@ class ProjectsLocationsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -558,7 +661,7 @@ class ProjectsLocationsGlossariesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -763,7 +866,7 @@ class ProjectsLocationsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -949,7 +1052,7 @@ class ProjectsLocationsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -966,6 +1069,231 @@ class ProjectsLocationsOperationsResource {
   }
 }
 
+/// Input configuration for BatchTranslateDocument request.
+class BatchDocumentInputConfig {
+  /// Google Cloud Storage location for the source input.
+  ///
+  /// This can be a single file (for example,
+  /// `gs://translation-test/input.docx`) or a wildcard (for example,
+  /// `gs://translation-test / * `). File mime type is determined based on
+  /// extension. Supported mime type includes: - `pdf`, application/pdf -
+  /// `docx`,
+  /// application/vnd.openxmlformats-officedocument.wordprocessingml.document -
+  /// `pptx`,
+  /// application/vnd.openxmlformats-officedocument.presentationml.presentation
+  /// - `xlsx`,
+  /// application/vnd.openxmlformats-officedocument.spreadsheetml.sheet The max
+  /// file size to support for `.docx`, `.pptx` and `.xlsx` is 100MB. The max
+  /// file size to support for `.pdf` is 1GB and the max page limit is 1000
+  /// pages. The max file size to support for all input documents is 1GB.
+  GcsSource? gcsSource;
+
+  BatchDocumentInputConfig({
+    this.gcsSource,
+  });
+
+  BatchDocumentInputConfig.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (gcsSource != null) 'gcsSource': gcsSource!,
+      };
+}
+
+/// Output configuration for BatchTranslateDocument request.
+class BatchDocumentOutputConfig {
+  /// Google Cloud Storage destination for output content.
+  ///
+  /// For every single input document (for example, gs://a/b/c.\[extension\]),
+  /// we generate at most 2 * n output files. (n is the # of
+  /// target_language_codes in the BatchTranslateDocumentRequest). While the
+  /// input documents are being processed, we write/update an index file
+  /// `index.csv` under `gcs_destination.output_uri_prefix` (for example,
+  /// gs://translation_output/index.csv) The index file is generated/updated as
+  /// new files are being translated. The format is:
+  /// input_document,target_language_code,translation_output,error_output,
+  /// glossary_translation_output,glossary_error_output `input_document` is one
+  /// file we matched using gcs_source.input_uri. `target_language_code` is
+  /// provided in the request. `translation_output` contains the translations.
+  /// (details provided below) `error_output` contains the error message during
+  /// processing of the file. Both translations_file and errors_file could be
+  /// empty strings if we have no content to output.
+  /// `glossary_translation_output` and `glossary_error_output` are the
+  /// translated output/error when we apply glossaries. They could also be empty
+  /// if we have no content to output. Once a row is present in index.csv, the
+  /// input/output matching never changes. Callers should also expect all the
+  /// content in input_file are processed and ready to be consumed (that is, no
+  /// partial output file is written). Since index.csv will be keeping updated
+  /// during the process, please make sure there is no custom retention policy
+  /// applied on the output bucket that may avoid file updating.
+  /// (https://cloud.google.com/storage/docs/bucket-lock?hl=en#retention-policy)
+  /// The naming format of translation output files follows (for target language
+  /// code \[trg\]): `translation_output`:
+  /// gs://translation_output/a_b_c_\[trg\]_translation.\[extension\]
+  /// `glossary_translation_output`:
+  /// gs://translation_test/a_b_c_\[trg\]_glossary_translation.\[extension\] The
+  /// output document will maintain the same file format as the input document.
+  /// The naming format of error output files follows (for target language code
+  /// \[trg\]): `error_output`: gs://translation_test/a_b_c_\[trg\]_errors.txt
+  /// `glossary_error_output`:
+  /// gs://translation_test/a_b_c_\[trg\]_glossary_translation.txt The error
+  /// output is a txt file containing error details.
+  GcsDestination? gcsDestination;
+
+  BatchDocumentOutputConfig({
+    this.gcsDestination,
+  });
+
+  BatchDocumentOutputConfig.fromJson(core.Map _json)
+      : this(
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GcsDestination.fromJson(_json['gcsDestination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
+      };
+}
+
+/// The BatchTranslateDocument request.
+class BatchTranslateDocumentRequest {
+  /// Optional.
+  core.Map<core.String, core.String>? formatConversions;
+
+  /// Glossaries to be applied.
+  ///
+  /// It's keyed by target language code.
+  ///
+  /// Optional.
+  core.Map<core.String, TranslateTextGlossaryConfig>? glossaries;
+
+  /// Input configurations.
+  ///
+  /// The total number of files matched should be \<= 100. The total content
+  /// size to translate should be \<= 100M Unicode codepoints. The files must
+  /// use UTF-8 encoding.
+  ///
+  /// Required.
+  core.List<BatchDocumentInputConfig>? inputConfigs;
+
+  /// The models to use for translation.
+  ///
+  /// Map's key is target language code. Map's value is the model name. Value
+  /// can be a built-in general model, or an AutoML Translation model. The value
+  /// format depends on model type: - AutoML Translation models:
+  /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
+  /// - General (built-in) models:
+  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
+  /// If the map is empty or a specific model is not requested for a language
+  /// pair, then default google model (nmt) is used.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? models;
+
+  /// Output configuration.
+  ///
+  /// If 2 input configs match to the same file (that is, same input path), we
+  /// don't generate output for duplicate inputs.
+  ///
+  /// Required.
+  BatchDocumentOutputConfig? outputConfig;
+
+  /// The BCP-47 language code of the input document if known, for example,
+  /// "en-US" or "sr-Latn".
+  ///
+  /// Supported language codes are listed in Language Support
+  /// (https://cloud.google.com/translate/docs/languages).
+  ///
+  /// Required.
+  core.String? sourceLanguageCode;
+
+  /// The BCP-47 language code to use for translation of the input document.
+  ///
+  /// Specify up to 10 language codes here.
+  ///
+  /// Required.
+  core.List<core.String>? targetLanguageCodes;
+
+  BatchTranslateDocumentRequest({
+    this.formatConversions,
+    this.glossaries,
+    this.inputConfigs,
+    this.models,
+    this.outputConfig,
+    this.sourceLanguageCode,
+    this.targetLanguageCodes,
+  });
+
+  BatchTranslateDocumentRequest.fromJson(core.Map _json)
+      : this(
+          formatConversions: _json.containsKey('formatConversions')
+              ? (_json['formatConversions']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          glossaries: _json.containsKey('glossaries')
+              ? (_json['glossaries'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    TranslateTextGlossaryConfig.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          inputConfigs: _json.containsKey('inputConfigs')
+              ? (_json['inputConfigs'] as core.List)
+                  .map((value) => BatchDocumentInputConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          models: _json.containsKey('models')
+              ? (_json['models'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          outputConfig: _json.containsKey('outputConfig')
+              ? BatchDocumentOutputConfig.fromJson(
+                  _json['outputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceLanguageCode: _json.containsKey('sourceLanguageCode')
+              ? _json['sourceLanguageCode'] as core.String
+              : null,
+          targetLanguageCodes: _json.containsKey('targetLanguageCodes')
+              ? (_json['targetLanguageCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (formatConversions != null) 'formatConversions': formatConversions!,
+        if (glossaries != null) 'glossaries': glossaries!,
+        if (inputConfigs != null) 'inputConfigs': inputConfigs!,
+        if (models != null) 'models': models!,
+        if (outputConfig != null) 'outputConfig': outputConfig!,
+        if (sourceLanguageCode != null)
+          'sourceLanguageCode': sourceLanguageCode!,
+        if (targetLanguageCodes != null)
+          'targetLanguageCodes': targetLanguageCodes!,
+      };
+}
+
 /// The batch translation request.
 class BatchTranslateTextRequest {
   /// Glossaries to be applied for translation.
@@ -977,8 +1305,9 @@ class BatchTranslateTextRequest {
 
   /// Input configurations.
   ///
-  /// The total number of files matched should be <= 100. The total content size
-  /// should be <= 100M Unicode codepoints. The files must use UTF-8 encoding.
+  /// The total number of files matched should be \<= 100. The total content
+  /// size should be \<= 100M Unicode codepoints. The files must use UTF-8
+  /// encoding.
   ///
   /// Required.
   core.List<InputConfig>? inputConfigs;
@@ -1003,7 +1332,6 @@ class BatchTranslateTextRequest {
   /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
   /// - General (built-in) models:
   /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
-  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/base`
   /// If the map is empty or a specific model is not requested for a language
   /// pair, then default google model (nmt) is used.
   ///
@@ -1028,64 +1356,70 @@ class BatchTranslateTextRequest {
   /// Required.
   core.List<core.String>? targetLanguageCodes;
 
-  BatchTranslateTextRequest();
+  BatchTranslateTextRequest({
+    this.glossaries,
+    this.inputConfigs,
+    this.labels,
+    this.models,
+    this.outputConfig,
+    this.sourceLanguageCode,
+    this.targetLanguageCodes,
+  });
 
-  BatchTranslateTextRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('glossaries')) {
-      glossaries =
-          (_json['glossaries'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          TranslateTextGlossaryConfig.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('inputConfigs')) {
-      inputConfigs = (_json['inputConfigs'] as core.List)
-          .map<InputConfig>((value) => InputConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('models')) {
-      models = (_json['models'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('outputConfig')) {
-      outputConfig = OutputConfig.fromJson(
-          _json['outputConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceLanguageCode')) {
-      sourceLanguageCode = _json['sourceLanguageCode'] as core.String;
-    }
-    if (_json.containsKey('targetLanguageCodes')) {
-      targetLanguageCodes = (_json['targetLanguageCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  BatchTranslateTextRequest.fromJson(core.Map _json)
+      : this(
+          glossaries: _json.containsKey('glossaries')
+              ? (_json['glossaries'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    TranslateTextGlossaryConfig.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          inputConfigs: _json.containsKey('inputConfigs')
+              ? (_json['inputConfigs'] as core.List)
+                  .map((value) => InputConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          models: _json.containsKey('models')
+              ? (_json['models'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          outputConfig: _json.containsKey('outputConfig')
+              ? OutputConfig.fromJson(
+                  _json['outputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceLanguageCode: _json.containsKey('sourceLanguageCode')
+              ? _json['sourceLanguageCode'] as core.String
+              : null,
+          targetLanguageCodes: _json.containsKey('targetLanguageCodes')
+              ? (_json['targetLanguageCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (glossaries != null)
-          'glossaries':
-              glossaries!.map((key, item) => core.MapEntry(key, item.toJson())),
-        if (inputConfigs != null)
-          'inputConfigs': inputConfigs!.map((value) => value.toJson()).toList(),
+        if (glossaries != null) 'glossaries': glossaries!,
+        if (inputConfigs != null) 'inputConfigs': inputConfigs!,
         if (labels != null) 'labels': labels!,
         if (models != null) 'models': models!,
-        if (outputConfig != null) 'outputConfig': outputConfig!.toJson(),
+        if (outputConfig != null) 'outputConfig': outputConfig!,
         if (sourceLanguageCode != null)
           'sourceLanguageCode': sourceLanguageCode!,
         if (targetLanguageCodes != null)
@@ -1094,15 +1428,7 @@ class BatchTranslateTextRequest {
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
-
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelOperationRequest = $Empty;
 
 /// The request message for language detection.
 class DetectLanguageRequest {
@@ -1139,27 +1465,32 @@ class DetectLanguageRequest {
   /// Optional.
   core.String? model;
 
-  DetectLanguageRequest();
+  DetectLanguageRequest({
+    this.content,
+    this.labels,
+    this.mimeType,
+    this.model,
+  });
 
-  DetectLanguageRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('content')) {
-      content = _json['content'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-  }
+  DetectLanguageRequest.fromJson(core.Map _json)
+      : this(
+          content: _json.containsKey('content')
+              ? _json['content'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (content != null) 'content': content!,
@@ -1176,20 +1507,22 @@ class DetectLanguageResponse {
   /// For each request, the Translation API will always return only one result.
   core.List<DetectedLanguage>? languages;
 
-  DetectLanguageResponse();
+  DetectLanguageResponse({
+    this.languages,
+  });
 
-  DetectLanguageResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('languages')) {
-      languages = (_json['languages'] as core.List)
-          .map<DetectedLanguage>((value) => DetectedLanguage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  DetectLanguageResponse.fromJson(core.Map _json)
+      : this(
+          languages: _json.containsKey('languages')
+              ? (_json['languages'] as core.List)
+                  .map((value) => DetectedLanguage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (languages != null)
-          'languages': languages!.map((value) => value.toJson()).toList(),
+        if (languages != null) 'languages': languages!,
       };
 }
 
@@ -1202,20 +1535,198 @@ class DetectedLanguage {
   /// automatically.
   core.String? languageCode;
 
-  DetectedLanguage();
+  DetectedLanguage({
+    this.confidence,
+    this.languageCode,
+  });
 
-  DetectedLanguage.fromJson(core.Map _json) {
-    if (_json.containsKey('confidence')) {
-      confidence = (_json['confidence'] as core.num).toDouble();
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-  }
+  DetectedLanguage.fromJson(core.Map _json)
+      : this(
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (confidence != null) 'confidence': confidence!,
         if (languageCode != null) 'languageCode': languageCode!,
+      };
+}
+
+/// A document translation request input config.
+class DocumentInputConfig {
+  /// Document's content represented as a stream of bytes.
+  core.String? content;
+  core.List<core.int> get contentAsBytes => convert.base64.decode(content!);
+
+  set contentAsBytes(core.List<core.int> _bytes) {
+    content =
+        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
+  }
+
+  /// Google Cloud Storage location.
+  ///
+  /// This must be a single file. For example:
+  /// gs://example_bucket/example_file.pdf
+  GcsSource? gcsSource;
+
+  /// Specifies the input document's mime_type.
+  ///
+  /// If not specified it will be determined using the file extension for
+  /// gcs_source provided files. For a file provided through bytes content the
+  /// mime_type must be provided. Currently supported mime types are: -
+  /// application/pdf -
+  /// application/vnd.openxmlformats-officedocument.wordprocessingml.document -
+  /// application/vnd.openxmlformats-officedocument.presentationml.presentation
+  /// - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  core.String? mimeType;
+
+  DocumentInputConfig({
+    this.content,
+    this.gcsSource,
+    this.mimeType,
+  });
+
+  DocumentInputConfig.fromJson(core.Map _json)
+      : this(
+          content: _json.containsKey('content')
+              ? _json['content'] as core.String
+              : null,
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (content != null) 'content': content!,
+        if (gcsSource != null) 'gcsSource': gcsSource!,
+        if (mimeType != null) 'mimeType': mimeType!,
+      };
+}
+
+/// A document translation request output config.
+class DocumentOutputConfig {
+  /// Google Cloud Storage destination for the translation output, e.g.,
+  /// `gs://my_bucket/my_directory/`.
+  ///
+  /// The destination directory provided does not have to be empty, but the
+  /// bucket must exist. If a file with the same name as the output file already
+  /// exists in the destination an error will be returned. For a
+  /// DocumentInputConfig.contents provided document, the output file will have
+  /// the name "output_\[trg\]_translations.\[ext\]", where - \[trg\]
+  /// corresponds to the translated file's language code, - \[ext\] corresponds
+  /// to the translated file's extension according to its mime type. For a
+  /// DocumentInputConfig.gcs_uri provided document, the output file will have a
+  /// name according to its URI. For example: an input file with URI:
+  /// "gs://a/b/c.\[extension\]" stored in a gcs_destination bucket with name
+  /// "my_bucket" will have an output URI:
+  /// "gs://my_bucket/a_b_c_\[trg\]_translations.\[ext\]", where - \[trg\]
+  /// corresponds to the translated file's language code, - \[ext\] corresponds
+  /// to the translated file's extension according to its mime type. If the
+  /// document was directly provided through the request, then the output
+  /// document will have the format:
+  /// "gs://my_bucket/translated_document_\[trg\]_translations.\[ext\], where -
+  /// \[trg\] corresponds to the translated file's language code, - \[ext\]
+  /// corresponds to the translated file's extension according to its mime type.
+  /// If a glossary was provided, then the output URI for the glossary
+  /// translation will be equal to the default output URI but have
+  /// `glossary_translations` instead of `translations`. For the previous
+  /// example, its glossary URI would be:
+  /// "gs://my_bucket/a_b_c_\[trg\]_glossary_translations.\[ext\]". Thus the max
+  /// number of output files will be 2 (Translated document, Glossary translated
+  /// document). Callers should expect no partial outputs. If there is any error
+  /// during document translation, no output will be stored in the Cloud Storage
+  /// bucket.
+  ///
+  /// Optional.
+  GcsDestination? gcsDestination;
+
+  /// Specifies the translated document's mime_type.
+  ///
+  /// If not specified, the translated file's mime type will be the same as the
+  /// input file's mime type. Currently only support the output mime type to be
+  /// the same as input mime type. - application/pdf -
+  /// application/vnd.openxmlformats-officedocument.wordprocessingml.document -
+  /// application/vnd.openxmlformats-officedocument.presentationml.presentation
+  /// - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+  ///
+  /// Optional.
+  core.String? mimeType;
+
+  DocumentOutputConfig({
+    this.gcsDestination,
+    this.mimeType,
+  });
+
+  DocumentOutputConfig.fromJson(core.Map _json)
+      : this(
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GcsDestination.fromJson(_json['gcsDestination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
+        if (mimeType != null) 'mimeType': mimeType!,
+      };
+}
+
+/// A translated document message.
+class DocumentTranslation {
+  /// The array of translated documents.
+  ///
+  /// It is expected to be size 1 for now. We may produce multiple translated
+  /// documents in the future for other type of file formats.
+  core.List<core.String>? byteStreamOutputs;
+
+  /// The detected language for the input document.
+  ///
+  /// If the user did not provide the source language for the input document,
+  /// this field will have the language code automatically detected. If the
+  /// source language was passed, auto-detection of the language does not occur
+  /// and this field is empty.
+  core.String? detectedLanguageCode;
+
+  /// The translated document's mime type.
+  core.String? mimeType;
+
+  DocumentTranslation({
+    this.byteStreamOutputs,
+    this.detectedLanguageCode,
+    this.mimeType,
+  });
+
+  DocumentTranslation.fromJson(core.Map _json)
+      : this(
+          byteStreamOutputs: _json.containsKey('byteStreamOutputs')
+              ? (_json['byteStreamOutputs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          detectedLanguageCode: _json.containsKey('detectedLanguageCode')
+              ? _json['detectedLanguageCode'] as core.String
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (byteStreamOutputs != null) 'byteStreamOutputs': byteStreamOutputs!,
+        if (detectedLanguageCode != null)
+          'detectedLanguageCode': detectedLanguageCode!,
+        if (mimeType != null) 'mimeType': mimeType!,
       };
 }
 
@@ -1226,15 +1737,7 @@ class DetectedLanguage {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// The Google Cloud Storage location for the output content.
 class GcsDestination {
@@ -1248,13 +1751,16 @@ class GcsDestination {
   /// Required.
   core.String? outputUriPrefix;
 
-  GcsDestination();
+  GcsDestination({
+    this.outputUriPrefix,
+  });
 
-  GcsDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('outputUriPrefix')) {
-      outputUriPrefix = _json['outputUriPrefix'] as core.String;
-    }
-  }
+  GcsDestination.fromJson(core.Map _json)
+      : this(
+          outputUriPrefix: _json.containsKey('outputUriPrefix')
+              ? _json['outputUriPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (outputUriPrefix != null) 'outputUriPrefix': outputUriPrefix!,
@@ -1270,13 +1776,16 @@ class GcsSource {
   /// Required.
   core.String? inputUri;
 
-  GcsSource();
+  GcsSource({
+    this.inputUri,
+  });
 
-  GcsSource.fromJson(core.Map _json) {
-    if (_json.containsKey('inputUri')) {
-      inputUri = _json['inputUri'] as core.String;
-    }
-  }
+  GcsSource.fromJson(core.Map _json)
+      : this(
+          inputUri: _json.containsKey('inputUri')
+              ? _json['inputUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (inputUri != null) 'inputUri': inputUri!,
@@ -1321,42 +1830,48 @@ class Glossary {
   /// Output only.
   core.String? submitTime;
 
-  Glossary();
+  Glossary({
+    this.endTime,
+    this.entryCount,
+    this.inputConfig,
+    this.languageCodesSet,
+    this.languagePair,
+    this.name,
+    this.submitTime,
+  });
 
-  Glossary.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('entryCount')) {
-      entryCount = _json['entryCount'] as core.int;
-    }
-    if (_json.containsKey('inputConfig')) {
-      inputConfig = GlossaryInputConfig.fromJson(
-          _json['inputConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('languageCodesSet')) {
-      languageCodesSet = LanguageCodesSet.fromJson(
-          _json['languageCodesSet'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('languagePair')) {
-      languagePair = LanguageCodePair.fromJson(
-          _json['languagePair'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('submitTime')) {
-      submitTime = _json['submitTime'] as core.String;
-    }
-  }
+  Glossary.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          entryCount: _json.containsKey('entryCount')
+              ? _json['entryCount'] as core.int
+              : null,
+          inputConfig: _json.containsKey('inputConfig')
+              ? GlossaryInputConfig.fromJson(
+                  _json['inputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          languageCodesSet: _json.containsKey('languageCodesSet')
+              ? LanguageCodesSet.fromJson(_json['languageCodesSet']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          languagePair: _json.containsKey('languagePair')
+              ? LanguageCodePair.fromJson(
+                  _json['languagePair'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          submitTime: _json.containsKey('submitTime')
+              ? _json['submitTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTime != null) 'endTime': endTime!,
         if (entryCount != null) 'entryCount': entryCount!,
-        if (inputConfig != null) 'inputConfig': inputConfig!.toJson(),
-        if (languageCodesSet != null)
-          'languageCodesSet': languageCodesSet!.toJson(),
-        if (languagePair != null) 'languagePair': languagePair!.toJson(),
+        if (inputConfig != null) 'inputConfig': inputConfig!,
+        if (languageCodesSet != null) 'languageCodesSet': languageCodesSet!,
+        if (languagePair != null) 'languagePair': languagePair!,
         if (name != null) 'name': name!,
         if (submitTime != null) 'submitTime': submitTime!,
       };
@@ -1382,17 +1897,20 @@ class GlossaryInputConfig {
   /// Required.
   GcsSource? gcsSource;
 
-  GlossaryInputConfig();
+  GlossaryInputConfig({
+    this.gcsSource,
+  });
 
-  GlossaryInputConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsSource')) {
-      gcsSource = GcsSource.fromJson(
-          _json['gcsSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GlossaryInputConfig.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsSource != null) 'gcsSource': gcsSource!.toJson(),
+        if (gcsSource != null) 'gcsSource': gcsSource!,
       };
 }
 
@@ -1406,7 +1924,7 @@ class InputConfig {
   /// column (optional) is the id of the text request. If the first column is
   /// missing, we use the row number (0-based) from the input file as the ID in
   /// the output file. The second column is the actual text to be translated. We
-  /// recommend each row be <= 10K Unicode codepoints, otherwise an error might
+  /// recommend each row be \<= 10K Unicode codepoints, otherwise an error might
   /// be returned. Note that the input tsv must be RFC 4180 compliant. You could
   /// use https://github.com/Clever/csvlint to check potential formatting errors
   /// in your tsv file. csvlint --delimiter='\t' your_input_file.tsv The other
@@ -1425,20 +1943,24 @@ class InputConfig {
   /// Optional.
   core.String? mimeType;
 
-  InputConfig();
+  InputConfig({
+    this.gcsSource,
+    this.mimeType,
+  });
 
-  InputConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsSource')) {
-      gcsSource = GcsSource.fromJson(
-          _json['gcsSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-  }
+  InputConfig.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsSource != null) 'gcsSource': gcsSource!.toJson(),
+        if (gcsSource != null) 'gcsSource': gcsSource!,
         if (mimeType != null) 'mimeType': mimeType!,
       };
 }
@@ -1459,16 +1981,20 @@ class LanguageCodePair {
   /// Required.
   core.String? targetLanguageCode;
 
-  LanguageCodePair();
+  LanguageCodePair({
+    this.sourceLanguageCode,
+    this.targetLanguageCode,
+  });
 
-  LanguageCodePair.fromJson(core.Map _json) {
-    if (_json.containsKey('sourceLanguageCode')) {
-      sourceLanguageCode = _json['sourceLanguageCode'] as core.String;
-    }
-    if (_json.containsKey('targetLanguageCode')) {
-      targetLanguageCode = _json['targetLanguageCode'] as core.String;
-    }
-  }
+  LanguageCodePair.fromJson(core.Map _json)
+      : this(
+          sourceLanguageCode: _json.containsKey('sourceLanguageCode')
+              ? _json['sourceLanguageCode'] as core.String
+              : null,
+          targetLanguageCode: _json.containsKey('targetLanguageCode')
+              ? _json['targetLanguageCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sourceLanguageCode != null)
@@ -1486,15 +2012,18 @@ class LanguageCodesSet {
   /// to be an exact match for GlossaryTerm.language_code.
   core.List<core.String>? languageCodes;
 
-  LanguageCodesSet();
+  LanguageCodesSet({
+    this.languageCodes,
+  });
 
-  LanguageCodesSet.fromJson(core.Map _json) {
-    if (_json.containsKey('languageCodes')) {
-      languageCodes = (_json['languageCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  LanguageCodesSet.fromJson(core.Map _json)
+      : this(
+          languageCodes: _json.containsKey('languageCodes')
+              ? (_json['languageCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (languageCodes != null) 'languageCodes': languageCodes!,
@@ -1513,23 +2042,26 @@ class ListGlossariesResponse {
   /// results.
   core.String? nextPageToken;
 
-  ListGlossariesResponse();
+  ListGlossariesResponse({
+    this.glossaries,
+    this.nextPageToken,
+  });
 
-  ListGlossariesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('glossaries')) {
-      glossaries = (_json['glossaries'] as core.List)
-          .map<Glossary>((value) =>
-              Glossary.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListGlossariesResponse.fromJson(core.Map _json)
+      : this(
+          glossaries: _json.containsKey('glossaries')
+              ? (_json['glossaries'] as core.List)
+                  .map((value) => Glossary.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (glossaries != null)
-          'glossaries': glossaries!.map((value) => value.toJson()).toList(),
+        if (glossaries != null) 'glossaries': glossaries!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1542,23 +2074,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1571,95 +2106,32 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// This resource represents a long-running operation that is the result of a
 /// network API call.
@@ -1682,7 +2154,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1702,42 +2174,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -1797,17 +2262,20 @@ class OutputConfig {
   /// format of gs://translation_test/a_b_c_'trg'_glossary_errors.\[extension\]
   GcsDestination? gcsDestination;
 
-  OutputConfig();
+  OutputConfig({
+    this.gcsDestination,
+  });
 
-  OutputConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsDestination')) {
-      gcsDestination = GcsDestination.fromJson(
-          _json['gcsDestination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  OutputConfig.fromJson(core.Map _json)
+      : this(
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GcsDestination.fromJson(_json['gcsDestination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsDestination != null) 'gcsDestination': gcsDestination!.toJson(),
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
       };
 }
 
@@ -1818,52 +2286,7 @@ class OutputConfig {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A single supported language response corresponds to information related to
 /// one supported language.
@@ -1885,22 +2308,28 @@ class SupportedLanguage {
   /// Can be used as target language.
   core.bool? supportTarget;
 
-  SupportedLanguage();
+  SupportedLanguage({
+    this.displayName,
+    this.languageCode,
+    this.supportSource,
+    this.supportTarget,
+  });
 
-  SupportedLanguage.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('supportSource')) {
-      supportSource = _json['supportSource'] as core.bool;
-    }
-    if (_json.containsKey('supportTarget')) {
-      supportTarget = _json['supportTarget'] as core.bool;
-    }
-  }
+  SupportedLanguage.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          supportSource: _json.containsKey('supportSource')
+              ? _json['supportSource'] as core.bool
+              : null,
+          supportTarget: _json.containsKey('supportTarget')
+              ? _json['supportTarget'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -1918,20 +2347,207 @@ class SupportedLanguages {
   /// supports.
   core.List<SupportedLanguage>? languages;
 
-  SupportedLanguages();
+  SupportedLanguages({
+    this.languages,
+  });
 
-  SupportedLanguages.fromJson(core.Map _json) {
-    if (_json.containsKey('languages')) {
-      languages = (_json['languages'] as core.List)
-          .map<SupportedLanguage>((value) => SupportedLanguage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SupportedLanguages.fromJson(core.Map _json)
+      : this(
+          languages: _json.containsKey('languages')
+              ? (_json['languages'] as core.List)
+                  .map((value) => SupportedLanguage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (languages != null)
-          'languages': languages!.map((value) => value.toJson()).toList(),
+        if (languages != null) 'languages': languages!,
+      };
+}
+
+/// A document translation request.
+class TranslateDocumentRequest {
+  /// Input configurations.
+  ///
+  /// Required.
+  DocumentInputConfig? documentInputConfig;
+
+  /// Output configurations.
+  ///
+  /// Defines if the output file should be stored within Cloud Storage as well
+  /// as the desired output format. If not provided the translated file will
+  /// only be returned through a byte-stream and its output mime type will be
+  /// the same as the input file's mime type.
+  ///
+  /// Optional.
+  DocumentOutputConfig? documentOutputConfig;
+
+  /// Glossary to be applied.
+  ///
+  /// The glossary must be within the same region (have the same location-id) as
+  /// the model, otherwise an INVALID_ARGUMENT (400) error is returned.
+  ///
+  /// Optional.
+  TranslateTextGlossaryConfig? glossaryConfig;
+
+  /// The labels with user-defined metadata for the request.
+  ///
+  /// Label keys and values can be no longer than 63 characters (Unicode
+  /// codepoints), can only contain lowercase letters, numeric characters,
+  /// underscores and dashes. International characters are allowed. Label values
+  /// are optional. Label keys must start with a letter. See
+  /// https://cloud.google.com/translate/docs/advanced/labels for more
+  /// information.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
+
+  /// The `model` type requested for this translation.
+  ///
+  /// The format depends on model type: - AutoML Translation models:
+  /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
+  /// - General (built-in) models:
+  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
+  /// If not provided, the default Google model (NMT) will be used for
+  /// translation.
+  ///
+  /// Optional.
+  core.String? model;
+
+  /// The BCP-47 language code of the input document if known, for example,
+  /// "en-US" or "sr-Latn".
+  ///
+  /// Supported language codes are listed in Language Support. If the source
+  /// language isn't specified, the API attempts to identify the source language
+  /// automatically and returns the source language within the response. Source
+  /// language must be specified if the request contains a glossary or a custom
+  /// model.
+  ///
+  /// Optional.
+  core.String? sourceLanguageCode;
+
+  /// The BCP-47 language code to use for translation of the input document, set
+  /// to one of the language codes listed in Language Support.
+  ///
+  /// Required.
+  core.String? targetLanguageCode;
+
+  TranslateDocumentRequest({
+    this.documentInputConfig,
+    this.documentOutputConfig,
+    this.glossaryConfig,
+    this.labels,
+    this.model,
+    this.sourceLanguageCode,
+    this.targetLanguageCode,
+  });
+
+  TranslateDocumentRequest.fromJson(core.Map _json)
+      : this(
+          documentInputConfig: _json.containsKey('documentInputConfig')
+              ? DocumentInputConfig.fromJson(_json['documentInputConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          documentOutputConfig: _json.containsKey('documentOutputConfig')
+              ? DocumentOutputConfig.fromJson(_json['documentOutputConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          glossaryConfig: _json.containsKey('glossaryConfig')
+              ? TranslateTextGlossaryConfig.fromJson(_json['glossaryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          sourceLanguageCode: _json.containsKey('sourceLanguageCode')
+              ? _json['sourceLanguageCode'] as core.String
+              : null,
+          targetLanguageCode: _json.containsKey('targetLanguageCode')
+              ? _json['targetLanguageCode'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (documentInputConfig != null)
+          'documentInputConfig': documentInputConfig!,
+        if (documentOutputConfig != null)
+          'documentOutputConfig': documentOutputConfig!,
+        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!,
+        if (labels != null) 'labels': labels!,
+        if (model != null) 'model': model!,
+        if (sourceLanguageCode != null)
+          'sourceLanguageCode': sourceLanguageCode!,
+        if (targetLanguageCode != null)
+          'targetLanguageCode': targetLanguageCode!,
+      };
+}
+
+/// A translated document response message.
+class TranslateDocumentResponse {
+  /// Translated document.
+  DocumentTranslation? documentTranslation;
+
+  /// The `glossary_config` used for this translation.
+  TranslateTextGlossaryConfig? glossaryConfig;
+
+  /// The document's translation output if a glossary is provided in the
+  /// request.
+  ///
+  /// This can be the same as \[TranslateDocumentResponse.document_translation\]
+  /// if no glossary terms apply.
+  DocumentTranslation? glossaryDocumentTranslation;
+
+  /// Only present when 'model' is present in the request.
+  ///
+  /// 'model' is normalized to have a project number. For example: If the
+  /// 'model' field in TranslateDocumentRequest is:
+  /// `projects/{project-id}/locations/{location-id}/models/general/nmt` then
+  /// `model` here would be normalized to
+  /// `projects/{project-number}/locations/{location-id}/models/general/nmt`.
+  core.String? model;
+
+  TranslateDocumentResponse({
+    this.documentTranslation,
+    this.glossaryConfig,
+    this.glossaryDocumentTranslation,
+    this.model,
+  });
+
+  TranslateDocumentResponse.fromJson(core.Map _json)
+      : this(
+          documentTranslation: _json.containsKey('documentTranslation')
+              ? DocumentTranslation.fromJson(_json['documentTranslation']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          glossaryConfig: _json.containsKey('glossaryConfig')
+              ? TranslateTextGlossaryConfig.fromJson(_json['glossaryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          glossaryDocumentTranslation:
+              _json.containsKey('glossaryDocumentTranslation')
+                  ? DocumentTranslation.fromJson(
+                      _json['glossaryDocumentTranslation']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (documentTranslation != null)
+          'documentTranslation': documentTranslation!,
+        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!,
+        if (glossaryDocumentTranslation != null)
+          'glossaryDocumentTranslation': glossaryDocumentTranslation!,
+        if (model != null) 'model': model!,
       };
 }
 
@@ -1953,16 +2569,20 @@ class TranslateTextGlossaryConfig {
   /// Optional.
   core.bool? ignoreCase;
 
-  TranslateTextGlossaryConfig();
+  TranslateTextGlossaryConfig({
+    this.glossary,
+    this.ignoreCase,
+  });
 
-  TranslateTextGlossaryConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('glossary')) {
-      glossary = _json['glossary'] as core.String;
-    }
-    if (_json.containsKey('ignoreCase')) {
-      ignoreCase = _json['ignoreCase'] as core.bool;
-    }
-  }
+  TranslateTextGlossaryConfig.fromJson(core.Map _json)
+      : this(
+          glossary: _json.containsKey('glossary')
+              ? _json['glossary'] as core.String
+              : null,
+          ignoreCase: _json.containsKey('ignoreCase')
+              ? _json['ignoreCase'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (glossary != null) 'glossary': glossary!,
@@ -2013,11 +2633,10 @@ class TranslateTextRequest {
   /// `projects/{project-number-or-id}/locations/{location-id}/models/{model-id}`
   /// - General (built-in) models:
   /// `projects/{project-number-or-id}/locations/{location-id}/models/general/nmt`,
-  /// `projects/{project-number-or-id}/locations/{location-id}/models/general/base`
   /// For global (non-regionalized) requests, use `location-id` `global`. For
   /// example,
   /// `projects/{project-number-or-id}/locations/global/models/general/nmt`. If
-  /// missing, the system decides which google base model to use.
+  /// not provided, the default Google model (NMT) will be used
   ///
   /// Optional.
   core.String? model;
@@ -2038,43 +2657,51 @@ class TranslateTextRequest {
   /// Required.
   core.String? targetLanguageCode;
 
-  TranslateTextRequest();
+  TranslateTextRequest({
+    this.contents,
+    this.glossaryConfig,
+    this.labels,
+    this.mimeType,
+    this.model,
+    this.sourceLanguageCode,
+    this.targetLanguageCode,
+  });
 
-  TranslateTextRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('contents')) {
-      contents = (_json['contents'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('glossaryConfig')) {
-      glossaryConfig = TranslateTextGlossaryConfig.fromJson(
-          _json['glossaryConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('sourceLanguageCode')) {
-      sourceLanguageCode = _json['sourceLanguageCode'] as core.String;
-    }
-    if (_json.containsKey('targetLanguageCode')) {
-      targetLanguageCode = _json['targetLanguageCode'] as core.String;
-    }
-  }
+  TranslateTextRequest.fromJson(core.Map _json)
+      : this(
+          contents: _json.containsKey('contents')
+              ? (_json['contents'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          glossaryConfig: _json.containsKey('glossaryConfig')
+              ? TranslateTextGlossaryConfig.fromJson(_json['glossaryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          sourceLanguageCode: _json.containsKey('sourceLanguageCode')
+              ? _json['sourceLanguageCode'] as core.String
+              : null,
+          targetLanguageCode: _json.containsKey('targetLanguageCode')
+              ? _json['targetLanguageCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (contents != null) 'contents': contents!,
-        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!.toJson(),
+        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!,
         if (labels != null) 'labels': labels!,
         if (mimeType != null) 'mimeType': mimeType!,
         if (model != null) 'model': model!,
@@ -2097,29 +2724,31 @@ class TranslateTextResponse {
   /// This field has the same length as `contents`.
   core.List<Translation>? translations;
 
-  TranslateTextResponse();
+  TranslateTextResponse({
+    this.glossaryTranslations,
+    this.translations,
+  });
 
-  TranslateTextResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('glossaryTranslations')) {
-      glossaryTranslations = (_json['glossaryTranslations'] as core.List)
-          .map<Translation>((value) => Translation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('translations')) {
-      translations = (_json['translations'] as core.List)
-          .map<Translation>((value) => Translation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  TranslateTextResponse.fromJson(core.Map _json)
+      : this(
+          glossaryTranslations: _json.containsKey('glossaryTranslations')
+              ? (_json['glossaryTranslations'] as core.List)
+                  .map((value) => Translation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          translations: _json.containsKey('translations')
+              ? (_json['translations'] as core.List)
+                  .map((value) => Translation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (glossaryTranslations != null)
-          'glossaryTranslations':
-              glossaryTranslations!.map((value) => value.toJson()).toList(),
-        if (translations != null)
-          'translations': translations!.map((value) => value.toJson()).toList(),
+          'glossaryTranslations': glossaryTranslations!,
+        if (translations != null) 'translations': translations!,
       };
 }
 
@@ -2146,30 +2775,38 @@ class Translation {
   core.String? model;
 
   /// Text translated into the target language.
+  ///
+  /// If an error occurs during translation, this field might be excluded from
+  /// the response.
   core.String? translatedText;
 
-  Translation();
+  Translation({
+    this.detectedLanguageCode,
+    this.glossaryConfig,
+    this.model,
+    this.translatedText,
+  });
 
-  Translation.fromJson(core.Map _json) {
-    if (_json.containsKey('detectedLanguageCode')) {
-      detectedLanguageCode = _json['detectedLanguageCode'] as core.String;
-    }
-    if (_json.containsKey('glossaryConfig')) {
-      glossaryConfig = TranslateTextGlossaryConfig.fromJson(
-          _json['glossaryConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('translatedText')) {
-      translatedText = _json['translatedText'] as core.String;
-    }
-  }
+  Translation.fromJson(core.Map _json)
+      : this(
+          detectedLanguageCode: _json.containsKey('detectedLanguageCode')
+              ? _json['detectedLanguageCode'] as core.String
+              : null,
+          glossaryConfig: _json.containsKey('glossaryConfig')
+              ? TranslateTextGlossaryConfig.fromJson(_json['glossaryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          translatedText: _json.containsKey('translatedText')
+              ? _json['translatedText'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (detectedLanguageCode != null)
           'detectedLanguageCode': detectedLanguageCode!,
-        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!.toJson(),
+        if (glossaryConfig != null) 'glossaryConfig': glossaryConfig!,
         if (model != null) 'model': model!,
         if (translatedText != null) 'translatedText': translatedText!,
       };
@@ -2184,13 +2821,16 @@ class WaitOperationRequest {
   /// the shorter one will be used.
   core.String? timeout;
 
-  WaitOperationRequest();
+  WaitOperationRequest({
+    this.timeout,
+  });
 
-  WaitOperationRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('timeout')) {
-      timeout = _json['timeout'] as core.String;
-    }
-  }
+  WaitOperationRequest.fromJson(core.Map _json)
+      : this(
+          timeout: _json.containsKey('timeout')
+              ? _json['timeout'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (timeout != null) 'timeout': timeout!,

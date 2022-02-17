@@ -22,6 +22,8 @@
 /// Create an instance of [StoragetransferApi] to access these resources:
 ///
 /// - [GoogleServiceAccountsResource]
+/// - [ProjectsResource]
+///   - [ProjectsAgentPoolsResource]
 /// - [TransferJobsResource]
 /// - [TransferOperationsResource]
 library storagetransfer.v1;
@@ -33,6 +35,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -41,7 +45,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Transfers data from external data sources to a Google Cloud Storage bucket
 /// or between Google Cloud Storage buckets.
 class StoragetransferApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -49,6 +54,7 @@ class StoragetransferApi {
 
   GoogleServiceAccountsResource get googleServiceAccounts =>
       GoogleServiceAccountsResource(_requester);
+  ProjectsResource get projects => ProjectsResource(_requester);
   TransferJobsResource get transferJobs => TransferJobsResource(_requester);
   TransferOperationsResource get transferOperations =>
       TransferOperationsResource(_requester);
@@ -70,16 +76,16 @@ class GoogleServiceAccountsResource {
   /// Service to access buckets in the project where transfers run or in other
   /// projects.
   ///
-  /// Each Google service account is associated with one Google Cloud Platform
-  /// Console project. Users should add this service account to the Google Cloud
-  /// Storage bucket ACLs to grant access to Storage Transfer Service. This
-  /// service account is created and owned by Storage Transfer Service and can
-  /// only be used by Storage Transfer Service.
+  /// Each Google service account is associated with one Google Cloud project.
+  /// Users should add this service account to the Google Cloud Storage bucket
+  /// ACLs to grant access to Storage Transfer Service. This service account is
+  /// created and owned by Storage Transfer Service and can only be used by
+  /// Storage Transfer Service.
   ///
   /// Request parameters:
   ///
-  /// [projectId] - Required. The ID of the Google Cloud Platform Console
-  /// project that the Google service account is associated with.
+  /// [projectId] - Required. The ID of the Google Cloud project that the Google
+  /// service account is associated with.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -112,6 +118,246 @@ class GoogleServiceAccountsResource {
   }
 }
 
+class ProjectsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsAgentPoolsResource get agentPools =>
+      ProjectsAgentPoolsResource(_requester);
+
+  ProjectsResource(commons.ApiRequester client) : _requester = client;
+}
+
+class ProjectsAgentPoolsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsAgentPoolsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Creates an agent pool resource.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [projectId] - Required. The ID of the Google Cloud project that owns the
+  /// agent pool.
+  /// Value must have pattern `^\[^/\]+$`.
+  ///
+  /// [agentPoolId] - Required. The ID of the agent pool to create. The
+  /// `agent_pool_id` must meet the following requirements: * Length of 128
+  /// characters or less. * Not start with the string `goog`. * Start with a
+  /// lowercase ASCII character, followed by: * Zero or more: lowercase Latin
+  /// alphabet characters, numerals, hyphens (`-`), periods (`.`), underscores
+  /// (`_`), or tildes (`~`). * One or more numerals or lowercase ASCII
+  /// characters. As expressed by the regular expression:
+  /// `^(?!goog)[a-z]([a-z0-9-._~]*[a-z0-9])?$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AgentPool].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AgentPool> create(
+    AgentPool request,
+    core.String projectId, {
+    core.String? agentPoolId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (agentPoolId != null) 'agentPoolId': [agentPoolId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/projects/' + core.Uri.encodeFull('$projectId') + '/agentPools';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AgentPool.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes an agent pool.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the agent pool to delete.
+  /// Value must have pattern `^projects/\[^/\]+/agentPools/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets an agent pool.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the agent pool to get.
+  /// Value must have pattern `^projects/\[^/\]+/agentPools/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AgentPool].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AgentPool> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AgentPool.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists agent pools.
+  ///
+  /// Request parameters:
+  ///
+  /// [projectId] - Required. The ID of the Google Cloud project that owns the
+  /// job.
+  /// Value must have pattern `^\[^/\]+$`.
+  ///
+  /// [filter] - An optional list of query parameters specified as JSON text in
+  /// the form of: `{"agentPoolNames":["agentpool1","agentpool2",...]}` Since
+  /// `agentPoolNames` support multiple values, its values must be specified
+  /// with array notation. When the filter is either empty or not provided, the
+  /// list returns all agent pools for the project.
+  ///
+  /// [pageSize] - The list page size. The max allowed value is `256`.
+  ///
+  /// [pageToken] - The list page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListAgentPoolsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListAgentPoolsResponse> list(
+    core.String projectId, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/projects/' + core.Uri.encodeFull('$projectId') + '/agentPools';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListAgentPoolsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates an existing agent pool resource.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Specifies a unique string that identifies the agent
+  /// pool. Format: `projects/{project_id}/agentPools/{agent_pool_id}`
+  /// Value must have pattern `^projects/\[^/\]+/agentPools/\[^/\]+$`.
+  ///
+  /// [updateMask] - The
+  /// [field mask](https://developers.google.com/protocol-buffers/docs/reference/google.protobuf)
+  /// of the fields in `agentPool` to update in this request. The following
+  /// `agentPool` fields can be updated: * display_name * bandwidth_limit
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AgentPool].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AgentPool> patch(
+    AgentPool request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AgentPool.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class TransferJobsResource {
   final commons.ApiRequester _requester;
 
@@ -137,7 +383,7 @@ class TransferJobsResource {
     TransferJob request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -158,11 +404,11 @@ class TransferJobsResource {
   ///
   /// Request parameters:
   ///
-  /// [jobName] - Required. " The job to get.
+  /// [jobName] - Required. The job to get.
   /// Value must have pattern `^transferJobs/.*$`.
   ///
-  /// [projectId] - Required. The ID of the Google Cloud Platform Console
-  /// project that owns the job.
+  /// [projectId] - Required. The ID of the Google Cloud project that owns the
+  /// job.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -275,7 +521,7 @@ class TransferJobsResource {
     core.String jobName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -295,7 +541,7 @@ class TransferJobsResource {
   /// Attempts to start a new TransferOperation for the current TransferJob.
   ///
   /// A TransferJob has a maximum of one active TransferOperation. If this
-  /// method is called while a TransferOperation is active, an error wil be
+  /// method is called while a TransferOperation is active, an error will be
   /// returned.
   ///
   /// [request] - The metadata request object.
@@ -320,7 +566,7 @@ class TransferJobsResource {
     core.String jobName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -384,7 +630,7 @@ class TransferOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -522,7 +768,7 @@ class TransferOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -562,7 +808,7 @@ class TransferOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -577,6 +823,66 @@ class TransferOperationsResource {
     );
     return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
+}
+
+/// Represents an On-Premises Agent pool.
+class AgentPool {
+  /// Specifies the bandwidth limit details.
+  ///
+  /// If this field is unspecified, the default value is set as 'No Limit'.
+  BandwidthLimit? bandwidthLimit;
+
+  /// Specifies the client-specified AgentPool description.
+  core.String? displayName;
+
+  /// Specifies a unique string that identifies the agent pool.
+  ///
+  /// Format: `projects/{project_id}/agentPools/{agent_pool_id}`
+  ///
+  /// Required.
+  core.String? name;
+
+  /// Specifies the state of the AgentPool.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : Default value. This value is unused.
+  /// - "CREATING" : This is an initialization state. During this stage, the
+  /// resources such as Pub/Sub topics are allocated for the AgentPool.
+  /// - "CREATED" : Determines that the AgentPool is created for use. At this
+  /// state, Agents can join the AgentPool and participate in the transfer jobs
+  /// in that pool.
+  /// - "DELETING" : Determines that the AgentPool deletion has been initiated,
+  /// and all the resources are scheduled to be cleaned up and freed.
+  core.String? state;
+
+  AgentPool({
+    this.bandwidthLimit,
+    this.displayName,
+    this.name,
+    this.state,
+  });
+
+  AgentPool.fromJson(core.Map _json)
+      : this(
+          bandwidthLimit: _json.containsKey('bandwidthLimit')
+              ? BandwidthLimit.fromJson(_json['bandwidthLimit']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (bandwidthLimit != null) 'bandwidthLimit': bandwidthLimit!,
+        if (displayName != null) 'displayName': displayName!,
+        if (name != null) 'name': name!,
+        if (state != null) 'state': state!,
+      };
 }
 
 /// AWS access key (see
@@ -598,16 +904,20 @@ class AwsAccessKey {
   /// Required.
   core.String? secretAccessKey;
 
-  AwsAccessKey();
+  AwsAccessKey({
+    this.accessKeyId,
+    this.secretAccessKey,
+  });
 
-  AwsAccessKey.fromJson(core.Map _json) {
-    if (_json.containsKey('accessKeyId')) {
-      accessKeyId = _json['accessKeyId'] as core.String;
-    }
-    if (_json.containsKey('secretAccessKey')) {
-      secretAccessKey = _json['secretAccessKey'] as core.String;
-    }
-  }
+  AwsAccessKey.fromJson(core.Map _json)
+      : this(
+          accessKeyId: _json.containsKey('accessKeyId')
+              ? _json['accessKeyId'] as core.String
+              : null,
+          secretAccessKey: _json.containsKey('secretAccessKey')
+              ? _json['secretAccessKey'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessKeyId != null) 'accessKeyId': accessKeyId!,
@@ -626,8 +936,6 @@ class AwsS3Data {
   /// access key. For information on our data retention policy for user
   /// credentials, see \[User
   /// credentials\](/storage-transfer/docs/data-retention#user-credentials).
-  ///
-  /// Required.
   AwsAccessKey? awsAccessKey;
 
   /// S3 Bucket name (see
@@ -643,25 +951,43 @@ class AwsS3Data {
   /// with a '/'.
   core.String? path;
 
-  AwsS3Data();
+  /// The Amazon Resource Name (ARN) of the role to support temporary
+  /// credentials via `AssumeRoleWithWebIdentity`.
+  ///
+  /// For more information about ARNs, see
+  /// [IAM ARNs](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns).
+  /// When a role ARN is provided, Transfer Service fetches temporary
+  /// credentials for the session using a `AssumeRoleWithWebIdentity` call for
+  /// the provided role using the GoogleServiceAccount for this project.
+  core.String? roleArn;
 
-  AwsS3Data.fromJson(core.Map _json) {
-    if (_json.containsKey('awsAccessKey')) {
-      awsAccessKey = AwsAccessKey.fromJson(
-          _json['awsAccessKey'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('bucketName')) {
-      bucketName = _json['bucketName'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-  }
+  AwsS3Data({
+    this.awsAccessKey,
+    this.bucketName,
+    this.path,
+    this.roleArn,
+  });
+
+  AwsS3Data.fromJson(core.Map _json)
+      : this(
+          awsAccessKey: _json.containsKey('awsAccessKey')
+              ? AwsAccessKey.fromJson(
+                  _json['awsAccessKey'] as core.Map<core.String, core.dynamic>)
+              : null,
+          bucketName: _json.containsKey('bucketName')
+              ? _json['bucketName'] as core.String
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          roleArn: _json.containsKey('roleArn')
+              ? _json['roleArn'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (awsAccessKey != null) 'awsAccessKey': awsAccessKey!.toJson(),
+        if (awsAccessKey != null) 'awsAccessKey': awsAccessKey!,
         if (bucketName != null) 'bucketName': bucketName!,
         if (path != null) 'path': path!,
+        if (roleArn != null) 'roleArn': roleArn!,
       };
 }
 
@@ -699,27 +1025,30 @@ class AzureBlobStorageData {
   /// Required.
   core.String? storageAccount;
 
-  AzureBlobStorageData();
+  AzureBlobStorageData({
+    this.azureCredentials,
+    this.container,
+    this.path,
+    this.storageAccount,
+  });
 
-  AzureBlobStorageData.fromJson(core.Map _json) {
-    if (_json.containsKey('azureCredentials')) {
-      azureCredentials = AzureCredentials.fromJson(
-          _json['azureCredentials'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('container')) {
-      container = _json['container'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-    if (_json.containsKey('storageAccount')) {
-      storageAccount = _json['storageAccount'] as core.String;
-    }
-  }
+  AzureBlobStorageData.fromJson(core.Map _json)
+      : this(
+          azureCredentials: _json.containsKey('azureCredentials')
+              ? AzureCredentials.fromJson(_json['azureCredentials']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          container: _json.containsKey('container')
+              ? _json['container'] as core.String
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          storageAccount: _json.containsKey('storageAccount')
+              ? _json['storageAccount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (azureCredentials != null)
-          'azureCredentials': azureCredentials!.toJson(),
+        if (azureCredentials != null) 'azureCredentials': azureCredentials!,
         if (container != null) 'container': container!,
         if (path != null) 'path': path!,
         if (storageAccount != null) 'storageAccount': storageAccount!,
@@ -730,85 +1059,66 @@ class AzureBlobStorageData {
 /// credentials, see \[User
 /// credentials\](/storage-transfer/docs/data-retention#user-credentials).
 class AzureCredentials {
-  /// Azure shared access signature.
+  /// Azure shared access signature (SAS).
   ///
-  /// (see \[Grant limited access to Azure Storage resources using shared access
-  /// signatures
-  /// (SAS)\](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview)).
+  /// For more information about SAS, see \[Grant limited access to Azure
+  /// Storage resources using shared access signatures
+  /// (SAS)\](https://docs.microsoft.com/en-us/azure/storage/common/storage-sas-overview).
   ///
   /// Required.
   core.String? sasToken;
 
-  AzureCredentials();
+  AzureCredentials({
+    this.sasToken,
+  });
 
-  AzureCredentials.fromJson(core.Map _json) {
-    if (_json.containsKey('sasToken')) {
-      sasToken = _json['sasToken'] as core.String;
-    }
-  }
+  AzureCredentials.fromJson(core.Map _json)
+      : this(
+          sasToken: _json.containsKey('sasToken')
+              ? _json['sasToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sasToken != null) 'sasToken': sasToken!,
       };
 }
 
-/// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
+/// Specifies a bandwidth limit for an agent pool.
+class BandwidthLimit {
+  /// Bandwidth rate in megabytes per second, distributed across all the agents
+  /// in the pool.
+  core.String? limitMbps;
 
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  BandwidthLimit({
+    this.limitMbps,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  BandwidthLimit.fromJson(core.Map _json)
+      : this(
+          limitMbps: _json.containsKey('limitMbps')
+              ? _json['limitMbps'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (limitMbps != null) 'limitMbps': limitMbps!,
+      };
 }
+
+/// The request message for Operations.CancelOperation.
+typedef CancelOperationRequest = $Empty;
 
 /// Represents a whole or partial calendar date, such as a birthday.
 ///
 /// The time of day and time zone are either specified elsewhere or are
 /// insignificant. The date is relative to the Gregorian Calendar. This can
 /// represent one of the following: * A full date, with non-zero year, month,
-/// and day values * A month and day value, with a zero year, such as an
-/// anniversary * A year on its own, with zero month and day values * A year and
-/// month value, with a zero day, such as a credit card expiration date Related
-/// types are google.type.TimeOfDay and `google.protobuf.Timestamp`.
-class Date {
-  /// Day of a month.
-  ///
-  /// Must be from 1 to 31 and valid for the year and month, or 0 to specify a
-  /// year by itself or a year and month where the day isn't significant.
-  core.int? day;
-
-  /// Month of a year.
-  ///
-  /// Must be from 1 to 12, or 0 to specify a year without a month and day.
-  core.int? month;
-
-  /// Year of the date.
-  ///
-  /// Must be from 1 to 9999, or 0 to specify a date without a year.
-  core.int? year;
-
-  Date();
-
-  Date.fromJson(core.Map _json) {
-    if (_json.containsKey('day')) {
-      day = _json['day'] as core.int;
-    }
-    if (_json.containsKey('month')) {
-      month = _json['month'] as core.int;
-    }
-    if (_json.containsKey('year')) {
-      year = _json['year'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (day != null) 'day': day!,
-        if (month != null) 'month': month!,
-        if (year != null) 'year': year!,
-      };
-}
+/// and day values * A month and day, with a zero year (e.g., an anniversary) *
+/// A year on its own, with a zero month and a zero day * A year and month, with
+/// a zero day (e.g., a credit card expiration date) Related types: *
+/// google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp
+typedef Date = $Date;
 
 /// A generic empty message that you can re-use to avoid defining duplicated
 /// empty messages in your APIs.
@@ -817,176 +1127,16 @@ class Date {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// An entry describing an error that has occurred.
-class ErrorLogEntry {
-  /// A list of messages that carry the error details.
-  core.List<core.String>? errorDetails;
-
-  /// A URL that refers to the target (a data source, a data sink, or an object)
-  /// with which the error is associated.
-  ///
-  /// Required.
-  core.String? url;
-
-  ErrorLogEntry();
-
-  ErrorLogEntry.fromJson(core.Map _json) {
-    if (_json.containsKey('errorDetails')) {
-      errorDetails = (_json['errorDetails'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (errorDetails != null) 'errorDetails': errorDetails!,
-        if (url != null) 'url': url!,
-      };
-}
-
-/// A summary of errors by error code, plus a count and sample error log
-/// entries.
-class ErrorSummary {
-  /// Required.
-  /// Possible string values are:
-  /// - "OK" : Not an error; returned on success HTTP Mapping: 200 OK
-  /// - "CANCELLED" : The operation was cancelled, typically by the caller. HTTP
-  /// Mapping: 499 Client Closed Request
-  /// - "UNKNOWN" : Unknown error. For example, this error may be returned when
-  /// a `Status` value received from another address space belongs to an error
-  /// space that is not known in this address space. Also errors raised by APIs
-  /// that do not return enough error information may be converted to this
-  /// error. HTTP Mapping: 500 Internal Server Error
-  /// - "INVALID_ARGUMENT" : The client specified an invalid argument. Note that
-  /// this differs from `FAILED_PRECONDITION`. `INVALID_ARGUMENT` indicates
-  /// arguments that are problematic regardless of the state of the system
-  /// (e.g., a malformed file name). HTTP Mapping: 400 Bad Request
-  /// - "DEADLINE_EXCEEDED" : The deadline expired before the operation could
-  /// complete. For operations that change the state of the system, this error
-  /// may be returned even if the operation has completed successfully. For
-  /// example, a successful response from a server could have been delayed long
-  /// enough for the deadline to expire. HTTP Mapping: 504 Gateway Timeout
-  /// - "NOT_FOUND" : Some requested entity (e.g., file or directory) was not
-  /// found. Note to server developers: if a request is denied for an entire
-  /// class of users, such as gradual feature rollout or undocumented allowlist,
-  /// `NOT_FOUND` may be used. If a request is denied for some users within a
-  /// class of users, such as user-based access control, `PERMISSION_DENIED`
-  /// must be used. HTTP Mapping: 404 Not Found
-  /// - "ALREADY_EXISTS" : The entity that a client attempted to create (e.g.,
-  /// file or directory) already exists. HTTP Mapping: 409 Conflict
-  /// - "PERMISSION_DENIED" : The caller does not have permission to execute the
-  /// specified operation. `PERMISSION_DENIED` must not be used for rejections
-  /// caused by exhausting some resource (use `RESOURCE_EXHAUSTED` instead for
-  /// those errors). `PERMISSION_DENIED` must not be used if the caller can not
-  /// be identified (use `UNAUTHENTICATED` instead for those errors). This error
-  /// code does not imply the request is valid or the requested entity exists or
-  /// satisfies other pre-conditions. HTTP Mapping: 403 Forbidden
-  /// - "UNAUTHENTICATED" : The request does not have valid authentication
-  /// credentials for the operation. HTTP Mapping: 401 Unauthorized
-  /// - "RESOURCE_EXHAUSTED" : Some resource has been exhausted, perhaps a
-  /// per-user quota, or perhaps the entire file system is out of space. HTTP
-  /// Mapping: 429 Too Many Requests
-  /// - "FAILED_PRECONDITION" : The operation was rejected because the system is
-  /// not in a state required for the operation's execution. For example, the
-  /// directory to be deleted is non-empty, an rmdir operation is applied to a
-  /// non-directory, etc. Service implementors can use the following guidelines
-  /// to decide between `FAILED_PRECONDITION`, `ABORTED`, and `UNAVAILABLE`: (a)
-  /// Use `UNAVAILABLE` if the client can retry just the failing call. (b) Use
-  /// `ABORTED` if the client should retry at a higher level (e.g., when a
-  /// client-specified test-and-set fails, indicating the client should restart
-  /// a read-modify-write sequence). (c) Use `FAILED_PRECONDITION` if the client
-  /// should not retry until the system state has been explicitly fixed. E.g.,
-  /// if an "rmdir" fails because the directory is non-empty,
-  /// `FAILED_PRECONDITION` should be returned since the client should not retry
-  /// unless the files are deleted from the directory. HTTP Mapping: 400 Bad
-  /// Request
-  /// - "ABORTED" : The operation was aborted, typically due to a concurrency
-  /// issue such as a sequencer check failure or transaction abort. See the
-  /// guidelines above for deciding between `FAILED_PRECONDITION`, `ABORTED`,
-  /// and `UNAVAILABLE`. HTTP Mapping: 409 Conflict
-  /// - "OUT_OF_RANGE" : The operation was attempted past the valid range. E.g.,
-  /// seeking or reading past end-of-file. Unlike `INVALID_ARGUMENT`, this error
-  /// indicates a problem that may be fixed if the system state changes. For
-  /// example, a 32-bit file system will generate `INVALID_ARGUMENT` if asked to
-  /// read at an offset that is not in the range \[0,2^32-1\], but it will
-  /// generate `OUT_OF_RANGE` if asked to read from an offset past the current
-  /// file size. There is a fair bit of overlap between `FAILED_PRECONDITION`
-  /// and `OUT_OF_RANGE`. We recommend using `OUT_OF_RANGE` (the more specific
-  /// error) when it applies so that callers who are iterating through a space
-  /// can easily look for an `OUT_OF_RANGE` error to detect when they are done.
-  /// HTTP Mapping: 400 Bad Request
-  /// - "UNIMPLEMENTED" : The operation is not implemented or is not
-  /// supported/enabled in this service. HTTP Mapping: 501 Not Implemented
-  /// - "INTERNAL" : Internal errors. This means that some invariants expected
-  /// by the underlying system have been broken. This error code is reserved for
-  /// serious errors. HTTP Mapping: 500 Internal Server Error
-  /// - "UNAVAILABLE" : The service is currently unavailable. This is most
-  /// likely a transient condition, which can be corrected by retrying with a
-  /// backoff. Note that it is not always safe to retry non-idempotent
-  /// operations. See the guidelines above for deciding between
-  /// `FAILED_PRECONDITION`, `ABORTED`, and `UNAVAILABLE`. HTTP Mapping: 503
-  /// Service Unavailable
-  /// - "DATA_LOSS" : Unrecoverable data loss or corruption. HTTP Mapping: 500
-  /// Internal Server Error
-  core.String? errorCode;
-
-  /// Count of this type of error.
-  ///
-  /// Required.
-  core.String? errorCount;
-
-  /// Error samples.
-  ///
-  /// At most 5 error log entries will be recorded for a given error code for a
-  /// single transfer operation.
-  core.List<ErrorLogEntry>? errorLogEntries;
-
-  ErrorSummary();
-
-  ErrorSummary.fromJson(core.Map _json) {
-    if (_json.containsKey('errorCode')) {
-      errorCode = _json['errorCode'] as core.String;
-    }
-    if (_json.containsKey('errorCount')) {
-      errorCount = _json['errorCount'] as core.String;
-    }
-    if (_json.containsKey('errorLogEntries')) {
-      errorLogEntries = (_json['errorLogEntries'] as core.List)
-          .map<ErrorLogEntry>((value) => ErrorLogEntry.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (errorCode != null) 'errorCode': errorCode!,
-        if (errorCount != null) 'errorCount': errorCount!,
-        if (errorLogEntries != null)
-          'errorLogEntries':
-              errorLogEntries!.map((value) => value.toJson()).toList(),
-      };
-}
+typedef Empty = $Empty;
 
 /// In a GcsData resource, an object's name is the Cloud Storage object's name
 /// and its "last modification time" refers to the object's `updated` property
 /// of Cloud Storage objects, which changes when the content or the metadata of
 /// the object is updated.
 class GcsData {
-  /// Cloud Storage bucket name (see
-  /// [Bucket Name Requirements](https://cloud.google.com/storage/docs/naming#requirements)).
+  /// Cloud Storage bucket name.
+  ///
+  /// Must meet \[Bucket Name Requirements\](/storage/docs/naming#requirements).
   ///
   /// Required.
   core.String? bucketName;
@@ -995,20 +1145,22 @@ class GcsData {
   ///
   /// Must be an empty string or full path name that ends with a '/'. This field
   /// is treated as an object prefix. As such, it should generally not begin
-  /// with a '/'. (must meet Object Name
-  /// Requirements\](https://cloud.google.com/storage/docs/naming#objectnames)).
+  /// with a '/'. The root path value must meet \[Object Name
+  /// Requirements\](/storage/docs/naming#objectnames).
   core.String? path;
 
-  GcsData();
+  GcsData({
+    this.bucketName,
+    this.path,
+  });
 
-  GcsData.fromJson(core.Map _json) {
-    if (_json.containsKey('bucketName')) {
-      bucketName = _json['bucketName'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-  }
+  GcsData.fromJson(core.Map _json)
+      : this(
+          bucketName: _json.containsKey('bucketName')
+              ? _json['bucketName'] as core.String
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bucketName != null) 'bucketName': bucketName!,
@@ -1021,16 +1173,27 @@ class GoogleServiceAccount {
   /// Email address of the service account.
   core.String? accountEmail;
 
-  GoogleServiceAccount();
+  /// Unique identifier for the service account.
+  core.String? subjectId;
 
-  GoogleServiceAccount.fromJson(core.Map _json) {
-    if (_json.containsKey('accountEmail')) {
-      accountEmail = _json['accountEmail'] as core.String;
-    }
-  }
+  GoogleServiceAccount({
+    this.accountEmail,
+    this.subjectId,
+  });
+
+  GoogleServiceAccount.fromJson(core.Map _json)
+      : this(
+          accountEmail: _json.containsKey('accountEmail')
+              ? _json['accountEmail'] as core.String
+              : null,
+          subjectId: _json.containsKey('subjectId')
+              ? _json['subjectId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountEmail != null) 'accountEmail': accountEmail!,
+        if (subjectId != null) 'subjectId': subjectId!,
       };
 }
 
@@ -1050,15 +1213,15 @@ class GoogleServiceAccount {
 /// When an object located at `http(s)://hostname:port/` is transferred to a
 /// data sink, the name of the object at the data sink is `/`. * If the
 /// specified size of an object does not match the actual size of the object
-/// fetched, the object will not be transferred. * If the specified MD5 does not
-/// match the MD5 computed from the transferred bytes, the object transfer will
-/// fail. * Ensure that each URL you specify is publicly accessible. For
-/// example, in Cloud Storage you can
-/// [share an object publicly](https://cloud.google.com/storage/docs/cloud-console#_sharingdata)
-/// and get a link to it. * Storage Transfer Service obeys `robots.txt` rules
-/// and requires the source HTTP server to support `Range` requests and to
-/// return a `Content-Length` header in each response. * ObjectConditions have
-/// no effect when filtering objects to transfer.
+/// fetched, the object is not transferred. * If the specified MD5 does not
+/// match the MD5 computed from the transferred bytes, the object transfer
+/// fails. * Ensure that each URL you specify is publicly accessible. For
+/// example, in Cloud Storage you can \[share an object publicly\]
+/// (/storage/docs/cloud-console#_sharingdata) and get a link to it. * Storage
+/// Transfer Service obeys `robots.txt` rules and requires the source HTTP
+/// server to support `Range` requests and to return a `Content-Length` header
+/// in each response. * ObjectConditions have no effect when filtering objects
+/// to transfer.
 class HttpData {
   /// The URL that points to the file that stores the object list entries.
   ///
@@ -1068,16 +1231,51 @@ class HttpData {
   /// Required.
   core.String? listUrl;
 
-  HttpData();
+  HttpData({
+    this.listUrl,
+  });
 
-  HttpData.fromJson(core.Map _json) {
-    if (_json.containsKey('listUrl')) {
-      listUrl = _json['listUrl'] as core.String;
-    }
-  }
+  HttpData.fromJson(core.Map _json)
+      : this(
+          listUrl: _json.containsKey('listUrl')
+              ? _json['listUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (listUrl != null) 'listUrl': listUrl!,
+      };
+}
+
+/// Response from ListAgentPools.
+class ListAgentPoolsResponse {
+  /// A list of agent pools.
+  core.List<AgentPool>? agentPools;
+
+  /// The list next page token.
+  core.String? nextPageToken;
+
+  ListAgentPoolsResponse({
+    this.agentPools,
+    this.nextPageToken,
+  });
+
+  ListAgentPoolsResponse.fromJson(core.Map _json)
+      : this(
+          agentPools: _json.containsKey('agentPools')
+              ? (_json['agentPools'] as core.List)
+                  .map((value) => AgentPool.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (agentPools != null) 'agentPools': agentPools!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
@@ -1089,24 +1287,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -1118,35 +1319,263 @@ class ListTransferJobsResponse {
   /// A list of transfer jobs.
   core.List<TransferJob>? transferJobs;
 
-  ListTransferJobsResponse();
+  ListTransferJobsResponse({
+    this.nextPageToken,
+    this.transferJobs,
+  });
 
-  ListTransferJobsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('transferJobs')) {
-      transferJobs = (_json['transferJobs'] as core.List)
-          .map<TransferJob>((value) => TransferJob.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTransferJobsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          transferJobs: _json.containsKey('transferJobs')
+              ? (_json['transferJobs'] as core.List)
+                  .map((value) => TransferJob.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (transferJobs != null)
-          'transferJobs': transferJobs!.map((value) => value.toJson()).toList(),
+        if (transferJobs != null) 'transferJobs': transferJobs!,
       };
 }
 
-/// Specification to configure notifications published to Cloud Pub/Sub.
+/// Specifies the logging behavior for transfer operations.
 ///
-/// Notifications will be published to the customer-provided topic using the
+/// For cloud-to-cloud transfers, logs are sent to Cloud Logging. See
+/// [Read transfer logs](https://cloud.google.com/storage-transfer/docs/read-transfer-logs)
+/// for details. For transfers to or from a POSIX file system, logs are stored
+/// in the Cloud Storage bucket that is the source or sink of the transfer. See
+/// \[Managing Transfer for on-premises
+/// jobs\](https://cloud.google.com/storage-transfer/docs/managing-on-prem-jobs#viewing-logs)
+/// for details.
+class LoggingConfig {
+  /// For transfers with a PosixFilesystem source, this option enables the Cloud
+  /// Storage transfer logs for this transfer.
+  core.bool? enableOnpremGcsTransferLogs;
+
+  /// States in which `log_actions` are logged.
+  ///
+  /// If empty, no logs are generated. Not supported for transfers with
+  /// PosixFilesystem data sources; use enable_onprem_gcs_transfer_logs instead.
+  core.List<core.String>? logActionStates;
+
+  /// Specifies the actions to be logged.
+  ///
+  /// If empty, no logs are generated. Not supported for transfers with
+  /// PosixFilesystem data sources; use enable_onprem_gcs_transfer_logs instead.
+  core.List<core.String>? logActions;
+
+  LoggingConfig({
+    this.enableOnpremGcsTransferLogs,
+    this.logActionStates,
+    this.logActions,
+  });
+
+  LoggingConfig.fromJson(core.Map _json)
+      : this(
+          enableOnpremGcsTransferLogs:
+              _json.containsKey('enableOnpremGcsTransferLogs')
+                  ? _json['enableOnpremGcsTransferLogs'] as core.bool
+                  : null,
+          logActionStates: _json.containsKey('logActionStates')
+              ? (_json['logActionStates'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          logActions: _json.containsKey('logActions')
+              ? (_json['logActions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (enableOnpremGcsTransferLogs != null)
+          'enableOnpremGcsTransferLogs': enableOnpremGcsTransferLogs!,
+        if (logActionStates != null) 'logActionStates': logActionStates!,
+        if (logActions != null) 'logActions': logActions!,
+      };
+}
+
+/// Specifies the metadata options for running a transfer.
+///
+/// These options only apply to transfers involving a POSIX filesystem and are
+/// ignored for other transfers.
+class MetadataOptions {
+  /// Specifies how each object's ACLs should be preserved for transfers between
+  /// Google Cloud Storage buckets.
+  ///
+  /// If unspecified, the default behavior is the same as
+  /// ACL_DESTINATION_BUCKET_DEFAULT.
+  /// Possible string values are:
+  /// - "ACL_UNSPECIFIED" : ACL behavior is unspecified.
+  /// - "ACL_DESTINATION_BUCKET_DEFAULT" : Use the destination bucket's default
+  /// object ACLS, if applicable.
+  /// - "ACL_PRESERVE" : Preserve the object's original ACLs. This requires the
+  /// service account to have `storage.objects.getIamPolicy` permission for the
+  /// source object. \[Uniform bucket-level
+  /// access\](https://cloud.google.com/storage/docs/uniform-bucket-level-access)
+  /// must not be enabled on either the source or destination buckets.
+  core.String? acl;
+
+  /// Specifies how each file's POSIX group ID (GID) attribute should be handled
+  /// by the transfer.
+  ///
+  /// By default, GID is not preserved.
+  /// Possible string values are:
+  /// - "GID_UNSPECIFIED" : GID behavior is unspecified.
+  /// - "GID_SKIP" : Do not preserve GID during a transfer job.
+  /// - "GID_NUMBER" : Preserve GID during a transfer job.
+  core.String? gid;
+
+  /// Specifies how each object's Cloud KMS customer-managed encryption key
+  /// (CMEK) is preserved for transfers between Google Cloud Storage buckets.
+  ///
+  /// If unspecified, the default behavior is the same as
+  /// KMS_KEY_DESTINATION_BUCKET_DEFAULT.
+  /// Possible string values are:
+  /// - "KMS_KEY_UNSPECIFIED" : KmsKey behavior is unspecified.
+  /// - "KMS_KEY_DESTINATION_BUCKET_DEFAULT" : Use the destination bucket's
+  /// default encryption settings.
+  /// - "KMS_KEY_PRESERVE" : Preserve the object's original Cloud KMS
+  /// customer-managed encryption key (CMEK) if present. Objects that do not use
+  /// a Cloud KMS encryption key will be encrypted using the destination
+  /// bucket's encryption settings.
+  core.String? kmsKey;
+
+  /// Specifies how each file's mode attribute should be handled by the
+  /// transfer.
+  ///
+  /// By default, mode is not preserved.
+  /// Possible string values are:
+  /// - "MODE_UNSPECIFIED" : Mode behavior is unspecified.
+  /// - "MODE_SKIP" : Do not preserve mode during a transfer job.
+  /// - "MODE_PRESERVE" : Preserve mode during a transfer job.
+  core.String? mode;
+
+  /// Specifies the storage class to set on objects being transferred to Google
+  /// Cloud Storage buckets.
+  ///
+  /// If unspecified, the default behavior is the same as
+  /// STORAGE_CLASS_DESTINATION_BUCKET_DEFAULT.
+  /// Possible string values are:
+  /// - "STORAGE_CLASS_UNSPECIFIED" : Storage class behavior is unspecified.
+  /// - "STORAGE_CLASS_DESTINATION_BUCKET_DEFAULT" : Use the destination
+  /// bucket's default storage class.
+  /// - "STORAGE_CLASS_PRESERVE" : Preserve the object's original storage class.
+  /// This is only supported for transfers from Google Cloud Storage buckets.
+  /// - "STORAGE_CLASS_STANDARD" : Set the storage class to STANDARD.
+  /// - "STORAGE_CLASS_NEARLINE" : Set the storage class to NEARLINE.
+  /// - "STORAGE_CLASS_COLDLINE" : Set the storage class to COLDLINE.
+  /// - "STORAGE_CLASS_ARCHIVE" : Set the storage class to ARCHIVE.
+  core.String? storageClass;
+
+  /// Specifies how symlinks should be handled by the transfer.
+  ///
+  /// By default, symlinks are not preserved.
+  /// Possible string values are:
+  /// - "SYMLINK_UNSPECIFIED" : Symlink behavior is unspecified.
+  /// - "SYMLINK_SKIP" : Do not preserve symlinks during a transfer job.
+  /// - "SYMLINK_PRESERVE" : Preserve symlinks during a transfer job.
+  core.String? symlink;
+
+  /// Specifies how each object's temporary hold status should be preserved for
+  /// transfers between Google Cloud Storage buckets.
+  ///
+  /// If unspecified, the default behavior is the same as
+  /// TEMPORARY_HOLD_PRESERVE.
+  /// Possible string values are:
+  /// - "TEMPORARY_HOLD_UNSPECIFIED" : Temporary hold behavior is unspecified.
+  /// - "TEMPORARY_HOLD_SKIP" : Do not set a temporary hold on the destination
+  /// object.
+  /// - "TEMPORARY_HOLD_PRESERVE" : Preserve the object's original temporary
+  /// hold status.
+  core.String? temporaryHold;
+
+  /// Specifies how each object's `timeCreated` metadata is preserved for
+  /// transfers between Google Cloud Storage buckets.
+  ///
+  /// If unspecified, the default behavior is the same as TIME_CREATED_SKIP.
+  /// Possible string values are:
+  /// - "TIME_CREATED_UNSPECIFIED" : TimeCreated behavior is unspecified.
+  /// - "TIME_CREATED_SKIP" : Do not preserve the `timeCreated` metadata from
+  /// the source object.
+  /// - "TIME_CREATED_PRESERVE_AS_CUSTOM_TIME" : Preserves the source object's
+  /// `timeCreated` metadata in the `customTime` field in the destination
+  /// object. Note that any value stored in the source object's `customTime`
+  /// field will not be propagated to the destination object.
+  core.String? timeCreated;
+
+  /// Specifies how each file's POSIX user ID (UID) attribute should be handled
+  /// by the transfer.
+  ///
+  /// By default, UID is not preserved.
+  /// Possible string values are:
+  /// - "UID_UNSPECIFIED" : UID behavior is unspecified.
+  /// - "UID_SKIP" : Do not preserve UID during a transfer job.
+  /// - "UID_NUMBER" : Preserve UID during a transfer job.
+  core.String? uid;
+
+  MetadataOptions({
+    this.acl,
+    this.gid,
+    this.kmsKey,
+    this.mode,
+    this.storageClass,
+    this.symlink,
+    this.temporaryHold,
+    this.timeCreated,
+    this.uid,
+  });
+
+  MetadataOptions.fromJson(core.Map _json)
+      : this(
+          acl: _json.containsKey('acl') ? _json['acl'] as core.String : null,
+          gid: _json.containsKey('gid') ? _json['gid'] as core.String : null,
+          kmsKey: _json.containsKey('kmsKey')
+              ? _json['kmsKey'] as core.String
+              : null,
+          mode: _json.containsKey('mode') ? _json['mode'] as core.String : null,
+          storageClass: _json.containsKey('storageClass')
+              ? _json['storageClass'] as core.String
+              : null,
+          symlink: _json.containsKey('symlink')
+              ? _json['symlink'] as core.String
+              : null,
+          temporaryHold: _json.containsKey('temporaryHold')
+              ? _json['temporaryHold'] as core.String
+              : null,
+          timeCreated: _json.containsKey('timeCreated')
+              ? _json['timeCreated'] as core.String
+              : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (acl != null) 'acl': acl!,
+        if (gid != null) 'gid': gid!,
+        if (kmsKey != null) 'kmsKey': kmsKey!,
+        if (mode != null) 'mode': mode!,
+        if (storageClass != null) 'storageClass': storageClass!,
+        if (symlink != null) 'symlink': symlink!,
+        if (temporaryHold != null) 'temporaryHold': temporaryHold!,
+        if (timeCreated != null) 'timeCreated': timeCreated!,
+        if (uid != null) 'uid': uid!,
+      };
+}
+
+/// Specification to configure notifications published to Pub/Sub.
+///
+/// Notifications are published to the customer-provided topic using the
 /// following `PubsubMessage.attributes`: * `"eventType"`: one of the EventType
 /// values * `"payloadFormat"`: one of the PayloadFormat values * `"projectId"`:
 /// the project_id of the `TransferOperation` * `"transferJobName"`: the
 /// transfer_job_name of the `TransferOperation` * `"transferOperationName"`:
-/// the name of the `TransferOperation` The `PubsubMessage.data` will contain a
+/// the name of the `TransferOperation` The `PubsubMessage.data` contains a
 /// TransferOperation resource formatted according to the specified
 /// `PayloadFormat`.
 class NotificationConfig {
@@ -1167,30 +1596,34 @@ class NotificationConfig {
   /// in application/json.
   core.String? payloadFormat;
 
-  /// The `Topic.name` of the Cloud Pub/Sub topic to which to publish
-  /// notifications.
+  /// The `Topic.name` of the Pub/Sub topic to which to publish notifications.
   ///
   /// Must be of the format: `projects/{project}/topics/{topic}`. Not matching
-  /// this format will result in an INVALID_ARGUMENT error.
+  /// this format results in an INVALID_ARGUMENT error.
   ///
   /// Required.
   core.String? pubsubTopic;
 
-  NotificationConfig();
+  NotificationConfig({
+    this.eventTypes,
+    this.payloadFormat,
+    this.pubsubTopic,
+  });
 
-  NotificationConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('eventTypes')) {
-      eventTypes = (_json['eventTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('payloadFormat')) {
-      payloadFormat = _json['payloadFormat'] as core.String;
-    }
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-  }
+  NotificationConfig.fromJson(core.Map _json)
+      : this(
+          eventTypes: _json.containsKey('eventTypes')
+              ? (_json['eventTypes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          payloadFormat: _json.containsKey('payloadFormat')
+              ? _json['payloadFormat'] as core.String
+              : null,
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (eventTypes != null) 'eventTypes': eventTypes!,
@@ -1199,13 +1632,14 @@ class NotificationConfig {
       };
 }
 
-/// Conditions that determine which objects will be transferred.
+/// Conditions that determine which objects are transferred.
 ///
 /// Applies only to Cloud Data Sources such as S3, Azure, and Cloud Storage. The
 /// "last modification time" refers to the time of the last change to the
 /// object's content or metadata — specifically, this is the `updated` property
 /// of Cloud Storage objects, the `LastModified` field of S3 objects, and the
-/// `Last-Modified` header of Azure blobs.
+/// `Last-Modified` header of Azure blobs. Transfers with a PosixFilesystem
+/// source or destination don't support `ObjectConditions`.
 class ObjectConditions {
   /// If you specify `exclude_prefixes`, Storage Transfer Service uses the items
   /// in the `exclude_prefixes` array to determine which objects to exclude from
@@ -1252,7 +1686,7 @@ class ObjectConditions {
   core.List<core.String>? includePrefixes;
 
   /// If specified, only objects with a "last modification time" before this
-  /// timestamp and objects that don't have a "last modification time" will be
+  /// timestamp and objects that don't have a "last modification time" are
   /// transferred.
   core.String? lastModifiedBefore;
 
@@ -1267,50 +1701,63 @@ class ObjectConditions {
   /// `last_modified_before` to the end of the day
   core.String? lastModifiedSince;
 
-  /// If specified, only objects with a "last modification time" on or after
-  /// `NOW` - `max_time_elapsed_since_last_modification` and objects that don't
-  /// have a "last modification time" are transferred.
+  /// Ensures that objects are not transferred if a specific maximum time has
+  /// elapsed since the "last modification time".
   ///
-  /// For each TransferOperation started by this TransferJob, `NOW` refers to
-  /// the start_time of the `TransferOperation`.
+  /// When a TransferOperation begins, objects with a "last modification time"
+  /// are transferred only if the elapsed time between the start_time of the
+  /// \`TransferOperation\`and the "last modification time" of the object is
+  /// less than the value of max_time_elapsed_since_last_modification\`. Objects
+  /// that do not have a "last modification time" are also transferred.
   core.String? maxTimeElapsedSinceLastModification;
 
-  /// If specified, only objects with a "last modification time" before `NOW` -
-  /// `min_time_elapsed_since_last_modification` and objects that don't have a
-  /// "last modification time" are transferred.
+  /// Ensures that objects are not transferred until a specific minimum time has
+  /// elapsed after the "last modification time".
   ///
-  /// For each TransferOperation started by this TransferJob, `NOW` refers to
-  /// the start_time of the `TransferOperation`.
+  /// When a TransferOperation begins, objects with a "last modification time"
+  /// are transferred only if the elapsed time between the start_time of the
+  /// \`TransferOperation\` and the "last modification time" of the object is
+  /// equal to or greater than the value of
+  /// min_time_elapsed_since_last_modification\`. Objects that do not have a
+  /// "last modification time" are also transferred.
   core.String? minTimeElapsedSinceLastModification;
 
-  ObjectConditions();
+  ObjectConditions({
+    this.excludePrefixes,
+    this.includePrefixes,
+    this.lastModifiedBefore,
+    this.lastModifiedSince,
+    this.maxTimeElapsedSinceLastModification,
+    this.minTimeElapsedSinceLastModification,
+  });
 
-  ObjectConditions.fromJson(core.Map _json) {
-    if (_json.containsKey('excludePrefixes')) {
-      excludePrefixes = (_json['excludePrefixes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('includePrefixes')) {
-      includePrefixes = (_json['includePrefixes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('lastModifiedBefore')) {
-      lastModifiedBefore = _json['lastModifiedBefore'] as core.String;
-    }
-    if (_json.containsKey('lastModifiedSince')) {
-      lastModifiedSince = _json['lastModifiedSince'] as core.String;
-    }
-    if (_json.containsKey('maxTimeElapsedSinceLastModification')) {
-      maxTimeElapsedSinceLastModification =
-          _json['maxTimeElapsedSinceLastModification'] as core.String;
-    }
-    if (_json.containsKey('minTimeElapsedSinceLastModification')) {
-      minTimeElapsedSinceLastModification =
-          _json['minTimeElapsedSinceLastModification'] as core.String;
-    }
-  }
+  ObjectConditions.fromJson(core.Map _json)
+      : this(
+          excludePrefixes: _json.containsKey('excludePrefixes')
+              ? (_json['excludePrefixes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          includePrefixes: _json.containsKey('includePrefixes')
+              ? (_json['includePrefixes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          lastModifiedBefore: _json.containsKey('lastModifiedBefore')
+              ? _json['lastModifiedBefore'] as core.String
+              : null,
+          lastModifiedSince: _json.containsKey('lastModifiedSince')
+              ? _json['lastModifiedSince'] as core.String
+              : null,
+          maxTimeElapsedSinceLastModification:
+              _json.containsKey('maxTimeElapsedSinceLastModification')
+                  ? _json['maxTimeElapsedSinceLastModification'] as core.String
+                  : null,
+          minTimeElapsedSinceLastModification:
+              _json.containsKey('minTimeElapsedSinceLastModification')
+                  ? _json['minTimeElapsedSinceLastModification'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (excludePrefixes != null) 'excludePrefixes': excludePrefixes!,
@@ -1345,7 +1792,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned unique name.
   ///
@@ -1363,42 +1810,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -1406,42 +1846,49 @@ class Operation {
 }
 
 /// Request passed to PauseTransferOperation.
-class PauseTransferOperationRequest {
-  PauseTransferOperationRequest();
+typedef PauseTransferOperationRequest = $Empty;
 
-  PauseTransferOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// A POSIX filesystem resource.
+class PosixFilesystem {
+  /// Root directory path to the filesystem.
+  core.String? rootDirectory;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  PosixFilesystem({
+    this.rootDirectory,
+  });
+
+  PosixFilesystem.fromJson(core.Map _json)
+      : this(
+          rootDirectory: _json.containsKey('rootDirectory')
+              ? _json['rootDirectory'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (rootDirectory != null) 'rootDirectory': rootDirectory!,
+      };
 }
 
 /// Request passed to ResumeTransferOperation.
-class ResumeTransferOperationRequest {
-  ResumeTransferOperationRequest();
-
-  ResumeTransferOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ResumeTransferOperationRequest = $Empty;
 
 /// Request passed to RunTransferJob.
 class RunTransferJobRequest {
-  /// The ID of the Google Cloud Platform Console project that owns the transfer
-  /// job.
+  /// The ID of the Google Cloud project that owns the transfer job.
   ///
   /// Required.
   core.String? projectId;
 
-  RunTransferJobRequest();
+  RunTransferJobRequest({
+    this.projectId,
+  });
 
-  RunTransferJobRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-  }
+  RunTransferJobRequest.fromJson(core.Map _json)
+      : this(
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (projectId != null) 'projectId': projectId!,
@@ -1470,12 +1917,12 @@ class Schedule {
 
   /// The last day a transfer runs.
   ///
-  /// Date boundaries are determined relative to UTC time. A job will run once
-  /// per 24 hours within the following guidelines: * If `schedule_end_date` and
+  /// Date boundaries are determined relative to UTC time. A job runs once per
+  /// 24 hours within the following guidelines: * If `schedule_end_date` and
   /// schedule_start_date are the same and in the future relative to UTC, the
   /// transfer is executed only one time. * If `schedule_end_date` is later than
   /// `schedule_start_date` and `schedule_end_date` is in the future relative to
-  /// UTC, the job will run each day at start_time_of_day through
+  /// UTC, the job runs each day at start_time_of_day through
   /// `schedule_end_date`.
   Date? scheduleEndDate;
 
@@ -1485,12 +1932,12 @@ class Schedule {
   /// `schedule_start_date` and start_time_of_day are in the past relative to
   /// the job's creation time, the transfer starts the day after you schedule
   /// the transfer request. **Note:** When starting jobs at or near midnight UTC
-  /// it is possible that a job will start later than expected. For example, if
-  /// you send an outbound request on June 1 one millisecond prior to midnight
-  /// UTC and the Storage Transfer Service server receives the request on June
-  /// 2, then it will create a TransferJob with `schedule_start_date` set to
-  /// June 2 and a `start_time_of_day` set to midnight UTC. The first scheduled
-  /// TransferOperation will take place on June 3 at midnight UTC.
+  /// it is possible that a job starts later than expected. For example, if you
+  /// send an outbound request on June 1 one millisecond prior to midnight UTC
+  /// and the Storage Transfer Service server receives the request on June 2,
+  /// then it creates a TransferJob with `schedule_start_date` set to June 2 and
+  /// a `start_time_of_day` set to midnight UTC. The first scheduled
+  /// TransferOperation takes place on June 3 at midnight UTC.
   ///
   /// Required.
   Date? scheduleStartDate;
@@ -1505,38 +1952,43 @@ class Schedule {
   /// through `schedule_end_date`.
   TimeOfDay? startTimeOfDay;
 
-  Schedule();
+  Schedule({
+    this.endTimeOfDay,
+    this.repeatInterval,
+    this.scheduleEndDate,
+    this.scheduleStartDate,
+    this.startTimeOfDay,
+  });
 
-  Schedule.fromJson(core.Map _json) {
-    if (_json.containsKey('endTimeOfDay')) {
-      endTimeOfDay = TimeOfDay.fromJson(
-          _json['endTimeOfDay'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('repeatInterval')) {
-      repeatInterval = _json['repeatInterval'] as core.String;
-    }
-    if (_json.containsKey('scheduleEndDate')) {
-      scheduleEndDate = Date.fromJson(
-          _json['scheduleEndDate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('scheduleStartDate')) {
-      scheduleStartDate = Date.fromJson(
-          _json['scheduleStartDate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startTimeOfDay')) {
-      startTimeOfDay = TimeOfDay.fromJson(
-          _json['startTimeOfDay'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Schedule.fromJson(core.Map _json)
+      : this(
+          endTimeOfDay: _json.containsKey('endTimeOfDay')
+              ? TimeOfDay.fromJson(
+                  _json['endTimeOfDay'] as core.Map<core.String, core.dynamic>)
+              : null,
+          repeatInterval: _json.containsKey('repeatInterval')
+              ? _json['repeatInterval'] as core.String
+              : null,
+          scheduleEndDate: _json.containsKey('scheduleEndDate')
+              ? Date.fromJson(_json['scheduleEndDate']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          scheduleStartDate: _json.containsKey('scheduleStartDate')
+              ? Date.fromJson(_json['scheduleStartDate']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          startTimeOfDay: _json.containsKey('startTimeOfDay')
+              ? TimeOfDay.fromJson(_json['startTimeOfDay']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endTimeOfDay != null) 'endTimeOfDay': endTimeOfDay!.toJson(),
+        if (endTimeOfDay != null) 'endTimeOfDay': endTimeOfDay!,
         if (repeatInterval != null) 'repeatInterval': repeatInterval!,
-        if (scheduleEndDate != null)
-          'scheduleEndDate': scheduleEndDate!.toJson(),
-        if (scheduleStartDate != null)
-          'scheduleStartDate': scheduleStartDate!.toJson(),
-        if (startTimeOfDay != null) 'startTimeOfDay': startTimeOfDay!.toJson(),
+        if (scheduleEndDate != null) 'scheduleEndDate': scheduleEndDate!,
+        if (scheduleStartDate != null) 'scheduleStartDate': scheduleStartDate!,
+        if (startTimeOfDay != null) 'startTimeOfDay': startTimeOfDay!,
       };
 }
 
@@ -1547,257 +1999,14 @@ class Schedule {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Represents a time of day.
 ///
 /// The date and time zone are either not significant or are specified
 /// elsewhere. An API may choose to allow leap seconds. Related types are
 /// google.type.Date and `google.protobuf.Timestamp`.
-class TimeOfDay {
-  /// Hours of day in 24 hour format.
-  ///
-  /// Should be from 0 to 23. An API may choose to allow the value "24:00:00"
-  /// for scenarios like business closing time.
-  core.int? hours;
-
-  /// Minutes of hour of day.
-  ///
-  /// Must be from 0 to 59.
-  core.int? minutes;
-
-  /// Fractions of seconds in nanoseconds.
-  ///
-  /// Must be from 0 to 999,999,999.
-  core.int? nanos;
-
-  /// Seconds of minutes of the time.
-  ///
-  /// Must normally be from 0 to 59. An API may allow the value 60 if it allows
-  /// leap-seconds.
-  core.int? seconds;
-
-  TimeOfDay();
-
-  TimeOfDay.fromJson(core.Map _json) {
-    if (_json.containsKey('hours')) {
-      hours = _json['hours'] as core.int;
-    }
-    if (_json.containsKey('minutes')) {
-      minutes = _json['minutes'] as core.int;
-    }
-    if (_json.containsKey('nanos')) {
-      nanos = _json['nanos'] as core.int;
-    }
-    if (_json.containsKey('seconds')) {
-      seconds = _json['seconds'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (hours != null) 'hours': hours!,
-        if (minutes != null) 'minutes': minutes!,
-        if (nanos != null) 'nanos': nanos!,
-        if (seconds != null) 'seconds': seconds!,
-      };
-}
-
-/// A collection of counters that report the progress of a transfer operation.
-class TransferCounters {
-  /// Bytes that are copied to the data sink.
-  core.String? bytesCopiedToSink;
-
-  /// Bytes that are deleted from the data sink.
-  core.String? bytesDeletedFromSink;
-
-  /// Bytes that are deleted from the data source.
-  core.String? bytesDeletedFromSource;
-
-  /// Bytes that failed to be deleted from the data sink.
-  core.String? bytesFailedToDeleteFromSink;
-
-  /// Bytes found in the data source that are scheduled to be transferred,
-  /// excluding any that are filtered based on object conditions or skipped due
-  /// to sync.
-  core.String? bytesFoundFromSource;
-
-  /// Bytes found only in the data sink that are scheduled to be deleted.
-  core.String? bytesFoundOnlyFromSink;
-
-  /// Bytes in the data source that failed to be transferred or that failed to
-  /// be deleted after being transferred.
-  core.String? bytesFromSourceFailed;
-
-  /// Bytes in the data source that are not transferred because they already
-  /// exist in the data sink.
-  core.String? bytesFromSourceSkippedBySync;
-
-  /// Objects that are copied to the data sink.
-  core.String? objectsCopiedToSink;
-
-  /// Objects that are deleted from the data sink.
-  core.String? objectsDeletedFromSink;
-
-  /// Objects that are deleted from the data source.
-  core.String? objectsDeletedFromSource;
-
-  /// Objects that failed to be deleted from the data sink.
-  core.String? objectsFailedToDeleteFromSink;
-
-  /// Objects found in the data source that are scheduled to be transferred,
-  /// excluding any that are filtered based on object conditions or skipped due
-  /// to sync.
-  core.String? objectsFoundFromSource;
-
-  /// Objects found only in the data sink that are scheduled to be deleted.
-  core.String? objectsFoundOnlyFromSink;
-
-  /// Objects in the data source that failed to be transferred or that failed to
-  /// be deleted after being transferred.
-  core.String? objectsFromSourceFailed;
-
-  /// Objects in the data source that are not transferred because they already
-  /// exist in the data sink.
-  core.String? objectsFromSourceSkippedBySync;
-
-  TransferCounters();
-
-  TransferCounters.fromJson(core.Map _json) {
-    if (_json.containsKey('bytesCopiedToSink')) {
-      bytesCopiedToSink = _json['bytesCopiedToSink'] as core.String;
-    }
-    if (_json.containsKey('bytesDeletedFromSink')) {
-      bytesDeletedFromSink = _json['bytesDeletedFromSink'] as core.String;
-    }
-    if (_json.containsKey('bytesDeletedFromSource')) {
-      bytesDeletedFromSource = _json['bytesDeletedFromSource'] as core.String;
-    }
-    if (_json.containsKey('bytesFailedToDeleteFromSink')) {
-      bytesFailedToDeleteFromSink =
-          _json['bytesFailedToDeleteFromSink'] as core.String;
-    }
-    if (_json.containsKey('bytesFoundFromSource')) {
-      bytesFoundFromSource = _json['bytesFoundFromSource'] as core.String;
-    }
-    if (_json.containsKey('bytesFoundOnlyFromSink')) {
-      bytesFoundOnlyFromSink = _json['bytesFoundOnlyFromSink'] as core.String;
-    }
-    if (_json.containsKey('bytesFromSourceFailed')) {
-      bytesFromSourceFailed = _json['bytesFromSourceFailed'] as core.String;
-    }
-    if (_json.containsKey('bytesFromSourceSkippedBySync')) {
-      bytesFromSourceSkippedBySync =
-          _json['bytesFromSourceSkippedBySync'] as core.String;
-    }
-    if (_json.containsKey('objectsCopiedToSink')) {
-      objectsCopiedToSink = _json['objectsCopiedToSink'] as core.String;
-    }
-    if (_json.containsKey('objectsDeletedFromSink')) {
-      objectsDeletedFromSink = _json['objectsDeletedFromSink'] as core.String;
-    }
-    if (_json.containsKey('objectsDeletedFromSource')) {
-      objectsDeletedFromSource =
-          _json['objectsDeletedFromSource'] as core.String;
-    }
-    if (_json.containsKey('objectsFailedToDeleteFromSink')) {
-      objectsFailedToDeleteFromSink =
-          _json['objectsFailedToDeleteFromSink'] as core.String;
-    }
-    if (_json.containsKey('objectsFoundFromSource')) {
-      objectsFoundFromSource = _json['objectsFoundFromSource'] as core.String;
-    }
-    if (_json.containsKey('objectsFoundOnlyFromSink')) {
-      objectsFoundOnlyFromSink =
-          _json['objectsFoundOnlyFromSink'] as core.String;
-    }
-    if (_json.containsKey('objectsFromSourceFailed')) {
-      objectsFromSourceFailed = _json['objectsFromSourceFailed'] as core.String;
-    }
-    if (_json.containsKey('objectsFromSourceSkippedBySync')) {
-      objectsFromSourceSkippedBySync =
-          _json['objectsFromSourceSkippedBySync'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (bytesCopiedToSink != null) 'bytesCopiedToSink': bytesCopiedToSink!,
-        if (bytesDeletedFromSink != null)
-          'bytesDeletedFromSink': bytesDeletedFromSink!,
-        if (bytesDeletedFromSource != null)
-          'bytesDeletedFromSource': bytesDeletedFromSource!,
-        if (bytesFailedToDeleteFromSink != null)
-          'bytesFailedToDeleteFromSink': bytesFailedToDeleteFromSink!,
-        if (bytesFoundFromSource != null)
-          'bytesFoundFromSource': bytesFoundFromSource!,
-        if (bytesFoundOnlyFromSink != null)
-          'bytesFoundOnlyFromSink': bytesFoundOnlyFromSink!,
-        if (bytesFromSourceFailed != null)
-          'bytesFromSourceFailed': bytesFromSourceFailed!,
-        if (bytesFromSourceSkippedBySync != null)
-          'bytesFromSourceSkippedBySync': bytesFromSourceSkippedBySync!,
-        if (objectsCopiedToSink != null)
-          'objectsCopiedToSink': objectsCopiedToSink!,
-        if (objectsDeletedFromSink != null)
-          'objectsDeletedFromSink': objectsDeletedFromSink!,
-        if (objectsDeletedFromSource != null)
-          'objectsDeletedFromSource': objectsDeletedFromSource!,
-        if (objectsFailedToDeleteFromSink != null)
-          'objectsFailedToDeleteFromSink': objectsFailedToDeleteFromSink!,
-        if (objectsFoundFromSource != null)
-          'objectsFoundFromSource': objectsFoundFromSource!,
-        if (objectsFoundOnlyFromSink != null)
-          'objectsFoundOnlyFromSink': objectsFoundOnlyFromSink!,
-        if (objectsFromSourceFailed != null)
-          'objectsFromSourceFailed': objectsFromSourceFailed!,
-        if (objectsFromSourceSkippedBySync != null)
-          'objectsFromSourceSkippedBySync': objectsFromSourceSkippedBySync!,
-      };
-}
+typedef TimeOfDay = $TimeOfDay;
 
 /// This resource represents the configuration of a transfer job that runs
 /// periodically.
@@ -1824,33 +2033,42 @@ class TransferJob {
 
   /// The name of the most recently started TransferOperation of this JobConfig.
   ///
-  /// Present if and only if at least one TransferOperation has been created for
-  /// this JobConfig.
+  /// Present if a TransferOperation has been created for this JobConfig.
   core.String? latestOperationName;
+
+  /// Logging configuration.
+  LoggingConfig? loggingConfig;
 
   /// A unique name (within the transfer project) assigned when the job is
   /// created.
   ///
   /// If this field is empty in a CreateTransferJobRequest, Storage Transfer
-  /// Service will assign a unique name. Otherwise, the specified name is used
-  /// as the unique name for this job. If the specified name is in use by a job,
+  /// Service assigns a unique name. Otherwise, the specified name is used as
+  /// the unique name for this job. If the specified name is in use by a job,
   /// the creation request fails with an ALREADY_EXISTS error. This name must
   /// start with `"transferJobs/"` prefix and end with a letter or a number, and
-  /// should be no more than 128 characters. Example:
-  /// `"transferJobs/[A-Za-z0-9-._~]*[A-Za-z0-9]$"` Invalid job names will fail
-  /// with an INVALID_ARGUMENT error.
+  /// should be no more than 128 characters. For transfers involving
+  /// PosixFilesystem, this name must start with `transferJobs/OPI`
+  /// specifically. For all other transfer types, this name must not start with
+  /// `transferJobs/OPI`. Non-PosixFilesystem example:
+  /// `"transferJobs/^(?!OPI)[A-Za-z0-9-._~]*[A-Za-z0-9]$"` PosixFilesystem
+  /// example: `"transferJobs/OPI^[A-Za-z0-9-._~]*[A-Za-z0-9]$"` Applications
+  /// must not rely on the enforcement of naming requirements involving OPI.
+  /// Invalid job names fail with an INVALID_ARGUMENT error.
   core.String? name;
 
   /// Notification configuration.
+  ///
+  /// This is not supported for transfers involving PosixFilesystem.
   NotificationConfig? notificationConfig;
 
-  /// The ID of the Google Cloud Platform Project that owns the job.
+  /// The ID of the Google Cloud project that owns the job.
   core.String? projectId;
 
   /// Specifies schedule for the transfer job.
   ///
-  /// This is an optional field. When the field is not set, the job will never
-  /// execute a transfer, unless you invoke RunTransferJob or update the job to
+  /// This is an optional field. When the field is not set, the job never
+  /// executes a transfer, unless you invoke RunTransferJob or update the job to
   /// have a non-empty schedule.
   Schedule? schedule;
 
@@ -1863,8 +2081,8 @@ class TransferJob {
   /// affect the current operation.
   /// Possible string values are:
   /// - "STATUS_UNSPECIFIED" : Zero is an illegal value.
-  /// - "ENABLED" : New transfers will be performed based on the schedule.
-  /// - "DISABLED" : New transfers will not be scheduled.
+  /// - "ENABLED" : New transfers are performed based on the schedule.
+  /// - "DISABLED" : New transfers are not scheduled.
   /// - "DELETED" : This is a soft delete state. After a transfer job is set to
   /// this state, the job and all the transfer executions are subject to garbage
   /// collection. Transfer jobs become eligible for garbage collection 30 days
@@ -1874,46 +2092,62 @@ class TransferJob {
   /// Transfer specification.
   TransferSpec? transferSpec;
 
-  TransferJob();
+  TransferJob({
+    this.creationTime,
+    this.deletionTime,
+    this.description,
+    this.lastModificationTime,
+    this.latestOperationName,
+    this.loggingConfig,
+    this.name,
+    this.notificationConfig,
+    this.projectId,
+    this.schedule,
+    this.status,
+    this.transferSpec,
+  });
 
-  TransferJob.fromJson(core.Map _json) {
-    if (_json.containsKey('creationTime')) {
-      creationTime = _json['creationTime'] as core.String;
-    }
-    if (_json.containsKey('deletionTime')) {
-      deletionTime = _json['deletionTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('lastModificationTime')) {
-      lastModificationTime = _json['lastModificationTime'] as core.String;
-    }
-    if (_json.containsKey('latestOperationName')) {
-      latestOperationName = _json['latestOperationName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationConfig')) {
-      notificationConfig = NotificationConfig.fromJson(
-          _json['notificationConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('schedule')) {
-      schedule = Schedule.fromJson(
-          _json['schedule'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('transferSpec')) {
-      transferSpec = TransferSpec.fromJson(
-          _json['transferSpec'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TransferJob.fromJson(core.Map _json)
+      : this(
+          creationTime: _json.containsKey('creationTime')
+              ? _json['creationTime'] as core.String
+              : null,
+          deletionTime: _json.containsKey('deletionTime')
+              ? _json['deletionTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          lastModificationTime: _json.containsKey('lastModificationTime')
+              ? _json['lastModificationTime'] as core.String
+              : null,
+          latestOperationName: _json.containsKey('latestOperationName')
+              ? _json['latestOperationName'] as core.String
+              : null,
+          loggingConfig: _json.containsKey('loggingConfig')
+              ? LoggingConfig.fromJson(
+                  _json['loggingConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationConfig: _json.containsKey('notificationConfig')
+              ? NotificationConfig.fromJson(_json['notificationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          schedule: _json.containsKey('schedule')
+              ? Schedule.fromJson(
+                  _json['schedule'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          transferSpec: _json.containsKey('transferSpec')
+              ? TransferSpec.fromJson(
+                  _json['transferSpec'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (creationTime != null) 'creationTime': creationTime!,
@@ -1923,112 +2157,39 @@ class TransferJob {
           'lastModificationTime': lastModificationTime!,
         if (latestOperationName != null)
           'latestOperationName': latestOperationName!,
+        if (loggingConfig != null) 'loggingConfig': loggingConfig!,
         if (name != null) 'name': name!,
         if (notificationConfig != null)
-          'notificationConfig': notificationConfig!.toJson(),
+          'notificationConfig': notificationConfig!,
         if (projectId != null) 'projectId': projectId!,
-        if (schedule != null) 'schedule': schedule!.toJson(),
+        if (schedule != null) 'schedule': schedule!,
         if (status != null) 'status': status!,
-        if (transferSpec != null) 'transferSpec': transferSpec!.toJson(),
+        if (transferSpec != null) 'transferSpec': transferSpec!,
       };
 }
 
-/// A description of the execution of a transfer.
-class TransferOperation {
-  /// Information about the progress of the transfer operation.
-  TransferCounters? counters;
+/// Specifies where the manifest is located.
+class TransferManifest {
+  /// Specifies the path to the manifest in Cloud Storage.
+  ///
+  /// The Google-managed service account for the transfer must have
+  /// `storage.objects.get` permission for this object. An example path is
+  /// `gs://bucket_name/path/manifest.csv`.
+  core.String? location;
 
-  /// End time of this transfer execution.
-  core.String? endTime;
+  TransferManifest({
+    this.location,
+  });
 
-  /// Summarizes errors encountered with sample error log entries.
-  core.List<ErrorSummary>? errorBreakdowns;
-
-  /// A globally unique ID assigned by the system.
-  core.String? name;
-
-  /// Notification configuration.
-  NotificationConfig? notificationConfig;
-
-  /// The ID of the Google Cloud Platform Project that owns the operation.
-  core.String? projectId;
-
-  /// Start time of this transfer execution.
-  core.String? startTime;
-
-  /// Status of the transfer operation.
-  /// Possible string values are:
-  /// - "STATUS_UNSPECIFIED" : Zero is an illegal value.
-  /// - "IN_PROGRESS" : In progress.
-  /// - "PAUSED" : Paused.
-  /// - "SUCCESS" : Completed successfully.
-  /// - "FAILED" : Terminated due to an unrecoverable failure.
-  /// - "ABORTED" : Aborted by the user.
-  /// - "QUEUED" : Temporarily delayed by the system. No user action is
-  /// required.
-  core.String? status;
-
-  /// The name of the transfer job that triggers this transfer operation.
-  core.String? transferJobName;
-
-  /// Transfer specification.
-  TransferSpec? transferSpec;
-
-  TransferOperation();
-
-  TransferOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('counters')) {
-      counters = TransferCounters.fromJson(
-          _json['counters'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('errorBreakdowns')) {
-      errorBreakdowns = (_json['errorBreakdowns'] as core.List)
-          .map<ErrorSummary>((value) => ErrorSummary.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationConfig')) {
-      notificationConfig = NotificationConfig.fromJson(
-          _json['notificationConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('transferJobName')) {
-      transferJobName = _json['transferJobName'] as core.String;
-    }
-    if (_json.containsKey('transferSpec')) {
-      transferSpec = TransferSpec.fromJson(
-          _json['transferSpec'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TransferManifest.fromJson(core.Map _json)
+      : this(
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (counters != null) 'counters': counters!.toJson(),
-        if (endTime != null) 'endTime': endTime!,
-        if (errorBreakdowns != null)
-          'errorBreakdowns':
-              errorBreakdowns!.map((value) => value.toJson()).toList(),
-        if (name != null) 'name': name!,
-        if (notificationConfig != null)
-          'notificationConfig': notificationConfig!.toJson(),
-        if (projectId != null) 'projectId': projectId!,
-        if (startTime != null) 'startTime': startTime!,
-        if (status != null) 'status': status!,
-        if (transferJobName != null) 'transferJobName': transferJobName!,
-        if (transferSpec != null) 'transferSpec': transferSpec!.toJson(),
+        if (location != null) 'location': location!,
       };
 }
 
@@ -2047,29 +2208,44 @@ class TransferOptions {
   /// mutually exclusive.
   core.bool? deleteObjectsUniqueInSink;
 
+  /// Represents the selected metadata options for a transfer job.
+  ///
+  /// This feature is in Preview.
+  MetadataOptions? metadataOptions;
+
   /// When to overwrite objects that already exist in the sink.
   ///
   /// The default is that only objects that are different from the source are
   /// ovewritten. If true, all objects in the sink whose name matches an object
-  /// in the source will be overwritten with the source object.
+  /// in the source are overwritten with the source object.
   core.bool? overwriteObjectsAlreadyExistingInSink;
 
-  TransferOptions();
+  TransferOptions({
+    this.deleteObjectsFromSourceAfterTransfer,
+    this.deleteObjectsUniqueInSink,
+    this.metadataOptions,
+    this.overwriteObjectsAlreadyExistingInSink,
+  });
 
-  TransferOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('deleteObjectsFromSourceAfterTransfer')) {
-      deleteObjectsFromSourceAfterTransfer =
-          _json['deleteObjectsFromSourceAfterTransfer'] as core.bool;
-    }
-    if (_json.containsKey('deleteObjectsUniqueInSink')) {
-      deleteObjectsUniqueInSink =
-          _json['deleteObjectsUniqueInSink'] as core.bool;
-    }
-    if (_json.containsKey('overwriteObjectsAlreadyExistingInSink')) {
-      overwriteObjectsAlreadyExistingInSink =
-          _json['overwriteObjectsAlreadyExistingInSink'] as core.bool;
-    }
-  }
+  TransferOptions.fromJson(core.Map _json)
+      : this(
+          deleteObjectsFromSourceAfterTransfer:
+              _json.containsKey('deleteObjectsFromSourceAfterTransfer')
+                  ? _json['deleteObjectsFromSourceAfterTransfer'] as core.bool
+                  : null,
+          deleteObjectsUniqueInSink:
+              _json.containsKey('deleteObjectsUniqueInSink')
+                  ? _json['deleteObjectsUniqueInSink'] as core.bool
+                  : null,
+          metadataOptions: _json.containsKey('metadataOptions')
+              ? MetadataOptions.fromJson(_json['metadataOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          overwriteObjectsAlreadyExistingInSink:
+              _json.containsKey('overwriteObjectsAlreadyExistingInSink')
+                  ? _json['overwriteObjectsAlreadyExistingInSink'] as core.bool
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deleteObjectsFromSourceAfterTransfer != null)
@@ -2077,6 +2253,7 @@ class TransferOptions {
               deleteObjectsFromSourceAfterTransfer!,
         if (deleteObjectsUniqueInSink != null)
           'deleteObjectsUniqueInSink': deleteObjectsUniqueInSink!,
+        if (metadataOptions != null) 'metadataOptions': metadataOptions!,
         if (overwriteObjectsAlreadyExistingInSink != null)
           'overwriteObjectsAlreadyExistingInSink':
               overwriteObjectsAlreadyExistingInSink!,
@@ -2097,6 +2274,9 @@ class TransferSpec {
   /// A Cloud Storage data source.
   GcsData? gcsDataSource;
 
+  /// Cloud Storage intermediate data location.
+  GcsData? gcsIntermediateDataLocation;
+
   /// An HTTP URL data source.
   HttpData? httpDataSource;
 
@@ -2107,74 +2287,141 @@ class TransferSpec {
   /// exclude objects in a data sink.
   ObjectConditions? objectConditions;
 
+  /// A POSIX Filesystem data sink.
+  PosixFilesystem? posixDataSink;
+
+  /// A POSIX Filesystem data source.
+  PosixFilesystem? posixDataSource;
+
+  /// Specifies the agent pool name associated with the posix data sink.
+  ///
+  /// When unspecified, the default name is used.
+  core.String? sinkAgentPoolName;
+
+  /// Specifies the agent pool name associated with the posix data source.
+  ///
+  /// When unspecified, the default name is used.
+  core.String? sourceAgentPoolName;
+
+  /// A manifest file provides a list of objects to be transferred from the data
+  /// source.
+  ///
+  /// This field points to the location of the manifest file. Otherwise, the
+  /// entire source bucket is used. ObjectConditions still apply.
+  TransferManifest? transferManifest;
+
   /// If the option delete_objects_unique_in_sink is `true` and time-based
   /// object conditions such as 'last modification time' are specified, the
   /// request fails with an INVALID_ARGUMENT error.
   TransferOptions? transferOptions;
 
-  TransferSpec();
+  TransferSpec({
+    this.awsS3DataSource,
+    this.azureBlobStorageDataSource,
+    this.gcsDataSink,
+    this.gcsDataSource,
+    this.gcsIntermediateDataLocation,
+    this.httpDataSource,
+    this.objectConditions,
+    this.posixDataSink,
+    this.posixDataSource,
+    this.sinkAgentPoolName,
+    this.sourceAgentPoolName,
+    this.transferManifest,
+    this.transferOptions,
+  });
 
-  TransferSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('awsS3DataSource')) {
-      awsS3DataSource = AwsS3Data.fromJson(
-          _json['awsS3DataSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('azureBlobStorageDataSource')) {
-      azureBlobStorageDataSource = AzureBlobStorageData.fromJson(
-          _json['azureBlobStorageDataSource']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gcsDataSink')) {
-      gcsDataSink = GcsData.fromJson(
-          _json['gcsDataSink'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gcsDataSource')) {
-      gcsDataSource = GcsData.fromJson(
-          _json['gcsDataSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('httpDataSource')) {
-      httpDataSource = HttpData.fromJson(
-          _json['httpDataSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('objectConditions')) {
-      objectConditions = ObjectConditions.fromJson(
-          _json['objectConditions'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('transferOptions')) {
-      transferOptions = TransferOptions.fromJson(
-          _json['transferOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TransferSpec.fromJson(core.Map _json)
+      : this(
+          awsS3DataSource: _json.containsKey('awsS3DataSource')
+              ? AwsS3Data.fromJson(_json['awsS3DataSource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          azureBlobStorageDataSource:
+              _json.containsKey('azureBlobStorageDataSource')
+                  ? AzureBlobStorageData.fromJson(
+                      _json['azureBlobStorageDataSource']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          gcsDataSink: _json.containsKey('gcsDataSink')
+              ? GcsData.fromJson(
+                  _json['gcsDataSink'] as core.Map<core.String, core.dynamic>)
+              : null,
+          gcsDataSource: _json.containsKey('gcsDataSource')
+              ? GcsData.fromJson(
+                  _json['gcsDataSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          gcsIntermediateDataLocation:
+              _json.containsKey('gcsIntermediateDataLocation')
+                  ? GcsData.fromJson(_json['gcsIntermediateDataLocation']
+                      as core.Map<core.String, core.dynamic>)
+                  : null,
+          httpDataSource: _json.containsKey('httpDataSource')
+              ? HttpData.fromJson(_json['httpDataSource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          objectConditions: _json.containsKey('objectConditions')
+              ? ObjectConditions.fromJson(_json['objectConditions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          posixDataSink: _json.containsKey('posixDataSink')
+              ? PosixFilesystem.fromJson(
+                  _json['posixDataSink'] as core.Map<core.String, core.dynamic>)
+              : null,
+          posixDataSource: _json.containsKey('posixDataSource')
+              ? PosixFilesystem.fromJson(_json['posixDataSource']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          sinkAgentPoolName: _json.containsKey('sinkAgentPoolName')
+              ? _json['sinkAgentPoolName'] as core.String
+              : null,
+          sourceAgentPoolName: _json.containsKey('sourceAgentPoolName')
+              ? _json['sourceAgentPoolName'] as core.String
+              : null,
+          transferManifest: _json.containsKey('transferManifest')
+              ? TransferManifest.fromJson(_json['transferManifest']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          transferOptions: _json.containsKey('transferOptions')
+              ? TransferOptions.fromJson(_json['transferOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (awsS3DataSource != null)
-          'awsS3DataSource': awsS3DataSource!.toJson(),
+        if (awsS3DataSource != null) 'awsS3DataSource': awsS3DataSource!,
         if (azureBlobStorageDataSource != null)
-          'azureBlobStorageDataSource': azureBlobStorageDataSource!.toJson(),
-        if (gcsDataSink != null) 'gcsDataSink': gcsDataSink!.toJson(),
-        if (gcsDataSource != null) 'gcsDataSource': gcsDataSource!.toJson(),
-        if (httpDataSource != null) 'httpDataSource': httpDataSource!.toJson(),
-        if (objectConditions != null)
-          'objectConditions': objectConditions!.toJson(),
-        if (transferOptions != null)
-          'transferOptions': transferOptions!.toJson(),
+          'azureBlobStorageDataSource': azureBlobStorageDataSource!,
+        if (gcsDataSink != null) 'gcsDataSink': gcsDataSink!,
+        if (gcsDataSource != null) 'gcsDataSource': gcsDataSource!,
+        if (gcsIntermediateDataLocation != null)
+          'gcsIntermediateDataLocation': gcsIntermediateDataLocation!,
+        if (httpDataSource != null) 'httpDataSource': httpDataSource!,
+        if (objectConditions != null) 'objectConditions': objectConditions!,
+        if (posixDataSink != null) 'posixDataSink': posixDataSink!,
+        if (posixDataSource != null) 'posixDataSource': posixDataSource!,
+        if (sinkAgentPoolName != null) 'sinkAgentPoolName': sinkAgentPoolName!,
+        if (sourceAgentPoolName != null)
+          'sourceAgentPoolName': sourceAgentPoolName!,
+        if (transferManifest != null) 'transferManifest': transferManifest!,
+        if (transferOptions != null) 'transferOptions': transferOptions!,
       };
 }
 
 /// Request passed to UpdateTransferJob.
 class UpdateTransferJobRequest {
-  /// The ID of the Google Cloud Platform Console project that owns the job.
+  /// The ID of the Google Cloud project that owns the job.
   ///
   /// Required.
   core.String? projectId;
 
   /// The job to update.
   ///
-  /// `transferJob` is expected to specify only four fields: description,
-  /// transfer_spec, notification_config, and status. An
-  /// `UpdateTransferJobRequest` that specifies other fields are rejected with
-  /// the error INVALID_ARGUMENT. Updating a job satus to DELETED requires
-  /// `storagetransfer.jobs.delete` permissions.
+  /// `transferJob` is expected to specify one or more of five fields:
+  /// description, transfer_spec, notification_config, logging_config, and
+  /// status. An `UpdateTransferJobRequest` that specifies other fields are
+  /// rejected with the error INVALID_ARGUMENT. Updating a job status to DELETED
+  /// requires `storagetransfer.jobs.delete` permissions.
   ///
   /// Required.
   TransferJob? transferJob;
@@ -2183,31 +2430,36 @@ class UpdateTransferJobRequest {
   /// this request.
   ///
   /// Fields in `transferJob` that can be updated are: description,
-  /// transfer_spec, notification_config, and status. To update the
-  /// `transfer_spec` of the job, a complete transfer specification must be
+  /// transfer_spec, notification_config, logging_config, and status. To update
+  /// the `transfer_spec` of the job, a complete transfer specification must be
   /// provided. An incomplete specification missing any required fields is
   /// rejected with the error INVALID_ARGUMENT.
   core.String? updateTransferJobFieldMask;
 
-  UpdateTransferJobRequest();
+  UpdateTransferJobRequest({
+    this.projectId,
+    this.transferJob,
+    this.updateTransferJobFieldMask,
+  });
 
-  UpdateTransferJobRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('transferJob')) {
-      transferJob = TransferJob.fromJson(
-          _json['transferJob'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateTransferJobFieldMask')) {
-      updateTransferJobFieldMask =
-          _json['updateTransferJobFieldMask'] as core.String;
-    }
-  }
+  UpdateTransferJobRequest.fromJson(core.Map _json)
+      : this(
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          transferJob: _json.containsKey('transferJob')
+              ? TransferJob.fromJson(
+                  _json['transferJob'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateTransferJobFieldMask:
+              _json.containsKey('updateTransferJobFieldMask')
+                  ? _json['updateTransferJobFieldMask'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (projectId != null) 'projectId': projectId!,
-        if (transferJob != null) 'transferJob': transferJob!.toJson(),
+        if (transferJob != null) 'transferJob': transferJob!,
         if (updateTransferJobFieldMask != null)
           'updateTransferJobFieldMask': updateTransferJobFieldMask!,
       };

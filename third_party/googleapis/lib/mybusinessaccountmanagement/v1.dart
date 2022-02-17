@@ -36,6 +36,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -93,7 +95,7 @@ class AccountsResource {
     Account request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -244,7 +246,7 @@ class AccountsResource {
     core.bool? validateOnly,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if (validateOnly != null) 'validateOnly': ['${validateOnly}'],
@@ -298,7 +300,7 @@ class AccountsAdminsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -418,7 +420,7 @@ class AccountsAdminsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -467,7 +469,7 @@ class AccountsInvitationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -508,7 +510,7 @@ class AccountsInvitationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -573,6 +575,52 @@ class LocationsResource {
   LocationsAdminsResource get admins => LocationsAdminsResource(_requester);
 
   LocationsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Moves a location from an account that the user owns to another account
+  /// that the same user administers.
+  ///
+  /// The user must be an owner of the account the location is currently
+  /// associated with and must also be at least a manager of the destination
+  /// account.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the location to transfer.
+  /// `locations/{location_id}`.
+  /// Value must have pattern `^locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> transfer(
+    TransferLocationRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':transfer';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 class LocationsAdminsResource {
@@ -610,7 +658,7 @@ class LocationsAdminsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -732,7 +780,7 @@ class LocationsAdminsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -751,15 +799,7 @@ class LocationsAdminsResource {
 }
 
 /// Request message for AccessControl.AcceptInvitation.
-class AcceptInvitationRequest {
-  AcceptInvitationRequest();
-
-  AcceptInvitationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef AcceptInvitationRequest = $Empty;
 
 /// An account is a container for your location.
 ///
@@ -871,48 +911,53 @@ class Account {
   /// will behave like an unvetted account.
   core.String? vettedState;
 
-  Account();
+  Account({
+    this.accountName,
+    this.accountNumber,
+    this.name,
+    this.organizationInfo,
+    this.permissionLevel,
+    this.primaryOwner,
+    this.role,
+    this.type,
+    this.verificationState,
+    this.vettedState,
+  });
 
-  Account.fromJson(core.Map _json) {
-    if (_json.containsKey('accountName')) {
-      accountName = _json['accountName'] as core.String;
-    }
-    if (_json.containsKey('accountNumber')) {
-      accountNumber = _json['accountNumber'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('organizationInfo')) {
-      organizationInfo = OrganizationInfo.fromJson(
-          _json['organizationInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('permissionLevel')) {
-      permissionLevel = _json['permissionLevel'] as core.String;
-    }
-    if (_json.containsKey('primaryOwner')) {
-      primaryOwner = _json['primaryOwner'] as core.String;
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('verificationState')) {
-      verificationState = _json['verificationState'] as core.String;
-    }
-    if (_json.containsKey('vettedState')) {
-      vettedState = _json['vettedState'] as core.String;
-    }
-  }
+  Account.fromJson(core.Map _json)
+      : this(
+          accountName: _json.containsKey('accountName')
+              ? _json['accountName'] as core.String
+              : null,
+          accountNumber: _json.containsKey('accountNumber')
+              ? _json['accountNumber'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          organizationInfo: _json.containsKey('organizationInfo')
+              ? OrganizationInfo.fromJson(_json['organizationInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          permissionLevel: _json.containsKey('permissionLevel')
+              ? _json['permissionLevel'] as core.String
+              : null,
+          primaryOwner: _json.containsKey('primaryOwner')
+              ? _json['primaryOwner'] as core.String
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          verificationState: _json.containsKey('verificationState')
+              ? _json['verificationState'] as core.String
+              : null,
+          vettedState: _json.containsKey('vettedState')
+              ? _json['vettedState'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountName != null) 'accountName': accountName!,
         if (accountNumber != null) 'accountNumber': accountNumber!,
         if (name != null) 'name': name!,
-        if (organizationInfo != null)
-          'organizationInfo': organizationInfo!.toJson(),
+        if (organizationInfo != null) 'organizationInfo': organizationInfo!,
         if (permissionLevel != null) 'permissionLevel': permissionLevel!,
         if (primaryOwner != null) 'primaryOwner': primaryOwner!,
         if (role != null) 'role': role!,
@@ -965,22 +1010,23 @@ class Admin {
   /// with a SITE_MANAGER role.
   core.String? role;
 
-  Admin();
+  Admin({
+    this.admin,
+    this.name,
+    this.pendingInvitation,
+    this.role,
+  });
 
-  Admin.fromJson(core.Map _json) {
-    if (_json.containsKey('admin')) {
-      admin = _json['admin'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('pendingInvitation')) {
-      pendingInvitation = _json['pendingInvitation'] as core.bool;
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Admin.fromJson(core.Map _json)
+      : this(
+          admin:
+              _json.containsKey('admin') ? _json['admin'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pendingInvitation: _json.containsKey('pendingInvitation')
+              ? _json['pendingInvitation'] as core.bool
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (admin != null) 'admin': admin!,
@@ -991,15 +1037,7 @@ class Admin {
 }
 
 /// Request message for AccessControl.DeclineInvitation.
-class DeclineInvitationRequest {
-  DeclineInvitationRequest();
-
-  DeclineInvitationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef DeclineInvitationRequest = $Empty;
 
 /// A generic empty message that you can re-use to avoid defining duplicated
 /// empty messages in your APIs.
@@ -1008,15 +1046,7 @@ class DeclineInvitationRequest {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a pending invitation.
 class Invitation {
@@ -1056,33 +1086,36 @@ class Invitation {
   /// - "LOCATIONS_ONLY" : List invitations only for targets of type Location.
   core.String? targetType;
 
-  Invitation();
+  Invitation({
+    this.name,
+    this.role,
+    this.targetAccount,
+    this.targetLocation,
+    this.targetType,
+  });
 
-  Invitation.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-    if (_json.containsKey('targetAccount')) {
-      targetAccount = Account.fromJson(
-          _json['targetAccount'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('targetLocation')) {
-      targetLocation = TargetLocation.fromJson(
-          _json['targetLocation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('targetType')) {
-      targetType = _json['targetType'] as core.String;
-    }
-  }
+  Invitation.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+          targetAccount: _json.containsKey('targetAccount')
+              ? Account.fromJson(
+                  _json['targetAccount'] as core.Map<core.String, core.dynamic>)
+              : null,
+          targetLocation: _json.containsKey('targetLocation')
+              ? TargetLocation.fromJson(_json['targetLocation']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          targetType: _json.containsKey('targetType')
+              ? _json['targetType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
         if (role != null) 'role': role!,
-        if (targetAccount != null) 'targetAccount': targetAccount!.toJson(),
-        if (targetLocation != null) 'targetLocation': targetLocation!.toJson(),
+        if (targetAccount != null) 'targetAccount': targetAccount!,
+        if (targetLocation != null) 'targetLocation': targetLocation!,
         if (targetType != null) 'targetType': targetType!,
       };
 }
@@ -1092,21 +1125,22 @@ class ListAccountAdminsResponse {
   /// A collection of Admin instances.
   core.List<Admin>? accountAdmins;
 
-  ListAccountAdminsResponse();
+  ListAccountAdminsResponse({
+    this.accountAdmins,
+  });
 
-  ListAccountAdminsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accountAdmins')) {
-      accountAdmins = (_json['accountAdmins'] as core.List)
-          .map<Admin>((value) =>
-              Admin.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListAccountAdminsResponse.fromJson(core.Map _json)
+      : this(
+          accountAdmins: _json.containsKey('accountAdmins')
+              ? (_json['accountAdmins'] as core.List)
+                  .map((value) => Admin.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accountAdmins != null)
-          'accountAdmins':
-              accountAdmins!.map((value) => value.toJson()).toList(),
+        if (accountAdmins != null) 'accountAdmins': accountAdmins!,
       };
 }
 
@@ -1125,23 +1159,26 @@ class ListAccountsResponse {
   /// If there are no more accounts, this field is not present in the response.
   core.String? nextPageToken;
 
-  ListAccountsResponse();
+  ListAccountsResponse({
+    this.accounts,
+    this.nextPageToken,
+  });
 
-  ListAccountsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accounts')) {
-      accounts = (_json['accounts'] as core.List)
-          .map<Account>((value) =>
-              Account.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAccountsResponse.fromJson(core.Map _json)
+      : this(
+          accounts: _json.containsKey('accounts')
+              ? (_json['accounts'] as core.List)
+                  .map((value) => Account.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accounts != null)
-          'accounts': accounts!.map((value) => value.toJson()).toList(),
+        if (accounts != null) 'accounts': accounts!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1153,20 +1190,22 @@ class ListInvitationsResponse {
   /// The number of invitations listed here cannot exceed 1000.
   core.List<Invitation>? invitations;
 
-  ListInvitationsResponse();
+  ListInvitationsResponse({
+    this.invitations,
+  });
 
-  ListInvitationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('invitations')) {
-      invitations = (_json['invitations'] as core.List)
-          .map<Invitation>((value) =>
-              Invitation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListInvitationsResponse.fromJson(core.Map _json)
+      : this(
+          invitations: _json.containsKey('invitations')
+              ? (_json['invitations'] as core.List)
+                  .map((value) => Invitation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (invitations != null)
-          'invitations': invitations!.map((value) => value.toJson()).toList(),
+        if (invitations != null) 'invitations': invitations!,
       };
 }
 
@@ -1175,20 +1214,22 @@ class ListLocationAdminsResponse {
   /// A collection of Admins.
   core.List<Admin>? admins;
 
-  ListLocationAdminsResponse();
+  ListLocationAdminsResponse({
+    this.admins,
+  });
 
-  ListLocationAdminsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('admins')) {
-      admins = (_json['admins'] as core.List)
-          .map<Admin>((value) =>
-              Admin.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListLocationAdminsResponse.fromJson(core.Map _json)
+      : this(
+          admins: _json.containsKey('admins')
+              ? (_json['admins'] as core.List)
+                  .map((value) => Admin.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (admins != null)
-          'admins': admins!.map((value) => value.toJson()).toList(),
+        if (admins != null) 'admins': admins!,
       };
 }
 
@@ -1209,23 +1250,28 @@ class OrganizationInfo {
   /// Output only.
   core.String? registeredDomain;
 
-  OrganizationInfo();
+  OrganizationInfo({
+    this.address,
+    this.phoneNumber,
+    this.registeredDomain,
+  });
 
-  OrganizationInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = PostalAddress.fromJson(
-          _json['address'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('phoneNumber')) {
-      phoneNumber = _json['phoneNumber'] as core.String;
-    }
-    if (_json.containsKey('registeredDomain')) {
-      registeredDomain = _json['registeredDomain'] as core.String;
-    }
-  }
+  OrganizationInfo.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? PostalAddress.fromJson(
+                  _json['address'] as core.Map<core.String, core.dynamic>)
+              : null,
+          phoneNumber: _json.containsKey('phoneNumber')
+              ? _json['phoneNumber'] as core.String
+              : null,
+          registeredDomain: _json.containsKey('registeredDomain')
+              ? _json['registeredDomain'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (address != null) 'address': address!.toJson(),
+        if (address != null) 'address': address!,
         if (phoneNumber != null) 'phoneNumber': phoneNumber!,
         if (registeredDomain != null) 'registeredDomain': registeredDomain!,
       };
@@ -1242,173 +1288,7 @@ class OrganizationInfo {
 /// be presented with UI elements for input or editing of fields outside
 /// countries where that field is used. For more guidance on how to use this
 /// schema, please see: https://support.google.com/business/answer/6397478
-class PostalAddress {
-  /// Unstructured address lines describing the lower levels of an address.
-  ///
-  /// Because values in address_lines do not have type information and may
-  /// sometimes contain multiple values in a single field (e.g. "Austin, TX"),
-  /// it is important that the line order is clear. The order of address lines
-  /// should be "envelope order" for the country/region of the address. In
-  /// places where this can vary (e.g. Japan), address_language is used to make
-  /// it explicit (e.g. "ja" for large-to-small ordering and "ja-Latn" or "en"
-  /// for small-to-large). This way, the most specific line of an address can be
-  /// selected based on the language. The minimum permitted structural
-  /// representation of an address consists of a region_code with all remaining
-  /// information placed in the address_lines. It would be possible to format
-  /// such an address very approximately without geocoding, but no semantic
-  /// reasoning could be made about any of the address components until it was
-  /// at least partially resolved. Creating an address only containing a
-  /// region_code and address_lines, and then geocoding is the recommended way
-  /// to handle completely unstructured addresses (as opposed to guessing which
-  /// parts of the address should be localities or administrative areas).
-  core.List<core.String>? addressLines;
-
-  /// Highest administrative subdivision which is used for postal addresses of a
-  /// country or region.
-  ///
-  /// For example, this can be a state, a province, an oblast, or a prefecture.
-  /// Specifically, for Spain this is the province and not the autonomous
-  /// community (e.g. "Barcelona" and not "Catalonia"). Many countries don't use
-  /// an administrative area in postal addresses. E.g. in Switzerland this
-  /// should be left unpopulated.
-  ///
-  /// Optional.
-  core.String? administrativeArea;
-
-  /// BCP-47 language code of the contents of this address (if known).
-  ///
-  /// This is often the UI language of the input form or is expected to match
-  /// one of the languages used in the address' country/region, or their
-  /// transliterated equivalents. This can affect formatting in certain
-  /// countries, but is not critical to the correctness of the data and will
-  /// never affect any validation or other non-formatting related operations. If
-  /// this value is not known, it should be omitted (rather than specifying a
-  /// possibly incorrect default). Examples: "zh-Hant", "ja", "ja-Latn", "en".
-  ///
-  /// Optional.
-  core.String? languageCode;
-
-  /// Generally refers to the city/town portion of the address.
-  ///
-  /// Examples: US city, IT comune, UK post town. In regions of the world where
-  /// localities are not well defined or do not fit into this structure well,
-  /// leave locality empty and use address_lines.
-  ///
-  /// Optional.
-  core.String? locality;
-
-  /// The name of the organization at the address.
-  ///
-  /// Optional.
-  core.String? organization;
-
-  /// Postal code of the address.
-  ///
-  /// Not all countries use or require postal codes to be present, but where
-  /// they are used, they may trigger additional validation with other parts of
-  /// the address (e.g. state/zip validation in the U.S.A.).
-  ///
-  /// Optional.
-  core.String? postalCode;
-
-  /// The recipient at the address.
-  ///
-  /// This field may, under certain circumstances, contain multiline
-  /// information. For example, it might contain "care of" information.
-  ///
-  /// Optional.
-  core.List<core.String>? recipients;
-
-  /// CLDR region code of the country/region of the address.
-  ///
-  /// This is never inferred and it is up to the user to ensure the value is
-  /// correct. See http://cldr.unicode.org/ and
-  /// http://www.unicode.org/cldr/charts/30/supplemental/territory_information.html
-  /// for details. Example: "CH" for Switzerland.
-  ///
-  /// Required.
-  core.String? regionCode;
-
-  /// The schema revision of the `PostalAddress`.
-  ///
-  /// This must be set to 0, which is the latest revision. All new revisions
-  /// **must** be backward compatible with old revisions.
-  core.int? revision;
-
-  /// Additional, country-specific, sorting code.
-  ///
-  /// This is not used in most regions. Where it is used, the value is either a
-  /// string like "CEDEX", optionally followed by a number (e.g. "CEDEX 7"), or
-  /// just a number alone, representing the "sector code" (Jamaica), "delivery
-  /// area indicator" (Malawi) or "post office indicator" (e.g. Côte d'Ivoire).
-  ///
-  /// Optional.
-  core.String? sortingCode;
-
-  /// Sublocality of the address.
-  ///
-  /// For example, this can be neighborhoods, boroughs, districts.
-  ///
-  /// Optional.
-  core.String? sublocality;
-
-  PostalAddress();
-
-  PostalAddress.fromJson(core.Map _json) {
-    if (_json.containsKey('addressLines')) {
-      addressLines = (_json['addressLines'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('administrativeArea')) {
-      administrativeArea = _json['administrativeArea'] as core.String;
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('locality')) {
-      locality = _json['locality'] as core.String;
-    }
-    if (_json.containsKey('organization')) {
-      organization = _json['organization'] as core.String;
-    }
-    if (_json.containsKey('postalCode')) {
-      postalCode = _json['postalCode'] as core.String;
-    }
-    if (_json.containsKey('recipients')) {
-      recipients = (_json['recipients'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('regionCode')) {
-      regionCode = _json['regionCode'] as core.String;
-    }
-    if (_json.containsKey('revision')) {
-      revision = _json['revision'] as core.int;
-    }
-    if (_json.containsKey('sortingCode')) {
-      sortingCode = _json['sortingCode'] as core.String;
-    }
-    if (_json.containsKey('sublocality')) {
-      sublocality = _json['sublocality'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (addressLines != null) 'addressLines': addressLines!,
-        if (administrativeArea != null)
-          'administrativeArea': administrativeArea!,
-        if (languageCode != null) 'languageCode': languageCode!,
-        if (locality != null) 'locality': locality!,
-        if (organization != null) 'organization': organization!,
-        if (postalCode != null) 'postalCode': postalCode!,
-        if (recipients != null) 'recipients': recipients!,
-        if (regionCode != null) 'regionCode': regionCode!,
-        if (revision != null) 'revision': revision!,
-        if (sortingCode != null) 'sortingCode': sortingCode!,
-        if (sublocality != null) 'sublocality': sublocality!,
-      };
-}
+typedef PostalAddress = $PostalAddress00;
 
 /// Represents a target location for a pending invitation.
 class TargetLocation {
@@ -1418,19 +1298,48 @@ class TargetLocation {
   /// The name of the location to which the user is invited.
   core.String? locationName;
 
-  TargetLocation();
+  TargetLocation({
+    this.address,
+    this.locationName,
+  });
 
-  TargetLocation.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = _json['address'] as core.String;
-    }
-    if (_json.containsKey('locationName')) {
-      locationName = _json['locationName'] as core.String;
-    }
-  }
+  TargetLocation.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? _json['address'] as core.String
+              : null,
+          locationName: _json.containsKey('locationName')
+              ? _json['locationName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (address != null) 'address': address!,
         if (locationName != null) 'locationName': locationName!,
+      };
+}
+
+/// Request message for AccessControl.TransferLocation.
+class TransferLocationRequest {
+  /// Name of the account resource to transfer the location to (for example,
+  /// "accounts/{account}").
+  ///
+  /// Required.
+  core.String? destinationAccount;
+
+  TransferLocationRequest({
+    this.destinationAccount,
+  });
+
+  TransferLocationRequest.fromJson(core.Map _json)
+      : this(
+          destinationAccount: _json.containsKey('destinationAccount')
+              ? _json['destinationAccount'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (destinationAccount != null)
+          'destinationAccount': destinationAccount!,
       };
 }

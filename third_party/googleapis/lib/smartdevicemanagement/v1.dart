@@ -45,6 +45,10 @@ class SmartDeviceManagementApi {
   /// See and/or control the devices that you selected
   static const sdmServiceScope = 'https://www.googleapis.com/auth/sdm.service';
 
+  /// See and control the Nest thermostats that you select
+  static const sdmThermostatServiceScope =
+      'https://www.googleapis.com/auth/sdm.thermostat.service';
+
   final commons.ApiRequester _requester;
 
   EnterprisesResource get enterprises => EnterprisesResource(_requester);
@@ -98,7 +102,7 @@ class EnterprisesDevicesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -411,7 +415,7 @@ class GoogleHomeEnterpriseSdmV1Device {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? traits;
+  core.Map<core.String, core.Object?>? traits;
 
   /// Type of the device for general display purposes.
   ///
@@ -422,37 +426,32 @@ class GoogleHomeEnterpriseSdmV1Device {
   /// Output only.
   core.String? type;
 
-  GoogleHomeEnterpriseSdmV1Device();
+  GoogleHomeEnterpriseSdmV1Device({
+    this.name,
+    this.parentRelations,
+    this.traits,
+    this.type,
+  });
 
-  GoogleHomeEnterpriseSdmV1Device.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parentRelations')) {
-      parentRelations = (_json['parentRelations'] as core.List)
-          .map<GoogleHomeEnterpriseSdmV1ParentRelation>((value) =>
-              GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('traits')) {
-      traits = (_json['traits'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  GoogleHomeEnterpriseSdmV1Device.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parentRelations: _json.containsKey('parentRelations')
+              ? (_json['parentRelations'] as core.List)
+                  .map((value) =>
+                      GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          traits: _json.containsKey('traits')
+              ? _json['traits'] as core.Map<core.String, core.dynamic>
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (parentRelations != null)
-          'parentRelations':
-              parentRelations!.map((value) => value.toJson()).toList(),
+        if (parentRelations != null) 'parentRelations': parentRelations!,
         if (traits != null) 'traits': traits!,
         if (type != null) 'type': type!,
       };
@@ -468,24 +467,22 @@ class GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? params;
+  core.Map<core.String, core.Object?>? params;
 
-  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
+  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest({
+    this.command,
+    this.params,
+  });
 
-  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('command')) {
-      command = _json['command'] as core.String;
-    }
-    if (_json.containsKey('params')) {
-      params = (_json['params'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest.fromJson(core.Map _json)
+      : this(
+          command: _json.containsKey('command')
+              ? _json['command'] as core.String
+              : null,
+          params: _json.containsKey('params')
+              ? _json['params'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (command != null) 'command': command!,
@@ -499,21 +496,18 @@ class GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? results;
+  core.Map<core.String, core.Object?>? results;
 
-  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse();
+  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse({
+    this.results,
+  });
 
-  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('results')) {
-      results = (_json['results'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse.fromJson(core.Map _json)
+      : this(
+          results: _json.containsKey('results')
+              ? _json['results'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (results != null) 'results': results!,
@@ -528,24 +522,26 @@ class GoogleHomeEnterpriseSdmV1ListDevicesResponse {
   /// The pagination token to retrieve the next page of results.
   core.String? nextPageToken;
 
-  GoogleHomeEnterpriseSdmV1ListDevicesResponse();
+  GoogleHomeEnterpriseSdmV1ListDevicesResponse({
+    this.devices,
+    this.nextPageToken,
+  });
 
-  GoogleHomeEnterpriseSdmV1ListDevicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.List)
-          .map<GoogleHomeEnterpriseSdmV1Device>((value) =>
-              GoogleHomeEnterpriseSdmV1Device.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ListDevicesResponse.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.List)
+                  .map((value) => GoogleHomeEnterpriseSdmV1Device.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devices != null)
-          'devices': devices!.map((value) => value.toJson()).toList(),
+        if (devices != null) 'devices': devices!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -560,25 +556,27 @@ class GoogleHomeEnterpriseSdmV1ListRoomsResponse {
   /// The list of rooms.
   core.List<GoogleHomeEnterpriseSdmV1Room>? rooms;
 
-  GoogleHomeEnterpriseSdmV1ListRoomsResponse();
+  GoogleHomeEnterpriseSdmV1ListRoomsResponse({
+    this.nextPageToken,
+    this.rooms,
+  });
 
-  GoogleHomeEnterpriseSdmV1ListRoomsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('rooms')) {
-      rooms = (_json['rooms'] as core.List)
-          .map<GoogleHomeEnterpriseSdmV1Room>((value) =>
-              GoogleHomeEnterpriseSdmV1Room.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ListRoomsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          rooms: _json.containsKey('rooms')
+              ? (_json['rooms'] as core.List)
+                  .map((value) => GoogleHomeEnterpriseSdmV1Room.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (rooms != null)
-          'rooms': rooms!.map((value) => value.toJson()).toList(),
+        if (rooms != null) 'rooms': rooms!,
       };
 }
 
@@ -592,25 +590,27 @@ class GoogleHomeEnterpriseSdmV1ListStructuresResponse {
   /// The list of structures.
   core.List<GoogleHomeEnterpriseSdmV1Structure>? structures;
 
-  GoogleHomeEnterpriseSdmV1ListStructuresResponse();
+  GoogleHomeEnterpriseSdmV1ListStructuresResponse({
+    this.nextPageToken,
+    this.structures,
+  });
 
-  GoogleHomeEnterpriseSdmV1ListStructuresResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('structures')) {
-      structures = (_json['structures'] as core.List)
-          .map<GoogleHomeEnterpriseSdmV1Structure>((value) =>
-              GoogleHomeEnterpriseSdmV1Structure.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ListStructuresResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          structures: _json.containsKey('structures')
+              ? (_json['structures'] as core.List)
+                  .map((value) => GoogleHomeEnterpriseSdmV1Structure.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (structures != null)
-          'structures': structures!.map((value) => value.toJson()).toList(),
+        if (structures != null) 'structures': structures!,
       };
 }
 
@@ -632,16 +632,20 @@ class GoogleHomeEnterpriseSdmV1ParentRelation {
   /// Output only.
   core.String? parent;
 
-  GoogleHomeEnterpriseSdmV1ParentRelation();
+  GoogleHomeEnterpriseSdmV1ParentRelation({
+    this.displayName,
+    this.parent,
+  });
 
-  GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-  }
+  GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -663,23 +667,20 @@ class GoogleHomeEnterpriseSdmV1Room {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? traits;
+  core.Map<core.String, core.Object?>? traits;
 
-  GoogleHomeEnterpriseSdmV1Room();
+  GoogleHomeEnterpriseSdmV1Room({
+    this.name,
+    this.traits,
+  });
 
-  GoogleHomeEnterpriseSdmV1Room.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('traits')) {
-      traits = (_json['traits'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleHomeEnterpriseSdmV1Room.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          traits: _json.containsKey('traits')
+              ? _json['traits'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -701,23 +702,20 @@ class GoogleHomeEnterpriseSdmV1Structure {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? traits;
+  core.Map<core.String, core.Object?>? traits;
 
-  GoogleHomeEnterpriseSdmV1Structure();
+  GoogleHomeEnterpriseSdmV1Structure({
+    this.name,
+    this.traits,
+  });
 
-  GoogleHomeEnterpriseSdmV1Structure.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('traits')) {
-      traits = (_json['traits'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleHomeEnterpriseSdmV1Structure.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          traits: _json.containsKey('traits')
+              ? _json['traits'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,

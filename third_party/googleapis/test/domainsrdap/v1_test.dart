@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,28 +20,26 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/domainsrdap/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/domainsrdap/v1.dart' as api;
 
 import '../test_shared.dart';
 
-core.Map<core.String, core.Object> buildUnnamed2060() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed0() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2060(core.Map<core.String, core.Object> o) {
+void checkUnnamed0(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted1 = (o['x']!) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
@@ -74,27 +71,25 @@ void checkUnnamed2060(core.Map<core.String, core.Object> o) {
   );
 }
 
-core.List<core.Map<core.String, core.Object>> buildUnnamed2061() {
-  var o = <core.Map<core.String, core.Object>>[];
-  o.add(buildUnnamed2060());
-  o.add(buildUnnamed2060());
-  return o;
-}
+core.List<core.Map<core.String, core.Object?>> buildUnnamed1() => [
+      buildUnnamed0(),
+      buildUnnamed0(),
+    ];
 
-void checkUnnamed2061(core.List<core.Map<core.String, core.Object>> o) {
+void checkUnnamed1(core.List<core.Map<core.String, core.Object?>> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUnnamed2060(o[0]);
-  checkUnnamed2060(o[1]);
+  checkUnnamed0(o[0]);
+  checkUnnamed0(o[1]);
 }
 
 core.int buildCounterHttpBody = 0;
 api.HttpBody buildHttpBody() {
-  var o = api.HttpBody();
+  final o = api.HttpBody();
   buildCounterHttpBody++;
   if (buildCounterHttpBody < 3) {
     o.contentType = 'foo';
     o.data = 'foo';
-    o.extensions = buildUnnamed2061();
+    o.extensions = buildUnnamed1();
   }
   buildCounterHttpBody--;
   return o;
@@ -111,14 +106,14 @@ void checkHttpBody(api.HttpBody o) {
       o.data!,
       unittest.equals('foo'),
     );
-    checkUnnamed2061(o.extensions!);
+    checkUnnamed1(o.extensions!);
   }
   buildCounterHttpBody--;
 }
 
 core.int buildCounterLink = 0;
 api.Link buildLink() {
-  var o = api.Link();
+  final o = api.Link();
   buildCounterLink++;
   if (buildCounterLink < 3) {
     o.href = 'foo';
@@ -168,14 +163,12 @@ void checkLink(api.Link o) {
   buildCounterLink--;
 }
 
-core.List<core.String> buildUnnamed2062() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed2() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2062(core.List<core.String> o) {
+void checkUnnamed2(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -187,26 +180,24 @@ void checkUnnamed2062(core.List<core.String> o) {
   );
 }
 
-core.List<api.Link> buildUnnamed2063() {
-  var o = <api.Link>[];
-  o.add(buildLink());
-  o.add(buildLink());
-  return o;
-}
+core.List<api.Link> buildUnnamed3() => [
+      buildLink(),
+      buildLink(),
+    ];
 
-void checkUnnamed2063(core.List<api.Link> o) {
+void checkUnnamed3(core.List<api.Link> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLink(o[0] as api.Link);
-  checkLink(o[1] as api.Link);
+  checkLink(o[0]);
+  checkLink(o[1]);
 }
 
 core.int buildCounterNotice = 0;
 api.Notice buildNotice() {
-  var o = api.Notice();
+  final o = api.Notice();
   buildCounterNotice++;
   if (buildCounterNotice < 3) {
-    o.description = buildUnnamed2062();
-    o.links = buildUnnamed2063();
+    o.description = buildUnnamed2();
+    o.links = buildUnnamed3();
     o.title = 'foo';
     o.type = 'foo';
   }
@@ -217,8 +208,8 @@ api.Notice buildNotice() {
 void checkNotice(api.Notice o) {
   buildCounterNotice++;
   if (buildCounterNotice < 3) {
-    checkUnnamed2062(o.description!);
-    checkUnnamed2063(o.links!);
+    checkUnnamed2(o.description!);
+    checkUnnamed3(o.links!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -231,14 +222,12 @@ void checkNotice(api.Notice o) {
   buildCounterNotice--;
 }
 
-core.List<core.String> buildUnnamed2064() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed4() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2064(core.List<core.String> o) {
+void checkUnnamed4(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -250,27 +239,23 @@ void checkUnnamed2064(core.List<core.String> o) {
   );
 }
 
-core.List<api.Notice> buildUnnamed2065() {
-  var o = <api.Notice>[];
-  o.add(buildNotice());
-  o.add(buildNotice());
-  return o;
-}
+core.List<api.Notice> buildUnnamed5() => [
+      buildNotice(),
+      buildNotice(),
+    ];
 
-void checkUnnamed2065(core.List<api.Notice> o) {
+void checkUnnamed5(core.List<api.Notice> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkNotice(o[0] as api.Notice);
-  checkNotice(o[1] as api.Notice);
+  checkNotice(o[0]);
+  checkNotice(o[1]);
 }
 
-core.List<core.String> buildUnnamed2066() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed6() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2066(core.List<core.String> o) {
+void checkUnnamed6(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -284,15 +269,15 @@ void checkUnnamed2066(core.List<core.String> o) {
 
 core.int buildCounterRdapResponse = 0;
 api.RdapResponse buildRdapResponse() {
-  var o = api.RdapResponse();
+  final o = api.RdapResponse();
   buildCounterRdapResponse++;
   if (buildCounterRdapResponse < 3) {
-    o.description = buildUnnamed2064();
+    o.description = buildUnnamed4();
     o.errorCode = 42;
     o.jsonResponse = buildHttpBody();
     o.lang = 'foo';
-    o.notices = buildUnnamed2065();
-    o.rdapConformance = buildUnnamed2066();
+    o.notices = buildUnnamed5();
+    o.rdapConformance = buildUnnamed6();
     o.title = 'foo';
   }
   buildCounterRdapResponse--;
@@ -302,18 +287,18 @@ api.RdapResponse buildRdapResponse() {
 void checkRdapResponse(api.RdapResponse o) {
   buildCounterRdapResponse++;
   if (buildCounterRdapResponse < 3) {
-    checkUnnamed2064(o.description!);
+    checkUnnamed4(o.description!);
     unittest.expect(
       o.errorCode!,
       unittest.equals(42),
     );
-    checkHttpBody(o.jsonResponse! as api.HttpBody);
+    checkHttpBody(o.jsonResponse!);
     unittest.expect(
       o.lang!,
       unittest.equals('foo'),
     );
-    checkUnnamed2065(o.notices!);
-    checkUnnamed2066(o.rdapConformance!);
+    checkUnnamed5(o.notices!);
+    checkUnnamed6(o.rdapConformance!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -325,62 +310,63 @@ void checkRdapResponse(api.RdapResponse o) {
 void main() {
   unittest.group('obj-schema-HttpBody', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildHttpBody();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildHttpBody();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.HttpBody.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkHttpBody(od as api.HttpBody);
+      checkHttpBody(od);
     });
   });
 
   unittest.group('obj-schema-Link', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLink();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Link.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLink(od as api.Link);
+      final o = buildLink();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Link.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLink(od);
     });
   });
 
   unittest.group('obj-schema-Notice', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildNotice();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildNotice();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Notice.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkNotice(od as api.Notice);
+      checkNotice(od);
     });
   });
 
   unittest.group('obj-schema-RdapResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRdapResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RdapResponse.fromJson(
+      final o = buildRdapResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RdapResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRdapResponse(od as api.RdapResponse);
+      checkRdapResponse(od);
     });
   });
 
   unittest.group('resource-AutnumResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).autnum;
-      var arg_autnumId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).autnum;
+      final arg_autnumId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/autnum/"),
+          unittest.equals('v1/autnum/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -390,15 +376,15 @@ void main() {
           unittest.equals('$arg_autnumId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -406,14 +392,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_autnumId, $fields: arg_$fields);
@@ -423,36 +409,36 @@ void main() {
 
   unittest.group('resource-DomainResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).domain;
-      var arg_domainName = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).domain;
+      final arg_domainName = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/domain/"),
+          unittest.equals('v1/domain/'),
         );
         pathOffset += 10;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -460,14 +446,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildHttpBody());
+        final resp = convert.json.encode(buildHttpBody());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_domainName, $fields: arg_$fields);
@@ -477,23 +463,23 @@ void main() {
 
   unittest.group('resource-EntityResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).entity;
-      var arg_entityId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).entity;
+      final arg_entityId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/entity/"),
+          unittest.equals('v1/entity/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -503,15 +489,15 @@ void main() {
           unittest.equals('$arg_entityId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -519,14 +505,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_entityId, $fields: arg_$fields);
@@ -536,24 +522,24 @@ void main() {
 
   unittest.group('resource-IpResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).ip;
-      var arg_ipId = 'foo';
-      var arg_ipId1 = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).ip;
+      final arg_ipId = 'foo';
+      final arg_ipId1 = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("v1/ip/"),
+          unittest.equals('v1/ip/'),
         );
         pathOffset += 6;
         index = path.indexOf('/', pathOffset);
@@ -567,7 +553,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -577,15 +563,15 @@ void main() {
           unittest.equals('$arg_ipId1'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -593,14 +579,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_ipId, arg_ipId1, $fields: arg_$fields);
@@ -610,23 +596,23 @@ void main() {
 
   unittest.group('resource-NameserverResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).nameserver;
-      var arg_nameserverId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).nameserver;
+      final arg_nameserverId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("v1/nameserver/"),
+          unittest.equals('v1/nameserver/'),
         );
         pathOffset += 14;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -636,15 +622,15 @@ void main() {
           unittest.equals('$arg_nameserverId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -652,14 +638,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_nameserverId, $fields: arg_$fields);
@@ -669,34 +655,34 @@ void main() {
 
   unittest.group('resource-V1Resource', () {
     unittest.test('method--getDomains', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).v1;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).v1;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/domains"),
+          unittest.equals('v1/domains'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -704,14 +690,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getDomains($fields: arg_$fields);
@@ -719,34 +705,34 @@ void main() {
     });
 
     unittest.test('method--getEntities', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).v1;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).v1;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/entities"),
+          unittest.equals('v1/entities'),
         );
         pathOffset += 11;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -754,14 +740,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getEntities($fields: arg_$fields);
@@ -769,34 +755,34 @@ void main() {
     });
 
     unittest.test('method--getHelp', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).v1;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).v1;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("v1/help"),
+          unittest.equals('v1/help'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -804,14 +790,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildHttpBody());
+        final resp = convert.json.encode(buildHttpBody());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getHelp($fields: arg_$fields);
@@ -819,34 +805,34 @@ void main() {
     });
 
     unittest.test('method--getIp', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).v1;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).v1;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("v1/ip"),
+          unittest.equals('v1/ip'),
         );
         pathOffset += 5;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -854,14 +840,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildHttpBody());
+        final resp = convert.json.encode(buildHttpBody());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getIp($fields: arg_$fields);
@@ -869,34 +855,34 @@ void main() {
     });
 
     unittest.test('method--getNameservers', () async {
-      var mock = HttpServerMock();
-      var res = api.DomainsRDAPApi(mock).v1;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.DomainsRDAPApi(mock).v1;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("v1/nameservers"),
+          unittest.equals('v1/nameservers'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -904,14 +890,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRdapResponse());
+        final resp = convert.json.encode(buildRdapResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getNameservers($fields: arg_$fields);

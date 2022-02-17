@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -45,7 +47,8 @@ class CloudBillingBudgetApi {
   static const cloudBillingScope =
       'https://www.googleapis.com/auth/cloud-billing';
 
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -104,7 +107,7 @@ class BillingAccountsBudgetsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -294,7 +297,7 @@ class BillingAccountsBudgetsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -326,7 +329,8 @@ class GoogleCloudBillingBudgetsV1Budget {
   GoogleCloudBillingBudgetsV1BudgetAmount? amount;
 
   /// Filters that define which resources are used to compute the actual spend
-  /// against the budget.
+  /// against the budget amount, such as projects, services, and the budget's
+  /// time period, as well as other filters.
   ///
   /// Optional.
   GoogleCloudBillingBudgetsV1Filter? budgetFilter;
@@ -339,7 +343,7 @@ class GoogleCloudBillingBudgetsV1Budget {
   /// Etag to validate that the object is unchanged for a read-modify-write
   /// operation.
   ///
-  /// An empty etag will cause an update to overwrite other changes.
+  /// An empty etag causes an update to overwrite other changes.
   ///
   /// Optional.
   core.String? etag;
@@ -360,53 +364,59 @@ class GoogleCloudBillingBudgetsV1Budget {
   /// Rules that trigger alerts (notifications of thresholds being crossed) when
   /// spend exceeds the specified percentages of the budget.
   ///
+  /// Optional for `pubsubTopic` notifications. Required if using email
+  /// notifications.
+  ///
   /// Optional.
   core.List<GoogleCloudBillingBudgetsV1ThresholdRule>? thresholdRules;
 
-  GoogleCloudBillingBudgetsV1Budget();
+  GoogleCloudBillingBudgetsV1Budget({
+    this.amount,
+    this.budgetFilter,
+    this.displayName,
+    this.etag,
+    this.name,
+    this.notificationsRule,
+    this.thresholdRules,
+  });
 
-  GoogleCloudBillingBudgetsV1Budget.fromJson(core.Map _json) {
-    if (_json.containsKey('amount')) {
-      amount = GoogleCloudBillingBudgetsV1BudgetAmount.fromJson(
-          _json['amount'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('budgetFilter')) {
-      budgetFilter = GoogleCloudBillingBudgetsV1Filter.fromJson(
-          _json['budgetFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationsRule')) {
-      notificationsRule = GoogleCloudBillingBudgetsV1NotificationsRule.fromJson(
-          _json['notificationsRule'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('thresholdRules')) {
-      thresholdRules = (_json['thresholdRules'] as core.List)
-          .map<GoogleCloudBillingBudgetsV1ThresholdRule>((value) =>
-              GoogleCloudBillingBudgetsV1ThresholdRule.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleCloudBillingBudgetsV1Budget.fromJson(core.Map _json)
+      : this(
+          amount: _json.containsKey('amount')
+              ? GoogleCloudBillingBudgetsV1BudgetAmount.fromJson(
+                  _json['amount'] as core.Map<core.String, core.dynamic>)
+              : null,
+          budgetFilter: _json.containsKey('budgetFilter')
+              ? GoogleCloudBillingBudgetsV1Filter.fromJson(
+                  _json['budgetFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationsRule: _json.containsKey('notificationsRule')
+              ? GoogleCloudBillingBudgetsV1NotificationsRule.fromJson(
+                  _json['notificationsRule']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          thresholdRules: _json.containsKey('thresholdRules')
+              ? (_json['thresholdRules'] as core.List)
+                  .map((value) =>
+                      GoogleCloudBillingBudgetsV1ThresholdRule.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (amount != null) 'amount': amount!.toJson(),
-        if (budgetFilter != null) 'budgetFilter': budgetFilter!.toJson(),
+        if (amount != null) 'amount': amount!,
+        if (budgetFilter != null) 'budgetFilter': budgetFilter!,
         if (displayName != null) 'displayName': displayName!,
         if (etag != null) 'etag': etag!,
         if (name != null) 'name': name!,
-        if (notificationsRule != null)
-          'notificationsRule': notificationsRule!.toJson(),
-        if (thresholdRules != null)
-          'thresholdRules':
-              thresholdRules!.map((value) => value.toJson()).toList(),
+        if (notificationsRule != null) 'notificationsRule': notificationsRule!,
+        if (thresholdRules != null) 'thresholdRules': thresholdRules!,
       };
 }
 
@@ -414,7 +424,9 @@ class GoogleCloudBillingBudgetsV1Budget {
 class GoogleCloudBillingBudgetsV1BudgetAmount {
   /// Use the last period's actual spend as the budget for the present period.
   ///
-  /// Cannot be set in combination with Filter.custom_period.
+  /// LastPeriodAmount can only be set when the budget's time period is a
+  /// Filter.calendar_period. It cannot be set in combination with
+  /// Filter.custom_period.
   GoogleCloudBillingBudgetsV1LastPeriodAmount? lastPeriodAmount;
 
   /// A specified amount to use as the budget.
@@ -425,24 +437,27 @@ class GoogleCloudBillingBudgetsV1BudgetAmount {
   /// `currency_code` is provided on output.
   GoogleTypeMoney? specifiedAmount;
 
-  GoogleCloudBillingBudgetsV1BudgetAmount();
+  GoogleCloudBillingBudgetsV1BudgetAmount({
+    this.lastPeriodAmount,
+    this.specifiedAmount,
+  });
 
-  GoogleCloudBillingBudgetsV1BudgetAmount.fromJson(core.Map _json) {
-    if (_json.containsKey('lastPeriodAmount')) {
-      lastPeriodAmount = GoogleCloudBillingBudgetsV1LastPeriodAmount.fromJson(
-          _json['lastPeriodAmount'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('specifiedAmount')) {
-      specifiedAmount = GoogleTypeMoney.fromJson(
-          _json['specifiedAmount'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GoogleCloudBillingBudgetsV1BudgetAmount.fromJson(core.Map _json)
+      : this(
+          lastPeriodAmount: _json.containsKey('lastPeriodAmount')
+              ? GoogleCloudBillingBudgetsV1LastPeriodAmount.fromJson(
+                  _json['lastPeriodAmount']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          specifiedAmount: _json.containsKey('specifiedAmount')
+              ? GoogleTypeMoney.fromJson(_json['specifiedAmount']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (lastPeriodAmount != null)
-          'lastPeriodAmount': lastPeriodAmount!.toJson(),
-        if (specifiedAmount != null)
-          'specifiedAmount': specifiedAmount!.toJson(),
+        if (lastPeriodAmount != null) 'lastPeriodAmount': lastPeriodAmount!,
+        if (specifiedAmount != null) 'specifiedAmount': specifiedAmount!,
       };
 }
 
@@ -461,22 +476,26 @@ class GoogleCloudBillingBudgetsV1CustomPeriod {
   /// Required.
   GoogleTypeDate? startDate;
 
-  GoogleCloudBillingBudgetsV1CustomPeriod();
+  GoogleCloudBillingBudgetsV1CustomPeriod({
+    this.endDate,
+    this.startDate,
+  });
 
-  GoogleCloudBillingBudgetsV1CustomPeriod.fromJson(core.Map _json) {
-    if (_json.containsKey('endDate')) {
-      endDate = GoogleTypeDate.fromJson(
-          _json['endDate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startDate')) {
-      startDate = GoogleTypeDate.fromJson(
-          _json['startDate'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GoogleCloudBillingBudgetsV1CustomPeriod.fromJson(core.Map _json)
+      : this(
+          endDate: _json.containsKey('endDate')
+              ? GoogleTypeDate.fromJson(
+                  _json['endDate'] as core.Map<core.String, core.dynamic>)
+              : null,
+          startDate: _json.containsKey('startDate')
+              ? GoogleTypeDate.fromJson(
+                  _json['startDate'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endDate != null) 'endDate': endDate!.toJson(),
-        if (startDate != null) 'startDate': startDate!.toJson(),
+        if (endDate != null) 'endDate': endDate!,
+        if (startDate != null) 'startDate': startDate!,
       };
 }
 
@@ -484,14 +503,15 @@ class GoogleCloudBillingBudgetsV1CustomPeriod {
 class GoogleCloudBillingBudgetsV1Filter {
   /// Specifies to track usage for recurring calendar period.
   ///
-  /// E.g. Assume that CalendarPeriod.QUARTER is set. The budget will track
-  /// usage from April 1 to June 30, when current calendar month is April, May,
-  /// June. After that, it will track usage from July 1 to September 30 when
-  /// current calendar month is July, August, September, and so on.
+  /// For example, assume that CalendarPeriod.QUARTER is set. The budget tracks
+  /// usage from April 1 to June 30, when the current calendar month is April,
+  /// May, June. After that, it tracks usage from July 1 to September 30 when
+  /// the current calendar month is July, August, September, so on.
   ///
   /// Optional.
   /// Possible string values are:
-  /// - "CALENDAR_PERIOD_UNSPECIFIED"
+  /// - "CALENDAR_PERIOD_UNSPECIFIED" : Calendar period is unset. This is the
+  /// default if the budget is for a custom time period (CustomPeriod).
   /// - "MONTH" : A month. Month starts on the first day of each month, such as
   /// January 1, February 1, March 1, and so on.
   /// - "QUARTER" : A quarter. Quarters start on dates January 1, April 1, July
@@ -503,9 +523,10 @@ class GoogleCloudBillingBudgetsV1Filter {
   /// list of credit types to be subtracted from gross cost to determine the
   /// spend for threshold calculations.
   ///
-  /// If Filter.credit_types_treatment is **not** INCLUDE_SPECIFIED_CREDITS,
-  /// this field must be empty. See
+  /// See
   /// [a list of acceptable credit type values](https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables#credits-type).
+  /// If Filter.credit_types_treatment is **not** INCLUDE_SPECIFIED_CREDITS,
+  /// this field must be empty.
   ///
   /// Optional.
   core.List<core.String>? creditTypes;
@@ -519,13 +540,16 @@ class GoogleCloudBillingBudgetsV1Filter {
   /// gross cost to determine the spend for threshold calculations.
   /// - "EXCLUDE_ALL_CREDITS" : All types of credit are added to the net cost to
   /// determine the spend for threshold calculations.
-  /// - "INCLUDE_SPECIFIED_CREDITS" : Credit types specified in the credit_types
-  /// field are subtracted from the gross cost to determine the spend for
-  /// threshold calculations.
+  /// - "INCLUDE_SPECIFIED_CREDITS" :
+  /// [Credit types](https://cloud.google.com/billing/docs/how-to/export-data-bigquery-tables#credits-type)
+  /// specified in the credit_types field are subtracted from the gross cost to
+  /// determine the spend for threshold calculations.
   core.String? creditTypesTreatment;
 
   /// Specifies to track usage from any start date (required) to any end date
   /// (optional).
+  ///
+  /// This time period is static, it does not recur.
   ///
   /// Optional.
   GoogleCloudBillingBudgetsV1CustomPeriod? customPeriod;
@@ -533,19 +557,21 @@ class GoogleCloudBillingBudgetsV1Filter {
   /// A single label and value pair specifying that usage from only this set of
   /// labeled resources should be included in the budget.
   ///
-  /// Currently, multiple entries or multiple values per entry are not allowed.
-  /// If omitted, the report will include all labeled and unlabeled usage.
+  /// If omitted, the report includes all labeled and unlabeled usage. An object
+  /// containing a single `"key": value` pair. Example: `{ "name": "wrench" }`.
+  /// _Currently, multiple entries or multiple values per entry are not
+  /// allowed._
   ///
   /// Optional.
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.List<core.Object>>? labels;
+  core.Map<core.String, core.List<core.Object?>>? labels;
 
   /// A set of projects of the form `projects/{project}`, specifying that usage
   /// from only this set of projects should be included in the budget.
   ///
-  /// If omitted, the report will include all usage for the billing account,
+  /// If omitted, the report includes all usage for the billing account,
   /// regardless of which project the usage occurred on. Only zero or one
   /// project can be specified currently.
   ///
@@ -555,8 +581,8 @@ class GoogleCloudBillingBudgetsV1Filter {
   /// A set of services of the form `services/{service_id}`, specifying that
   /// usage from only this set of services should be included in the budget.
   ///
-  /// If omitted, the report will include usage for all the services. The
-  /// service names are available through the Catalog API:
+  /// If omitted, the report includes usage for all the services. The service
+  /// names are available through the Catalog API:
   /// https://cloud.google.com/billing/v1/how-tos/catalog-api.
   ///
   /// Optional.
@@ -567,63 +593,71 @@ class GoogleCloudBillingBudgetsV1Filter {
   /// in the budget.
   ///
   /// If a subaccount is set to the name of the parent account, usage from the
-  /// parent account will be included. If the field is omitted, the report will
-  /// include usage from the parent account and all subaccounts, if they exist.
+  /// parent account is included. If the field is omitted, the report includes
+  /// usage from the parent account and all subaccounts, if they exist.
   ///
   /// Optional.
   core.List<core.String>? subaccounts;
 
-  GoogleCloudBillingBudgetsV1Filter();
+  GoogleCloudBillingBudgetsV1Filter({
+    this.calendarPeriod,
+    this.creditTypes,
+    this.creditTypesTreatment,
+    this.customPeriod,
+    this.labels,
+    this.projects,
+    this.services,
+    this.subaccounts,
+  });
 
-  GoogleCloudBillingBudgetsV1Filter.fromJson(core.Map _json) {
-    if (_json.containsKey('calendarPeriod')) {
-      calendarPeriod = _json['calendarPeriod'] as core.String;
-    }
-    if (_json.containsKey('creditTypes')) {
-      creditTypes = (_json['creditTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('creditTypesTreatment')) {
-      creditTypesTreatment = _json['creditTypesTreatment'] as core.String;
-    }
-    if (_json.containsKey('customPeriod')) {
-      customPeriod = GoogleCloudBillingBudgetsV1CustomPeriod.fromJson(
-          _json['customPeriod'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          (item as core.List)
-              .map<core.Object>((value) => value as core.Object)
-              .toList(),
-        ),
-      );
-    }
-    if (_json.containsKey('projects')) {
-      projects = (_json['projects'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('services')) {
-      services = (_json['services'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('subaccounts')) {
-      subaccounts = (_json['subaccounts'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  GoogleCloudBillingBudgetsV1Filter.fromJson(core.Map _json)
+      : this(
+          calendarPeriod: _json.containsKey('calendarPeriod')
+              ? _json['calendarPeriod'] as core.String
+              : null,
+          creditTypes: _json.containsKey('creditTypes')
+              ? (_json['creditTypes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          creditTypesTreatment: _json.containsKey('creditTypesTreatment')
+              ? _json['creditTypesTreatment'] as core.String
+              : null,
+          customPeriod: _json.containsKey('customPeriod')
+              ? GoogleCloudBillingBudgetsV1CustomPeriod.fromJson(
+                  _json['customPeriod'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.List,
+                  ),
+                )
+              : null,
+          projects: _json.containsKey('projects')
+              ? (_json['projects'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          services: _json.containsKey('services')
+              ? (_json['services'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          subaccounts: _json.containsKey('subaccounts')
+              ? (_json['subaccounts'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (calendarPeriod != null) 'calendarPeriod': calendarPeriod!,
         if (creditTypes != null) 'creditTypes': creditTypes!,
         if (creditTypesTreatment != null)
           'creditTypesTreatment': creditTypesTreatment!,
-        if (customPeriod != null) 'customPeriod': customPeriod!.toJson(),
+        if (customPeriod != null) 'customPeriod': customPeriod!,
         if (labels != null) 'labels': labels!,
         if (projects != null) 'projects': projects!,
         if (services != null) 'services': services!,
@@ -631,20 +665,12 @@ class GoogleCloudBillingBudgetsV1Filter {
       };
 }
 
-/// Describes a budget amount targeted to last period's spend.
+/// Describes a budget amount targeted to the last Filter.calendar_period spend.
 ///
-/// At this time, the amount is automatically 100% of last period's spend; that
-/// is, there are no other options yet. Future configuration will be described
-/// here (for example, configuring a percentage of last period's spend).
-class GoogleCloudBillingBudgetsV1LastPeriodAmount {
-  GoogleCloudBillingBudgetsV1LastPeriodAmount();
-
-  GoogleCloudBillingBudgetsV1LastPeriodAmount.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+/// At this time, the amount is automatically 100% of the last calendar period's
+/// spend; that is, there are no other options yet. LastPeriodAmount cannot be
+/// set for a budget configured with a Filter.custom_period.
+typedef GoogleCloudBillingBudgetsV1LastPeriodAmount = $Empty;
 
 /// Response for ListBudgets
 class GoogleCloudBillingBudgetsV1ListBudgetsResponse {
@@ -655,24 +681,26 @@ class GoogleCloudBillingBudgetsV1ListBudgetsResponse {
   /// request; this value should be passed in a new `ListBudgetsRequest`.
   core.String? nextPageToken;
 
-  GoogleCloudBillingBudgetsV1ListBudgetsResponse();
+  GoogleCloudBillingBudgetsV1ListBudgetsResponse({
+    this.budgets,
+    this.nextPageToken,
+  });
 
-  GoogleCloudBillingBudgetsV1ListBudgetsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('budgets')) {
-      budgets = (_json['budgets'] as core.List)
-          .map<GoogleCloudBillingBudgetsV1Budget>((value) =>
-              GoogleCloudBillingBudgetsV1Budget.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleCloudBillingBudgetsV1ListBudgetsResponse.fromJson(core.Map _json)
+      : this(
+          budgets: _json.containsKey('budgets')
+              ? (_json['budgets'] as core.List)
+                  .map((value) => GoogleCloudBillingBudgetsV1Budget.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (budgets != null)
-          'budgets': budgets!.map((value) => value.toJson()).toList(),
+        if (budgets != null) 'budgets': budgets!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -689,30 +717,46 @@ class GoogleCloudBillingBudgetsV1NotificationsRule {
   /// Optional.
   core.bool? disableDefaultIamRecipients;
 
-  /// Targets to send notifications to when a threshold is exceeded.
+  /// Email targets to send notifications to when a threshold is exceeded.
   ///
-  /// This is in addition to default recipients who have billing account IAM
-  /// roles. The value is the full REST resource name of a monitoring
-  /// notification channel with the form
-  /// `projects/{project_id}/notificationChannels/{channel_id}`. A maximum of 5
-  /// channels are allowed. See
-  /// https://cloud.google.com/billing/docs/how-to/budgets-notification-recipients
-  /// for more details.
+  /// This is in addition to the `DefaultIamRecipients` who receive alert emails
+  /// based on their billing account IAM role. The value is the full REST
+  /// resource name of a Cloud Monitoring email notification channel with the
+  /// form `projects/{project_id}/notificationChannels/{channel_id}`. A maximum
+  /// of 5 email notifications are allowed. To customize budget alert email
+  /// recipients with monitoring notification channels, you _must create the
+  /// monitoring notification channels before you link them to a budget_. For
+  /// guidance on setting up notification channels to use with budgets, see
+  /// [Customize budget alert email recipients](https://cloud.google.com/billing/docs/how-to/budgets-notification-recipients).
+  /// For Cloud Billing budget alerts, you _must use email notification
+  /// channels_. The other types of notification channels are _not_ supported,
+  /// such as Slack, SMS, or PagerDuty. If you want to
+  /// [send budget notifications to Slack](https://cloud.google.com/billing/docs/how-to/notify#send_notifications_to_slack),
+  /// use a pubsubTopic and configure
+  /// [programmatic notifications](https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications).
   ///
   /// Optional.
   core.List<core.String>? monitoringNotificationChannels;
 
-  /// The name of the Pub/Sub topic where budget related messages will be
-  /// published, in the form `projects/{project_id}/topics/{topic_id}`.
+  /// The name of the Pub/Sub topic where budget-related messages are published,
+  /// in the form `projects/{project_id}/topics/{topic_id}`.
   ///
-  /// Updates are sent at regular intervals to the topic. The topic needs to be
-  /// created before the budget is created; see
-  /// https://cloud.google.com/billing/docs/how-to/budgets#manage-notifications
-  /// for more details. Caller is expected to have `pubsub.topics.setIamPolicy`
-  /// permission on the topic when it's set for a budget, otherwise, the API
-  /// call will fail with PERMISSION_DENIED. See
-  /// https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications
-  /// for more details on Pub/Sub roles and permissions.
+  /// Updates are sent to the topic at regular intervals; the timing of the
+  /// updates is not dependent on the \[threshold rules\](#thresholdrule) you've
+  /// set. Note that if you want your
+  /// [Pub/Sub JSON object](https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification_format)
+  /// to contain data for `alertThresholdExceeded`, you need at least one
+  /// \[alert threshold rule\](#thresholdrule). When you set threshold rules,
+  /// you must also enable at least one of the email notification options,
+  /// either using the default IAM recipients or Cloud Monitoring email
+  /// notification channels. To use Pub/Sub topics with budgets, you must do the
+  /// following: 1. Create the Pub/Sub topic before connecting it to your
+  /// budget. For guidance, see
+  /// [Manage programmatic budget alert notifications](https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications).
+  /// 2. Grant the API caller the `pubsub.topics.setIamPolicy` permission on the
+  /// Pub/Sub topic. If not set, the API call fails with PERMISSION_DENIED. For
+  /// additional details on Pub/Sub roles and permissions, see
+  /// [Permissions required for this task](https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#permissions_required_for_this_task).
   ///
   /// Optional.
   core.String? pubsubTopic;
@@ -727,26 +771,32 @@ class GoogleCloudBillingBudgetsV1NotificationsRule {
   /// Optional.
   core.String? schemaVersion;
 
-  GoogleCloudBillingBudgetsV1NotificationsRule();
+  GoogleCloudBillingBudgetsV1NotificationsRule({
+    this.disableDefaultIamRecipients,
+    this.monitoringNotificationChannels,
+    this.pubsubTopic,
+    this.schemaVersion,
+  });
 
-  GoogleCloudBillingBudgetsV1NotificationsRule.fromJson(core.Map _json) {
-    if (_json.containsKey('disableDefaultIamRecipients')) {
-      disableDefaultIamRecipients =
-          _json['disableDefaultIamRecipients'] as core.bool;
-    }
-    if (_json.containsKey('monitoringNotificationChannels')) {
-      monitoringNotificationChannels =
-          (_json['monitoringNotificationChannels'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-    if (_json.containsKey('schemaVersion')) {
-      schemaVersion = _json['schemaVersion'] as core.String;
-    }
-  }
+  GoogleCloudBillingBudgetsV1NotificationsRule.fromJson(core.Map _json)
+      : this(
+          disableDefaultIamRecipients:
+              _json.containsKey('disableDefaultIamRecipients')
+                  ? _json['disableDefaultIamRecipients'] as core.bool
+                  : null,
+          monitoringNotificationChannels:
+              _json.containsKey('monitoringNotificationChannels')
+                  ? (_json['monitoringNotificationChannels'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+          schemaVersion: _json.containsKey('schemaVersion')
+              ? _json['schemaVersion'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disableDefaultIamRecipients != null)
@@ -758,14 +808,20 @@ class GoogleCloudBillingBudgetsV1NotificationsRule {
       };
 }
 
-/// ThresholdRule contains a definition of a threshold which triggers an alert
-/// (a notification of a threshold being crossed) to be sent when spend goes
-/// above the specified amount.
+/// ThresholdRule contains the definition of a threshold.
 ///
-/// Alerts are automatically e-mailed to users with the Billing Account
-/// Administrator role or the Billing Account User role. The thresholds here
-/// have no effect on notifications sent to anything configured under
-/// `Budget.all_updates_rule`.
+/// Threshold rules define the triggering events used to generate a budget
+/// notification email. When a threshold is crossed (spend exceeds the specified
+/// percentages of the budget), budget alert emails are sent to the email
+/// recipients you specify in the \[NotificationsRule\](#notificationsrule).
+/// Threshold rules also affect the fields included in the
+/// [JSON data object](https://cloud.google.com/billing/docs/how-to/budgets-programmatic-notifications#notification_format)
+/// sent to a Pub/Sub topic. Threshold rules are _required_ if using email
+/// notifications. Threshold rules are _optional_ if only setting a
+/// \[`pubsubTopic` NotificationsRule\](#NotificationsRule), unless you want
+/// your JSON data object to include data about the thresholds you set. For more
+/// information, see
+/// [set budget threshold rules and actions](https://cloud.google.com/billing/docs/how-to/budgets#budget-actions).
 class GoogleCloudBillingBudgetsV1ThresholdRule {
   /// The type of basis used to determine if spend has passed the threshold.
   ///
@@ -777,8 +833,9 @@ class GoogleCloudBillingBudgetsV1ThresholdRule {
   /// - "CURRENT_SPEND" : Use current spend as the basis for comparison against
   /// the threshold.
   /// - "FORECASTED_SPEND" : Use forecasted spend for the period as the basis
-  /// for comparison against the threshold. Cannot be set in combination with
-  /// Filter.custom_period.
+  /// for comparison against the threshold. FORECASTED_SPEND can only be set
+  /// when the budget's time period is a Filter.calendar_period. It cannot be
+  /// set in combination with Filter.custom_period.
   core.String? spendBasis;
 
   /// Send an alert when this threshold is exceeded.
@@ -789,16 +846,20 @@ class GoogleCloudBillingBudgetsV1ThresholdRule {
   /// Required.
   core.double? thresholdPercent;
 
-  GoogleCloudBillingBudgetsV1ThresholdRule();
+  GoogleCloudBillingBudgetsV1ThresholdRule({
+    this.spendBasis,
+    this.thresholdPercent,
+  });
 
-  GoogleCloudBillingBudgetsV1ThresholdRule.fromJson(core.Map _json) {
-    if (_json.containsKey('spendBasis')) {
-      spendBasis = _json['spendBasis'] as core.String;
-    }
-    if (_json.containsKey('thresholdPercent')) {
-      thresholdPercent = (_json['thresholdPercent'] as core.num).toDouble();
-    }
-  }
+  GoogleCloudBillingBudgetsV1ThresholdRule.fromJson(core.Map _json)
+      : this(
+          spendBasis: _json.containsKey('spendBasis')
+              ? _json['spendBasis'] as core.String
+              : null,
+          thresholdPercent: _json.containsKey('thresholdPercent')
+              ? (_json['thresholdPercent'] as core.num).toDouble()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (spendBasis != null) 'spendBasis': spendBasis!,
@@ -813,99 +874,18 @@ class GoogleCloudBillingBudgetsV1ThresholdRule {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class GoogleProtobufEmpty {
-  GoogleProtobufEmpty();
-
-  GoogleProtobufEmpty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef GoogleProtobufEmpty = $Empty;
 
 /// Represents a whole or partial calendar date, such as a birthday.
 ///
 /// The time of day and time zone are either specified elsewhere or are
 /// insignificant. The date is relative to the Gregorian Calendar. This can
 /// represent one of the following: * A full date, with non-zero year, month,
-/// and day values * A month and day value, with a zero year, such as an
-/// anniversary * A year on its own, with zero month and day values * A year and
-/// month value, with a zero day, such as a credit card expiration date Related
-/// types are google.type.TimeOfDay and `google.protobuf.Timestamp`.
-class GoogleTypeDate {
-  /// Day of a month.
-  ///
-  /// Must be from 1 to 31 and valid for the year and month, or 0 to specify a
-  /// year by itself or a year and month where the day isn't significant.
-  core.int? day;
-
-  /// Month of a year.
-  ///
-  /// Must be from 1 to 12, or 0 to specify a year without a month and day.
-  core.int? month;
-
-  /// Year of the date.
-  ///
-  /// Must be from 1 to 9999, or 0 to specify a date without a year.
-  core.int? year;
-
-  GoogleTypeDate();
-
-  GoogleTypeDate.fromJson(core.Map _json) {
-    if (_json.containsKey('day')) {
-      day = _json['day'] as core.int;
-    }
-    if (_json.containsKey('month')) {
-      month = _json['month'] as core.int;
-    }
-    if (_json.containsKey('year')) {
-      year = _json['year'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (day != null) 'day': day!,
-        if (month != null) 'month': month!,
-        if (year != null) 'year': year!,
-      };
-}
+/// and day values * A month and day, with a zero year (e.g., an anniversary) *
+/// A year on its own, with a zero month and a zero day * A year and month, with
+/// a zero day (e.g., a credit card expiration date) Related types: *
+/// google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp
+typedef GoogleTypeDate = $Date;
 
 /// Represents an amount of money with its currency type.
-class GoogleTypeMoney {
-  /// The three-letter currency code defined in ISO 4217.
-  core.String? currencyCode;
-
-  /// Number of nano (10^-9) units of the amount.
-  ///
-  /// The value must be between -999,999,999 and +999,999,999 inclusive. If
-  /// `units` is positive, `nanos` must be positive or zero. If `units` is zero,
-  /// `nanos` can be positive, zero, or negative. If `units` is negative,
-  /// `nanos` must be negative or zero. For example $-1.75 is represented as
-  /// `units`=-1 and `nanos`=-750,000,000.
-  core.int? nanos;
-
-  /// The whole units of the amount.
-  ///
-  /// For example if `currencyCode` is `"USD"`, then 1 unit is one US dollar.
-  core.String? units;
-
-  GoogleTypeMoney();
-
-  GoogleTypeMoney.fromJson(core.Map _json) {
-    if (_json.containsKey('currencyCode')) {
-      currencyCode = _json['currencyCode'] as core.String;
-    }
-    if (_json.containsKey('nanos')) {
-      nanos = _json['nanos'] as core.int;
-    }
-    if (_json.containsKey('units')) {
-      units = _json['units'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (currencyCode != null) 'currencyCode': currencyCode!,
-        if (nanos != null) 'nanos': nanos!,
-        if (units != null) 'units': units!,
-      };
-}
+typedef GoogleTypeMoney = $Money;

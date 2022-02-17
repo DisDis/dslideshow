@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -41,7 +43,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Accesses the schemaless NoSQL database to provide fully managed, robust,
 /// scalable storage for your application.
 class DatastoreApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -93,7 +96,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -135,7 +138,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -179,7 +182,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -228,7 +231,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -275,7 +278,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -317,7 +320,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -360,7 +363,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -402,7 +405,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -444,7 +447,7 @@ class ProjectsResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -500,7 +503,7 @@ class ProjectsIndexesResource {
     core.String projectId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -856,19 +859,22 @@ class AllocateIdsRequest {
   /// Required.
   core.List<Key>? keys;
 
-  AllocateIdsRequest();
+  AllocateIdsRequest({
+    this.keys,
+  });
 
-  AllocateIdsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<Key>((value) =>
-              Key.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  AllocateIdsRequest.fromJson(core.Map _json)
+      : this(
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => Key.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (keys != null) 'keys': keys!.map((value) => value.toJson()).toList(),
+        if (keys != null) 'keys': keys!,
       };
 }
 
@@ -878,19 +884,22 @@ class AllocateIdsResponse {
   /// path completed with a newly allocated ID.
   core.List<Key>? keys;
 
-  AllocateIdsResponse();
+  AllocateIdsResponse({
+    this.keys,
+  });
 
-  AllocateIdsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<Key>((value) =>
-              Key.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  AllocateIdsResponse.fromJson(core.Map _json)
+      : this(
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => Key.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (keys != null) 'keys': keys!.map((value) => value.toJson()).toList(),
+        if (keys != null) 'keys': keys!,
       };
 }
 
@@ -902,20 +911,22 @@ class ArrayValue {
   /// identical settings for 'exclude_from_indexes'.
   core.List<Value>? values;
 
-  ArrayValue();
+  ArrayValue({
+    this.values,
+  });
 
-  ArrayValue.fromJson(core.Map _json) {
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<Value>((value) =>
-              Value.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ArrayValue.fromJson(core.Map _json)
+      : this(
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => Value.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (values != null)
-          'values': values!.map((value) => value.toJson()).toList(),
+        if (values != null) 'values': values!,
       };
 }
 
@@ -924,18 +935,21 @@ class BeginTransactionRequest {
   /// Options for a new transaction.
   TransactionOptions? transactionOptions;
 
-  BeginTransactionRequest();
+  BeginTransactionRequest({
+    this.transactionOptions,
+  });
 
-  BeginTransactionRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('transactionOptions')) {
-      transactionOptions = TransactionOptions.fromJson(
-          _json['transactionOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  BeginTransactionRequest.fromJson(core.Map _json)
+      : this(
+          transactionOptions: _json.containsKey('transactionOptions')
+              ? TransactionOptions.fromJson(_json['transactionOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transactionOptions != null)
-          'transactionOptions': transactionOptions!.toJson(),
+          'transactionOptions': transactionOptions!,
       };
 }
 
@@ -951,13 +965,16 @@ class BeginTransactionResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  BeginTransactionResponse();
+  BeginTransactionResponse({
+    this.transaction,
+  });
 
-  BeginTransactionResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  BeginTransactionResponse.fromJson(core.Map _json)
+      : this(
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transaction != null) 'transaction': transaction!,
@@ -1001,27 +1018,29 @@ class CommitRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  CommitRequest();
+  CommitRequest({
+    this.mode,
+    this.mutations,
+    this.transaction,
+  });
 
-  CommitRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('mode')) {
-      mode = _json['mode'] as core.String;
-    }
-    if (_json.containsKey('mutations')) {
-      mutations = (_json['mutations'] as core.List)
-          .map<Mutation>((value) =>
-              Mutation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  CommitRequest.fromJson(core.Map _json)
+      : this(
+          mode: _json.containsKey('mode') ? _json['mode'] as core.String : null,
+          mutations: _json.containsKey('mutations')
+              ? (_json['mutations'] as core.List)
+                  .map((value) => Mutation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (mode != null) 'mode': mode!,
-        if (mutations != null)
-          'mutations': mutations!.map((value) => value.toJson()).toList(),
+        if (mutations != null) 'mutations': mutations!,
         if (transaction != null) 'transaction': transaction!,
       };
 }
@@ -1037,25 +1056,27 @@ class CommitResponse {
   /// The i-th mutation result corresponds to the i-th mutation in the request.
   core.List<MutationResult>? mutationResults;
 
-  CommitResponse();
+  CommitResponse({
+    this.indexUpdates,
+    this.mutationResults,
+  });
 
-  CommitResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('indexUpdates')) {
-      indexUpdates = _json['indexUpdates'] as core.int;
-    }
-    if (_json.containsKey('mutationResults')) {
-      mutationResults = (_json['mutationResults'] as core.List)
-          .map<MutationResult>((value) => MutationResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  CommitResponse.fromJson(core.Map _json)
+      : this(
+          indexUpdates: _json.containsKey('indexUpdates')
+              ? _json['indexUpdates'] as core.int
+              : null,
+          mutationResults: _json.containsKey('mutationResults')
+              ? (_json['mutationResults'] as core.List)
+                  .map((value) => MutationResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (indexUpdates != null) 'indexUpdates': indexUpdates!,
-        if (mutationResults != null)
-          'mutationResults':
-              mutationResults!.map((value) => value.toJson()).toList(),
+        if (mutationResults != null) 'mutationResults': mutationResults!,
       };
 }
 
@@ -1073,23 +1094,24 @@ class CompositeFilter {
   /// filters.
   core.String? op;
 
-  CompositeFilter();
+  CompositeFilter({
+    this.filters,
+    this.op,
+  });
 
-  CompositeFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('filters')) {
-      filters = (_json['filters'] as core.List)
-          .map<Filter>((value) =>
-              Filter.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-  }
+  CompositeFilter.fromJson(core.Map _json)
+      : this(
+          filters: _json.containsKey('filters')
+              ? (_json['filters'] as core.List)
+                  .map((value) => Filter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filters != null)
-          'filters': filters!.map((value) => value.toJson()).toList(),
+        if (filters != null) 'filters': filters!,
         if (op != null) 'op': op!,
       };
 }
@@ -1101,15 +1123,7 @@ class CompositeFilter {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// A Datastore data object.
 ///
@@ -1131,28 +1145,31 @@ class Entity {
   /// cannot be `""`.
   core.Map<core.String, Value>? properties;
 
-  Entity();
+  Entity({
+    this.key,
+    this.properties,
+  });
 
-  Entity.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = Key.fromJson(_json['key'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          Value.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
+  Entity.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key')
+              ? Key.fromJson(
+                  _json['key'] as core.Map<core.String, core.dynamic>)
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    Value.fromJson(item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (key != null) 'key': key!.toJson(),
-        if (properties != null)
-          'properties':
-              properties!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (key != null) 'key': key!,
+        if (properties != null) 'properties': properties!,
       };
 }
 
@@ -1181,24 +1198,29 @@ class EntityResult {
   /// reads.
   core.String? version;
 
-  EntityResult();
+  EntityResult({
+    this.cursor,
+    this.entity,
+    this.version,
+  });
 
-  EntityResult.fromJson(core.Map _json) {
-    if (_json.containsKey('cursor')) {
-      cursor = _json['cursor'] as core.String;
-    }
-    if (_json.containsKey('entity')) {
-      entity = Entity.fromJson(
-          _json['entity'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  EntityResult.fromJson(core.Map _json)
+      : this(
+          cursor: _json.containsKey('cursor')
+              ? _json['cursor'] as core.String
+              : null,
+          entity: _json.containsKey('entity')
+              ? Entity.fromJson(
+                  _json['entity'] as core.Map<core.String, core.dynamic>)
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cursor != null) 'cursor': cursor!,
-        if (entity != null) 'entity': entity!.toJson(),
+        if (entity != null) 'entity': entity!,
         if (version != null) 'version': version!,
       };
 }
@@ -1211,98 +1233,26 @@ class Filter {
   /// A filter on a property.
   PropertyFilter? propertyFilter;
 
-  Filter();
+  Filter({
+    this.compositeFilter,
+    this.propertyFilter,
+  });
 
-  Filter.fromJson(core.Map _json) {
-    if (_json.containsKey('compositeFilter')) {
-      compositeFilter = CompositeFilter.fromJson(
-          _json['compositeFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('propertyFilter')) {
-      propertyFilter = PropertyFilter.fromJson(
-          _json['propertyFilter'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (compositeFilter != null)
-          'compositeFilter': compositeFilter!.toJson(),
-        if (propertyFilter != null) 'propertyFilter': propertyFilter!.toJson(),
-      };
-}
-
-/// Metadata common to all Datastore Admin operations.
-class GoogleDatastoreAdminV1CommonMetadata {
-  /// The time the operation ended, either successfully or otherwise.
-  core.String? endTime;
-
-  /// The client-assigned labels which were provided when the operation was
-  /// created.
-  ///
-  /// May also include additional labels.
-  core.Map<core.String, core.String>? labels;
-
-  /// The type of the operation.
-  ///
-  /// Can be used as a filter in ListOperationsRequest.
-  /// Possible string values are:
-  /// - "OPERATION_TYPE_UNSPECIFIED" : Unspecified.
-  /// - "EXPORT_ENTITIES" : ExportEntities.
-  /// - "IMPORT_ENTITIES" : ImportEntities.
-  /// - "CREATE_INDEX" : CreateIndex.
-  /// - "DELETE_INDEX" : DeleteIndex.
-  core.String? operationType;
-
-  /// The time that work began on the operation.
-  core.String? startTime;
-
-  /// The current state of the Operation.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? state;
-
-  GoogleDatastoreAdminV1CommonMetadata();
-
-  GoogleDatastoreAdminV1CommonMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('operationType')) {
-      operationType = _json['operationType'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  Filter.fromJson(core.Map _json)
+      : this(
+          compositeFilter: _json.containsKey('compositeFilter')
+              ? CompositeFilter.fromJson(_json['compositeFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          propertyFilter: _json.containsKey('propertyFilter')
+              ? PropertyFilter.fromJson(_json['propertyFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (labels != null) 'labels': labels!,
-        if (operationType != null) 'operationType': operationType!,
-        if (startTime != null) 'startTime': startTime!,
-        if (state != null) 'state': state!,
+        if (compositeFilter != null) 'compositeFilter': compositeFilter!,
+        if (propertyFilter != null) 'propertyFilter': propertyFilter!,
       };
 }
 
@@ -1328,80 +1278,28 @@ class GoogleDatastoreAdminV1EntityFilter {
   /// include them. Each namespace in this list must be unique.
   core.List<core.String>? namespaceIds;
 
-  GoogleDatastoreAdminV1EntityFilter();
+  GoogleDatastoreAdminV1EntityFilter({
+    this.kinds,
+    this.namespaceIds,
+  });
 
-  GoogleDatastoreAdminV1EntityFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('kinds')) {
-      kinds = (_json['kinds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('namespaceIds')) {
-      namespaceIds = (_json['namespaceIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  GoogleDatastoreAdminV1EntityFilter.fromJson(core.Map _json)
+      : this(
+          kinds: _json.containsKey('kinds')
+              ? (_json['kinds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          namespaceIds: _json.containsKey('namespaceIds')
+              ? (_json['namespaceIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kinds != null) 'kinds': kinds!,
         if (namespaceIds != null) 'namespaceIds': namespaceIds!,
-      };
-}
-
-/// Metadata for ExportEntities operations.
-class GoogleDatastoreAdminV1ExportEntitiesMetadata {
-  /// Metadata common to all Datastore Admin operations.
-  GoogleDatastoreAdminV1CommonMetadata? common;
-
-  /// Description of which entities are being exported.
-  GoogleDatastoreAdminV1EntityFilter? entityFilter;
-
-  /// Location for the export metadata and data files.
-  ///
-  /// This will be the same value as the
-  /// google.datastore.admin.v1.ExportEntitiesRequest.output_url_prefix field.
-  /// The final output location is provided in
-  /// google.datastore.admin.v1.ExportEntitiesResponse.output_url.
-  core.String? outputUrlPrefix;
-
-  /// An estimate of the number of bytes processed.
-  GoogleDatastoreAdminV1Progress? progressBytes;
-
-  /// An estimate of the number of entities processed.
-  GoogleDatastoreAdminV1Progress? progressEntities;
-
-  GoogleDatastoreAdminV1ExportEntitiesMetadata();
-
-  GoogleDatastoreAdminV1ExportEntitiesMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('common')) {
-      common = GoogleDatastoreAdminV1CommonMetadata.fromJson(
-          _json['common'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('outputUrlPrefix')) {
-      outputUrlPrefix = _json['outputUrlPrefix'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleDatastoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressEntities')) {
-      progressEntities = GoogleDatastoreAdminV1Progress.fromJson(
-          _json['progressEntities'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (common != null) 'common': common!.toJson(),
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
-        if (outputUrlPrefix != null) 'outputUrlPrefix': outputUrlPrefix!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressEntities != null)
-          'progressEntities': progressEntities!.toJson(),
       };
 }
 
@@ -1432,107 +1330,35 @@ class GoogleDatastoreAdminV1ExportEntitiesRequest {
   /// Required.
   core.String? outputUrlPrefix;
 
-  GoogleDatastoreAdminV1ExportEntitiesRequest();
+  GoogleDatastoreAdminV1ExportEntitiesRequest({
+    this.entityFilter,
+    this.labels,
+    this.outputUrlPrefix,
+  });
 
-  GoogleDatastoreAdminV1ExportEntitiesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('outputUrlPrefix')) {
-      outputUrlPrefix = _json['outputUrlPrefix'] as core.String;
-    }
-  }
+  GoogleDatastoreAdminV1ExportEntitiesRequest.fromJson(core.Map _json)
+      : this(
+          entityFilter: _json.containsKey('entityFilter')
+              ? GoogleDatastoreAdminV1EntityFilter.fromJson(
+                  _json['entityFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          outputUrlPrefix: _json.containsKey('outputUrlPrefix')
+              ? _json['outputUrlPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
+        if (entityFilter != null) 'entityFilter': entityFilter!,
         if (labels != null) 'labels': labels!,
         if (outputUrlPrefix != null) 'outputUrlPrefix': outputUrlPrefix!,
-      };
-}
-
-/// The response for google.datastore.admin.v1.DatastoreAdmin.ExportEntities.
-class GoogleDatastoreAdminV1ExportEntitiesResponse {
-  /// Location of the output metadata file.
-  ///
-  /// This can be used to begin an import into Cloud Datastore (this project or
-  /// another project). See
-  /// google.datastore.admin.v1.ImportEntitiesRequest.input_url. Only present if
-  /// the operation completed successfully.
-  core.String? outputUrl;
-
-  GoogleDatastoreAdminV1ExportEntitiesResponse();
-
-  GoogleDatastoreAdminV1ExportEntitiesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('outputUrl')) {
-      outputUrl = _json['outputUrl'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (outputUrl != null) 'outputUrl': outputUrl!,
-      };
-}
-
-/// Metadata for ImportEntities operations.
-class GoogleDatastoreAdminV1ImportEntitiesMetadata {
-  /// Metadata common to all Datastore Admin operations.
-  GoogleDatastoreAdminV1CommonMetadata? common;
-
-  /// Description of which entities are being imported.
-  GoogleDatastoreAdminV1EntityFilter? entityFilter;
-
-  /// The location of the import metadata file.
-  ///
-  /// This will be the same value as the
-  /// google.datastore.admin.v1.ExportEntitiesResponse.output_url field.
-  core.String? inputUrl;
-
-  /// An estimate of the number of bytes processed.
-  GoogleDatastoreAdminV1Progress? progressBytes;
-
-  /// An estimate of the number of entities processed.
-  GoogleDatastoreAdminV1Progress? progressEntities;
-
-  GoogleDatastoreAdminV1ImportEntitiesMetadata();
-
-  GoogleDatastoreAdminV1ImportEntitiesMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('common')) {
-      common = GoogleDatastoreAdminV1CommonMetadata.fromJson(
-          _json['common'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('inputUrl')) {
-      inputUrl = _json['inputUrl'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleDatastoreAdminV1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressEntities')) {
-      progressEntities = GoogleDatastoreAdminV1Progress.fromJson(
-          _json['progressEntities'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (common != null) 'common': common!.toJson(),
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
-        if (inputUrl != null) 'inputUrl': inputUrl!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressEntities != null)
-          'progressEntities': progressEntities!.toJson(),
       };
 }
 
@@ -1566,28 +1392,33 @@ class GoogleDatastoreAdminV1ImportEntitiesRequest {
   /// Client-assigned labels.
   core.Map<core.String, core.String>? labels;
 
-  GoogleDatastoreAdminV1ImportEntitiesRequest();
+  GoogleDatastoreAdminV1ImportEntitiesRequest({
+    this.entityFilter,
+    this.inputUrl,
+    this.labels,
+  });
 
-  GoogleDatastoreAdminV1ImportEntitiesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('inputUrl')) {
-      inputUrl = _json['inputUrl'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  GoogleDatastoreAdminV1ImportEntitiesRequest.fromJson(core.Map _json)
+      : this(
+          entityFilter: _json.containsKey('entityFilter')
+              ? GoogleDatastoreAdminV1EntityFilter.fromJson(
+                  _json['entityFilter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          inputUrl: _json.containsKey('inputUrl')
+              ? _json['inputUrl'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
+        if (entityFilter != null) 'entityFilter': entityFilter!,
         if (inputUrl != null) 'inputUrl': inputUrl!,
         if (labels != null) 'labels': labels!,
       };
@@ -1647,76 +1478,45 @@ class GoogleDatastoreAdminV1Index {
   /// entity. Some index data may exist.
   core.String? state;
 
-  GoogleDatastoreAdminV1Index();
+  GoogleDatastoreAdminV1Index({
+    this.ancestor,
+    this.indexId,
+    this.kind,
+    this.projectId,
+    this.properties,
+    this.state,
+  });
 
-  GoogleDatastoreAdminV1Index.fromJson(core.Map _json) {
-    if (_json.containsKey('ancestor')) {
-      ancestor = _json['ancestor'] as core.String;
-    }
-    if (_json.containsKey('indexId')) {
-      indexId = _json['indexId'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties = (_json['properties'] as core.List)
-          .map<GoogleDatastoreAdminV1IndexedProperty>((value) =>
-              GoogleDatastoreAdminV1IndexedProperty.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  GoogleDatastoreAdminV1Index.fromJson(core.Map _json)
+      : this(
+          ancestor: _json.containsKey('ancestor')
+              ? _json['ancestor'] as core.String
+              : null,
+          indexId: _json.containsKey('indexId')
+              ? _json['indexId'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          properties: _json.containsKey('properties')
+              ? (_json['properties'] as core.List)
+                  .map((value) =>
+                      GoogleDatastoreAdminV1IndexedProperty.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ancestor != null) 'ancestor': ancestor!,
         if (indexId != null) 'indexId': indexId!,
         if (kind != null) 'kind': kind!,
         if (projectId != null) 'projectId': projectId!,
-        if (properties != null)
-          'properties': properties!.map((value) => value.toJson()).toList(),
+        if (properties != null) 'properties': properties!,
         if (state != null) 'state': state!,
-      };
-}
-
-/// Metadata for Index operations.
-class GoogleDatastoreAdminV1IndexOperationMetadata {
-  /// Metadata common to all Datastore Admin operations.
-  GoogleDatastoreAdminV1CommonMetadata? common;
-
-  /// The index resource ID that this operation is acting on.
-  core.String? indexId;
-
-  /// An estimate of the number of entities processed.
-  GoogleDatastoreAdminV1Progress? progressEntities;
-
-  GoogleDatastoreAdminV1IndexOperationMetadata();
-
-  GoogleDatastoreAdminV1IndexOperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('common')) {
-      common = GoogleDatastoreAdminV1CommonMetadata.fromJson(
-          _json['common'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('indexId')) {
-      indexId = _json['indexId'] as core.String;
-    }
-    if (_json.containsKey('progressEntities')) {
-      progressEntities = GoogleDatastoreAdminV1Progress.fromJson(
-          _json['progressEntities'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (common != null) 'common': common!.toJson(),
-        if (indexId != null) 'indexId': indexId!,
-        if (progressEntities != null)
-          'progressEntities': progressEntities!.toJson(),
       };
 }
 
@@ -1730,9 +1530,9 @@ class GoogleDatastoreAdminV1IndexedProperty {
   /// Possible string values are:
   /// - "DIRECTION_UNSPECIFIED" : The direction is unspecified.
   /// - "ASCENDING" : The property's values are indexed so as to support
-  /// sequencing in ascending order and also query by <, >, <=, >=, and =.
+  /// sequencing in ascending order and also query by \<, \>, \<=, \>=, and =.
   /// - "DESCENDING" : The property's values are indexed so as to support
-  /// sequencing in descending order and also query by <, >, <=, >=, and =.
+  /// sequencing in descending order and also query by \<, \>, \<=, \>=, and =.
   core.String? direction;
 
   /// The property name to index.
@@ -1740,16 +1540,18 @@ class GoogleDatastoreAdminV1IndexedProperty {
   /// Required.
   core.String? name;
 
-  GoogleDatastoreAdminV1IndexedProperty();
+  GoogleDatastoreAdminV1IndexedProperty({
+    this.direction,
+    this.name,
+  });
 
-  GoogleDatastoreAdminV1IndexedProperty.fromJson(core.Map _json) {
-    if (_json.containsKey('direction')) {
-      direction = _json['direction'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  GoogleDatastoreAdminV1IndexedProperty.fromJson(core.Map _json)
+      : this(
+          direction: _json.containsKey('direction')
+              ? _json['direction'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (direction != null) 'direction': direction!,
@@ -1765,333 +1567,27 @@ class GoogleDatastoreAdminV1ListIndexesResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  GoogleDatastoreAdminV1ListIndexesResponse();
+  GoogleDatastoreAdminV1ListIndexesResponse({
+    this.indexes,
+    this.nextPageToken,
+  });
 
-  GoogleDatastoreAdminV1ListIndexesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('indexes')) {
-      indexes = (_json['indexes'] as core.List)
-          .map<GoogleDatastoreAdminV1Index>((value) =>
-              GoogleDatastoreAdminV1Index.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  GoogleDatastoreAdminV1ListIndexesResponse.fromJson(core.Map _json)
+      : this(
+          indexes: _json.containsKey('indexes')
+              ? (_json['indexes'] as core.List)
+                  .map((value) => GoogleDatastoreAdminV1Index.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (indexes != null)
-          'indexes': indexes!.map((value) => value.toJson()).toList(),
+        if (indexes != null) 'indexes': indexes!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-      };
-}
-
-/// Measures the progress of a particular metric.
-class GoogleDatastoreAdminV1Progress {
-  /// The amount of work that has been completed.
-  ///
-  /// Note that this may be greater than work_estimated.
-  core.String? workCompleted;
-
-  /// An estimate of how much work needs to be performed.
-  ///
-  /// May be zero if the work estimate is unavailable.
-  core.String? workEstimated;
-
-  GoogleDatastoreAdminV1Progress();
-
-  GoogleDatastoreAdminV1Progress.fromJson(core.Map _json) {
-    if (_json.containsKey('workCompleted')) {
-      workCompleted = _json['workCompleted'] as core.String;
-    }
-    if (_json.containsKey('workEstimated')) {
-      workEstimated = _json['workEstimated'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (workCompleted != null) 'workCompleted': workCompleted!,
-        if (workEstimated != null) 'workEstimated': workEstimated!,
-      };
-}
-
-/// Metadata common to all Datastore Admin operations.
-class GoogleDatastoreAdminV1beta1CommonMetadata {
-  /// The time the operation ended, either successfully or otherwise.
-  core.String? endTime;
-
-  /// The client-assigned labels which were provided when the operation was
-  /// created.
-  ///
-  /// May also include additional labels.
-  core.Map<core.String, core.String>? labels;
-
-  /// The type of the operation.
-  ///
-  /// Can be used as a filter in ListOperationsRequest.
-  /// Possible string values are:
-  /// - "OPERATION_TYPE_UNSPECIFIED" : Unspecified.
-  /// - "EXPORT_ENTITIES" : ExportEntities.
-  /// - "IMPORT_ENTITIES" : ImportEntities.
-  core.String? operationType;
-
-  /// The time that work began on the operation.
-  core.String? startTime;
-
-  /// The current state of the Operation.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Unspecified.
-  /// - "INITIALIZING" : Request is being prepared for processing.
-  /// - "PROCESSING" : Request is actively being processed.
-  /// - "CANCELLING" : Request is in the process of being cancelled after user
-  /// called google.longrunning.Operations.CancelOperation on the operation.
-  /// - "FINALIZING" : Request has been processed and is in its finalization
-  /// stage.
-  /// - "SUCCESSFUL" : Request has completed successfully.
-  /// - "FAILED" : Request has finished being processed, but encountered an
-  /// error.
-  /// - "CANCELLED" : Request has finished being cancelled after user called
-  /// google.longrunning.Operations.CancelOperation.
-  core.String? state;
-
-  GoogleDatastoreAdminV1beta1CommonMetadata();
-
-  GoogleDatastoreAdminV1beta1CommonMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('operationType')) {
-      operationType = _json['operationType'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (labels != null) 'labels': labels!,
-        if (operationType != null) 'operationType': operationType!,
-        if (startTime != null) 'startTime': startTime!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// Identifies a subset of entities in a project.
-///
-/// This is specified as combinations of kinds and namespaces (either or both of
-/// which may be all, as described in the following examples). Example usage:
-/// Entire project: kinds=\[\], namespace_ids=\[\] Kinds Foo and Bar in all
-/// namespaces: kinds=\['Foo', 'Bar'\], namespace_ids=\[\] Kinds Foo and Bar
-/// only in the default namespace: kinds=\['Foo', 'Bar'\], namespace_ids=\[''\]
-/// Kinds Foo and Bar in both the default and Baz namespaces: kinds=\['Foo',
-/// 'Bar'\], namespace_ids=\['', 'Baz'\] The entire Baz namespace: kinds=\[\],
-/// namespace_ids=\['Baz'\]
-class GoogleDatastoreAdminV1beta1EntityFilter {
-  /// If empty, then this represents all kinds.
-  core.List<core.String>? kinds;
-
-  /// An empty list represents all namespaces.
-  ///
-  /// This is the preferred usage for projects that don't use namespaces. An
-  /// empty string element represents the default namespace. This should be used
-  /// if the project has data in non-default namespaces, but doesn't want to
-  /// include them. Each namespace in this list must be unique.
-  core.List<core.String>? namespaceIds;
-
-  GoogleDatastoreAdminV1beta1EntityFilter();
-
-  GoogleDatastoreAdminV1beta1EntityFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('kinds')) {
-      kinds = (_json['kinds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('namespaceIds')) {
-      namespaceIds = (_json['namespaceIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (kinds != null) 'kinds': kinds!,
-        if (namespaceIds != null) 'namespaceIds': namespaceIds!,
-      };
-}
-
-/// Metadata for ExportEntities operations.
-class GoogleDatastoreAdminV1beta1ExportEntitiesMetadata {
-  /// Metadata common to all Datastore Admin operations.
-  GoogleDatastoreAdminV1beta1CommonMetadata? common;
-
-  /// Description of which entities are being exported.
-  GoogleDatastoreAdminV1beta1EntityFilter? entityFilter;
-
-  /// Location for the export metadata and data files.
-  ///
-  /// This will be the same value as the
-  /// google.datastore.admin.v1beta1.ExportEntitiesRequest.output_url_prefix
-  /// field. The final output location is provided in
-  /// google.datastore.admin.v1beta1.ExportEntitiesResponse.output_url.
-  core.String? outputUrlPrefix;
-
-  /// An estimate of the number of bytes processed.
-  GoogleDatastoreAdminV1beta1Progress? progressBytes;
-
-  /// An estimate of the number of entities processed.
-  GoogleDatastoreAdminV1beta1Progress? progressEntities;
-
-  GoogleDatastoreAdminV1beta1ExportEntitiesMetadata();
-
-  GoogleDatastoreAdminV1beta1ExportEntitiesMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('common')) {
-      common = GoogleDatastoreAdminV1beta1CommonMetadata.fromJson(
-          _json['common'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1beta1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('outputUrlPrefix')) {
-      outputUrlPrefix = _json['outputUrlPrefix'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleDatastoreAdminV1beta1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressEntities')) {
-      progressEntities = GoogleDatastoreAdminV1beta1Progress.fromJson(
-          _json['progressEntities'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (common != null) 'common': common!.toJson(),
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
-        if (outputUrlPrefix != null) 'outputUrlPrefix': outputUrlPrefix!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressEntities != null)
-          'progressEntities': progressEntities!.toJson(),
-      };
-}
-
-/// The response for
-/// google.datastore.admin.v1beta1.DatastoreAdmin.ExportEntities.
-class GoogleDatastoreAdminV1beta1ExportEntitiesResponse {
-  /// Location of the output metadata file.
-  ///
-  /// This can be used to begin an import into Cloud Datastore (this project or
-  /// another project). See
-  /// google.datastore.admin.v1beta1.ImportEntitiesRequest.input_url. Only
-  /// present if the operation completed successfully.
-  core.String? outputUrl;
-
-  GoogleDatastoreAdminV1beta1ExportEntitiesResponse();
-
-  GoogleDatastoreAdminV1beta1ExportEntitiesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('outputUrl')) {
-      outputUrl = _json['outputUrl'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (outputUrl != null) 'outputUrl': outputUrl!,
-      };
-}
-
-/// Metadata for ImportEntities operations.
-class GoogleDatastoreAdminV1beta1ImportEntitiesMetadata {
-  /// Metadata common to all Datastore Admin operations.
-  GoogleDatastoreAdminV1beta1CommonMetadata? common;
-
-  /// Description of which entities are being imported.
-  GoogleDatastoreAdminV1beta1EntityFilter? entityFilter;
-
-  /// The location of the import metadata file.
-  ///
-  /// This will be the same value as the
-  /// google.datastore.admin.v1beta1.ExportEntitiesResponse.output_url field.
-  core.String? inputUrl;
-
-  /// An estimate of the number of bytes processed.
-  GoogleDatastoreAdminV1beta1Progress? progressBytes;
-
-  /// An estimate of the number of entities processed.
-  GoogleDatastoreAdminV1beta1Progress? progressEntities;
-
-  GoogleDatastoreAdminV1beta1ImportEntitiesMetadata();
-
-  GoogleDatastoreAdminV1beta1ImportEntitiesMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('common')) {
-      common = GoogleDatastoreAdminV1beta1CommonMetadata.fromJson(
-          _json['common'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('entityFilter')) {
-      entityFilter = GoogleDatastoreAdminV1beta1EntityFilter.fromJson(
-          _json['entityFilter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('inputUrl')) {
-      inputUrl = _json['inputUrl'] as core.String;
-    }
-    if (_json.containsKey('progressBytes')) {
-      progressBytes = GoogleDatastoreAdminV1beta1Progress.fromJson(
-          _json['progressBytes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('progressEntities')) {
-      progressEntities = GoogleDatastoreAdminV1beta1Progress.fromJson(
-          _json['progressEntities'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (common != null) 'common': common!.toJson(),
-        if (entityFilter != null) 'entityFilter': entityFilter!.toJson(),
-        if (inputUrl != null) 'inputUrl': inputUrl!,
-        if (progressBytes != null) 'progressBytes': progressBytes!.toJson(),
-        if (progressEntities != null)
-          'progressEntities': progressEntities!.toJson(),
-      };
-}
-
-/// Measures the progress of a particular metric.
-class GoogleDatastoreAdminV1beta1Progress {
-  /// The amount of work that has been completed.
-  ///
-  /// Note that this may be greater than work_estimated.
-  core.String? workCompleted;
-
-  /// An estimate of how much work needs to be performed.
-  ///
-  /// May be zero if the work estimate is unavailable.
-  core.String? workEstimated;
-
-  GoogleDatastoreAdminV1beta1Progress();
-
-  GoogleDatastoreAdminV1beta1Progress.fromJson(core.Map _json) {
-    if (_json.containsKey('workCompleted')) {
-      workCompleted = _json['workCompleted'] as core.String;
-    }
-    if (_json.containsKey('workEstimated')) {
-      workEstimated = _json['workEstimated'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (workCompleted != null) 'workCompleted': workCompleted!,
-        if (workEstimated != null) 'workEstimated': workEstimated!,
       };
 }
 
@@ -2103,25 +1599,27 @@ class GoogleLongrunningListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<GoogleLongrunningOperation>? operations;
 
-  GoogleLongrunningListOperationsResponse();
+  GoogleLongrunningListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<GoogleLongrunningOperation>((value) =>
-              GoogleLongrunningOperation.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  GoogleLongrunningListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => GoogleLongrunningOperation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -2146,7 +1644,7 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -2166,42 +1664,35 @@ class GoogleLongrunningOperation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  GoogleLongrunningOperation();
+  GoogleLongrunningOperation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  GoogleLongrunningOperation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GoogleLongrunningOperation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -2236,41 +1727,44 @@ class GqlQuery {
   /// [here](https://cloud.google.com/datastore/docs/apis/gql/gql_reference).
   core.String? queryString;
 
-  GqlQuery();
+  GqlQuery({
+    this.allowLiterals,
+    this.namedBindings,
+    this.positionalBindings,
+    this.queryString,
+  });
 
-  GqlQuery.fromJson(core.Map _json) {
-    if (_json.containsKey('allowLiterals')) {
-      allowLiterals = _json['allowLiterals'] as core.bool;
-    }
-    if (_json.containsKey('namedBindings')) {
-      namedBindings =
-          (_json['namedBindings'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          GqlQueryParameter.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('positionalBindings')) {
-      positionalBindings = (_json['positionalBindings'] as core.List)
-          .map<GqlQueryParameter>((value) => GqlQueryParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('queryString')) {
-      queryString = _json['queryString'] as core.String;
-    }
-  }
+  GqlQuery.fromJson(core.Map _json)
+      : this(
+          allowLiterals: _json.containsKey('allowLiterals')
+              ? _json['allowLiterals'] as core.bool
+              : null,
+          namedBindings: _json.containsKey('namedBindings')
+              ? (_json['namedBindings'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    GqlQueryParameter.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          positionalBindings: _json.containsKey('positionalBindings')
+              ? (_json['positionalBindings'] as core.List)
+                  .map((value) => GqlQueryParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          queryString: _json.containsKey('queryString')
+              ? _json['queryString'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowLiterals != null) 'allowLiterals': allowLiterals!,
-        if (namedBindings != null)
-          'namedBindings': namedBindings!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
+        if (namedBindings != null) 'namedBindings': namedBindings!,
         if (positionalBindings != null)
-          'positionalBindings':
-              positionalBindings!.map((value) => value.toJson()).toList(),
+          'positionalBindings': positionalBindings!,
         if (queryString != null) 'queryString': queryString!,
       };
 }
@@ -2291,21 +1785,25 @@ class GqlQueryParameter {
   /// A value parameter.
   Value? value;
 
-  GqlQueryParameter();
+  GqlQueryParameter({
+    this.cursor,
+    this.value,
+  });
 
-  GqlQueryParameter.fromJson(core.Map _json) {
-    if (_json.containsKey('cursor')) {
-      cursor = _json['cursor'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value =
-          Value.fromJson(_json['value'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GqlQueryParameter.fromJson(core.Map _json)
+      : this(
+          cursor: _json.containsKey('cursor')
+              ? _json['cursor'] as core.String
+              : null,
+          value: _json.containsKey('value')
+              ? Value.fromJson(
+                  _json['value'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cursor != null) 'cursor': cursor!,
-        if (value != null) 'value': value!.toJson(),
+        if (value != null) 'value': value!,
       };
 }
 
@@ -2337,77 +1835,40 @@ class Key {
   /// path can have at most 100 elements.
   core.List<PathElement>? path;
 
-  Key();
+  Key({
+    this.partitionId,
+    this.path,
+  });
 
-  Key.fromJson(core.Map _json) {
-    if (_json.containsKey('partitionId')) {
-      partitionId = PartitionId.fromJson(
-          _json['partitionId'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('path')) {
-      path = (_json['path'] as core.List)
-          .map<PathElement>((value) => PathElement.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Key.fromJson(core.Map _json)
+      : this(
+          partitionId: _json.containsKey('partitionId')
+              ? PartitionId.fromJson(
+                  _json['partitionId'] as core.Map<core.String, core.dynamic>)
+              : null,
+          path: _json.containsKey('path')
+              ? (_json['path'] as core.List)
+                  .map((value) => PathElement.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (partitionId != null) 'partitionId': partitionId!.toJson(),
-        if (path != null) 'path': path!.map((value) => value.toJson()).toList(),
+        if (partitionId != null) 'partitionId': partitionId!,
+        if (path != null) 'path': path!,
       };
 }
 
 /// A representation of a kind.
-class KindExpression {
-  /// The name of the kind.
-  core.String? name;
+typedef KindExpression = $KindExpression;
 
-  KindExpression();
-
-  KindExpression.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-      };
-}
-
-/// An object representing a latitude/longitude pair.
+/// An object that represents a latitude/longitude pair.
 ///
-/// This is expressed as a pair of doubles representing degrees latitude and
-/// degrees longitude. Unless specified otherwise, this must conform to the
-/// WGS84 standard. Values must be within normalized ranges.
-class LatLng {
-  /// The latitude in degrees.
-  ///
-  /// It must be in the range \[-90.0, +90.0\].
-  core.double? latitude;
-
-  /// The longitude in degrees.
-  ///
-  /// It must be in the range \[-180.0, +180.0\].
-  core.double? longitude;
-
-  LatLng();
-
-  LatLng.fromJson(core.Map _json) {
-    if (_json.containsKey('latitude')) {
-      latitude = (_json['latitude'] as core.num).toDouble();
-    }
-    if (_json.containsKey('longitude')) {
-      longitude = (_json['longitude'] as core.num).toDouble();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (latitude != null) 'latitude': latitude!,
-        if (longitude != null) 'longitude': longitude!,
-      };
-}
+/// This is expressed as a pair of doubles to represent degrees latitude and
+/// degrees longitude. Unless specified otherwise, this object must conform to
+/// the WGS84 standard. Values must be within normalized ranges.
+typedef LatLng = $LatLng;
 
 /// The request for Datastore.Lookup.
 class LookupRequest {
@@ -2419,24 +1880,28 @@ class LookupRequest {
   /// The options for this lookup request.
   ReadOptions? readOptions;
 
-  LookupRequest();
+  LookupRequest({
+    this.keys,
+    this.readOptions,
+  });
 
-  LookupRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<Key>((value) =>
-              Key.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('readOptions')) {
-      readOptions = ReadOptions.fromJson(
-          _json['readOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  LookupRequest.fromJson(core.Map _json)
+      : this(
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => Key.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          readOptions: _json.containsKey('readOptions')
+              ? ReadOptions.fromJson(
+                  _json['readOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (keys != null) 'keys': keys!.map((value) => value.toJson()).toList(),
-        if (readOptions != null) 'readOptions': readOptions!.toJson(),
+        if (keys != null) 'keys': keys!,
+        if (readOptions != null) 'readOptions': readOptions!,
       };
 }
 
@@ -2460,36 +1925,38 @@ class LookupResponse {
   /// order of the keys in the input.
   core.List<EntityResult>? missing;
 
-  LookupResponse();
+  LookupResponse({
+    this.deferred,
+    this.found,
+    this.missing,
+  });
 
-  LookupResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('deferred')) {
-      deferred = (_json['deferred'] as core.List)
-          .map<Key>((value) =>
-              Key.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('found')) {
-      found = (_json['found'] as core.List)
-          .map<EntityResult>((value) => EntityResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('missing')) {
-      missing = (_json['missing'] as core.List)
-          .map<EntityResult>((value) => EntityResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  LookupResponse.fromJson(core.Map _json)
+      : this(
+          deferred: _json.containsKey('deferred')
+              ? (_json['deferred'] as core.List)
+                  .map((value) => Key.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          found: _json.containsKey('found')
+              ? (_json['found'] as core.List)
+                  .map((value) => EntityResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          missing: _json.containsKey('missing')
+              ? (_json['missing'] as core.List)
+                  .map((value) => EntityResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deferred != null)
-          'deferred': deferred!.map((value) => value.toJson()).toList(),
-        if (found != null)
-          'found': found!.map((value) => value.toJson()).toList(),
-        if (missing != null)
-          'missing': missing!.map((value) => value.toJson()).toList(),
+        if (deferred != null) 'deferred': deferred!,
+        if (found != null) 'found': found!,
+        if (missing != null) 'missing': missing!,
       };
 }
 
@@ -2524,36 +1991,43 @@ class Mutation {
   /// element may be incomplete.
   Entity? upsert;
 
-  Mutation();
+  Mutation({
+    this.baseVersion,
+    this.delete,
+    this.insert,
+    this.update,
+    this.upsert,
+  });
 
-  Mutation.fromJson(core.Map _json) {
-    if (_json.containsKey('baseVersion')) {
-      baseVersion = _json['baseVersion'] as core.String;
-    }
-    if (_json.containsKey('delete')) {
-      delete =
-          Key.fromJson(_json['delete'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('insert')) {
-      insert = Entity.fromJson(
-          _json['insert'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('update')) {
-      update = Entity.fromJson(
-          _json['update'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('upsert')) {
-      upsert = Entity.fromJson(
-          _json['upsert'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Mutation.fromJson(core.Map _json)
+      : this(
+          baseVersion: _json.containsKey('baseVersion')
+              ? _json['baseVersion'] as core.String
+              : null,
+          delete: _json.containsKey('delete')
+              ? Key.fromJson(
+                  _json['delete'] as core.Map<core.String, core.dynamic>)
+              : null,
+          insert: _json.containsKey('insert')
+              ? Entity.fromJson(
+                  _json['insert'] as core.Map<core.String, core.dynamic>)
+              : null,
+          update: _json.containsKey('update')
+              ? Entity.fromJson(
+                  _json['update'] as core.Map<core.String, core.dynamic>)
+              : null,
+          upsert: _json.containsKey('upsert')
+              ? Entity.fromJson(
+                  _json['upsert'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (baseVersion != null) 'baseVersion': baseVersion!,
-        if (delete != null) 'delete': delete!.toJson(),
-        if (insert != null) 'insert': insert!.toJson(),
-        if (update != null) 'update': update!.toJson(),
-        if (upsert != null) 'upsert': upsert!.toJson(),
+        if (delete != null) 'delete': delete!,
+        if (insert != null) 'insert': insert!,
+        if (update != null) 'update': update!,
+        if (upsert != null) 'upsert': upsert!,
       };
 }
 
@@ -2578,23 +2052,29 @@ class MutationResult {
   /// and less than the version of any possible future entity.
   core.String? version;
 
-  MutationResult();
+  MutationResult({
+    this.conflictDetected,
+    this.key,
+    this.version,
+  });
 
-  MutationResult.fromJson(core.Map _json) {
-    if (_json.containsKey('conflictDetected')) {
-      conflictDetected = _json['conflictDetected'] as core.bool;
-    }
-    if (_json.containsKey('key')) {
-      key = Key.fromJson(_json['key'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  MutationResult.fromJson(core.Map _json)
+      : this(
+          conflictDetected: _json.containsKey('conflictDetected')
+              ? _json['conflictDetected'] as core.bool
+              : null,
+          key: _json.containsKey('key')
+              ? Key.fromJson(
+                  _json['key'] as core.Map<core.String, core.dynamic>)
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (conflictDetected != null) 'conflictDetected': conflictDetected!,
-        if (key != null) 'key': key!.toJson(),
+        if (key != null) 'key': key!,
         if (version != null) 'version': version!,
       };
 }
@@ -2610,90 +2090,33 @@ class MutationResult {
 /// certain documented contexts. Foreign partition IDs (in which the project ID
 /// does not match the context project ID ) are discouraged. Reads and writes of
 /// foreign partition IDs may fail if the project is not in an active state.
-class PartitionId {
-  /// If not empty, the ID of the namespace to which the entities belong.
-  core.String? namespaceId;
-
-  /// The ID of the project to which the entities belong.
-  core.String? projectId;
-
-  PartitionId();
-
-  PartitionId.fromJson(core.Map _json) {
-    if (_json.containsKey('namespaceId')) {
-      namespaceId = _json['namespaceId'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (namespaceId != null) 'namespaceId': namespaceId!,
-        if (projectId != null) 'projectId': projectId!,
-      };
-}
+typedef PartitionId = $PartitionId;
 
 /// A (kind, ID/name) pair used to construct a key path.
 ///
 /// If either name or ID is set, the element is complete. If neither is set, the
 /// element is incomplete.
-class PathElement {
-  /// The auto-allocated ID of the entity.
-  ///
-  /// Never equal to zero. Values less than zero are discouraged and may not be
-  /// supported in the future.
-  core.String? id;
-
-  /// The kind of the entity.
-  ///
-  /// A kind matching regex `__.*__` is reserved/read-only. A kind must not
-  /// contain more than 1500 bytes when UTF-8 encoded. Cannot be `""`.
-  core.String? kind;
-
-  /// The name of the entity.
-  ///
-  /// A name matching regex `__.*__` is reserved/read-only. A name must not be
-  /// more than 1500 bytes when UTF-8 encoded. Cannot be `""`.
-  core.String? name;
-
-  PathElement();
-
-  PathElement.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (id != null) 'id': id!,
-        if (kind != null) 'kind': kind!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef PathElement = $PathElement;
 
 /// A representation of a property in a projection.
 class Projection {
   /// The property to project.
   PropertyReference? property;
 
-  Projection();
+  Projection({
+    this.property,
+  });
 
-  Projection.fromJson(core.Map _json) {
-    if (_json.containsKey('property')) {
-      property = PropertyReference.fromJson(
-          _json['property'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Projection.fromJson(core.Map _json)
+      : this(
+          property: _json.containsKey('property')
+              ? PropertyReference.fromJson(
+                  _json['property'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (property != null) 'property': property!.toJson(),
+        if (property != null) 'property': property!,
       };
 }
 
@@ -2702,12 +2125,18 @@ class PropertyFilter {
   /// The operator to filter by.
   /// Possible string values are:
   /// - "OPERATOR_UNSPECIFIED" : Unspecified. This value must not be used.
-  /// - "LESS_THAN" : Less than.
-  /// - "LESS_THAN_OR_EQUAL" : Less than or equal.
-  /// - "GREATER_THAN" : Greater than.
-  /// - "GREATER_THAN_OR_EQUAL" : Greater than or equal.
-  /// - "EQUAL" : Equal.
-  /// - "HAS_ANCESTOR" : Has ancestor.
+  /// - "LESS_THAN" : The given `property` is less than the given `value`.
+  /// Requires: * That `property` comes first in `order_by`.
+  /// - "LESS_THAN_OR_EQUAL" : The given `property` is less than or equal to the
+  /// given `value`. Requires: * That `property` comes first in `order_by`.
+  /// - "GREATER_THAN" : The given `property` is greater than the given `value`.
+  /// Requires: * That `property` comes first in `order_by`.
+  /// - "GREATER_THAN_OR_EQUAL" : The given `property` is greater than or equal
+  /// to the given `value`. Requires: * That `property` comes first in
+  /// `order_by`.
+  /// - "EQUAL" : The given `property` is equal to the given `value`.
+  /// - "HAS_ANCESTOR" : Limit the result set to the given entity and its
+  /// descendants. Requires: * That `value` is an entity key.
   core.String? op;
 
   /// The property to filter by.
@@ -2716,26 +2145,29 @@ class PropertyFilter {
   /// The value to compare the property to.
   Value? value;
 
-  PropertyFilter();
+  PropertyFilter({
+    this.op,
+    this.property,
+    this.value,
+  });
 
-  PropertyFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('op')) {
-      op = _json['op'] as core.String;
-    }
-    if (_json.containsKey('property')) {
-      property = PropertyReference.fromJson(
-          _json['property'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('value')) {
-      value =
-          Value.fromJson(_json['value'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PropertyFilter.fromJson(core.Map _json)
+      : this(
+          op: _json.containsKey('op') ? _json['op'] as core.String : null,
+          property: _json.containsKey('property')
+              ? PropertyReference.fromJson(
+                  _json['property'] as core.Map<core.String, core.dynamic>)
+              : null,
+          value: _json.containsKey('value')
+              ? Value.fromJson(
+                  _json['value'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (op != null) 'op': op!,
-        if (property != null) 'property': property!.toJson(),
-        if (value != null) 'value': value!.toJson(),
+        if (property != null) 'property': property!,
+        if (value != null) 'value': value!,
       };
 }
 
@@ -2753,21 +2185,25 @@ class PropertyOrder {
   /// The property to order by.
   PropertyReference? property;
 
-  PropertyOrder();
+  PropertyOrder({
+    this.direction,
+    this.property,
+  });
 
-  PropertyOrder.fromJson(core.Map _json) {
-    if (_json.containsKey('direction')) {
-      direction = _json['direction'] as core.String;
-    }
-    if (_json.containsKey('property')) {
-      property = PropertyReference.fromJson(
-          _json['property'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PropertyOrder.fromJson(core.Map _json)
+      : this(
+          direction: _json.containsKey('direction')
+              ? _json['direction'] as core.String
+              : null,
+          property: _json.containsKey('property')
+              ? PropertyReference.fromJson(
+                  _json['property'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (direction != null) 'direction': direction!,
-        if (property != null) 'property': property!.toJson(),
+        if (property != null) 'property': property!,
       };
 }
 
@@ -2778,13 +2214,14 @@ class PropertyReference {
   /// If name includes "."s, it may be interpreted as a property name path.
   core.String? name;
 
-  PropertyReference();
+  PropertyReference({
+    this.name,
+  });
 
-  PropertyReference.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  PropertyReference.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -2823,13 +2260,13 @@ class Query {
   /// The maximum number of results to return.
   ///
   /// Applies after all other constraints. Optional. Unspecified is interpreted
-  /// as no limit. Must be >= 0 if specified.
+  /// as no limit. Must be \>= 0 if specified.
   core.int? limit;
 
   /// The number of results to skip.
   ///
   /// Applies before limit, but after all other constraints. Optional. Must be
-  /// >= 0 if specified.
+  /// \>= 0 if specified.
   core.int? offset;
 
   /// The order to apply to the query results (if empty, order is unspecified).
@@ -2853,63 +2290,68 @@ class Query {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  Query();
+  Query({
+    this.distinctOn,
+    this.endCursor,
+    this.filter,
+    this.kind,
+    this.limit,
+    this.offset,
+    this.order,
+    this.projection,
+    this.startCursor,
+  });
 
-  Query.fromJson(core.Map _json) {
-    if (_json.containsKey('distinctOn')) {
-      distinctOn = (_json['distinctOn'] as core.List)
-          .map<PropertyReference>((value) => PropertyReference.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('endCursor')) {
-      endCursor = _json['endCursor'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = Filter.fromJson(
-          _json['filter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = (_json['kind'] as core.List)
-          .map<KindExpression>((value) => KindExpression.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('limit')) {
-      limit = _json['limit'] as core.int;
-    }
-    if (_json.containsKey('offset')) {
-      offset = _json['offset'] as core.int;
-    }
-    if (_json.containsKey('order')) {
-      order = (_json['order'] as core.List)
-          .map<PropertyOrder>((value) => PropertyOrder.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('projection')) {
-      projection = (_json['projection'] as core.List)
-          .map<Projection>((value) =>
-              Projection.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('startCursor')) {
-      startCursor = _json['startCursor'] as core.String;
-    }
-  }
+  Query.fromJson(core.Map _json)
+      : this(
+          distinctOn: _json.containsKey('distinctOn')
+              ? (_json['distinctOn'] as core.List)
+                  .map((value) => PropertyReference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          endCursor: _json.containsKey('endCursor')
+              ? _json['endCursor'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? Filter.fromJson(
+                  _json['filter'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind')
+              ? (_json['kind'] as core.List)
+                  .map((value) => KindExpression.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          limit: _json.containsKey('limit') ? _json['limit'] as core.int : null,
+          offset:
+              _json.containsKey('offset') ? _json['offset'] as core.int : null,
+          order: _json.containsKey('order')
+              ? (_json['order'] as core.List)
+                  .map((value) => PropertyOrder.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          projection: _json.containsKey('projection')
+              ? (_json['projection'] as core.List)
+                  .map((value) => Projection.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          startCursor: _json.containsKey('startCursor')
+              ? _json['startCursor'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (distinctOn != null)
-          'distinctOn': distinctOn!.map((value) => value.toJson()).toList(),
+        if (distinctOn != null) 'distinctOn': distinctOn!,
         if (endCursor != null) 'endCursor': endCursor!,
-        if (filter != null) 'filter': filter!.toJson(),
-        if (kind != null) 'kind': kind!.map((value) => value.toJson()).toList(),
+        if (filter != null) 'filter': filter!,
+        if (kind != null) 'kind': kind!,
         if (limit != null) 'limit': limit!,
         if (offset != null) 'offset': offset!,
-        if (order != null)
-          'order': order!.map((value) => value.toJson()).toList(),
-        if (projection != null)
-          'projection': projection!.map((value) => value.toJson()).toList(),
+        if (order != null) 'order': order!,
+        if (projection != null) 'projection': projection!,
         if (startCursor != null) 'startCursor': startCursor!,
       };
 }
@@ -2976,41 +2418,48 @@ class QueryResultBatch {
   /// queries.
   core.String? snapshotVersion;
 
-  QueryResultBatch();
+  QueryResultBatch({
+    this.endCursor,
+    this.entityResultType,
+    this.entityResults,
+    this.moreResults,
+    this.skippedCursor,
+    this.skippedResults,
+    this.snapshotVersion,
+  });
 
-  QueryResultBatch.fromJson(core.Map _json) {
-    if (_json.containsKey('endCursor')) {
-      endCursor = _json['endCursor'] as core.String;
-    }
-    if (_json.containsKey('entityResultType')) {
-      entityResultType = _json['entityResultType'] as core.String;
-    }
-    if (_json.containsKey('entityResults')) {
-      entityResults = (_json['entityResults'] as core.List)
-          .map<EntityResult>((value) => EntityResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('moreResults')) {
-      moreResults = _json['moreResults'] as core.String;
-    }
-    if (_json.containsKey('skippedCursor')) {
-      skippedCursor = _json['skippedCursor'] as core.String;
-    }
-    if (_json.containsKey('skippedResults')) {
-      skippedResults = _json['skippedResults'] as core.int;
-    }
-    if (_json.containsKey('snapshotVersion')) {
-      snapshotVersion = _json['snapshotVersion'] as core.String;
-    }
-  }
+  QueryResultBatch.fromJson(core.Map _json)
+      : this(
+          endCursor: _json.containsKey('endCursor')
+              ? _json['endCursor'] as core.String
+              : null,
+          entityResultType: _json.containsKey('entityResultType')
+              ? _json['entityResultType'] as core.String
+              : null,
+          entityResults: _json.containsKey('entityResults')
+              ? (_json['entityResults'] as core.List)
+                  .map((value) => EntityResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          moreResults: _json.containsKey('moreResults')
+              ? _json['moreResults'] as core.String
+              : null,
+          skippedCursor: _json.containsKey('skippedCursor')
+              ? _json['skippedCursor'] as core.String
+              : null,
+          skippedResults: _json.containsKey('skippedResults')
+              ? _json['skippedResults'] as core.int
+              : null,
+          snapshotVersion: _json.containsKey('snapshotVersion')
+              ? _json['snapshotVersion'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endCursor != null) 'endCursor': endCursor!,
         if (entityResultType != null) 'entityResultType': entityResultType!,
-        if (entityResults != null)
-          'entityResults':
-              entityResults!.map((value) => value.toJson()).toList(),
+        if (entityResults != null) 'entityResults': entityResults!,
         if (moreResults != null) 'moreResults': moreResults!,
         if (skippedCursor != null) 'skippedCursor': skippedCursor!,
         if (skippedResults != null) 'skippedResults': skippedResults!,
@@ -3019,15 +2468,7 @@ class QueryResultBatch {
 }
 
 /// Options specific to read-only transactions.
-class ReadOnly {
-  ReadOnly();
-
-  ReadOnly.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ReadOnly = $Empty;
 
 /// The options shared by read requests.
 class ReadOptions {
@@ -3054,16 +2495,20 @@ class ReadOptions {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  ReadOptions();
+  ReadOptions({
+    this.readConsistency,
+    this.transaction,
+  });
 
-  ReadOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('readConsistency')) {
-      readConsistency = _json['readConsistency'] as core.String;
-    }
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  ReadOptions.fromJson(core.Map _json)
+      : this(
+          readConsistency: _json.containsKey('readConsistency')
+              ? _json['readConsistency'] as core.String
+              : null,
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (readConsistency != null) 'readConsistency': readConsistency!,
@@ -3083,13 +2528,16 @@ class ReadWrite {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  ReadWrite();
+  ReadWrite({
+    this.previousTransaction,
+  });
 
-  ReadWrite.fromJson(core.Map _json) {
-    if (_json.containsKey('previousTransaction')) {
-      previousTransaction = _json['previousTransaction'] as core.String;
-    }
-  }
+  ReadWrite.fromJson(core.Map _json)
+      : this(
+          previousTransaction: _json.containsKey('previousTransaction')
+              ? _json['previousTransaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (previousTransaction != null)
@@ -3108,36 +2556,32 @@ class ReserveIdsRequest {
   /// Required.
   core.List<Key>? keys;
 
-  ReserveIdsRequest();
+  ReserveIdsRequest({
+    this.databaseId,
+    this.keys,
+  });
 
-  ReserveIdsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('databaseId')) {
-      databaseId = _json['databaseId'] as core.String;
-    }
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<Key>((value) =>
-              Key.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ReserveIdsRequest.fromJson(core.Map _json)
+      : this(
+          databaseId: _json.containsKey('databaseId')
+              ? _json['databaseId'] as core.String
+              : null,
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => Key.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (databaseId != null) 'databaseId': databaseId!,
-        if (keys != null) 'keys': keys!.map((value) => value.toJson()).toList(),
+        if (keys != null) 'keys': keys!,
       };
 }
 
 /// The response for Datastore.ReserveIds.
-class ReserveIdsResponse {
-  ReserveIdsResponse();
-
-  ReserveIdsResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ReserveIdsResponse = $Empty;
 
 /// The request for Datastore.Rollback.
 class RollbackRequest {
@@ -3154,13 +2598,16 @@ class RollbackRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  RollbackRequest();
+  RollbackRequest({
+    this.transaction,
+  });
 
-  RollbackRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('transaction')) {
-      transaction = _json['transaction'] as core.String;
-    }
-  }
+  RollbackRequest.fromJson(core.Map _json)
+      : this(
+          transaction: _json.containsKey('transaction')
+              ? _json['transaction'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (transaction != null) 'transaction': transaction!,
@@ -3170,15 +2617,7 @@ class RollbackRequest {
 /// The response for Datastore.Rollback.
 ///
 /// (an empty message).
-class RollbackResponse {
-  RollbackResponse();
-
-  RollbackResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef RollbackResponse = $Empty;
 
 /// The request for Datastore.RunQuery.
 class RunQueryRequest {
@@ -3197,32 +2636,38 @@ class RunQueryRequest {
   /// The options for this query.
   ReadOptions? readOptions;
 
-  RunQueryRequest();
+  RunQueryRequest({
+    this.gqlQuery,
+    this.partitionId,
+    this.query,
+    this.readOptions,
+  });
 
-  RunQueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('gqlQuery')) {
-      gqlQuery = GqlQuery.fromJson(
-          _json['gqlQuery'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('partitionId')) {
-      partitionId = PartitionId.fromJson(
-          _json['partitionId'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('query')) {
-      query =
-          Query.fromJson(_json['query'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readOptions')) {
-      readOptions = ReadOptions.fromJson(
-          _json['readOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  RunQueryRequest.fromJson(core.Map _json)
+      : this(
+          gqlQuery: _json.containsKey('gqlQuery')
+              ? GqlQuery.fromJson(
+                  _json['gqlQuery'] as core.Map<core.String, core.dynamic>)
+              : null,
+          partitionId: _json.containsKey('partitionId')
+              ? PartitionId.fromJson(
+                  _json['partitionId'] as core.Map<core.String, core.dynamic>)
+              : null,
+          query: _json.containsKey('query')
+              ? Query.fromJson(
+                  _json['query'] as core.Map<core.String, core.dynamic>)
+              : null,
+          readOptions: _json.containsKey('readOptions')
+              ? ReadOptions.fromJson(
+                  _json['readOptions'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gqlQuery != null) 'gqlQuery': gqlQuery!.toJson(),
-        if (partitionId != null) 'partitionId': partitionId!.toJson(),
-        if (query != null) 'query': query!.toJson(),
-        if (readOptions != null) 'readOptions': readOptions!.toJson(),
+        if (gqlQuery != null) 'gqlQuery': gqlQuery!,
+        if (partitionId != null) 'partitionId': partitionId!,
+        if (query != null) 'query': query!,
+        if (readOptions != null) 'readOptions': readOptions!,
       };
 }
 
@@ -3234,22 +2679,26 @@ class RunQueryResponse {
   /// The parsed form of the `GqlQuery` from the request, if it was set.
   Query? query;
 
-  RunQueryResponse();
+  RunQueryResponse({
+    this.batch,
+    this.query,
+  });
 
-  RunQueryResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('batch')) {
-      batch = QueryResultBatch.fromJson(
-          _json['batch'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('query')) {
-      query =
-          Query.fromJson(_json['query'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  RunQueryResponse.fromJson(core.Map _json)
+      : this(
+          batch: _json.containsKey('batch')
+              ? QueryResultBatch.fromJson(
+                  _json['batch'] as core.Map<core.String, core.dynamic>)
+              : null,
+          query: _json.containsKey('query')
+              ? Query.fromJson(
+                  _json['query'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (batch != null) 'batch': batch!.toJson(),
-        if (query != null) 'query': query!.toJson(),
+        if (batch != null) 'batch': batch!,
+        if (query != null) 'query': query!,
       };
 }
 
@@ -3260,52 +2709,7 @@ class RunQueryResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Options for beginning a new transaction.
 ///
@@ -3319,22 +2723,26 @@ class TransactionOptions {
   /// The transaction should allow both reads and writes.
   ReadWrite? readWrite;
 
-  TransactionOptions();
+  TransactionOptions({
+    this.readOnly,
+    this.readWrite,
+  });
 
-  TransactionOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('readOnly')) {
-      readOnly = ReadOnly.fromJson(
-          _json['readOnly'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('readWrite')) {
-      readWrite = ReadWrite.fromJson(
-          _json['readWrite'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TransactionOptions.fromJson(core.Map _json)
+      : this(
+          readOnly: _json.containsKey('readOnly')
+              ? ReadOnly.fromJson(
+                  _json['readOnly'] as core.Map<core.String, core.dynamic>)
+              : null,
+          readWrite: _json.containsKey('readWrite')
+              ? ReadWrite.fromJson(
+                  _json['readWrite'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (readOnly != null) 'readOnly': readOnly!.toJson(),
-        if (readWrite != null) 'readWrite': readWrite!.toJson(),
+        if (readOnly != null) 'readOnly': readOnly!,
+        if (readWrite != null) 'readWrite': readWrite!,
       };
 }
 
@@ -3404,65 +2812,78 @@ class Value {
   /// precision is rounded down.
   core.String? timestampValue;
 
-  Value();
+  Value({
+    this.arrayValue,
+    this.blobValue,
+    this.booleanValue,
+    this.doubleValue,
+    this.entityValue,
+    this.excludeFromIndexes,
+    this.geoPointValue,
+    this.integerValue,
+    this.keyValue,
+    this.meaning,
+    this.nullValue,
+    this.stringValue,
+    this.timestampValue,
+  });
 
-  Value.fromJson(core.Map _json) {
-    if (_json.containsKey('arrayValue')) {
-      arrayValue = ArrayValue.fromJson(
-          _json['arrayValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('blobValue')) {
-      blobValue = _json['blobValue'] as core.String;
-    }
-    if (_json.containsKey('booleanValue')) {
-      booleanValue = _json['booleanValue'] as core.bool;
-    }
-    if (_json.containsKey('doubleValue')) {
-      doubleValue = (_json['doubleValue'] as core.num).toDouble();
-    }
-    if (_json.containsKey('entityValue')) {
-      entityValue = Entity.fromJson(
-          _json['entityValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('excludeFromIndexes')) {
-      excludeFromIndexes = _json['excludeFromIndexes'] as core.bool;
-    }
-    if (_json.containsKey('geoPointValue')) {
-      geoPointValue = LatLng.fromJson(
-          _json['geoPointValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('integerValue')) {
-      integerValue = _json['integerValue'] as core.String;
-    }
-    if (_json.containsKey('keyValue')) {
-      keyValue = Key.fromJson(
-          _json['keyValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('meaning')) {
-      meaning = _json['meaning'] as core.int;
-    }
-    if (_json.containsKey('nullValue')) {
-      nullValue = _json['nullValue'] as core.String;
-    }
-    if (_json.containsKey('stringValue')) {
-      stringValue = _json['stringValue'] as core.String;
-    }
-    if (_json.containsKey('timestampValue')) {
-      timestampValue = _json['timestampValue'] as core.String;
-    }
-  }
+  Value.fromJson(core.Map _json)
+      : this(
+          arrayValue: _json.containsKey('arrayValue')
+              ? ArrayValue.fromJson(
+                  _json['arrayValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          blobValue: _json.containsKey('blobValue')
+              ? _json['blobValue'] as core.String
+              : null,
+          booleanValue: _json.containsKey('booleanValue')
+              ? _json['booleanValue'] as core.bool
+              : null,
+          doubleValue: _json.containsKey('doubleValue')
+              ? (_json['doubleValue'] as core.num).toDouble()
+              : null,
+          entityValue: _json.containsKey('entityValue')
+              ? Entity.fromJson(
+                  _json['entityValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          excludeFromIndexes: _json.containsKey('excludeFromIndexes')
+              ? _json['excludeFromIndexes'] as core.bool
+              : null,
+          geoPointValue: _json.containsKey('geoPointValue')
+              ? LatLng.fromJson(
+                  _json['geoPointValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          integerValue: _json.containsKey('integerValue')
+              ? _json['integerValue'] as core.String
+              : null,
+          keyValue: _json.containsKey('keyValue')
+              ? Key.fromJson(
+                  _json['keyValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          meaning: _json.containsKey('meaning')
+              ? _json['meaning'] as core.int
+              : null,
+          nullValue: _json.containsKey('nullValue') ? 'NULL_VALUE' : null,
+          stringValue: _json.containsKey('stringValue')
+              ? _json['stringValue'] as core.String
+              : null,
+          timestampValue: _json.containsKey('timestampValue')
+              ? _json['timestampValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (arrayValue != null) 'arrayValue': arrayValue!.toJson(),
+        if (arrayValue != null) 'arrayValue': arrayValue!,
         if (blobValue != null) 'blobValue': blobValue!,
         if (booleanValue != null) 'booleanValue': booleanValue!,
         if (doubleValue != null) 'doubleValue': doubleValue!,
-        if (entityValue != null) 'entityValue': entityValue!.toJson(),
+        if (entityValue != null) 'entityValue': entityValue!,
         if (excludeFromIndexes != null)
           'excludeFromIndexes': excludeFromIndexes!,
-        if (geoPointValue != null) 'geoPointValue': geoPointValue!.toJson(),
+        if (geoPointValue != null) 'geoPointValue': geoPointValue!,
         if (integerValue != null) 'integerValue': integerValue!,
-        if (keyValue != null) 'keyValue': keyValue!.toJson(),
+        if (keyValue != null) 'keyValue': keyValue!,
         if (meaning != null) 'meaning': meaning!,
         if (nullValue != null) 'nullValue': nullValue!,
         if (stringValue != null) 'stringValue': stringValue!,

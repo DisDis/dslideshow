@@ -32,6 +32,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -39,7 +41,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Creates and manages jobs run on a regular recurring schedule.
 class CloudSchedulerApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -113,11 +116,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -186,7 +193,7 @@ class ProjectsLocationsJobsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -374,7 +381,7 @@ class ProjectsLocationsJobsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -422,7 +429,7 @@ class ProjectsLocationsJobsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -468,7 +475,7 @@ class ProjectsLocationsJobsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -513,7 +520,7 @@ class ProjectsLocationsJobsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -565,17 +572,21 @@ class AppEngineHttpTarget {
   /// (+http://code.google.com/appengine)"`. This header can be modified, but
   /// Cloud Scheduler will append `"AppEngine-Google;
   /// (+http://code.google.com/appengine)"` to the modified `User-Agent`. *
-  /// `X-CloudScheduler`: This header will be set to true. If the job has an
-  /// body, Cloud Scheduler sets the following headers: * `Content-Type`: By
-  /// default, the `Content-Type` header is set to `"application/octet-stream"`.
-  /// The default can be overridden by explictly setting `Content-Type` to a
-  /// particular media type when the job is created. For example, `Content-Type`
-  /// can be set to `"application/json"`. * `Content-Length`: This is computed
-  /// by Cloud Scheduler. This value is output only. It cannot be changed. The
-  /// headers below are output only. They cannot be set or overridden: *
-  /// `X-Google-*`: For Google internal use only. * `X-AppEngine-*`: For Google
-  /// internal use only. In addition, some App Engine headers, which contain
-  /// job-specific information, are also be sent to the job handler.
+  /// `X-CloudScheduler`: This header will be set to true. *
+  /// `X-CloudScheduler-JobName`: This header will contain the job name. *
+  /// `X-CloudScheduler-ScheduleTime`: For Cloud Scheduler jobs specified in the
+  /// unix-cron format, this header will contain the job schedule time in
+  /// RFC3339 UTC "Zulu" format. If the job has an body, Cloud Scheduler sets
+  /// the following headers: * `Content-Type`: By default, the `Content-Type`
+  /// header is set to `"application/octet-stream"`. The default can be
+  /// overridden by explictly setting `Content-Type` to a particular media type
+  /// when the job is created. For example, `Content-Type` can be set to
+  /// `"application/json"`. * `Content-Length`: This is computed by Cloud
+  /// Scheduler. This value is output only. It cannot be changed. The headers
+  /// below are output only. They cannot be set or overridden: * `X-Google-*`:
+  /// For Google internal use only. * `X-AppEngine-*`: For Google internal use
+  /// only. In addition, some App Engine headers, which contain job-specific
+  /// information, are also be sent to the job handler.
   core.Map<core.String, core.String>? headers;
 
   /// The HTTP method to use for the request.
@@ -600,35 +611,39 @@ class AppEngineHttpTarget {
   /// are allowed, and the maximum length allowed is 2083 characters.
   core.String? relativeUri;
 
-  AppEngineHttpTarget();
+  AppEngineHttpTarget({
+    this.appEngineRouting,
+    this.body,
+    this.headers,
+    this.httpMethod,
+    this.relativeUri,
+  });
 
-  AppEngineHttpTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('appEngineRouting')) {
-      appEngineRouting = AppEngineRouting.fromJson(
-          _json['appEngineRouting'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('body')) {
-      body = _json['body'] as core.String;
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('httpMethod')) {
-      httpMethod = _json['httpMethod'] as core.String;
-    }
-    if (_json.containsKey('relativeUri')) {
-      relativeUri = _json['relativeUri'] as core.String;
-    }
-  }
+  AppEngineHttpTarget.fromJson(core.Map _json)
+      : this(
+          appEngineRouting: _json.containsKey('appEngineRouting')
+              ? AppEngineRouting.fromJson(_json['appEngineRouting']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          body: _json.containsKey('body') ? _json['body'] as core.String : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          httpMethod: _json.containsKey('httpMethod')
+              ? _json['httpMethod'] as core.String
+              : null,
+          relativeUri: _json.containsKey('relativeUri')
+              ? _json['relativeUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (appEngineRouting != null)
-          'appEngineRouting': appEngineRouting!.toJson(),
+        if (appEngineRouting != null) 'appEngineRouting': appEngineRouting!,
         if (body != null) 'body': body!,
         if (headers != null) 'headers': headers!,
         if (httpMethod != null) 'httpMethod': httpMethod!,
@@ -697,22 +712,26 @@ class AppEngineRouting {
   /// when the job is attempted.
   core.String? version;
 
-  AppEngineRouting();
+  AppEngineRouting({
+    this.host,
+    this.instance,
+    this.service,
+    this.version,
+  });
 
-  AppEngineRouting.fromJson(core.Map _json) {
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('instance')) {
-      instance = _json['instance'] as core.String;
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  AppEngineRouting.fromJson(core.Map _json)
+      : this(
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          instance: _json.containsKey('instance')
+              ? _json['instance'] as core.String
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (host != null) 'host': host!,
@@ -729,15 +748,7 @@ class AppEngineRouting {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Http target.
 ///
@@ -771,7 +782,12 @@ class HttpTarget {
   /// `Content-Length`: This will be computed by Cloud Scheduler. *
   /// `User-Agent`: This will be set to `"Google-Cloud-Scheduler"`. *
   /// `X-Google-*`: Google internal use only. * `X-AppEngine-*`: Google internal
-  /// use only. The total size of headers must be less than 80KB.
+  /// use only. * `X-CloudScheduler`: This header will be set to true. *
+  /// `X-CloudScheduler-JobName`: This header will contain the job name. *
+  /// `X-CloudScheduler-ScheduleTime`: For Cloud Scheduler jobs specified in the
+  /// unix-cron format, this header will contain the job schedule time in
+  /// RFC3339 UTC "Zulu" format. The total size of headers must be less than
+  /// 80KB.
   core.Map<core.String, core.String>? headers;
 
   /// Which HTTP method to use for the request.
@@ -816,49 +832,53 @@ class HttpTarget {
   /// Required.
   core.String? uri;
 
-  HttpTarget();
+  HttpTarget({
+    this.body,
+    this.headers,
+    this.httpMethod,
+    this.oauthToken,
+    this.oidcToken,
+    this.uri,
+  });
 
-  HttpTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('body')) {
-      body = _json['body'] as core.String;
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('httpMethod')) {
-      httpMethod = _json['httpMethod'] as core.String;
-    }
-    if (_json.containsKey('oauthToken')) {
-      oauthToken = OAuthToken.fromJson(
-          _json['oauthToken'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oidcToken')) {
-      oidcToken = OidcToken.fromJson(
-          _json['oidcToken'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  HttpTarget.fromJson(core.Map _json)
+      : this(
+          body: _json.containsKey('body') ? _json['body'] as core.String : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          httpMethod: _json.containsKey('httpMethod')
+              ? _json['httpMethod'] as core.String
+              : null,
+          oauthToken: _json.containsKey('oauthToken')
+              ? OAuthToken.fromJson(
+                  _json['oauthToken'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oidcToken: _json.containsKey('oidcToken')
+              ? OidcToken.fromJson(
+                  _json['oidcToken'] as core.Map<core.String, core.dynamic>)
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (body != null) 'body': body!,
         if (headers != null) 'headers': headers!,
         if (httpMethod != null) 'httpMethod': httpMethod!,
-        if (oauthToken != null) 'oauthToken': oauthToken!.toJson(),
-        if (oidcToken != null) 'oidcToken': oidcToken!.toJson(),
+        if (oauthToken != null) 'oauthToken': oauthToken!,
+        if (oidcToken != null) 'oidcToken': oidcToken!,
         if (uri != null) 'uri': uri!,
       };
 }
 
 /// Configuration for a job.
 ///
-/// The maximum allowed size for a job is 100KB.
+/// The maximum allowed size for a job is 1MB.
 class Job {
   /// App Engine HTTP target.
   AppEngineHttpTarget? appEngineHttpTarget;
@@ -870,7 +890,7 @@ class Job {
   /// The failed attempt can be viewed in execution logs. Cloud Scheduler will
   /// retry the job according to the RetryConfig. The allowed duration for this
   /// deadline is: * For HTTP targets, between 15 seconds and 30 minutes. * For
-  /// App Engine HTTP targets, between 15 seconds and 24 hours.
+  /// App Engine HTTP targets, between 15 seconds and 24 hours 15 seconds.
   core.String? attemptDeadline;
 
   /// Optionally caller-specified in CreateJob or UpdateJob.
@@ -920,8 +940,8 @@ class Job {
   /// the `n+1`th execution is scheduled to run at 16:00 but the `n`th execution
   /// takes until 16:15, the `n+1`th execution will not start until `16:15`. A
   /// scheduled start time will be delayed if the previous execution has not
-  /// ended when its scheduled time occurs. If retry_count > 0 and a job attempt
-  /// fails, the job will be tried a total of retry_count times, with
+  /// ended when its scheduled time occurs. If retry_count \> 0 and a job
+  /// attempt fails, the job will be tried a total of retry_count times, with
   /// exponential backoff, until the next scheduled start time.
   core.String? schedule;
 
@@ -968,72 +988,85 @@ class Job {
   /// Output only.
   core.String? userUpdateTime;
 
-  Job();
+  Job({
+    this.appEngineHttpTarget,
+    this.attemptDeadline,
+    this.description,
+    this.httpTarget,
+    this.lastAttemptTime,
+    this.name,
+    this.pubsubTarget,
+    this.retryConfig,
+    this.schedule,
+    this.scheduleTime,
+    this.state,
+    this.status,
+    this.timeZone,
+    this.userUpdateTime,
+  });
 
-  Job.fromJson(core.Map _json) {
-    if (_json.containsKey('appEngineHttpTarget')) {
-      appEngineHttpTarget = AppEngineHttpTarget.fromJson(
-          _json['appEngineHttpTarget'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('attemptDeadline')) {
-      attemptDeadline = _json['attemptDeadline'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('httpTarget')) {
-      httpTarget = HttpTarget.fromJson(
-          _json['httpTarget'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('lastAttemptTime')) {
-      lastAttemptTime = _json['lastAttemptTime'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('pubsubTarget')) {
-      pubsubTarget = PubsubTarget.fromJson(
-          _json['pubsubTarget'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('retryConfig')) {
-      retryConfig = RetryConfig.fromJson(
-          _json['retryConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('schedule')) {
-      schedule = _json['schedule'] as core.String;
-    }
-    if (_json.containsKey('scheduleTime')) {
-      scheduleTime = _json['scheduleTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = Status.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('timeZone')) {
-      timeZone = _json['timeZone'] as core.String;
-    }
-    if (_json.containsKey('userUpdateTime')) {
-      userUpdateTime = _json['userUpdateTime'] as core.String;
-    }
-  }
+  Job.fromJson(core.Map _json)
+      : this(
+          appEngineHttpTarget: _json.containsKey('appEngineHttpTarget')
+              ? AppEngineHttpTarget.fromJson(_json['appEngineHttpTarget']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          attemptDeadline: _json.containsKey('attemptDeadline')
+              ? _json['attemptDeadline'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          httpTarget: _json.containsKey('httpTarget')
+              ? HttpTarget.fromJson(
+                  _json['httpTarget'] as core.Map<core.String, core.dynamic>)
+              : null,
+          lastAttemptTime: _json.containsKey('lastAttemptTime')
+              ? _json['lastAttemptTime'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pubsubTarget: _json.containsKey('pubsubTarget')
+              ? PubsubTarget.fromJson(
+                  _json['pubsubTarget'] as core.Map<core.String, core.dynamic>)
+              : null,
+          retryConfig: _json.containsKey('retryConfig')
+              ? RetryConfig.fromJson(
+                  _json['retryConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          schedule: _json.containsKey('schedule')
+              ? _json['schedule'] as core.String
+              : null,
+          scheduleTime: _json.containsKey('scheduleTime')
+              ? _json['scheduleTime'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          status: _json.containsKey('status')
+              ? Status.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+          timeZone: _json.containsKey('timeZone')
+              ? _json['timeZone'] as core.String
+              : null,
+          userUpdateTime: _json.containsKey('userUpdateTime')
+              ? _json['userUpdateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (appEngineHttpTarget != null)
-          'appEngineHttpTarget': appEngineHttpTarget!.toJson(),
+          'appEngineHttpTarget': appEngineHttpTarget!,
         if (attemptDeadline != null) 'attemptDeadline': attemptDeadline!,
         if (description != null) 'description': description!,
-        if (httpTarget != null) 'httpTarget': httpTarget!.toJson(),
+        if (httpTarget != null) 'httpTarget': httpTarget!,
         if (lastAttemptTime != null) 'lastAttemptTime': lastAttemptTime!,
         if (name != null) 'name': name!,
-        if (pubsubTarget != null) 'pubsubTarget': pubsubTarget!.toJson(),
-        if (retryConfig != null) 'retryConfig': retryConfig!.toJson(),
+        if (pubsubTarget != null) 'pubsubTarget': pubsubTarget!,
+        if (retryConfig != null) 'retryConfig': retryConfig!,
         if (schedule != null) 'schedule': schedule!,
         if (scheduleTime != null) 'scheduleTime': scheduleTime!,
         if (state != null) 'state': state!,
-        if (status != null) 'status': status!.toJson(),
+        if (status != null) 'status': status!,
         if (timeZone != null) 'timeZone': timeZone!,
         if (userUpdateTime != null) 'userUpdateTime': userUpdateTime!,
       };
@@ -1052,22 +1085,26 @@ class ListJobsResponse {
   /// valid for only 2 hours.
   core.String? nextPageToken;
 
-  ListJobsResponse();
+  ListJobsResponse({
+    this.jobs,
+    this.nextPageToken,
+  });
 
-  ListJobsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('jobs')) {
-      jobs = (_json['jobs'] as core.List)
-          .map<Job>((value) =>
-              Job.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListJobsResponse.fromJson(core.Map _json)
+      : this(
+          jobs: _json.containsKey('jobs')
+              ? (_json['jobs'] as core.List)
+                  .map((value) => Job.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (jobs != null) 'jobs': jobs!.map((value) => value.toJson()).toList(),
+        if (jobs != null) 'jobs': jobs!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1080,95 +1117,32 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// Contains information needed for generating an
 /// [OAuth token](https://developers.google.com/identity/protocols/OAuth2).
@@ -1189,16 +1163,19 @@ class OAuthToken {
   /// must have iam.serviceAccounts.actAs permission for the service account.
   core.String? serviceAccountEmail;
 
-  OAuthToken();
+  OAuthToken({
+    this.scope,
+    this.serviceAccountEmail,
+  });
 
-  OAuthToken.fromJson(core.Map _json) {
-    if (_json.containsKey('scope')) {
-      scope = _json['scope'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountEmail')) {
-      serviceAccountEmail = _json['serviceAccountEmail'] as core.String;
-    }
-  }
+  OAuthToken.fromJson(core.Map _json)
+      : this(
+          scope:
+              _json.containsKey('scope') ? _json['scope'] as core.String : null,
+          serviceAccountEmail: _json.containsKey('serviceAccountEmail')
+              ? _json['serviceAccountEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (scope != null) 'scope': scope!,
@@ -1225,16 +1202,20 @@ class OidcToken {
   /// must have iam.serviceAccounts.actAs permission for the service account.
   core.String? serviceAccountEmail;
 
-  OidcToken();
+  OidcToken({
+    this.audience,
+    this.serviceAccountEmail,
+  });
 
-  OidcToken.fromJson(core.Map _json) {
-    if (_json.containsKey('audience')) {
-      audience = _json['audience'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountEmail')) {
-      serviceAccountEmail = _json['serviceAccountEmail'] as core.String;
-    }
-  }
+  OidcToken.fromJson(core.Map _json)
+      : this(
+          audience: _json.containsKey('audience')
+              ? _json['audience'] as core.String
+              : null,
+          serviceAccountEmail: _json.containsKey('serviceAccountEmail')
+              ? _json['serviceAccountEmail'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audience != null) 'audience': audience!,
@@ -1244,100 +1225,7 @@ class OidcToken {
 }
 
 /// Request message for PauseJob.
-class PauseJobRequest {
-  PauseJobRequest();
-
-  PauseJobRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// A message that is published by publishers and consumed by subscribers.
-///
-/// The message must contain either a non-empty data field or at least one
-/// attribute. Note that client libraries represent this object differently
-/// depending on the language. See the corresponding
-/// [client library documentation](https://cloud.google.com/pubsub/docs/reference/libraries)
-/// for more information. See
-/// [quotas and limits](https://cloud.google.com/pubsub/quotas) for more
-/// information about message limits.
-class PubsubMessage {
-  /// Attributes for this message.
-  ///
-  /// If this field is empty, the message must contain non-empty data. This can
-  /// be used to filter messages on the subscription.
-  core.Map<core.String, core.String>? attributes;
-
-  /// The message data field.
-  ///
-  /// If this field is empty, the message must contain at least one attribute.
-  core.String? data;
-  core.List<core.int> get dataAsBytes => convert.base64.decode(data!);
-
-  set dataAsBytes(core.List<core.int> _bytes) {
-    data =
-        convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
-  }
-
-  /// ID of this message, assigned by the server when the message is published.
-  ///
-  /// Guaranteed to be unique within the topic. This value may be read by a
-  /// subscriber that receives a `PubsubMessage` via a `Pull` call or a push
-  /// delivery. It must not be populated by the publisher in a `Publish` call.
-  core.String? messageId;
-
-  /// If non-empty, identifies related messages for which publish order should
-  /// be respected.
-  ///
-  /// If a `Subscription` has `enable_message_ordering` set to `true`, messages
-  /// published with the same non-empty `ordering_key` value will be delivered
-  /// to subscribers in the order in which they are received by the Pub/Sub
-  /// system. All `PubsubMessage`s published in a given `PublishRequest` must
-  /// specify the same `ordering_key` value.
-  core.String? orderingKey;
-
-  /// The time at which the message was published, populated by the server when
-  /// it receives the `Publish` call.
-  ///
-  /// It must not be populated by the publisher in a `Publish` call.
-  core.String? publishTime;
-
-  PubsubMessage();
-
-  PubsubMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('attributes')) {
-      attributes =
-          (_json['attributes'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('messageId')) {
-      messageId = _json['messageId'] as core.String;
-    }
-    if (_json.containsKey('orderingKey')) {
-      orderingKey = _json['orderingKey'] as core.String;
-    }
-    if (_json.containsKey('publishTime')) {
-      publishTime = _json['publishTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (attributes != null) 'attributes': attributes!,
-        if (data != null) 'data': data!,
-        if (messageId != null) 'messageId': messageId!,
-        if (orderingKey != null) 'orderingKey': orderingKey!,
-        if (publishTime != null) 'publishTime': publishTime!,
-      };
-}
+typedef PauseJobRequest = $Empty;
 
 /// Pub/Sub target.
 ///
@@ -1373,25 +1261,28 @@ class PubsubTarget {
   /// Required.
   core.String? topicName;
 
-  PubsubTarget();
+  PubsubTarget({
+    this.attributes,
+    this.data,
+    this.topicName,
+  });
 
-  PubsubTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('attributes')) {
-      attributes =
-          (_json['attributes'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('topicName')) {
-      topicName = _json['topicName'] as core.String;
-    }
-  }
+  PubsubTarget.fromJson(core.Map _json)
+      : this(
+          attributes: _json.containsKey('attributes')
+              ? (_json['attributes'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+          topicName: _json.containsKey('topicName')
+              ? _json['topicName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (attributes != null) 'attributes': attributes!,
@@ -1401,15 +1292,7 @@ class PubsubTarget {
 }
 
 /// Request message for ResumeJob.
-class ResumeJobRequest {
-  ResumeJobRequest();
-
-  ResumeJobRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ResumeJobRequest = $Empty;
 
 /// Settings that determine the retry behavior.
 ///
@@ -1461,25 +1344,32 @@ class RetryConfig {
   /// values are not allowed.
   core.int? retryCount;
 
-  RetryConfig();
+  RetryConfig({
+    this.maxBackoffDuration,
+    this.maxDoublings,
+    this.maxRetryDuration,
+    this.minBackoffDuration,
+    this.retryCount,
+  });
 
-  RetryConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('maxBackoffDuration')) {
-      maxBackoffDuration = _json['maxBackoffDuration'] as core.String;
-    }
-    if (_json.containsKey('maxDoublings')) {
-      maxDoublings = _json['maxDoublings'] as core.int;
-    }
-    if (_json.containsKey('maxRetryDuration')) {
-      maxRetryDuration = _json['maxRetryDuration'] as core.String;
-    }
-    if (_json.containsKey('minBackoffDuration')) {
-      minBackoffDuration = _json['minBackoffDuration'] as core.String;
-    }
-    if (_json.containsKey('retryCount')) {
-      retryCount = _json['retryCount'] as core.int;
-    }
-  }
+  RetryConfig.fromJson(core.Map _json)
+      : this(
+          maxBackoffDuration: _json.containsKey('maxBackoffDuration')
+              ? _json['maxBackoffDuration'] as core.String
+              : null,
+          maxDoublings: _json.containsKey('maxDoublings')
+              ? _json['maxDoublings'] as core.int
+              : null,
+          maxRetryDuration: _json.containsKey('maxRetryDuration')
+              ? _json['maxRetryDuration'] as core.String
+              : null,
+          minBackoffDuration: _json.containsKey('minBackoffDuration')
+              ? _json['minBackoffDuration'] as core.String
+              : null,
+          retryCount: _json.containsKey('retryCount')
+              ? _json['retryCount'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maxBackoffDuration != null)
@@ -1493,15 +1383,7 @@ class RetryConfig {
 }
 
 /// Request message for forcing a job to run now using RunJob.
-class RunJobRequest {
-  RunJobRequest();
-
-  RunJobRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef RunJobRequest = $Empty;
 
 /// The `Status` type defines a logical error model that is suitable for
 /// different programming environments, including REST APIs and RPC APIs.
@@ -1510,49 +1392,4 @@ class RunJobRequest {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;

@@ -14,11 +14,9 @@
 
 /// Notebooks API - v1
 ///
-/// AI Platform Notebooks API is used to manage notebook resources in Google
-/// Cloud.
+/// Notebooks API is used to manage notebook resources in Google Cloud.
 ///
-/// For more information, see
-/// <https://cloud.google.com/ai-platform/notebooks/docs/>
+/// For more information, see <https://cloud.google.com/notebooks/docs/>
 ///
 /// Create an instance of [AIPlatformNotebooksApi] to access these resources:
 ///
@@ -28,6 +26,7 @@
 ///     - [ProjectsLocationsExecutionsResource]
 ///     - [ProjectsLocationsInstancesResource]
 ///     - [ProjectsLocationsOperationsResource]
+///     - [ProjectsLocationsRuntimesResource]
 ///     - [ProjectsLocationsSchedulesResource]
 library notebooks.v1;
 
@@ -38,15 +37,17 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
-/// AI Platform Notebooks API is used to manage notebook resources in Google
-/// Cloud.
+/// Notebooks API is used to manage notebook resources in Google Cloud.
 class AIPlatformNotebooksApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -81,6 +82,8 @@ class ProjectsLocationsResource {
       ProjectsLocationsInstancesResource(_requester);
   ProjectsLocationsOperationsResource get operations =>
       ProjectsLocationsOperationsResource(_requester);
+  ProjectsLocationsRuntimesResource get runtimes =>
+      ProjectsLocationsRuntimesResource(_requester);
   ProjectsLocationsSchedulesResource get schedules =>
       ProjectsLocationsSchedulesResource(_requester);
 
@@ -128,11 +131,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -206,7 +213,7 @@ class ProjectsLocationsEnvironmentsResource {
     core.String? environmentId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (environmentId != null) 'environmentId': [environmentId],
       if ($fields != null) 'fields': [$fields],
@@ -350,7 +357,7 @@ class ProjectsLocationsExecutionsResource {
   ProjectsLocationsExecutionsResource(commons.ApiRequester client)
       : _requester = client;
 
-  /// Creates a new Scheduled Notebook in a given project and location.
+  /// Creates a new Execution in a given project and location.
   ///
   /// [request] - The metadata request object.
   ///
@@ -378,7 +385,7 @@ class ProjectsLocationsExecutionsResource {
     core.String? executionId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (executionId != null) 'executionId': [executionId],
       if ($fields != null) 'fields': [$fields],
@@ -437,7 +444,7 @@ class ProjectsLocationsExecutionsResource {
   /// Request parameters:
   ///
   /// [name] - Required. Format:
-  /// `projects/{project_id}/locations/{location}/schedules/{execution_id}`
+  /// `projects/{project_id}/locations/{location}/executions/{execution_id}`
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/executions/\[^/\]+$`.
   ///
@@ -477,7 +484,8 @@ class ProjectsLocationsExecutionsResource {
   /// `parent=projects/{project_id}/locations/{location}`
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [filter] - Filter applied to resulting executions.
+  /// [filter] - Filter applied to resulting executions. Currently only supports
+  /// filtering executions by a specified schedule_id. Format: `schedule_id=`
   ///
   /// [orderBy] - Sort by field.
   ///
@@ -558,7 +566,7 @@ class ProjectsLocationsInstancesResource {
     core.String? instanceId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (instanceId != null) 'instanceId': [instanceId],
       if ($fields != null) 'fields': [$fields],
@@ -662,12 +670,16 @@ class ProjectsLocationsInstancesResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -748,6 +760,15 @@ class ProjectsLocationsInstancesResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
   ///
+  /// [type] - Optional. The optional UpgradeType. Setting this field will
+  /// search for additional compute images to upgrade this instance.
+  /// Possible string values are:
+  /// - "UPGRADE_TYPE_UNSPECIFIED" : Upgrade type is not specified.
+  /// - "UPGRADE_FRAMEWORK" : Upgrade ML framework.
+  /// - "UPGRADE_OS" : Upgrade Operating System.
+  /// - "UPGRADE_CUDA" : Upgrade CUDA.
+  /// - "UPGRADE_ALL" : Upgrade All (OS, Framework and CUDA).
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -760,9 +781,11 @@ class ProjectsLocationsInstancesResource {
   /// this method will complete with the same error.
   async.Future<IsInstanceUpgradeableResponse> isUpgradeable(
     core.String notebookInstance, {
+    core.String? type,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (type != null) 'type': [type],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -854,7 +877,7 @@ class ProjectsLocationsInstancesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -900,7 +923,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -942,12 +965,54 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
 
     final _url = 'v1/' + core.Uri.encodeFull('$name') + ':reset';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Rollbacks a notebook instance to the previous version.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/instances/{instance_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> rollback(
+    RollbackInstanceRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':rollback';
 
     final _response = await _requester.request(
       _url,
@@ -984,7 +1049,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1030,7 +1095,7 @@ class ProjectsLocationsInstancesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1072,7 +1137,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1114,7 +1179,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1156,7 +1221,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1198,7 +1263,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1246,7 +1311,7 @@ class ProjectsLocationsInstancesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1262,6 +1327,134 @@ class ProjectsLocationsInstancesResource {
     );
     return TestIamPermissionsResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update Notebook Instance configurations.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/instances/{instance_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> updateConfig(
+    UpdateInstanceConfigRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':updateConfig';
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Add/update metadata items for an instance.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/instances/{instance_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [UpdateInstanceMetadataItemsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<UpdateInstanceMetadataItemsResponse> updateMetadataItems(
+    UpdateInstanceMetadataItemsRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':updateMetadataItems';
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return UpdateInstanceMetadataItemsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the Shielded instance configuration of a single Instance.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/instances/{instance_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> updateShieldedInstanceConfig(
+    UpdateShieldedInstanceConfigRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$name') + ':updateShieldedInstanceConfig';
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Upgrades a notebook instance to the latest version.
@@ -1290,7 +1483,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1334,7 +1527,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1391,7 +1584,7 @@ class ProjectsLocationsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1544,6 +1737,550 @@ class ProjectsLocationsOperationsResource {
   }
 }
 
+class ProjectsLocationsRuntimesResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsRuntimesResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a new Runtime in a given project and location.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Format:
+  /// `parent=projects/{project_id}/locations/{location}`
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [runtimeId] - Required. User-defined unique ID of this Runtime.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> create(
+    Runtime request,
+    core.String parent, {
+    core.String? runtimeId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (runtimeId != null) 'runtimeId': [runtimeId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/runtimes';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a single Runtime.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets details of a single Runtime.
+  ///
+  /// The location must be a regional endpoint rather than zonal.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Runtime].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Runtime> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Runtime.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the access control policy for a resource.
+  ///
+  /// Returns an empty policy if the resource exists and does not have a policy
+  /// set.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
+  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> getIamPolicy(
+    core.String resource, {
+    core.int? options_requestedPolicyVersion,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (options_requestedPolicyVersion != null)
+        'options.requestedPolicyVersion': ['${options_requestedPolicyVersion}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':getIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists Runtimes in a given project and location.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Format:
+  /// `parent=projects/{project_id}/locations/{location}`
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - Maximum return size of the list call.
+  ///
+  /// [pageToken] - A previous returned page token that can be used to continue
+  /// listing from the last result.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListRuntimesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListRuntimesResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/runtimes';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListRuntimesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Report and process a runtime event.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> reportEvent(
+    ReportRuntimeEventRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':reportEvent';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Resets a Managed Notebook Runtime.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> reset(
+    ResetRuntimeRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':reset';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Sets the access control policy on the specified resource.
+  ///
+  /// Replaces any existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`,
+  /// and `PERMISSION_DENIED` errors.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// specified. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> setIamPolicy(
+    SetIamPolicyRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':setIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Starts a Managed Notebook Runtime.
+  ///
+  /// Perform "Start" on GPU instances; "Resume" on CPU instances See:
+  /// https://cloud.google.com/compute/docs/instances/stop-start-instance
+  /// https://cloud.google.com/compute/docs/instances/suspend-resume-instance
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> start(
+    StartRuntimeRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':start';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Stops a Managed Notebook Runtime.
+  ///
+  /// Perform "Stop" on GPU instances; "Suspend" on CPU instances See:
+  /// https://cloud.google.com/compute/docs/instances/stop-start-instance
+  /// https://cloud.google.com/compute/docs/instances/suspend-resume-instance
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> stop(
+    StopRuntimeRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':stop';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Switch a Managed Notebook Runtime.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Format:
+  /// `projects/{project_id}/locations/{location}/runtimes/{runtime_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> switch_(
+    SwitchRuntimeRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':switch';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns permissions that a caller has on the specified resource.
+  ///
+  /// If the resource does not exist, this will return an empty set of
+  /// permissions, not a `NOT_FOUND` error. Note: This operation is designed to
+  /// be used for building permission-aware UIs and command-line tools, not for
+  /// authorization checking. This operation may "fail open" without warning.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy detail is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/runtimes/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TestIamPermissionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TestIamPermissionsResponse> testIamPermissions(
+    TestIamPermissionsRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$resource') + ':testIamPermissions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class ProjectsLocationsSchedulesResource {
   final commons.ApiRequester _requester;
 
@@ -1578,7 +2315,7 @@ class ProjectsLocationsSchedulesResource {
     core.String? scheduleId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (scheduleId != null) 'scheduleId': [scheduleId],
       if ($fields != null) 'fields': [$fields],
@@ -1749,7 +2486,7 @@ class ProjectsLocationsSchedulesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1794,16 +2531,18 @@ class AcceleratorConfig {
   /// - "TPU_V3" : (Coming soon) Accelerator type is TPU V3.
   core.String? type;
 
-  AcceleratorConfig();
+  AcceleratorConfig({
+    this.coreCount,
+    this.type,
+  });
 
-  AcceleratorConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('coreCount')) {
-      coreCount = _json['coreCount'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  AcceleratorConfig.fromJson(core.Map _json)
+      : this(
+          coreCount: _json.containsKey('coreCount')
+              ? _json['coreCount'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (coreCount != null) 'coreCount': coreCount!,
@@ -1811,19 +2550,20 @@ class AcceleratorConfig {
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -1855,45 +2595,40 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
-
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelOperationRequest = $Empty;
 
 /// Definition of a container image for starting a notebook instance with the
 /// environment installed in a container.
@@ -1910,20 +2645,45 @@ class ContainerImage {
   /// If not specified, this defaults to the latest tag.
   core.String? tag;
 
-  ContainerImage();
+  ContainerImage({
+    this.repository,
+    this.tag,
+  });
 
-  ContainerImage.fromJson(core.Map _json) {
-    if (_json.containsKey('repository')) {
-      repository = _json['repository'] as core.String;
-    }
-    if (_json.containsKey('tag')) {
-      tag = _json['tag'] as core.String;
-    }
-  }
+  ContainerImage.fromJson(core.Map _json)
+      : this(
+          repository: _json.containsKey('repository')
+              ? _json['repository'] as core.String
+              : null,
+          tag: _json.containsKey('tag') ? _json['tag'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (repository != null) 'repository': repository!,
         if (tag != null) 'tag': tag!,
+      };
+}
+
+/// Parameters used in Dataproc JobType executions.
+class DataprocParameters {
+  /// URI for cluster used to run Dataproc execution.
+  ///
+  /// Format: `projects/{PROJECT_ID}/regions/{REGION}/clusters/{CLUSTER_NAME}`
+  core.String? cluster;
+
+  DataprocParameters({
+    this.cluster,
+  });
+
+  DataprocParameters.fromJson(core.Map _json)
+      : this(
+          cluster: _json.containsKey('cluster')
+              ? _json['cluster'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cluster != null) 'cluster': cluster!,
       };
 }
 
@@ -1972,7 +2732,7 @@ class Disk {
   /// will fail if you attempt to attach a persistent disk in any other format
   /// than SCSI. Local SSDs can use either NVME or SCSI. For performance
   /// characteristics of SCSI over NVMe, see Local SSD performance. Valid
-  /// values: NVME SCSI
+  /// values: * NVME * SCSI
   core.String? interface;
 
   /// Type of the resource.
@@ -1989,7 +2749,7 @@ class Disk {
   /// The mode in which to attach this disk, either READ_WRITE or READ_ONLY.
   ///
   /// If not specified, the default is to attach the disk in READ_WRITE mode.
-  /// Valid values: READ_ONLY READ_WRITE
+  /// Valid values: * READ_ONLY * READ_WRITE
   core.String? mode;
 
   /// Indicates a valid partial or full URL to an existing Persistent Disk
@@ -1998,63 +2758,66 @@ class Disk {
 
   /// Indicates the type of the disk, either SCRATCH or PERSISTENT.
   ///
-  /// Valid values: PERSISTENT SCRATCH
+  /// Valid values: * PERSISTENT * SCRATCH
   core.String? type;
 
-  Disk();
+  Disk({
+    this.autoDelete,
+    this.boot,
+    this.deviceName,
+    this.diskSizeGb,
+    this.guestOsFeatures,
+    this.index,
+    this.interface,
+    this.kind,
+    this.licenses,
+    this.mode,
+    this.source,
+    this.type,
+  });
 
-  Disk.fromJson(core.Map _json) {
-    if (_json.containsKey('autoDelete')) {
-      autoDelete = _json['autoDelete'] as core.bool;
-    }
-    if (_json.containsKey('boot')) {
-      boot = _json['boot'] as core.bool;
-    }
-    if (_json.containsKey('deviceName')) {
-      deviceName = _json['deviceName'] as core.String;
-    }
-    if (_json.containsKey('diskSizeGb')) {
-      diskSizeGb = _json['diskSizeGb'] as core.String;
-    }
-    if (_json.containsKey('guestOsFeatures')) {
-      guestOsFeatures = (_json['guestOsFeatures'] as core.List)
-          .map<GuestOsFeature>((value) => GuestOsFeature.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('index')) {
-      index = _json['index'] as core.String;
-    }
-    if (_json.containsKey('interface')) {
-      interface = _json['interface'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('licenses')) {
-      licenses = (_json['licenses'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('mode')) {
-      mode = _json['mode'] as core.String;
-    }
-    if (_json.containsKey('source')) {
-      source = _json['source'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Disk.fromJson(core.Map _json)
+      : this(
+          autoDelete: _json.containsKey('autoDelete')
+              ? _json['autoDelete'] as core.bool
+              : null,
+          boot: _json.containsKey('boot') ? _json['boot'] as core.bool : null,
+          deviceName: _json.containsKey('deviceName')
+              ? _json['deviceName'] as core.String
+              : null,
+          diskSizeGb: _json.containsKey('diskSizeGb')
+              ? _json['diskSizeGb'] as core.String
+              : null,
+          guestOsFeatures: _json.containsKey('guestOsFeatures')
+              ? (_json['guestOsFeatures'] as core.List)
+                  .map((value) => GuestOsFeature.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          index:
+              _json.containsKey('index') ? _json['index'] as core.String : null,
+          interface: _json.containsKey('interface')
+              ? _json['interface'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          licenses: _json.containsKey('licenses')
+              ? (_json['licenses'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mode: _json.containsKey('mode') ? _json['mode'] as core.String : null,
+          source: _json.containsKey('source')
+              ? _json['source'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (autoDelete != null) 'autoDelete': autoDelete!,
         if (boot != null) 'boot': boot!,
         if (deviceName != null) 'deviceName': deviceName!,
         if (diskSizeGb != null) 'diskSizeGb': diskSizeGb!,
-        if (guestOsFeatures != null)
-          'guestOsFeatures':
-              guestOsFeatures!.map((value) => value.toJson()).toList(),
+        if (guestOsFeatures != null) 'guestOsFeatures': guestOsFeatures!,
         if (index != null) 'index': index!,
         if (interface != null) 'interface': interface!,
         if (kind != null) 'kind': kind!,
@@ -2072,14 +2835,34 @@ class Disk {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Represents a custom encryption key configuration that can be applied to a
+/// resource.
+///
+/// This will encrypt all disks in Virtual Machine.
+class EncryptionConfig {
+  /// The Cloud KMS resource identifier of the customer-managed encryption key
+  /// used to protect a resource, such as a disks.
+  ///
+  /// It has the following format:
+  /// `projects/{PROJECT_ID}/locations/{REGION}/keyRings/{KEY_RING_NAME}/cryptoKeys/{KEY_NAME}`
+  core.String? kmsKey;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  EncryptionConfig({
+    this.kmsKey,
+  });
+
+  EncryptionConfig.fromJson(core.Map _json)
+      : this(
+          kmsKey: _json.containsKey('kmsKey')
+              ? _json['kmsKey'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kmsKey != null) 'kmsKey': kmsKey!,
+      };
 }
 
 /// Definition of a software environment that is used to start a notebook
@@ -2117,42 +2900,100 @@ class Environment {
   /// Use a Compute Engine VM image to start the notebook instance.
   VmImage? vmImage;
 
-  Environment();
+  Environment({
+    this.containerImage,
+    this.createTime,
+    this.description,
+    this.displayName,
+    this.name,
+    this.postStartupScript,
+    this.vmImage,
+  });
 
-  Environment.fromJson(core.Map _json) {
-    if (_json.containsKey('containerImage')) {
-      containerImage = ContainerImage.fromJson(
-          _json['containerImage'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('postStartupScript')) {
-      postStartupScript = _json['postStartupScript'] as core.String;
-    }
-    if (_json.containsKey('vmImage')) {
-      vmImage = VmImage.fromJson(
-          _json['vmImage'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Environment.fromJson(core.Map _json)
+      : this(
+          containerImage: _json.containsKey('containerImage')
+              ? ContainerImage.fromJson(_json['containerImage']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          postStartupScript: _json.containsKey('postStartupScript')
+              ? _json['postStartupScript'] as core.String
+              : null,
+          vmImage: _json.containsKey('vmImage')
+              ? VmImage.fromJson(
+                  _json['vmImage'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (containerImage != null) 'containerImage': containerImage!.toJson(),
+        if (containerImage != null) 'containerImage': containerImage!,
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
         if (name != null) 'name': name!,
         if (postStartupScript != null) 'postStartupScript': postStartupScript!,
-        if (vmImage != null) 'vmImage': vmImage!.toJson(),
+        if (vmImage != null) 'vmImage': vmImage!,
+      };
+}
+
+/// The definition of an Event for a managed / semi-managed notebook instance.
+class Event {
+  /// Event details.
+  ///
+  /// This field is used to pass event information.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? details;
+
+  /// Event report time.
+  core.String? reportTime;
+
+  /// Event type.
+  /// Possible string values are:
+  /// - "EVENT_TYPE_UNSPECIFIED" : Event is not specified.
+  /// - "IDLE" : The instance / runtime is idle
+  /// - "HEARTBEAT" : The instance / runtime is available. This event indicates
+  /// that instance / runtime underlying compute is operational.
+  /// - "HEALTH" : The instance / runtime health is available. This event
+  /// indicates that instance / runtime health information.
+  core.String? type;
+
+  Event({
+    this.details,
+    this.reportTime,
+    this.type,
+  });
+
+  Event.fromJson(core.Map _json)
+      : this(
+          details: _json.containsKey('details')
+              ? (_json['details'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          reportTime: _json.containsKey('reportTime')
+              ? _json['reportTime'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (details != null) 'details': details!,
+        if (reportTime != null) 'reportTime': reportTime!,
+        if (type != null) 'type': type!,
       };
 }
 
@@ -2176,10 +3017,15 @@ class Execution {
   /// execute metadata including name, hardware spec, region, labels, etc.
   ExecutionTemplate? executionTemplate;
 
+  /// The URI of the external job used to execute the notebook.
+  ///
+  /// Output only.
+  core.String? jobUri;
+
   /// The resource name of the execute.
   ///
   /// Format:
-  /// \`projects/{project_id}/locations/{location}/execution/{execution_id}
+  /// `projects/{project_id}/locations/{location}/executions/{execution_id}`
   ///
   /// Output only.
   core.String? name;
@@ -2203,6 +3049,9 @@ class Execution {
   /// describe the reason for the cancellation.
   /// - "CANCELLED" : The job has been cancelled. `error_message` should
   /// describe the reason for the cancellation.
+  /// - "EXPIRED" : The job has become expired (relevant to Vertex AI jobs)
+  /// https://cloud.google.com/vertex-ai/docs/reference/rest/v1/JobState
+  /// - "INITIALIZING" : The Execution is being created.
   core.String? state;
 
   /// Time the Execution was last updated.
@@ -2210,42 +3059,53 @@ class Execution {
   /// Output only.
   core.String? updateTime;
 
-  Execution();
+  Execution({
+    this.createTime,
+    this.description,
+    this.displayName,
+    this.executionTemplate,
+    this.jobUri,
+    this.name,
+    this.outputNotebookFile,
+    this.state,
+    this.updateTime,
+  });
 
-  Execution.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('executionTemplate')) {
-      executionTemplate = ExecutionTemplate.fromJson(
-          _json['executionTemplate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('outputNotebookFile')) {
-      outputNotebookFile = _json['outputNotebookFile'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Execution.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          executionTemplate: _json.containsKey('executionTemplate')
+              ? ExecutionTemplate.fromJson(_json['executionTemplate']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          jobUri: _json.containsKey('jobUri')
+              ? _json['jobUri'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          outputNotebookFile: _json.containsKey('outputNotebookFile')
+              ? _json['outputNotebookFile'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (executionTemplate != null)
-          'executionTemplate': executionTemplate!.toJson(),
+        if (executionTemplate != null) 'executionTemplate': executionTemplate!,
+        if (jobUri != null) 'jobUri': jobUri!,
         if (name != null) 'name': name!,
         if (outputNotebookFile != null)
           'outputNotebookFile': outputNotebookFile!,
@@ -2266,12 +3126,30 @@ class ExecutionTemplate {
   /// https://cloud.google.com/ai-platform/deep-learning-containers/docs/choosing-container
   core.String? containerImageUri;
 
+  /// Parameters used in Dataproc JobType executions.
+  DataprocParameters? dataprocParameters;
+
   /// Path to the notebook file to execute.
   ///
   /// Must be in a Google Cloud Storage bucket. Format:
-  /// gs://{project_id}/{folder}/{notebook_file_name} Ex:
-  /// gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb
+  /// `gs://{bucket_name}/{folder}/{notebook_file_name}` Ex:
+  /// `gs://notebook_user/scheduled_notebooks/sentiment_notebook.ipynb`
   core.String? inputNotebookFile;
+
+  /// The type of Job to be used on this execution.
+  /// Possible string values are:
+  /// - "JOB_TYPE_UNSPECIFIED" : No type specified.
+  /// - "VERTEX_AI" : Custom Job in `aiplatform.googleapis.com`. Default value
+  /// for an execution.
+  /// - "DATAPROC" : Run execution on a cluster with Dataproc as a job.
+  /// https://cloud.google.com/dataproc/docs/reference/rest/v1/projects.regions.jobs
+  core.String? jobType;
+
+  /// Name of the kernel spec to use.
+  ///
+  /// This must be specified if the kernel spec name on the execution target
+  /// does not match the name in the input notebook file.
+  core.String? kernelSpec;
 
   /// Labels for execution.
   ///
@@ -2297,13 +3175,14 @@ class ExecutionTemplate {
   /// `complex_model_m_p100` - `standard_v100` - `large_model_v100` -
   /// `complex_model_m_v100` - `complex_model_l_v100` Finally, if you want to
   /// use a TPU for training, specify `cloud_tpu` in this field. Learn more
-  /// about the \[special configuration options for training with TPU.
+  /// about the
+  /// [special configuration options for training with TPU](https://cloud.google.com/ai-platform/training/docs/using-tpus#configuring_a_custom_tpu_machine).
   core.String? masterType;
 
   /// Path to the notebook folder to write to.
   ///
   /// Must be in a Google Cloud Storage bucket path. Format:
-  /// gs://{project_id}/{folder} Ex: gs://notebook_user/scheduled_notebooks
+  /// `gs://{bucket_name}/{folder}` Ex: `gs://notebook_user/scheduled_notebooks`
   core.String? outputNotebookFolder;
 
   /// Parameters used within the 'input_notebook_file' notebook.
@@ -2314,10 +3193,12 @@ class ExecutionTemplate {
   /// Ref https://papermill.readthedocs.io/en/latest/usage-parameterize.html on
   /// how to specifying parameters in the input notebook and pass them here in
   /// an YAML file. Ex:
-  /// gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml
+  /// `gs://notebook_user/scheduled_notebooks/sentiment_notebook_params.yaml`
   core.String? paramsYamlFile;
 
   /// Scale tier of the hardware used for notebook execution.
+  ///
+  /// DEPRECATED Will be discontinued. As right now only CUSTOM is supported.
   ///
   /// Required.
   /// Possible string values are:
@@ -2332,64 +3213,109 @@ class ExecutionTemplate {
   /// - "CUSTOM" : The CUSTOM tier is not a set tier, but rather enables you to
   /// use your own cluster specification. When you use this tier, set values to
   /// configure your processing cluster according to these guidelines: * You
-  /// _must_ set `TrainingInput.masterType` to specify the type of machine to
-  /// use for your master node. This is the only required setting. * You _may_
-  /// set `TrainingInput.workerCount` to specify the number of workers to use.
-  /// If you specify one or more workers, you _must_ also set
-  /// `TrainingInput.workerType` to specify the type of machine to use for your
-  /// worker nodes. * You _may_ set `TrainingInput.parameterServerCount` to
-  /// specify the number of parameter servers to use. If you specify one or more
-  /// parameter servers, you _must_ also set `TrainingInput.parameterServerType`
-  /// to specify the type of machine to use for your parameter servers. Note
-  /// that all of your workers must use the same machine type, which can be
-  /// different from your parameter server type and master type. Your parameter
-  /// servers must likewise use the same machine type, which can be different
-  /// from your worker type and master type.
+  /// _must_ set `ExecutionTemplate.masterType` to specify the type of machine
+  /// to use for your master node. This is the only required setting.
   core.String? scaleTier;
 
-  ExecutionTemplate();
+  /// The email address of a service account to use when running the execution.
+  ///
+  /// You must have the `iam.serviceAccounts.actAs` permission for the specified
+  /// service account.
+  core.String? serviceAccount;
 
-  ExecutionTemplate.fromJson(core.Map _json) {
-    if (_json.containsKey('acceleratorConfig')) {
-      acceleratorConfig = SchedulerAcceleratorConfig.fromJson(
-          _json['acceleratorConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('containerImageUri')) {
-      containerImageUri = _json['containerImageUri'] as core.String;
-    }
-    if (_json.containsKey('inputNotebookFile')) {
-      inputNotebookFile = _json['inputNotebookFile'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('masterType')) {
-      masterType = _json['masterType'] as core.String;
-    }
-    if (_json.containsKey('outputNotebookFolder')) {
-      outputNotebookFolder = _json['outputNotebookFolder'] as core.String;
-    }
-    if (_json.containsKey('parameters')) {
-      parameters = _json['parameters'] as core.String;
-    }
-    if (_json.containsKey('paramsYamlFile')) {
-      paramsYamlFile = _json['paramsYamlFile'] as core.String;
-    }
-    if (_json.containsKey('scaleTier')) {
-      scaleTier = _json['scaleTier'] as core.String;
-    }
-  }
+  /// The name of a Vertex AI \[Tensorboard\] resource to which this execution
+  /// will upload Tensorboard logs.
+  ///
+  /// Format:
+  /// `projects/{project}/locations/{location}/tensorboards/{tensorboard}`
+  core.String? tensorboard;
+
+  /// Parameters used in Vertex AI JobType executions.
+  VertexAIParameters? vertexAiParameters;
+
+  ExecutionTemplate({
+    this.acceleratorConfig,
+    this.containerImageUri,
+    this.dataprocParameters,
+    this.inputNotebookFile,
+    this.jobType,
+    this.kernelSpec,
+    this.labels,
+    this.masterType,
+    this.outputNotebookFolder,
+    this.parameters,
+    this.paramsYamlFile,
+    this.scaleTier,
+    this.serviceAccount,
+    this.tensorboard,
+    this.vertexAiParameters,
+  });
+
+  ExecutionTemplate.fromJson(core.Map _json)
+      : this(
+          acceleratorConfig: _json.containsKey('acceleratorConfig')
+              ? SchedulerAcceleratorConfig.fromJson(_json['acceleratorConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          containerImageUri: _json.containsKey('containerImageUri')
+              ? _json['containerImageUri'] as core.String
+              : null,
+          dataprocParameters: _json.containsKey('dataprocParameters')
+              ? DataprocParameters.fromJson(_json['dataprocParameters']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          inputNotebookFile: _json.containsKey('inputNotebookFile')
+              ? _json['inputNotebookFile'] as core.String
+              : null,
+          jobType: _json.containsKey('jobType')
+              ? _json['jobType'] as core.String
+              : null,
+          kernelSpec: _json.containsKey('kernelSpec')
+              ? _json['kernelSpec'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          masterType: _json.containsKey('masterType')
+              ? _json['masterType'] as core.String
+              : null,
+          outputNotebookFolder: _json.containsKey('outputNotebookFolder')
+              ? _json['outputNotebookFolder'] as core.String
+              : null,
+          parameters: _json.containsKey('parameters')
+              ? _json['parameters'] as core.String
+              : null,
+          paramsYamlFile: _json.containsKey('paramsYamlFile')
+              ? _json['paramsYamlFile'] as core.String
+              : null,
+          scaleTier: _json.containsKey('scaleTier')
+              ? _json['scaleTier'] as core.String
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          tensorboard: _json.containsKey('tensorboard')
+              ? _json['tensorboard'] as core.String
+              : null,
+          vertexAiParameters: _json.containsKey('vertexAiParameters')
+              ? VertexAIParameters.fromJson(_json['vertexAiParameters']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (acceleratorConfig != null)
-          'acceleratorConfig': acceleratorConfig!.toJson(),
+        if (acceleratorConfig != null) 'acceleratorConfig': acceleratorConfig!,
         if (containerImageUri != null) 'containerImageUri': containerImageUri!,
+        if (dataprocParameters != null)
+          'dataprocParameters': dataprocParameters!,
         if (inputNotebookFile != null) 'inputNotebookFile': inputNotebookFile!,
+        if (jobType != null) 'jobType': jobType!,
+        if (kernelSpec != null) 'kernelSpec': kernelSpec!,
         if (labels != null) 'labels': labels!,
         if (masterType != null) 'masterType': masterType!,
         if (outputNotebookFolder != null)
@@ -2397,6 +3323,10 @@ class ExecutionTemplate {
         if (parameters != null) 'parameters': parameters!,
         if (paramsYamlFile != null) 'paramsYamlFile': paramsYamlFile!,
         if (scaleTier != null) 'scaleTier': scaleTier!,
+        if (serviceAccount != null) 'serviceAccount': serviceAccount!,
+        if (tensorboard != null) 'tensorboard': tensorboard!,
+        if (vertexAiParameters != null)
+          'vertexAiParameters': vertexAiParameters!,
       };
 }
 
@@ -2406,7 +3336,7 @@ class ExecutionTemplate {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -2418,56 +3348,7 @@ class ExecutionTemplate {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Response for checking if a notebook instance is healthy.
 class GetInstanceHealthResponse {
@@ -2495,22 +3376,26 @@ class GetInstanceHealthResponse {
   /// running. Applies to ACTIVE state.
   core.String? healthState;
 
-  GetInstanceHealthResponse();
+  GetInstanceHealthResponse({
+    this.healthInfo,
+    this.healthState,
+  });
 
-  GetInstanceHealthResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('healthInfo')) {
-      healthInfo =
-          (_json['healthInfo'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('healthState')) {
-      healthState = _json['healthState'] as core.String;
-    }
-  }
+  GetInstanceHealthResponse.fromJson(core.Map _json)
+      : this(
+          healthInfo: _json.containsKey('healthInfo')
+              ? (_json['healthInfo'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          healthState: _json.containsKey('healthState')
+              ? _json['healthState'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (healthInfo != null) 'healthInfo': healthInfo!,
@@ -2523,17 +3408,18 @@ class GuestOsFeature {
   /// The ID of a supported feature.
   ///
   /// Read Enabling guest operating system features to see a list of available
-  /// options. Valid values: FEATURE_TYPE_UNSPECIFIED MULTI_IP_SUBNET
-  /// SECURE_BOOT UEFI_COMPATIBLE VIRTIO_SCSI_MULTIQUEUE WINDOWS
+  /// options. Valid values: * FEATURE_TYPE_UNSPECIFIED * MULTI_IP_SUBNET *
+  /// SECURE_BOOT * UEFI_COMPATIBLE * VIRTIO_SCSI_MULTIQUEUE * WINDOWS
   core.String? type;
 
-  GuestOsFeature();
+  GuestOsFeature({
+    this.type,
+  });
 
-  GuestOsFeature.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  GuestOsFeature.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (type != null) 'type': type!,
@@ -2574,6 +3460,11 @@ class Instance {
   ///
   /// Output only.
   core.String? createTime;
+
+  /// Email address of entity that sent original CreateInstance request.
+  ///
+  /// Output only.
+  core.String? creator;
 
   /// Specify a custom Cloud Storage path where the GPU driver is stored.
   ///
@@ -2661,6 +3552,17 @@ class Instance {
   /// Format: `projects/{project_id}/global/networks/{network_id}`
   core.String? network;
 
+  /// The type of vNIC to be used on this interface.
+  ///
+  /// This may be gVNIC or VirtioNet.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "UNSPECIFIED_NIC_TYPE" : No type specified.
+  /// - "VIRTIO_NET" : VIRTIO
+  /// - "GVNIC" : GVNIC
+  core.String? nicType;
+
   /// If true, the notebook instance will not register with the proxy.
   core.bool? noProxyAccess;
 
@@ -2677,13 +3579,22 @@ class Instance {
   /// fully boots up.
   ///
   /// The path must be a URL or Cloud Storage path
-  /// (gs://path-to-file/file-name).
+  /// (`gs://path-to-file/file-name`).
   core.String? postStartupScript;
 
   /// The proxy endpoint that is used to access the Jupyter notebook.
   ///
   /// Output only.
   core.String? proxyUri;
+
+  /// The optional reservation affinity.
+  ///
+  /// Setting this field will apply the specified
+  /// [Zonal Compute Reservation](https://cloud.google.com/compute/docs/instances/reserving-zonal-resources)
+  /// to this notebook instance.
+  ///
+  /// Optional.
+  ReservationAffinity? reservationAffinity;
 
   /// The service account on this instance, giving access to other Google Cloud
   /// services.
@@ -2729,6 +3640,8 @@ class Instance {
   /// - "UPGRADING" : The instance is upgrading.
   /// - "INITIALIZING" : The instance is being created.
   /// - "REGISTERING" : The instance is getting registered.
+  /// - "SUSPENDING" : The instance is suspending.
+  /// - "SUSPENDED" : The instance is suspended.
   core.String? state;
 
   /// The name of the subnet that this instance is in.
@@ -2754,148 +3667,190 @@ class Instance {
   /// Use a Compute Engine VM image to start the notebook instance.
   VmImage? vmImage;
 
-  Instance();
+  Instance({
+    this.acceleratorConfig,
+    this.bootDiskSizeGb,
+    this.bootDiskType,
+    this.containerImage,
+    this.createTime,
+    this.creator,
+    this.customGpuDriverPath,
+    this.dataDiskSizeGb,
+    this.dataDiskType,
+    this.diskEncryption,
+    this.disks,
+    this.installGpuDriver,
+    this.instanceOwners,
+    this.kmsKey,
+    this.labels,
+    this.machineType,
+    this.metadata,
+    this.name,
+    this.network,
+    this.nicType,
+    this.noProxyAccess,
+    this.noPublicIp,
+    this.noRemoveDataDisk,
+    this.postStartupScript,
+    this.proxyUri,
+    this.reservationAffinity,
+    this.serviceAccount,
+    this.serviceAccountScopes,
+    this.shieldedInstanceConfig,
+    this.state,
+    this.subnet,
+    this.tags,
+    this.updateTime,
+    this.upgradeHistory,
+    this.vmImage,
+  });
 
-  Instance.fromJson(core.Map _json) {
-    if (_json.containsKey('acceleratorConfig')) {
-      acceleratorConfig = AcceleratorConfig.fromJson(
-          _json['acceleratorConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('bootDiskSizeGb')) {
-      bootDiskSizeGb = _json['bootDiskSizeGb'] as core.String;
-    }
-    if (_json.containsKey('bootDiskType')) {
-      bootDiskType = _json['bootDiskType'] as core.String;
-    }
-    if (_json.containsKey('containerImage')) {
-      containerImage = ContainerImage.fromJson(
-          _json['containerImage'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('customGpuDriverPath')) {
-      customGpuDriverPath = _json['customGpuDriverPath'] as core.String;
-    }
-    if (_json.containsKey('dataDiskSizeGb')) {
-      dataDiskSizeGb = _json['dataDiskSizeGb'] as core.String;
-    }
-    if (_json.containsKey('dataDiskType')) {
-      dataDiskType = _json['dataDiskType'] as core.String;
-    }
-    if (_json.containsKey('diskEncryption')) {
-      diskEncryption = _json['diskEncryption'] as core.String;
-    }
-    if (_json.containsKey('disks')) {
-      disks = (_json['disks'] as core.List)
-          .map<Disk>((value) =>
-              Disk.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('installGpuDriver')) {
-      installGpuDriver = _json['installGpuDriver'] as core.bool;
-    }
-    if (_json.containsKey('instanceOwners')) {
-      instanceOwners = (_json['instanceOwners'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('kmsKey')) {
-      kmsKey = _json['kmsKey'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('network')) {
-      network = _json['network'] as core.String;
-    }
-    if (_json.containsKey('noProxyAccess')) {
-      noProxyAccess = _json['noProxyAccess'] as core.bool;
-    }
-    if (_json.containsKey('noPublicIp')) {
-      noPublicIp = _json['noPublicIp'] as core.bool;
-    }
-    if (_json.containsKey('noRemoveDataDisk')) {
-      noRemoveDataDisk = _json['noRemoveDataDisk'] as core.bool;
-    }
-    if (_json.containsKey('postStartupScript')) {
-      postStartupScript = _json['postStartupScript'] as core.String;
-    }
-    if (_json.containsKey('proxyUri')) {
-      proxyUri = _json['proxyUri'] as core.String;
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountScopes')) {
-      serviceAccountScopes = (_json['serviceAccountScopes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('shieldedInstanceConfig')) {
-      shieldedInstanceConfig = ShieldedInstanceConfig.fromJson(
-          _json['shieldedInstanceConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('subnet')) {
-      subnet = _json['subnet'] as core.String;
-    }
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('upgradeHistory')) {
-      upgradeHistory = (_json['upgradeHistory'] as core.List)
-          .map<UpgradeHistoryEntry>((value) => UpgradeHistoryEntry.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('vmImage')) {
-      vmImage = VmImage.fromJson(
-          _json['vmImage'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Instance.fromJson(core.Map _json)
+      : this(
+          acceleratorConfig: _json.containsKey('acceleratorConfig')
+              ? AcceleratorConfig.fromJson(_json['acceleratorConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          bootDiskSizeGb: _json.containsKey('bootDiskSizeGb')
+              ? _json['bootDiskSizeGb'] as core.String
+              : null,
+          bootDiskType: _json.containsKey('bootDiskType')
+              ? _json['bootDiskType'] as core.String
+              : null,
+          containerImage: _json.containsKey('containerImage')
+              ? ContainerImage.fromJson(_json['containerImage']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          creator: _json.containsKey('creator')
+              ? _json['creator'] as core.String
+              : null,
+          customGpuDriverPath: _json.containsKey('customGpuDriverPath')
+              ? _json['customGpuDriverPath'] as core.String
+              : null,
+          dataDiskSizeGb: _json.containsKey('dataDiskSizeGb')
+              ? _json['dataDiskSizeGb'] as core.String
+              : null,
+          dataDiskType: _json.containsKey('dataDiskType')
+              ? _json['dataDiskType'] as core.String
+              : null,
+          diskEncryption: _json.containsKey('diskEncryption')
+              ? _json['diskEncryption'] as core.String
+              : null,
+          disks: _json.containsKey('disks')
+              ? (_json['disks'] as core.List)
+                  .map((value) => Disk.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          installGpuDriver: _json.containsKey('installGpuDriver')
+              ? _json['installGpuDriver'] as core.bool
+              : null,
+          instanceOwners: _json.containsKey('instanceOwners')
+              ? (_json['instanceOwners'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          kmsKey: _json.containsKey('kmsKey')
+              ? _json['kmsKey'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+          nicType: _json.containsKey('nicType')
+              ? _json['nicType'] as core.String
+              : null,
+          noProxyAccess: _json.containsKey('noProxyAccess')
+              ? _json['noProxyAccess'] as core.bool
+              : null,
+          noPublicIp: _json.containsKey('noPublicIp')
+              ? _json['noPublicIp'] as core.bool
+              : null,
+          noRemoveDataDisk: _json.containsKey('noRemoveDataDisk')
+              ? _json['noRemoveDataDisk'] as core.bool
+              : null,
+          postStartupScript: _json.containsKey('postStartupScript')
+              ? _json['postStartupScript'] as core.String
+              : null,
+          proxyUri: _json.containsKey('proxyUri')
+              ? _json['proxyUri'] as core.String
+              : null,
+          reservationAffinity: _json.containsKey('reservationAffinity')
+              ? ReservationAffinity.fromJson(_json['reservationAffinity']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          serviceAccountScopes: _json.containsKey('serviceAccountScopes')
+              ? (_json['serviceAccountScopes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          shieldedInstanceConfig: _json.containsKey('shieldedInstanceConfig')
+              ? ShieldedInstanceConfig.fromJson(_json['shieldedInstanceConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          subnet: _json.containsKey('subnet')
+              ? _json['subnet'] as core.String
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          upgradeHistory: _json.containsKey('upgradeHistory')
+              ? (_json['upgradeHistory'] as core.List)
+                  .map((value) => UpgradeHistoryEntry.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          vmImage: _json.containsKey('vmImage')
+              ? VmImage.fromJson(
+                  _json['vmImage'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (acceleratorConfig != null)
-          'acceleratorConfig': acceleratorConfig!.toJson(),
+        if (acceleratorConfig != null) 'acceleratorConfig': acceleratorConfig!,
         if (bootDiskSizeGb != null) 'bootDiskSizeGb': bootDiskSizeGb!,
         if (bootDiskType != null) 'bootDiskType': bootDiskType!,
-        if (containerImage != null) 'containerImage': containerImage!.toJson(),
+        if (containerImage != null) 'containerImage': containerImage!,
         if (createTime != null) 'createTime': createTime!,
+        if (creator != null) 'creator': creator!,
         if (customGpuDriverPath != null)
           'customGpuDriverPath': customGpuDriverPath!,
         if (dataDiskSizeGb != null) 'dataDiskSizeGb': dataDiskSizeGb!,
         if (dataDiskType != null) 'dataDiskType': dataDiskType!,
         if (diskEncryption != null) 'diskEncryption': diskEncryption!,
-        if (disks != null)
-          'disks': disks!.map((value) => value.toJson()).toList(),
+        if (disks != null) 'disks': disks!,
         if (installGpuDriver != null) 'installGpuDriver': installGpuDriver!,
         if (instanceOwners != null) 'instanceOwners': instanceOwners!,
         if (kmsKey != null) 'kmsKey': kmsKey!,
@@ -2904,29 +3859,69 @@ class Instance {
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (network != null) 'network': network!,
+        if (nicType != null) 'nicType': nicType!,
         if (noProxyAccess != null) 'noProxyAccess': noProxyAccess!,
         if (noPublicIp != null) 'noPublicIp': noPublicIp!,
         if (noRemoveDataDisk != null) 'noRemoveDataDisk': noRemoveDataDisk!,
         if (postStartupScript != null) 'postStartupScript': postStartupScript!,
         if (proxyUri != null) 'proxyUri': proxyUri!,
+        if (reservationAffinity != null)
+          'reservationAffinity': reservationAffinity!,
         if (serviceAccount != null) 'serviceAccount': serviceAccount!,
         if (serviceAccountScopes != null)
           'serviceAccountScopes': serviceAccountScopes!,
         if (shieldedInstanceConfig != null)
-          'shieldedInstanceConfig': shieldedInstanceConfig!.toJson(),
+          'shieldedInstanceConfig': shieldedInstanceConfig!,
         if (state != null) 'state': state!,
         if (subnet != null) 'subnet': subnet!,
         if (tags != null) 'tags': tags!,
         if (updateTime != null) 'updateTime': updateTime!,
-        if (upgradeHistory != null)
-          'upgradeHistory':
-              upgradeHistory!.map((value) => value.toJson()).toList(),
-        if (vmImage != null) 'vmImage': vmImage!.toJson(),
+        if (upgradeHistory != null) 'upgradeHistory': upgradeHistory!,
+        if (vmImage != null) 'vmImage': vmImage!,
+      };
+}
+
+/// Notebook instance configurations that can be updated.
+class InstanceConfig {
+  /// Verifies core internal services are running.
+  core.bool? enableHealthMonitoring;
+
+  /// Cron expression in UTC timezone, used to schedule instance auto upgrade.
+  ///
+  /// Please follow the [cron format](https://en.wikipedia.org/wiki/Cron).
+  core.String? notebookUpgradeSchedule;
+
+  InstanceConfig({
+    this.enableHealthMonitoring,
+    this.notebookUpgradeSchedule,
+  });
+
+  InstanceConfig.fromJson(core.Map _json)
+      : this(
+          enableHealthMonitoring: _json.containsKey('enableHealthMonitoring')
+              ? _json['enableHealthMonitoring'] as core.bool
+              : null,
+          notebookUpgradeSchedule: _json.containsKey('notebookUpgradeSchedule')
+              ? _json['notebookUpgradeSchedule'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (enableHealthMonitoring != null)
+          'enableHealthMonitoring': enableHealthMonitoring!,
+        if (notebookUpgradeSchedule != null)
+          'notebookUpgradeSchedule': notebookUpgradeSchedule!,
       };
 }
 
 /// Response for checking if a notebook instance is upgradeable.
 class IsInstanceUpgradeableResponse {
+  /// The new image self link this instance will be upgraded to if calling the
+  /// upgrade endpoint.
+  ///
+  /// This field will only be populated if field upgradeable is true.
+  core.String? upgradeImage;
+
   /// Additional information about upgrade.
   core.String? upgradeInfo;
 
@@ -2939,21 +3934,31 @@ class IsInstanceUpgradeableResponse {
   /// If an instance is upgradeable.
   core.bool? upgradeable;
 
-  IsInstanceUpgradeableResponse();
+  IsInstanceUpgradeableResponse({
+    this.upgradeImage,
+    this.upgradeInfo,
+    this.upgradeVersion,
+    this.upgradeable,
+  });
 
-  IsInstanceUpgradeableResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('upgradeInfo')) {
-      upgradeInfo = _json['upgradeInfo'] as core.String;
-    }
-    if (_json.containsKey('upgradeVersion')) {
-      upgradeVersion = _json['upgradeVersion'] as core.String;
-    }
-    if (_json.containsKey('upgradeable')) {
-      upgradeable = _json['upgradeable'] as core.bool;
-    }
-  }
+  IsInstanceUpgradeableResponse.fromJson(core.Map _json)
+      : this(
+          upgradeImage: _json.containsKey('upgradeImage')
+              ? _json['upgradeImage'] as core.String
+              : null,
+          upgradeInfo: _json.containsKey('upgradeInfo')
+              ? _json['upgradeInfo'] as core.String
+              : null,
+          upgradeVersion: _json.containsKey('upgradeVersion')
+              ? _json['upgradeVersion'] as core.String
+              : null,
+          upgradeable: _json.containsKey('upgradeable')
+              ? _json['upgradeable'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (upgradeImage != null) 'upgradeImage': upgradeImage!,
         if (upgradeInfo != null) 'upgradeInfo': upgradeInfo!,
         if (upgradeVersion != null) 'upgradeVersion': upgradeVersion!,
         if (upgradeable != null) 'upgradeable': upgradeable!,
@@ -2972,28 +3977,32 @@ class ListEnvironmentsResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListEnvironmentsResponse();
+  ListEnvironmentsResponse({
+    this.environments,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListEnvironmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('environments')) {
-      environments = (_json['environments'] as core.List)
-          .map<Environment>((value) => Environment.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListEnvironmentsResponse.fromJson(core.Map _json)
+      : this(
+          environments: _json.containsKey('environments')
+              ? (_json['environments'] as core.List)
+                  .map((value) => Environment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (environments != null)
-          'environments': environments!.map((value) => value.toJson()).toList(),
+        if (environments != null) 'environments': environments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3010,33 +4019,37 @@ class ListExecutionsResponse {
 
   /// Executions IDs that could not be reached.
   ///
-  /// For example,
+  /// For example:
   /// \['projects/{project_id}/location/{location}/executions/imagenet_test1',
-  /// 'projects/{project_id}/location/{location}/executions/classifier_train1'\].
+  /// 'projects/{project_id}/location/{location}/executions/classifier_train1'\]
   core.List<core.String>? unreachable;
 
-  ListExecutionsResponse();
+  ListExecutionsResponse({
+    this.executions,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListExecutionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('executions')) {
-      executions = (_json['executions'] as core.List)
-          .map<Execution>((value) =>
-              Execution.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListExecutionsResponse.fromJson(core.Map _json)
+      : this(
+          executions: _json.containsKey('executions')
+              ? (_json['executions'] as core.List)
+                  .map((value) => Execution.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (executions != null)
-          'executions': executions!.map((value) => value.toJson()).toList(),
+        if (executions != null) 'executions': executions!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3057,28 +4070,32 @@ class ListInstancesResponse {
   /// will only contain either instances or unreachables,
   core.List<core.String>? unreachable;
 
-  ListInstancesResponse();
+  ListInstancesResponse({
+    this.instances,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListInstancesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('instances')) {
-      instances = (_json['instances'] as core.List)
-          .map<Instance>((value) =>
-              Instance.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListInstancesResponse.fromJson(core.Map _json)
+      : this(
+          instances: _json.containsKey('instances')
+              ? (_json['instances'] as core.List)
+                  .map((value) => Instance.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (instances != null)
-          'instances': instances!.map((value) => value.toJson()).toList(),
+        if (instances != null) 'instances': instances!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -3092,23 +4109,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3121,24 +4141,73 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
+      };
+}
+
+/// Response for listing Managed Notebook Runtimes.
+class ListRuntimesResponse {
+  /// Page token that can be used to continue listing from the last result in
+  /// the next list call.
+  core.String? nextPageToken;
+
+  /// A list of returned Runtimes.
+  core.List<Runtime>? runtimes;
+
+  /// Locations that could not be reached.
+  ///
+  /// For example, \['us-west1', 'us-central1'\]. A ListRuntimesResponse will
+  /// only contain either runtimes or unreachables,
+  core.List<core.String>? unreachable;
+
+  ListRuntimesResponse({
+    this.nextPageToken,
+    this.runtimes,
+    this.unreachable,
+  });
+
+  ListRuntimesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          runtimes: _json.containsKey('runtimes')
+              ? (_json['runtimes'] as core.List)
+                  .map((value) => Runtime.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (runtimes != null) 'runtimes': runtimes!,
+        if (unreachable != null) 'unreachable': unreachable!,
       };
 }
 
@@ -3153,106 +4222,293 @@ class ListSchedulesResponse {
 
   /// Schedules that could not be reached.
   ///
-  /// For example,
+  /// For example:
   /// \['projects/{project_id}/location/{location}/schedules/monthly_digest',
-  /// 'projects/{project_id}/location/{location}/schedules/weekly_sentiment'\].
+  /// 'projects/{project_id}/location/{location}/schedules/weekly_sentiment'\]
   core.List<core.String>? unreachable;
 
-  ListSchedulesResponse();
+  ListSchedulesResponse({
+    this.nextPageToken,
+    this.schedules,
+    this.unreachable,
+  });
 
-  ListSchedulesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('schedules')) {
-      schedules = (_json['schedules'] as core.List)
-          .map<Schedule>((value) =>
-              Schedule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListSchedulesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          schedules: _json.containsKey('schedules')
+              ? (_json['schedules'] as core.List)
+                  .map((value) => Schedule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (schedules != null)
-          'schedules': schedules!.map((value) => value.toJson()).toList(),
+        if (schedules != null) 'schedules': schedules!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
 
-/// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
+/// A Local attached disk resource.
+class LocalDisk {
+  /// Specifies whether the disk will be auto-deleted when the instance is
+  /// deleted (but not when the disk is detached from the instance).
   ///
-  /// For example, "Tokyo".
-  core.String? displayName;
+  /// Optional. Output only.
+  core.bool? autoDelete;
 
-  /// Cross-service attributes for the location.
+  /// Indicates that this is a boot disk.
   ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
+  /// The virtual machine will use the first partition of the disk for its root
+  /// filesystem.
   ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
+  /// Optional. Output only.
+  core.bool? boot;
 
-  /// Service-specific metadata.
+  /// Specifies a unique device name of your choice that is reflected into the
+  /// /dev/disk/by-id/google-* tree of a Linux operating system running within
+  /// the instance.
   ///
-  /// For example the available capacity at the given location.
+  /// This name can be used to reference the device for mounting, resizing, and
+  /// so on, from within the instance. If not specified, the server chooses a
+  /// default device name to apply to this disk, in the form persistent-disk-x,
+  /// where x is a number assigned by Google Compute Engine. This field is only
+  /// applicable for persistent disks.
   ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  /// Optional. Output only.
+  core.String? deviceName;
 
-  /// Resource name for the location, which may vary between implementations.
+  /// Indicates a list of features to enable on the guest operating system.
   ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
+  /// Applicable only for bootable images. Read Enabling guest operating system
+  /// features to see a list of available options.
+  ///
+  /// Output only.
+  core.List<RuntimeGuestOsFeature>? guestOsFeatures;
 
-  Location();
+  /// A zero-based index to this disk, where 0 is reserved for the boot disk.
+  ///
+  /// If you have many disks attached to an instance, each disk would have a
+  /// unique index number.
+  ///
+  /// Output only.
+  core.int? index;
 
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  /// Input only.
+  ///
+  /// Specifies the parameters for a new disk that will be created alongside the
+  /// new instance. Use initialization parameters to create boot disks or local
+  /// SSDs attached to the new instance. This property is mutually exclusive
+  /// with the source property; you can only define one or the other, but not
+  /// both.
+  LocalDiskInitializeParams? initializeParams;
+
+  /// Specifies the disk interface to use for attaching this disk, which is
+  /// either SCSI or NVME.
+  ///
+  /// The default is SCSI. Persistent disks must always use SCSI and the request
+  /// will fail if you attempt to attach a persistent disk in any other format
+  /// than SCSI. Local SSDs can use either NVME or SCSI. For performance
+  /// characteristics of SCSI over NVMe, see Local SSD performance. Valid
+  /// values: * NVME * SCSI
+  core.String? interface;
+
+  /// Type of the resource.
+  ///
+  /// Always compute#attachedDisk for attached disks.
+  ///
+  /// Output only.
+  core.String? kind;
+
+  /// Any valid publicly visible licenses.
+  ///
+  /// Output only.
+  core.List<core.String>? licenses;
+
+  /// The mode in which to attach this disk, either READ_WRITE or READ_ONLY.
+  ///
+  /// If not specified, the default is to attach the disk in READ_WRITE mode.
+  /// Valid values: * READ_ONLY * READ_WRITE
+  core.String? mode;
+
+  /// Specifies a valid partial or full URL to an existing Persistent Disk
+  /// resource.
+  core.String? source;
+
+  /// Specifies the type of the disk, either SCRATCH or PERSISTENT.
+  ///
+  /// If not specified, the default is PERSISTENT. Valid values: * PERSISTENT *
+  /// SCRATCH
+  core.String? type;
+
+  LocalDisk({
+    this.autoDelete,
+    this.boot,
+    this.deviceName,
+    this.guestOsFeatures,
+    this.index,
+    this.initializeParams,
+    this.interface,
+    this.kind,
+    this.licenses,
+    this.mode,
+    this.source,
+    this.type,
+  });
+
+  LocalDisk.fromJson(core.Map _json)
+      : this(
+          autoDelete: _json.containsKey('autoDelete')
+              ? _json['autoDelete'] as core.bool
+              : null,
+          boot: _json.containsKey('boot') ? _json['boot'] as core.bool : null,
+          deviceName: _json.containsKey('deviceName')
+              ? _json['deviceName'] as core.String
+              : null,
+          guestOsFeatures: _json.containsKey('guestOsFeatures')
+              ? (_json['guestOsFeatures'] as core.List)
+                  .map((value) => RuntimeGuestOsFeature.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          index: _json.containsKey('index') ? _json['index'] as core.int : null,
+          initializeParams: _json.containsKey('initializeParams')
+              ? LocalDiskInitializeParams.fromJson(_json['initializeParams']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          interface: _json.containsKey('interface')
+              ? _json['interface'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          licenses: _json.containsKey('licenses')
+              ? (_json['licenses'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          mode: _json.containsKey('mode') ? _json['mode'] as core.String : null,
+          source: _json.containsKey('source')
+              ? _json['source'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
+        if (autoDelete != null) 'autoDelete': autoDelete!,
+        if (boot != null) 'boot': boot!,
+        if (deviceName != null) 'deviceName': deviceName!,
+        if (guestOsFeatures != null) 'guestOsFeatures': guestOsFeatures!,
+        if (index != null) 'index': index!,
+        if (initializeParams != null) 'initializeParams': initializeParams!,
+        if (interface != null) 'interface': interface!,
+        if (kind != null) 'kind': kind!,
+        if (licenses != null) 'licenses': licenses!,
+        if (mode != null) 'mode': mode!,
+        if (source != null) 'source': source!,
+        if (type != null) 'type': type!,
       };
 }
+
+/// Input only.
+///
+/// Specifies the parameters for a new disk that will be created alongside the
+/// new instance. Use initialization parameters to create boot disks or local
+/// SSDs attached to the new runtime. This property is mutually exclusive with
+/// the source property; you can only define one or the other, but not both.
+class LocalDiskInitializeParams {
+  /// Provide this property when creating the disk.
+  ///
+  /// Optional.
+  core.String? description;
+
+  /// Specifies the disk name.
+  ///
+  /// If not specified, the default is to use the name of the instance. If the
+  /// disk with the instance name exists already in the given zone/region, a new
+  /// name will be automatically generated.
+  ///
+  /// Optional.
+  core.String? diskName;
+
+  /// Specifies the size of the disk in base-2 GB.
+  ///
+  /// If not specified, the disk will be the same size as the image (usually
+  /// 10GB). If specified, the size must be equal to or larger than 10GB.
+  /// Default 100 GB.
+  ///
+  /// Optional.
+  core.String? diskSizeGb;
+
+  /// Input only.
+  ///
+  /// The type of the boot disk attached to this instance, defaults to standard
+  /// persistent disk (`PD_STANDARD`).
+  /// Possible string values are:
+  /// - "DISK_TYPE_UNSPECIFIED" : Disk type not set.
+  /// - "PD_STANDARD" : Standard persistent disk type.
+  /// - "PD_SSD" : SSD persistent disk type.
+  /// - "PD_BALANCED" : Balanced persistent disk type.
+  core.String? diskType;
+
+  /// Labels to apply to this disk.
+  ///
+  /// These can be later modified by the disks.setLabels method. This field is
+  /// only applicable for persistent disks.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
+
+  LocalDiskInitializeParams({
+    this.description,
+    this.diskName,
+    this.diskSizeGb,
+    this.diskType,
+    this.labels,
+  });
+
+  LocalDiskInitializeParams.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          diskName: _json.containsKey('diskName')
+              ? _json['diskName'] as core.String
+              : null,
+          diskSizeGb: _json.containsKey('diskSizeGb')
+              ? _json['diskSizeGb'] as core.String
+              : null,
+          diskType: _json.containsKey('diskType')
+              ? _json['diskType'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (description != null) 'description': description!,
+        if (diskName != null) 'diskName': diskName!,
+        if (diskSizeGb != null) 'diskSizeGb': diskSizeGb!,
+        if (diskType != null) 'diskType': diskType!,
+        if (labels != null) 'labels': labels!,
+      };
+}
+
+/// A resource that represents Google Cloud Platform location.
+typedef Location = $Location00;
 
 /// This resource represents a long-running operation that is the result of a
 /// network API call.
@@ -3275,7 +4531,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3295,117 +4551,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Represents the metadata of the long-running operation.
-class OperationMetadata {
-  /// API version used to start the operation.
-  core.String? apiVersion;
-
-  /// The time the operation was created.
-  core.String? createTime;
-
-  /// The time the operation finished running.
-  core.String? endTime;
-
-  /// API endpoint name of this operation.
-  core.String? endpoint;
-
-  /// Identifies whether the user has requested cancellation of the operation.
-  ///
-  /// Operations that have successfully been cancelled have Operation.error
-  /// value with a google.rpc.Status.code of 1, corresponding to
-  /// `Code.CANCELLED`.
-  core.bool? requestedCancellation;
-
-  /// Human-readable status of the operation, if any.
-  core.String? statusMessage;
-
-  /// Server-defined resource path for the target of the operation.
-  core.String? target;
-
-  /// Name of the verb executed by the operation.
-  core.String? verb;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('endpoint')) {
-      endpoint = _json['endpoint'] as core.String;
-    }
-    if (_json.containsKey('requestedCancellation')) {
-      requestedCancellation = _json['requestedCancellation'] as core.bool;
-    }
-    if (_json.containsKey('statusMessage')) {
-      statusMessage = _json['statusMessage'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-    if (_json.containsKey('verb')) {
-      verb = _json['verb'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (endpoint != null) 'endpoint': endpoint!,
-        if (requestedCancellation != null)
-          'requestedCancellation': requestedCancellation!,
-        if (statusMessage != null) 'statusMessage': statusMessage!,
-        if (target != null) 'target': target!,
-        if (verb != null) 'verb': verb!,
       };
 }
 
@@ -3413,15 +4590,15 @@ class OperationMetadata {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -3430,22 +4607,27 @@ class OperationMetadata {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -3487,26 +4669,28 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -3523,13 +4707,16 @@ class RegisterInstanceRequest {
   /// Required.
   core.String? instanceId;
 
-  RegisterInstanceRequest();
+  RegisterInstanceRequest({
+    this.instanceId,
+  });
 
-  RegisterInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('instanceId')) {
-      instanceId = _json['instanceId'] as core.String;
-    }
-  }
+  RegisterInstanceRequest.fromJson(core.Map _json)
+      : this(
+          instanceId: _json.containsKey('instanceId')
+              ? _json['instanceId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (instanceId != null) 'instanceId': instanceId!,
@@ -3550,21 +4737,23 @@ class ReportInstanceInfoRequest {
   /// Required.
   core.String? vmId;
 
-  ReportInstanceInfoRequest();
+  ReportInstanceInfoRequest({
+    this.metadata,
+    this.vmId,
+  });
 
-  ReportInstanceInfoRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('vmId')) {
-      vmId = _json['vmId'] as core.String;
-    }
-  }
+  ReportInstanceInfoRequest.fromJson(core.Map _json)
+      : this(
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          vmId: _json.containsKey('vmId') ? _json['vmId'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (metadata != null) 'metadata': metadata!,
@@ -3572,15 +4761,523 @@ class ReportInstanceInfoRequest {
       };
 }
 
-/// Request for reseting a notebook instance
-class ResetInstanceRequest {
-  ResetInstanceRequest();
+/// Request for reporting a Managed Notebook Event.
+class ReportRuntimeEventRequest {
+  /// The Event to be reported.
+  ///
+  /// Required.
+  Event? event;
 
-  ResetInstanceRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  /// The VM hardware token for authenticating the VM.
+  ///
+  /// https://cloud.google.com/compute/docs/instances/verifying-instance-identity
+  ///
+  /// Required.
+  core.String? vmId;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  ReportRuntimeEventRequest({
+    this.event,
+    this.vmId,
+  });
+
+  ReportRuntimeEventRequest.fromJson(core.Map _json)
+      : this(
+          event: _json.containsKey('event')
+              ? Event.fromJson(
+                  _json['event'] as core.Map<core.String, core.dynamic>)
+              : null,
+          vmId: _json.containsKey('vmId') ? _json['vmId'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (event != null) 'event': event!,
+        if (vmId != null) 'vmId': vmId!,
+      };
+}
+
+/// Reservation Affinity for consuming Zonal reservation.
+class ReservationAffinity {
+  /// Type of reservation to consume
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "TYPE_UNSPECIFIED" : Default type.
+  /// - "NO_RESERVATION" : Do not consume from any allocated capacity.
+  /// - "ANY_RESERVATION" : Consume any reservation available.
+  /// - "SPECIFIC_RESERVATION" : Must consume from a specific reservation. Must
+  /// specify key value fields for specifying the reservations.
+  core.String? consumeReservationType;
+
+  /// Corresponds to the label key of reservation resource.
+  ///
+  /// Optional.
+  core.String? key;
+
+  /// Corresponds to the label values of reservation resource.
+  ///
+  /// Optional.
+  core.List<core.String>? values;
+
+  ReservationAffinity({
+    this.consumeReservationType,
+    this.key,
+    this.values,
+  });
+
+  ReservationAffinity.fromJson(core.Map _json)
+      : this(
+          consumeReservationType: _json.containsKey('consumeReservationType')
+              ? _json['consumeReservationType'] as core.String
+              : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consumeReservationType != null)
+          'consumeReservationType': consumeReservationType!,
+        if (key != null) 'key': key!,
+        if (values != null) 'values': values!,
+      };
+}
+
+/// Request for resetting a notebook instance
+typedef ResetInstanceRequest = $Empty;
+
+/// Request for resetting a Managed Notebook Runtime.
+typedef ResetRuntimeRequest = $Empty;
+
+/// Request for rollbacking a notebook instance
+class RollbackInstanceRequest {
+  /// The snapshot for rollback.
+  ///
+  /// Example: "projects/test-project/global/snapshots/krwlzipynril".
+  ///
+  /// Required.
+  core.String? targetSnapshot;
+
+  RollbackInstanceRequest({
+    this.targetSnapshot,
+  });
+
+  RollbackInstanceRequest.fromJson(core.Map _json)
+      : this(
+          targetSnapshot: _json.containsKey('targetSnapshot')
+              ? _json['targetSnapshot'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (targetSnapshot != null) 'targetSnapshot': targetSnapshot!,
+      };
+}
+
+/// The definition of a Runtime for a managed notebook instance.
+class Runtime {
+  /// The config settings for accessing runtime.
+  RuntimeAccessConfig? accessConfig;
+
+  /// Runtime creation time.
+  ///
+  /// Output only.
+  core.String? createTime;
+
+  /// Runtime health_state.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "HEALTH_STATE_UNSPECIFIED" : The runtime substate is unknown.
+  /// - "HEALTHY" : The runtime is known to be in an healthy state (for example,
+  /// critical daemons are running) Applies to ACTIVE state.
+  /// - "UNHEALTHY" : The runtime is known to be in an unhealthy state (for
+  /// example, critical daemons are not running) Applies to ACTIVE state.
+  /// - "AGENT_NOT_INSTALLED" : The runtime has not installed health monitoring
+  /// agent. Applies to ACTIVE state.
+  /// - "AGENT_NOT_RUNNING" : The runtime health monitoring agent is not
+  /// running. Applies to ACTIVE state.
+  core.String? healthState;
+
+  /// Contains Runtime daemon metrics such as Service status and JupyterLab
+  /// stats.
+  ///
+  /// Output only.
+  RuntimeMetrics? metrics;
+
+  /// The resource name of the runtime.
+  ///
+  /// Format: `projects/{project}/locations/{location}/runtimes/{runtimeId}`
+  ///
+  /// Output only.
+  core.String? name;
+
+  /// The config settings for software inside the runtime.
+  RuntimeSoftwareConfig? softwareConfig;
+
+  /// Runtime state.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : State is not specified.
+  /// - "STARTING" : The compute layer is starting the runtime. It is not ready
+  /// for use.
+  /// - "PROVISIONING" : The compute layer is installing required frameworks and
+  /// registering the runtime with notebook proxy. It cannot be used.
+  /// - "ACTIVE" : The runtime is currently running. It is ready for use.
+  /// - "STOPPING" : The control logic is stopping the runtime. It cannot be
+  /// used.
+  /// - "STOPPED" : The runtime is stopped. It cannot be used.
+  /// - "DELETING" : The runtime is being deleted. It cannot be used.
+  /// - "UPGRADING" : The runtime is upgrading. It cannot be used.
+  /// - "INITIALIZING" : The runtime is being created and set up. It is not
+  /// ready for use.
+  core.String? state;
+
+  /// Runtime update time.
+  ///
+  /// Output only.
+  core.String? updateTime;
+
+  /// Use a Compute Engine VM image to start the managed notebook instance.
+  VirtualMachine? virtualMachine;
+
+  Runtime({
+    this.accessConfig,
+    this.createTime,
+    this.healthState,
+    this.metrics,
+    this.name,
+    this.softwareConfig,
+    this.state,
+    this.updateTime,
+    this.virtualMachine,
+  });
+
+  Runtime.fromJson(core.Map _json)
+      : this(
+          accessConfig: _json.containsKey('accessConfig')
+              ? RuntimeAccessConfig.fromJson(
+                  _json['accessConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          healthState: _json.containsKey('healthState')
+              ? _json['healthState'] as core.String
+              : null,
+          metrics: _json.containsKey('metrics')
+              ? RuntimeMetrics.fromJson(
+                  _json['metrics'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          softwareConfig: _json.containsKey('softwareConfig')
+              ? RuntimeSoftwareConfig.fromJson(_json['softwareConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          virtualMachine: _json.containsKey('virtualMachine')
+              ? VirtualMachine.fromJson(_json['virtualMachine']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (accessConfig != null) 'accessConfig': accessConfig!,
+        if (createTime != null) 'createTime': createTime!,
+        if (healthState != null) 'healthState': healthState!,
+        if (metrics != null) 'metrics': metrics!,
+        if (name != null) 'name': name!,
+        if (softwareConfig != null) 'softwareConfig': softwareConfig!,
+        if (state != null) 'state': state!,
+        if (updateTime != null) 'updateTime': updateTime!,
+        if (virtualMachine != null) 'virtualMachine': virtualMachine!,
+      };
+}
+
+/// Definition of the types of hardware accelerators that can be used.
+///
+/// Definition of the types of hardware accelerators that can be used. See
+/// [Compute Engine AcceleratorTypes](https://cloud.google.com/compute/docs/reference/beta/acceleratorTypes).
+/// Examples: * `nvidia-tesla-k80` * `nvidia-tesla-p100` * `nvidia-tesla-v100` *
+/// `nvidia-tesla-p4` * `nvidia-tesla-t4` * `nvidia-tesla-a100`
+class RuntimeAcceleratorConfig {
+  /// Count of cores of this accelerator.
+  core.String? coreCount;
+
+  /// Accelerator model.
+  /// Possible string values are:
+  /// - "ACCELERATOR_TYPE_UNSPECIFIED" : Accelerator type is not specified.
+  /// - "NVIDIA_TESLA_K80" : Accelerator type is Nvidia Tesla K80.
+  /// - "NVIDIA_TESLA_P100" : Accelerator type is Nvidia Tesla P100.
+  /// - "NVIDIA_TESLA_V100" : Accelerator type is Nvidia Tesla V100.
+  /// - "NVIDIA_TESLA_P4" : Accelerator type is Nvidia Tesla P4.
+  /// - "NVIDIA_TESLA_T4" : Accelerator type is Nvidia Tesla T4.
+  /// - "NVIDIA_TESLA_A100" : Accelerator type is Nvidia Tesla A100.
+  /// - "TPU_V2" : (Coming soon) Accelerator type is TPU V2.
+  /// - "TPU_V3" : (Coming soon) Accelerator type is TPU V3.
+  /// - "NVIDIA_TESLA_T4_VWS" : Accelerator type is NVIDIA Tesla T4 Virtual
+  /// Workstations.
+  /// - "NVIDIA_TESLA_P100_VWS" : Accelerator type is NVIDIA Tesla P100 Virtual
+  /// Workstations.
+  /// - "NVIDIA_TESLA_P4_VWS" : Accelerator type is NVIDIA Tesla P4 Virtual
+  /// Workstations.
+  core.String? type;
+
+  RuntimeAcceleratorConfig({
+    this.coreCount,
+    this.type,
+  });
+
+  RuntimeAcceleratorConfig.fromJson(core.Map _json)
+      : this(
+          coreCount: _json.containsKey('coreCount')
+              ? _json['coreCount'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (coreCount != null) 'coreCount': coreCount!,
+        if (type != null) 'type': type!,
+      };
+}
+
+/// Specifies the login configuration for Runtime
+class RuntimeAccessConfig {
+  /// The type of access mode this instance.
+  /// Possible string values are:
+  /// - "RUNTIME_ACCESS_TYPE_UNSPECIFIED" : Unspecified access.
+  /// - "SINGLE_USER" : Single user login.
+  /// - "SERVICE_ACCOUNT" : Service Account mode. In Service Account mode,
+  /// Runtime creator will specify a SA that exists in the consumer project.
+  /// Using Runtime Service Account field. Users accessing the Runtime need
+  /// ActAs (Service Account User) permission.
+  core.String? accessType;
+
+  /// The proxy endpoint that is used to access the runtime.
+  ///
+  /// Output only.
+  core.String? proxyUri;
+
+  /// The owner of this runtime after creation.
+  ///
+  /// Format: `alias@example.com` Currently supports one owner only.
+  core.String? runtimeOwner;
+
+  RuntimeAccessConfig({
+    this.accessType,
+    this.proxyUri,
+    this.runtimeOwner,
+  });
+
+  RuntimeAccessConfig.fromJson(core.Map _json)
+      : this(
+          accessType: _json.containsKey('accessType')
+              ? _json['accessType'] as core.String
+              : null,
+          proxyUri: _json.containsKey('proxyUri')
+              ? _json['proxyUri'] as core.String
+              : null,
+          runtimeOwner: _json.containsKey('runtimeOwner')
+              ? _json['runtimeOwner'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (accessType != null) 'accessType': accessType!,
+        if (proxyUri != null) 'proxyUri': proxyUri!,
+        if (runtimeOwner != null) 'runtimeOwner': runtimeOwner!,
+      };
+}
+
+/// A list of features to enable on the guest operating system.
+///
+/// Applicable only for bootable images. Read
+/// [Enabling guest operating system features](https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features)
+/// to see a list of available options. Guest OS features for boot disk.
+///
+/// Optional.
+class RuntimeGuestOsFeature {
+  /// The ID of a supported feature.
+  ///
+  /// Read
+  /// [Enabling guest operating system features](https://cloud.google.com/compute/docs/images/create-delete-deprecate-private-images#guest-os-features)
+  /// to see a list of available options. Valid values: *
+  /// FEATURE_TYPE_UNSPECIFIED * MULTI_IP_SUBNET * SECURE_BOOT * UEFI_COMPATIBLE
+  /// * VIRTIO_SCSI_MULTIQUEUE * WINDOWS
+  core.String? type;
+
+  RuntimeGuestOsFeature({
+    this.type,
+  });
+
+  RuntimeGuestOsFeature.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (type != null) 'type': type!,
+      };
+}
+
+/// Contains runtime daemon metrics, such as OS and kernels and sessions stats.
+class RuntimeMetrics {
+  /// The system metrics.
+  ///
+  /// Output only.
+  core.Map<core.String, core.String>? systemMetrics;
+
+  RuntimeMetrics({
+    this.systemMetrics,
+  });
+
+  RuntimeMetrics.fromJson(core.Map _json)
+      : this(
+          systemMetrics: _json.containsKey('systemMetrics')
+              ? (_json['systemMetrics'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (systemMetrics != null) 'systemMetrics': systemMetrics!,
+      };
+}
+
+/// A set of Shielded Instance options.
+///
+/// Check
+/// [Images using supported Shielded VM features](https://cloud.google.com/compute/docs/instances/modifying-shielded-vm).
+/// Not all combinations are valid.
+typedef RuntimeShieldedInstanceConfig = $ShieldedInstanceConfig;
+
+/// Specifies the selection and configuration of software inside the runtime.
+///
+/// The properties to set on runtime. Properties keys are specified in
+/// `key:value` format, for example: * `idle_shutdown: true` *
+/// `idle_shutdown_timeout: 180` * `enable_health_monitoring: true`
+class RuntimeSoftwareConfig {
+  /// Specify a custom Cloud Storage path where the GPU driver is stored.
+  ///
+  /// If not specified, we'll automatically choose from official GPU drivers.
+  core.String? customGpuDriverPath;
+
+  /// Verifies core internal services are running.
+  ///
+  /// Default: True
+  core.bool? enableHealthMonitoring;
+
+  /// Runtime will automatically shutdown after idle_shutdown_time.
+  ///
+  /// Default: True
+  core.bool? idleShutdown;
+
+  /// Time in minutes to wait before shutting down runtime.
+  ///
+  /// Default: 180 minutes
+  core.int? idleShutdownTimeout;
+
+  /// Install Nvidia Driver automatically.
+  ///
+  /// Default: True
+  core.bool? installGpuDriver;
+
+  /// Use a list of container images to use as Kernels in the notebook instance.
+  ///
+  /// Optional.
+  core.List<ContainerImage>? kernels;
+
+  /// Cron expression in UTC timezone, used to schedule instance auto upgrade.
+  ///
+  /// Please follow the [cron format](https://en.wikipedia.org/wiki/Cron).
+  core.String? notebookUpgradeSchedule;
+
+  /// Path to a Bash script that automatically runs after a notebook instance
+  /// fully boots up.
+  ///
+  /// The path must be a URL or Cloud Storage path
+  /// (`gs://path-to-file/file-name`).
+  core.String? postStartupScript;
+
+  /// Bool indicating whether an newer image is available in an image family.
+  ///
+  /// Output only.
+  core.bool? upgradeable;
+
+  RuntimeSoftwareConfig({
+    this.customGpuDriverPath,
+    this.enableHealthMonitoring,
+    this.idleShutdown,
+    this.idleShutdownTimeout,
+    this.installGpuDriver,
+    this.kernels,
+    this.notebookUpgradeSchedule,
+    this.postStartupScript,
+    this.upgradeable,
+  });
+
+  RuntimeSoftwareConfig.fromJson(core.Map _json)
+      : this(
+          customGpuDriverPath: _json.containsKey('customGpuDriverPath')
+              ? _json['customGpuDriverPath'] as core.String
+              : null,
+          enableHealthMonitoring: _json.containsKey('enableHealthMonitoring')
+              ? _json['enableHealthMonitoring'] as core.bool
+              : null,
+          idleShutdown: _json.containsKey('idleShutdown')
+              ? _json['idleShutdown'] as core.bool
+              : null,
+          idleShutdownTimeout: _json.containsKey('idleShutdownTimeout')
+              ? _json['idleShutdownTimeout'] as core.int
+              : null,
+          installGpuDriver: _json.containsKey('installGpuDriver')
+              ? _json['installGpuDriver'] as core.bool
+              : null,
+          kernels: _json.containsKey('kernels')
+              ? (_json['kernels'] as core.List)
+                  .map((value) => ContainerImage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          notebookUpgradeSchedule: _json.containsKey('notebookUpgradeSchedule')
+              ? _json['notebookUpgradeSchedule'] as core.String
+              : null,
+          postStartupScript: _json.containsKey('postStartupScript')
+              ? _json['postStartupScript'] as core.String
+              : null,
+          upgradeable: _json.containsKey('upgradeable')
+              ? _json['upgradeable'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (customGpuDriverPath != null)
+          'customGpuDriverPath': customGpuDriverPath!,
+        if (enableHealthMonitoring != null)
+          'enableHealthMonitoring': enableHealthMonitoring!,
+        if (idleShutdown != null) 'idleShutdown': idleShutdown!,
+        if (idleShutdownTimeout != null)
+          'idleShutdownTimeout': idleShutdownTimeout!,
+        if (installGpuDriver != null) 'installGpuDriver': installGpuDriver!,
+        if (kernels != null) 'kernels': kernels!,
+        if (notebookUpgradeSchedule != null)
+          'notebookUpgradeSchedule': notebookUpgradeSchedule!,
+        if (postStartupScript != null) 'postStartupScript': postStartupScript!,
+        if (upgradeable != null) 'upgradeable': upgradeable!,
+      };
 }
 
 /// The definition of a schedule.
@@ -3590,9 +5287,10 @@ class Schedule {
   /// Output only.
   core.String? createTime;
 
-  /// Cron-tab formatted schedule by which the job will execute Format: minute,
-  /// hour, day of month, month, day of week e.g. 0 0 * * WED = every Wednesday
-  /// More examples: https://crontab.guru/examples.html
+  /// Cron-tab formatted schedule by which the job will execute.
+  ///
+  /// Format: minute, hour, day of month, month, day of week, e.g. 0 0 * * WED =
+  /// every Wednesday More examples: https://crontab.guru/examples.html
   core.String? cronSchedule;
 
   /// A brief description of this environment.
@@ -3600,8 +5298,8 @@ class Schedule {
 
   /// Display name used for UI purposes.
   ///
-  /// Name can only contain alphanumeric characters, hyphens ‘-’, and
-  /// underscores ‘_’.
+  /// Name can only contain alphanumeric characters, hyphens '-', and
+  /// underscores '_'.
   ///
   /// Output only.
   core.String? displayName;
@@ -3634,6 +5332,8 @@ class Schedule {
   /// - "UPDATE_FAILED" : The job state resulting from a failed
   /// CloudScheduler.UpdateJob operation. To recover a job from this state,
   /// retry CloudScheduler.UpdateJob until a successful response is received.
+  /// - "INITIALIZING" : The schedule resource is being created.
+  /// - "DELETING" : The schedule resource is being deleted.
   core.String? state;
 
   /// Timezone on which the cron_schedule.
@@ -3651,56 +5351,62 @@ class Schedule {
   /// Output only.
   core.String? updateTime;
 
-  Schedule();
+  Schedule({
+    this.createTime,
+    this.cronSchedule,
+    this.description,
+    this.displayName,
+    this.executionTemplate,
+    this.name,
+    this.recentExecutions,
+    this.state,
+    this.timeZone,
+    this.updateTime,
+  });
 
-  Schedule.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('cronSchedule')) {
-      cronSchedule = _json['cronSchedule'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('executionTemplate')) {
-      executionTemplate = ExecutionTemplate.fromJson(
-          _json['executionTemplate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('recentExecutions')) {
-      recentExecutions = (_json['recentExecutions'] as core.List)
-          .map<Execution>((value) =>
-              Execution.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('timeZone')) {
-      timeZone = _json['timeZone'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Schedule.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          cronSchedule: _json.containsKey('cronSchedule')
+              ? _json['cronSchedule'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          executionTemplate: _json.containsKey('executionTemplate')
+              ? ExecutionTemplate.fromJson(_json['executionTemplate']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          recentExecutions: _json.containsKey('recentExecutions')
+              ? (_json['recentExecutions'] as core.List)
+                  .map((value) => Execution.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          timeZone: _json.containsKey('timeZone')
+              ? _json['timeZone'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (cronSchedule != null) 'cronSchedule': cronSchedule!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (executionTemplate != null)
-          'executionTemplate': executionTemplate!.toJson(),
+        if (executionTemplate != null) 'executionTemplate': executionTemplate!,
         if (name != null) 'name': name!,
-        if (recentExecutions != null)
-          'recentExecutions':
-              recentExecutions!.map((value) => value.toJson()).toList(),
+        if (recentExecutions != null) 'recentExecutions': recentExecutions!,
         if (state != null) 'state': state!,
         if (timeZone != null) 'timeZone': timeZone!,
         if (updateTime != null) 'updateTime': updateTime!,
@@ -3710,7 +5416,8 @@ class Schedule {
 /// Definition of a hardware accelerator.
 ///
 /// Note that not all combinations of `type` and `core_count` are valid. Check
-/// GPUs on Compute Engine to find a valid combination. TPUs are not supported.
+/// [GPUs on Compute Engine](https://cloud.google.com/compute/docs/gpus) to find
+/// a valid combination. TPUs are not supported.
 class SchedulerAcceleratorConfig {
   /// Count of cores of this accelerator.
   core.String? coreCount;
@@ -3724,20 +5431,23 @@ class SchedulerAcceleratorConfig {
   /// - "NVIDIA_TESLA_V100" : Nvidia Tesla V100 GPU.
   /// - "NVIDIA_TESLA_P4" : Nvidia Tesla P4 GPU.
   /// - "NVIDIA_TESLA_T4" : Nvidia Tesla T4 GPU.
+  /// - "NVIDIA_TESLA_A100" : Nvidia Tesla A100 GPU.
   /// - "TPU_V2" : TPU v2.
   /// - "TPU_V3" : TPU v3.
   core.String? type;
 
-  SchedulerAcceleratorConfig();
+  SchedulerAcceleratorConfig({
+    this.coreCount,
+    this.type,
+  });
 
-  SchedulerAcceleratorConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('coreCount')) {
-      coreCount = _json['coreCount'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  SchedulerAcceleratorConfig.fromJson(core.Map _json)
+      : this(
+          coreCount: _json.containsKey('coreCount')
+              ? _json['coreCount'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (coreCount != null) 'coreCount': coreCount!,
@@ -3754,17 +5464,20 @@ class SetIamPolicyRequest {
   /// reject them.
   Policy? policy;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
       };
 }
 
@@ -3800,16 +5513,18 @@ class SetInstanceAcceleratorRequest {
   /// - "TPU_V3" : (Coming soon) Accelerator type is TPU V3.
   core.String? type;
 
-  SetInstanceAcceleratorRequest();
+  SetInstanceAcceleratorRequest({
+    this.coreCount,
+    this.type,
+  });
 
-  SetInstanceAcceleratorRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('coreCount')) {
-      coreCount = _json['coreCount'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  SetInstanceAcceleratorRequest.fromJson(core.Map _json)
+      : this(
+          coreCount: _json.containsKey('coreCount')
+              ? _json['coreCount'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (coreCount != null) 'coreCount': coreCount!,
@@ -3824,18 +5539,21 @@ class SetInstanceLabelsRequest {
   /// These can be later modified by the setLabels method
   core.Map<core.String, core.String>? labels;
 
-  SetInstanceLabelsRequest();
+  SetInstanceLabelsRequest({
+    this.labels,
+  });
 
-  SetInstanceLabelsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  SetInstanceLabelsRequest.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
@@ -3850,13 +5568,16 @@ class SetInstanceMachineTypeRequest {
   /// Required.
   core.String? machineType;
 
-  SetInstanceMachineTypeRequest();
+  SetInstanceMachineTypeRequest({
+    this.machineType,
+  });
 
-  SetInstanceMachineTypeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-  }
+  SetInstanceMachineTypeRequest.fromJson(core.Map _json)
+      : this(
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (machineType != null) 'machineType': machineType!,
@@ -3867,60 +5588,13 @@ class SetInstanceMachineTypeRequest {
 ///
 /// Check \[Images using supported Shielded VM features\] Not all combinations
 /// are valid.
-class ShieldedInstanceConfig {
-  /// Defines whether the instance has integrity monitoring enabled.
-  ///
-  /// Enables monitoring and attestation of the boot integrity of the instance.
-  /// The attestation is performed against the integrity policy baseline. This
-  /// baseline is initially derived from the implicitly trusted boot image when
-  /// the instance is created. Enabled by default.
-  core.bool? enableIntegrityMonitoring;
-
-  /// Defines whether the instance has Secure Boot enabled.
-  ///
-  /// Secure Boot helps ensure that the system only runs authentic software by
-  /// verifying the digital signature of all boot components, and halting the
-  /// boot process if signature verification fails. Disabled by default.
-  core.bool? enableSecureBoot;
-
-  /// Defines whether the instance has the vTPM enabled.
-  ///
-  /// Enabled by default.
-  core.bool? enableVtpm;
-
-  ShieldedInstanceConfig();
-
-  ShieldedInstanceConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('enableIntegrityMonitoring')) {
-      enableIntegrityMonitoring =
-          _json['enableIntegrityMonitoring'] as core.bool;
-    }
-    if (_json.containsKey('enableSecureBoot')) {
-      enableSecureBoot = _json['enableSecureBoot'] as core.bool;
-    }
-    if (_json.containsKey('enableVtpm')) {
-      enableVtpm = _json['enableVtpm'] as core.bool;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (enableIntegrityMonitoring != null)
-          'enableIntegrityMonitoring': enableIntegrityMonitoring!,
-        if (enableSecureBoot != null) 'enableSecureBoot': enableSecureBoot!,
-        if (enableVtpm != null) 'enableVtpm': enableVtpm!,
-      };
-}
+typedef ShieldedInstanceConfig = $ShieldedInstanceConfig;
 
 /// Request for starting a notebook instance
-class StartInstanceRequest {
-  StartInstanceRequest();
+typedef StartInstanceRequest = $Empty;
 
-  StartInstanceRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+/// Request for starting a Managed Notebook Runtime.
+typedef StartRuntimeRequest = $Empty;
 
 /// The `Status` type defines a logical error model that is suitable for
 /// different programming environments, including REST APIs and RPC APIs.
@@ -3929,118 +5603,150 @@ class StartInstanceRequest {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Request for stopping a notebook instance
-class StopInstanceRequest {
-  StopInstanceRequest();
+typedef StopInstanceRequest = $Empty;
 
-  StopInstanceRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Request for stopping a Managed Notebook Runtime.
+typedef StopRuntimeRequest = $Empty;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+/// Request for switching a Managed Notebook Runtime.
+class SwitchRuntimeRequest {
+  /// accelerator config.
+  RuntimeAcceleratorConfig? acceleratorConfig;
+
+  /// machine type.
+  core.String? machineType;
+
+  SwitchRuntimeRequest({
+    this.acceleratorConfig,
+    this.machineType,
+  });
+
+  SwitchRuntimeRequest.fromJson(core.Map _json)
+      : this(
+          acceleratorConfig: _json.containsKey('acceleratorConfig')
+              ? RuntimeAcceleratorConfig.fromJson(_json['acceleratorConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (acceleratorConfig != null) 'acceleratorConfig': acceleratorConfig!,
+        if (machineType != null) 'machineType': machineType!,
+      };
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
-  TestIamPermissionsResponse();
+/// Request for created scheduled notebooks
+typedef TriggerScheduleRequest = $Empty;
 
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+/// Request for updating instance configurations.
+class UpdateInstanceConfigRequest {
+  /// The instance configurations to be updated.
+  InstanceConfig? config;
+
+  UpdateInstanceConfigRequest({
+    this.config,
+  });
+
+  UpdateInstanceConfigRequest.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? InstanceConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
+        if (config != null) 'config': config!,
       };
 }
 
-/// Request for created scheduled notebooks
-class TriggerScheduleRequest {
-  TriggerScheduleRequest();
+/// Request for adding/changing metadata items for an instance.
+class UpdateInstanceMetadataItemsRequest {
+  /// Metadata items to add/update for the instance.
+  core.Map<core.String, core.String>? items;
 
-  TriggerScheduleRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  UpdateInstanceMetadataItemsRequest({
+    this.items,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  UpdateInstanceMetadataItemsRequest.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (items != null) 'items': items!,
+      };
+}
+
+/// Response for adding/changing metadata items for an instance.
+class UpdateInstanceMetadataItemsResponse {
+  /// Map of items that were added/updated to/in the metadata.
+  core.Map<core.String, core.String>? items;
+
+  UpdateInstanceMetadataItemsResponse({
+    this.items,
+  });
+
+  UpdateInstanceMetadataItemsResponse.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (items != null) 'items': items!,
+      };
+}
+
+/// Request for updating the Shielded Instance config for a notebook instance.
+///
+/// You can only use this method on a stopped instance
+class UpdateShieldedInstanceConfigRequest {
+  /// ShieldedInstance configuration to be updated.
+  ShieldedInstanceConfig? shieldedInstanceConfig;
+
+  UpdateShieldedInstanceConfigRequest({
+    this.shieldedInstanceConfig,
+  });
+
+  UpdateShieldedInstanceConfigRequest.fromJson(core.Map _json)
+      : this(
+          shieldedInstanceConfig: _json.containsKey('shieldedInstanceConfig')
+              ? ShieldedInstanceConfig.fromJson(_json['shieldedInstanceConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (shieldedInstanceConfig != null)
+          'shieldedInstanceConfig': shieldedInstanceConfig!,
+      };
 }
 
 /// The entry of VM image upgrade history.
@@ -4088,40 +5794,51 @@ class UpgradeHistoryEntry {
   /// The VM image before this instance upgrade.
   core.String? vmImage;
 
-  UpgradeHistoryEntry();
+  UpgradeHistoryEntry({
+    this.action,
+    this.containerImage,
+    this.createTime,
+    this.framework,
+    this.snapshot,
+    this.state,
+    this.targetImage,
+    this.targetVersion,
+    this.version,
+    this.vmImage,
+  });
 
-  UpgradeHistoryEntry.fromJson(core.Map _json) {
-    if (_json.containsKey('action')) {
-      action = _json['action'] as core.String;
-    }
-    if (_json.containsKey('containerImage')) {
-      containerImage = _json['containerImage'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('framework')) {
-      framework = _json['framework'] as core.String;
-    }
-    if (_json.containsKey('snapshot')) {
-      snapshot = _json['snapshot'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('targetImage')) {
-      targetImage = _json['targetImage'] as core.String;
-    }
-    if (_json.containsKey('targetVersion')) {
-      targetVersion = _json['targetVersion'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-    if (_json.containsKey('vmImage')) {
-      vmImage = _json['vmImage'] as core.String;
-    }
-  }
+  UpgradeHistoryEntry.fromJson(core.Map _json)
+      : this(
+          action: _json.containsKey('action')
+              ? _json['action'] as core.String
+              : null,
+          containerImage: _json.containsKey('containerImage')
+              ? _json['containerImage'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          framework: _json.containsKey('framework')
+              ? _json['framework'] as core.String
+              : null,
+          snapshot: _json.containsKey('snapshot')
+              ? _json['snapshot'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          targetImage: _json.containsKey('targetImage')
+              ? _json['targetImage'] as core.String
+              : null,
+          targetVersion: _json.containsKey('targetVersion')
+              ? _json['targetVersion'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+          vmImage: _json.containsKey('vmImage')
+              ? _json['vmImage'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (action != null) 'action': action!,
@@ -4139,6 +5856,20 @@ class UpgradeHistoryEntry {
 
 /// Request for upgrading a notebook instance from within the VM
 class UpgradeInstanceInternalRequest {
+  /// The optional UpgradeType.
+  ///
+  /// Setting this field will search for additional compute images to upgrade
+  /// this instance.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "UPGRADE_TYPE_UNSPECIFIED" : Upgrade type is not specified.
+  /// - "UPGRADE_FRAMEWORK" : Upgrade ML framework.
+  /// - "UPGRADE_OS" : Upgrade Operating System.
+  /// - "UPGRADE_CUDA" : Upgrade CUDA.
+  /// - "UPGRADE_ALL" : Upgrade All (OS, Framework and CUDA).
+  core.String? type;
+
   /// The VM hardware token for authenticating the VM.
   ///
   /// https://cloud.google.com/compute/docs/instances/verifying-instance-identity
@@ -4146,28 +5877,394 @@ class UpgradeInstanceInternalRequest {
   /// Required.
   core.String? vmId;
 
-  UpgradeInstanceInternalRequest();
+  UpgradeInstanceInternalRequest({
+    this.type,
+    this.vmId,
+  });
 
-  UpgradeInstanceInternalRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('vmId')) {
-      vmId = _json['vmId'] as core.String;
-    }
-  }
+  UpgradeInstanceInternalRequest.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          vmId: _json.containsKey('vmId') ? _json['vmId'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (type != null) 'type': type!,
         if (vmId != null) 'vmId': vmId!,
       };
 }
 
 /// Request for upgrading a notebook instance
 class UpgradeInstanceRequest {
-  UpgradeInstanceRequest();
+  /// The optional UpgradeType.
+  ///
+  /// Setting this field will search for additional compute images to upgrade
+  /// this instance.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "UPGRADE_TYPE_UNSPECIFIED" : Upgrade type is not specified.
+  /// - "UPGRADE_FRAMEWORK" : Upgrade ML framework.
+  /// - "UPGRADE_OS" : Upgrade Operating System.
+  /// - "UPGRADE_CUDA" : Upgrade CUDA.
+  /// - "UPGRADE_ALL" : Upgrade All (OS, Framework and CUDA).
+  core.String? type;
 
-  UpgradeInstanceRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  UpgradeInstanceRequest({
+    this.type,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  UpgradeInstanceRequest.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (type != null) 'type': type!,
+      };
+}
+
+/// Parameters used in Vertex AI JobType executions.
+class VertexAIParameters {
+  /// Environment variables.
+  ///
+  /// At most 100 environment variables can be specified and unique. Example:
+  /// GCP_BUCKET=gs://my-bucket/samples/
+  core.Map<core.String, core.String>? env;
+
+  /// The full name of the Compute Engine
+  /// \[network\](/compute/docs/networks-and-firewalls#networks) to which the
+  /// Job should be peered.
+  ///
+  /// For example, `projects/12345/global/networks/myVPC`.
+  /// [Format](https://cloud.google.com/compute/docs/reference/rest/v1/networks/insert)
+  /// is of the form `projects/{project}/global/networks/{network}`. Where
+  /// {project} is a project number, as in `12345`, and {network} is a network
+  /// name. Private services access must already be configured for the network.
+  /// If left unspecified, the job is not peered with any network.
+  core.String? network;
+
+  VertexAIParameters({
+    this.env,
+    this.network,
+  });
+
+  VertexAIParameters.fromJson(core.Map _json)
+      : this(
+          env: _json.containsKey('env')
+              ? (_json['env'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (env != null) 'env': env!,
+        if (network != null) 'network': network!,
+      };
+}
+
+/// Runtime using Virtual Machine for computing.
+class VirtualMachine {
+  /// The unique identifier of the Managed Compute Engine instance.
+  ///
+  /// Output only.
+  core.String? instanceId;
+
+  /// The user-friendly name of the Managed Compute Engine instance.
+  ///
+  /// Output only.
+  core.String? instanceName;
+
+  /// Virtual Machine configuration settings.
+  VirtualMachineConfig? virtualMachineConfig;
+
+  VirtualMachine({
+    this.instanceId,
+    this.instanceName,
+    this.virtualMachineConfig,
+  });
+
+  VirtualMachine.fromJson(core.Map _json)
+      : this(
+          instanceId: _json.containsKey('instanceId')
+              ? _json['instanceId'] as core.String
+              : null,
+          instanceName: _json.containsKey('instanceName')
+              ? _json['instanceName'] as core.String
+              : null,
+          virtualMachineConfig: _json.containsKey('virtualMachineConfig')
+              ? VirtualMachineConfig.fromJson(_json['virtualMachineConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (instanceId != null) 'instanceId': instanceId!,
+        if (instanceName != null) 'instanceName': instanceName!,
+        if (virtualMachineConfig != null)
+          'virtualMachineConfig': virtualMachineConfig!,
+      };
+}
+
+/// The config settings for virtual machine.
+class VirtualMachineConfig {
+  /// The Compute Engine accelerator configuration for this runtime.
+  ///
+  /// Optional.
+  RuntimeAcceleratorConfig? acceleratorConfig;
+
+  /// Use a list of container images to use as Kernels in the notebook instance.
+  ///
+  /// Optional.
+  core.List<ContainerImage>? containerImages;
+
+  /// Data disk option configuration settings.
+  ///
+  /// Required.
+  LocalDisk? dataDisk;
+
+  /// Encryption settings for virtual machine data disk.
+  ///
+  /// Optional.
+  EncryptionConfig? encryptionConfig;
+
+  /// The Compute Engine guest attributes.
+  ///
+  /// (see
+  /// [Project and instance guest attributes](https://cloud.google.com/compute/docs/storing-retrieving-metadata#guest_attributes)).
+  ///
+  /// Output only.
+  core.Map<core.String, core.String>? guestAttributes;
+
+  /// If true, runtime will only have internal IP addresses.
+  ///
+  /// By default, runtimes are not restricted to internal IP addresses, and will
+  /// have ephemeral external IP addresses assigned to each vm. This
+  /// `internal_ip_only` restriction can only be enabled for subnetwork enabled
+  /// networks, and all dependencies must be configured to be accessible without
+  /// external IP addresses.
+  ///
+  /// Optional.
+  core.bool? internalIpOnly;
+
+  /// The labels to associate with this runtime.
+  ///
+  /// Label **keys** must contain 1 to 63 characters, and must conform to
+  /// [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt). Label **values** may be
+  /// empty, but, if present, must contain 1 to 63 characters, and must conform
+  /// to [RFC 1035](https://www.ietf.org/rfc/rfc1035.txt). No more than 32
+  /// labels can be associated with a cluster.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
+
+  /// The Compute Engine machine type used for runtimes.
+  ///
+  /// Short name is valid. Examples: * `n1-standard-2` * `e2-standard-8`
+  ///
+  /// Required.
+  core.String? machineType;
+
+  /// The Compute Engine metadata entries to add to virtual machine.
+  ///
+  /// (see
+  /// [Project and instance metadata](https://cloud.google.com/compute/docs/storing-retrieving-metadata#project_and_instance_metadata)).
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? metadata;
+
+  /// The Compute Engine network to be used for machine communications.
+  ///
+  /// Cannot be specified with subnetwork. If neither `network` nor `subnet` is
+  /// specified, the "default" network of the project is used, if it exists. A
+  /// full URL or partial URI. Examples: *
+  /// `https://www.googleapis.com/compute/v1/projects/[project_id]/regions/global/default`
+  /// * `projects/[project_id]/regions/global/default` Runtimes are managed
+  /// resources inside Google Infrastructure. Runtimes support the following
+  /// network configurations: * Google Managed Network (Network & subnet are
+  /// empty) * Consumer Project VPC (network & subnet are required). Requires
+  /// configuring Private Service Access. * Shared VPC (network & subnet are
+  /// required). Requires configuring Private Service Access.
+  ///
+  /// Optional.
+  core.String? network;
+
+  /// The type of vNIC to be used on this interface.
+  ///
+  /// This may be gVNIC or VirtioNet.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "UNSPECIFIED_NIC_TYPE" : No type specified.
+  /// - "VIRTIO_NET" : VIRTIO
+  /// - "GVNIC" : GVNIC
+  core.String? nicType;
+
+  /// Reserved IP Range name is used for VPC Peering.
+  ///
+  /// The subnetwork allocation will use the range *name* if it's assigned.
+  /// Example: managed-notebooks-range-c
+  /// PEERING_RANGE_NAME_3=managed-notebooks-range-c gcloud compute addresses
+  /// create $PEERING_RANGE_NAME_3 \ --global \ --prefix-length=24 \
+  /// --description="Google Cloud Managed Notebooks Range 24 c" \
+  /// --network=$NETWORK \ --addresses=192.168.0.0 \ --purpose=VPC_PEERING Field
+  /// value will be: `managed-notebooks-range-c`
+  ///
+  /// Optional.
+  core.String? reservedIpRange;
+
+  /// Shielded VM Instance configuration settings.
+  ///
+  /// Optional.
+  RuntimeShieldedInstanceConfig? shieldedInstanceConfig;
+
+  /// The Compute Engine subnetwork to be used for machine communications.
+  ///
+  /// Cannot be specified with network. A full URL or partial URI are valid.
+  /// Examples: *
+  /// `https://www.googleapis.com/compute/v1/projects/[project_id]/regions/us-east1/subnetworks/sub0`
+  /// * `projects/[project_id]/regions/us-east1/subnetworks/sub0`
+  ///
+  /// Optional.
+  core.String? subnet;
+
+  /// The Compute Engine tags to add to runtime (see
+  /// [Tagging instances](https://cloud.google.com/compute/docs/label-or-tag-resources#tags)).
+  ///
+  /// Optional.
+  core.List<core.String>? tags;
+
+  /// The zone where the virtual machine is located.
+  ///
+  /// If using regional request, the notebooks service will pick a location in
+  /// the corresponding runtime region. On a get request, zone will always be
+  /// present. Example: * `us-central1-b`
+  ///
+  /// Output only.
+  core.String? zone;
+
+  VirtualMachineConfig({
+    this.acceleratorConfig,
+    this.containerImages,
+    this.dataDisk,
+    this.encryptionConfig,
+    this.guestAttributes,
+    this.internalIpOnly,
+    this.labels,
+    this.machineType,
+    this.metadata,
+    this.network,
+    this.nicType,
+    this.reservedIpRange,
+    this.shieldedInstanceConfig,
+    this.subnet,
+    this.tags,
+    this.zone,
+  });
+
+  VirtualMachineConfig.fromJson(core.Map _json)
+      : this(
+          acceleratorConfig: _json.containsKey('acceleratorConfig')
+              ? RuntimeAcceleratorConfig.fromJson(_json['acceleratorConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          containerImages: _json.containsKey('containerImages')
+              ? (_json['containerImages'] as core.List)
+                  .map((value) => ContainerImage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          dataDisk: _json.containsKey('dataDisk')
+              ? LocalDisk.fromJson(
+                  _json['dataDisk'] as core.Map<core.String, core.dynamic>)
+              : null,
+          encryptionConfig: _json.containsKey('encryptionConfig')
+              ? EncryptionConfig.fromJson(_json['encryptionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          guestAttributes: _json.containsKey('guestAttributes')
+              ? (_json['guestAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          internalIpOnly: _json.containsKey('internalIpOnly')
+              ? _json['internalIpOnly'] as core.bool
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+          nicType: _json.containsKey('nicType')
+              ? _json['nicType'] as core.String
+              : null,
+          reservedIpRange: _json.containsKey('reservedIpRange')
+              ? _json['reservedIpRange'] as core.String
+              : null,
+          shieldedInstanceConfig: _json.containsKey('shieldedInstanceConfig')
+              ? RuntimeShieldedInstanceConfig.fromJson(
+                  _json['shieldedInstanceConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          subnet: _json.containsKey('subnet')
+              ? _json['subnet'] as core.String
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          zone: _json.containsKey('zone') ? _json['zone'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (acceleratorConfig != null) 'acceleratorConfig': acceleratorConfig!,
+        if (containerImages != null) 'containerImages': containerImages!,
+        if (dataDisk != null) 'dataDisk': dataDisk!,
+        if (encryptionConfig != null) 'encryptionConfig': encryptionConfig!,
+        if (guestAttributes != null) 'guestAttributes': guestAttributes!,
+        if (internalIpOnly != null) 'internalIpOnly': internalIpOnly!,
+        if (labels != null) 'labels': labels!,
+        if (machineType != null) 'machineType': machineType!,
+        if (metadata != null) 'metadata': metadata!,
+        if (network != null) 'network': network!,
+        if (nicType != null) 'nicType': nicType!,
+        if (reservedIpRange != null) 'reservedIpRange': reservedIpRange!,
+        if (shieldedInstanceConfig != null)
+          'shieldedInstanceConfig': shieldedInstanceConfig!,
+        if (subnet != null) 'subnet': subnet!,
+        if (tags != null) 'tags': tags!,
+        if (zone != null) 'zone': zone!,
+      };
 }
 
 /// Definition of a custom Compute Engine virtual machine image for starting a
@@ -4187,19 +6284,24 @@ class VmImage {
   /// Required.
   core.String? project;
 
-  VmImage();
+  VmImage({
+    this.imageFamily,
+    this.imageName,
+    this.project,
+  });
 
-  VmImage.fromJson(core.Map _json) {
-    if (_json.containsKey('imageFamily')) {
-      imageFamily = _json['imageFamily'] as core.String;
-    }
-    if (_json.containsKey('imageName')) {
-      imageName = _json['imageName'] as core.String;
-    }
-    if (_json.containsKey('project')) {
-      project = _json['project'] as core.String;
-    }
-  }
+  VmImage.fromJson(core.Map _json)
+      : this(
+          imageFamily: _json.containsKey('imageFamily')
+              ? _json['imageFamily'] as core.String
+              : null,
+          imageName: _json.containsKey('imageName')
+              ? _json['imageName'] as core.String
+              : null,
+          project: _json.containsKey('project')
+              ? _json['project'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (imageFamily != null) 'imageFamily': imageFamily!,

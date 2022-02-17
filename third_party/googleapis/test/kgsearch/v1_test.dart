@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,28 +20,26 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/kgsearch/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/kgsearch/v1.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<core.Object> buildUnnamed4121() {
-  var o = <core.Object>[];
-  o.add({
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  });
-  o.add({
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  });
-  return o;
-}
+core.List<core.Object?> buildUnnamed0() => [
+      {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    ];
 
-void checkUnnamed4121(core.List<core.Object> o) {
+void checkUnnamed0(core.List<core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted1 = (o[0]) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
@@ -76,7 +73,7 @@ void checkUnnamed4121(core.List<core.Object> o) {
 
 core.int buildCounterSearchResponse = 0;
 api.SearchResponse buildSearchResponse() {
-  var o = api.SearchResponse();
+  final o = api.SearchResponse();
   buildCounterSearchResponse++;
   if (buildCounterSearchResponse < 3) {
     o.P_context = {
@@ -89,7 +86,7 @@ api.SearchResponse buildSearchResponse() {
       'bool': true,
       'string': 'foo'
     };
-    o.itemListElement = buildUnnamed4121();
+    o.itemListElement = buildUnnamed0();
   }
   buildCounterSearchResponse--;
   return o;
@@ -126,19 +123,17 @@ void checkSearchResponse(api.SearchResponse o) {
       casted4['string'],
       unittest.equals('foo'),
     );
-    checkUnnamed4121(o.itemListElement!);
+    checkUnnamed0(o.itemListElement!);
   }
   buildCounterSearchResponse--;
 }
 
-core.List<core.String> buildUnnamed4122() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed1() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed4122(core.List<core.String> o) {
+void checkUnnamed1(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -150,14 +145,12 @@ void checkUnnamed4122(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed4123() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed2() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed4123(core.List<core.String> o) {
+void checkUnnamed2(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -169,14 +162,12 @@ void checkUnnamed4123(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed4124() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed3() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed4124(core.List<core.String> o) {
+void checkUnnamed3(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -191,51 +182,51 @@ void checkUnnamed4124(core.List<core.String> o) {
 void main() {
   unittest.group('obj-schema-SearchResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchResponse.fromJson(
+      final o = buildSearchResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchResponse(od as api.SearchResponse);
+      checkSearchResponse(od);
     });
   });
 
   unittest.group('resource-EntitiesResource', () {
     unittest.test('method--search', () async {
-      var mock = HttpServerMock();
-      var res = api.KgsearchApi(mock).entities;
-      var arg_ids = buildUnnamed4122();
-      var arg_indent = true;
-      var arg_languages = buildUnnamed4123();
-      var arg_limit = 42;
-      var arg_prefix = true;
-      var arg_query = 'foo';
-      var arg_types = buildUnnamed4124();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.KgsearchApi(mock).entities;
+      final arg_ids = buildUnnamed1();
+      final arg_indent = true;
+      final arg_languages = buildUnnamed2();
+      final arg_limit = 42;
+      final arg_prefix = true;
+      final arg_query = 'foo';
+      final arg_types = buildUnnamed3();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 18),
-          unittest.equals("v1/entities:search"),
+          unittest.equals('v1/entities:search'),
         );
         pathOffset += 18;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -243,42 +234,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["ids"]!,
+          queryMap['ids']!,
           unittest.equals(arg_ids),
         );
         unittest.expect(
-          queryMap["indent"]!.first,
-          unittest.equals("$arg_indent"),
+          queryMap['indent']!.first,
+          unittest.equals('$arg_indent'),
         );
         unittest.expect(
-          queryMap["languages"]!,
+          queryMap['languages']!,
           unittest.equals(arg_languages),
         );
         unittest.expect(
-          core.int.parse(queryMap["limit"]!.first),
+          core.int.parse(queryMap['limit']!.first),
           unittest.equals(arg_limit),
         );
         unittest.expect(
-          queryMap["prefix"]!.first,
-          unittest.equals("$arg_prefix"),
+          queryMap['prefix']!.first,
+          unittest.equals('$arg_prefix'),
         );
         unittest.expect(
-          queryMap["query"]!.first,
+          queryMap['query']!.first,
           unittest.equals(arg_query),
         );
         unittest.expect(
-          queryMap["types"]!,
+          queryMap['types']!,
           unittest.equals(arg_types),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSearchResponse());
+        final resp = convert.json.encode(buildSearchResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.search(

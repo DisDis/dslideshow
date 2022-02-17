@@ -34,6 +34,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -41,7 +43,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Manages Apache Airflow environments on Google Cloud Platform.
 class CloudComposerApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -109,7 +112,7 @@ class ProjectsLocationsEnvironmentsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -286,44 +289,65 @@ class ProjectsLocationsEnvironmentsResource {
   /// path "config.softwareConfig.pypiPackages", and the patch environment would
   /// be the following: { "config":{ "softwareConfig":{ "pypiPackages":{
   /// "botocore":"==1.7.14" } } } } **Note:** Only the following fields can be
-  /// updated: *Mask* *Purpose* config.softwareConfig.pypiPackages Replace all
-  /// custom custom PyPI packages. If a replacement package map is not included
-  /// in `environment`, all custom PyPI packages are cleared. It is an error to
-  /// provide both this mask and a mask specifying an individual package.
-  /// config.softwareConfig.pypiPackages.packagename Update the custom PyPI
-  /// package packagename, preserving other packages. To delete the package,
+  /// updated: * `config.softwareConfig.pypiPackages` * Replace all custom
+  /// custom PyPI packages. If a replacement package map is not included in
+  /// `environment`, all custom PyPI packages are cleared. It is an error to
+  /// provide both this mask and a mask specifying an individual package. *
+  /// `config.softwareConfig.pypiPackages.`packagename * Update the custom PyPI
+  /// package *packagename*, preserving other packages. To delete the package,
   /// include it in `updateMask`, and omit the mapping for it in
   /// `environment.config.softwareConfig.pypiPackages`. It is an error to
   /// provide both a mask of this form and the
-  /// "config.softwareConfig.pypiPackages" mask. labels Replace all environment
-  /// labels. If a replacement labels map is not included in `environment`, all
-  /// labels are cleared. It is an error to provide both this mask and a mask
-  /// specifying one or more individual labels. labels.labelName Set the label
-  /// named labelName, while preserving other labels. To delete the label,
-  /// include it in `updateMask` and omit its mapping in `environment.labels`.
-  /// It is an error to provide both a mask of this form and the "labels" mask.
-  /// config.nodeCount Horizontally scale the number of nodes in the
-  /// environment. An integer greater than or equal to 3 must be provided in the
-  /// `config.nodeCount` field. config.webServerNetworkAccessControl Replace the
-  /// environment's current WebServerNetworkAccessControl. config.databaseConfig
-  /// Replace the environment's current DatabaseConfig. config.webServerConfig
-  /// Replace the environment's current WebServerConfig.
-  /// config.softwareConfig.airflowConfigOverrides Replace all Apache Airflow
-  /// config overrides. If a replacement config overrides map is not included in
-  /// `environment`, all config overrides are cleared. It is an error to provide
-  /// both this mask and a mask specifying one or more individual config
-  /// overrides. config.softwareConfig.airflowConfigOverrides.section-name
-  /// Override the Apache Airflow config property name in the section named
-  /// section, preserving other properties. To delete the property override,
-  /// include it in `updateMask` and omit its mapping in
+  /// `config.softwareConfig.pypiPackages` mask. * `labels` * Replace all
+  /// environment labels. If a replacement labels map is not included in
+  /// `environment`, all labels are cleared. It is an error to provide both this
+  /// mask and a mask specifying one or more individual labels. *
+  /// `labels.`labelName * Set the label named *labelName*, while preserving
+  /// other labels. To delete the label, include it in `updateMask` and omit its
+  /// mapping in `environment.labels`. It is an error to provide both a mask of
+  /// this form and the `labels` mask. * `config.nodeCount` * Horizontally scale
+  /// the number of nodes in the environment. An integer greater than or equal
+  /// to 3 must be provided in the `config.nodeCount` field. Supported for Cloud
+  /// Composer environments in versions composer-1.*.*-airflow-*.*.*. *
+  /// `config.webServerNetworkAccessControl` * Replace the environment's current
+  /// `WebServerNetworkAccessControl`. * `config.databaseConfig.machineType` *
+  /// Cloud SQL machine type used by Airflow database. It has to be one of:
+  /// db-n1-standard-2, db-n1-standard-4, db-n1-standard-8 or db-n1-standard-16.
+  /// Supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*. * `config.webServerConfig.machineType` *
+  /// Machine type on which Airflow web server is running. It has to be one of:
+  /// composer-n1-webserver-2, composer-n1-webserver-4 or
+  /// composer-n1-webserver-8. Supported for Cloud Composer environments in
+  /// versions composer-1.*.*-airflow-*.*.*. *
+  /// `config.softwareConfig.airflowConfigOverrides` * Replace all Apache
+  /// Airflow config overrides. If a replacement config overrides map is not
+  /// included in `environment`, all config overrides are cleared. It is an
+  /// error to provide both this mask and a mask specifying one or more
+  /// individual config overrides. *
+  /// `config.softwareConfig.airflowConfigOverrides.`section-name * Override the
+  /// Apache Airflow config property *name* in the section named *section*,
+  /// preserving other properties. To delete the property override, include it
+  /// in `updateMask` and omit its mapping in
   /// `environment.config.softwareConfig.airflowConfigOverrides`. It is an error
   /// to provide both a mask of this form and the
-  /// "config.softwareConfig.airflowConfigOverrides" mask.
-  /// config.softwareConfig.envVariables Replace all environment variables. If a
-  /// replacement environment variable map is not included in `environment`, all
-  /// custom environment variables are cleared. It is an error to provide both
-  /// this mask and a mask specifying one or more individual environment
-  /// variables.
+  /// `config.softwareConfig.airflowConfigOverrides` mask. *
+  /// `config.softwareConfig.envVariables` * Replace all environment variables.
+  /// If a replacement environment variable map is not included in
+  /// `environment`, all custom environment variables are cleared. It is an
+  /// error to provide both this mask and a mask specifying one or more
+  /// individual environment variables. * `config.softwareConfig.schedulerCount`
+  /// * Horizontally scale the number of schedulers in Airflow. A positive
+  /// integer not greater than the number of nodes must be provided in the
+  /// `config.softwareConfig.schedulerCount` field. Supported for Cloud Composer
+  /// environments in versions composer-1.*.*-airflow-2.*.*. *
+  /// `config.databaseConfig.machineType` * Cloud SQL machine type used by
+  /// Airflow database. It has to be one of: db-n1-standard-2, db-n1-standard-4,
+  /// db-n1-standard-8 or db-n1-standard-16. Supported for Cloud Composer
+  /// environments in versions composer-1.*.*-airflow-*.*.*. *
+  /// `config.webServerConfig.machineType` * Machine type on which Airflow web
+  /// server is running. It has to be one of: composer-n1-webserver-2,
+  /// composer-n1-webserver-4 or composer-n1-webserver-8. Supported for Cloud
+  /// Composer environments in versions composer-1.*.*-airflow-*.*.*.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -341,7 +365,7 @@ class ProjectsLocationsEnvironmentsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -580,16 +604,19 @@ class AllowedIpRange {
   /// `2001:db8::/32`.
   core.String? value;
 
-  AllowedIpRange();
+  AllowedIpRange({
+    this.description,
+    this.value,
+  });
 
-  AllowedIpRange.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  AllowedIpRange.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -599,6 +626,9 @@ class AllowedIpRange {
 
 /// The configuration of Cloud SQL instance that is used by the Apache Airflow
 /// software.
+///
+/// Supported for Cloud Composer environments in versions
+/// composer-1.*.*-airflow-*.*.*.
 class DatabaseConfig {
   /// Cloud SQL machine type used by Airflow database.
   ///
@@ -608,13 +638,16 @@ class DatabaseConfig {
   /// Optional.
   core.String? machineType;
 
-  DatabaseConfig();
+  DatabaseConfig({
+    this.machineType,
+  });
 
-  DatabaseConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-  }
+  DatabaseConfig.fromJson(core.Map _json)
+      : this(
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (machineType != null) 'machineType': machineType!,
@@ -626,47 +659,11 @@ class DatabaseConfig {
 /// The time of day and time zone are either specified elsewhere or are
 /// insignificant. The date is relative to the Gregorian Calendar. This can
 /// represent one of the following: * A full date, with non-zero year, month,
-/// and day values * A month and day value, with a zero year, such as an
-/// anniversary * A year on its own, with zero month and day values * A year and
-/// month value, with a zero day, such as a credit card expiration date Related
-/// types are google.type.TimeOfDay and `google.protobuf.Timestamp`.
-class Date {
-  /// Day of a month.
-  ///
-  /// Must be from 1 to 31 and valid for the year and month, or 0 to specify a
-  /// year by itself or a year and month where the day isn't significant.
-  core.int? day;
-
-  /// Month of a year.
-  ///
-  /// Must be from 1 to 12, or 0 to specify a year without a month and day.
-  core.int? month;
-
-  /// Year of the date.
-  ///
-  /// Must be from 1 to 9999, or 0 to specify a date without a year.
-  core.int? year;
-
-  Date();
-
-  Date.fromJson(core.Map _json) {
-    if (_json.containsKey('day')) {
-      day = _json['day'] as core.int;
-    }
-    if (_json.containsKey('month')) {
-      month = _json['month'] as core.int;
-    }
-    if (_json.containsKey('year')) {
-      year = _json['year'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (day != null) 'day': day!,
-        if (month != null) 'month': month!,
-        if (year != null) 'year': year!,
-      };
-}
+/// and day values * A month and day, with a zero year (e.g., an anniversary) *
+/// A year on its own, with a zero month and a zero day * A year and month, with
+/// a zero day (e.g., a credit card expiration date) Related types: *
+/// google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp
+typedef Date = $Date;
 
 /// A generic empty message that you can re-use to avoid defining duplicated
 /// empty messages in your APIs.
@@ -675,18 +672,11 @@ class Date {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// The encryption options for the Cloud Composer environment and its
-/// dependencies.
+/// dependencies.Supported for Cloud Composer environments in versions
+/// composer-1.*.*-airflow-*.*.*.
 class EncryptionConfig {
   /// Customer-managed Encryption Key available through Google's Key Management
   /// Service.
@@ -696,13 +686,16 @@ class EncryptionConfig {
   /// Optional.
   core.String? kmsKeyName;
 
-  EncryptionConfig();
+  EncryptionConfig({
+    this.kmsKeyName,
+  });
 
-  EncryptionConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kmsKeyName')) {
-      kmsKeyName = _json['kmsKeyName'] as core.String;
-    }
-  }
+  EncryptionConfig.fromJson(core.Map _json)
+      : this(
+          kmsKeyName: _json.containsKey('kmsKeyName')
+              ? _json['kmsKeyName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kmsKeyName != null) 'kmsKeyName': kmsKeyName!,
@@ -725,7 +718,7 @@ class Environment {
   /// map are UTF8 strings that comply with the following restrictions: * Keys
   /// must conform to regexp: \p{Ll}\p{Lo}{0,62} * Values must conform to
   /// regexp: \[\p{Ll}\p{Lo}\p{N}_-\]{0,63} * Both keys and values are
-  /// additionally constrained to be <= 128 bytes in size.
+  /// additionally constrained to be \<= 128 bytes in size.
   ///
   /// Optional.
   core.Map<core.String, core.String>? labels;
@@ -760,40 +753,44 @@ class Environment {
   /// Output only.
   core.String? uuid;
 
-  Environment();
+  Environment({
+    this.config,
+    this.createTime,
+    this.labels,
+    this.name,
+    this.state,
+    this.updateTime,
+    this.uuid,
+  });
 
-  Environment.fromJson(core.Map _json) {
-    if (_json.containsKey('config')) {
-      config = EnvironmentConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-    if (_json.containsKey('uuid')) {
-      uuid = _json['uuid'] as core.String;
-    }
-  }
+  Environment.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? EnvironmentConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          uuid: _json.containsKey('uuid') ? _json['uuid'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (createTime != null) 'createTime': createTime!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
@@ -825,6 +822,9 @@ class EnvironmentConfig {
   /// The configuration settings for Cloud SQL instance used internally by
   /// Apache Airflow software.
   ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
+  ///
   /// Optional.
   DatabaseConfig? databaseConfig;
 
@@ -836,16 +836,48 @@ class EnvironmentConfig {
   /// Optional.
   EncryptionConfig? encryptionConfig;
 
+  /// The size of the Cloud Composer environment.
+  ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-2.*.*-airflow-*.*.* and newer.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "ENVIRONMENT_SIZE_UNSPECIFIED" : The size of the environment is
+  /// unspecified.
+  /// - "ENVIRONMENT_SIZE_SMALL" : The environment size is small.
+  /// - "ENVIRONMENT_SIZE_MEDIUM" : The environment size is medium.
+  /// - "ENVIRONMENT_SIZE_LARGE" : The environment size is large.
+  core.String? environmentSize;
+
   /// The Kubernetes Engine cluster used to run this environment.
   ///
   /// Output only.
   core.String? gkeCluster;
+
+  /// The maintenance window is the period when Cloud Composer components may
+  /// undergo maintenance.
+  ///
+  /// It is defined so that maintenance is not executed during peak hours or
+  /// critical time periods. The system will not be under maintenance for every
+  /// occurrence of this window, but when maintenance is planned, it will be
+  /// scheduled during the window. The maintenance window period must encompass
+  /// at least 12 hours per week. This may be split into multiple chunks, each
+  /// with a size of at least 4 hours. If this value is omitted, the default
+  /// value for maintenance window will be applied. The default value is
+  /// Saturday and Sunday 00-06 GMT.
+  ///
+  /// Optional.
+  MaintenanceWindow? maintenanceWindow;
 
   /// The configuration used for the Kubernetes Engine cluster.
   NodeConfig? nodeConfig;
 
   /// The number of nodes in the Kubernetes Engine cluster that will be used to
   /// run this environment.
+  ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
   core.int? nodeCount;
 
   /// The configuration used for the Private IP Cloud Composer environment.
@@ -866,70 +898,109 @@ class EnvironmentConfig {
   /// Optional.
   WebServerNetworkAccessControl? webServerNetworkAccessControl;
 
-  EnvironmentConfig();
+  /// The workloads configuration settings for the GKE cluster associated with
+  /// the Cloud Composer environment.
+  ///
+  /// The GKE cluster runs Airflow scheduler, web server and workers workloads.
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-2.*.*-airflow-*.*.* and newer.
+  ///
+  /// Optional.
+  WorkloadsConfig? workloadsConfig;
 
-  EnvironmentConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('airflowUri')) {
-      airflowUri = _json['airflowUri'] as core.String;
-    }
-    if (_json.containsKey('dagGcsPrefix')) {
-      dagGcsPrefix = _json['dagGcsPrefix'] as core.String;
-    }
-    if (_json.containsKey('databaseConfig')) {
-      databaseConfig = DatabaseConfig.fromJson(
-          _json['databaseConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('encryptionConfig')) {
-      encryptionConfig = EncryptionConfig.fromJson(
-          _json['encryptionConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gkeCluster')) {
-      gkeCluster = _json['gkeCluster'] as core.String;
-    }
-    if (_json.containsKey('nodeConfig')) {
-      nodeConfig = NodeConfig.fromJson(
-          _json['nodeConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('nodeCount')) {
-      nodeCount = _json['nodeCount'] as core.int;
-    }
-    if (_json.containsKey('privateEnvironmentConfig')) {
-      privateEnvironmentConfig = PrivateEnvironmentConfig.fromJson(
-          _json['privateEnvironmentConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('softwareConfig')) {
-      softwareConfig = SoftwareConfig.fromJson(
-          _json['softwareConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('webServerConfig')) {
-      webServerConfig = WebServerConfig.fromJson(
-          _json['webServerConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('webServerNetworkAccessControl')) {
-      webServerNetworkAccessControl = WebServerNetworkAccessControl.fromJson(
-          _json['webServerNetworkAccessControl']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EnvironmentConfig({
+    this.airflowUri,
+    this.dagGcsPrefix,
+    this.databaseConfig,
+    this.encryptionConfig,
+    this.environmentSize,
+    this.gkeCluster,
+    this.maintenanceWindow,
+    this.nodeConfig,
+    this.nodeCount,
+    this.privateEnvironmentConfig,
+    this.softwareConfig,
+    this.webServerConfig,
+    this.webServerNetworkAccessControl,
+    this.workloadsConfig,
+  });
+
+  EnvironmentConfig.fromJson(core.Map _json)
+      : this(
+          airflowUri: _json.containsKey('airflowUri')
+              ? _json['airflowUri'] as core.String
+              : null,
+          dagGcsPrefix: _json.containsKey('dagGcsPrefix')
+              ? _json['dagGcsPrefix'] as core.String
+              : null,
+          databaseConfig: _json.containsKey('databaseConfig')
+              ? DatabaseConfig.fromJson(_json['databaseConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          encryptionConfig: _json.containsKey('encryptionConfig')
+              ? EncryptionConfig.fromJson(_json['encryptionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          environmentSize: _json.containsKey('environmentSize')
+              ? _json['environmentSize'] as core.String
+              : null,
+          gkeCluster: _json.containsKey('gkeCluster')
+              ? _json['gkeCluster'] as core.String
+              : null,
+          maintenanceWindow: _json.containsKey('maintenanceWindow')
+              ? MaintenanceWindow.fromJson(_json['maintenanceWindow']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          nodeConfig: _json.containsKey('nodeConfig')
+              ? NodeConfig.fromJson(
+                  _json['nodeConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          nodeCount: _json.containsKey('nodeCount')
+              ? _json['nodeCount'] as core.int
+              : null,
+          privateEnvironmentConfig:
+              _json.containsKey('privateEnvironmentConfig')
+                  ? PrivateEnvironmentConfig.fromJson(
+                      _json['privateEnvironmentConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          softwareConfig: _json.containsKey('softwareConfig')
+              ? SoftwareConfig.fromJson(_json['softwareConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          webServerConfig: _json.containsKey('webServerConfig')
+              ? WebServerConfig.fromJson(_json['webServerConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          webServerNetworkAccessControl:
+              _json.containsKey('webServerNetworkAccessControl')
+                  ? WebServerNetworkAccessControl.fromJson(
+                      _json['webServerNetworkAccessControl']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          workloadsConfig: _json.containsKey('workloadsConfig')
+              ? WorkloadsConfig.fromJson(_json['workloadsConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (airflowUri != null) 'airflowUri': airflowUri!,
         if (dagGcsPrefix != null) 'dagGcsPrefix': dagGcsPrefix!,
-        if (databaseConfig != null) 'databaseConfig': databaseConfig!.toJson(),
-        if (encryptionConfig != null)
-          'encryptionConfig': encryptionConfig!.toJson(),
+        if (databaseConfig != null) 'databaseConfig': databaseConfig!,
+        if (encryptionConfig != null) 'encryptionConfig': encryptionConfig!,
+        if (environmentSize != null) 'environmentSize': environmentSize!,
         if (gkeCluster != null) 'gkeCluster': gkeCluster!,
-        if (nodeConfig != null) 'nodeConfig': nodeConfig!.toJson(),
+        if (maintenanceWindow != null) 'maintenanceWindow': maintenanceWindow!,
+        if (nodeConfig != null) 'nodeConfig': nodeConfig!,
         if (nodeCount != null) 'nodeCount': nodeCount!,
         if (privateEnvironmentConfig != null)
-          'privateEnvironmentConfig': privateEnvironmentConfig!.toJson(),
-        if (softwareConfig != null) 'softwareConfig': softwareConfig!.toJson(),
-        if (webServerConfig != null)
-          'webServerConfig': webServerConfig!.toJson(),
+          'privateEnvironmentConfig': privateEnvironmentConfig!,
+        if (softwareConfig != null) 'softwareConfig': softwareConfig!,
+        if (webServerConfig != null) 'webServerConfig': webServerConfig!,
         if (webServerNetworkAccessControl != null)
-          'webServerNetworkAccessControl':
-              webServerNetworkAccessControl!.toJson(),
+          'webServerNetworkAccessControl': webServerNetworkAccessControl!,
+        if (workloadsConfig != null) 'workloadsConfig': workloadsConfig!,
       };
 }
 
@@ -939,10 +1010,11 @@ class IPAllocationPolicy {
   /// The IP address range used to allocate IP addresses to pods in the GKE
   /// cluster.
   ///
-  /// This field is applicable only when `use_ip_aliases` is true. Set to blank
+  /// For Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*,
+  /// this field is applicable only when `use_ip_aliases` is true. Set to blank
   /// to have GKE choose a range with the default size. Set to /netmask (e.g.
   /// `/14`) to have GKE choose a range with a specific netmask. Set to a
-  /// [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
+  /// [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
   /// notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g.
   /// `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range
   /// to use.
@@ -953,17 +1025,19 @@ class IPAllocationPolicy {
   /// The name of the GKE cluster's secondary range used to allocate IP
   /// addresses to pods.
   ///
-  /// This field is applicable only when `use_ip_aliases` is true.
+  /// For Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*,
+  /// this field is applicable only when `use_ip_aliases` is true.
   ///
   /// Optional.
   core.String? clusterSecondaryRangeName;
 
   /// The IP address range of the services IP addresses in this GKE cluster.
   ///
-  /// This field is applicable only when `use_ip_aliases` is true. Set to blank
+  /// For Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*,
+  /// this field is applicable only when `use_ip_aliases` is true. Set to blank
   /// to have GKE choose a range with the default size. Set to /netmask (e.g.
   /// `/14`) to have GKE choose a range with a specific netmask. Set to a
-  /// [CIDR](http://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
+  /// [CIDR](https://en.wikipedia.org/wiki/Classless_Inter-Domain_Routing)
   /// notation (e.g. `10.96.0.0/14`) from the RFC-1918 private networks (e.g.
   /// `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`) to pick a specific range
   /// to use.
@@ -974,39 +1048,49 @@ class IPAllocationPolicy {
   /// The name of the services' secondary range used to allocate IP addresses to
   /// the GKE cluster.
   ///
-  /// This field is applicable only when `use_ip_aliases` is true.
+  /// For Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*,
+  /// this field is applicable only when `use_ip_aliases` is true.
   ///
   /// Optional.
   core.String? servicesSecondaryRangeName;
 
   /// Whether or not to enable Alias IPs in the GKE cluster.
   ///
-  /// If `true`, a VPC-native cluster is created.
+  /// If `true`, a VPC-native cluster is created. This field is only supported
+  /// for Cloud Composer environments in versions composer-1.*.*-airflow-*.*.*.
+  /// Environments in newer versions always use VPC-native GKE clusters.
   ///
   /// Optional.
   core.bool? useIpAliases;
 
-  IPAllocationPolicy();
+  IPAllocationPolicy({
+    this.clusterIpv4CidrBlock,
+    this.clusterSecondaryRangeName,
+    this.servicesIpv4CidrBlock,
+    this.servicesSecondaryRangeName,
+    this.useIpAliases,
+  });
 
-  IPAllocationPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterIpv4CidrBlock')) {
-      clusterIpv4CidrBlock = _json['clusterIpv4CidrBlock'] as core.String;
-    }
-    if (_json.containsKey('clusterSecondaryRangeName')) {
-      clusterSecondaryRangeName =
-          _json['clusterSecondaryRangeName'] as core.String;
-    }
-    if (_json.containsKey('servicesIpv4CidrBlock')) {
-      servicesIpv4CidrBlock = _json['servicesIpv4CidrBlock'] as core.String;
-    }
-    if (_json.containsKey('servicesSecondaryRangeName')) {
-      servicesSecondaryRangeName =
-          _json['servicesSecondaryRangeName'] as core.String;
-    }
-    if (_json.containsKey('useIpAliases')) {
-      useIpAliases = _json['useIpAliases'] as core.bool;
-    }
-  }
+  IPAllocationPolicy.fromJson(core.Map _json)
+      : this(
+          clusterIpv4CidrBlock: _json.containsKey('clusterIpv4CidrBlock')
+              ? _json['clusterIpv4CidrBlock'] as core.String
+              : null,
+          clusterSecondaryRangeName:
+              _json.containsKey('clusterSecondaryRangeName')
+                  ? _json['clusterSecondaryRangeName'] as core.String
+                  : null,
+          servicesIpv4CidrBlock: _json.containsKey('servicesIpv4CidrBlock')
+              ? _json['servicesIpv4CidrBlock'] as core.String
+              : null,
+          servicesSecondaryRangeName:
+              _json.containsKey('servicesSecondaryRangeName')
+                  ? _json['servicesSecondaryRangeName'] as core.String
+                  : null,
+          useIpAliases: _json.containsKey('useIpAliases')
+              ? _json['useIpAliases'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (clusterIpv4CidrBlock != null)
@@ -1044,37 +1128,45 @@ class ImageVersion {
   /// version.
   core.bool? upgradeDisabled;
 
-  ImageVersion();
+  ImageVersion({
+    this.creationDisabled,
+    this.imageVersionId,
+    this.isDefault,
+    this.releaseDate,
+    this.supportedPythonVersions,
+    this.upgradeDisabled,
+  });
 
-  ImageVersion.fromJson(core.Map _json) {
-    if (_json.containsKey('creationDisabled')) {
-      creationDisabled = _json['creationDisabled'] as core.bool;
-    }
-    if (_json.containsKey('imageVersionId')) {
-      imageVersionId = _json['imageVersionId'] as core.String;
-    }
-    if (_json.containsKey('isDefault')) {
-      isDefault = _json['isDefault'] as core.bool;
-    }
-    if (_json.containsKey('releaseDate')) {
-      releaseDate = Date.fromJson(
-          _json['releaseDate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('supportedPythonVersions')) {
-      supportedPythonVersions = (_json['supportedPythonVersions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('upgradeDisabled')) {
-      upgradeDisabled = _json['upgradeDisabled'] as core.bool;
-    }
-  }
+  ImageVersion.fromJson(core.Map _json)
+      : this(
+          creationDisabled: _json.containsKey('creationDisabled')
+              ? _json['creationDisabled'] as core.bool
+              : null,
+          imageVersionId: _json.containsKey('imageVersionId')
+              ? _json['imageVersionId'] as core.String
+              : null,
+          isDefault: _json.containsKey('isDefault')
+              ? _json['isDefault'] as core.bool
+              : null,
+          releaseDate: _json.containsKey('releaseDate')
+              ? Date.fromJson(
+                  _json['releaseDate'] as core.Map<core.String, core.dynamic>)
+              : null,
+          supportedPythonVersions: _json.containsKey('supportedPythonVersions')
+              ? (_json['supportedPythonVersions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          upgradeDisabled: _json.containsKey('upgradeDisabled')
+              ? _json['upgradeDisabled'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (creationDisabled != null) 'creationDisabled': creationDisabled!,
         if (imageVersionId != null) 'imageVersionId': imageVersionId!,
         if (isDefault != null) 'isDefault': isDefault!,
-        if (releaseDate != null) 'releaseDate': releaseDate!.toJson(),
+        if (releaseDate != null) 'releaseDate': releaseDate!,
         if (supportedPythonVersions != null)
           'supportedPythonVersions': supportedPythonVersions!,
         if (upgradeDisabled != null) 'upgradeDisabled': upgradeDisabled!,
@@ -1089,23 +1181,26 @@ class ListEnvironmentsResponse {
   /// The page token used to query for the next page if one exists.
   core.String? nextPageToken;
 
-  ListEnvironmentsResponse();
+  ListEnvironmentsResponse({
+    this.environments,
+    this.nextPageToken,
+  });
 
-  ListEnvironmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('environments')) {
-      environments = (_json['environments'] as core.List)
-          .map<Environment>((value) => Environment.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListEnvironmentsResponse.fromJson(core.Map _json)
+      : this(
+          environments: _json.containsKey('environments')
+              ? (_json['environments'] as core.List)
+                  .map((value) => Environment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (environments != null)
-          'environments': environments!.map((value) => value.toJson()).toList(),
+        if (environments != null) 'environments': environments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1118,24 +1213,26 @@ class ListImageVersionsResponse {
   /// The page token used to query for the next page if one exists.
   core.String? nextPageToken;
 
-  ListImageVersionsResponse();
+  ListImageVersionsResponse({
+    this.imageVersions,
+    this.nextPageToken,
+  });
 
-  ListImageVersionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('imageVersions')) {
-      imageVersions = (_json['imageVersions'] as core.List)
-          .map<ImageVersion>((value) => ImageVersion.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListImageVersionsResponse.fromJson(core.Map _json)
+      : this(
+          imageVersions: _json.containsKey('imageVersions')
+              ? (_json['imageVersions'] as core.List)
+                  .map((value) => ImageVersion.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (imageVersions != null)
-          'imageVersions':
-              imageVersions!.map((value) => value.toJson()).toList(),
+        if (imageVersions != null) 'imageVersions': imageVersions!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1148,24 +1245,83 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
+      };
+}
+
+/// The configuration settings for Cloud Composer maintenance window.
+///
+/// The following example: ``` { "startTime":"2019-08-01T01:00:00Z"
+/// "endTime":"2019-08-01T07:00:00Z" "recurrence":"FREQ=WEEKLY;BYDAY=TU,WE" }
+/// ``` would define a maintenance window between 01 and 07 hours UTC during
+/// each Tuesday and Wednesday.
+class MaintenanceWindow {
+  /// Maintenance window end time.
+  ///
+  /// It is used only to calculate the duration of the maintenance window. The
+  /// value for end-time must be in the future, relative to `start_time`.
+  ///
+  /// Required.
+  core.String? endTime;
+
+  /// Maintenance window recurrence.
+  ///
+  /// Format is a subset of \[RFC-5545\](https://tools.ietf.org/html/rfc5545)
+  /// `RRULE`. The only allowed values for `FREQ` field are `FREQ=DAILY` and
+  /// `FREQ=WEEKLY;BYDAY=...` Example values: `FREQ=WEEKLY;BYDAY=TU,WE`,
+  /// `FREQ=DAILY`.
+  ///
+  /// Required.
+  core.String? recurrence;
+
+  /// Start time of the first recurrence of the maintenance window.
+  ///
+  /// Required.
+  core.String? startTime;
+
+  MaintenanceWindow({
+    this.endTime,
+    this.recurrence,
+    this.startTime,
+  });
+
+  MaintenanceWindow.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          recurrence: _json.containsKey('recurrence')
+              ? _json['recurrence'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (endTime != null) 'endTime': endTime!,
+        if (recurrence != null) 'recurrence': recurrence!,
+        if (startTime != null) 'startTime': startTime!,
       };
 }
 
@@ -1175,7 +1331,8 @@ class NodeConfig {
   /// The disk size in GB used for node VMs.
   ///
   /// Minimum size is 20GB. If unspecified, defaults to 100GB. Cannot be
-  /// updated.
+  /// updated. This field is supported for Cloud Composer environments in
+  /// versions composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.int? diskSizeGb;
@@ -1199,7 +1356,8 @@ class NodeConfig {
   /// Composer location, and propagate that choice to both fields. If only one
   /// field (`location` or `nodeConfig.machineType`) is specified, the location
   /// information from the specified field will be propagated to the unspecified
-  /// field.
+  /// field. This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.String? location;
@@ -1220,7 +1378,8 @@ class NodeConfig {
   /// propagated to the unspecified field. The `machineTypeId` must not be a
   /// \[shared-core machine type\](/compute/docs/machine-types#sharedcore). If
   /// this field is unspecified, the `machineTypeId` defaults to
-  /// "n1-standard-1".
+  /// "n1-standard-1". This field is supported for Cloud Composer environments
+  /// in versions composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.String? machineType;
@@ -1244,6 +1403,8 @@ class NodeConfig {
   ///
   /// If `oauth_scopes` is empty, defaults to
   /// \["https://www.googleapis.com/auth/cloud-platform"\]. Cannot be updated.
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.List<core.String>? oauthScopes;
@@ -1273,52 +1434,65 @@ class NodeConfig {
   ///
   /// Tags are used to identify valid sources or targets for network firewalls.
   /// Each tag within the list must comply with
-  /// [RFC1035](https://www.ietf.org/rfc/rfc1035.txt). Cannot be updated.
+  /// [RFC1035](https://www.ietf.org/rfc/rfc1035.txt). Cannot be updated. This
+  /// field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.List<core.String>? tags;
 
-  NodeConfig();
+  NodeConfig({
+    this.diskSizeGb,
+    this.ipAllocationPolicy,
+    this.location,
+    this.machineType,
+    this.network,
+    this.oauthScopes,
+    this.serviceAccount,
+    this.subnetwork,
+    this.tags,
+  });
 
-  NodeConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('diskSizeGb')) {
-      diskSizeGb = _json['diskSizeGb'] as core.int;
-    }
-    if (_json.containsKey('ipAllocationPolicy')) {
-      ipAllocationPolicy = IPAllocationPolicy.fromJson(
-          _json['ipAllocationPolicy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-    if (_json.containsKey('network')) {
-      network = _json['network'] as core.String;
-    }
-    if (_json.containsKey('oauthScopes')) {
-      oauthScopes = (_json['oauthScopes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('subnetwork')) {
-      subnetwork = _json['subnetwork'] as core.String;
-    }
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  NodeConfig.fromJson(core.Map _json)
+      : this(
+          diskSizeGb: _json.containsKey('diskSizeGb')
+              ? _json['diskSizeGb'] as core.int
+              : null,
+          ipAllocationPolicy: _json.containsKey('ipAllocationPolicy')
+              ? IPAllocationPolicy.fromJson(_json['ipAllocationPolicy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+          network: _json.containsKey('network')
+              ? _json['network'] as core.String
+              : null,
+          oauthScopes: _json.containsKey('oauthScopes')
+              ? (_json['oauthScopes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          subnetwork: _json.containsKey('subnetwork')
+              ? _json['subnetwork'] as core.String
+              : null,
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (diskSizeGb != null) 'diskSizeGb': diskSizeGb!,
         if (ipAllocationPolicy != null)
-          'ipAllocationPolicy': ipAllocationPolicy!.toJson(),
+          'ipAllocationPolicy': ipAllocationPolicy!,
         if (location != null) 'location': location!,
         if (machineType != null) 'machineType': machineType!,
         if (network != null) 'network': network!,
@@ -1350,7 +1524,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1370,125 +1544,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Metadata describing an operation.
-class OperationMetadata {
-  /// The time the operation was submitted to the server.
-  ///
-  /// Output only.
-  core.String? createTime;
-
-  /// The time when the operation terminated, regardless of its success.
-  ///
-  /// This field is unset if the operation is still ongoing.
-  ///
-  /// Output only.
-  core.String? endTime;
-
-  /// The type of operation being performed.
-  ///
-  /// Output only.
-  /// Possible string values are:
-  /// - "TYPE_UNSPECIFIED" : Unused.
-  /// - "CREATE" : A resource creation operation.
-  /// - "DELETE" : A resource deletion operation.
-  /// - "UPDATE" : A resource update operation.
-  core.String? operationType;
-
-  /// The resource being operated on, as a \[relative resource name\](
-  /// /apis/design/resource_names#relative_resource_name).
-  ///
-  /// Output only.
-  core.String? resource;
-
-  /// The UUID of the resource being operated on.
-  ///
-  /// Output only.
-  core.String? resourceUuid;
-
-  /// The current operation state.
-  ///
-  /// Output only.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Unused.
-  /// - "PENDING" : The operation has been created but is not yet started.
-  /// - "RUNNING" : The operation is underway.
-  /// - "SUCCEEDED" : The operation completed successfully.
-  /// - "SUCCESSFUL"
-  /// - "FAILED" : The operation is no longer running but did not succeed.
-  core.String? state;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('operationType')) {
-      operationType = _json['operationType'] as core.String;
-    }
-    if (_json.containsKey('resource')) {
-      resource = _json['resource'] as core.String;
-    }
-    if (_json.containsKey('resourceUuid')) {
-      resourceUuid = _json['resourceUuid'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (operationType != null) 'operationType': operationType!,
-        if (resource != null) 'resource': resource!,
-        if (resourceUuid != null) 'resourceUuid': resourceUuid!,
-        if (state != null) 'state': state!,
       };
 }
 
@@ -1517,19 +1604,24 @@ class PrivateClusterConfig {
   /// Output only.
   core.String? masterIpv4ReservedRange;
 
-  PrivateClusterConfig();
+  PrivateClusterConfig({
+    this.enablePrivateEndpoint,
+    this.masterIpv4CidrBlock,
+    this.masterIpv4ReservedRange,
+  });
 
-  PrivateClusterConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('enablePrivateEndpoint')) {
-      enablePrivateEndpoint = _json['enablePrivateEndpoint'] as core.bool;
-    }
-    if (_json.containsKey('masterIpv4CidrBlock')) {
-      masterIpv4CidrBlock = _json['masterIpv4CidrBlock'] as core.String;
-    }
-    if (_json.containsKey('masterIpv4ReservedRange')) {
-      masterIpv4ReservedRange = _json['masterIpv4ReservedRange'] as core.String;
-    }
-  }
+  PrivateClusterConfig.fromJson(core.Map _json)
+      : this(
+          enablePrivateEndpoint: _json.containsKey('enablePrivateEndpoint')
+              ? _json['enablePrivateEndpoint'] as core.bool
+              : null,
+          masterIpv4CidrBlock: _json.containsKey('masterIpv4CidrBlock')
+              ? _json['masterIpv4CidrBlock'] as core.String
+              : null,
+          masterIpv4ReservedRange: _json.containsKey('masterIpv4ReservedRange')
+              ? _json['masterIpv4ReservedRange'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enablePrivateEndpoint != null)
@@ -1544,6 +1636,32 @@ class PrivateClusterConfig {
 /// The configuration information for configuring a Private IP Cloud Composer
 /// environment.
 class PrivateEnvironmentConfig {
+  /// When specified, the environment will use Private Service Connect instead
+  /// of VPC peerings to connect to Cloud SQL in the Tenant Project, and the PSC
+  /// endpoint in the Customer Project will use an IP address from this
+  /// subnetwork.
+  ///
+  /// Optional.
+  core.String? cloudComposerConnectionSubnetwork;
+
+  /// The CIDR block from which IP range for Cloud Composer Network in tenant
+  /// project will be reserved.
+  ///
+  /// Needs to be disjoint from private_cluster_config.master_ipv4_cidr_block
+  /// and cloud_sql_ipv4_cidr_block. This field is supported for Cloud Composer
+  /// environments in versions composer-2.*.*-airflow-*.*.* and newer.
+  ///
+  /// Optional.
+  core.String? cloudComposerNetworkIpv4CidrBlock;
+
+  /// The IP range reserved for the tenant project's Cloud Composer network.
+  ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-2.*.*-airflow-*.*.* and newer.
+  ///
+  /// Output only.
+  core.String? cloudComposerNetworkIpv4ReservedRange;
+
   /// The CIDR block from which IP range in tenant project will be reserved for
   /// Cloud SQL.
   ///
@@ -1555,7 +1673,8 @@ class PrivateEnvironmentConfig {
   /// If `true`, a Private IP Cloud Composer environment is created.
   ///
   /// If this field is set to true, `IPAllocationPolicy.use_ip_aliases` must be
-  /// set to true.
+  /// set to true for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.bool? enablePrivateEnvironment;
@@ -1569,49 +1688,136 @@ class PrivateEnvironmentConfig {
   /// The CIDR block from which IP range for web server will be reserved.
   ///
   /// Needs to be disjoint from `private_cluster_config.master_ipv4_cidr_block`
-  /// and `cloud_sql_ipv4_cidr_block`.
+  /// and `cloud_sql_ipv4_cidr_block`. This field is supported for Cloud
+  /// Composer environments in versions composer-1.*.*-airflow-*.*.*.
   ///
   /// Optional.
   core.String? webServerIpv4CidrBlock;
 
   /// The IP range reserved for the tenant project's App Engine VMs.
   ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-*.*.*.
+  ///
   /// Output only.
   core.String? webServerIpv4ReservedRange;
 
-  PrivateEnvironmentConfig();
+  PrivateEnvironmentConfig({
+    this.cloudComposerConnectionSubnetwork,
+    this.cloudComposerNetworkIpv4CidrBlock,
+    this.cloudComposerNetworkIpv4ReservedRange,
+    this.cloudSqlIpv4CidrBlock,
+    this.enablePrivateEnvironment,
+    this.privateClusterConfig,
+    this.webServerIpv4CidrBlock,
+    this.webServerIpv4ReservedRange,
+  });
 
-  PrivateEnvironmentConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('cloudSqlIpv4CidrBlock')) {
-      cloudSqlIpv4CidrBlock = _json['cloudSqlIpv4CidrBlock'] as core.String;
-    }
-    if (_json.containsKey('enablePrivateEnvironment')) {
-      enablePrivateEnvironment = _json['enablePrivateEnvironment'] as core.bool;
-    }
-    if (_json.containsKey('privateClusterConfig')) {
-      privateClusterConfig = PrivateClusterConfig.fromJson(
-          _json['privateClusterConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('webServerIpv4CidrBlock')) {
-      webServerIpv4CidrBlock = _json['webServerIpv4CidrBlock'] as core.String;
-    }
-    if (_json.containsKey('webServerIpv4ReservedRange')) {
-      webServerIpv4ReservedRange =
-          _json['webServerIpv4ReservedRange'] as core.String;
-    }
-  }
+  PrivateEnvironmentConfig.fromJson(core.Map _json)
+      : this(
+          cloudComposerConnectionSubnetwork:
+              _json.containsKey('cloudComposerConnectionSubnetwork')
+                  ? _json['cloudComposerConnectionSubnetwork'] as core.String
+                  : null,
+          cloudComposerNetworkIpv4CidrBlock:
+              _json.containsKey('cloudComposerNetworkIpv4CidrBlock')
+                  ? _json['cloudComposerNetworkIpv4CidrBlock'] as core.String
+                  : null,
+          cloudComposerNetworkIpv4ReservedRange: _json
+                  .containsKey('cloudComposerNetworkIpv4ReservedRange')
+              ? _json['cloudComposerNetworkIpv4ReservedRange'] as core.String
+              : null,
+          cloudSqlIpv4CidrBlock: _json.containsKey('cloudSqlIpv4CidrBlock')
+              ? _json['cloudSqlIpv4CidrBlock'] as core.String
+              : null,
+          enablePrivateEnvironment:
+              _json.containsKey('enablePrivateEnvironment')
+                  ? _json['enablePrivateEnvironment'] as core.bool
+                  : null,
+          privateClusterConfig: _json.containsKey('privateClusterConfig')
+              ? PrivateClusterConfig.fromJson(_json['privateClusterConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          webServerIpv4CidrBlock: _json.containsKey('webServerIpv4CidrBlock')
+              ? _json['webServerIpv4CidrBlock'] as core.String
+              : null,
+          webServerIpv4ReservedRange:
+              _json.containsKey('webServerIpv4ReservedRange')
+                  ? _json['webServerIpv4ReservedRange'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (cloudComposerConnectionSubnetwork != null)
+          'cloudComposerConnectionSubnetwork':
+              cloudComposerConnectionSubnetwork!,
+        if (cloudComposerNetworkIpv4CidrBlock != null)
+          'cloudComposerNetworkIpv4CidrBlock':
+              cloudComposerNetworkIpv4CidrBlock!,
+        if (cloudComposerNetworkIpv4ReservedRange != null)
+          'cloudComposerNetworkIpv4ReservedRange':
+              cloudComposerNetworkIpv4ReservedRange!,
         if (cloudSqlIpv4CidrBlock != null)
           'cloudSqlIpv4CidrBlock': cloudSqlIpv4CidrBlock!,
         if (enablePrivateEnvironment != null)
           'enablePrivateEnvironment': enablePrivateEnvironment!,
         if (privateClusterConfig != null)
-          'privateClusterConfig': privateClusterConfig!.toJson(),
+          'privateClusterConfig': privateClusterConfig!,
         if (webServerIpv4CidrBlock != null)
           'webServerIpv4CidrBlock': webServerIpv4CidrBlock!,
         if (webServerIpv4ReservedRange != null)
           'webServerIpv4ReservedRange': webServerIpv4ReservedRange!,
+      };
+}
+
+/// Configuration for resources used by Airflow schedulers.
+class SchedulerResource {
+  /// The number of schedulers.
+  ///
+  /// Optional.
+  core.int? count;
+
+  /// CPU request and limit for a single Airflow scheduler replica.
+  ///
+  /// Optional.
+  core.double? cpu;
+
+  /// Memory (GB) request and limit for a single Airflow scheduler replica.
+  ///
+  /// Optional.
+  core.double? memoryGb;
+
+  /// Storage (GB) request and limit for a single Airflow scheduler replica.
+  ///
+  /// Optional.
+  core.double? storageGb;
+
+  SchedulerResource({
+    this.count,
+    this.cpu,
+    this.memoryGb,
+    this.storageGb,
+  });
+
+  SchedulerResource.fromJson(core.Map _json)
+      : this(
+          count: _json.containsKey('count') ? _json['count'] as core.int : null,
+          cpu: _json.containsKey('cpu')
+              ? (_json['cpu'] as core.num).toDouble()
+              : null,
+          memoryGb: _json.containsKey('memoryGb')
+              ? (_json['memoryGb'] as core.num).toDouble()
+              : null,
+          storageGb: _json.containsKey('storageGb')
+              ? (_json['storageGb'] as core.num).toDouble()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (count != null) 'count': count!,
+        if (cpu != null) 'cpu': cpu!,
+        if (memoryGb != null) 'memoryGb': memoryGb!,
+        if (storageGb != null) 'storageGb': storageGb!,
       };
 }
 
@@ -1675,7 +1881,7 @@ class SoftwareConfig {
   ///
   /// Keys refer to the lowercase package name such as "numpy" and values are
   /// the lowercase extras and version specifier such as "==1.12.0",
-  /// "\[devel,gcp_api\]", or "\[devel\]>=1.8.2, <1.9.2". To specify a package
+  /// "\[devel,gcp_api\]", or "\[devel\]\>=1.8.2, \<1.9.2". To specify a package
   /// without pinning it to a version specifier, use the empty string as the
   /// value.
   ///
@@ -1685,50 +1891,71 @@ class SoftwareConfig {
   /// The major version of Python used to run the Apache Airflow scheduler,
   /// worker, and webserver processes.
   ///
-  /// Can be set to '2' or '3'. If not specified, the default is '2'. Cannot be
-  /// updated.
+  /// Can be set to '2' or '3'. If not specified, the default is '3'. Cannot be
+  /// updated. This field is only supported for Cloud Composer environments in
+  /// versions composer-1.*.*-airflow-*.*.*. Environments in newer versions
+  /// always use Python major version 3.
   ///
   /// Optional.
   core.String? pythonVersion;
 
-  SoftwareConfig();
+  /// The number of schedulers for Airflow.
+  ///
+  /// This field is supported for Cloud Composer environments in versions
+  /// composer-1.*.*-airflow-2.*.*.
+  ///
+  /// Optional.
+  core.int? schedulerCount;
 
-  SoftwareConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('airflowConfigOverrides')) {
-      airflowConfigOverrides = (_json['airflowConfigOverrides']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('envVariables')) {
-      envVariables =
-          (_json['envVariables'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('imageVersion')) {
-      imageVersion = _json['imageVersion'] as core.String;
-    }
-    if (_json.containsKey('pypiPackages')) {
-      pypiPackages =
-          (_json['pypiPackages'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('pythonVersion')) {
-      pythonVersion = _json['pythonVersion'] as core.String;
-    }
-  }
+  SoftwareConfig({
+    this.airflowConfigOverrides,
+    this.envVariables,
+    this.imageVersion,
+    this.pypiPackages,
+    this.pythonVersion,
+    this.schedulerCount,
+  });
+
+  SoftwareConfig.fromJson(core.Map _json)
+      : this(
+          airflowConfigOverrides: _json.containsKey('airflowConfigOverrides')
+              ? (_json['airflowConfigOverrides']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          envVariables: _json.containsKey('envVariables')
+              ? (_json['envVariables'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          imageVersion: _json.containsKey('imageVersion')
+              ? _json['imageVersion'] as core.String
+              : null,
+          pypiPackages: _json.containsKey('pypiPackages')
+              ? (_json['pypiPackages'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          pythonVersion: _json.containsKey('pythonVersion')
+              ? _json['pythonVersion'] as core.String
+              : null,
+          schedulerCount: _json.containsKey('schedulerCount')
+              ? _json['schedulerCount'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (airflowConfigOverrides != null)
@@ -1737,6 +1964,7 @@ class SoftwareConfig {
         if (imageVersion != null) 'imageVersion': imageVersion!,
         if (pypiPackages != null) 'pypiPackages': pypiPackages!,
         if (pythonVersion != null) 'pythonVersion': pythonVersion!,
+        if (schedulerCount != null) 'schedulerCount': schedulerCount!,
       };
 }
 
@@ -1747,54 +1975,12 @@ class SoftwareConfig {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// The configuration settings for the Airflow web server App Engine instance.
+///
+/// Supported for Cloud Composer environments in versions
+/// composer-1.*.*-airflow-*.*.*
 class WebServerConfig {
   /// Machine type on which Airflow web server is running.
   ///
@@ -1806,13 +1992,16 @@ class WebServerConfig {
   /// Optional.
   core.String? machineType;
 
-  WebServerConfig();
+  WebServerConfig({
+    this.machineType,
+  });
 
-  WebServerConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('machineType')) {
-      machineType = _json['machineType'] as core.String;
-    }
-  }
+  WebServerConfig.fromJson(core.Map _json)
+      : this(
+          machineType: _json.containsKey('machineType')
+              ? _json['machineType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (machineType != null) 'machineType': machineType!,
@@ -1824,20 +2013,177 @@ class WebServerNetworkAccessControl {
   /// A collection of allowed IP ranges with descriptions.
   core.List<AllowedIpRange>? allowedIpRanges;
 
-  WebServerNetworkAccessControl();
+  WebServerNetworkAccessControl({
+    this.allowedIpRanges,
+  });
 
-  WebServerNetworkAccessControl.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedIpRanges')) {
-      allowedIpRanges = (_json['allowedIpRanges'] as core.List)
-          .map<AllowedIpRange>((value) => AllowedIpRange.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  WebServerNetworkAccessControl.fromJson(core.Map _json)
+      : this(
+          allowedIpRanges: _json.containsKey('allowedIpRanges')
+              ? (_json['allowedIpRanges'] as core.List)
+                  .map((value) => AllowedIpRange.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (allowedIpRanges != null)
-          'allowedIpRanges':
-              allowedIpRanges!.map((value) => value.toJson()).toList(),
+        if (allowedIpRanges != null) 'allowedIpRanges': allowedIpRanges!,
+      };
+}
+
+/// Configuration for resources used by Airflow web server.
+class WebServerResource {
+  /// CPU request and limit for Airflow web server.
+  ///
+  /// Optional.
+  core.double? cpu;
+
+  /// Memory (GB) request and limit for Airflow web server.
+  ///
+  /// Optional.
+  core.double? memoryGb;
+
+  /// Storage (GB) request and limit for Airflow web server.
+  ///
+  /// Optional.
+  core.double? storageGb;
+
+  WebServerResource({
+    this.cpu,
+    this.memoryGb,
+    this.storageGb,
+  });
+
+  WebServerResource.fromJson(core.Map _json)
+      : this(
+          cpu: _json.containsKey('cpu')
+              ? (_json['cpu'] as core.num).toDouble()
+              : null,
+          memoryGb: _json.containsKey('memoryGb')
+              ? (_json['memoryGb'] as core.num).toDouble()
+              : null,
+          storageGb: _json.containsKey('storageGb')
+              ? (_json['storageGb'] as core.num).toDouble()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cpu != null) 'cpu': cpu!,
+        if (memoryGb != null) 'memoryGb': memoryGb!,
+        if (storageGb != null) 'storageGb': storageGb!,
+      };
+}
+
+/// Configuration for resources used by Airflow workers.
+class WorkerResource {
+  /// CPU request and limit for a single Airflow worker replica.
+  ///
+  /// Optional.
+  core.double? cpu;
+
+  /// Maximum number of workers for autoscaling.
+  ///
+  /// Optional.
+  core.int? maxCount;
+
+  /// Memory (GB) request and limit for a single Airflow worker replica.
+  ///
+  /// Optional.
+  core.double? memoryGb;
+
+  /// Minimum number of workers for autoscaling.
+  ///
+  /// Optional.
+  core.int? minCount;
+
+  /// Storage (GB) request and limit for a single Airflow worker replica.
+  ///
+  /// Optional.
+  core.double? storageGb;
+
+  WorkerResource({
+    this.cpu,
+    this.maxCount,
+    this.memoryGb,
+    this.minCount,
+    this.storageGb,
+  });
+
+  WorkerResource.fromJson(core.Map _json)
+      : this(
+          cpu: _json.containsKey('cpu')
+              ? (_json['cpu'] as core.num).toDouble()
+              : null,
+          maxCount: _json.containsKey('maxCount')
+              ? _json['maxCount'] as core.int
+              : null,
+          memoryGb: _json.containsKey('memoryGb')
+              ? (_json['memoryGb'] as core.num).toDouble()
+              : null,
+          minCount: _json.containsKey('minCount')
+              ? _json['minCount'] as core.int
+              : null,
+          storageGb: _json.containsKey('storageGb')
+              ? (_json['storageGb'] as core.num).toDouble()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cpu != null) 'cpu': cpu!,
+        if (maxCount != null) 'maxCount': maxCount!,
+        if (memoryGb != null) 'memoryGb': memoryGb!,
+        if (minCount != null) 'minCount': minCount!,
+        if (storageGb != null) 'storageGb': storageGb!,
+      };
+}
+
+/// The Kubernetes workloads configuration for GKE cluster associated with the
+/// Cloud Composer environment.
+///
+/// Supported for Cloud Composer environments in versions
+/// composer-2.*.*-airflow-*.*.* and newer.
+class WorkloadsConfig {
+  /// Resources used by Airflow schedulers.
+  ///
+  /// Optional.
+  SchedulerResource? scheduler;
+
+  /// Resources used by Airflow web server.
+  ///
+  /// Optional.
+  WebServerResource? webServer;
+
+  /// Resources used by Airflow workers.
+  ///
+  /// Optional.
+  WorkerResource? worker;
+
+  WorkloadsConfig({
+    this.scheduler,
+    this.webServer,
+    this.worker,
+  });
+
+  WorkloadsConfig.fromJson(core.Map _json)
+      : this(
+          scheduler: _json.containsKey('scheduler')
+              ? SchedulerResource.fromJson(
+                  _json['scheduler'] as core.Map<core.String, core.dynamic>)
+              : null,
+          webServer: _json.containsKey('webServer')
+              ? WebServerResource.fromJson(
+                  _json['webServer'] as core.Map<core.String, core.dynamic>)
+              : null,
+          worker: _json.containsKey('worker')
+              ? WorkerResource.fromJson(
+                  _json['worker'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (scheduler != null) 'scheduler': scheduler!,
+        if (webServer != null) 'webServer': webServer!,
+        if (worker != null) 'worker': worker!,
       };
 }

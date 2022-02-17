@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,20 +20,18 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/jobs/v3.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/jobs/v3.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<core.String> buildUnnamed1217() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed0() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1217(core.List<core.String> o) {
+void checkUnnamed0(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -46,14 +43,12 @@ void checkUnnamed1217(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1218() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed1() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1218(core.List<core.String> o) {
+void checkUnnamed1(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -67,12 +62,12 @@ void checkUnnamed1218(core.List<core.String> o) {
 
 core.int buildCounterApplicationInfo = 0;
 api.ApplicationInfo buildApplicationInfo() {
-  var o = api.ApplicationInfo();
+  final o = api.ApplicationInfo();
   buildCounterApplicationInfo++;
   if (buildCounterApplicationInfo < 3) {
-    o.emails = buildUnnamed1217();
+    o.emails = buildUnnamed0();
     o.instruction = 'foo';
-    o.uris = buildUnnamed1218();
+    o.uris = buildUnnamed1();
   }
   buildCounterApplicationInfo--;
   return o;
@@ -81,19 +76,19 @@ api.ApplicationInfo buildApplicationInfo() {
 void checkApplicationInfo(api.ApplicationInfo o) {
   buildCounterApplicationInfo++;
   if (buildCounterApplicationInfo < 3) {
-    checkUnnamed1217(o.emails!);
+    checkUnnamed0(o.emails!);
     unittest.expect(
       o.instruction!,
       unittest.equals('foo'),
     );
-    checkUnnamed1218(o.uris!);
+    checkUnnamed1(o.uris!);
   }
   buildCounterApplicationInfo--;
 }
 
 core.int buildCounterBatchDeleteJobsRequest = 0;
 api.BatchDeleteJobsRequest buildBatchDeleteJobsRequest() {
-  var o = api.BatchDeleteJobsRequest();
+  final o = api.BatchDeleteJobsRequest();
   buildCounterBatchDeleteJobsRequest++;
   if (buildCounterBatchDeleteJobsRequest < 3) {
     o.filter = 'foo';
@@ -115,7 +110,7 @@ void checkBatchDeleteJobsRequest(api.BatchDeleteJobsRequest o) {
 
 core.int buildCounterBucketRange = 0;
 api.BucketRange buildBucketRange() {
-  var o = api.BucketRange();
+  final o = api.BucketRange();
   buildCounterBucketRange++;
   if (buildCounterBucketRange < 3) {
     o.from = 42.0;
@@ -142,7 +137,7 @@ void checkBucketRange(api.BucketRange o) {
 
 core.int buildCounterBucketizedCount = 0;
 api.BucketizedCount buildBucketizedCount() {
-  var o = api.BucketizedCount();
+  final o = api.BucketizedCount();
   buildCounterBucketizedCount++;
   if (buildCounterBucketizedCount < 3) {
     o.count = 42;
@@ -159,19 +154,17 @@ void checkBucketizedCount(api.BucketizedCount o) {
       o.count!,
       unittest.equals(42),
     );
-    checkBucketRange(o.range! as api.BucketRange);
+    checkBucketRange(o.range!);
   }
   buildCounterBucketizedCount--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1219() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed2() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1219(core.Map<core.String, core.String> o) {
+void checkUnnamed2(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -185,12 +178,12 @@ void checkUnnamed1219(core.Map<core.String, core.String> o) {
 
 core.int buildCounterClientEvent = 0;
 api.ClientEvent buildClientEvent() {
-  var o = api.ClientEvent();
+  final o = api.ClientEvent();
   buildCounterClientEvent++;
   if (buildCounterClientEvent < 3) {
     o.createTime = 'foo';
     o.eventId = 'foo';
-    o.extraInfo = buildUnnamed1219();
+    o.extraInfo = buildUnnamed2();
     o.jobEvent = buildJobEvent();
     o.parentEventId = 'foo';
     o.requestId = 'foo';
@@ -210,8 +203,8 @@ void checkClientEvent(api.ClientEvent o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed1219(o.extraInfo!);
-    checkJobEvent(o.jobEvent! as api.JobEvent);
+    checkUnnamed2(o.extraInfo!);
+    checkJobEvent(o.jobEvent!);
     unittest.expect(
       o.parentEventId!,
       unittest.equals('foo'),
@@ -226,7 +219,7 @@ void checkClientEvent(api.ClientEvent o) {
 
 core.int buildCounterCommuteFilter = 0;
 api.CommuteFilter buildCommuteFilter() {
-  var o = api.CommuteFilter();
+  final o = api.CommuteFilter();
   buildCounterCommuteFilter++;
   if (buildCounterCommuteFilter < 3) {
     o.allowImpreciseAddresses = true;
@@ -248,12 +241,12 @@ void checkCommuteFilter(api.CommuteFilter o) {
       o.commuteMethod!,
       unittest.equals('foo'),
     );
-    checkTimeOfDay(o.departureTime! as api.TimeOfDay);
+    checkTimeOfDay(o.departureTime!);
     unittest.expect(
       o.roadTraffic!,
       unittest.equals('foo'),
     );
-    checkLatLng(o.startCoordinates! as api.LatLng);
+    checkLatLng(o.startCoordinates!);
     unittest.expect(
       o.travelDuration!,
       unittest.equals('foo'),
@@ -264,7 +257,7 @@ void checkCommuteFilter(api.CommuteFilter o) {
 
 core.int buildCounterCommuteInfo = 0;
 api.CommuteInfo buildCommuteInfo() {
-  var o = api.CommuteInfo();
+  final o = api.CommuteInfo();
   buildCounterCommuteInfo++;
   if (buildCounterCommuteInfo < 3) {
     o.jobLocation = buildLocation();
@@ -277,7 +270,7 @@ api.CommuteInfo buildCommuteInfo() {
 void checkCommuteInfo(api.CommuteInfo o) {
   buildCounterCommuteInfo++;
   if (buildCounterCommuteInfo < 3) {
-    checkLocation(o.jobLocation! as api.Location);
+    checkLocation(o.jobLocation!);
     unittest.expect(
       o.travelDuration!,
       unittest.equals('foo'),
@@ -286,14 +279,12 @@ void checkCommuteInfo(api.CommuteInfo o) {
   buildCounterCommuteInfo--;
 }
 
-core.List<core.String> buildUnnamed1220() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed3() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1220(core.List<core.String> o) {
+void checkUnnamed3(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -307,7 +298,7 @@ void checkUnnamed1220(core.List<core.String> o) {
 
 core.int buildCounterCompany = 0;
 api.Company buildCompany() {
-  var o = api.Company();
+  final o = api.Company();
   buildCounterCompany++;
   if (buildCounterCompany < 3) {
     o.careerSiteUri = 'foo';
@@ -318,7 +309,7 @@ api.Company buildCompany() {
     o.headquartersAddress = 'foo';
     o.hiringAgency = true;
     o.imageUri = 'foo';
-    o.keywordSearchableJobCustomAttributes = buildUnnamed1220();
+    o.keywordSearchableJobCustomAttributes = buildUnnamed3();
     o.name = 'foo';
     o.size = 'foo';
     o.suspended = true;
@@ -335,7 +326,7 @@ void checkCompany(api.Company o) {
       o.careerSiteUri!,
       unittest.equals('foo'),
     );
-    checkCompanyDerivedInfo(o.derivedInfo! as api.CompanyDerivedInfo);
+    checkCompanyDerivedInfo(o.derivedInfo!);
     unittest.expect(
       o.displayName!,
       unittest.equals('foo'),
@@ -357,7 +348,7 @@ void checkCompany(api.Company o) {
       o.imageUri!,
       unittest.equals('foo'),
     );
-    checkUnnamed1220(o.keywordSearchableJobCustomAttributes!);
+    checkUnnamed3(o.keywordSearchableJobCustomAttributes!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
@@ -377,7 +368,7 @@ void checkCompany(api.Company o) {
 
 core.int buildCounterCompanyDerivedInfo = 0;
 api.CompanyDerivedInfo buildCompanyDerivedInfo() {
-  var o = api.CompanyDerivedInfo();
+  final o = api.CompanyDerivedInfo();
   buildCounterCompanyDerivedInfo++;
   if (buildCounterCompanyDerivedInfo < 3) {
     o.headquartersLocation = buildLocation();
@@ -389,14 +380,14 @@ api.CompanyDerivedInfo buildCompanyDerivedInfo() {
 void checkCompanyDerivedInfo(api.CompanyDerivedInfo o) {
   buildCounterCompanyDerivedInfo++;
   if (buildCounterCompanyDerivedInfo < 3) {
-    checkLocation(o.headquartersLocation! as api.Location);
+    checkLocation(o.headquartersLocation!);
   }
   buildCounterCompanyDerivedInfo--;
 }
 
 core.int buildCounterCompensationEntry = 0;
 api.CompensationEntry buildCompensationEntry() {
-  var o = api.CompensationEntry();
+  final o = api.CompensationEntry();
   buildCounterCompensationEntry++;
   if (buildCounterCompensationEntry < 3) {
     o.amount = buildMoney();
@@ -413,7 +404,7 @@ api.CompensationEntry buildCompensationEntry() {
 void checkCompensationEntry(api.CompensationEntry o) {
   buildCounterCompensationEntry++;
   if (buildCounterCompensationEntry < 3) {
-    checkMoney(o.amount! as api.Money);
+    checkMoney(o.amount!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
@@ -422,7 +413,7 @@ void checkCompensationEntry(api.CompensationEntry o) {
       o.expectedUnitsPerYear!,
       unittest.equals(42.0),
     );
-    checkCompensationRange(o.range! as api.CompensationRange);
+    checkCompensationRange(o.range!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -435,14 +426,12 @@ void checkCompensationEntry(api.CompensationEntry o) {
   buildCounterCompensationEntry--;
 }
 
-core.List<core.String> buildUnnamed1221() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed4() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1221(core.List<core.String> o) {
+void checkUnnamed4(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -456,13 +445,13 @@ void checkUnnamed1221(core.List<core.String> o) {
 
 core.int buildCounterCompensationFilter = 0;
 api.CompensationFilter buildCompensationFilter() {
-  var o = api.CompensationFilter();
+  final o = api.CompensationFilter();
   buildCounterCompensationFilter++;
   if (buildCounterCompensationFilter < 3) {
     o.includeJobsWithUnspecifiedCompensationRange = true;
     o.range = buildCompensationRange();
     o.type = 'foo';
-    o.units = buildUnnamed1221();
+    o.units = buildUnnamed4();
   }
   buildCounterCompensationFilter--;
   return o;
@@ -473,19 +462,19 @@ void checkCompensationFilter(api.CompensationFilter o) {
   if (buildCounterCompensationFilter < 3) {
     unittest.expect(
         o.includeJobsWithUnspecifiedCompensationRange!, unittest.isTrue);
-    checkCompensationRange(o.range! as api.CompensationRange);
+    checkCompensationRange(o.range!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
     );
-    checkUnnamed1221(o.units!);
+    checkUnnamed4(o.units!);
   }
   buildCounterCompensationFilter--;
 }
 
 core.int buildCounterCompensationHistogramRequest = 0;
 api.CompensationHistogramRequest buildCompensationHistogramRequest() {
-  var o = api.CompensationHistogramRequest();
+  final o = api.CompensationHistogramRequest();
   buildCounterCompensationHistogramRequest++;
   if (buildCounterCompensationHistogramRequest < 3) {
     o.bucketingOption = buildNumericBucketingOption();
@@ -498,8 +487,7 @@ api.CompensationHistogramRequest buildCompensationHistogramRequest() {
 void checkCompensationHistogramRequest(api.CompensationHistogramRequest o) {
   buildCounterCompensationHistogramRequest++;
   if (buildCounterCompensationHistogramRequest < 3) {
-    checkNumericBucketingOption(
-        o.bucketingOption! as api.NumericBucketingOption);
+    checkNumericBucketingOption(o.bucketingOption!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -510,7 +498,7 @@ void checkCompensationHistogramRequest(api.CompensationHistogramRequest o) {
 
 core.int buildCounterCompensationHistogramResult = 0;
 api.CompensationHistogramResult buildCompensationHistogramResult() {
-  var o = api.CompensationHistogramResult();
+  final o = api.CompensationHistogramResult();
   buildCounterCompensationHistogramResult++;
   if (buildCounterCompensationHistogramResult < 3) {
     o.result = buildNumericBucketingResult();
@@ -523,7 +511,7 @@ api.CompensationHistogramResult buildCompensationHistogramResult() {
 void checkCompensationHistogramResult(api.CompensationHistogramResult o) {
   buildCounterCompensationHistogramResult++;
   if (buildCounterCompensationHistogramResult < 3) {
-    checkNumericBucketingResult(o.result! as api.NumericBucketingResult);
+    checkNumericBucketingResult(o.result!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -532,27 +520,25 @@ void checkCompensationHistogramResult(api.CompensationHistogramResult o) {
   buildCounterCompensationHistogramResult--;
 }
 
-core.List<api.CompensationEntry> buildUnnamed1222() {
-  var o = <api.CompensationEntry>[];
-  o.add(buildCompensationEntry());
-  o.add(buildCompensationEntry());
-  return o;
-}
+core.List<api.CompensationEntry> buildUnnamed5() => [
+      buildCompensationEntry(),
+      buildCompensationEntry(),
+    ];
 
-void checkUnnamed1222(core.List<api.CompensationEntry> o) {
+void checkUnnamed5(core.List<api.CompensationEntry> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCompensationEntry(o[0] as api.CompensationEntry);
-  checkCompensationEntry(o[1] as api.CompensationEntry);
+  checkCompensationEntry(o[0]);
+  checkCompensationEntry(o[1]);
 }
 
 core.int buildCounterCompensationInfo = 0;
 api.CompensationInfo buildCompensationInfo() {
-  var o = api.CompensationInfo();
+  final o = api.CompensationInfo();
   buildCounterCompensationInfo++;
   if (buildCounterCompensationInfo < 3) {
     o.annualizedBaseCompensationRange = buildCompensationRange();
     o.annualizedTotalCompensationRange = buildCompensationRange();
-    o.entries = buildUnnamed1222();
+    o.entries = buildUnnamed5();
   }
   buildCounterCompensationInfo--;
   return o;
@@ -561,18 +547,16 @@ api.CompensationInfo buildCompensationInfo() {
 void checkCompensationInfo(api.CompensationInfo o) {
   buildCounterCompensationInfo++;
   if (buildCounterCompensationInfo < 3) {
-    checkCompensationRange(
-        o.annualizedBaseCompensationRange! as api.CompensationRange);
-    checkCompensationRange(
-        o.annualizedTotalCompensationRange! as api.CompensationRange);
-    checkUnnamed1222(o.entries!);
+    checkCompensationRange(o.annualizedBaseCompensationRange!);
+    checkCompensationRange(o.annualizedTotalCompensationRange!);
+    checkUnnamed5(o.entries!);
   }
   buildCounterCompensationInfo--;
 }
 
 core.int buildCounterCompensationRange = 0;
 api.CompensationRange buildCompensationRange() {
-  var o = api.CompensationRange();
+  final o = api.CompensationRange();
   buildCounterCompensationRange++;
   if (buildCounterCompensationRange < 3) {
     o.maxCompensation = buildMoney();
@@ -585,31 +569,29 @@ api.CompensationRange buildCompensationRange() {
 void checkCompensationRange(api.CompensationRange o) {
   buildCounterCompensationRange++;
   if (buildCounterCompensationRange < 3) {
-    checkMoney(o.maxCompensation! as api.Money);
-    checkMoney(o.minCompensation! as api.Money);
+    checkMoney(o.maxCompensation!);
+    checkMoney(o.minCompensation!);
   }
   buildCounterCompensationRange--;
 }
 
-core.List<api.CompletionResult> buildUnnamed1223() {
-  var o = <api.CompletionResult>[];
-  o.add(buildCompletionResult());
-  o.add(buildCompletionResult());
-  return o;
-}
+core.List<api.CompletionResult> buildUnnamed6() => [
+      buildCompletionResult(),
+      buildCompletionResult(),
+    ];
 
-void checkUnnamed1223(core.List<api.CompletionResult> o) {
+void checkUnnamed6(core.List<api.CompletionResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCompletionResult(o[0] as api.CompletionResult);
-  checkCompletionResult(o[1] as api.CompletionResult);
+  checkCompletionResult(o[0]);
+  checkCompletionResult(o[1]);
 }
 
 core.int buildCounterCompleteQueryResponse = 0;
 api.CompleteQueryResponse buildCompleteQueryResponse() {
-  var o = api.CompleteQueryResponse();
+  final o = api.CompleteQueryResponse();
   buildCounterCompleteQueryResponse++;
   if (buildCounterCompleteQueryResponse < 3) {
-    o.completionResults = buildUnnamed1223();
+    o.completionResults = buildUnnamed6();
     o.metadata = buildResponseMetadata();
   }
   buildCounterCompleteQueryResponse--;
@@ -619,15 +601,15 @@ api.CompleteQueryResponse buildCompleteQueryResponse() {
 void checkCompleteQueryResponse(api.CompleteQueryResponse o) {
   buildCounterCompleteQueryResponse++;
   if (buildCounterCompleteQueryResponse < 3) {
-    checkUnnamed1223(o.completionResults!);
-    checkResponseMetadata(o.metadata! as api.ResponseMetadata);
+    checkUnnamed6(o.completionResults!);
+    checkResponseMetadata(o.metadata!);
   }
   buildCounterCompleteQueryResponse--;
 }
 
 core.int buildCounterCompletionResult = 0;
 api.CompletionResult buildCompletionResult() {
-  var o = api.CompletionResult();
+  final o = api.CompletionResult();
   buildCounterCompletionResult++;
   if (buildCounterCompletionResult < 3) {
     o.imageUri = 'foo';
@@ -659,7 +641,7 @@ void checkCompletionResult(api.CompletionResult o) {
 
 core.int buildCounterCreateClientEventRequest = 0;
 api.CreateClientEventRequest buildCreateClientEventRequest() {
-  var o = api.CreateClientEventRequest();
+  final o = api.CreateClientEventRequest();
   buildCounterCreateClientEventRequest++;
   if (buildCounterCreateClientEventRequest < 3) {
     o.clientEvent = buildClientEvent();
@@ -671,14 +653,14 @@ api.CreateClientEventRequest buildCreateClientEventRequest() {
 void checkCreateClientEventRequest(api.CreateClientEventRequest o) {
   buildCounterCreateClientEventRequest++;
   if (buildCounterCreateClientEventRequest < 3) {
-    checkClientEvent(o.clientEvent! as api.ClientEvent);
+    checkClientEvent(o.clientEvent!);
   }
   buildCounterCreateClientEventRequest--;
 }
 
 core.int buildCounterCreateCompanyRequest = 0;
 api.CreateCompanyRequest buildCreateCompanyRequest() {
-  var o = api.CreateCompanyRequest();
+  final o = api.CreateCompanyRequest();
   buildCounterCreateCompanyRequest++;
   if (buildCounterCreateCompanyRequest < 3) {
     o.company = buildCompany();
@@ -690,14 +672,14 @@ api.CreateCompanyRequest buildCreateCompanyRequest() {
 void checkCreateCompanyRequest(api.CreateCompanyRequest o) {
   buildCounterCreateCompanyRequest++;
   if (buildCounterCreateCompanyRequest < 3) {
-    checkCompany(o.company! as api.Company);
+    checkCompany(o.company!);
   }
   buildCounterCreateCompanyRequest--;
 }
 
 core.int buildCounterCreateJobRequest = 0;
 api.CreateJobRequest buildCreateJobRequest() {
-  var o = api.CreateJobRequest();
+  final o = api.CreateJobRequest();
   buildCounterCreateJobRequest++;
   if (buildCounterCreateJobRequest < 3) {
     o.job = buildJob();
@@ -709,19 +691,17 @@ api.CreateJobRequest buildCreateJobRequest() {
 void checkCreateJobRequest(api.CreateJobRequest o) {
   buildCounterCreateJobRequest++;
   if (buildCounterCreateJobRequest < 3) {
-    checkJob(o.job! as api.Job);
+    checkJob(o.job!);
   }
   buildCounterCreateJobRequest--;
 }
 
-core.List<core.String> buildUnnamed1224() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed7() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1224(core.List<core.String> o) {
+void checkUnnamed7(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -733,14 +713,12 @@ void checkUnnamed1224(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1225() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed8() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1225(core.List<core.String> o) {
+void checkUnnamed8(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -754,12 +732,12 @@ void checkUnnamed1225(core.List<core.String> o) {
 
 core.int buildCounterCustomAttribute = 0;
 api.CustomAttribute buildCustomAttribute() {
-  var o = api.CustomAttribute();
+  final o = api.CustomAttribute();
   buildCounterCustomAttribute++;
   if (buildCounterCustomAttribute < 3) {
     o.filterable = true;
-    o.longValues = buildUnnamed1224();
-    o.stringValues = buildUnnamed1225();
+    o.longValues = buildUnnamed7();
+    o.stringValues = buildUnnamed8();
   }
   buildCounterCustomAttribute--;
   return o;
@@ -769,15 +747,15 @@ void checkCustomAttribute(api.CustomAttribute o) {
   buildCounterCustomAttribute++;
   if (buildCounterCustomAttribute < 3) {
     unittest.expect(o.filterable!, unittest.isTrue);
-    checkUnnamed1224(o.longValues!);
-    checkUnnamed1225(o.stringValues!);
+    checkUnnamed7(o.longValues!);
+    checkUnnamed8(o.stringValues!);
   }
   buildCounterCustomAttribute--;
 }
 
 core.int buildCounterCustomAttributeHistogramRequest = 0;
 api.CustomAttributeHistogramRequest buildCustomAttributeHistogramRequest() {
-  var o = api.CustomAttributeHistogramRequest();
+  final o = api.CustomAttributeHistogramRequest();
   buildCounterCustomAttributeHistogramRequest++;
   if (buildCounterCustomAttributeHistogramRequest < 3) {
     o.key = 'foo';
@@ -796,21 +774,18 @@ void checkCustomAttributeHistogramRequest(
       o.key!,
       unittest.equals('foo'),
     );
-    checkNumericBucketingOption(
-        o.longValueHistogramBucketingOption! as api.NumericBucketingOption);
+    checkNumericBucketingOption(o.longValueHistogramBucketingOption!);
     unittest.expect(o.stringValueHistogram!, unittest.isTrue);
   }
   buildCounterCustomAttributeHistogramRequest--;
 }
 
-core.Map<core.String, core.int> buildUnnamed1226() {
-  var o = <core.String, core.int>{};
-  o['x'] = 42;
-  o['y'] = 42;
-  return o;
-}
+core.Map<core.String, core.int> buildUnnamed9() => {
+      'x': 42,
+      'y': 42,
+    };
 
-void checkUnnamed1226(core.Map<core.String, core.int> o) {
+void checkUnnamed9(core.Map<core.String, core.int> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -824,12 +799,12 @@ void checkUnnamed1226(core.Map<core.String, core.int> o) {
 
 core.int buildCounterCustomAttributeHistogramResult = 0;
 api.CustomAttributeHistogramResult buildCustomAttributeHistogramResult() {
-  var o = api.CustomAttributeHistogramResult();
+  final o = api.CustomAttributeHistogramResult();
   buildCounterCustomAttributeHistogramResult++;
   if (buildCounterCustomAttributeHistogramResult < 3) {
     o.key = 'foo';
     o.longValueHistogramResult = buildNumericBucketingResult();
-    o.stringValueHistogramResult = buildUnnamed1226();
+    o.stringValueHistogramResult = buildUnnamed9();
   }
   buildCounterCustomAttributeHistogramResult--;
   return o;
@@ -842,16 +817,15 @@ void checkCustomAttributeHistogramResult(api.CustomAttributeHistogramResult o) {
       o.key!,
       unittest.equals('foo'),
     );
-    checkNumericBucketingResult(
-        o.longValueHistogramResult! as api.NumericBucketingResult);
-    checkUnnamed1226(o.stringValueHistogramResult!);
+    checkNumericBucketingResult(o.longValueHistogramResult!);
+    checkUnnamed9(o.stringValueHistogramResult!);
   }
   buildCounterCustomAttributeHistogramResult--;
 }
 
 core.int buildCounterDeviceInfo = 0;
 api.DeviceInfo buildDeviceInfo() {
-  var o = api.DeviceInfo();
+  final o = api.DeviceInfo();
   buildCounterDeviceInfo++;
   if (buildCounterDeviceInfo < 3) {
     o.deviceType = 'foo';
@@ -878,7 +852,7 @@ void checkDeviceInfo(api.DeviceInfo o) {
 
 core.int buildCounterEmpty = 0;
 api.Empty buildEmpty() {
-  var o = api.Empty();
+  final o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
@@ -891,42 +865,34 @@ void checkEmpty(api.Empty o) {
   buildCounterEmpty--;
 }
 
-core.List<api.CompensationHistogramRequest> buildUnnamed1227() {
-  var o = <api.CompensationHistogramRequest>[];
-  o.add(buildCompensationHistogramRequest());
-  o.add(buildCompensationHistogramRequest());
-  return o;
-}
+core.List<api.CompensationHistogramRequest> buildUnnamed10() => [
+      buildCompensationHistogramRequest(),
+      buildCompensationHistogramRequest(),
+    ];
 
-void checkUnnamed1227(core.List<api.CompensationHistogramRequest> o) {
+void checkUnnamed10(core.List<api.CompensationHistogramRequest> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCompensationHistogramRequest(o[0] as api.CompensationHistogramRequest);
-  checkCompensationHistogramRequest(o[1] as api.CompensationHistogramRequest);
+  checkCompensationHistogramRequest(o[0]);
+  checkCompensationHistogramRequest(o[1]);
 }
 
-core.List<api.CustomAttributeHistogramRequest> buildUnnamed1228() {
-  var o = <api.CustomAttributeHistogramRequest>[];
-  o.add(buildCustomAttributeHistogramRequest());
-  o.add(buildCustomAttributeHistogramRequest());
-  return o;
-}
+core.List<api.CustomAttributeHistogramRequest> buildUnnamed11() => [
+      buildCustomAttributeHistogramRequest(),
+      buildCustomAttributeHistogramRequest(),
+    ];
 
-void checkUnnamed1228(core.List<api.CustomAttributeHistogramRequest> o) {
+void checkUnnamed11(core.List<api.CustomAttributeHistogramRequest> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCustomAttributeHistogramRequest(
-      o[0] as api.CustomAttributeHistogramRequest);
-  checkCustomAttributeHistogramRequest(
-      o[1] as api.CustomAttributeHistogramRequest);
+  checkCustomAttributeHistogramRequest(o[0]);
+  checkCustomAttributeHistogramRequest(o[1]);
 }
 
-core.List<core.String> buildUnnamed1229() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed12() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1229(core.List<core.String> o) {
+void checkUnnamed12(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -940,12 +906,12 @@ void checkUnnamed1229(core.List<core.String> o) {
 
 core.int buildCounterHistogramFacets = 0;
 api.HistogramFacets buildHistogramFacets() {
-  var o = api.HistogramFacets();
+  final o = api.HistogramFacets();
   buildCounterHistogramFacets++;
   if (buildCounterHistogramFacets < 3) {
-    o.compensationHistogramFacets = buildUnnamed1227();
-    o.customAttributeHistogramFacets = buildUnnamed1228();
-    o.simpleHistogramFacets = buildUnnamed1229();
+    o.compensationHistogramFacets = buildUnnamed10();
+    o.customAttributeHistogramFacets = buildUnnamed11();
+    o.simpleHistogramFacets = buildUnnamed12();
   }
   buildCounterHistogramFacets--;
   return o;
@@ -954,21 +920,19 @@ api.HistogramFacets buildHistogramFacets() {
 void checkHistogramFacets(api.HistogramFacets o) {
   buildCounterHistogramFacets++;
   if (buildCounterHistogramFacets < 3) {
-    checkUnnamed1227(o.compensationHistogramFacets!);
-    checkUnnamed1228(o.customAttributeHistogramFacets!);
-    checkUnnamed1229(o.simpleHistogramFacets!);
+    checkUnnamed10(o.compensationHistogramFacets!);
+    checkUnnamed11(o.customAttributeHistogramFacets!);
+    checkUnnamed12(o.simpleHistogramFacets!);
   }
   buildCounterHistogramFacets--;
 }
 
-core.Map<core.String, core.int> buildUnnamed1230() {
-  var o = <core.String, core.int>{};
-  o['x'] = 42;
-  o['y'] = 42;
-  return o;
-}
+core.Map<core.String, core.int> buildUnnamed13() => {
+      'x': 42,
+      'y': 42,
+    };
 
-void checkUnnamed1230(core.Map<core.String, core.int> o) {
+void checkUnnamed13(core.Map<core.String, core.int> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -982,11 +946,11 @@ void checkUnnamed1230(core.Map<core.String, core.int> o) {
 
 core.int buildCounterHistogramResult = 0;
 api.HistogramResult buildHistogramResult() {
-  var o = api.HistogramResult();
+  final o = api.HistogramResult();
   buildCounterHistogramResult++;
   if (buildCounterHistogramResult < 3) {
     o.searchType = 'foo';
-    o.values = buildUnnamed1230();
+    o.values = buildUnnamed13();
   }
   buildCounterHistogramResult--;
   return o;
@@ -999,60 +963,52 @@ void checkHistogramResult(api.HistogramResult o) {
       o.searchType!,
       unittest.equals('foo'),
     );
-    checkUnnamed1230(o.values!);
+    checkUnnamed13(o.values!);
   }
   buildCounterHistogramResult--;
 }
 
-core.List<api.CompensationHistogramResult> buildUnnamed1231() {
-  var o = <api.CompensationHistogramResult>[];
-  o.add(buildCompensationHistogramResult());
-  o.add(buildCompensationHistogramResult());
-  return o;
-}
+core.List<api.CompensationHistogramResult> buildUnnamed14() => [
+      buildCompensationHistogramResult(),
+      buildCompensationHistogramResult(),
+    ];
 
-void checkUnnamed1231(core.List<api.CompensationHistogramResult> o) {
+void checkUnnamed14(core.List<api.CompensationHistogramResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCompensationHistogramResult(o[0] as api.CompensationHistogramResult);
-  checkCompensationHistogramResult(o[1] as api.CompensationHistogramResult);
+  checkCompensationHistogramResult(o[0]);
+  checkCompensationHistogramResult(o[1]);
 }
 
-core.List<api.CustomAttributeHistogramResult> buildUnnamed1232() {
-  var o = <api.CustomAttributeHistogramResult>[];
-  o.add(buildCustomAttributeHistogramResult());
-  o.add(buildCustomAttributeHistogramResult());
-  return o;
-}
+core.List<api.CustomAttributeHistogramResult> buildUnnamed15() => [
+      buildCustomAttributeHistogramResult(),
+      buildCustomAttributeHistogramResult(),
+    ];
 
-void checkUnnamed1232(core.List<api.CustomAttributeHistogramResult> o) {
+void checkUnnamed15(core.List<api.CustomAttributeHistogramResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCustomAttributeHistogramResult(
-      o[0] as api.CustomAttributeHistogramResult);
-  checkCustomAttributeHistogramResult(
-      o[1] as api.CustomAttributeHistogramResult);
+  checkCustomAttributeHistogramResult(o[0]);
+  checkCustomAttributeHistogramResult(o[1]);
 }
 
-core.List<api.HistogramResult> buildUnnamed1233() {
-  var o = <api.HistogramResult>[];
-  o.add(buildHistogramResult());
-  o.add(buildHistogramResult());
-  return o;
-}
+core.List<api.HistogramResult> buildUnnamed16() => [
+      buildHistogramResult(),
+      buildHistogramResult(),
+    ];
 
-void checkUnnamed1233(core.List<api.HistogramResult> o) {
+void checkUnnamed16(core.List<api.HistogramResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkHistogramResult(o[0] as api.HistogramResult);
-  checkHistogramResult(o[1] as api.HistogramResult);
+  checkHistogramResult(o[0]);
+  checkHistogramResult(o[1]);
 }
 
 core.int buildCounterHistogramResults = 0;
 api.HistogramResults buildHistogramResults() {
-  var o = api.HistogramResults();
+  final o = api.HistogramResults();
   buildCounterHistogramResults++;
   if (buildCounterHistogramResults < 3) {
-    o.compensationHistogramResults = buildUnnamed1231();
-    o.customAttributeHistogramResults = buildUnnamed1232();
-    o.simpleHistogramResults = buildUnnamed1233();
+    o.compensationHistogramResults = buildUnnamed14();
+    o.customAttributeHistogramResults = buildUnnamed15();
+    o.simpleHistogramResults = buildUnnamed16();
   }
   buildCounterHistogramResults--;
   return o;
@@ -1061,21 +1017,19 @@ api.HistogramResults buildHistogramResults() {
 void checkHistogramResults(api.HistogramResults o) {
   buildCounterHistogramResults++;
   if (buildCounterHistogramResults < 3) {
-    checkUnnamed1231(o.compensationHistogramResults!);
-    checkUnnamed1232(o.customAttributeHistogramResults!);
-    checkUnnamed1233(o.simpleHistogramResults!);
+    checkUnnamed14(o.compensationHistogramResults!);
+    checkUnnamed15(o.customAttributeHistogramResults!);
+    checkUnnamed16(o.simpleHistogramResults!);
   }
   buildCounterHistogramResults--;
 }
 
-core.List<core.String> buildUnnamed1234() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed17() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1234(core.List<core.String> o) {
+void checkUnnamed17(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1087,27 +1041,23 @@ void checkUnnamed1234(core.List<core.String> o) {
   );
 }
 
-core.Map<core.String, api.CustomAttribute> buildUnnamed1235() {
-  var o = <core.String, api.CustomAttribute>{};
-  o['x'] = buildCustomAttribute();
-  o['y'] = buildCustomAttribute();
-  return o;
-}
+core.Map<core.String, api.CustomAttribute> buildUnnamed18() => {
+      'x': buildCustomAttribute(),
+      'y': buildCustomAttribute(),
+    };
 
-void checkUnnamed1235(core.Map<core.String, api.CustomAttribute> o) {
+void checkUnnamed18(core.Map<core.String, api.CustomAttribute> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCustomAttribute(o['x']! as api.CustomAttribute);
-  checkCustomAttribute(o['y']! as api.CustomAttribute);
+  checkCustomAttribute(o['x']!);
+  checkCustomAttribute(o['y']!);
 }
 
-core.List<core.String> buildUnnamed1236() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed19() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1236(core.List<core.String> o) {
+void checkUnnamed19(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1119,14 +1069,12 @@ void checkUnnamed1236(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1237() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed20() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1237(core.List<core.String> o) {
+void checkUnnamed20(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1138,14 +1086,12 @@ void checkUnnamed1237(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1238() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed21() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1238(core.List<core.String> o) {
+void checkUnnamed21(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1159,22 +1105,22 @@ void checkUnnamed1238(core.List<core.String> o) {
 
 core.int buildCounterJob = 0;
 api.Job buildJob() {
-  var o = api.Job();
+  final o = api.Job();
   buildCounterJob++;
   if (buildCounterJob < 3) {
-    o.addresses = buildUnnamed1234();
+    o.addresses = buildUnnamed17();
     o.applicationInfo = buildApplicationInfo();
     o.companyDisplayName = 'foo';
     o.companyName = 'foo';
     o.compensationInfo = buildCompensationInfo();
-    o.customAttributes = buildUnnamed1235();
-    o.degreeTypes = buildUnnamed1236();
+    o.customAttributes = buildUnnamed18();
+    o.degreeTypes = buildUnnamed19();
     o.department = 'foo';
     o.derivedInfo = buildJobDerivedInfo();
     o.description = 'foo';
-    o.employmentTypes = buildUnnamed1237();
+    o.employmentTypes = buildUnnamed20();
     o.incentives = 'foo';
-    o.jobBenefits = buildUnnamed1238();
+    o.jobBenefits = buildUnnamed21();
     o.jobEndTime = 'foo';
     o.jobLevel = 'foo';
     o.jobStartTime = 'foo';
@@ -1200,8 +1146,8 @@ api.Job buildJob() {
 void checkJob(api.Job o) {
   buildCounterJob++;
   if (buildCounterJob < 3) {
-    checkUnnamed1234(o.addresses!);
-    checkApplicationInfo(o.applicationInfo! as api.ApplicationInfo);
+    checkUnnamed17(o.addresses!);
+    checkApplicationInfo(o.applicationInfo!);
     unittest.expect(
       o.companyDisplayName!,
       unittest.equals('foo'),
@@ -1210,24 +1156,24 @@ void checkJob(api.Job o) {
       o.companyName!,
       unittest.equals('foo'),
     );
-    checkCompensationInfo(o.compensationInfo! as api.CompensationInfo);
-    checkUnnamed1235(o.customAttributes!);
-    checkUnnamed1236(o.degreeTypes!);
+    checkCompensationInfo(o.compensationInfo!);
+    checkUnnamed18(o.customAttributes!);
+    checkUnnamed19(o.degreeTypes!);
     unittest.expect(
       o.department!,
       unittest.equals('foo'),
     );
-    checkJobDerivedInfo(o.derivedInfo! as api.JobDerivedInfo);
+    checkJobDerivedInfo(o.derivedInfo!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
     );
-    checkUnnamed1237(o.employmentTypes!);
+    checkUnnamed20(o.employmentTypes!);
     unittest.expect(
       o.incentives!,
       unittest.equals('foo'),
     );
-    checkUnnamed1238(o.jobBenefits!);
+    checkUnnamed21(o.jobBenefits!);
     unittest.expect(
       o.jobEndTime!,
       unittest.equals('foo'),
@@ -1268,7 +1214,7 @@ void checkJob(api.Job o) {
       o.postingUpdateTime!,
       unittest.equals('foo'),
     );
-    checkProcessingOptions(o.processingOptions! as api.ProcessingOptions);
+    checkProcessingOptions(o.processingOptions!);
     unittest.expect(
       o.promotionValue!,
       unittest.equals(42),
@@ -1297,14 +1243,12 @@ void checkJob(api.Job o) {
   buildCounterJob--;
 }
 
-core.List<core.String> buildUnnamed1239() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed22() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1239(core.List<core.String> o) {
+void checkUnnamed22(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1316,26 +1260,24 @@ void checkUnnamed1239(core.List<core.String> o) {
   );
 }
 
-core.List<api.Location> buildUnnamed1240() {
-  var o = <api.Location>[];
-  o.add(buildLocation());
-  o.add(buildLocation());
-  return o;
-}
+core.List<api.Location> buildUnnamed23() => [
+      buildLocation(),
+      buildLocation(),
+    ];
 
-void checkUnnamed1240(core.List<api.Location> o) {
+void checkUnnamed23(core.List<api.Location> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocation(o[0] as api.Location);
-  checkLocation(o[1] as api.Location);
+  checkLocation(o[0]);
+  checkLocation(o[1]);
 }
 
 core.int buildCounterJobDerivedInfo = 0;
 api.JobDerivedInfo buildJobDerivedInfo() {
-  var o = api.JobDerivedInfo();
+  final o = api.JobDerivedInfo();
   buildCounterJobDerivedInfo++;
   if (buildCounterJobDerivedInfo < 3) {
-    o.jobCategories = buildUnnamed1239();
-    o.locations = buildUnnamed1240();
+    o.jobCategories = buildUnnamed22();
+    o.locations = buildUnnamed23();
   }
   buildCounterJobDerivedInfo--;
   return o;
@@ -1344,20 +1286,18 @@ api.JobDerivedInfo buildJobDerivedInfo() {
 void checkJobDerivedInfo(api.JobDerivedInfo o) {
   buildCounterJobDerivedInfo++;
   if (buildCounterJobDerivedInfo < 3) {
-    checkUnnamed1239(o.jobCategories!);
-    checkUnnamed1240(o.locations!);
+    checkUnnamed22(o.jobCategories!);
+    checkUnnamed23(o.locations!);
   }
   buildCounterJobDerivedInfo--;
 }
 
-core.List<core.String> buildUnnamed1241() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed24() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1241(core.List<core.String> o) {
+void checkUnnamed24(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1371,10 +1311,10 @@ void checkUnnamed1241(core.List<core.String> o) {
 
 core.int buildCounterJobEvent = 0;
 api.JobEvent buildJobEvent() {
-  var o = api.JobEvent();
+  final o = api.JobEvent();
   buildCounterJobEvent++;
   if (buildCounterJobEvent < 3) {
-    o.jobs = buildUnnamed1241();
+    o.jobs = buildUnnamed24();
     o.type = 'foo';
   }
   buildCounterJobEvent--;
@@ -1384,7 +1324,7 @@ api.JobEvent buildJobEvent() {
 void checkJobEvent(api.JobEvent o) {
   buildCounterJobEvent++;
   if (buildCounterJobEvent < 3) {
-    checkUnnamed1241(o.jobs!);
+    checkUnnamed24(o.jobs!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -1393,14 +1333,12 @@ void checkJobEvent(api.JobEvent o) {
   buildCounterJobEvent--;
 }
 
-core.List<core.String> buildUnnamed1242() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed25() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1242(core.List<core.String> o) {
+void checkUnnamed25(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1412,14 +1350,12 @@ void checkUnnamed1242(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1243() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed26() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1243(core.List<core.String> o) {
+void checkUnnamed26(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1431,14 +1367,12 @@ void checkUnnamed1243(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1244() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed27() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1244(core.List<core.String> o) {
+void checkUnnamed27(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1450,14 +1384,12 @@ void checkUnnamed1244(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1245() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed28() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1245(core.List<core.String> o) {
+void checkUnnamed28(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1469,14 +1401,12 @@ void checkUnnamed1245(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1246() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed29() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1246(core.List<core.String> o) {
+void checkUnnamed29(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1488,34 +1418,32 @@ void checkUnnamed1246(core.List<core.String> o) {
   );
 }
 
-core.List<api.LocationFilter> buildUnnamed1247() {
-  var o = <api.LocationFilter>[];
-  o.add(buildLocationFilter());
-  o.add(buildLocationFilter());
-  return o;
-}
+core.List<api.LocationFilter> buildUnnamed30() => [
+      buildLocationFilter(),
+      buildLocationFilter(),
+    ];
 
-void checkUnnamed1247(core.List<api.LocationFilter> o) {
+void checkUnnamed30(core.List<api.LocationFilter> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocationFilter(o[0] as api.LocationFilter);
-  checkLocationFilter(o[1] as api.LocationFilter);
+  checkLocationFilter(o[0]);
+  checkLocationFilter(o[1]);
 }
 
 core.int buildCounterJobQuery = 0;
 api.JobQuery buildJobQuery() {
-  var o = api.JobQuery();
+  final o = api.JobQuery();
   buildCounterJobQuery++;
   if (buildCounterJobQuery < 3) {
     o.commuteFilter = buildCommuteFilter();
-    o.companyDisplayNames = buildUnnamed1242();
-    o.companyNames = buildUnnamed1243();
+    o.companyDisplayNames = buildUnnamed25();
+    o.companyNames = buildUnnamed26();
     o.compensationFilter = buildCompensationFilter();
     o.customAttributeFilter = 'foo';
     o.disableSpellCheck = true;
-    o.employmentTypes = buildUnnamed1244();
-    o.jobCategories = buildUnnamed1245();
-    o.languageCodes = buildUnnamed1246();
-    o.locationFilters = buildUnnamed1247();
+    o.employmentTypes = buildUnnamed27();
+    o.jobCategories = buildUnnamed28();
+    o.languageCodes = buildUnnamed29();
+    o.locationFilters = buildUnnamed30();
     o.publishTimeRange = buildTimestampRange();
     o.query = 'foo';
     o.queryLanguageCode = 'foo';
@@ -1527,20 +1455,20 @@ api.JobQuery buildJobQuery() {
 void checkJobQuery(api.JobQuery o) {
   buildCounterJobQuery++;
   if (buildCounterJobQuery < 3) {
-    checkCommuteFilter(o.commuteFilter! as api.CommuteFilter);
-    checkUnnamed1242(o.companyDisplayNames!);
-    checkUnnamed1243(o.companyNames!);
-    checkCompensationFilter(o.compensationFilter! as api.CompensationFilter);
+    checkCommuteFilter(o.commuteFilter!);
+    checkUnnamed25(o.companyDisplayNames!);
+    checkUnnamed26(o.companyNames!);
+    checkCompensationFilter(o.compensationFilter!);
     unittest.expect(
       o.customAttributeFilter!,
       unittest.equals('foo'),
     );
     unittest.expect(o.disableSpellCheck!, unittest.isTrue);
-    checkUnnamed1244(o.employmentTypes!);
-    checkUnnamed1245(o.jobCategories!);
-    checkUnnamed1246(o.languageCodes!);
-    checkUnnamed1247(o.locationFilters!);
-    checkTimestampRange(o.publishTimeRange! as api.TimestampRange);
+    checkUnnamed27(o.employmentTypes!);
+    checkUnnamed28(o.jobCategories!);
+    checkUnnamed29(o.languageCodes!);
+    checkUnnamed30(o.locationFilters!);
+    checkTimestampRange(o.publishTimeRange!);
     unittest.expect(
       o.query!,
       unittest.equals('foo'),
@@ -1555,7 +1483,7 @@ void checkJobQuery(api.JobQuery o) {
 
 core.int buildCounterLatLng = 0;
 api.LatLng buildLatLng() {
-  var o = api.LatLng();
+  final o = api.LatLng();
   buildCounterLatLng++;
   if (buildCounterLatLng < 3) {
     o.latitude = 42.0;
@@ -1580,25 +1508,23 @@ void checkLatLng(api.LatLng o) {
   buildCounterLatLng--;
 }
 
-core.List<api.Company> buildUnnamed1248() {
-  var o = <api.Company>[];
-  o.add(buildCompany());
-  o.add(buildCompany());
-  return o;
-}
+core.List<api.Company> buildUnnamed31() => [
+      buildCompany(),
+      buildCompany(),
+    ];
 
-void checkUnnamed1248(core.List<api.Company> o) {
+void checkUnnamed31(core.List<api.Company> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCompany(o[0] as api.Company);
-  checkCompany(o[1] as api.Company);
+  checkCompany(o[0]);
+  checkCompany(o[1]);
 }
 
 core.int buildCounterListCompaniesResponse = 0;
 api.ListCompaniesResponse buildListCompaniesResponse() {
-  var o = api.ListCompaniesResponse();
+  final o = api.ListCompaniesResponse();
   buildCounterListCompaniesResponse++;
   if (buildCounterListCompaniesResponse < 3) {
-    o.companies = buildUnnamed1248();
+    o.companies = buildUnnamed31();
     o.metadata = buildResponseMetadata();
     o.nextPageToken = 'foo';
   }
@@ -1609,8 +1535,8 @@ api.ListCompaniesResponse buildListCompaniesResponse() {
 void checkListCompaniesResponse(api.ListCompaniesResponse o) {
   buildCounterListCompaniesResponse++;
   if (buildCounterListCompaniesResponse < 3) {
-    checkUnnamed1248(o.companies!);
-    checkResponseMetadata(o.metadata! as api.ResponseMetadata);
+    checkUnnamed31(o.companies!);
+    checkResponseMetadata(o.metadata!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1619,25 +1545,23 @@ void checkListCompaniesResponse(api.ListCompaniesResponse o) {
   buildCounterListCompaniesResponse--;
 }
 
-core.List<api.Job> buildUnnamed1249() {
-  var o = <api.Job>[];
-  o.add(buildJob());
-  o.add(buildJob());
-  return o;
-}
+core.List<api.Job> buildUnnamed32() => [
+      buildJob(),
+      buildJob(),
+    ];
 
-void checkUnnamed1249(core.List<api.Job> o) {
+void checkUnnamed32(core.List<api.Job> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkJob(o[0] as api.Job);
-  checkJob(o[1] as api.Job);
+  checkJob(o[0]);
+  checkJob(o[1]);
 }
 
 core.int buildCounterListJobsResponse = 0;
 api.ListJobsResponse buildListJobsResponse() {
-  var o = api.ListJobsResponse();
+  final o = api.ListJobsResponse();
   buildCounterListJobsResponse++;
   if (buildCounterListJobsResponse < 3) {
-    o.jobs = buildUnnamed1249();
+    o.jobs = buildUnnamed32();
     o.metadata = buildResponseMetadata();
     o.nextPageToken = 'foo';
   }
@@ -1648,8 +1572,8 @@ api.ListJobsResponse buildListJobsResponse() {
 void checkListJobsResponse(api.ListJobsResponse o) {
   buildCounterListJobsResponse++;
   if (buildCounterListJobsResponse < 3) {
-    checkUnnamed1249(o.jobs!);
-    checkResponseMetadata(o.metadata! as api.ResponseMetadata);
+    checkUnnamed32(o.jobs!);
+    checkResponseMetadata(o.metadata!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1660,7 +1584,7 @@ void checkListJobsResponse(api.ListJobsResponse o) {
 
 core.int buildCounterLocation = 0;
 api.Location buildLocation() {
-  var o = api.Location();
+  final o = api.Location();
   buildCounterLocation++;
   if (buildCounterLocation < 3) {
     o.latLng = buildLatLng();
@@ -1675,12 +1599,12 @@ api.Location buildLocation() {
 void checkLocation(api.Location o) {
   buildCounterLocation++;
   if (buildCounterLocation < 3) {
-    checkLatLng(o.latLng! as api.LatLng);
+    checkLatLng(o.latLng!);
     unittest.expect(
       o.locationType!,
       unittest.equals('foo'),
     );
-    checkPostalAddress(o.postalAddress! as api.PostalAddress);
+    checkPostalAddress(o.postalAddress!);
     unittest.expect(
       o.radiusInMiles!,
       unittest.equals(42.0),
@@ -1691,7 +1615,7 @@ void checkLocation(api.Location o) {
 
 core.int buildCounterLocationFilter = 0;
 api.LocationFilter buildLocationFilter() {
-  var o = api.LocationFilter();
+  final o = api.LocationFilter();
   buildCounterLocationFilter++;
   if (buildCounterLocationFilter < 3) {
     o.address = 'foo';
@@ -1715,7 +1639,7 @@ void checkLocationFilter(api.LocationFilter o) {
       o.distanceInMiles!,
       unittest.equals(42.0),
     );
-    checkLatLng(o.latLng! as api.LatLng);
+    checkLatLng(o.latLng!);
     unittest.expect(
       o.regionCode!,
       unittest.equals('foo'),
@@ -1730,7 +1654,7 @@ void checkLocationFilter(api.LocationFilter o) {
 
 core.int buildCounterMatchingJob = 0;
 api.MatchingJob buildMatchingJob() {
-  var o = api.MatchingJob();
+  final o = api.MatchingJob();
   buildCounterMatchingJob++;
   if (buildCounterMatchingJob < 3) {
     o.commuteInfo = buildCommuteInfo();
@@ -1746,8 +1670,8 @@ api.MatchingJob buildMatchingJob() {
 void checkMatchingJob(api.MatchingJob o) {
   buildCounterMatchingJob++;
   if (buildCounterMatchingJob < 3) {
-    checkCommuteInfo(o.commuteInfo! as api.CommuteInfo);
-    checkJob(o.job! as api.Job);
+    checkCommuteInfo(o.commuteInfo!);
+    checkJob(o.job!);
     unittest.expect(
       o.jobSummary!,
       unittest.equals('foo'),
@@ -1764,41 +1688,9 @@ void checkMatchingJob(api.MatchingJob o) {
   buildCounterMatchingJob--;
 }
 
-core.Map<core.String, api.NamespacedDebugInput> buildUnnamed1250() {
-  var o = <core.String, api.NamespacedDebugInput>{};
-  o['x'] = buildNamespacedDebugInput();
-  o['y'] = buildNamespacedDebugInput();
-  return o;
-}
-
-void checkUnnamed1250(core.Map<core.String, api.NamespacedDebugInput> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  checkNamespacedDebugInput(o['x']! as api.NamespacedDebugInput);
-  checkNamespacedDebugInput(o['y']! as api.NamespacedDebugInput);
-}
-
-core.int buildCounterMendelDebugInput = 0;
-api.MendelDebugInput buildMendelDebugInput() {
-  var o = api.MendelDebugInput();
-  buildCounterMendelDebugInput++;
-  if (buildCounterMendelDebugInput < 3) {
-    o.namespacedDebugInput = buildUnnamed1250();
-  }
-  buildCounterMendelDebugInput--;
-  return o;
-}
-
-void checkMendelDebugInput(api.MendelDebugInput o) {
-  buildCounterMendelDebugInput++;
-  if (buildCounterMendelDebugInput < 3) {
-    checkUnnamed1250(o.namespacedDebugInput!);
-  }
-  buildCounterMendelDebugInput--;
-}
-
 core.int buildCounterMoney = 0;
 api.Money buildMoney() {
-  var o = api.Money();
+  final o = api.Money();
   buildCounterMoney++;
   if (buildCounterMoney < 3) {
     o.currencyCode = 'foo';
@@ -1828,262 +1720,12 @@ void checkMoney(api.Money o) {
   buildCounterMoney--;
 }
 
-core.List<core.String> buildUnnamed1251() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.double> buildUnnamed33() => [
+      42.0,
+      42.0,
+    ];
 
-void checkUnnamed1251(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.String> buildUnnamed1252() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
-
-void checkUnnamed1252(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.int> buildUnnamed1253() {
-  var o = <core.int>[];
-  o.add(42);
-  o.add(42);
-  return o;
-}
-
-void checkUnnamed1253(core.List<core.int> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals(42),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals(42),
-  );
-}
-
-core.List<core.String> buildUnnamed1254() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
-
-void checkUnnamed1254(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.String> buildUnnamed1255() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
-
-void checkUnnamed1255(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.int> buildUnnamed1256() {
-  var o = <core.int>[];
-  o.add(42);
-  o.add(42);
-  return o;
-}
-
-void checkUnnamed1256(core.List<core.int> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals(42),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals(42),
-  );
-}
-
-core.List<core.String> buildUnnamed1257() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
-
-void checkUnnamed1257(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.String> buildUnnamed1258() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
-
-void checkUnnamed1258(core.List<core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals('foo'),
-  );
-}
-
-core.List<core.int> buildUnnamed1259() {
-  var o = <core.int>[];
-  o.add(42);
-  o.add(42);
-  return o;
-}
-
-void checkUnnamed1259(core.List<core.int> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o[0],
-    unittest.equals(42),
-  );
-  unittest.expect(
-    o[1],
-    unittest.equals(42),
-  );
-}
-
-core.Map<core.String, core.String> buildUnnamed1260() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
-
-void checkUnnamed1260(core.Map<core.String, core.String> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(
-    o['x']!,
-    unittest.equals('foo'),
-  );
-  unittest.expect(
-    o['y']!,
-    unittest.equals('foo'),
-  );
-}
-
-core.Map<core.String, core.bool> buildUnnamed1261() {
-  var o = <core.String, core.bool>{};
-  o['x'] = true;
-  o['y'] = true;
-  return o;
-}
-
-void checkUnnamed1261(core.Map<core.String, core.bool> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  unittest.expect(o['x']!, unittest.isTrue);
-  unittest.expect(o['y']!, unittest.isTrue);
-}
-
-core.int buildCounterNamespacedDebugInput = 0;
-api.NamespacedDebugInput buildNamespacedDebugInput() {
-  var o = api.NamespacedDebugInput();
-  buildCounterNamespacedDebugInput++;
-  if (buildCounterNamespacedDebugInput < 3) {
-    o.absolutelyForcedExpNames = buildUnnamed1251();
-    o.absolutelyForcedExpTags = buildUnnamed1252();
-    o.absolutelyForcedExps = buildUnnamed1253();
-    o.conditionallyForcedExpNames = buildUnnamed1254();
-    o.conditionallyForcedExpTags = buildUnnamed1255();
-    o.conditionallyForcedExps = buildUnnamed1256();
-    o.disableAutomaticEnrollmentSelection = true;
-    o.disableExpNames = buildUnnamed1257();
-    o.disableExpTags = buildUnnamed1258();
-    o.disableExps = buildUnnamed1259();
-    o.disableManualEnrollmentSelection = true;
-    o.disableOrganicSelection = true;
-    o.forcedFlags = buildUnnamed1260();
-    o.forcedRollouts = buildUnnamed1261();
-  }
-  buildCounterNamespacedDebugInput--;
-  return o;
-}
-
-void checkNamespacedDebugInput(api.NamespacedDebugInput o) {
-  buildCounterNamespacedDebugInput++;
-  if (buildCounterNamespacedDebugInput < 3) {
-    checkUnnamed1251(o.absolutelyForcedExpNames!);
-    checkUnnamed1252(o.absolutelyForcedExpTags!);
-    checkUnnamed1253(o.absolutelyForcedExps!);
-    checkUnnamed1254(o.conditionallyForcedExpNames!);
-    checkUnnamed1255(o.conditionallyForcedExpTags!);
-    checkUnnamed1256(o.conditionallyForcedExps!);
-    unittest.expect(o.disableAutomaticEnrollmentSelection!, unittest.isTrue);
-    checkUnnamed1257(o.disableExpNames!);
-    checkUnnamed1258(o.disableExpTags!);
-    checkUnnamed1259(o.disableExps!);
-    unittest.expect(o.disableManualEnrollmentSelection!, unittest.isTrue);
-    unittest.expect(o.disableOrganicSelection!, unittest.isTrue);
-    checkUnnamed1260(o.forcedFlags!);
-    checkUnnamed1261(o.forcedRollouts!);
-  }
-  buildCounterNamespacedDebugInput--;
-}
-
-core.List<core.double> buildUnnamed1262() {
-  var o = <core.double>[];
-  o.add(42.0);
-  o.add(42.0);
-  return o;
-}
-
-void checkUnnamed1262(core.List<core.double> o) {
+void checkUnnamed33(core.List<core.double> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2097,10 +1739,10 @@ void checkUnnamed1262(core.List<core.double> o) {
 
 core.int buildCounterNumericBucketingOption = 0;
 api.NumericBucketingOption buildNumericBucketingOption() {
-  var o = api.NumericBucketingOption();
+  final o = api.NumericBucketingOption();
   buildCounterNumericBucketingOption++;
   if (buildCounterNumericBucketingOption < 3) {
-    o.bucketBounds = buildUnnamed1262();
+    o.bucketBounds = buildUnnamed33();
     o.requiresMinMax = true;
   }
   buildCounterNumericBucketingOption--;
@@ -2110,31 +1752,29 @@ api.NumericBucketingOption buildNumericBucketingOption() {
 void checkNumericBucketingOption(api.NumericBucketingOption o) {
   buildCounterNumericBucketingOption++;
   if (buildCounterNumericBucketingOption < 3) {
-    checkUnnamed1262(o.bucketBounds!);
+    checkUnnamed33(o.bucketBounds!);
     unittest.expect(o.requiresMinMax!, unittest.isTrue);
   }
   buildCounterNumericBucketingOption--;
 }
 
-core.List<api.BucketizedCount> buildUnnamed1263() {
-  var o = <api.BucketizedCount>[];
-  o.add(buildBucketizedCount());
-  o.add(buildBucketizedCount());
-  return o;
-}
+core.List<api.BucketizedCount> buildUnnamed34() => [
+      buildBucketizedCount(),
+      buildBucketizedCount(),
+    ];
 
-void checkUnnamed1263(core.List<api.BucketizedCount> o) {
+void checkUnnamed34(core.List<api.BucketizedCount> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBucketizedCount(o[0] as api.BucketizedCount);
-  checkBucketizedCount(o[1] as api.BucketizedCount);
+  checkBucketizedCount(o[0]);
+  checkBucketizedCount(o[1]);
 }
 
 core.int buildCounterNumericBucketingResult = 0;
 api.NumericBucketingResult buildNumericBucketingResult() {
-  var o = api.NumericBucketingResult();
+  final o = api.NumericBucketingResult();
   buildCounterNumericBucketingResult++;
   if (buildCounterNumericBucketingResult < 3) {
-    o.counts = buildUnnamed1263();
+    o.counts = buildUnnamed34();
     o.maxValue = 42.0;
     o.minValue = 42.0;
   }
@@ -2145,7 +1785,7 @@ api.NumericBucketingResult buildNumericBucketingResult() {
 void checkNumericBucketingResult(api.NumericBucketingResult o) {
   buildCounterNumericBucketingResult++;
   if (buildCounterNumericBucketingResult < 3) {
-    checkUnnamed1263(o.counts!);
+    checkUnnamed34(o.counts!);
     unittest.expect(
       o.maxValue!,
       unittest.equals(42.0),
@@ -2158,14 +1798,12 @@ void checkNumericBucketingResult(api.NumericBucketingResult o) {
   buildCounterNumericBucketingResult--;
 }
 
-core.List<core.String> buildUnnamed1264() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed35() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1264(core.List<core.String> o) {
+void checkUnnamed35(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2177,14 +1815,12 @@ void checkUnnamed1264(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1265() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed36() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1265(core.List<core.String> o) {
+void checkUnnamed36(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2198,16 +1834,16 @@ void checkUnnamed1265(core.List<core.String> o) {
 
 core.int buildCounterPostalAddress = 0;
 api.PostalAddress buildPostalAddress() {
-  var o = api.PostalAddress();
+  final o = api.PostalAddress();
   buildCounterPostalAddress++;
   if (buildCounterPostalAddress < 3) {
-    o.addressLines = buildUnnamed1264();
+    o.addressLines = buildUnnamed35();
     o.administrativeArea = 'foo';
     o.languageCode = 'foo';
     o.locality = 'foo';
     o.organization = 'foo';
     o.postalCode = 'foo';
-    o.recipients = buildUnnamed1265();
+    o.recipients = buildUnnamed36();
     o.regionCode = 'foo';
     o.revision = 42;
     o.sortingCode = 'foo';
@@ -2220,7 +1856,7 @@ api.PostalAddress buildPostalAddress() {
 void checkPostalAddress(api.PostalAddress o) {
   buildCounterPostalAddress++;
   if (buildCounterPostalAddress < 3) {
-    checkUnnamed1264(o.addressLines!);
+    checkUnnamed35(o.addressLines!);
     unittest.expect(
       o.administrativeArea!,
       unittest.equals('foo'),
@@ -2241,7 +1877,7 @@ void checkPostalAddress(api.PostalAddress o) {
       o.postalCode!,
       unittest.equals('foo'),
     );
-    checkUnnamed1265(o.recipients!);
+    checkUnnamed36(o.recipients!);
     unittest.expect(
       o.regionCode!,
       unittest.equals('foo'),
@@ -2264,7 +1900,7 @@ void checkPostalAddress(api.PostalAddress o) {
 
 core.int buildCounterProcessingOptions = 0;
 api.ProcessingOptions buildProcessingOptions() {
-  var o = api.ProcessingOptions();
+  final o = api.ProcessingOptions();
   buildCounterProcessingOptions++;
   if (buildCounterProcessingOptions < 3) {
     o.disableStreetAddressResolution = true;
@@ -2288,7 +1924,7 @@ void checkProcessingOptions(api.ProcessingOptions o) {
 
 core.int buildCounterRequestMetadata = 0;
 api.RequestMetadata buildRequestMetadata() {
-  var o = api.RequestMetadata();
+  final o = api.RequestMetadata();
   buildCounterRequestMetadata++;
   if (buildCounterRequestMetadata < 3) {
     o.deviceInfo = buildDeviceInfo();
@@ -2303,7 +1939,7 @@ api.RequestMetadata buildRequestMetadata() {
 void checkRequestMetadata(api.RequestMetadata o) {
   buildCounterRequestMetadata++;
   if (buildCounterRequestMetadata < 3) {
-    checkDeviceInfo(o.deviceInfo! as api.DeviceInfo);
+    checkDeviceInfo(o.deviceInfo!);
     unittest.expect(
       o.domain!,
       unittest.equals('foo'),
@@ -2322,7 +1958,7 @@ void checkRequestMetadata(api.RequestMetadata o) {
 
 core.int buildCounterResponseMetadata = 0;
 api.ResponseMetadata buildResponseMetadata() {
-  var o = api.ResponseMetadata();
+  final o = api.ResponseMetadata();
   buildCounterResponseMetadata++;
   if (buildCounterResponseMetadata < 3) {
     o.requestId = 'foo';
@@ -2344,7 +1980,7 @@ void checkResponseMetadata(api.ResponseMetadata o) {
 
 core.int buildCounterSearchJobsRequest = 0;
 api.SearchJobsRequest buildSearchJobsRequest() {
-  var o = api.SearchJobsRequest();
+  final o = api.SearchJobsRequest();
   buildCounterSearchJobsRequest++;
   if (buildCounterSearchJobsRequest < 3) {
     o.disableKeywordMatch = true;
@@ -2374,8 +2010,8 @@ void checkSearchJobsRequest(api.SearchJobsRequest o) {
       unittest.equals('foo'),
     );
     unittest.expect(o.enableBroadening!, unittest.isTrue);
-    checkHistogramFacets(o.histogramFacets! as api.HistogramFacets);
-    checkJobQuery(o.jobQuery! as api.JobQuery);
+    checkHistogramFacets(o.histogramFacets!);
+    checkJobQuery(o.jobQuery!);
     unittest.expect(
       o.jobView!,
       unittest.equals('foo'),
@@ -2396,7 +2032,7 @@ void checkSearchJobsRequest(api.SearchJobsRequest o) {
       o.pageToken!,
       unittest.equals('foo'),
     );
-    checkRequestMetadata(o.requestMetadata! as api.RequestMetadata);
+    checkRequestMetadata(o.requestMetadata!);
     unittest.expect(o.requirePreciseResultSize!, unittest.isTrue);
     unittest.expect(
       o.searchMode!,
@@ -2406,42 +2042,38 @@ void checkSearchJobsRequest(api.SearchJobsRequest o) {
   buildCounterSearchJobsRequest--;
 }
 
-core.List<api.Location> buildUnnamed1266() {
-  var o = <api.Location>[];
-  o.add(buildLocation());
-  o.add(buildLocation());
-  return o;
-}
+core.List<api.Location> buildUnnamed37() => [
+      buildLocation(),
+      buildLocation(),
+    ];
 
-void checkUnnamed1266(core.List<api.Location> o) {
+void checkUnnamed37(core.List<api.Location> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocation(o[0] as api.Location);
-  checkLocation(o[1] as api.Location);
+  checkLocation(o[0]);
+  checkLocation(o[1]);
 }
 
-core.List<api.MatchingJob> buildUnnamed1267() {
-  var o = <api.MatchingJob>[];
-  o.add(buildMatchingJob());
-  o.add(buildMatchingJob());
-  return o;
-}
+core.List<api.MatchingJob> buildUnnamed38() => [
+      buildMatchingJob(),
+      buildMatchingJob(),
+    ];
 
-void checkUnnamed1267(core.List<api.MatchingJob> o) {
+void checkUnnamed38(core.List<api.MatchingJob> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMatchingJob(o[0] as api.MatchingJob);
-  checkMatchingJob(o[1] as api.MatchingJob);
+  checkMatchingJob(o[0]);
+  checkMatchingJob(o[1]);
 }
 
 core.int buildCounterSearchJobsResponse = 0;
 api.SearchJobsResponse buildSearchJobsResponse() {
-  var o = api.SearchJobsResponse();
+  final o = api.SearchJobsResponse();
   buildCounterSearchJobsResponse++;
   if (buildCounterSearchJobsResponse < 3) {
     o.broadenedQueryJobsCount = 42;
     o.estimatedTotalSize = 42;
     o.histogramResults = buildHistogramResults();
-    o.locationFilters = buildUnnamed1266();
-    o.matchingJobs = buildUnnamed1267();
+    o.locationFilters = buildUnnamed37();
+    o.matchingJobs = buildUnnamed38();
     o.metadata = buildResponseMetadata();
     o.nextPageToken = 'foo';
     o.spellCorrection = buildSpellingCorrection();
@@ -2462,15 +2094,15 @@ void checkSearchJobsResponse(api.SearchJobsResponse o) {
       o.estimatedTotalSize!,
       unittest.equals(42),
     );
-    checkHistogramResults(o.histogramResults! as api.HistogramResults);
-    checkUnnamed1266(o.locationFilters!);
-    checkUnnamed1267(o.matchingJobs!);
-    checkResponseMetadata(o.metadata! as api.ResponseMetadata);
+    checkHistogramResults(o.histogramResults!);
+    checkUnnamed37(o.locationFilters!);
+    checkUnnamed38(o.matchingJobs!);
+    checkResponseMetadata(o.metadata!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkSpellingCorrection(o.spellCorrection! as api.SpellingCorrection);
+    checkSpellingCorrection(o.spellCorrection!);
     unittest.expect(
       o.totalSize!,
       unittest.equals(42),
@@ -2481,7 +2113,7 @@ void checkSearchJobsResponse(api.SearchJobsResponse o) {
 
 core.int buildCounterSpellingCorrection = 0;
 api.SpellingCorrection buildSpellingCorrection() {
-  var o = api.SpellingCorrection();
+  final o = api.SpellingCorrection();
   buildCounterSpellingCorrection++;
   if (buildCounterSpellingCorrection < 3) {
     o.corrected = true;
@@ -2505,7 +2137,7 @@ void checkSpellingCorrection(api.SpellingCorrection o) {
 
 core.int buildCounterTimeOfDay = 0;
 api.TimeOfDay buildTimeOfDay() {
-  var o = api.TimeOfDay();
+  final o = api.TimeOfDay();
   buildCounterTimeOfDay++;
   if (buildCounterTimeOfDay < 3) {
     o.hours = 42;
@@ -2542,7 +2174,7 @@ void checkTimeOfDay(api.TimeOfDay o) {
 
 core.int buildCounterTimestampRange = 0;
 api.TimestampRange buildTimestampRange() {
-  var o = api.TimestampRange();
+  final o = api.TimestampRange();
   buildCounterTimestampRange++;
   if (buildCounterTimestampRange < 3) {
     o.endTime = 'foo';
@@ -2569,7 +2201,7 @@ void checkTimestampRange(api.TimestampRange o) {
 
 core.int buildCounterUpdateCompanyRequest = 0;
 api.UpdateCompanyRequest buildUpdateCompanyRequest() {
-  var o = api.UpdateCompanyRequest();
+  final o = api.UpdateCompanyRequest();
   buildCounterUpdateCompanyRequest++;
   if (buildCounterUpdateCompanyRequest < 3) {
     o.company = buildCompany();
@@ -2582,7 +2214,7 @@ api.UpdateCompanyRequest buildUpdateCompanyRequest() {
 void checkUpdateCompanyRequest(api.UpdateCompanyRequest o) {
   buildCounterUpdateCompanyRequest++;
   if (buildCounterUpdateCompanyRequest < 3) {
-    checkCompany(o.company! as api.Company);
+    checkCompany(o.company!);
     unittest.expect(
       o.updateMask!,
       unittest.equals('foo'),
@@ -2593,7 +2225,7 @@ void checkUpdateCompanyRequest(api.UpdateCompanyRequest o) {
 
 core.int buildCounterUpdateJobRequest = 0;
 api.UpdateJobRequest buildUpdateJobRequest() {
-  var o = api.UpdateJobRequest();
+  final o = api.UpdateJobRequest();
   buildCounterUpdateJobRequest++;
   if (buildCounterUpdateJobRequest < 3) {
     o.job = buildJob();
@@ -2606,7 +2238,7 @@ api.UpdateJobRequest buildUpdateJobRequest() {
 void checkUpdateJobRequest(api.UpdateJobRequest o) {
   buildCounterUpdateJobRequest++;
   if (buildCounterUpdateJobRequest < 3) {
-    checkJob(o.job! as api.Job);
+    checkJob(o.job!);
     unittest.expect(
       o.updateMask!,
       unittest.equals('foo'),
@@ -2615,14 +2247,12 @@ void checkUpdateJobRequest(api.UpdateJobRequest o) {
   buildCounterUpdateJobRequest--;
 }
 
-core.List<core.String> buildUnnamed1268() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed39() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1268(core.List<core.String> o) {
+void checkUnnamed39(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2637,582 +2267,562 @@ void checkUnnamed1268(core.List<core.String> o) {
 void main() {
   unittest.group('obj-schema-ApplicationInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApplicationInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ApplicationInfo.fromJson(
+      final o = buildApplicationInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ApplicationInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkApplicationInfo(od as api.ApplicationInfo);
+      checkApplicationInfo(od);
     });
   });
 
   unittest.group('obj-schema-BatchDeleteJobsRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBatchDeleteJobsRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.BatchDeleteJobsRequest.fromJson(
+      final o = buildBatchDeleteJobsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.BatchDeleteJobsRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkBatchDeleteJobsRequest(od as api.BatchDeleteJobsRequest);
+      checkBatchDeleteJobsRequest(od);
     });
   });
 
   unittest.group('obj-schema-BucketRange', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBucketRange();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.BucketRange.fromJson(
+      final o = buildBucketRange();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.BucketRange.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkBucketRange(od as api.BucketRange);
+      checkBucketRange(od);
     });
   });
 
   unittest.group('obj-schema-BucketizedCount', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBucketizedCount();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.BucketizedCount.fromJson(
+      final o = buildBucketizedCount();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.BucketizedCount.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkBucketizedCount(od as api.BucketizedCount);
+      checkBucketizedCount(od);
     });
   });
 
   unittest.group('obj-schema-ClientEvent', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildClientEvent();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ClientEvent.fromJson(
+      final o = buildClientEvent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ClientEvent.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkClientEvent(od as api.ClientEvent);
+      checkClientEvent(od);
     });
   });
 
   unittest.group('obj-schema-CommuteFilter', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommuteFilter();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommuteFilter.fromJson(
+      final o = buildCommuteFilter();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommuteFilter.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommuteFilter(od as api.CommuteFilter);
+      checkCommuteFilter(od);
     });
   });
 
   unittest.group('obj-schema-CommuteInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommuteInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommuteInfo.fromJson(
+      final o = buildCommuteInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommuteInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommuteInfo(od as api.CommuteInfo);
+      checkCommuteInfo(od);
     });
   });
 
   unittest.group('obj-schema-Company', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompany();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildCompany();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Company.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkCompany(od as api.Company);
+      checkCompany(od);
     });
   });
 
   unittest.group('obj-schema-CompanyDerivedInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompanyDerivedInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompanyDerivedInfo.fromJson(
+      final o = buildCompanyDerivedInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompanyDerivedInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompanyDerivedInfo(od as api.CompanyDerivedInfo);
+      checkCompanyDerivedInfo(od);
     });
   });
 
   unittest.group('obj-schema-CompensationEntry', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationEntry();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationEntry.fromJson(
+      final o = buildCompensationEntry();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationEntry.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationEntry(od as api.CompensationEntry);
+      checkCompensationEntry(od);
     });
   });
 
   unittest.group('obj-schema-CompensationFilter', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationFilter();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationFilter.fromJson(
+      final o = buildCompensationFilter();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationFilter.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationFilter(od as api.CompensationFilter);
+      checkCompensationFilter(od);
     });
   });
 
   unittest.group('obj-schema-CompensationHistogramRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationHistogramRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationHistogramRequest.fromJson(
+      final o = buildCompensationHistogramRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationHistogramRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationHistogramRequest(od as api.CompensationHistogramRequest);
+      checkCompensationHistogramRequest(od);
     });
   });
 
   unittest.group('obj-schema-CompensationHistogramResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationHistogramResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationHistogramResult.fromJson(
+      final o = buildCompensationHistogramResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationHistogramResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationHistogramResult(od as api.CompensationHistogramResult);
+      checkCompensationHistogramResult(od);
     });
   });
 
   unittest.group('obj-schema-CompensationInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationInfo.fromJson(
+      final o = buildCompensationInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationInfo(od as api.CompensationInfo);
+      checkCompensationInfo(od);
     });
   });
 
   unittest.group('obj-schema-CompensationRange', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompensationRange();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompensationRange.fromJson(
+      final o = buildCompensationRange();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompensationRange.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompensationRange(od as api.CompensationRange);
+      checkCompensationRange(od);
     });
   });
 
   unittest.group('obj-schema-CompleteQueryResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompleteQueryResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompleteQueryResponse.fromJson(
+      final o = buildCompleteQueryResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompleteQueryResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompleteQueryResponse(od as api.CompleteQueryResponse);
+      checkCompleteQueryResponse(od);
     });
   });
 
   unittest.group('obj-schema-CompletionResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCompletionResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CompletionResult.fromJson(
+      final o = buildCompletionResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CompletionResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCompletionResult(od as api.CompletionResult);
+      checkCompletionResult(od);
     });
   });
 
   unittest.group('obj-schema-CreateClientEventRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCreateClientEventRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CreateClientEventRequest.fromJson(
+      final o = buildCreateClientEventRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CreateClientEventRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCreateClientEventRequest(od as api.CreateClientEventRequest);
+      checkCreateClientEventRequest(od);
     });
   });
 
   unittest.group('obj-schema-CreateCompanyRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCreateCompanyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CreateCompanyRequest.fromJson(
+      final o = buildCreateCompanyRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CreateCompanyRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCreateCompanyRequest(od as api.CreateCompanyRequest);
+      checkCreateCompanyRequest(od);
     });
   });
 
   unittest.group('obj-schema-CreateJobRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCreateJobRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CreateJobRequest.fromJson(
+      final o = buildCreateJobRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CreateJobRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCreateJobRequest(od as api.CreateJobRequest);
+      checkCreateJobRequest(od);
     });
   });
 
   unittest.group('obj-schema-CustomAttribute', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCustomAttribute();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CustomAttribute.fromJson(
+      final o = buildCustomAttribute();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CustomAttribute.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCustomAttribute(od as api.CustomAttribute);
+      checkCustomAttribute(od);
     });
   });
 
   unittest.group('obj-schema-CustomAttributeHistogramRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCustomAttributeHistogramRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CustomAttributeHistogramRequest.fromJson(
+      final o = buildCustomAttributeHistogramRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CustomAttributeHistogramRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCustomAttributeHistogramRequest(
-          od as api.CustomAttributeHistogramRequest);
+      checkCustomAttributeHistogramRequest(od);
     });
   });
 
   unittest.group('obj-schema-CustomAttributeHistogramResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCustomAttributeHistogramResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CustomAttributeHistogramResult.fromJson(
+      final o = buildCustomAttributeHistogramResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CustomAttributeHistogramResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCustomAttributeHistogramResult(
-          od as api.CustomAttributeHistogramResult);
+      checkCustomAttributeHistogramResult(od);
     });
   });
 
   unittest.group('obj-schema-DeviceInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeviceInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildDeviceInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.DeviceInfo.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDeviceInfo(od as api.DeviceInfo);
+      checkDeviceInfo(od);
     });
   });
 
   unittest.group('obj-schema-Empty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEmpty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEmpty(od as api.Empty);
+      final o = buildEmpty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od);
     });
   });
 
   unittest.group('obj-schema-HistogramFacets', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildHistogramFacets();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.HistogramFacets.fromJson(
+      final o = buildHistogramFacets();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.HistogramFacets.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkHistogramFacets(od as api.HistogramFacets);
+      checkHistogramFacets(od);
     });
   });
 
   unittest.group('obj-schema-HistogramResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildHistogramResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.HistogramResult.fromJson(
+      final o = buildHistogramResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.HistogramResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkHistogramResult(od as api.HistogramResult);
+      checkHistogramResult(od);
     });
   });
 
   unittest.group('obj-schema-HistogramResults', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildHistogramResults();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.HistogramResults.fromJson(
+      final o = buildHistogramResults();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.HistogramResults.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkHistogramResults(od as api.HistogramResults);
+      checkHistogramResults(od);
     });
   });
 
   unittest.group('obj-schema-Job', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildJob();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Job.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkJob(od as api.Job);
+      final o = buildJob();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Job.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkJob(od);
     });
   });
 
   unittest.group('obj-schema-JobDerivedInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildJobDerivedInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.JobDerivedInfo.fromJson(
+      final o = buildJobDerivedInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.JobDerivedInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkJobDerivedInfo(od as api.JobDerivedInfo);
+      checkJobDerivedInfo(od);
     });
   });
 
   unittest.group('obj-schema-JobEvent', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildJobEvent();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildJobEvent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.JobEvent.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkJobEvent(od as api.JobEvent);
+      checkJobEvent(od);
     });
   });
 
   unittest.group('obj-schema-JobQuery', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildJobQuery();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildJobQuery();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.JobQuery.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkJobQuery(od as api.JobQuery);
+      checkJobQuery(od);
     });
   });
 
   unittest.group('obj-schema-LatLng', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLatLng();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildLatLng();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.LatLng.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLatLng(od as api.LatLng);
+      checkLatLng(od);
     });
   });
 
   unittest.group('obj-schema-ListCompaniesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListCompaniesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListCompaniesResponse.fromJson(
+      final o = buildListCompaniesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListCompaniesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListCompaniesResponse(od as api.ListCompaniesResponse);
+      checkListCompaniesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListJobsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListJobsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListJobsResponse.fromJson(
+      final o = buildListJobsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListJobsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListJobsResponse(od as api.ListJobsResponse);
+      checkListJobsResponse(od);
     });
   });
 
   unittest.group('obj-schema-Location', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildLocation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Location.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLocation(od as api.Location);
+      checkLocation(od);
     });
   });
 
   unittest.group('obj-schema-LocationFilter', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocationFilter();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LocationFilter.fromJson(
+      final o = buildLocationFilter();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LocationFilter.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLocationFilter(od as api.LocationFilter);
+      checkLocationFilter(od);
     });
   });
 
   unittest.group('obj-schema-MatchingJob', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMatchingJob();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MatchingJob.fromJson(
+      final o = buildMatchingJob();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MatchingJob.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMatchingJob(od as api.MatchingJob);
-    });
-  });
-
-  unittest.group('obj-schema-MendelDebugInput', () {
-    unittest.test('to-json--from-json', () async {
-      var o = buildMendelDebugInput();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MendelDebugInput.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
-      checkMendelDebugInput(od as api.MendelDebugInput);
+      checkMatchingJob(od);
     });
   });
 
   unittest.group('obj-schema-Money', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMoney();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Money.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkMoney(od as api.Money);
-    });
-  });
-
-  unittest.group('obj-schema-NamespacedDebugInput', () {
-    unittest.test('to-json--from-json', () async {
-      var o = buildNamespacedDebugInput();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.NamespacedDebugInput.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
-      checkNamespacedDebugInput(od as api.NamespacedDebugInput);
+      final o = buildMoney();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Money.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkMoney(od);
     });
   });
 
   unittest.group('obj-schema-NumericBucketingOption', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildNumericBucketingOption();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.NumericBucketingOption.fromJson(
+      final o = buildNumericBucketingOption();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.NumericBucketingOption.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkNumericBucketingOption(od as api.NumericBucketingOption);
+      checkNumericBucketingOption(od);
     });
   });
 
   unittest.group('obj-schema-NumericBucketingResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildNumericBucketingResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.NumericBucketingResult.fromJson(
+      final o = buildNumericBucketingResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.NumericBucketingResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkNumericBucketingResult(od as api.NumericBucketingResult);
+      checkNumericBucketingResult(od);
     });
   });
 
   unittest.group('obj-schema-PostalAddress', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPostalAddress();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PostalAddress.fromJson(
+      final o = buildPostalAddress();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PostalAddress.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPostalAddress(od as api.PostalAddress);
+      checkPostalAddress(od);
     });
   });
 
   unittest.group('obj-schema-ProcessingOptions', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildProcessingOptions();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ProcessingOptions.fromJson(
+      final o = buildProcessingOptions();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ProcessingOptions.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkProcessingOptions(od as api.ProcessingOptions);
+      checkProcessingOptions(od);
     });
   });
 
   unittest.group('obj-schema-RequestMetadata', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRequestMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RequestMetadata.fromJson(
+      final o = buildRequestMetadata();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RequestMetadata.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRequestMetadata(od as api.RequestMetadata);
+      checkRequestMetadata(od);
     });
   });
 
   unittest.group('obj-schema-ResponseMetadata', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildResponseMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ResponseMetadata.fromJson(
+      final o = buildResponseMetadata();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ResponseMetadata.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkResponseMetadata(od as api.ResponseMetadata);
+      checkResponseMetadata(od);
     });
   });
 
   unittest.group('obj-schema-SearchJobsRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchJobsRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchJobsRequest.fromJson(
+      final o = buildSearchJobsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchJobsRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchJobsRequest(od as api.SearchJobsRequest);
+      checkSearchJobsRequest(od);
     });
   });
 
   unittest.group('obj-schema-SearchJobsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchJobsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchJobsResponse.fromJson(
+      final o = buildSearchJobsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchJobsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchJobsResponse(od as api.SearchJobsResponse);
+      checkSearchJobsResponse(od);
     });
   });
 
   unittest.group('obj-schema-SpellingCorrection', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSpellingCorrection();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SpellingCorrection.fromJson(
+      final o = buildSpellingCorrection();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SpellingCorrection.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSpellingCorrection(od as api.SpellingCorrection);
+      checkSpellingCorrection(od);
     });
   });
 
   unittest.group('obj-schema-TimeOfDay', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTimeOfDay();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTimeOfDay();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TimeOfDay.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTimeOfDay(od as api.TimeOfDay);
+      checkTimeOfDay(od);
     });
   });
 
   unittest.group('obj-schema-TimestampRange', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTimestampRange();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TimestampRange.fromJson(
+      final o = buildTimestampRange();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TimestampRange.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTimestampRange(od as api.TimestampRange);
+      checkTimestampRange(od);
     });
   });
 
   unittest.group('obj-schema-UpdateCompanyRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpdateCompanyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpdateCompanyRequest.fromJson(
+      final o = buildUpdateCompanyRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateCompanyRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpdateCompanyRequest(od as api.UpdateCompanyRequest);
+      checkUpdateCompanyRequest(od);
     });
   });
 
   unittest.group('obj-schema-UpdateJobRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpdateJobRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpdateJobRequest.fromJson(
+      final o = buildUpdateJobRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateJobRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpdateJobRequest(od as api.UpdateJobRequest);
+      checkUpdateJobRequest(od);
     });
   });
 
   unittest.group('resource-ProjectsResource', () {
     unittest.test('method--complete', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects;
-      var arg_name = 'foo';
-      var arg_companyName = 'foo';
-      var arg_languageCode = 'foo';
-      var arg_languageCodes = buildUnnamed1268();
-      var arg_pageSize = 42;
-      var arg_query = 'foo';
-      var arg_scope = 'foo';
-      var arg_type = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects;
+      final arg_name = 'foo';
+      final arg_companyName = 'foo';
+      final arg_languageCode = 'foo';
+      final arg_languageCodes = buildUnnamed39();
+      final arg_pageSize = 42;
+      final arg_query = 'foo';
+      final arg_scope = 'foo';
+      final arg_type = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3220,42 +2830,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["companyName"]!.first,
+          queryMap['companyName']!.first,
           unittest.equals(arg_companyName),
         );
         unittest.expect(
-          queryMap["languageCode"]!.first,
+          queryMap['languageCode']!.first,
           unittest.equals(arg_languageCode),
         );
         unittest.expect(
-          queryMap["languageCodes"]!,
+          queryMap['languageCodes']!,
           unittest.equals(arg_languageCodes),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["query"]!.first,
+          queryMap['query']!.first,
           unittest.equals(arg_query),
         );
         unittest.expect(
-          queryMap["scope"]!.first,
+          queryMap['scope']!.first,
           unittest.equals(arg_scope),
         );
         unittest.expect(
-          queryMap["type"]!.first,
+          queryMap['type']!.first,
           unittest.equals(arg_type),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCompleteQueryResponse());
+        final resp = convert.json.encode(buildCompleteQueryResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.complete(arg_name,
@@ -3273,41 +2883,41 @@ void main() {
 
   unittest.group('resource-ProjectsClientEventsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.clientEvents;
-      var arg_request = buildCreateClientEventRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.clientEvents;
+      final arg_request = buildCreateClientEventRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CreateClientEventRequest.fromJson(
+        final obj = api.CreateClientEventRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCreateClientEventRequest(obj as api.CreateClientEventRequest);
+        checkCreateClientEventRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3315,14 +2925,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildClientEvent());
+        final resp = convert.json.encode(buildClientEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3333,41 +2943,41 @@ void main() {
 
   unittest.group('resource-ProjectsCompaniesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.companies;
-      var arg_request = buildCreateCompanyRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.companies;
+      final arg_request = buildCreateCompanyRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CreateCompanyRequest.fromJson(
+        final obj = api.CreateCompanyRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCreateCompanyRequest(obj as api.CreateCompanyRequest);
+        checkCreateCompanyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3375,14 +2985,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCompany());
+        final resp = convert.json.encode(buildCompany());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3391,36 +3001,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.companies;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.companies;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3428,14 +3038,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -3443,36 +3053,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.companies;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.companies;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3480,14 +3090,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCompany());
+        final resp = convert.json.encode(buildCompany());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -3495,39 +3105,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.companies;
-      var arg_parent = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_requireOpenJobs = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.companies;
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_requireOpenJobs = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3535,26 +3145,26 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["requireOpenJobs"]!.first,
-          unittest.equals("$arg_requireOpenJobs"),
+          queryMap['requireOpenJobs']!.first,
+          unittest.equals('$arg_requireOpenJobs'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListCompaniesResponse());
+        final resp = convert.json.encode(buildListCompaniesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -3566,41 +3176,41 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.companies;
-      var arg_request = buildUpdateCompanyRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.companies;
+      final arg_request = buildUpdateCompanyRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpdateCompanyRequest.fromJson(
+        final obj = api.UpdateCompanyRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpdateCompanyRequest(obj as api.UpdateCompanyRequest);
+        checkUpdateCompanyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3608,14 +3218,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCompany());
+        final resp = convert.json.encode(buildCompany());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3626,41 +3236,41 @@ void main() {
 
   unittest.group('resource-ProjectsJobsResource', () {
     unittest.test('method--batchDelete', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_request = buildBatchDeleteJobsRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_request = buildBatchDeleteJobsRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.BatchDeleteJobsRequest.fromJson(
+        final obj = api.BatchDeleteJobsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkBatchDeleteJobsRequest(obj as api.BatchDeleteJobsRequest);
+        checkBatchDeleteJobsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3668,14 +3278,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3684,41 +3294,41 @@ void main() {
     });
 
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_request = buildCreateJobRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_request = buildCreateJobRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CreateJobRequest.fromJson(
+        final obj = api.CreateJobRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCreateJobRequest(obj as api.CreateJobRequest);
+        checkCreateJobRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3726,14 +3336,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildJob());
+        final resp = convert.json.encode(buildJob());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3742,36 +3352,36 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3779,14 +3389,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_name, $fields: arg_$fields);
@@ -3794,36 +3404,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3831,14 +3441,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildJob());
+        final resp = convert.json.encode(buildJob());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -3846,40 +3456,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_parent = 'foo';
-      var arg_filter = 'foo';
-      var arg_jobView = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_parent = 'foo';
+      final arg_filter = 'foo';
+      final arg_jobView = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3887,30 +3497,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          queryMap["jobView"]!.first,
+          queryMap['jobView']!.first,
           unittest.equals(arg_jobView),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListJobsResponse());
+        final resp = convert.json.encode(buildListJobsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_parent,
@@ -3923,41 +3533,41 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_request = buildUpdateJobRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_request = buildUpdateJobRequest();
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpdateJobRequest.fromJson(
+        final obj = api.UpdateJobRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpdateJobRequest(obj as api.UpdateJobRequest);
+        checkUpdateJobRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3965,14 +3575,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildJob());
+        final resp = convert.json.encode(buildJob());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3981,41 +3591,41 @@ void main() {
     });
 
     unittest.test('method--search', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_request = buildSearchJobsRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_request = buildSearchJobsRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SearchJobsRequest.fromJson(
+        final obj = api.SearchJobsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSearchJobsRequest(obj as api.SearchJobsRequest);
+        checkSearchJobsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4023,14 +3633,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSearchJobsResponse());
+        final resp = convert.json.encode(buildSearchJobsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4039,41 +3649,41 @@ void main() {
     });
 
     unittest.test('method--searchForAlert', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudTalentSolutionApi(mock).projects.jobs;
-      var arg_request = buildSearchJobsRequest();
-      var arg_parent = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudTalentSolutionApi(mock).projects.jobs;
+      final arg_request = buildSearchJobsRequest();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SearchJobsRequest.fromJson(
+        final obj = api.SearchJobsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSearchJobsRequest(obj as api.SearchJobsRequest);
+        checkSearchJobsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v3/"),
+          unittest.equals('v3/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4081,14 +3691,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSearchJobsResponse());
+        final resp = convert.json.encode(buildSearchJobsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.searchForAlert(arg_request, arg_parent,

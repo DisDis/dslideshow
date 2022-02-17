@@ -24,6 +24,10 @@
 ///   - [ProjectsLocationsResource]
 ///     - [ProjectsLocationsDatasetsResource]
 ///       - [ProjectsLocationsDatasetsConsentStoresResource]
+/// - [ProjectsLocationsDatasetsConsentStoresAttributeDefinitionsResource]
+///         - [ProjectsLocationsDatasetsConsentStoresConsentArtifactsResource]
+///         - [ProjectsLocationsDatasetsConsentStoresConsentsResource]
+///         - [ProjectsLocationsDatasetsConsentStoresUserDataMappingsResource]
 ///       - [ProjectsLocationsDatasetsDicomStoresResource]
 ///         - [ProjectsLocationsDatasetsDicomStoresStudiesResource]
 ///           - [ProjectsLocationsDatasetsDicomStoresStudiesSeriesResource]
@@ -34,6 +38,8 @@
 ///       - [ProjectsLocationsDatasetsHl7V2StoresResource]
 ///         - [ProjectsLocationsDatasetsHl7V2StoresMessagesResource]
 ///       - [ProjectsLocationsDatasetsOperationsResource]
+///     - [ProjectsLocationsServicesResource]
+///       - [ProjectsLocationsServicesNlpResource]
 library healthcare.v1;
 
 import 'dart:async' as async;
@@ -43,6 +49,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -50,7 +58,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Manage, store, and access healthcare data in Google Cloud Platform.
 class CloudHealthcareApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -79,6 +88,8 @@ class ProjectsLocationsResource {
 
   ProjectsLocationsDatasetsResource get datasets =>
       ProjectsLocationsDatasetsResource(_requester);
+  ProjectsLocationsServicesResource get services =>
+      ProjectsLocationsServicesResource(_requester);
 
   ProjectsLocationsResource(commons.ApiRequester client) : _requester = client;
 
@@ -124,11 +135,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -216,7 +231,7 @@ class ProjectsLocationsDatasetsResource {
     core.String? datasetId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (datasetId != null) 'datasetId': [datasetId],
       if ($fields != null) 'fields': [$fields],
@@ -242,7 +257,8 @@ class ProjectsLocationsDatasetsResource {
   /// fails for some DICOM instances. The new de-identified dataset will not
   /// contain these failed resources. Failed resource totals are tracked in
   /// Operation.metadata. Error details are also logged to Cloud Logging. For
-  /// more information, see \[Viewing logs\](/healthcare/docs/how-tos/logging).
+  /// more information, see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging).
   ///
   /// [request] - The metadata request object.
   ///
@@ -268,7 +284,7 @@ class ProjectsLocationsDatasetsResource {
     core.String sourceDataset, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -375,12 +391,16 @@ class ProjectsLocationsDatasetsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -492,7 +512,7 @@ class ProjectsLocationsDatasetsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -539,7 +559,7 @@ class ProjectsLocationsDatasetsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -587,7 +607,7 @@ class ProjectsLocationsDatasetsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -609,8 +629,243 @@ class ProjectsLocationsDatasetsResource {
 class ProjectsLocationsDatasetsConsentStoresResource {
   final commons.ApiRequester _requester;
 
+  ProjectsLocationsDatasetsConsentStoresAttributeDefinitionsResource
+      get attributeDefinitions =>
+          ProjectsLocationsDatasetsConsentStoresAttributeDefinitionsResource(
+              _requester);
+  ProjectsLocationsDatasetsConsentStoresConsentArtifactsResource
+      get consentArtifacts =>
+          ProjectsLocationsDatasetsConsentStoresConsentArtifactsResource(
+              _requester);
+  ProjectsLocationsDatasetsConsentStoresConsentsResource get consents =>
+      ProjectsLocationsDatasetsConsentStoresConsentsResource(_requester);
+  ProjectsLocationsDatasetsConsentStoresUserDataMappingsResource
+      get userDataMappings =>
+          ProjectsLocationsDatasetsConsentStoresUserDataMappingsResource(
+              _requester);
+
   ProjectsLocationsDatasetsConsentStoresResource(commons.ApiRequester client)
       : _requester = client;
+
+  /// Checks if a particular data_id of a User data mapping in the specified
+  /// consent store is consented for the specified use.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [consentStore] - Required. Name of the consent store where the requested
+  /// data_id is stored, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}`.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CheckDataAccessResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CheckDataAccessResponse> checkDataAccess(
+    CheckDataAccessRequest request,
+    core.String consentStore, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$consentStore') + ':checkDataAccess';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CheckDataAccessResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Creates a new consent store in the parent dataset.
+  ///
+  /// Attempting to create a consent store with the same ID as an existing store
+  /// fails with an ALREADY_EXISTS error.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The name of the dataset this consent store belongs
+  /// to.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+$`.
+  ///
+  /// [consentStoreId] - Required. The ID of the consent store to create. The
+  /// string must match the following regex: `[\p{L}\p{N}_\-\.]{1,256}`. Cannot
+  /// be changed after creation.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConsentStore].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConsentStore> create(
+    ConsentStore request,
+    core.String parent, {
+    core.String? consentStoreId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (consentStoreId != null) 'consentStoreId': [consentStoreId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consentStores';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ConsentStore.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified consent store and removes all the consent store's
+  /// data.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the consent store to delete.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Evaluates the user's Consents for all matching User data mappings.
+  ///
+  /// Note: User data mappings are indexed asynchronously, which can cause a
+  /// slight delay between the time mappings are created or updated and when
+  /// they are included in EvaluateUserConsents results.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [consentStore] - Required. Name of the consent store to retrieve User data
+  /// mappings from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [EvaluateUserConsentsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<EvaluateUserConsentsResponse> evaluateUserConsents(
+    EvaluateUserConsentsRequest request,
+    core.String consentStore, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$consentStore') + ':evaluateUserConsents';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return EvaluateUserConsentsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the specified consent store.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the consent store to get.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConsentStore].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConsentStore> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ConsentStore.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 
   /// Gets the access control policy for a resource.
   ///
@@ -625,12 +880,16 @@ class ProjectsLocationsDatasetsConsentStoresResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -664,6 +923,181 @@ class ProjectsLocationsDatasetsConsentStoresResource {
     return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Lists the consent stores in the specified dataset.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the dataset.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the stores returned to those matching a
+  /// filter. Only filtering on labels is supported. For example,
+  /// `filter=labels.key=value`.
+  ///
+  /// [pageSize] - Optional. Limit on the number of consent stores to return in
+  /// a single response. If not specified, 100 is used. May not be larger than
+  /// 1000.
+  ///
+  /// [pageToken] - Optional. Token to retrieve the next page of results, or
+  /// empty to get the first page.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListConsentStoresResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListConsentStoresResponse> list(
+    core.String parent, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consentStores';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListConsentStoresResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the specified consent store.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Resource name of the consent store, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}`.
+  /// Cannot be changed after creation.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. The update mask that applies to the resource. For
+  /// the `FieldMask` definition, see
+  /// https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask.
+  /// Only the `labels`, `default_consent_ttl`, and
+  /// `enable_consent_create_on_update` fields are allowed to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConsentStore].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConsentStore> patch(
+    ConsentStore request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ConsentStore.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Queries all data_ids that are consented for a specified use in the given
+  /// consent store and writes them to a specified destination.
+  ///
+  /// The returned Operation includes a progress counter for the number of User
+  /// data mappings processed. If the request is successful, a detailed response
+  /// is returned of type QueryAccessibleDataResponse, contained in the response
+  /// field when the operation finishes. The metadata field type is
+  /// OperationMetadata. Errors are logged to Cloud Logging (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
+  /// For example, the following sample log entry shows a `failed to evaluate
+  /// consent policy` error that occurred during a QueryAccessibleData call to
+  /// consent store
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}`.
+  /// ```json jsonPayload: { @type:
+  /// "type.googleapis.com/google.cloud.healthcare.logging.QueryAccessibleDataLogEntry"
+  /// error: { code: 9 message: "failed to evaluate consent policy" }
+  /// resourceName:
+  /// "projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}"
+  /// } logName:
+  /// "projects/{project_id}/logs/healthcare.googleapis.com%2Fquery_accessible_data"
+  /// operation: { id:
+  /// "projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/operations/{operation_id}"
+  /// producer: "healthcare.googleapis.com/QueryAccessibleData" }
+  /// receiveTimestamp: "TIMESTAMP" resource: { labels: { consent_store_id:
+  /// "{consent_store_id}" dataset_id: "{dataset_id}" location: "{location_id}"
+  /// project_id: "{project_id}" } type: "healthcare_consent_store" } severity:
+  /// "ERROR" timestamp: "TIMESTAMP" ```
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [consentStore] - Required. Name of the consent store to retrieve User data
+  /// mappings from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> queryAccessibleData(
+    QueryAccessibleDataRequest request,
+    core.String consentStore, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$consentStore') + ':queryAccessibleData';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Sets the access control policy on the specified resource.
   ///
   /// Replaces any existing policy. Can return `NOT_FOUND`, `INVALID_ARGUMENT`,
@@ -694,7 +1128,7 @@ class ProjectsLocationsDatasetsConsentStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -742,7 +1176,7 @@ class ProjectsLocationsDatasetsConsentStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -757,6 +1191,1297 @@ class ProjectsLocationsDatasetsConsentStoresResource {
       queryParams: _queryParams,
     );
     return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsDatasetsConsentStoresAttributeDefinitionsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsDatasetsConsentStoresAttributeDefinitionsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a new Attribute definition in the parent consent store.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The name of the consent store that this Attribute
+  /// definition belongs to.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [attributeDefinitionId] - Required. The ID of the Attribute definition to
+  /// create. The string must match the following regex: `_a-zA-Z{0,255}` and
+  /// must not be a reserved keyword within the Common Expression Language as
+  /// listed on https://github.com/google/cel-spec/blob/master/doc/langdef.md.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AttributeDefinition].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AttributeDefinition> create(
+    AttributeDefinition request,
+    core.String parent, {
+    core.String? attributeDefinitionId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (attributeDefinitionId != null)
+        'attributeDefinitionId': [attributeDefinitionId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/attributeDefinitions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AttributeDefinition.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified Attribute definition.
+  ///
+  /// Fails if the Attribute definition is referenced by any User data mapping,
+  /// or the latest revision of any Consent.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Attribute definition to
+  /// delete. To preserve referential integrity, Attribute definitions
+  /// referenced by a User data mapping or the latest revision of a Consent
+  /// cannot be deleted.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/attributeDefinitions/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the specified Attribute definition.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Attribute definition to get.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/attributeDefinitions/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AttributeDefinition].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AttributeDefinition> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return AttributeDefinition.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the Attribute definitions in the specified consent store.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store to retrieve Attribute
+  /// definitions from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the attributes returned to those matching a
+  /// filter. The only field available for filtering is `category`. For example,
+  /// `filter=category=\"REQUEST\"`.
+  ///
+  /// [pageSize] - Optional. Limit on the number of Attribute definitions to
+  /// return in a single response. If not specified, 100 is used. May not be
+  /// larger than 1000.
+  ///
+  /// [pageToken] - Optional. Token to retrieve the next page of results or
+  /// empty to get the first page.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListAttributeDefinitionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListAttributeDefinitionsResponse> list(
+    core.String parent, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$parent') + '/attributeDefinitions';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListAttributeDefinitionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the specified Attribute definition.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Resource name of the Attribute definition, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/attributeDefinitions/{attribute_definition_id}`.
+  /// Cannot be changed after creation.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/attributeDefinitions/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. The update mask that applies to the resource. For
+  /// the `FieldMask` definition, see
+  /// https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask.
+  /// Only the `description`, `allowed_values`, `consent_default_values` and
+  /// `data_mapping_default_value` fields can be updated. The updated
+  /// `allowed_values` must contain all values from the previous
+  /// `allowed_values`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AttributeDefinition].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AttributeDefinition> patch(
+    AttributeDefinition request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AttributeDefinition.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsDatasetsConsentStoresConsentArtifactsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsDatasetsConsentStoresConsentArtifactsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a new Consent artifact in the parent consent store.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The name of the consent store this Consent artifact
+  /// belongs to.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConsentArtifact].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConsentArtifact> create(
+    ConsentArtifact request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consentArtifacts';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ConsentArtifact.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified Consent artifact.
+  ///
+  /// Fails if the artifact is referenced by the latest revision of any Consent.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent artifact to delete. To
+  /// preserve referential integrity, Consent artifacts referenced by the latest
+  /// revision of a Consent cannot be deleted.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consentArtifacts/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the specified Consent artifact.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent artifact to retrieve.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consentArtifacts/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConsentArtifact].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConsentArtifact> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ConsentArtifact.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the Consent artifacts in the specified consent store.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store to retrieve consent
+  /// artifacts from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the artifacts returned to those matching a
+  /// filter. The following syntax is available: * A string field value can be
+  /// written as text inside quotation marks, for example `"query text"`. The
+  /// only valid relational operation for text fields is equality (`=`), where
+  /// text is searched within the field, rather than having the field be equal
+  /// to the text. For example, `"Comment = great"` returns messages with
+  /// `great` in the comment field. * A number field value can be written as an
+  /// integer, a decimal, or an exponential. The valid relational operators for
+  /// number fields are the equality operator (`=`), along with the less
+  /// than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no
+  /// inequality (`!=`) operator. You can prepend the `NOT` operator to an
+  /// expression to negate it. * A date field value must be written in
+  /// `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format.
+  /// Leading zeros are required for one-digit months and days. The valid
+  /// relational operators for date fields are the equality operator (`=`) ,
+  /// along with the less than/greater than operators (`<`, `<=`, `>`, `>=`).
+  /// Note that there is no inequality (`!=`) operator. You can prepend the
+  /// `NOT` operator to an expression to negate it. * Multiple field query
+  /// expressions can be combined in one query by adding `AND` or `OR` operators
+  /// between the expressions. If a boolean operator appears within a quoted
+  /// string, it is not treated as special, it's just another part of the
+  /// character string to be matched. You can prepend the `NOT` operator to an
+  /// expression to negate it. The fields available for filtering are: -
+  /// user_id. For example, `filter=user_id=\"user123\"`. -
+  /// consent_content_version - metadata. For example,
+  /// `filter=Metadata(\"testkey\")=\"value\"` or
+  /// `filter=HasMetadata(\"testkey\")`.
+  ///
+  /// [pageSize] - Optional. Limit on the number of consent artifacts to return
+  /// in a single response. If not specified, 100 is used. May not be larger
+  /// than 1000.
+  ///
+  /// [pageToken] - Optional. The next_page_token value returned from the
+  /// previous List request, if any.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListConsentArtifactsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListConsentArtifactsResponse> list(
+    core.String parent, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consentArtifacts';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListConsentArtifactsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsDatasetsConsentStoresConsentsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsDatasetsConsentStoresConsentsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Activates the latest revision of the specified Consent by committing a new
+  /// revision with `state` updated to `ACTIVE`.
+  ///
+  /// If the latest revision of the specified Consent is in the `ACTIVE` state,
+  /// no new revision is committed. A FAILED_PRECONDITION error occurs if the
+  /// latest revision of the specified Consent is in the `REJECTED` or `REVOKED`
+  /// state.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to activate, of the
+  /// form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// An INVALID_ARGUMENT error occurs if `revision_id` is specified in the
+  /// name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> activate(
+    ActivateConsentRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':activate';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Creates a new Consent in the parent consent store.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> create(
+    Consent request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consents';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the Consent and its revisions.
+  ///
+  /// To keep a record of the Consent but mark it inactive, see
+  /// \[RevokeConsent\]. To delete a revision of a Consent, see
+  /// \[DeleteConsentRevision\]. This operation does not delete the related
+  /// Consent artifact.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to delete, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// An INVALID_ARGUMENT error occurs if `revision_id` is specified in the
+  /// name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified revision of a Consent.
+  ///
+  /// An INVALID_ARGUMENT error occurs if the specified revision is the latest
+  /// revision.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent revision to delete, of
+  /// the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}@{revision_id}`.
+  /// An INVALID_ARGUMENT error occurs if `revision_id` is not specified in the
+  /// name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> deleteRevision(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':deleteRevision';
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the specified revision of a Consent, or the latest revision if
+  /// `revision_id` is not specified in the resource name.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to retrieve, of the
+  /// form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// In order to retrieve a previous revision of the Consent, also provide the
+  /// revision ID:
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}@{revision_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the Consent in the given consent store, returning each Consent's
+  /// latest revision.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store to retrieve Consents from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the Consents returned to those matching a
+  /// filter. The following syntax is available: * A string field value can be
+  /// written as text inside quotation marks, for example `"query text"`. The
+  /// only valid relational operation for text fields is equality (`=`), where
+  /// text is searched within the field, rather than having the field be equal
+  /// to the text. For example, `"Comment = great"` returns messages with
+  /// `great` in the comment field. * A number field value can be written as an
+  /// integer, a decimal, or an exponential. The valid relational operators for
+  /// number fields are the equality operator (`=`), along with the less
+  /// than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no
+  /// inequality (`!=`) operator. You can prepend the `NOT` operator to an
+  /// expression to negate it. * A date field value must be written in
+  /// `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format.
+  /// Leading zeros are required for one-digit months and days. The valid
+  /// relational operators for date fields are the equality operator (`=`) ,
+  /// along with the less than/greater than operators (`<`, `<=`, `>`, `>=`).
+  /// Note that there is no inequality (`!=`) operator. You can prepend the
+  /// `NOT` operator to an expression to negate it. * Multiple field query
+  /// expressions can be combined in one query by adding `AND` or `OR` operators
+  /// between the expressions. If a boolean operator appears within a quoted
+  /// string, it is not treated as special, it's just another part of the
+  /// character string to be matched. You can prepend the `NOT` operator to an
+  /// expression to negate it. The fields available for filtering are: -
+  /// user_id. For example, `filter='user_id="user123"'`. - consent_artifact -
+  /// state - revision_create_time - metadata. For example,
+  /// `filter=Metadata(\"testkey\")=\"value\"` or
+  /// `filter=HasMetadata(\"testkey\")`.
+  ///
+  /// [pageSize] - Optional. Limit on the number of Consents to return in a
+  /// single response. If not specified, 100 is used. May not be larger than
+  /// 1000.
+  ///
+  /// [pageToken] - Optional. The next_page_token value returned from the
+  /// previous List request, if any.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListConsentsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListConsentsResponse> list(
+    core.String parent, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/consents';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListConsentsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the revisions of the specified Consent in reverse chronological
+  /// order.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to retrieve revisions
+  /// for.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the revisions returned to those matching a
+  /// filter. The following syntax is available: * A string field value can be
+  /// written as text inside quotation marks, for example `"query text"`. The
+  /// only valid relational operation for text fields is equality (`=`), where
+  /// text is searched within the field, rather than having the field be equal
+  /// to the text. For example, `"Comment = great"` returns messages with
+  /// `great` in the comment field. * A number field value can be written as an
+  /// integer, a decimal, or an exponential. The valid relational operators for
+  /// number fields are the equality operator (`=`), along with the less
+  /// than/greater than operators (`<`, `<=`, `>`, `>=`). Note that there is no
+  /// inequality (`!=`) operator. You can prepend the `NOT` operator to an
+  /// expression to negate it. * A date field value must be written in
+  /// `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format.
+  /// Leading zeros are required for one-digit months and days. The valid
+  /// relational operators for date fields are the equality operator (`=`) ,
+  /// along with the less than/greater than operators (`<`, `<=`, `>`, `>=`).
+  /// Note that there is no inequality (`!=`) operator. You can prepend the
+  /// `NOT` operator to an expression to negate it. * Multiple field query
+  /// expressions can be combined in one query by adding `AND` or `OR` operators
+  /// between the expressions. If a boolean operator appears within a quoted
+  /// string, it is not treated as special, it's just another part of the
+  /// character string to be matched. You can prepend the `NOT` operator to an
+  /// expression to negate it. Fields available for filtering are: - user_id.
+  /// For example, `filter='user_id="user123"'`. - consent_artifact - state -
+  /// revision_create_time - metadata. For example,
+  /// `filter=Metadata(\"testkey\")=\"value\"` or
+  /// `filter=HasMetadata(\"testkey\")`.
+  ///
+  /// [pageSize] - Optional. Limit on the number of revisions to return in a
+  /// single response. If not specified, 100 is used. May not be larger than
+  /// 1000.
+  ///
+  /// [pageToken] - Optional. Token to retrieve the next page of results or
+  /// empty if there are no more results in the list.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListConsentRevisionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListConsentRevisionsResponse> listRevisions(
+    core.String name, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':listRevisions';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListConsentRevisionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the latest revision of the specified Consent by committing a new
+  /// revision with the changes.
+  ///
+  /// A FAILED_PRECONDITION error occurs if the latest revision of the specified
+  /// Consent is in the `REJECTED` or `REVOKED` state.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Resource name of the Consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// Cannot be changed after creation.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. The update mask to apply to the resource. For the
+  /// `FieldMask` definition, see
+  /// https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask.
+  /// Only the `user_id`, `policies`, `consent_artifact`, and `metadata` fields
+  /// can be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> patch(
+    Consent request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Rejects the latest revision of the specified Consent by committing a new
+  /// revision with `state` updated to `REJECTED`.
+  ///
+  /// If the latest revision of the specified Consent is in the `REJECTED`
+  /// state, no new revision is committed. A FAILED_PRECONDITION error occurs if
+  /// the latest revision of the specified Consent is in the `ACTIVE` or
+  /// `REVOKED` state.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to reject, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// An INVALID_ARGUMENT error occurs if `revision_id` is specified in the
+  /// name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> reject(
+    RejectConsentRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':reject';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Revokes the latest revision of the specified Consent by committing a new
+  /// revision with `state` updated to `REVOKED`.
+  ///
+  /// If the latest revision of the specified Consent is in the `REVOKED` state,
+  /// no new revision is committed. A FAILED_PRECONDITION error occurs if the
+  /// latest revision of the given consent is in `DRAFT` or `REJECTED` state.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the Consent to revoke, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  /// An INVALID_ARGUMENT error occurs if `revision_id` is specified in the
+  /// name.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/consents/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Consent].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Consent> revoke(
+    RevokeConsentRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':revoke';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Consent.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsDatasetsConsentStoresUserDataMappingsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsDatasetsConsentStoresUserDataMappingsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Archives the specified User data mapping.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the User data mapping to archive.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/userDataMappings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ArchiveUserDataMappingResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ArchiveUserDataMappingResponse> archive(
+    ArchiveUserDataMappingRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':archive';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ArchiveUserDataMappingResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Creates a new User data mapping in the parent consent store.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [UserDataMapping].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<UserDataMapping> create(
+    UserDataMapping request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/userDataMappings';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return UserDataMapping.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes the specified User data mapping.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the User data mapping to delete.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/userDataMappings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets the specified User data mapping.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the User data mapping to retrieve.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/userDataMappings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [UserDataMapping].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<UserDataMapping> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return UserDataMapping.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists the User data mappings in the specified consent store.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Name of the consent store to retrieve User data
+  /// mappings from.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+$`.
+  ///
+  /// [filter] - Optional. Restricts the User data mappings returned to those
+  /// matching a filter. The following syntax is available: * A string field
+  /// value can be written as text inside quotation marks, for example `"query
+  /// text"`. The only valid relational operation for text fields is equality
+  /// (`=`), where text is searched within the field, rather than having the
+  /// field be equal to the text. For example, `"Comment = great"` returns
+  /// messages with `great` in the comment field. * A number field value can be
+  /// written as an integer, a decimal, or an exponential. The valid relational
+  /// operators for number fields are the equality operator (`=`), along with
+  /// the less than/greater than operators (`<`, `<=`, `>`, `>=`). Note that
+  /// there is no inequality (`!=`) operator. You can prepend the `NOT` operator
+  /// to an expression to negate it. * A date field value must be written in
+  /// `yyyy-mm-dd` form. Fields with date and time use the RFC3339 time format.
+  /// Leading zeros are required for one-digit months and days. The valid
+  /// relational operators for date fields are the equality operator (`=`) ,
+  /// along with the less than/greater than operators (`<`, `<=`, `>`, `>=`).
+  /// Note that there is no inequality (`!=`) operator. You can prepend the
+  /// `NOT` operator to an expression to negate it. * Multiple field query
+  /// expressions can be combined in one query by adding `AND` or `OR` operators
+  /// between the expressions. If a boolean operator appears within a quoted
+  /// string, it is not treated as special, it's just another part of the
+  /// character string to be matched. You can prepend the `NOT` operator to an
+  /// expression to negate it. The fields available for filtering are: - data_id
+  /// - user_id. For example, `filter=user_id=\"user123\"`. - archived -
+  /// archive_time
+  ///
+  /// [pageSize] - Optional. Limit on the number of User data mappings to return
+  /// in a single response. If not specified, 100 is used. May not be larger
+  /// than 1000.
+  ///
+  /// [pageToken] - Optional. Token to retrieve the next page of results, or
+  /// empty to get the first page.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListUserDataMappingsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListUserDataMappingsResponse> list(
+    core.String parent, {
+    core.String? filter,
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (filter != null) 'filter': [filter],
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/userDataMappings';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListUserDataMappingsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the specified User data mapping.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Resource name of the User data mapping, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/userDataMappings/{user_data_mapping_id}`.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/consentStores/\[^/\]+/userDataMappings/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. The update mask that applies to the resource. For
+  /// the `FieldMask` definition, see
+  /// https://developers.google.com/protocol-buffers/docs/reference/google.protobuf#fieldmask.
+  /// Only the `data_id`, `user_id` and `resource_attributes` fields can be
+  /// updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [UserDataMapping].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<UserDataMapping> patch(
+    UserDataMapping request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return UserDataMapping.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 }
@@ -799,7 +2524,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String? dicomStoreId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (dicomStoreId != null) 'dicomStoreId': [dicomStoreId],
       if ($fields != null) 'fields': [$fields],
@@ -826,7 +2551,8 @@ class ProjectsLocationsDatasetsDicomStoresResource {
   /// de-identification fails for some DICOM instances. The output DICOM store
   /// will not contain these failed resources. Failed resource totals are
   /// tracked in Operation.metadata. Error details are also logged to Cloud
-  /// Logging (see \[Viewing logs\](/healthcare/docs/how-tos/logging)).
+  /// Logging (see \[Viewing error logs in Cloud
+  /// Logging\](/healthcare/docs/how-tos/logging)).
   ///
   /// [request] - The metadata request object.
   ///
@@ -852,7 +2578,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String sourceStore, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -909,8 +2635,8 @@ class ProjectsLocationsDatasetsDicomStoresResource {
   /// store.
   ///
   /// Errors are also logged to Cloud Logging. For more information, see
-  /// \[Viewing logs\](/healthcare/docs/how-tos/logging). The metadata field
-  /// type is OperationMetadata.
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging).
+  /// The metadata field type is OperationMetadata.
   ///
   /// [request] - The metadata request object.
   ///
@@ -937,7 +2663,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1003,12 +2729,16 @@ class ProjectsLocationsDatasetsDicomStoresResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/dicomStores/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1044,9 +2774,9 @@ class ProjectsLocationsDatasetsDicomStoresResource {
 
   /// Imports data into the DICOM store by copying it from the specified source.
   ///
-  /// Errors are logged to Cloud Logging. For more information, see \[Viewing
-  /// logs\](/healthcare/docs/how-tos/logging). The metadata field type is
-  /// OperationMetadata.
+  /// Errors are logged to Cloud Logging. For more information, see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging).
+  /// The metadata field type is OperationMetadata.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1073,7 +2803,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1194,7 +2924,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1405,7 +3135,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1462,7 +3192,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String dicomWebPath, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1513,7 +3243,7 @@ class ProjectsLocationsDatasetsDicomStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1546,11 +3276,9 @@ class ProjectsLocationsDatasetsDicomStoresStudiesResource {
   ///
   /// Delete requests are equivalent to the GET requests specified in the
   /// Retrieve transaction. The method returns an Operation which will be marked
-  /// successful when the deletion is complete. Warning: Inserting instances
-  /// into a study while a delete operation is running for that study could
-  /// result in the new instances not appearing in search results until the
-  /// deletion operation finishes. For samples that show how to call
-  /// DeleteStudy, see
+  /// successful when the deletion is complete. Warning: Instances cannot be
+  /// inserted into a study that is being deleted by an operation until the
+  /// operation completes. For samples that show how to call DeleteStudy, see
   /// [Deleting a study, series, or instance](https://cloud.google.com/healthcare/docs/how-tos/dicomweb#deleting_a_study_series_or_instance).
   ///
   /// Request parameters:
@@ -1854,7 +3582,7 @@ class ProjectsLocationsDatasetsDicomStoresStudiesResource {
     core.String dicomWebPath, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1890,11 +3618,9 @@ class ProjectsLocationsDatasetsDicomStoresStudiesSeriesResource {
   ///
   /// Delete requests are equivalent to the GET requests specified in the
   /// Retrieve transaction. The method returns an Operation which will be marked
-  /// successful when the deletion is complete. Warning: Inserting instances
-  /// into a series while a delete operation is running for that series could
-  /// result in the new instances not appearing in search results until the
-  /// deletion operation finishes. For samples that show how to call
-  /// DeleteSeries, see
+  /// successful when the deletion is complete. Warning: Instances cannot be
+  /// inserted into a series that is being deleted by an operation until the
+  /// operation completes. For samples that show how to call DeleteSeries, see
   /// [Deleting a study, series, or instance](https://cloud.google.com/healthcare/docs/how-tos/dicomweb#deleting_a_study_series_or_instance).
   ///
   /// Request parameters:
@@ -2508,7 +4234,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String? fhirStoreId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (fhirStoreId != null) 'fhirStoreId': [fhirStoreId],
       if ($fields != null) 'fields': [$fields],
@@ -2531,7 +4257,8 @@ class ProjectsLocationsDatasetsFhirStoresResource {
   /// The metadata field type is OperationMetadata. If the request is
   /// successful, the response field type is DeidentifyFhirStoreSummary. If
   /// errors occur, error is set. Error details are also logged to Cloud Logging
-  /// (see \[Viewing logs\](/healthcare/docs/how-tos/logging)).
+  /// (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
   ///
   /// [request] - The metadata request object.
   ///
@@ -2557,7 +4284,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String sourceStore, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2613,11 +4340,11 @@ class ProjectsLocationsDatasetsFhirStoresResource {
   ///
   /// This method returns an Operation that can be used to track the status of
   /// the export by calling GetOperation. Immediate fatal errors appear in the
-  /// error field, errors are also logged to Cloud Logging (see \[Viewing
-  /// logs\](/healthcare/docs/how-tos/logging)). Otherwise, when the operation
-  /// finishes, a detailed response of type ExportResourcesResponse is returned
-  /// in the response field. The metadata field type for this operation is
-  /// OperationMetadata.
+  /// error field, errors are also logged to Cloud Logging (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
+  /// Otherwise, when the operation finishes, a detailed response of type
+  /// ExportResourcesResponse is returned in the response field. The metadata
+  /// field type for this operation is OperationMetadata.
   ///
   /// [request] - The metadata request object.
   ///
@@ -2644,7 +4371,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2709,12 +4436,16 @@ class ProjectsLocationsDatasetsFhirStoresResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/fhirStores/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -2761,7 +4492,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
   /// enable_update_create setting on the FHIR store. It is strongly advised not
   /// to include or encode any sensitive data such as patient identifiers in
   /// client-specified resource IDs. Those IDs are part of the FHIR resource
-  /// path recorded in Cloud audit logs and Cloud Pub/Sub notifications. Those
+  /// path recorded in Cloud Audit Logs and Cloud Pub/Sub notifications. Those
   /// IDs can also be contained in reference fields within other resources. The
   /// import process does not enforce referential integrity, regardless of the
   /// disable_referential_integrity setting on the FHIR store. This allows the
@@ -2801,7 +4532,8 @@ class ProjectsLocationsDatasetsFhirStoresResource {
   /// Patient-everything operation. This method returns an Operation that can be
   /// used to track the status of the import by calling GetOperation. Immediate
   /// fatal errors appear in the error field, errors are also logged to Cloud
-  /// Logging (see \[Viewing logs\](/healthcare/docs/how-tos/logging)).
+  /// Logging (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
   /// Otherwise, when the operation finishes, a detailed response of type
   /// ImportResourcesResponse is returned in the response field. The metadata
   /// field type for this operation is OperationMetadata.
@@ -2831,7 +4563,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2951,7 +4683,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -2998,7 +4730,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3046,7 +4778,7 @@ class ProjectsLocationsDatasetsFhirStoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3077,9 +4809,9 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/patient-operations.html#everything),
   /// [STU3](http://hl7.org/implement/standards/fhir/STU3/patient-operations.html#everything),
   /// [R4](http://hl7.org/implement/standards/fhir/R4/patient-operations.html#everything)).
-  /// On success, the response body will contain a JSON-encoded representation
-  /// of a `Bundle` resource of type `searchset`, containing the results of the
-  /// operation. Errors generated by the FHIR store will contain a JSON-encoded
+  /// On success, the response body contains a JSON-encoded representation of a
+  /// `Bundle` resource of type `searchset`, containing the results of the
+  /// operation. Errors generated by the FHIR store contain a JSON-encoded
   /// `OperationOutcome` resource describing the reason for the error. If the
   /// request cannot be mapped to a valid API method on a FHIR store, a generic
   /// GCP error might be returned instead. The resources in scope for the
@@ -3208,6 +4940,81 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Validates an input FHIR resource's conformance to its profiles and the
+  /// profiles configured on the FHIR store.
+  ///
+  /// Implements the FHIR extended operation $validate
+  /// ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/resource-operations.html#validate),
+  /// [STU3](http://hl7.org/implement/standards/fhir/STU3/resource-operations.html#validate),
+  /// or
+  /// [R4](http://hl7.org/implement/standards/fhir/R4/resource-operation-validate.html)).
+  /// The request body must contain a JSON-encoded FHIR resource, and the
+  /// request headers must contain `Content-Type: application/fhir+json`. The
+  /// `Parameters` input syntax is not supported. The `profile` query parameter
+  /// can be used to request that the resource only be validated against a
+  /// specific profile. If a profile with the given URL cannot be found in the
+  /// FHIR store then an error is returned. Errors generated by validation
+  /// contain a JSON-encoded `OperationOutcome` resource describing the reason
+  /// for the error. If the request cannot be mapped to a valid API method on a
+  /// FHIR store, a generic GCP error might be returned instead.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - The name of the FHIR store that holds the profiles being used
+  /// for validation.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/fhirStores/\[^/\]+$`.
+  ///
+  /// [type] - The FHIR resource type of the resource being validated. For a
+  /// complete list, see the FHIR Resource Index
+  /// ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/resourcelist.html),
+  /// [STU3](http://hl7.org/implement/standards/fhir/STU3/resourcelist.html), or
+  /// [R4](http://hl7.org/implement/standards/fhir/R4/resourcelist.html)). Must
+  /// match the resource type in the provided content.
+  /// Value must have pattern `^\[^/\]+$`.
+  ///
+  /// [profile] - A profile that this resource should be validated against.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [HttpBody].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<HttpBody> ResourceValidate(
+    HttpBody request,
+    core.String parent,
+    core.String type, {
+    core.String? profile,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (profile != null) 'profile': [profile],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/fhir/' +
+        core.Uri.encodeFull('$type') +
+        '/\$validate';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return HttpBody.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Gets the FHIR capability statement
   /// ([STU3](http://hl7.org/implement/standards/fhir/STU3/capabilitystatement.html),
   /// [R4](http://hl7.org/implement/standards/fhir/R4/capabilitystatement.html)),
@@ -3221,8 +5028,8 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// [R4](http://hl7.org/implement/standards/fhir/R4/http.html#capabilities)),
   /// or the
   /// [conformance interaction](http://hl7.org/implement/standards/fhir/DSTU2/http.html#conformance)
-  /// in the DSTU2 case. On success, the response body will contain a
-  /// JSON-encoded representation of a `CapabilityStatement` resource.
+  /// in the DSTU2 case. On success, the response body contains a JSON-encoded
+  /// representation of a `CapabilityStatement` resource.
   ///
   /// Request parameters:
   ///
@@ -3267,13 +5074,13 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// creates a new resource with a server-assigned resource ID. The request
   /// body must contain a JSON-encoded FHIR resource, and the request headers
   /// must contain `Content-Type: application/fhir+json`. On success, the
-  /// response body will contain a JSON-encoded representation of the resource
-  /// as it was created on the server, including the server-assigned resource ID
-  /// and version ID. Errors generated by the FHIR store will contain a
-  /// JSON-encoded `OperationOutcome` resource describing the reason for the
-  /// error. If the request cannot be mapped to a valid API method on a FHIR
-  /// store, a generic GCP error might be returned instead. For samples that
-  /// show how to call `create`, see \[Creating a FHIR
+  /// response body contains a JSON-encoded representation of the resource as it
+  /// was created on the server, including the server-assigned resource ID and
+  /// version ID. Errors generated by the FHIR store contain a JSON-encoded
+  /// `OperationOutcome` resource describing the reason for the error. If the
+  /// request cannot be mapped to a valid API method on a FHIR store, a generic
+  /// GCP error might be returned instead. For samples that show how to call
+  /// `create`, see \[Creating a FHIR
   /// resource\](/healthcare/docs/how-tos/fhir-resources#creating_a_fhir_resource).
   ///
   /// [request] - The metadata request object.
@@ -3308,7 +5115,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String type, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3426,7 +5233,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3449,13 +5256,13 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/http.html#history),
   /// [STU3](http://hl7.org/implement/standards/fhir/STU3/http.html#history),
   /// [R4](http://hl7.org/implement/standards/fhir/R4/http.html#history)). On
-  /// success, the response body will contain a JSON-encoded representation of a
+  /// success, the response body contains a JSON-encoded representation of a
   /// `Bundle` resource of type `history`, containing the version history sorted
   /// from most recent to oldest versions. Errors generated by the FHIR store
-  /// will contain a JSON-encoded `OperationOutcome` resource describing the
-  /// reason for the error. If the request cannot be mapped to a valid API
-  /// method on a FHIR store, a generic GCP error might be returned instead. For
-  /// samples that show how to call `history`, see \[Listing FHIR resource
+  /// contain a JSON-encoded `OperationOutcome` resource describing the reason
+  /// for the error. If the request cannot be mapped to a valid API method on a
+  /// FHIR store, a generic GCP error might be returned instead. For samples
+  /// that show how to call `history`, see \[Listing FHIR resource
   /// versions\](/healthcare/docs/how-tos/fhir-resources#listing_fhir_resource_versions).
   ///
   /// Request parameters:
@@ -3532,13 +5339,13 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// doesn't define a patch method, but the server supports it in the same way
   /// it supports STU3. The request body must contain a JSON Patch document, and
   /// the request headers must contain `Content-Type:
-  /// application/json-patch+json`. On success, the response body will contain a
+  /// application/json-patch+json`. On success, the response body contains a
   /// JSON-encoded representation of the updated resource, including the
-  /// server-assigned version ID. Errors generated by the FHIR store will
-  /// contain a JSON-encoded `OperationOutcome` resource describing the reason
-  /// for the error. If the request cannot be mapped to a valid API method on a
-  /// FHIR store, a generic GCP error might be returned instead. For samples
-  /// that show how to call `patch`, see \[Patching a FHIR
+  /// server-assigned version ID. Errors generated by the FHIR store contain a
+  /// JSON-encoded `OperationOutcome` resource describing the reason for the
+  /// error. If the request cannot be mapped to a valid API method on a FHIR
+  /// store, a generic GCP error might be returned instead. For samples that
+  /// show how to call `patch`, see \[Patching a FHIR
   /// resource\](/healthcare/docs/how-tos/fhir-resources#patching_a_fhir_resource).
   ///
   /// [request] - The metadata request object.
@@ -3564,7 +5371,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3592,8 +5399,8 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// [R4](http://hl7.org/implement/standards/fhir/R4/http.html#cread))
   /// specified by supplying an `If-Modified-Since` header with a date/time
   /// value or an `If-None-Match` header with an ETag value. On success, the
-  /// response body will contain a JSON-encoded representation of the resource.
-  /// Errors generated by the FHIR store will contain a JSON-encoded
+  /// response body contains a JSON-encoded representation of the resource.
+  /// Errors generated by the FHIR store contain a JSON-encoded
   /// `OperationOutcome` resource describing the reason for the error. If the
   /// request cannot be mapped to a valid API method on a FHIR store, a generic
   /// GCP error might be returned instead. For samples that show how to call
@@ -3654,9 +5461,9 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// semantics as the `GET` method for the specified type. The `GET` and `POST`
   /// methods do not support compartment searches. The `POST` method does not
   /// support `application/x-www-form-urlencoded` search parameters. On success,
-  /// the response body will contain a JSON-encoded representation of a `Bundle`
+  /// the response body contains a JSON-encoded representation of a `Bundle`
   /// resource of type `searchset`, containing the results of the search. Errors
-  /// generated by the FHIR store will contain a JSON-encoded `OperationOutcome`
+  /// generated by the FHIR store contain a JSON-encoded `OperationOutcome`
   /// resource describing the reason for the error. If the request cannot be
   /// mapped to a valid API method on a FHIR store, a generic GCP error might be
   /// returned instead. The server's capability statement, retrieved through
@@ -3672,14 +5479,16 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// `_count`, `_include`, `_revinclude`, `_summary=text`, `_summary=data`, and
   /// `_elements`. The maximum number of search results returned defaults to
   /// 100, which can be overridden by the `_count` parameter up to a maximum
-  /// limit of 1000. If there are additional results, the returned `Bundle` will
-  /// contain pagination links. Resources with a total size larger than 5MB or a
-  /// field count larger than 50,000 might not be fully searchable as the server
-  /// might trim its generated search index in those cases. Note: FHIR resources
-  /// are indexed asynchronously, so there might be a slight delay between the
-  /// time a resource is created or changes and when the change is reflected in
-  /// search results. For samples and detailed information, see \[Searching for
-  /// FHIR resources\](/healthcare/docs/how-tos/fhir-search) and \[Advanced FHIR
+  /// limit of 1000. If there are additional results, the returned `Bundle`
+  /// contains a link of `relation` "next", which has a `_page_token` parameter
+  /// for an opaque pagination token that can be used to retrieve the next page.
+  /// Resources with a total size larger than 5MB or a field count larger than
+  /// 50,000 might not be fully searchable as the server might trim its
+  /// generated search index in those cases. Note: FHIR resources are indexed
+  /// asynchronously, so there might be a slight delay between the time a
+  /// resource is created or changes and when the change is reflected in search
+  /// results. For samples and detailed information, see \[Searching for FHIR
+  /// resources\](/healthcare/docs/how-tos/fhir-search) and \[Advanced FHIR
   /// search features\](/healthcare/docs/how-tos/fhir-advanced-search).
   ///
   /// [request] - The metadata request object.
@@ -3705,7 +5514,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3741,9 +5550,9 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// semantics as the `GET` method for the specified type. The `GET` and `POST`
   /// methods do not support compartment searches. The `POST` method does not
   /// support `application/x-www-form-urlencoded` search parameters. On success,
-  /// the response body will contain a JSON-encoded representation of a `Bundle`
+  /// the response body contains a JSON-encoded representation of a `Bundle`
   /// resource of type `searchset`, containing the results of the search. Errors
-  /// generated by the FHIR store will contain a JSON-encoded `OperationOutcome`
+  /// generated by the FHIR store contain a JSON-encoded `OperationOutcome`
   /// resource describing the reason for the error. If the request cannot be
   /// mapped to a valid API method on a FHIR store, a generic GCP error might be
   /// returned instead. The server's capability statement, retrieved through
@@ -3759,14 +5568,16 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// `_count`, `_include`, `_revinclude`, `_summary=text`, `_summary=data`, and
   /// `_elements`. The maximum number of search results returned defaults to
   /// 100, which can be overridden by the `_count` parameter up to a maximum
-  /// limit of 1000. If there are additional results, the returned `Bundle` will
-  /// contain pagination links. Resources with a total size larger than 5MB or a
-  /// field count larger than 50,000 might not be fully searchable as the server
-  /// might trim its generated search index in those cases. Note: FHIR resources
-  /// are indexed asynchronously, so there might be a slight delay between the
-  /// time a resource is created or changes and when the change is reflected in
-  /// search results. For samples and detailed information, see \[Searching for
-  /// FHIR resources\](/healthcare/docs/how-tos/fhir-search) and \[Advanced FHIR
+  /// limit of 1000. If there are additional results, the returned `Bundle`
+  /// contains a link of `relation` "next", which has a `_page_token` parameter
+  /// for an opaque pagination token that can be used to retrieve the next page.
+  /// Resources with a total size larger than 5MB or a field count larger than
+  /// 50,000 might not be fully searchable as the server might trim its
+  /// generated search index in those cases. Note: FHIR resources are indexed
+  /// asynchronously, so there might be a slight delay between the time a
+  /// resource is created or changes and when the change is reflected in search
+  /// results. For samples and detailed information, see \[Searching for FHIR
+  /// resources\](/healthcare/docs/how-tos/fhir-search) and \[Advanced FHIR
   /// search features\](/healthcare/docs/how-tos/fhir-advanced-search).
   ///
   /// [request] - The metadata request object.
@@ -3799,7 +5610,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String resourceType, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3829,19 +5640,18 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// enable_update_create set, creates the resource with the client-specified
   /// ID. It is strongly advised not to include or encode any sensitive data
   /// such as patient identifiers in client-specified resource IDs. Those IDs
-  /// are part of the FHIR resource path recorded in Cloud audit logs and Cloud
+  /// are part of the FHIR resource path recorded in Cloud Audit Logs and
   /// Pub/Sub notifications. Those IDs can also be contained in reference fields
   /// within other resources. The request body must contain a JSON-encoded FHIR
   /// resource, and the request headers must contain `Content-Type:
   /// application/fhir+json`. The resource must contain an `id` element having
   /// an identical value to the ID in the REST path of the request. On success,
-  /// the response body will contain a JSON-encoded representation of the
-  /// updated resource, including the server-assigned version ID. Errors
-  /// generated by the FHIR store will contain a JSON-encoded `OperationOutcome`
-  /// resource describing the reason for the error. If the request cannot be
-  /// mapped to a valid API method on a FHIR store, a generic GCP error might be
-  /// returned instead. For samples that show how to call `update`, see
-  /// \[Updating a FHIR
+  /// the response body contains a JSON-encoded representation of the updated
+  /// resource, including the server-assigned version ID. Errors generated by
+  /// the FHIR store contain a JSON-encoded `OperationOutcome` resource
+  /// describing the reason for the error. If the request cannot be mapped to a
+  /// valid API method on a FHIR store, a generic GCP error might be returned
+  /// instead. For samples that show how to call `update`, see \[Updating a FHIR
   /// resource\](/healthcare/docs/how-tos/fhir-resources#updating_a_fhir_resource).
   ///
   /// [request] - The metadata request object.
@@ -3867,7 +5677,7 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3890,12 +5700,12 @@ class ProjectsLocationsDatasetsFhirStoresFhirResource {
   /// ([DSTU2](http://hl7.org/implement/standards/fhir/DSTU2/http.html#vread),
   /// [STU3](http://hl7.org/implement/standards/fhir/STU3/http.html#vread),
   /// [R4](http://hl7.org/implement/standards/fhir/R4/http.html#vread)). On
-  /// success, the response body will contain a JSON-encoded representation of
-  /// the resource. Errors generated by the FHIR store will contain a
-  /// JSON-encoded `OperationOutcome` resource describing the reason for the
-  /// error. If the request cannot be mapped to a valid API method on a FHIR
-  /// store, a generic GCP error might be returned instead. For samples that
-  /// show how to call `vread`, see \[Retrieving a FHIR resource
+  /// success, the response body contains a JSON-encoded representation of the
+  /// resource. Errors generated by the FHIR store contain a JSON-encoded
+  /// `OperationOutcome` resource describing the reason for the error. If the
+  /// request cannot be mapped to a valid API method on a FHIR store, a generic
+  /// GCP error might be returned instead. For samples that show how to call
+  /// `vread`, see \[Retrieving a FHIR resource
   /// version\](/healthcare/docs/how-tos/fhir-resources#retrieving_a_fhir_resource_version).
   ///
   /// Request parameters:
@@ -3971,7 +5781,7 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
     core.String? hl7V2StoreId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (hl7V2StoreId != null) 'hl7V2StoreId': [hl7V2StoreId],
       if ($fields != null) 'fields': [$fields],
@@ -4026,6 +5836,56 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
     return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Exports the messages to a destination.
+  ///
+  /// To filter messages to be exported, define a filter using the start and end
+  /// time, relative to the message generation time (MSH.7). This API returns an
+  /// Operation that can be used to track the status of the job by calling
+  /// GetOperation. Immediate fatal errors appear in the error field. Otherwise,
+  /// when the operation finishes, a detailed response of type
+  /// ExportMessagesResponse is returned in the response field. The metadata
+  /// field type for this operation is OperationMetadata.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the source HL7v2 store, in the format
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/hl7v2Stores/{hl7v2_store_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/hl7V2Stores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> export(
+    ExportMessagesRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':export';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Gets the specified HL7v2 store.
   ///
   /// Request parameters:
@@ -4076,12 +5936,16 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/hl7V2Stores/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -4113,6 +5977,74 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
       queryParams: _queryParams,
     );
     return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Import messages to the HL7v2 store by loading data from the specified
+  /// sources.
+  ///
+  /// This method is optimized to load large quantities of data using import
+  /// semantics that ignore some HL7v2 store configuration options and are not
+  /// suitable for all use cases. It is primarily intended to load data into an
+  /// empty HL7v2 store that is not being used by other clients. An existing
+  /// message will be overwritten if a duplicate message is imported. A
+  /// duplicate message is a message with the same raw bytes as a message that
+  /// already exists in this HL7v2 store. When a message is overwritten, its
+  /// labels will also be overwritten. The import operation is idempotent unless
+  /// the input data contains multiple valid messages with the same raw bytes
+  /// but different labels. In that case, after the import completes, the store
+  /// contains exactly one message with those raw bytes but there is no ordering
+  /// guarantee on which version of the labels it has. The operation result
+  /// counters do not count duplicated raw bytes as an error and count one
+  /// success for each message in the input, which might result in a success
+  /// count larger than the number of messages in the HL7v2 store. If some
+  /// messages fail to import, for example due to parsing errors, successfully
+  /// imported messages are not rolled back. This method returns an Operation
+  /// that can be used to track the status of the import by calling
+  /// GetOperation. Immediate fatal errors appear in the error field, errors are
+  /// also logged to Cloud Logging (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
+  /// Otherwise, when the operation finishes, a response of type
+  /// ImportMessagesResponse is returned in the response field. The metadata
+  /// field type for this operation is OperationMetadata.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the target HL7v2 store, in the format
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/hl7v2Stores/{hl7v2_store_id}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/datasets/\[^/\]+/hl7V2Stores/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> import(
+    ImportMessagesRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':import';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
   /// Lists the HL7v2 stores in the given dataset.
@@ -4220,7 +6152,7 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -4268,7 +6200,7 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -4316,7 +6248,7 @@ class ProjectsLocationsDatasetsHl7V2StoresResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -4344,12 +6276,10 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
 
   /// Parses and stores an HL7v2 message.
   ///
-  /// This method triggers an asynchronous notification to any Cloud Pub/Sub
-  /// topic configured in
-  /// projects.locations.datasets.hl7V2Stores.Hl7V2NotificationConfig, if the
-  /// filtering matches the message. If an MLLP adapter is configured to listen
-  /// to a Cloud Pub/Sub topic, the adapter transmits the message when a
-  /// notification is received.
+  /// This method triggers an asynchronous notification to any Pub/Sub topic
+  /// configured in Hl7V2Store.Hl7V2NotificationConfig, if the filtering matches
+  /// the message. If an MLLP adapter is configured to listen to a Pub/Sub
+  /// topic, the adapter transmits the message when a notification is received.
   ///
   /// [request] - The metadata request object.
   ///
@@ -4374,7 +6304,7 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -4439,10 +6369,12 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
   /// Possible string values are:
   /// - "MESSAGE_VIEW_UNSPECIFIED" : Not specified, equivalent to FULL.
   /// - "RAW_ONLY" : Server responses include all the message fields except
-  /// parsed_data field.
+  /// parsed_data field, and schematized_data fields.
   /// - "PARSED_ONLY" : Server responses include all the message fields except
-  /// data field.
+  /// data field, and schematized_data fields.
   /// - "FULL" : Server responses include all the message fields.
+  /// - "SCHEMATIZED_ONLY" : Server responses include all the message fields
+  /// except data and parsed_data fields.
   /// - "BASIC" : Server responses include only the name field.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -4477,15 +6409,15 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
 
   /// Parses and stores an HL7v2 message.
   ///
-  /// This method triggers an asynchronous notification to any Cloud Pub/Sub
-  /// topic configured in
-  /// projects.locations.datasets.hl7V2Stores.Hl7V2NotificationConfig, if the
-  /// filtering matches the message. If an MLLP adapter is configured to listen
-  /// to a Cloud Pub/Sub topic, the adapter transmits the message when a
-  /// notification is received. This method also generates a response containing
-  /// an HL7v2 acknowledgement (`ACK`) message when successful or a negative
-  /// acknowledgement (`NACK`) message in case of error, suitable for replying
-  /// to HL7v2 interface systems that expect these acknowledgements.
+  /// This method triggers an asynchronous notification to any Pub/Sub topic
+  /// configured in Hl7V2Store.Hl7V2NotificationConfig, if the filtering matches
+  /// the message. If an MLLP adapter is configured to listen to a Pub/Sub
+  /// topic, the adapter transmits the message when a notification is received.
+  /// If the method is successful, it generates a response containing an HL7v2
+  /// acknowledgment (`ACK`) message. If the method encounters an error, it
+  /// returns a negative acknowledgment (`NACK`) message. This behavior is
+  /// suitable for replying to HL7v2 interface systems that expect these
+  /// acknowledgments.
   ///
   /// [request] - The metadata request object.
   ///
@@ -4510,7 +6442,7 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -4568,15 +6500,18 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
   /// time_zone, from the MSH-7 segment. For example, `send_date <
   /// "2017-01-02"`. * `send_time`, the timestamp when the message was sent,
   /// using the RFC3339 time format for comparisons, from the MSH-7 segment. For
-  /// example, `send_time < "2017-01-02T00:00:00-05:00"`. * `send_facility`, the
-  /// care center that the message came from, from the MSH-4 segment. For
-  /// example, `send_facility = "ABC"`. * `PatientId(value, type)`, which
-  /// matches if the message lists a patient having an ID of the given value and
-  /// type in the PID-2, PID-3, or PID-4 segments. For example,
-  /// `PatientId("123456", "MRN")`. * `labels.x`, a string value of the label
-  /// with key `x` as set using the Message.labels map. For example,
-  /// `labels."priority"="high"`. The operator `:*` can be used to assert the
-  /// existence of a label. For example, `labels."priority":*`.
+  /// example, `send_time < "2017-01-02T00:00:00-05:00"`. * `create_time`, the
+  /// timestamp when the message was created in the HL7v2 store. Use the RFC3339
+  /// time format for comparisons. For example, `create_time <
+  /// "2017-01-02T00:00:00-05:00"`. * `send_facility`, the care center that the
+  /// message came from, from the MSH-4 segment. For example, `send_facility =
+  /// "ABC"`. * `PatientId(value, type)`, which matches if the message lists a
+  /// patient having an ID of the given value and type in the PID-2, PID-3, or
+  /// PID-4 segments. For example, `PatientId("123456", "MRN")`. * `labels.x`, a
+  /// string value of the label with key `x` as set using the Message.labels
+  /// map. For example, `labels."priority"="high"`. The operator `:*` can be
+  /// used to assert the existence of a label. For example,
+  /// `labels."priority":*`.
   ///
   /// [orderBy] - Orders messages returned by the specified order_by clause.
   /// Syntax: https://cloud.google.com/apis/design/design_patterns#sorting_order
@@ -4595,10 +6530,12 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
   /// Possible string values are:
   /// - "MESSAGE_VIEW_UNSPECIFIED" : Not specified, equivalent to FULL.
   /// - "RAW_ONLY" : Server responses include all the message fields except
-  /// parsed_data field.
+  /// parsed_data field, and schematized_data fields.
   /// - "PARSED_ONLY" : Server responses include all the message fields except
-  /// data field.
+  /// data field, and schematized_data fields.
   /// - "FULL" : Server responses include all the message fields.
+  /// - "SCHEMATIZED_ONLY" : Server responses include all the message fields
+  /// except data and parsed_data fields.
   /// - "BASIC" : Server responses include only the name field.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -4678,7 +6615,7 @@ class ProjectsLocationsDatasetsHl7V2StoresMessagesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -4736,7 +6673,7 @@ class ProjectsLocationsDatasetsOperationsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -4850,6 +6787,345 @@ class ProjectsLocationsDatasetsOperationsResource {
   }
 }
 
+class ProjectsLocationsServicesResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsServicesNlpResource get nlp =>
+      ProjectsLocationsServicesNlpResource(_requester);
+
+  ProjectsLocationsServicesResource(commons.ApiRequester client)
+      : _requester = client;
+}
+
+class ProjectsLocationsServicesNlpResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsServicesNlpResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Analyze heathcare entity in a document.
+  ///
+  /// Its response includes the recognized entity mentions and the relationships
+  /// between them. AnalyzeEntities uses context aware models to detect
+  /// entities.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [nlpService] - The resource name of the service of the form:
+  /// "projects/{project_id}/locations/{location_id}/services/nlp".
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/services/nlp$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [AnalyzeEntitiesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<AnalyzeEntitiesResponse> analyzeEntities(
+    AnalyzeEntitiesRequest request,
+    core.String nlpService, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$nlpService') + ':analyzeEntities';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return AnalyzeEntitiesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+/// Activates the latest revision of the specified Consent by committing a new
+/// revision with `state` updated to `ACTIVE`.
+///
+/// If the latest revision of the given Consent is in the `ACTIVE` state, no new
+/// revision is committed. A FAILED_PRECONDITION error occurs if the latest
+/// revision of the given consent is in the `REJECTED` or `REVOKED` state.
+class ActivateConsentRequest {
+  /// The resource name of the Consent artifact that contains documentation of
+  /// the user's consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.
+  ///
+  /// If the draft Consent had a Consent artifact, this Consent artifact
+  /// overwrites it.
+  ///
+  /// Required.
+  core.String? consentArtifact;
+
+  /// Timestamp in UTC of when this Consent is considered expired.
+  core.String? expireTime;
+
+  /// The time to live for this Consent from when it is marked as active.
+  core.String? ttl;
+
+  ActivateConsentRequest({
+    this.consentArtifact,
+    this.expireTime,
+    this.ttl,
+  });
+
+  ActivateConsentRequest.fromJson(core.Map _json)
+      : this(
+          consentArtifact: _json.containsKey('consentArtifact')
+              ? _json['consentArtifact'] as core.String
+              : null,
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+          ttl: _json.containsKey('ttl') ? _json['ttl'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentArtifact != null) 'consentArtifact': consentArtifact!,
+        if (expireTime != null) 'expireTime': expireTime!,
+        if (ttl != null) 'ttl': ttl!,
+      };
+}
+
+/// The request to analyze healthcare entities in a document.
+class AnalyzeEntitiesRequest {
+  /// document_content is a document to be annotated.
+  core.String? documentContent;
+
+  /// A list of licensed vocabularies to use in the request, in addition to the
+  /// default unlicensed vocabularies.
+  core.List<core.String>? licensedVocabularies;
+
+  AnalyzeEntitiesRequest({
+    this.documentContent,
+    this.licensedVocabularies,
+  });
+
+  AnalyzeEntitiesRequest.fromJson(core.Map _json)
+      : this(
+          documentContent: _json.containsKey('documentContent')
+              ? _json['documentContent'] as core.String
+              : null,
+          licensedVocabularies: _json.containsKey('licensedVocabularies')
+              ? (_json['licensedVocabularies'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (documentContent != null) 'documentContent': documentContent!,
+        if (licensedVocabularies != null)
+          'licensedVocabularies': licensedVocabularies!,
+      };
+}
+
+/// Includes recognized entity mentions and relationships between them.
+class AnalyzeEntitiesResponse {
+  /// The union of all the candidate entities that the entity_mentions in this
+  /// response could link to.
+  ///
+  /// These are UMLS concepts or normalized mention content.
+  core.List<Entity>? entities;
+
+  /// entity_mentions contains all the annotated medical entities that were
+  /// mentioned in the provided document.
+  core.List<EntityMention>? entityMentions;
+
+  /// relationships contains all the binary relationships that were identified
+  /// between entity mentions within the provided document.
+  core.List<EntityMentionRelationship>? relationships;
+
+  AnalyzeEntitiesResponse({
+    this.entities,
+    this.entityMentions,
+    this.relationships,
+  });
+
+  AnalyzeEntitiesResponse.fromJson(core.Map _json)
+      : this(
+          entities: _json.containsKey('entities')
+              ? (_json['entities'] as core.List)
+                  .map((value) => Entity.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          entityMentions: _json.containsKey('entityMentions')
+              ? (_json['entityMentions'] as core.List)
+                  .map((value) => EntityMention.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          relationships: _json.containsKey('relationships')
+              ? (_json['relationships'] as core.List)
+                  .map((value) => EntityMentionRelationship.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (entities != null) 'entities': entities!,
+        if (entityMentions != null) 'entityMentions': entityMentions!,
+        if (relationships != null) 'relationships': relationships!,
+      };
+}
+
+/// Archives the specified User data mapping.
+typedef ArchiveUserDataMappingRequest = $Empty;
+
+/// Archives the specified User data mapping.
+typedef ArchiveUserDataMappingResponse = $Empty;
+
+/// An attribute value for a Consent or User data mapping.
+///
+/// Each Attribute must have a corresponding AttributeDefinition in the consent
+/// store that defines the default and allowed values.
+class Attribute {
+  /// Indicates the name of an attribute defined in the consent store.
+  core.String? attributeDefinitionId;
+
+  /// The value of the attribute.
+  ///
+  /// Must be an acceptable value as defined in the consent store. For example,
+  /// if the consent store defines "data type" with acceptable values
+  /// "questionnaire" and "step-count", when the attribute name is data type,
+  /// this field must contain one of those values.
+  ///
+  /// Required.
+  core.List<core.String>? values;
+
+  Attribute({
+    this.attributeDefinitionId,
+    this.values,
+  });
+
+  Attribute.fromJson(core.Map _json)
+      : this(
+          attributeDefinitionId: _json.containsKey('attributeDefinitionId')
+              ? _json['attributeDefinitionId'] as core.String
+              : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (attributeDefinitionId != null)
+          'attributeDefinitionId': attributeDefinitionId!,
+        if (values != null) 'values': values!,
+      };
+}
+
+/// A client-defined consent attribute.
+class AttributeDefinition {
+  /// Possible values for the attribute.
+  ///
+  /// The number of allowed values must not exceed 500. An empty list is
+  /// invalid. The list can only be expanded after creation.
+  ///
+  /// Required.
+  core.List<core.String>? allowedValues;
+
+  /// The category of the attribute.
+  ///
+  /// The value of this field cannot be changed after creation.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "CATEGORY_UNSPECIFIED" : No category specified. This option is invalid.
+  /// - "RESOURCE" : Specify this category when this attribute describes the
+  /// properties of resources. For example, data anonymity or data type.
+  /// - "REQUEST" : Specify this category when this attribute describes the
+  /// properties of requests. For example, requester's role or requester's
+  /// organization.
+  core.String? category;
+
+  /// Default values of the attribute in Consents.
+  ///
+  /// If no default values are specified, it defaults to an empty value.
+  ///
+  /// Optional.
+  core.List<core.String>? consentDefaultValues;
+
+  /// Default value of the attribute in User data mappings.
+  ///
+  /// If no default value is specified, it defaults to an empty value. This
+  /// field is only applicable to attributes of the category `RESOURCE`.
+  ///
+  /// Optional.
+  core.String? dataMappingDefaultValue;
+
+  /// A description of the attribute.
+  ///
+  /// Optional.
+  core.String? description;
+
+  /// Resource name of the Attribute definition, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/attributeDefinitions/{attribute_definition_id}`.
+  ///
+  /// Cannot be changed after creation.
+  core.String? name;
+
+  AttributeDefinition({
+    this.allowedValues,
+    this.category,
+    this.consentDefaultValues,
+    this.dataMappingDefaultValue,
+    this.description,
+    this.name,
+  });
+
+  AttributeDefinition.fromJson(core.Map _json)
+      : this(
+          allowedValues: _json.containsKey('allowedValues')
+              ? (_json['allowedValues'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          category: _json.containsKey('category')
+              ? _json['category'] as core.String
+              : null,
+          consentDefaultValues: _json.containsKey('consentDefaultValues')
+              ? (_json['consentDefaultValues'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          dataMappingDefaultValue: _json.containsKey('dataMappingDefaultValue')
+              ? _json['dataMappingDefaultValue'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (allowedValues != null) 'allowedValues': allowedValues!,
+        if (category != null) 'category': category!,
+        if (consentDefaultValues != null)
+          'consentDefaultValues': consentDefaultValues!,
+        if (dataMappingDefaultValue != null)
+          'dataMappingDefaultValue': dataMappingDefaultValue!,
+        if (description != null) 'description': description!,
+        if (name != null) 'name': name!,
+      };
+}
+
 /// Specifies the audit configuration for a service.
 ///
 /// The configuration determines which permission types are logged, and what
@@ -4877,24 +7153,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -4905,53 +7183,22 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
+typedef AuditLogConfig = $AuditLogConfig;
 
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
-
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -4983,45 +7230,40 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
 }
 
 /// The request message for Operations.CancelOperation.
-class CancelOperationRequest {
-  CancelOperationRequest();
-
-  CancelOperationRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef CancelOperationRequest = $Empty;
 
 /// Mask a string by replacing its characters with a fixed character.
 class CharacterMaskConfig {
@@ -5030,16 +7272,525 @@ class CharacterMaskConfig {
   /// If not supplied, defaults to "*".
   core.String? maskingCharacter;
 
-  CharacterMaskConfig();
+  CharacterMaskConfig({
+    this.maskingCharacter,
+  });
 
-  CharacterMaskConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('maskingCharacter')) {
-      maskingCharacter = _json['maskingCharacter'] as core.String;
-    }
-  }
+  CharacterMaskConfig.fromJson(core.Map _json)
+      : this(
+          maskingCharacter: _json.containsKey('maskingCharacter')
+              ? _json['maskingCharacter'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maskingCharacter != null) 'maskingCharacter': maskingCharacter!,
+      };
+}
+
+/// Checks if a particular data_id of a User data mapping in the given consent
+/// store is consented for a given use.
+class CheckDataAccessRequest {
+  /// Specific Consents to evaluate the access request against.
+  ///
+  /// These Consents must have the same `user_id` as the evaluated User data
+  /// mapping, must exist in the current `consent_store`, and have a `state` of
+  /// either `ACTIVE` or `DRAFT`. A maximum of 100 Consents can be provided
+  /// here. If no selection is specified, the access request is evaluated
+  /// against all `ACTIVE` unexpired Consents with the same `user_id` as the
+  /// evaluated User data mapping.
+  ///
+  /// Optional.
+  ConsentList? consentList;
+
+  /// The unique identifier of the resource to check access for.
+  ///
+  /// This identifier must correspond to a User data mapping in the given
+  /// consent store.
+  ///
+  /// Required.
+  core.String? dataId;
+
+  /// The values of request attributes associated with this access request.
+  core.Map<core.String, core.String>? requestAttributes;
+
+  /// The view for CheckDataAccessResponse.
+  ///
+  /// If unspecified, defaults to `BASIC` and returns `consented` as `TRUE` or
+  /// `FALSE`.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "RESPONSE_VIEW_UNSPECIFIED" : No response view specified. The API will
+  /// default to the BASIC view.
+  /// - "BASIC" : Only the `consented` field is populated in
+  /// CheckDataAccessResponse.
+  /// - "FULL" : All fields within CheckDataAccessResponse are populated. When
+  /// set to `FULL`, all `ACTIVE` Consents are evaluated even if a matching
+  /// policy is found during evaluation.
+  core.String? responseView;
+
+  CheckDataAccessRequest({
+    this.consentList,
+    this.dataId,
+    this.requestAttributes,
+    this.responseView,
+  });
+
+  CheckDataAccessRequest.fromJson(core.Map _json)
+      : this(
+          consentList: _json.containsKey('consentList')
+              ? ConsentList.fromJson(
+                  _json['consentList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          dataId: _json.containsKey('dataId')
+              ? _json['dataId'] as core.String
+              : null,
+          requestAttributes: _json.containsKey('requestAttributes')
+              ? (_json['requestAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          responseView: _json.containsKey('responseView')
+              ? _json['responseView'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentList != null) 'consentList': consentList!,
+        if (dataId != null) 'dataId': dataId!,
+        if (requestAttributes != null) 'requestAttributes': requestAttributes!,
+        if (responseView != null) 'responseView': responseView!,
+      };
+}
+
+/// Checks if a particular data_id of a User data mapping in the given consent
+/// store is consented for a given use.
+class CheckDataAccessResponse {
+  /// The resource names of all evaluated Consents mapped to their evaluation.
+  core.Map<core.String, ConsentEvaluation>? consentDetails;
+
+  /// Whether the requested resource is consented for the given use.
+  core.bool? consented;
+
+  CheckDataAccessResponse({
+    this.consentDetails,
+    this.consented,
+  });
+
+  CheckDataAccessResponse.fromJson(core.Map _json)
+      : this(
+          consentDetails: _json.containsKey('consentDetails')
+              ? (_json['consentDetails'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    ConsentEvaluation.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          consented: _json.containsKey('consented')
+              ? _json['consented'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentDetails != null) 'consentDetails': consentDetails!,
+        if (consented != null) 'consented': consented!,
+      };
+}
+
+/// Represents a user's consent.
+class Consent {
+  /// The resource name of the Consent artifact that contains proof of the end
+  /// user's consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.
+  ///
+  /// Required.
+  core.String? consentArtifact;
+
+  /// Timestamp in UTC of when this Consent is considered expired.
+  core.String? expireTime;
+
+  /// User-supplied key-value pairs used to organize Consent resources.
+  ///
+  /// Metadata keys must: - be between 1 and 63 characters long - have a UTF-8
+  /// encoding of maximum 128 bytes - begin with a letter - consist of up to 63
+  /// characters including lowercase letters, numeric characters, underscores,
+  /// and dashes Metadata values must be: - be between 1 and 63 characters long
+  /// - have a UTF-8 encoding of maximum 128 bytes - consist of up to 63
+  /// characters including lowercase letters, numeric characters, underscores,
+  /// and dashes No more than 64 metadata entries can be associated with a given
+  /// consent.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? metadata;
+
+  /// Resource name of the Consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  ///
+  /// Cannot be changed after creation.
+  core.String? name;
+
+  /// Represents a user's consent in terms of the resources that can be accessed
+  /// and under what conditions.
+  ///
+  /// Optional.
+  core.List<GoogleCloudHealthcareV1ConsentPolicy>? policies;
+
+  /// The timestamp that the revision was created.
+  ///
+  /// Output only.
+  core.String? revisionCreateTime;
+
+  /// The revision ID of the Consent.
+  ///
+  /// The format is an 8-character hexadecimal string. Refer to a specific
+  /// revision of a Consent by appending `@{revision_id}` to the Consent's
+  /// resource name.
+  ///
+  /// Output only.
+  core.String? revisionId;
+
+  /// Indicates the current state of this Consent.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "STATE_UNSPECIFIED" : No state specified. Treated as ACTIVE only at the
+  /// time of resource creation.
+  /// - "ACTIVE" : The Consent is active and is considered when evaluating a
+  /// user's consent on resources.
+  /// - "ARCHIVED" : The archived state is currently not being used.
+  /// - "REVOKED" : A revoked Consent is not considered when evaluating a user's
+  /// consent on resources.
+  /// - "DRAFT" : A draft Consent is not considered when evaluating a user's
+  /// consent on resources unless explicitly specified.
+  /// - "REJECTED" : When a draft Consent is rejected by a user, it is set to a
+  /// rejected state. A rejected Consent is not considered when evaluating a
+  /// user's consent on resources.
+  core.String? state;
+
+  /// Input only.
+  ///
+  /// The time to live for this Consent from when it is created.
+  core.String? ttl;
+
+  /// User's UUID provided by the client.
+  ///
+  /// Required.
+  core.String? userId;
+
+  Consent({
+    this.consentArtifact,
+    this.expireTime,
+    this.metadata,
+    this.name,
+    this.policies,
+    this.revisionCreateTime,
+    this.revisionId,
+    this.state,
+    this.ttl,
+    this.userId,
+  });
+
+  Consent.fromJson(core.Map _json)
+      : this(
+          consentArtifact: _json.containsKey('consentArtifact')
+              ? _json['consentArtifact'] as core.String
+              : null,
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          policies: _json.containsKey('policies')
+              ? (_json['policies'] as core.List)
+                  .map((value) => GoogleCloudHealthcareV1ConsentPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          revisionCreateTime: _json.containsKey('revisionCreateTime')
+              ? _json['revisionCreateTime'] as core.String
+              : null,
+          revisionId: _json.containsKey('revisionId')
+              ? _json['revisionId'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          ttl: _json.containsKey('ttl') ? _json['ttl'] as core.String : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentArtifact != null) 'consentArtifact': consentArtifact!,
+        if (expireTime != null) 'expireTime': expireTime!,
+        if (metadata != null) 'metadata': metadata!,
+        if (name != null) 'name': name!,
+        if (policies != null) 'policies': policies!,
+        if (revisionCreateTime != null)
+          'revisionCreateTime': revisionCreateTime!,
+        if (revisionId != null) 'revisionId': revisionId!,
+        if (state != null) 'state': state!,
+        if (ttl != null) 'ttl': ttl!,
+        if (userId != null) 'userId': userId!,
+      };
+}
+
+/// Documentation of a user's consent.
+class ConsentArtifact {
+  /// Screenshots, PDFs, or other binary information documenting the user's
+  /// consent.
+  ///
+  /// Optional.
+  core.List<Image>? consentContentScreenshots;
+
+  /// An string indicating the version of the consent information shown to the
+  /// user.
+  ///
+  /// Optional.
+  core.String? consentContentVersion;
+
+  /// A signature from a guardian.
+  ///
+  /// Optional.
+  Signature? guardianSignature;
+
+  /// Metadata associated with the Consent artifact.
+  ///
+  /// For example, the consent locale or user agent version.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? metadata;
+
+  /// Resource name of the Consent artifact, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.
+  ///
+  /// Cannot be changed after creation.
+  core.String? name;
+
+  /// User's UUID provided by the client.
+  ///
+  /// Required.
+  core.String? userId;
+
+  /// User's signature.
+  ///
+  /// Optional.
+  Signature? userSignature;
+
+  /// A signature from a witness.
+  ///
+  /// Optional.
+  Signature? witnessSignature;
+
+  ConsentArtifact({
+    this.consentContentScreenshots,
+    this.consentContentVersion,
+    this.guardianSignature,
+    this.metadata,
+    this.name,
+    this.userId,
+    this.userSignature,
+    this.witnessSignature,
+  });
+
+  ConsentArtifact.fromJson(core.Map _json)
+      : this(
+          consentContentScreenshots:
+              _json.containsKey('consentContentScreenshots')
+                  ? (_json['consentContentScreenshots'] as core.List)
+                      .map((value) => Image.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          consentContentVersion: _json.containsKey('consentContentVersion')
+              ? _json['consentContentVersion'] as core.String
+              : null,
+          guardianSignature: _json.containsKey('guardianSignature')
+              ? Signature.fromJson(_json['guardianSignature']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+          userSignature: _json.containsKey('userSignature')
+              ? Signature.fromJson(
+                  _json['userSignature'] as core.Map<core.String, core.dynamic>)
+              : null,
+          witnessSignature: _json.containsKey('witnessSignature')
+              ? Signature.fromJson(_json['witnessSignature']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentContentScreenshots != null)
+          'consentContentScreenshots': consentContentScreenshots!,
+        if (consentContentVersion != null)
+          'consentContentVersion': consentContentVersion!,
+        if (guardianSignature != null) 'guardianSignature': guardianSignature!,
+        if (metadata != null) 'metadata': metadata!,
+        if (name != null) 'name': name!,
+        if (userId != null) 'userId': userId!,
+        if (userSignature != null) 'userSignature': userSignature!,
+        if (witnessSignature != null) 'witnessSignature': witnessSignature!,
+      };
+}
+
+/// The detailed evaluation of a particular Consent.
+class ConsentEvaluation {
+  /// The evaluation result.
+  /// Possible string values are:
+  /// - "EVALUATION_RESULT_UNSPECIFIED" : No evaluation result specified. This
+  /// option is invalid.
+  /// - "NOT_APPLICABLE" : The Consent is not applicable to the requested access
+  /// determination. For example, the Consent does not apply to the user for
+  /// which the access determination is requested, or it has a `state` of
+  /// `REVOKED`, or it has expired.
+  /// - "NO_MATCHING_POLICY" : The Consent does not have a policy that matches
+  /// the `resource_attributes` of the evaluated resource.
+  /// - "NO_SATISFIED_POLICY" : The Consent has at least one policy that matches
+  /// the `resource_attributes` of the evaluated resource, but no
+  /// `authorization_rule` was satisfied.
+  /// - "HAS_SATISFIED_POLICY" : The Consent has at least one policy that
+  /// matches the `resource_attributes` of the evaluated resource, and at least
+  /// one `authorization_rule` was satisfied.
+  core.String? evaluationResult;
+
+  ConsentEvaluation({
+    this.evaluationResult,
+  });
+
+  ConsentEvaluation.fromJson(core.Map _json)
+      : this(
+          evaluationResult: _json.containsKey('evaluationResult')
+              ? _json['evaluationResult'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (evaluationResult != null) 'evaluationResult': evaluationResult!,
+      };
+}
+
+/// List of resource names of Consent resources.
+class ConsentList {
+  /// The resource names of the Consents to evaluate against, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consents/{consent_id}`.
+  core.List<core.String>? consents;
+
+  ConsentList({
+    this.consents,
+  });
+
+  ConsentList.fromJson(core.Map _json)
+      : this(
+          consents: _json.containsKey('consents')
+              ? (_json['consents'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consents != null) 'consents': consents!,
+      };
+}
+
+/// Represents a consent store.
+class ConsentStore {
+  /// Default time to live for Consents created in this store.
+  ///
+  /// Must be at least 24 hours. Updating this field will not affect the
+  /// expiration time of existing consents.
+  ///
+  /// Optional.
+  core.String? defaultConsentTtl;
+
+  /// If `true`, UpdateConsent creates the Consent if it does not already exist.
+  ///
+  /// If unspecified, defaults to `false`.
+  ///
+  /// Optional.
+  core.bool? enableConsentCreateOnUpdate;
+
+  /// User-supplied key-value pairs used to organize consent stores.
+  ///
+  /// Label keys must be between 1 and 63 characters long, have a UTF-8 encoding
+  /// of maximum 128 bytes, and must conform to the following PCRE regular
+  /// expression: \p{Ll}\p{Lo}{0,62}. Label values must be between 1 and 63
+  /// characters long, have a UTF-8 encoding of maximum 128 bytes, and must
+  /// conform to the following PCRE regular expression:
+  /// \[\p{Ll}\p{Lo}\p{N}_-\]{0,63}. No more than 64 labels can be associated
+  /// with a given store. For more information:
+  /// https://cloud.google.com/healthcare/docs/how-tos/labeling-resources
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? labels;
+
+  /// Resource name of the consent store, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}`.
+  ///
+  /// Cannot be changed after creation.
+  core.String? name;
+
+  ConsentStore({
+    this.defaultConsentTtl,
+    this.enableConsentCreateOnUpdate,
+    this.labels,
+    this.name,
+  });
+
+  ConsentStore.fromJson(core.Map _json)
+      : this(
+          defaultConsentTtl: _json.containsKey('defaultConsentTtl')
+              ? _json['defaultConsentTtl'] as core.String
+              : null,
+          enableConsentCreateOnUpdate:
+              _json.containsKey('enableConsentCreateOnUpdate')
+                  ? _json['enableConsentCreateOnUpdate'] as core.bool
+                  : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (defaultConsentTtl != null) 'defaultConsentTtl': defaultConsentTtl!,
+        if (enableConsentCreateOnUpdate != null)
+          'enableConsentCreateOnUpdate': enableConsentCreateOnUpdate!,
+        if (labels != null) 'labels': labels!,
+        if (name != null) 'name': name!,
       };
 }
 
@@ -5048,17 +7799,20 @@ class CreateMessageRequest {
   /// HL7v2 message.
   Message? message;
 
-  CreateMessageRequest();
+  CreateMessageRequest({
+    this.message,
+  });
 
-  CreateMessageRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('message')) {
-      message = Message.fromJson(
-          _json['message'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  CreateMessageRequest.fromJson(core.Map _json)
+      : this(
+          message: _json.containsKey('message')
+              ? Message.fromJson(
+                  _json['message'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (message != null) 'message': message!.toJson(),
+        if (message != null) 'message': message!,
       };
 }
 
@@ -5080,13 +7834,16 @@ class CryptoHashConfig {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  CryptoHashConfig();
+  CryptoHashConfig({
+    this.cryptoKey,
+  });
 
-  CryptoHashConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('cryptoKey')) {
-      cryptoKey = _json['cryptoKey'] as core.String;
-    }
-  }
+  CryptoHashConfig.fromJson(core.Map _json)
+      : this(
+          cryptoKey: _json.containsKey('cryptoKey')
+              ? _json['cryptoKey'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cryptoKey != null) 'cryptoKey': cryptoKey!,
@@ -5110,16 +7867,18 @@ class Dataset {
   /// such as HL7 messages, where no explicit timezone is specified.
   core.String? timeZone;
 
-  Dataset();
+  Dataset({
+    this.name,
+    this.timeZone,
+  });
 
-  Dataset.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('timeZone')) {
-      timeZone = _json['timeZone'] as core.String;
-    }
-  }
+  Dataset.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          timeZone: _json.containsKey('timeZone')
+              ? _json['timeZone'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -5143,13 +7902,16 @@ class DateShiftConfig {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  DateShiftConfig();
+  DateShiftConfig({
+    this.cryptoKey,
+  });
 
-  DateShiftConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('cryptoKey')) {
-      cryptoKey = _json['cryptoKey'] as core.String;
-    }
-  }
+  DateShiftConfig.fromJson(core.Map _json)
+      : this(
+          cryptoKey: _json.containsKey('cryptoKey')
+              ? _json['cryptoKey'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cryptoKey != null) 'cryptoKey': cryptoKey!,
@@ -5176,32 +7938,38 @@ class DeidentifyConfig {
   /// source_dataset.
   TextConfig? text;
 
-  DeidentifyConfig();
+  DeidentifyConfig({
+    this.dicom,
+    this.fhir,
+    this.image,
+    this.text,
+  });
 
-  DeidentifyConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('dicom')) {
-      dicom = DicomConfig.fromJson(
-          _json['dicom'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fhir')) {
-      fhir = FhirConfig.fromJson(
-          _json['fhir'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('image')) {
-      image = ImageConfig.fromJson(
-          _json['image'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('text')) {
-      text = TextConfig.fromJson(
-          _json['text'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeidentifyConfig.fromJson(core.Map _json)
+      : this(
+          dicom: _json.containsKey('dicom')
+              ? DicomConfig.fromJson(
+                  _json['dicom'] as core.Map<core.String, core.dynamic>)
+              : null,
+          fhir: _json.containsKey('fhir')
+              ? FhirConfig.fromJson(
+                  _json['fhir'] as core.Map<core.String, core.dynamic>)
+              : null,
+          image: _json.containsKey('image')
+              ? ImageConfig.fromJson(
+                  _json['image'] as core.Map<core.String, core.dynamic>)
+              : null,
+          text: _json.containsKey('text')
+              ? TextConfig.fromJson(
+                  _json['text'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dicom != null) 'dicom': dicom!.toJson(),
-        if (fhir != null) 'fhir': fhir!.toJson(),
-        if (image != null) 'image': image!.toJson(),
-        if (text != null) 'text': text!.toJson(),
+        if (dicom != null) 'dicom': dicom!,
+        if (fhir != null) 'fhir': fhir!,
+        if (image != null) 'image': image!,
+        if (text != null) 'text': text!,
       };
 }
 
@@ -5213,24 +7981,28 @@ class DeidentifyDatasetRequest {
   /// The name of the dataset resource to create and write the redacted data to.
   ///
   /// * The destination dataset must not exist. * The destination dataset must
-  /// be in the same project and location as the source dataset. De-identifying
-  /// data across multiple projects or locations is not supported.
+  /// be in the same location as the source dataset. De-identifying data across
+  /// multiple locations is not supported.
   core.String? destinationDataset;
 
-  DeidentifyDatasetRequest();
+  DeidentifyDatasetRequest({
+    this.config,
+    this.destinationDataset,
+  });
 
-  DeidentifyDatasetRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('config')) {
-      config = DeidentifyConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('destinationDataset')) {
-      destinationDataset = _json['destinationDataset'] as core.String;
-    }
-  }
+  DeidentifyDatasetRequest.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? DeidentifyConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          destinationDataset: _json.containsKey('destinationDataset')
+              ? _json['destinationDataset'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (destinationDataset != null)
           'destinationDataset': destinationDataset!,
       };
@@ -5238,7 +8010,7 @@ class DeidentifyDatasetRequest {
 
 /// Creates a new DICOM store with sensitive information de-identified.
 class DeidentifyDicomStoreRequest {
-  /// De-identify configuration.
+  /// Deidentify configuration.
   DeidentifyConfig? config;
 
   /// The name of the DICOM store to create and write the redacted data to.
@@ -5246,35 +8018,40 @@ class DeidentifyDicomStoreRequest {
   /// For example,
   /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/dicomStores/{dicom_store_id}`.
   /// * The destination dataset must exist. * The source dataset and destination
-  /// dataset must both reside in the same project. De-identifying data across
-  /// multiple projects is not supported. * The destination DICOM store must not
-  /// exist. * The caller must have the necessary permissions to create the
+  /// dataset must both reside in the same location. De-identifying data across
+  /// multiple locations is not supported. * The destination DICOM store must
+  /// not exist. * The caller must have the necessary permissions to create the
   /// destination DICOM store.
   core.String? destinationStore;
 
   /// Filter configuration.
   DicomFilterConfig? filterConfig;
 
-  DeidentifyDicomStoreRequest();
+  DeidentifyDicomStoreRequest({
+    this.config,
+    this.destinationStore,
+    this.filterConfig,
+  });
 
-  DeidentifyDicomStoreRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('config')) {
-      config = DeidentifyConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('destinationStore')) {
-      destinationStore = _json['destinationStore'] as core.String;
-    }
-    if (_json.containsKey('filterConfig')) {
-      filterConfig = DicomFilterConfig.fromJson(
-          _json['filterConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeidentifyDicomStoreRequest.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? DeidentifyConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          destinationStore: _json.containsKey('destinationStore')
+              ? _json['destinationStore'] as core.String
+              : null,
+          filterConfig: _json.containsKey('filterConfig')
+              ? DicomFilterConfig.fromJson(
+                  _json['filterConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (destinationStore != null) 'destinationStore': destinationStore!,
-        if (filterConfig != null) 'filterConfig': filterConfig!.toJson(),
+        if (filterConfig != null) 'filterConfig': filterConfig!,
       };
 }
 
@@ -5288,8 +8065,8 @@ class DeidentifyFhirStoreRequest {
   /// For example,
   /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/fhirStores/{fhir_store_id}`.
   /// * The destination dataset must exist. * The source dataset and destination
-  /// dataset must both reside in the same project. De-identifying data across
-  /// multiple projects is not supported. * The destination FHIR store must
+  /// dataset must both reside in the same location. De-identifying data across
+  /// multiple locations is not supported. * The destination FHIR store must
   /// exist. * The caller must have the healthcare.fhirResources.update
   /// permission to write to the destination FHIR store.
   core.String? destinationStore;
@@ -5299,38 +8076,32 @@ class DeidentifyFhirStoreRequest {
   /// If not specified, all resources are included in the output.
   FhirFilter? resourceFilter;
 
-  DeidentifyFhirStoreRequest();
+  DeidentifyFhirStoreRequest({
+    this.config,
+    this.destinationStore,
+    this.resourceFilter,
+  });
 
-  DeidentifyFhirStoreRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('config')) {
-      config = DeidentifyConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('destinationStore')) {
-      destinationStore = _json['destinationStore'] as core.String;
-    }
-    if (_json.containsKey('resourceFilter')) {
-      resourceFilter = FhirFilter.fromJson(
-          _json['resourceFilter'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeidentifyFhirStoreRequest.fromJson(core.Map _json)
+      : this(
+          config: _json.containsKey('config')
+              ? DeidentifyConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          destinationStore: _json.containsKey('destinationStore')
+              ? _json['destinationStore'] as core.String
+              : null,
+          resourceFilter: _json.containsKey('resourceFilter')
+              ? FhirFilter.fromJson(_json['resourceFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (config != null) 'config': config!.toJson(),
+        if (config != null) 'config': config!,
         if (destinationStore != null) 'destinationStore': destinationStore!,
-        if (resourceFilter != null) 'resourceFilter': resourceFilter!.toJson(),
+        if (resourceFilter != null) 'resourceFilter': resourceFilter!,
       };
-}
-
-/// Contains a summary of the Deidentify operation.
-class DeidentifySummary {
-  DeidentifySummary();
-
-  DeidentifySummary.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
 }
 
 /// Specifies the parameters needed for de-identification of DICOM stores.
@@ -5373,29 +8144,35 @@ class DicomConfig {
   /// http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.9.html
   core.bool? skipIdRedaction;
 
-  DicomConfig();
+  DicomConfig({
+    this.filterProfile,
+    this.keepList,
+    this.removeList,
+    this.skipIdRedaction,
+  });
 
-  DicomConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('filterProfile')) {
-      filterProfile = _json['filterProfile'] as core.String;
-    }
-    if (_json.containsKey('keepList')) {
-      keepList = TagFilterList.fromJson(
-          _json['keepList'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('removeList')) {
-      removeList = TagFilterList.fromJson(
-          _json['removeList'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('skipIdRedaction')) {
-      skipIdRedaction = _json['skipIdRedaction'] as core.bool;
-    }
-  }
+  DicomConfig.fromJson(core.Map _json)
+      : this(
+          filterProfile: _json.containsKey('filterProfile')
+              ? _json['filterProfile'] as core.String
+              : null,
+          keepList: _json.containsKey('keepList')
+              ? TagFilterList.fromJson(
+                  _json['keepList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          removeList: _json.containsKey('removeList')
+              ? TagFilterList.fromJson(
+                  _json['removeList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          skipIdRedaction: _json.containsKey('skipIdRedaction')
+              ? _json['skipIdRedaction'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (filterProfile != null) 'filterProfile': filterProfile!,
-        if (keepList != null) 'keepList': keepList!.toJson(),
-        if (removeList != null) 'removeList': removeList!.toJson(),
+        if (keepList != null) 'keepList': keepList!,
+        if (removeList != null) 'removeList': removeList!,
         if (skipIdRedaction != null) 'skipIdRedaction': skipIdRedaction!,
       };
 }
@@ -5414,13 +8191,16 @@ class DicomFilterConfig {
   /// location.
   core.String? resourcePathsGcsUri;
 
-  DicomFilterConfig();
+  DicomFilterConfig({
+    this.resourcePathsGcsUri,
+  });
 
-  DicomFilterConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('resourcePathsGcsUri')) {
-      resourcePathsGcsUri = _json['resourcePathsGcsUri'] as core.String;
-    }
-  }
+  DicomFilterConfig.fromJson(core.Map _json)
+      : this(
+          resourcePathsGcsUri: _json.containsKey('resourcePathsGcsUri')
+              ? _json['resourcePathsGcsUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (resourcePathsGcsUri != null)
@@ -5450,31 +8230,34 @@ class DicomStore {
   /// Supplied by the client.
   NotificationConfig? notificationConfig;
 
-  DicomStore();
+  DicomStore({
+    this.labels,
+    this.name,
+    this.notificationConfig,
+  });
 
-  DicomStore.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationConfig')) {
-      notificationConfig = NotificationConfig.fromJson(
-          _json['notificationConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DicomStore.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationConfig: _json.containsKey('notificationConfig')
+              ? NotificationConfig.fromJson(_json['notificationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (notificationConfig != null)
-          'notificationConfig': notificationConfig!.toJson(),
+          'notificationConfig': notificationConfig!,
       };
 }
 
@@ -5485,14 +8268,361 @@ class DicomStore {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// The candidate entities that an entity mention could link to.
+class Entity {
+  /// entity_id is a first class field entity_id uniquely identifies this
+  /// concept and its meta-vocabulary.
+  ///
+  /// For example, "UMLS/C0000970".
+  core.String? entityId;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// preferred_term is the preferred term for this concept.
+  ///
+  /// For example, "Acetaminophen". For ad hoc entities formed by normalization,
+  /// this is the most popular unnormalized string.
+  core.String? preferredTerm;
+
+  /// Vocabulary codes are first-class fields and differentiated from the
+  /// concept unique identifier (entity_id).
+  ///
+  /// vocabulary_codes contains the representation of this concept in particular
+  /// vocabularies, such as ICD-10, SNOMED-CT and RxNORM. These are prefixed by
+  /// the name of the vocabulary, followed by the unique code within that
+  /// vocabulary. For example, "RXNORM/A10334543".
+  core.List<core.String>? vocabularyCodes;
+
+  Entity({
+    this.entityId,
+    this.preferredTerm,
+    this.vocabularyCodes,
+  });
+
+  Entity.fromJson(core.Map _json)
+      : this(
+          entityId: _json.containsKey('entityId')
+              ? _json['entityId'] as core.String
+              : null,
+          preferredTerm: _json.containsKey('preferredTerm')
+              ? _json['preferredTerm'] as core.String
+              : null,
+          vocabularyCodes: _json.containsKey('vocabularyCodes')
+              ? (_json['vocabularyCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (entityId != null) 'entityId': entityId!,
+        if (preferredTerm != null) 'preferredTerm': preferredTerm!,
+        if (vocabularyCodes != null) 'vocabularyCodes': vocabularyCodes!,
+      };
+}
+
+/// An entity mention in the document.
+class EntityMention {
+  /// The certainty assessment of the entity mention.
+  ///
+  /// Its value is one of: LIKELY, SOMEWHAT_LIKELY, UNCERTAIN,
+  /// SOMEWHAT_UNLIKELY, UNLIKELY, CONDITIONAL
+  Feature? certaintyAssessment;
+
+  /// The model's confidence in this entity mention annotation.
+  ///
+  /// A number between 0 and 1.
+  core.double? confidence;
+
+  /// linked_entities are candidate ontological concepts that this entity
+  /// mention may refer to.
+  ///
+  /// They are sorted by decreasing confidence.it
+  core.List<LinkedEntity>? linkedEntities;
+
+  /// mention_id uniquely identifies each entity mention in a single response.
+  core.String? mentionId;
+
+  /// The subject this entity mention relates to.
+  ///
+  /// Its value is one of: PATIENT, FAMILY_MEMBER, OTHER
+  Feature? subject;
+
+  /// How this entity mention relates to the subject temporally.
+  ///
+  /// Its value is one of: CURRENT, CLINICAL_HISTORY, FAMILY_HISTORY, UPCOMING,
+  /// ALLERGY
+  Feature? temporalAssessment;
+
+  /// text is the location of the entity mention in the document.
+  TextSpan? text;
+
+  /// The semantic type of the entity: UNKNOWN_ENTITY_TYPE, ALONE,
+  /// ANATOMICAL_STRUCTURE, ASSISTED_LIVING, BF_RESULT, BM_RESULT, BM_UNIT,
+  /// BM_VALUE, BODY_FUNCTION, BODY_MEASUREMENT, COMPLIANT, DOESNOT_FOLLOWUP,
+  /// FAMILY, FOLLOWSUP, LABORATORY_DATA, LAB_RESULT, LAB_UNIT, LAB_VALUE,
+  /// MEDICAL_DEVICE, MEDICINE, MED_DOSE, MED_DURATION, MED_FORM, MED_FREQUENCY,
+  /// MED_ROUTE, MED_STATUS, MED_STRENGTH, MED_TOTALDOSE, MED_UNIT,
+  /// NON_COMPLIANT, OTHER_LIVINGSTATUS, PROBLEM, PROCEDURE, PROCEDURE_RESULT,
+  /// PROC_METHOD, REASON_FOR_NONCOMPLIANCE, SEVERITY, SUBSTANCE_ABUSE,
+  /// UNCLEAR_FOLLOWUP.
+  core.String? type;
+
+  EntityMention({
+    this.certaintyAssessment,
+    this.confidence,
+    this.linkedEntities,
+    this.mentionId,
+    this.subject,
+    this.temporalAssessment,
+    this.text,
+    this.type,
+  });
+
+  EntityMention.fromJson(core.Map _json)
+      : this(
+          certaintyAssessment: _json.containsKey('certaintyAssessment')
+              ? Feature.fromJson(_json['certaintyAssessment']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          linkedEntities: _json.containsKey('linkedEntities')
+              ? (_json['linkedEntities'] as core.List)
+                  .map((value) => LinkedEntity.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          mentionId: _json.containsKey('mentionId')
+              ? _json['mentionId'] as core.String
+              : null,
+          subject: _json.containsKey('subject')
+              ? Feature.fromJson(
+                  _json['subject'] as core.Map<core.String, core.dynamic>)
+              : null,
+          temporalAssessment: _json.containsKey('temporalAssessment')
+              ? Feature.fromJson(_json['temporalAssessment']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          text: _json.containsKey('text')
+              ? TextSpan.fromJson(
+                  _json['text'] as core.Map<core.String, core.dynamic>)
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (certaintyAssessment != null)
+          'certaintyAssessment': certaintyAssessment!,
+        if (confidence != null) 'confidence': confidence!,
+        if (linkedEntities != null) 'linkedEntities': linkedEntities!,
+        if (mentionId != null) 'mentionId': mentionId!,
+        if (subject != null) 'subject': subject!,
+        if (temporalAssessment != null)
+          'temporalAssessment': temporalAssessment!,
+        if (text != null) 'text': text!,
+        if (type != null) 'type': type!,
+      };
+}
+
+/// Defines directed relationship from one entity mention to another.
+class EntityMentionRelationship {
+  /// The model's confidence in this annotation.
+  ///
+  /// A number between 0 and 1.
+  core.double? confidence;
+
+  /// object_id is the id of the object entity mention.
+  core.String? objectId;
+
+  /// subject_id is the id of the subject entity mention.
+  core.String? subjectId;
+
+  EntityMentionRelationship({
+    this.confidence,
+    this.objectId,
+    this.subjectId,
+  });
+
+  EntityMentionRelationship.fromJson(core.Map _json)
+      : this(
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          objectId: _json.containsKey('objectId')
+              ? _json['objectId'] as core.String
+              : null,
+          subjectId: _json.containsKey('subjectId')
+              ? _json['subjectId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (confidence != null) 'confidence': confidence!,
+        if (objectId != null) 'objectId': objectId!,
+        if (subjectId != null) 'subjectId': subjectId!,
+      };
+}
+
+/// Evaluate a user's Consents for all matching User data mappings.
+///
+/// Note: User data mappings are indexed asynchronously, causing slight delays
+/// between the time mappings are created or updated and when they are included
+/// in EvaluateUserConsents results.
+class EvaluateUserConsentsRequest {
+  /// Specific Consents to evaluate the access request against.
+  ///
+  /// These Consents must have the same `user_id` as the User data mappings
+  /// being evalauted, must exist in the current `consent_store`, and must have
+  /// a `state` of either `ACTIVE` or `DRAFT`. A maximum of 100 Consents can be
+  /// provided here. If unspecified, all `ACTIVE` unexpired Consents in the
+  /// current `consent_store` will be evaluated.
+  ///
+  /// Optional.
+  ConsentList? consentList;
+
+  /// Limit on the number of User data mappings to return in a single response.
+  ///
+  /// If not specified, 100 is used. May not be larger than 1000.
+  ///
+  /// Optional.
+  core.int? pageSize;
+
+  /// Token to retrieve the next page of results, or empty to get the first
+  /// page.
+  ///
+  /// Optional.
+  core.String? pageToken;
+
+  /// The values of request attributes associated with this access request.
+  ///
+  /// Required.
+  core.Map<core.String, core.String>? requestAttributes;
+
+  /// The values of resource attributes associated with the resources being
+  /// requested.
+  ///
+  /// If no values are specified, then all resources are queried.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? resourceAttributes;
+
+  /// The view for EvaluateUserConsentsResponse.
+  ///
+  /// If unspecified, defaults to `BASIC` and returns `consented` as `TRUE` or
+  /// `FALSE`.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "RESPONSE_VIEW_UNSPECIFIED" : No response view specified. The API will
+  /// default to the BASIC view.
+  /// - "BASIC" : Only the `data_id` and `consented` fields are populated in the
+  /// response.
+  /// - "FULL" : All fields within the response are populated. When set to
+  /// `FULL`, all `ACTIVE` Consents are evaluated even if a matching policy is
+  /// found during evaluation.
+  core.String? responseView;
+
+  /// User ID to evaluate consents for.
+  ///
+  /// Required.
+  core.String? userId;
+
+  EvaluateUserConsentsRequest({
+    this.consentList,
+    this.pageSize,
+    this.pageToken,
+    this.requestAttributes,
+    this.resourceAttributes,
+    this.responseView,
+    this.userId,
+  });
+
+  EvaluateUserConsentsRequest.fromJson(core.Map _json)
+      : this(
+          consentList: _json.containsKey('consentList')
+              ? ConsentList.fromJson(
+                  _json['consentList'] as core.Map<core.String, core.dynamic>)
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          requestAttributes: _json.containsKey('requestAttributes')
+              ? (_json['requestAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          resourceAttributes: _json.containsKey('resourceAttributes')
+              ? (_json['resourceAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          responseView: _json.containsKey('responseView')
+              ? _json['responseView'] as core.String
+              : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentList != null) 'consentList': consentList!,
+        if (pageSize != null) 'pageSize': pageSize!,
+        if (pageToken != null) 'pageToken': pageToken!,
+        if (requestAttributes != null) 'requestAttributes': requestAttributes!,
+        if (resourceAttributes != null)
+          'resourceAttributes': resourceAttributes!,
+        if (responseView != null) 'responseView': responseView!,
+        if (userId != null) 'userId': userId!,
+      };
+}
+
+class EvaluateUserConsentsResponse {
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  ///
+  /// This token is valid for 72 hours after it is created.
+  core.String? nextPageToken;
+
+  /// The consent evaluation result for each `data_id`.
+  core.List<Result>? results;
+
+  EvaluateUserConsentsResponse({
+    this.nextPageToken,
+    this.results,
+  });
+
+  EvaluateUserConsentsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          results: _json.containsKey('results')
+              ? (_json['results'] as core.List)
+                  .map((value) => Result.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (results != null) 'results': results!,
+      };
 }
 
 /// Exports data from the specified DICOM store.
@@ -5516,37 +8646,82 @@ class ExportDicomDataRequest {
   /// `roles/storage.objectAdmin` Cloud IAM roles on the Cloud Storage location.
   GoogleCloudHealthcareV1DicomGcsDestination? gcsDestination;
 
-  ExportDicomDataRequest();
+  ExportDicomDataRequest({
+    this.bigqueryDestination,
+    this.gcsDestination,
+  });
 
-  ExportDicomDataRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('bigqueryDestination')) {
-      bigqueryDestination =
-          GoogleCloudHealthcareV1DicomBigQueryDestination.fromJson(
-              _json['bigqueryDestination']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gcsDestination')) {
-      gcsDestination = GoogleCloudHealthcareV1DicomGcsDestination.fromJson(
-          _json['gcsDestination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ExportDicomDataRequest.fromJson(core.Map _json)
+      : this(
+          bigqueryDestination: _json.containsKey('bigqueryDestination')
+              ? GoogleCloudHealthcareV1DicomBigQueryDestination.fromJson(
+                  _json['bigqueryDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GoogleCloudHealthcareV1DicomGcsDestination.fromJson(
+                  _json['gcsDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bigqueryDestination != null)
-          'bigqueryDestination': bigqueryDestination!.toJson(),
-        if (gcsDestination != null) 'gcsDestination': gcsDestination!.toJson(),
+          'bigqueryDestination': bigqueryDestination!,
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
       };
 }
 
-/// Returns additional information in regards to a completed DICOM store export.
-class ExportDicomDataResponse {
-  ExportDicomDataResponse();
+/// Request to schedule an export.
+class ExportMessagesRequest {
+  /// The end of the range in `send_time` (MSH.7,
+  /// https://www.hl7.org/documentcenter/public_temp_2E58C1F9-1C23-BA17-0C6126475344DA9D/wg/conf/HL7MSH.htm)
+  /// to process.
+  ///
+  /// If not specified, the time when the export is scheduled is used. This
+  /// value has to come after the `start_time` defined below. Only messages
+  /// whose `send_time` lies in the range `start_time` (inclusive) to `end_time`
+  /// (exclusive) are exported.
+  core.String? endTime;
 
-  ExportDicomDataResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  /// Export to a Cloud Storage destination.
+  GcsDestination? gcsDestination;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// The start of the range in `send_time` (MSH.7,
+  /// https://www.hl7.org/documentcenter/public_temp_2E58C1F9-1C23-BA17-0C6126475344DA9D/wg/conf/HL7MSH.htm)
+  /// to process.
+  ///
+  /// If not specified, the UNIX epoch (1970-01-01T00:00:00Z) is used. This
+  /// value has to come before the `end_time` defined below. Only messages whose
+  /// `send_time` lies in the range `start_time` (inclusive) to `end_time`
+  /// (exclusive) are exported.
+  core.String? startTime;
+
+  ExportMessagesRequest({
+    this.endTime,
+    this.gcsDestination,
+    this.startTime,
+  });
+
+  ExportMessagesRequest.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GcsDestination.fromJson(_json['gcsDestination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (endTime != null) 'endTime': endTime!,
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
+        if (startTime != null) 'startTime': startTime!,
+      };
 }
 
 /// Request to export resources.
@@ -5555,7 +8730,9 @@ class ExportResourcesRequest {
   ///
   /// The Cloud Healthcare Service Agent requires two IAM roles on the BigQuery
   /// location: `roles/bigquery.dataEditor` and `roles/bigquery.jobUser`. The
-  /// output is one BigQuery table per resource type.
+  /// output is one BigQuery table per resource type. Unlike when setting
+  /// `BigQueryDestination` for `StreamConfig`, `ExportResources` does not
+  /// create BigQuery views.
   GoogleCloudHealthcareV1FhirBigQueryDestination? bigqueryDestination;
 
   /// The Cloud Storage output destination.
@@ -5567,40 +8744,30 @@ class ExportResourcesRequest {
   /// and each line is a FHIR resource.
   GoogleCloudHealthcareV1FhirGcsDestination? gcsDestination;
 
-  ExportResourcesRequest();
+  ExportResourcesRequest({
+    this.bigqueryDestination,
+    this.gcsDestination,
+  });
 
-  ExportResourcesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('bigqueryDestination')) {
-      bigqueryDestination =
-          GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(
-              _json['bigqueryDestination']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gcsDestination')) {
-      gcsDestination = GoogleCloudHealthcareV1FhirGcsDestination.fromJson(
-          _json['gcsDestination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ExportResourcesRequest.fromJson(core.Map _json)
+      : this(
+          bigqueryDestination: _json.containsKey('bigqueryDestination')
+              ? GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(
+                  _json['bigqueryDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GoogleCloudHealthcareV1FhirGcsDestination.fromJson(
+                  _json['gcsDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bigqueryDestination != null)
-          'bigqueryDestination': bigqueryDestination!.toJson(),
-        if (gcsDestination != null) 'gcsDestination': gcsDestination!.toJson(),
+          'bigqueryDestination': bigqueryDestination!,
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
       };
-}
-
-/// Response when all resources export successfully.
-///
-/// This structure is included in the response to describe the detailed outcome
-/// after the operation finishes successfully.
-class ExportResourcesResponse {
-  ExportResourcesResponse();
-
-  ExportResourcesResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
 }
 
 /// Represents a textual expression in the Common Expression Language (CEL)
@@ -5609,7 +8776,7 @@ class ExportResourcesResponse {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -5621,80 +8788,79 @@ class ExportResourcesResponse {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
+typedef Expr = $Expr;
 
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
+/// A feature of an entity mention.
+class Feature {
+  /// The model's confidence in this feature annotation.
   ///
-  /// Optional.
-  core.String? location;
+  /// A number between 0 and 1.
+  core.double? confidence;
 
-  /// Title for the expression, i.e. a short string describing its purpose.
+  /// The value of this feature annotation.
   ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
+  /// Its range depends on the type of the feature.
+  core.String? value;
 
-  Expr();
+  Feature({
+    this.confidence,
+    this.value,
+  });
 
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Feature.fromJson(core.Map _json)
+      : this(
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
+        if (confidence != null) 'confidence': confidence!,
+        if (value != null) 'value': value!,
       };
 }
 
 /// Specifies how to handle de-identification of a FHIR store.
 class FhirConfig {
+  /// The behaviour for handling FHIR extensions that aren't otherwise specified
+  /// for de-identification.
+  ///
+  /// If true, all extensions are preserved during de-identification by default.
+  /// If false or unspecified, all extensions are removed during
+  /// de-identification by default.
+  core.bool? defaultKeepExtensions;
+
   /// Specifies FHIR paths to match and how to transform them.
   ///
   /// Any field that is not matched by a FieldMetadata is passed through to the
-  /// output dataset unmodified. All extensions are removed in the output.
+  /// output dataset unmodified. All extensions will be processed according to
+  /// `default_keep_extensions`.
   core.List<FieldMetadata>? fieldMetadataList;
 
-  FhirConfig();
+  FhirConfig({
+    this.defaultKeepExtensions,
+    this.fieldMetadataList,
+  });
 
-  FhirConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('fieldMetadataList')) {
-      fieldMetadataList = (_json['fieldMetadataList'] as core.List)
-          .map<FieldMetadata>((value) => FieldMetadata.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  FhirConfig.fromJson(core.Map _json)
+      : this(
+          defaultKeepExtensions: _json.containsKey('defaultKeepExtensions')
+              ? _json['defaultKeepExtensions'] as core.bool
+              : null,
+          fieldMetadataList: _json.containsKey('fieldMetadataList')
+              ? (_json['fieldMetadataList'] as core.List)
+                  .map((value) => FieldMetadata.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fieldMetadataList != null)
-          'fieldMetadataList':
-              fieldMetadataList!.map((value) => value.toJson()).toList(),
+        if (defaultKeepExtensions != null)
+          'defaultKeepExtensions': defaultKeepExtensions!,
+        if (fieldMetadataList != null) 'fieldMetadataList': fieldMetadataList!,
       };
 }
 
@@ -5706,22 +8872,35 @@ class FhirFilter {
   /// output.
   Resources? resources;
 
-  FhirFilter();
+  FhirFilter({
+    this.resources,
+  });
 
-  FhirFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('resources')) {
-      resources = Resources.fromJson(
-          _json['resources'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  FhirFilter.fromJson(core.Map _json)
+      : this(
+          resources: _json.containsKey('resources')
+              ? Resources.fromJson(
+                  _json['resources'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (resources != null) 'resources': resources!.toJson(),
+        if (resources != null) 'resources': resources!,
       };
 }
 
 /// Represents a FHIR store.
 class FhirStore {
+  /// If true, overrides the default search behavior for this FHIR store to
+  /// `handling=strict` which returns an error for unrecognized search
+  /// parameters.
+  ///
+  /// If false, uses the FHIR specification default `handling=lenient` which
+  /// ignores unrecognized search parameters. The handling can always be changed
+  /// from the default on an individual API call by setting the HTTP header
+  /// `Prefer: handling=strict` or `Prefer: handling=lenient`.
+  core.bool? defaultSearchHandlingStrict;
+
   /// Whether to disable referential integrity in this FHIR store.
   ///
   /// This field is immutable after FHIR store creation. The default value is
@@ -5756,7 +8935,7 @@ class FhirStore {
   /// resource return errors. It is strongly advised not to include or encode
   /// any sensitive data such as patient identifiers in client-specified
   /// resource IDs. Those IDs are part of the FHIR resource path recorded in
-  /// Cloud audit logs and Cloud Pub/Sub notifications. Those IDs can also be
+  /// Cloud audit logs and Pub/Sub notifications. Those IDs can also be
   /// contained in reference fields within other resources.
   core.bool? enableUpdateCreate;
 
@@ -5780,8 +8959,8 @@ class FhirStore {
   /// If non-empty, publish all resource modifications of this FHIR store to
   /// this destination.
   ///
-  /// The Cloud Pub/Sub message attributes contain a map with a string
-  /// describing the action that has triggered the notification. For example,
+  /// The Pub/Sub message attributes contain a map with a string describing the
+  /// action that has triggered the notification. For example,
   /// "action":"CreateResource".
   NotificationConfig? notificationConfig;
 
@@ -5800,6 +8979,10 @@ class FhirStore {
   /// the results show up in the streaming destination.
   core.List<StreamConfig>? streamConfigs;
 
+  /// Configuration for how to validate incoming FHIR resources against
+  /// configured profiles.
+  ValidationConfig? validationConfig;
+
   /// The FHIR specification version that this FHIR store supports natively.
   ///
   /// This field is immutable after store creation. Requests are rejected if
@@ -5817,47 +9000,67 @@ class FhirStore {
   /// - "R4" : [Release 4](https://www.hl7.org/fhir/R4)
   core.String? version;
 
-  FhirStore();
+  FhirStore({
+    this.defaultSearchHandlingStrict,
+    this.disableReferentialIntegrity,
+    this.disableResourceVersioning,
+    this.enableUpdateCreate,
+    this.labels,
+    this.name,
+    this.notificationConfig,
+    this.streamConfigs,
+    this.validationConfig,
+    this.version,
+  });
 
-  FhirStore.fromJson(core.Map _json) {
-    if (_json.containsKey('disableReferentialIntegrity')) {
-      disableReferentialIntegrity =
-          _json['disableReferentialIntegrity'] as core.bool;
-    }
-    if (_json.containsKey('disableResourceVersioning')) {
-      disableResourceVersioning =
-          _json['disableResourceVersioning'] as core.bool;
-    }
-    if (_json.containsKey('enableUpdateCreate')) {
-      enableUpdateCreate = _json['enableUpdateCreate'] as core.bool;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationConfig')) {
-      notificationConfig = NotificationConfig.fromJson(
-          _json['notificationConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('streamConfigs')) {
-      streamConfigs = (_json['streamConfigs'] as core.List)
-          .map<StreamConfig>((value) => StreamConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  FhirStore.fromJson(core.Map _json)
+      : this(
+          defaultSearchHandlingStrict:
+              _json.containsKey('defaultSearchHandlingStrict')
+                  ? _json['defaultSearchHandlingStrict'] as core.bool
+                  : null,
+          disableReferentialIntegrity:
+              _json.containsKey('disableReferentialIntegrity')
+                  ? _json['disableReferentialIntegrity'] as core.bool
+                  : null,
+          disableResourceVersioning:
+              _json.containsKey('disableResourceVersioning')
+                  ? _json['disableResourceVersioning'] as core.bool
+                  : null,
+          enableUpdateCreate: _json.containsKey('enableUpdateCreate')
+              ? _json['enableUpdateCreate'] as core.bool
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationConfig: _json.containsKey('notificationConfig')
+              ? NotificationConfig.fromJson(_json['notificationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          streamConfigs: _json.containsKey('streamConfigs')
+              ? (_json['streamConfigs'] as core.List)
+                  .map((value) => StreamConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          validationConfig: _json.containsKey('validationConfig')
+              ? ValidationConfig.fromJson(_json['validationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (defaultSearchHandlingStrict != null)
+          'defaultSearchHandlingStrict': defaultSearchHandlingStrict!,
         if (disableReferentialIntegrity != null)
           'disableReferentialIntegrity': disableReferentialIntegrity!,
         if (disableResourceVersioning != null)
@@ -5867,11 +9070,67 @@ class FhirStore {
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (notificationConfig != null)
-          'notificationConfig': notificationConfig!.toJson(),
-        if (streamConfigs != null)
-          'streamConfigs':
-              streamConfigs!.map((value) => value.toJson()).toList(),
+          'notificationConfig': notificationConfig!,
+        if (streamConfigs != null) 'streamConfigs': streamConfigs!,
+        if (validationConfig != null) 'validationConfig': validationConfig!,
         if (version != null) 'version': version!,
+      };
+}
+
+/// A (sub) field of a type.
+class Field {
+  /// The maximum number of times this field can be repeated.
+  ///
+  /// 0 or -1 means unbounded.
+  core.int? maxOccurs;
+
+  /// The minimum number of times this field must be present/repeated.
+  core.int? minOccurs;
+
+  /// The name of the field.
+  ///
+  /// For example, "PID-1" or just "1".
+  core.String? name;
+
+  /// The HL7v2 table this field refers to.
+  ///
+  /// For example, PID-15 (Patient's Primary Language) usually refers to table
+  /// "0296".
+  core.String? table;
+
+  /// The type of this field.
+  ///
+  /// A Type with this name must be defined in an Hl7TypesConfig.
+  core.String? type;
+
+  Field({
+    this.maxOccurs,
+    this.minOccurs,
+    this.name,
+    this.table,
+    this.type,
+  });
+
+  Field.fromJson(core.Map _json)
+      : this(
+          maxOccurs: _json.containsKey('maxOccurs')
+              ? _json['maxOccurs'] as core.int
+              : null,
+          minOccurs: _json.containsKey('minOccurs')
+              ? _json['minOccurs'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          table:
+              _json.containsKey('table') ? _json['table'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (maxOccurs != null) 'maxOccurs': maxOccurs!,
+        if (minOccurs != null) 'minOccurs': minOccurs!,
+        if (name != null) 'name': name!,
+        if (table != null) 'table': table!,
+        if (type != null) 'type': type!,
       };
 }
 
@@ -5893,23 +9152,27 @@ class FieldMetadata {
   /// "choice" types (those defined in the FHIR spec with the form: field\[x\])
   /// we use two separate components. For example, "deceasedAge.unit" is matched
   /// by "Deceased.Age.unit". Supported types are: AdministrativeGenderCode,
-  /// Code, Date, DateTime, Decimal, HumanName, Id, LanguageCode, Markdown, Oid,
-  /// String, Uri, Uuid, Xhtml. Base64Binary is also supported, but may only be
-  /// kept as-is or have all the content removed.
+  /// Base64Binary, Boolean, Code, Date, DateTime, Decimal, HumanName, Id,
+  /// Instant, Integer, LanguageCode, Markdown, Oid, PositiveInt, String,
+  /// UnsignedInt, Uri, Uuid, Xhtml.
   core.List<core.String>? paths;
 
-  FieldMetadata();
+  FieldMetadata({
+    this.action,
+    this.paths,
+  });
 
-  FieldMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('action')) {
-      action = _json['action'] as core.String;
-    }
-    if (_json.containsKey('paths')) {
-      paths = (_json['paths'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  FieldMetadata.fromJson(core.Map _json)
+      : this(
+          action: _json.containsKey('action')
+              ? _json['action'] as core.String
+              : null,
+          paths: _json.containsKey('paths')
+              ? (_json['paths'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (action != null) 'action': action!,
@@ -5917,55 +9180,188 @@ class FieldMetadata {
       };
 }
 
-/// Contains a summary of the DeidentifyDicomStore operation.
-class GoogleCloudHealthcareV1DeidentifyDeidentifyDicomStoreSummary {
-  GoogleCloudHealthcareV1DeidentifyDeidentifyDicomStoreSummary();
+/// The Cloud Storage output destination.
+///
+/// The Cloud Healthcare Service Agent requires the `roles/storage.objectAdmin`
+/// Cloud IAM roles on the Cloud Storage location.
+class GcsDestination {
+  /// The format of the exported HL7v2 message files.
+  /// Possible string values are:
+  /// - "CONTENT_STRUCTURE_UNSPECIFIED" : If the content structure is not
+  /// specified, the default value `MESSAGE_JSON` will be used.
+  /// - "MESSAGE_JSON" : Messages are printed using the JSON format returned
+  /// from the `GetMessage` API. Messages are delimited with newlines.
+  core.String? contentStructure;
 
-  GoogleCloudHealthcareV1DeidentifyDeidentifyDicomStoreSummary.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  /// Specifies the parts of the Message resource to include in the export.
+  ///
+  /// If not specified, FULL is used.
+  /// Possible string values are:
+  /// - "MESSAGE_VIEW_UNSPECIFIED" : Not specified, equivalent to FULL.
+  /// - "RAW_ONLY" : Server responses include all the message fields except
+  /// parsed_data field, and schematized_data fields.
+  /// - "PARSED_ONLY" : Server responses include all the message fields except
+  /// data field, and schematized_data fields.
+  /// - "FULL" : Server responses include all the message fields.
+  /// - "SCHEMATIZED_ONLY" : Server responses include all the message fields
+  /// except data and parsed_data fields.
+  /// - "BASIC" : Server responses include only the name field.
+  core.String? messageView;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  /// URI of an existing Cloud Storage directory where the server writes result
+  /// files, in the format `gs://{bucket-id}/{path/to/destination/dir}`.
+  ///
+  /// If there is no trailing slash, the service appends one when composing the
+  /// object path.
+  core.String? uriPrefix;
+
+  GcsDestination({
+    this.contentStructure,
+    this.messageView,
+    this.uriPrefix,
+  });
+
+  GcsDestination.fromJson(core.Map _json)
+      : this(
+          contentStructure: _json.containsKey('contentStructure')
+              ? _json['contentStructure'] as core.String
+              : null,
+          messageView: _json.containsKey('messageView')
+              ? _json['messageView'] as core.String
+              : null,
+          uriPrefix: _json.containsKey('uriPrefix')
+              ? _json['uriPrefix'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (contentStructure != null) 'contentStructure': contentStructure!,
+        if (messageView != null) 'messageView': messageView!,
+        if (uriPrefix != null) 'uriPrefix': uriPrefix!,
+      };
 }
 
-/// Contains a summary of the DeidentifyFhirStore operation.
-class GoogleCloudHealthcareV1DeidentifyDeidentifyFhirStoreSummary {
-  GoogleCloudHealthcareV1DeidentifyDeidentifyFhirStoreSummary();
+/// Specifies the configuration for importing data from Cloud Storage.
+typedef GcsSource = $GcsSource;
 
-  GoogleCloudHealthcareV1DeidentifyDeidentifyFhirStoreSummary.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// The Cloud Storage location for export.
+class GoogleCloudHealthcareV1ConsentGcsDestination {
+  /// URI for a Cloud Storage directory where the server writes result files, in
+  /// the format `gs://{bucket-id}/{path/to/destination/dir}`.
+  ///
+  /// If there is no trailing slash, the service appends one when composing the
+  /// object path. The user is responsible for creating the Cloud Storage bucket
+  /// and directory referenced in `uri_prefix`.
+  core.String? uriPrefix;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  GoogleCloudHealthcareV1ConsentGcsDestination({
+    this.uriPrefix,
+  });
+
+  GoogleCloudHealthcareV1ConsentGcsDestination.fromJson(core.Map _json)
+      : this(
+          uriPrefix: _json.containsKey('uriPrefix')
+              ? _json['uriPrefix'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (uriPrefix != null) 'uriPrefix': uriPrefix!,
+      };
+}
+
+/// Represents a user's consent in terms of the resources that can be accessed
+/// and under what conditions.
+class GoogleCloudHealthcareV1ConsentPolicy {
+  /// The request conditions to meet to grant access.
+  ///
+  /// In addition to any supported comparison operators, authorization rules may
+  /// have `IN` operator as well as at most 10 logical operators that are
+  /// limited to `AND` (`&&`), `OR` (`||`).
+  ///
+  /// Required.
+  Expr? authorizationRule;
+
+  /// The resources that this policy applies to.
+  ///
+  /// A resource is a match if it matches all the attributes listed here. If
+  /// empty, this policy applies to all User data mappings for the given user.
+  core.List<Attribute>? resourceAttributes;
+
+  GoogleCloudHealthcareV1ConsentPolicy({
+    this.authorizationRule,
+    this.resourceAttributes,
+  });
+
+  GoogleCloudHealthcareV1ConsentPolicy.fromJson(core.Map _json)
+      : this(
+          authorizationRule: _json.containsKey('authorizationRule')
+              ? Expr.fromJson(_json['authorizationRule']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resourceAttributes: _json.containsKey('resourceAttributes')
+              ? (_json['resourceAttributes'] as core.List)
+                  .map((value) => Attribute.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (authorizationRule != null) 'authorizationRule': authorizationRule!,
+        if (resourceAttributes != null)
+          'resourceAttributes': resourceAttributes!,
+      };
 }
 
 /// The BigQuery table where the server writes the output.
 class GoogleCloudHealthcareV1DicomBigQueryDestination {
-  /// If the destination table already exists and this flag is `TRUE`, the table
-  /// is overwritten by the contents of the DICOM store.
+  /// Use `write_disposition` instead.
   ///
-  /// If the flag is not set and the destination table already exists, the
-  /// export call returns an error.
+  /// If `write_disposition` is specified, this parameter is ignored.
+  /// force=false is equivalent to write_disposition=WRITE_EMPTY and force=true
+  /// is equivalent to write_disposition=WRITE_TRUNCATE.
   core.bool? force;
 
   /// BigQuery URI to a table, up to 2000 characters long, in the format
   /// `bq://projectId.bqDatasetId.tableId`
   core.String? tableUri;
 
-  GoogleCloudHealthcareV1DicomBigQueryDestination();
+  /// Determines whether the existing table in the destination is to be
+  /// overwritten or appended to.
+  ///
+  /// If a write_disposition is specified, the `force` parameter is ignored.
+  /// Possible string values are:
+  /// - "WRITE_DISPOSITION_UNSPECIFIED" : Default behavior is the same as
+  /// WRITE_EMPTY.
+  /// - "WRITE_EMPTY" : Only export data if the destination table is empty.
+  /// - "WRITE_TRUNCATE" : Erase all existing data in a table before writing the
+  /// instances.
+  /// - "WRITE_APPEND" : Append data to the existing table.
+  core.String? writeDisposition;
 
-  GoogleCloudHealthcareV1DicomBigQueryDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('force')) {
-      force = _json['force'] as core.bool;
-    }
-    if (_json.containsKey('tableUri')) {
-      tableUri = _json['tableUri'] as core.String;
-    }
-  }
+  GoogleCloudHealthcareV1DicomBigQueryDestination({
+    this.force,
+    this.tableUri,
+    this.writeDisposition,
+  });
+
+  GoogleCloudHealthcareV1DicomBigQueryDestination.fromJson(core.Map _json)
+      : this(
+          force:
+              _json.containsKey('force') ? _json['force'] as core.bool : null,
+          tableUri: _json.containsKey('tableUri')
+              ? _json['tableUri'] as core.String
+              : null,
+          writeDisposition: _json.containsKey('writeDisposition')
+              ? _json['writeDisposition'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (force != null) 'force': force!,
         if (tableUri != null) 'tableUri': tableUri!,
+        if (writeDisposition != null) 'writeDisposition': writeDisposition!,
       };
 }
 
@@ -5991,10 +9387,10 @@ class GoogleCloudHealthcareV1DicomGcsDestination {
   /// application/octet-stream; transfer-syntax=* (raw PixelData in whatever
   /// format it was uploaded in) - image/jpeg;
   /// transfer-syntax=1.2.840.10008.1.2.4.50 (Consumer JPEG) - image/png The
-  /// following extensions are used for output files: - application/dicom ->
-  /// .dcm - image/jpeg -> .jpg - image/png -> .png - application/octet-stream
-  /// -> no extension If unspecified, the instances are exported in the original
-  /// DICOM format they were uploaded in.
+  /// following extensions are used for output files: - application/dicom -\>
+  /// .dcm - image/jpeg -\> .jpg - image/png -\> .png - application/octet-stream
+  /// -\> no extension If unspecified, the instances are exported in the
+  /// original DICOM format they were uploaded in.
   core.String? mimeType;
 
   /// The Cloud Storage destination to export to.
@@ -6006,16 +9402,20 @@ class GoogleCloudHealthcareV1DicomGcsDestination {
   /// referenced in `uri_prefix`.
   core.String? uriPrefix;
 
-  GoogleCloudHealthcareV1DicomGcsDestination();
+  GoogleCloudHealthcareV1DicomGcsDestination({
+    this.mimeType,
+    this.uriPrefix,
+  });
 
-  GoogleCloudHealthcareV1DicomGcsDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('mimeType')) {
-      mimeType = _json['mimeType'] as core.String;
-    }
-    if (_json.containsKey('uriPrefix')) {
-      uriPrefix = _json['uriPrefix'] as core.String;
-    }
-  }
+  GoogleCloudHealthcareV1DicomGcsDestination.fromJson(core.Map _json)
+      : this(
+          mimeType: _json.containsKey('mimeType')
+              ? _json['mimeType'] as core.String
+              : null,
+          uriPrefix: _json.containsKey('uriPrefix')
+              ? _json['uriPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (mimeType != null) 'mimeType': mimeType!,
@@ -6029,24 +9429,26 @@ class GoogleCloudHealthcareV1DicomGcsSource {
   ///
   /// The URI must be in the following format: `gs://{bucket_id}/{object_id}`.
   /// The URI can include wildcards in `object_id` and thus identify multiple
-  /// files. Supported wildcards: '*' to match 0 or more non-separator
-  /// characters '**' to match 0 or more characters (including separators). Must
-  /// be used at the end of a path and with no other wildcards in the path. Can
-  /// also be used with a file extension (such as .dcm), which imports all files
-  /// with the extension in the specified directory and its sub-directories. For
-  /// example, `gs://my-bucket/my-directory / * *.dcm` imports all files with
-  /// .dcm extensions in `my-directory/` and its sub-directories. '?' to match 1
-  /// character All other URI formats are invalid. Files matching the wildcard
-  /// are expected to contain content only, no metadata.
+  /// files. Supported wildcards: * '*' to match 0 or more non-separator
+  /// characters * '**' to match 0 or more characters (including separators).
+  /// Must be used at the end of a path and with no other wildcards in the path.
+  /// Can also be used with a file extension (such as .dcm), which imports all
+  /// files with the extension in the specified directory and its
+  /// sub-directories. For example, `gs://my-bucket/my-directory / * *.dcm`
+  /// imports all files with .dcm extensions in `my-directory/` and its
+  /// sub-directories. * '?' to match 1 character. All other URI formats are
+  /// invalid. Files matching the wildcard are expected to contain content only,
+  /// no metadata.
   core.String? uri;
 
-  GoogleCloudHealthcareV1DicomGcsSource();
+  GoogleCloudHealthcareV1DicomGcsSource({
+    this.uri,
+  });
 
-  GoogleCloudHealthcareV1DicomGcsSource.fromJson(core.Map _json) {
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  GoogleCloudHealthcareV1DicomGcsSource.fromJson(core.Map _json)
+      : this(
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (uri != null) 'uri': uri!,
@@ -6072,8 +9474,8 @@ class GoogleCloudHealthcareV1FhirBigQueryDestination {
   /// The configuration for the exported BigQuery schema.
   SchemaConfig? schemaConfig;
 
-  /// Determines whether existing tables in the destination dataset are
-  /// overwritten or appended to.
+  /// Determines if existing data in the destination dataset is overwritten,
+  /// appended to, or not written if the tables contain data.
   ///
   /// If a write_disposition is specified, the `force` parameter is ignored.
   /// Possible string values are:
@@ -6085,28 +9487,33 @@ class GoogleCloudHealthcareV1FhirBigQueryDestination {
   /// - "WRITE_APPEND" : Append data to the existing tables.
   core.String? writeDisposition;
 
-  GoogleCloudHealthcareV1FhirBigQueryDestination();
+  GoogleCloudHealthcareV1FhirBigQueryDestination({
+    this.datasetUri,
+    this.force,
+    this.schemaConfig,
+    this.writeDisposition,
+  });
 
-  GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('datasetUri')) {
-      datasetUri = _json['datasetUri'] as core.String;
-    }
-    if (_json.containsKey('force')) {
-      force = _json['force'] as core.bool;
-    }
-    if (_json.containsKey('schemaConfig')) {
-      schemaConfig = SchemaConfig.fromJson(
-          _json['schemaConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('writeDisposition')) {
-      writeDisposition = _json['writeDisposition'] as core.String;
-    }
-  }
+  GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(core.Map _json)
+      : this(
+          datasetUri: _json.containsKey('datasetUri')
+              ? _json['datasetUri'] as core.String
+              : null,
+          force:
+              _json.containsKey('force') ? _json['force'] as core.bool : null,
+          schemaConfig: _json.containsKey('schemaConfig')
+              ? SchemaConfig.fromJson(
+                  _json['schemaConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          writeDisposition: _json.containsKey('writeDisposition')
+              ? _json['writeDisposition'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (datasetUri != null) 'datasetUri': datasetUri!,
         if (force != null) 'force': force!,
-        if (schemaConfig != null) 'schemaConfig': schemaConfig!.toJson(),
+        if (schemaConfig != null) 'schemaConfig': schemaConfig!,
         if (writeDisposition != null) 'writeDisposition': writeDisposition!,
       };
 }
@@ -6121,13 +9528,16 @@ class GoogleCloudHealthcareV1FhirGcsDestination {
   /// referenced in `uri_prefix`.
   core.String? uriPrefix;
 
-  GoogleCloudHealthcareV1FhirGcsDestination();
+  GoogleCloudHealthcareV1FhirGcsDestination({
+    this.uriPrefix,
+  });
 
-  GoogleCloudHealthcareV1FhirGcsDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('uriPrefix')) {
-      uriPrefix = _json['uriPrefix'] as core.String;
-    }
-  }
+  GoogleCloudHealthcareV1FhirGcsDestination.fromJson(core.Map _json)
+      : this(
+          uriPrefix: _json.containsKey('uriPrefix')
+              ? _json['uriPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (uriPrefix != null) 'uriPrefix': uriPrefix!,
@@ -6135,32 +9545,116 @@ class GoogleCloudHealthcareV1FhirGcsDestination {
 }
 
 /// Specifies the configuration for importing data from Cloud Storage.
-class GoogleCloudHealthcareV1FhirGcsSource {
-  /// Points to a Cloud Storage URI containing file(s) to import.
-  ///
-  /// The URI must be in the following format: `gs://{bucket_id}/{object_id}`.
-  /// The URI can include wildcards in `object_id` and thus identify multiple
-  /// files. Supported wildcards: * `*` to match 0 or more non-separator
-  /// characters * `**` to match 0 or more characters (including separators).
-  /// Must be used at the end of a path and with no other wildcards in the path.
-  /// Can also be used with a file extension (such as .ndjson), which imports
-  /// all files with the extension in the specified directory and its
-  /// sub-directories. For example, `gs://my-bucket/my-directory / * *.ndjson`
-  /// imports all files with `.ndjson` extensions in `my-directory/` and its
-  /// sub-directories. * `?` to match 1 character Files matching the wildcard
-  /// are expected to contain content only, no metadata.
-  core.String? uri;
+typedef GoogleCloudHealthcareV1FhirGcsSource = $GcsSource;
 
-  GoogleCloudHealthcareV1FhirGcsSource();
+/// Construct representing a logical group or a segment.
+class GroupOrSegment {
+  SchemaGroup? group;
+  SchemaSegment? segment;
 
-  GoogleCloudHealthcareV1FhirGcsSource.fromJson(core.Map _json) {
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  GroupOrSegment({
+    this.group,
+    this.segment,
+  });
+
+  GroupOrSegment.fromJson(core.Map _json)
+      : this(
+          group: _json.containsKey('group')
+              ? SchemaGroup.fromJson(
+                  _json['group'] as core.Map<core.String, core.dynamic>)
+              : null,
+          segment: _json.containsKey('segment')
+              ? SchemaSegment.fromJson(
+                  _json['segment'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (uri != null) 'uri': uri!,
+        if (group != null) 'group': group!,
+        if (segment != null) 'segment': segment!,
+      };
+}
+
+/// Root config message for HL7v2 schema.
+///
+/// This contains a schema structure of groups and segments, and filters that
+/// determine which messages to apply the schema structure to.
+class Hl7SchemaConfig {
+  /// Map from each HL7v2 message type and trigger event pair, such as ADT_A04,
+  /// to its schema configuration root group.
+  core.Map<core.String, SchemaGroup>? messageSchemaConfigs;
+
+  /// Each VersionSource is tested and only if they all match is the schema used
+  /// for the message.
+  core.List<VersionSource>? version;
+
+  Hl7SchemaConfig({
+    this.messageSchemaConfigs,
+    this.version,
+  });
+
+  Hl7SchemaConfig.fromJson(core.Map _json)
+      : this(
+          messageSchemaConfigs: _json.containsKey('messageSchemaConfigs')
+              ? (_json['messageSchemaConfigs']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    SchemaGroup.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          version: _json.containsKey('version')
+              ? (_json['version'] as core.List)
+                  .map((value) => VersionSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (messageSchemaConfigs != null)
+          'messageSchemaConfigs': messageSchemaConfigs!,
+        if (version != null) 'version': version!,
+      };
+}
+
+/// Root config for HL7v2 datatype definitions for a specific HL7v2 version.
+class Hl7TypesConfig {
+  /// The HL7v2 type definitions.
+  core.List<Type>? type;
+
+  /// The version selectors that this config applies to.
+  ///
+  /// A message must match ALL version sources to apply.
+  core.List<VersionSource>? version;
+
+  Hl7TypesConfig({
+    this.type,
+    this.version,
+  });
+
+  Hl7TypesConfig.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type')
+              ? (_json['type'] as core.List)
+                  .map((value) => Type.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          version: _json.containsKey('version')
+              ? (_json['version'] as core.List)
+                  .map((value) => VersionSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (type != null) 'type': type!,
+        if (version != null) 'version': version!,
       };
 }
 
@@ -6197,18 +9691,20 @@ class Hl7V2NotificationConfig {
   /// MSH-7 segment. For example, `send_date < "2017-01-02"`. * `send_time`, the
   /// timestamp when the message was sent, using the RFC3339 time format for
   /// comparisons, from the MSH-7 segment. For example, `send_time <
-  /// "2017-01-02T00:00:00-05:00"`. * `send_facility`, the care center that the
-  /// message came from, from the MSH-4 segment. For example, `send_facility =
-  /// "ABC"`. * `PatientId(value, type)`, which matches if the message lists a
-  /// patient having an ID of the given value and type in the PID-2, PID-3, or
-  /// PID-4 segments. For example, `PatientId("123456", "MRN")`. * `labels.x`, a
-  /// string value of the label with key `x` as set using the Message.labels
-  /// map. For example, `labels."priority"="high"`. The operator `:*` can be
-  /// used to assert the existence of a label. For example,
-  /// `labels."priority":*`.
+  /// "2017-01-02T00:00:00-05:00"`. * `create_time`, the timestamp when the
+  /// message was created in the HL7v2 store. Use the RFC3339 time format for
+  /// comparisons. For example, `create_time < "2017-01-02T00:00:00-05:00"`. *
+  /// `send_facility`, the care center that the message came from, from the
+  /// MSH-4 segment. For example, `send_facility = "ABC"`. * `PatientId(value,
+  /// type)`, which matches if the message lists a patient having an ID of the
+  /// given value and type in the PID-2, PID-3, or PID-4 segments. For example,
+  /// `PatientId("123456", "MRN")`. * `labels.x`, a string value of the label
+  /// with key `x` as set using the Message.labels map. For example,
+  /// `labels."priority"="high"`. The operator `:*` can be used to assert the
+  /// existence of a label. For example, `labels."priority":*`.
   core.String? filter;
 
-  /// The [Cloud Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that
+  /// The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that
   /// notifications of changes are published on.
   ///
   /// Supplied by the client. The notification is a `PubsubMessage` with the
@@ -6222,21 +9718,25 @@ class Hl7V2NotificationConfig {
   /// service-PROJECT_NUMBER@gcp-sa-healthcare.iam.gserviceaccount.com, must
   /// have publisher permissions on the given Pub/Sub topic. Not having adequate
   /// permissions causes the calls that send notifications to fail. If a
-  /// notification cannot be published to Cloud Pub/Sub, errors are logged to
-  /// Cloud Logging. For more information, see \[Viewing error logs in Cloud
-  /// Logging\](/healthcare/docs/how-tos/logging)).
+  /// notification cannot be published to Pub/Sub, errors are logged to Cloud
+  /// Logging. For more information, see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
   core.String? pubsubTopic;
 
-  Hl7V2NotificationConfig();
+  Hl7V2NotificationConfig({
+    this.filter,
+    this.pubsubTopic,
+  });
 
-  Hl7V2NotificationConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-  }
+  Hl7V2NotificationConfig.fromJson(core.Map _json)
+      : this(
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (filter != null) 'filter': filter!,
@@ -6286,43 +9786,46 @@ class Hl7V2Store {
   /// IngestMessageErrorDetail returns a NACK message upon rejection.
   core.bool? rejectDuplicateMessage;
 
-  Hl7V2Store();
+  Hl7V2Store({
+    this.labels,
+    this.name,
+    this.notificationConfigs,
+    this.parserConfig,
+    this.rejectDuplicateMessage,
+  });
 
-  Hl7V2Store.fromJson(core.Map _json) {
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationConfigs')) {
-      notificationConfigs = (_json['notificationConfigs'] as core.List)
-          .map<Hl7V2NotificationConfig>((value) =>
-              Hl7V2NotificationConfig.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('parserConfig')) {
-      parserConfig = ParserConfig.fromJson(
-          _json['parserConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('rejectDuplicateMessage')) {
-      rejectDuplicateMessage = _json['rejectDuplicateMessage'] as core.bool;
-    }
-  }
+  Hl7V2Store.fromJson(core.Map _json)
+      : this(
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationConfigs: _json.containsKey('notificationConfigs')
+              ? (_json['notificationConfigs'] as core.List)
+                  .map((value) => Hl7V2NotificationConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          parserConfig: _json.containsKey('parserConfig')
+              ? ParserConfig.fromJson(
+                  _json['parserConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          rejectDuplicateMessage: _json.containsKey('rejectDuplicateMessage')
+              ? _json['rejectDuplicateMessage'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (notificationConfigs != null)
-          'notificationConfigs':
-              notificationConfigs!.map((value) => value.toJson()).toList(),
-        if (parserConfig != null) 'parserConfig': parserConfig!.toJson(),
+          'notificationConfigs': notificationConfigs!,
+        if (parserConfig != null) 'parserConfig': parserConfig!,
         if (rejectDuplicateMessage != null)
           'rejectDuplicateMessage': rejectDuplicateMessage!,
       };
@@ -6346,54 +9849,51 @@ class Hl7V2Store {
 /// (stream google.api.HttpBody); } Use of this type only changes how the
 /// request and response bodies are handled, all other features will continue to
 /// work unchanged.
-class HttpBody {
-  /// The HTTP Content-Type header value specifying the content type of the
-  /// body.
-  core.String? contentType;
+typedef HttpBody = $HttpBody;
 
-  /// The HTTP request/response body as raw binary.
-  core.String? data;
-  core.List<core.int> get dataAsBytes => convert.base64.decode(data!);
+/// Raw bytes representing consent artifact content.
+class Image {
+  /// Input only.
+  ///
+  /// Points to a Cloud Storage URI containing the consent artifact content. The
+  /// URI must be in the following format: `gs://{bucket_id}/{object_id}`. The
+  /// Cloud Healthcare API service account must have the
+  /// `roles/storage.objectViewer` Cloud IAM role for this Cloud Storage
+  /// location. The consent artifact content at this URI is copied to a Cloud
+  /// Storage location managed by the Cloud Healthcare API. Responses to
+  /// fetching requests return the consent artifact content in raw_bytes.
+  core.String? gcsUri;
 
-  set dataAsBytes(core.List<core.int> _bytes) {
-    data =
+  /// Consent artifact content represented as a stream of bytes.
+  ///
+  /// This field is populated when returned in GetConsentArtifact response, but
+  /// not included in CreateConsentArtifact and ListConsentArtifact response.
+  core.String? rawBytes;
+  core.List<core.int> get rawBytesAsBytes => convert.base64.decode(rawBytes!);
+
+  set rawBytesAsBytes(core.List<core.int> _bytes) {
+    rawBytes =
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  /// Application specific response metadata.
-  ///
-  /// Must be set in the first response for streaming APIs.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? extensions;
+  Image({
+    this.gcsUri,
+    this.rawBytes,
+  });
 
-  HttpBody();
-
-  HttpBody.fromJson(core.Map _json) {
-    if (_json.containsKey('contentType')) {
-      contentType = _json['contentType'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('extensions')) {
-      extensions = (_json['extensions'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-  }
+  Image.fromJson(core.Map _json)
+      : this(
+          gcsUri: _json.containsKey('gcsUri')
+              ? _json['gcsUri'] as core.String
+              : null,
+          rawBytes: _json.containsKey('rawBytes')
+              ? _json['rawBytes'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (contentType != null) 'contentType': contentType!,
-        if (data != null) 'data': data!,
-        if (extensions != null) 'extensions': extensions!,
+        if (gcsUri != null) 'gcsUri': gcsUri!,
+        if (rawBytes != null) 'rawBytes': rawBytes!,
       };
 }
 
@@ -6408,13 +9908,16 @@ class ImageConfig {
   /// - "REDACT_NO_TEXT" : Do not redact text.
   core.String? textRedactionMode;
 
-  ImageConfig();
+  ImageConfig({
+    this.textRedactionMode,
+  });
 
-  ImageConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('textRedactionMode')) {
-      textRedactionMode = _json['textRedactionMode'] as core.String;
-    }
-  }
+  ImageConfig.fromJson(core.Map _json)
+      : this(
+          textRedactionMode: _json.containsKey('textRedactionMode')
+              ? _json['textRedactionMode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (textRedactionMode != null) 'textRedactionMode': textRedactionMode!,
@@ -6434,29 +9937,47 @@ class ImportDicomDataRequest {
   /// location.
   GoogleCloudHealthcareV1DicomGcsSource? gcsSource;
 
-  ImportDicomDataRequest();
+  ImportDicomDataRequest({
+    this.gcsSource,
+  });
 
-  ImportDicomDataRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsSource')) {
-      gcsSource = GoogleCloudHealthcareV1DicomGcsSource.fromJson(
-          _json['gcsSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ImportDicomDataRequest.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GoogleCloudHealthcareV1DicomGcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsSource != null) 'gcsSource': gcsSource!.toJson(),
+        if (gcsSource != null) 'gcsSource': gcsSource!,
       };
 }
 
-/// Returns additional information in regards to a completed DICOM store import.
-class ImportDicomDataResponse {
-  ImportDicomDataResponse();
+/// Request to import messages.
+class ImportMessagesRequest {
+  /// Cloud Storage source data location and import configuration.
+  ///
+  /// The Cloud Healthcare Service Agent requires the
+  /// `roles/storage.objectViewer` Cloud IAM roles on the Cloud Storage
+  /// location.
+  GcsSource? gcsSource;
 
-  ImportDicomDataResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  ImportMessagesRequest({
+    this.gcsSource,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  ImportMessagesRequest.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (gcsSource != null) 'gcsSource': gcsSource!,
+      };
 }
 
 /// Request to import resources.
@@ -6486,36 +10007,26 @@ class ImportResourcesRequest {
   /// ContentStructure.
   GoogleCloudHealthcareV1FhirGcsSource? gcsSource;
 
-  ImportResourcesRequest();
+  ImportResourcesRequest({
+    this.contentStructure,
+    this.gcsSource,
+  });
 
-  ImportResourcesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('contentStructure')) {
-      contentStructure = _json['contentStructure'] as core.String;
-    }
-    if (_json.containsKey('gcsSource')) {
-      gcsSource = GoogleCloudHealthcareV1FhirGcsSource.fromJson(
-          _json['gcsSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ImportResourcesRequest.fromJson(core.Map _json)
+      : this(
+          contentStructure: _json.containsKey('contentStructure')
+              ? _json['contentStructure'] as core.String
+              : null,
+          gcsSource: _json.containsKey('gcsSource')
+              ? GoogleCloudHealthcareV1FhirGcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (contentStructure != null) 'contentStructure': contentStructure!,
-        if (gcsSource != null) 'gcsSource': gcsSource!.toJson(),
+        if (gcsSource != null) 'gcsSource': gcsSource!,
       };
-}
-
-/// Final response of importing resources.
-///
-/// This structure is included in the response to describe the detailed outcome
-/// after the operation finishes successfully.
-class ImportResourcesResponse {
-  ImportResourcesResponse();
-
-  ImportResourcesResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
 }
 
 /// A transformation to apply to text that is identified as a specific
@@ -6541,48 +10052,55 @@ class InfoTypeTransformation {
   /// Config for replace with InfoType.
   ReplaceWithInfoTypeConfig? replaceWithInfoTypeConfig;
 
-  InfoTypeTransformation();
+  InfoTypeTransformation({
+    this.characterMaskConfig,
+    this.cryptoHashConfig,
+    this.dateShiftConfig,
+    this.infoTypes,
+    this.redactConfig,
+    this.replaceWithInfoTypeConfig,
+  });
 
-  InfoTypeTransformation.fromJson(core.Map _json) {
-    if (_json.containsKey('characterMaskConfig')) {
-      characterMaskConfig = CharacterMaskConfig.fromJson(
-          _json['characterMaskConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('cryptoHashConfig')) {
-      cryptoHashConfig = CryptoHashConfig.fromJson(
-          _json['cryptoHashConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('dateShiftConfig')) {
-      dateShiftConfig = DateShiftConfig.fromJson(
-          _json['dateShiftConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('infoTypes')) {
-      infoTypes = (_json['infoTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('redactConfig')) {
-      redactConfig = RedactConfig.fromJson(
-          _json['redactConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('replaceWithInfoTypeConfig')) {
-      replaceWithInfoTypeConfig = ReplaceWithInfoTypeConfig.fromJson(
-          _json['replaceWithInfoTypeConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  InfoTypeTransformation.fromJson(core.Map _json)
+      : this(
+          characterMaskConfig: _json.containsKey('characterMaskConfig')
+              ? CharacterMaskConfig.fromJson(_json['characterMaskConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          cryptoHashConfig: _json.containsKey('cryptoHashConfig')
+              ? CryptoHashConfig.fromJson(_json['cryptoHashConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          dateShiftConfig: _json.containsKey('dateShiftConfig')
+              ? DateShiftConfig.fromJson(_json['dateShiftConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          infoTypes: _json.containsKey('infoTypes')
+              ? (_json['infoTypes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          redactConfig: _json.containsKey('redactConfig')
+              ? RedactConfig.fromJson(
+                  _json['redactConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          replaceWithInfoTypeConfig:
+              _json.containsKey('replaceWithInfoTypeConfig')
+                  ? ReplaceWithInfoTypeConfig.fromJson(
+                      _json['replaceWithInfoTypeConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (characterMaskConfig != null)
-          'characterMaskConfig': characterMaskConfig!.toJson(),
-        if (cryptoHashConfig != null)
-          'cryptoHashConfig': cryptoHashConfig!.toJson(),
-        if (dateShiftConfig != null)
-          'dateShiftConfig': dateShiftConfig!.toJson(),
+          'characterMaskConfig': characterMaskConfig!,
+        if (cryptoHashConfig != null) 'cryptoHashConfig': cryptoHashConfig!,
+        if (dateShiftConfig != null) 'dateShiftConfig': dateShiftConfig!,
         if (infoTypes != null) 'infoTypes': infoTypes!,
-        if (redactConfig != null) 'redactConfig': redactConfig!.toJson(),
+        if (redactConfig != null) 'redactConfig': redactConfig!,
         if (replaceWithInfoTypeConfig != null)
-          'replaceWithInfoTypeConfig': replaceWithInfoTypeConfig!.toJson(),
+          'replaceWithInfoTypeConfig': replaceWithInfoTypeConfig!,
       };
 }
 
@@ -6591,17 +10109,20 @@ class IngestMessageRequest {
   /// HL7v2 message to ingest.
   Message? message;
 
-  IngestMessageRequest();
+  IngestMessageRequest({
+    this.message,
+  });
 
-  IngestMessageRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('message')) {
-      message = Message.fromJson(
-          _json['message'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  IngestMessageRequest.fromJson(core.Map _json)
+      : this(
+          message: _json.containsKey('message')
+              ? Message.fromJson(
+                  _json['message'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (message != null) 'message': message!.toJson(),
+        if (message != null) 'message': message!,
       };
 }
 
@@ -6620,21 +10141,228 @@ class IngestMessageResponse {
   /// Created message resource.
   Message? message;
 
-  IngestMessageResponse();
+  IngestMessageResponse({
+    this.hl7Ack,
+    this.message,
+  });
 
-  IngestMessageResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hl7Ack')) {
-      hl7Ack = _json['hl7Ack'] as core.String;
-    }
-    if (_json.containsKey('message')) {
-      message = Message.fromJson(
-          _json['message'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  IngestMessageResponse.fromJson(core.Map _json)
+      : this(
+          hl7Ack: _json.containsKey('hl7Ack')
+              ? _json['hl7Ack'] as core.String
+              : null,
+          message: _json.containsKey('message')
+              ? Message.fromJson(
+                  _json['message'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (hl7Ack != null) 'hl7Ack': hl7Ack!,
-        if (message != null) 'message': message!.toJson(),
+        if (message != null) 'message': message!,
+      };
+}
+
+/// EntityMentions can be linked to multiple entities using a LinkedEntity
+/// message lets us add other fields, e.g. confidence.
+class LinkedEntity {
+  /// entity_id is a concept unique identifier.
+  ///
+  /// These are prefixed by a string that identifies the entity coding system,
+  /// followed by the unique identifier within that system. For example,
+  /// "UMLS/C0000970". This also supports ad hoc entities, which are formed by
+  /// normalizing entity mention content.
+  core.String? entityId;
+
+  LinkedEntity({
+    this.entityId,
+  });
+
+  LinkedEntity.fromJson(core.Map _json)
+      : this(
+          entityId: _json.containsKey('entityId')
+              ? _json['entityId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (entityId != null) 'entityId': entityId!,
+      };
+}
+
+class ListAttributeDefinitionsResponse {
+  /// The returned Attribute definitions.
+  ///
+  /// The maximum number of attributes returned is determined by the value of
+  /// page_size in the ListAttributeDefinitionsRequest.
+  core.List<AttributeDefinition>? attributeDefinitions;
+
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  ListAttributeDefinitionsResponse({
+    this.attributeDefinitions,
+    this.nextPageToken,
+  });
+
+  ListAttributeDefinitionsResponse.fromJson(core.Map _json)
+      : this(
+          attributeDefinitions: _json.containsKey('attributeDefinitions')
+              ? (_json['attributeDefinitions'] as core.List)
+                  .map((value) => AttributeDefinition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (attributeDefinitions != null)
+          'attributeDefinitions': attributeDefinitions!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+class ListConsentArtifactsResponse {
+  /// The returned Consent artifacts.
+  ///
+  /// The maximum number of artifacts returned is determined by the value of
+  /// page_size in the ListConsentArtifactsRequest.
+  core.List<ConsentArtifact>? consentArtifacts;
+
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  ListConsentArtifactsResponse({
+    this.consentArtifacts,
+    this.nextPageToken,
+  });
+
+  ListConsentArtifactsResponse.fromJson(core.Map _json)
+      : this(
+          consentArtifacts: _json.containsKey('consentArtifacts')
+              ? (_json['consentArtifacts'] as core.List)
+                  .map((value) => ConsentArtifact.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentArtifacts != null) 'consentArtifacts': consentArtifacts!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+class ListConsentRevisionsResponse {
+  /// The returned Consent revisions.
+  ///
+  /// The maximum number of revisions returned is determined by the value of
+  /// `page_size` in the ListConsentRevisionsRequest.
+  core.List<Consent>? consents;
+
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  ListConsentRevisionsResponse({
+    this.consents,
+    this.nextPageToken,
+  });
+
+  ListConsentRevisionsResponse.fromJson(core.Map _json)
+      : this(
+          consents: _json.containsKey('consents')
+              ? (_json['consents'] as core.List)
+                  .map((value) => Consent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consents != null) 'consents': consents!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+class ListConsentStoresResponse {
+  /// The returned consent stores.
+  ///
+  /// The maximum number of stores returned is determined by the value of
+  /// page_size in the ListConsentStoresRequest.
+  core.List<ConsentStore>? consentStores;
+
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  ListConsentStoresResponse({
+    this.consentStores,
+    this.nextPageToken,
+  });
+
+  ListConsentStoresResponse.fromJson(core.Map _json)
+      : this(
+          consentStores: _json.containsKey('consentStores')
+              ? (_json['consentStores'] as core.List)
+                  .map((value) => ConsentStore.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentStores != null) 'consentStores': consentStores!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
+class ListConsentsResponse {
+  /// The returned Consents.
+  ///
+  /// The maximum number of Consents returned is determined by the value of
+  /// page_size in the ListConsentsRequest.
+  core.List<Consent>? consents;
+
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  ListConsentsResponse({
+    this.consents,
+    this.nextPageToken,
+  });
+
+  ListConsentsResponse.fromJson(core.Map _json)
+      : this(
+          consents: _json.containsKey('consents')
+              ? (_json['consents'] as core.List)
+                  .map((value) => Consent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consents != null) 'consents': consents!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
@@ -6647,23 +10375,26 @@ class ListDatasetsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListDatasetsResponse();
+  ListDatasetsResponse({
+    this.datasets,
+    this.nextPageToken,
+  });
 
-  ListDatasetsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('datasets')) {
-      datasets = (_json['datasets'] as core.List)
-          .map<Dataset>((value) =>
-              Dataset.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListDatasetsResponse.fromJson(core.Map _json)
+      : this(
+          datasets: _json.containsKey('datasets')
+              ? (_json['datasets'] as core.List)
+                  .map((value) => Dataset.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (datasets != null)
-          'datasets': datasets!.map((value) => value.toJson()).toList(),
+        if (datasets != null) 'datasets': datasets!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6679,23 +10410,26 @@ class ListDicomStoresResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListDicomStoresResponse();
+  ListDicomStoresResponse({
+    this.dicomStores,
+    this.nextPageToken,
+  });
 
-  ListDicomStoresResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('dicomStores')) {
-      dicomStores = (_json['dicomStores'] as core.List)
-          .map<DicomStore>((value) =>
-              DicomStore.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListDicomStoresResponse.fromJson(core.Map _json)
+      : this(
+          dicomStores: _json.containsKey('dicomStores')
+              ? (_json['dicomStores'] as core.List)
+                  .map((value) => DicomStore.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dicomStores != null)
-          'dicomStores': dicomStores!.map((value) => value.toJson()).toList(),
+        if (dicomStores != null) 'dicomStores': dicomStores!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6711,23 +10445,26 @@ class ListFhirStoresResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListFhirStoresResponse();
+  ListFhirStoresResponse({
+    this.fhirStores,
+    this.nextPageToken,
+  });
 
-  ListFhirStoresResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('fhirStores')) {
-      fhirStores = (_json['fhirStores'] as core.List)
-          .map<FhirStore>((value) =>
-              FhirStore.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListFhirStoresResponse.fromJson(core.Map _json)
+      : this(
+          fhirStores: _json.containsKey('fhirStores')
+              ? (_json['fhirStores'] as core.List)
+                  .map((value) => FhirStore.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fhirStores != null)
-          'fhirStores': fhirStores!.map((value) => value.toJson()).toList(),
+        if (fhirStores != null) 'fhirStores': fhirStores!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6743,23 +10480,26 @@ class ListHl7V2StoresResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListHl7V2StoresResponse();
+  ListHl7V2StoresResponse({
+    this.hl7V2Stores,
+    this.nextPageToken,
+  });
 
-  ListHl7V2StoresResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hl7V2Stores')) {
-      hl7V2Stores = (_json['hl7V2Stores'] as core.List)
-          .map<Hl7V2Store>((value) =>
-              Hl7V2Store.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListHl7V2StoresResponse.fromJson(core.Map _json)
+      : this(
+          hl7V2Stores: _json.containsKey('hl7V2Stores')
+              ? (_json['hl7V2Stores'] as core.List)
+                  .map((value) => Hl7V2Store.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (hl7V2Stores != null)
-          'hl7V2Stores': hl7V2Stores!.map((value) => value.toJson()).toList(),
+        if (hl7V2Stores != null) 'hl7V2Stores': hl7V2Stores!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6772,23 +10512,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6805,24 +10548,26 @@ class ListMessagesResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListMessagesResponse();
+  ListMessagesResponse({
+    this.hl7V2Messages,
+    this.nextPageToken,
+  });
 
-  ListMessagesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('hl7V2Messages')) {
-      hl7V2Messages = (_json['hl7V2Messages'] as core.List)
-          .map<Message>((value) =>
-              Message.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListMessagesResponse.fromJson(core.Map _json)
+      : this(
+          hl7V2Messages: _json.containsKey('hl7V2Messages')
+              ? (_json['hl7V2Messages'] as core.List)
+                  .map((value) => Message.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (hl7V2Messages != null)
-          'hl7V2Messages':
-              hl7V2Messages!.map((value) => value.toJson()).toList(),
+        if (hl7V2Messages != null) 'hl7V2Messages': hl7V2Messages!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -6835,95 +10580,67 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
+      };
+}
+
+class ListUserDataMappingsResponse {
+  /// Token to retrieve the next page of results, or empty if there are no more
+  /// results in the list.
+  core.String? nextPageToken;
+
+  /// The returned User data mappings.
+  ///
+  /// The maximum number of User data mappings returned is determined by the
+  /// value of page_size in the ListUserDataMappingsRequest.
+  core.List<UserDataMapping>? userDataMappings;
+
+  ListUserDataMappingsResponse({
+    this.nextPageToken,
+    this.userDataMappings,
+  });
+
+  ListUserDataMappingsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          userDataMappings: _json.containsKey('userDataMappings')
+              ? (_json['userDataMappings'] as core.List)
+                  .map((value) => UserDataMapping.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (userDataMappings != null) 'userDataMappings': userDataMappings!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// A complete HL7v2 message.
 ///
@@ -6978,6 +10695,10 @@ class Message {
   /// message.
   core.List<PatientId>? patientIds;
 
+  /// The parsed version of the raw message data schematized according to this
+  /// store's schemas and type definitions.
+  SchematizedData? schematizedData;
+
   /// The hospital that this message came from.
   ///
   /// MSH-4.
@@ -6988,46 +10709,58 @@ class Message {
   /// MSH-7.
   core.String? sendTime;
 
-  Message();
+  Message({
+    this.createTime,
+    this.data,
+    this.labels,
+    this.messageType,
+    this.name,
+    this.parsedData,
+    this.patientIds,
+    this.schematizedData,
+    this.sendFacility,
+    this.sendTime,
+  });
 
-  Message.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('messageType')) {
-      messageType = _json['messageType'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parsedData')) {
-      parsedData = ParsedData.fromJson(
-          _json['parsedData'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('patientIds')) {
-      patientIds = (_json['patientIds'] as core.List)
-          .map<PatientId>((value) =>
-              PatientId.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('sendFacility')) {
-      sendFacility = _json['sendFacility'] as core.String;
-    }
-    if (_json.containsKey('sendTime')) {
-      sendTime = _json['sendTime'] as core.String;
-    }
-  }
+  Message.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          messageType: _json.containsKey('messageType')
+              ? _json['messageType'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parsedData: _json.containsKey('parsedData')
+              ? ParsedData.fromJson(
+                  _json['parsedData'] as core.Map<core.String, core.dynamic>)
+              : null,
+          patientIds: _json.containsKey('patientIds')
+              ? (_json['patientIds'] as core.List)
+                  .map((value) => PatientId.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          schematizedData: _json.containsKey('schematizedData')
+              ? SchematizedData.fromJson(_json['schematizedData']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          sendFacility: _json.containsKey('sendFacility')
+              ? _json['sendFacility'] as core.String
+              : null,
+          sendTime: _json.containsKey('sendTime')
+              ? _json['sendTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -7035,9 +10768,9 @@ class Message {
         if (labels != null) 'labels': labels!,
         if (messageType != null) 'messageType': messageType!,
         if (name != null) 'name': name!,
-        if (parsedData != null) 'parsedData': parsedData!.toJson(),
-        if (patientIds != null)
-          'patientIds': patientIds!.map((value) => value.toJson()).toList(),
+        if (parsedData != null) 'parsedData': parsedData!,
+        if (patientIds != null) 'patientIds': patientIds!,
+        if (schematizedData != null) 'schematizedData': schematizedData!,
         if (sendFacility != null) 'sendFacility': sendFacility!,
         if (sendTime != null) 'sendTime': sendTime!,
       };
@@ -7045,7 +10778,7 @@ class Message {
 
 /// Specifies where to send notifications upon changes to a data store.
 class NotificationConfig {
-  /// The [Cloud Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that
+  /// The [Pub/Sub](https://cloud.google.com/pubsub/docs/) topic that
   /// notifications of changes are published on.
   ///
   /// Supplied by the client. PubsubMessage.Data contains the resource name.
@@ -7055,23 +10788,27 @@ class NotificationConfig {
   /// non-empty.
   /// [Topic names](https://cloud.google.com/pubsub/docs/overview#names) must be
   /// scoped to a project. Cloud Healthcare API service account must have
-  /// publisher permissions on the given Cloud Pub/Sub topic. Not having
-  /// adequate permissions causes the calls that send notifications to fail. If
-  /// a notification can't be published to Cloud Pub/Sub, errors are logged to
-  /// Cloud Logging (see \[Viewing logs\](/healthcare/docs/how-tos/logging)). If
-  /// the number of errors exceeds a certain rate, some aren't submitted. Note
-  /// that not all operations trigger notifications, see
+  /// publisher permissions on the given Pub/Sub topic. Not having adequate
+  /// permissions causes the calls that send notifications to fail. If a
+  /// notification can't be published to Pub/Sub, errors are logged to Cloud
+  /// Logging (see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
+  /// If the number of errors exceeds a certain rate, some aren't submitted.
+  /// Note that not all operations trigger notifications, see
   /// [Configuring Pub/Sub notifications](https://cloud.google.com/healthcare/docs/how-tos/pubsub)
   /// for specific details.
   core.String? pubsubTopic;
 
-  NotificationConfig();
+  NotificationConfig({
+    this.pubsubTopic,
+  });
 
-  NotificationConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-  }
+  NotificationConfig.fromJson(core.Map _json)
+      : this(
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (pubsubTopic != null) 'pubsubTopic': pubsubTopic!,
@@ -7099,7 +10836,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -7119,102 +10856,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// OperationMetadata provides information about the operation execution.
-///
-/// Returned in the long-running operation's metadata field.
-class OperationMetadata {
-  /// The name of the API method that initiated the operation.
-  core.String? apiMethodName;
-
-  /// Specifies if cancellation was requested for the operation.
-  core.bool? cancelRequested;
-  ProgressCounter? counter;
-
-  /// The time at which the operation was created by the API.
-  core.String? createTime;
-
-  /// The time at which execution was completed.
-  core.String? endTime;
-
-  /// A link to audit and error logs in the log viewer.
-  ///
-  /// Error logs are generated only by some operations, listed at \[Viewing
-  /// logs\](/healthcare/docs/how-tos/logging).
-  core.String? logsUrl;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('apiMethodName')) {
-      apiMethodName = _json['apiMethodName'] as core.String;
-    }
-    if (_json.containsKey('cancelRequested')) {
-      cancelRequested = _json['cancelRequested'] as core.bool;
-    }
-    if (_json.containsKey('counter')) {
-      counter = ProgressCounter.fromJson(
-          _json['counter'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('logsUrl')) {
-      logsUrl = _json['logsUrl'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiMethodName != null) 'apiMethodName': apiMethodName!,
-        if (cancelRequested != null) 'cancelRequested': cancelRequested!,
-        if (counter != null) 'counter': counter!.toJson(),
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (logsUrl != null) 'logsUrl': logsUrl!,
       };
 }
 
@@ -7222,20 +10895,22 @@ class OperationMetadata {
 class ParsedData {
   core.List<Segment>? segments;
 
-  ParsedData();
+  ParsedData({
+    this.segments,
+  });
 
-  ParsedData.fromJson(core.Map _json) {
-    if (_json.containsKey('segments')) {
-      segments = (_json['segments'] as core.List)
-          .map<Segment>((value) =>
-              Segment.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ParsedData.fromJson(core.Map _json)
+      : this(
+          segments: _json.containsKey('segments')
+              ? (_json['segments'] as core.List)
+                  .map((value) => Segment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (segments != null)
-          'segments': segments!.map((value) => value.toJson()).toList(),
+        if (segments != null) 'segments': segments!,
       };
 }
 
@@ -7245,6 +10920,10 @@ class ParsedData {
 class ParserConfig {
   /// Determines whether messages with no header are allowed.
   core.bool? allowNullHeader;
+
+  /// Schemas used to parse messages in this store, if schematized parsing is
+  /// desired.
+  SchemaPackage? schema;
 
   /// Byte(s) to use as the segment terminator.
   ///
@@ -7259,20 +10938,52 @@ class ParserConfig {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  ParserConfig();
+  /// Determines the version of both the default parser to be used when `schema`
+  /// is not given, as well as the schematized parser used when `schema` is
+  /// specified.
+  ///
+  /// This field is immutable after HL7v2 store creation.
+  ///
+  /// Immutable.
+  /// Possible string values are:
+  /// - "PARSER_VERSION_UNSPECIFIED" : Unspecified parser version, equivalent to
+  /// V1.
+  /// - "V1" : The `parsed_data` includes every given non-empty message field
+  /// except the Field Separator (MSH-1) field. As a result, the parsed MSH
+  /// segment starts with the MSH-2 field and the field numbers are off-by-one
+  /// with respect to the HL7 standard.
+  /// - "V2" : The `parsed_data` includes every given non-empty message field.
+  core.String? version;
 
-  ParserConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('allowNullHeader')) {
-      allowNullHeader = _json['allowNullHeader'] as core.bool;
-    }
-    if (_json.containsKey('segmentTerminator')) {
-      segmentTerminator = _json['segmentTerminator'] as core.String;
-    }
-  }
+  ParserConfig({
+    this.allowNullHeader,
+    this.schema,
+    this.segmentTerminator,
+    this.version,
+  });
+
+  ParserConfig.fromJson(core.Map _json)
+      : this(
+          allowNullHeader: _json.containsKey('allowNullHeader')
+              ? _json['allowNullHeader'] as core.bool
+              : null,
+          schema: _json.containsKey('schema')
+              ? SchemaPackage.fromJson(
+                  _json['schema'] as core.Map<core.String, core.dynamic>)
+              : null,
+          segmentTerminator: _json.containsKey('segmentTerminator')
+              ? _json['segmentTerminator'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowNullHeader != null) 'allowNullHeader': allowNullHeader!,
+        if (schema != null) 'schema': schema!,
         if (segmentTerminator != null) 'segmentTerminator': segmentTerminator!,
+        if (version != null) 'version': version!,
       };
 }
 
@@ -7286,16 +10997,17 @@ class PatientId {
   /// The patient's unique identifier.
   core.String? value;
 
-  PatientId();
+  PatientId({
+    this.type,
+    this.value,
+  });
 
-  PatientId.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  PatientId.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (type != null) 'type': type!,
@@ -7307,15 +11019,15 @@ class PatientId {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -7324,25 +11036,30 @@ class PatientId {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -7384,68 +11101,108 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
 }
 
-/// ProgressCounter provides counters to describe an operation's progress.
-class ProgressCounter {
-  /// The number of units that failed in the operation.
-  core.String? failure;
+/// Queries all data_ids that are consented for a given use in the given consent
+/// store and writes them to a specified destination.
+///
+/// The returned Operation includes a progress counter for the number of User
+/// data mappings processed. Errors are logged to Cloud Logging (see
+/// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)
+/// and \[QueryAccessibleData\] for a sample log entry).
+class QueryAccessibleDataRequest {
+  /// The Cloud Storage destination.
+  ///
+  /// The Cloud Healthcare API service account must have the
+  /// `roles/storage.objectAdmin` Cloud IAM role for this Cloud Storage
+  /// location.
+  GoogleCloudHealthcareV1ConsentGcsDestination? gcsDestination;
 
-  /// The number of units that are pending in the operation.
-  core.String? pending;
+  /// The values of request attributes associated with this access request.
+  core.Map<core.String, core.String>? requestAttributes;
 
-  /// The number of units that succeeded in the operation.
-  core.String? success;
+  /// The values of resource attributes associated with the type of resources
+  /// being requested.
+  ///
+  /// If no values are specified, then all resource types are included in the
+  /// output.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? resourceAttributes;
 
-  ProgressCounter();
+  QueryAccessibleDataRequest({
+    this.gcsDestination,
+    this.requestAttributes,
+    this.resourceAttributes,
+  });
 
-  ProgressCounter.fromJson(core.Map _json) {
-    if (_json.containsKey('failure')) {
-      failure = _json['failure'] as core.String;
-    }
-    if (_json.containsKey('pending')) {
-      pending = _json['pending'] as core.String;
-    }
-    if (_json.containsKey('success')) {
-      success = _json['success'] as core.String;
-    }
-  }
+  QueryAccessibleDataRequest.fromJson(core.Map _json)
+      : this(
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GoogleCloudHealthcareV1ConsentGcsDestination.fromJson(
+                  _json['gcsDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          requestAttributes: _json.containsKey('requestAttributes')
+              ? (_json['requestAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          resourceAttributes: _json.containsKey('resourceAttributes')
+              ? (_json['resourceAttributes']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (failure != null) 'failure': failure!,
-        if (pending != null) 'pending': pending!,
-        if (success != null) 'success': success!,
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
+        if (requestAttributes != null) 'requestAttributes': requestAttributes!,
+        if (resourceAttributes != null)
+          'resourceAttributes': resourceAttributes!,
       };
 }
 
@@ -7453,14 +11210,38 @@ class ProgressCounter {
 ///
 /// Default behaviour is erase. For example, "My name is Jane." becomes "My name
 /// is ."
-class RedactConfig {
-  RedactConfig();
+typedef RedactConfig = $Empty;
 
-  RedactConfig.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Rejects the latest revision of the specified Consent by committing a new
+/// revision with `state` updated to `REJECTED`.
+///
+/// If the latest revision of the given Consent is in the `REJECTED` state, no
+/// new revision is committed.
+class RejectConsentRequest {
+  /// The resource name of the Consent artifact that contains documentation of
+  /// the user's rejection of the draft Consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.
+  ///
+  /// If the draft Consent had a Consent artifact, this Consent artifact
+  /// overwrites it.
+  ///
+  /// Optional.
+  core.String? consentArtifact;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  RejectConsentRequest({
+    this.consentArtifact,
+  });
+
+  RejectConsentRequest.fromJson(core.Map _json)
+      : this(
+          consentArtifact: _json.containsKey('consentArtifact')
+              ? _json['consentArtifact'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentArtifact != null) 'consentArtifact': consentArtifact!,
+      };
 }
 
 /// When using the INSPECT_AND_TRANSFORM action, each match is replaced with the
@@ -7468,15 +11249,7 @@ class RedactConfig {
 ///
 /// For example, "My name is Jane" becomes "My name is \[PERSON_NAME\]." The
 /// TRANSFORM action is equivalent to redacting.
-class ReplaceWithInfoTypeConfig {
-  ReplaceWithInfoTypeConfig();
-
-  ReplaceWithInfoTypeConfig.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ReplaceWithInfoTypeConfig = $Empty;
 
 /// A list of FHIR resources.
 class Resources {
@@ -7485,18 +11258,94 @@ class Resources {
   /// For example, "Patient/1234".
   core.List<core.String>? resources;
 
-  Resources();
+  Resources({
+    this.resources,
+  });
 
-  Resources.fromJson(core.Map _json) {
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Resources.fromJson(core.Map _json)
+      : this(
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (resources != null) 'resources': resources!,
+      };
+}
+
+/// The consent evaluation result for a single `data_id`.
+class Result {
+  /// The resource names of all evaluated Consents mapped to their evaluation.
+  core.Map<core.String, ConsentEvaluation>? consentDetails;
+
+  /// Whether the resource is consented for the given use.
+  core.bool? consented;
+
+  /// The unique identifier of the evaluated resource.
+  core.String? dataId;
+
+  Result({
+    this.consentDetails,
+    this.consented,
+    this.dataId,
+  });
+
+  Result.fromJson(core.Map _json)
+      : this(
+          consentDetails: _json.containsKey('consentDetails')
+              ? (_json['consentDetails'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    ConsentEvaluation.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          consented: _json.containsKey('consented')
+              ? _json['consented'] as core.bool
+              : null,
+          dataId: _json.containsKey('dataId')
+              ? _json['dataId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentDetails != null) 'consentDetails': consentDetails!,
+        if (consented != null) 'consented': consented!,
+        if (dataId != null) 'dataId': dataId!,
+      };
+}
+
+/// Revokes the latest revision of the specified Consent by committing a new
+/// revision with `state` updated to `REVOKED`.
+///
+/// If the latest revision of the given Consent is in the `REVOKED` state, no
+/// new revision is committed.
+class RevokeConsentRequest {
+  /// The resource name of the Consent artifact that contains proof of the
+  /// user's revocation of the Consent, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/consentArtifacts/{consent_artifact_id}`.
+  ///
+  /// Optional.
+  core.String? consentArtifact;
+
+  RevokeConsentRequest({
+    this.consentArtifact,
+  });
+
+  RevokeConsentRequest.fromJson(core.Map _json)
+      : this(
+          consentArtifact: _json.containsKey('consentArtifact')
+              ? _json['consentArtifact'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (consentArtifact != null) 'consentArtifact': consentArtifact!,
       };
 }
 
@@ -7528,21 +11377,241 @@ class SchemaConfig {
   /// `Bundle.entry.response.outcome`.
   core.String? schemaType;
 
-  SchemaConfig();
+  SchemaConfig({
+    this.recursiveStructureDepth,
+    this.schemaType,
+  });
 
-  SchemaConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('recursiveStructureDepth')) {
-      recursiveStructureDepth = _json['recursiveStructureDepth'] as core.String;
-    }
-    if (_json.containsKey('schemaType')) {
-      schemaType = _json['schemaType'] as core.String;
-    }
-  }
+  SchemaConfig.fromJson(core.Map _json)
+      : this(
+          recursiveStructureDepth: _json.containsKey('recursiveStructureDepth')
+              ? _json['recursiveStructureDepth'] as core.String
+              : null,
+          schemaType: _json.containsKey('schemaType')
+              ? _json['schemaType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (recursiveStructureDepth != null)
           'recursiveStructureDepth': recursiveStructureDepth!,
         if (schemaType != null) 'schemaType': schemaType!,
+      };
+}
+
+/// An HL7v2 logical group construct.
+class SchemaGroup {
+  /// True indicates that this is a choice group, meaning that only one of its
+  /// segments can exist in a given message.
+  core.bool? choice;
+
+  /// The maximum number of times this group can be repeated.
+  ///
+  /// 0 or -1 means unbounded.
+  core.int? maxOccurs;
+
+  /// Nested groups and/or segments.
+  core.List<GroupOrSegment>? members;
+
+  /// The minimum number of times this group must be present/repeated.
+  core.int? minOccurs;
+
+  /// The name of this group.
+  ///
+  /// For example, "ORDER_DETAIL".
+  core.String? name;
+
+  SchemaGroup({
+    this.choice,
+    this.maxOccurs,
+    this.members,
+    this.minOccurs,
+    this.name,
+  });
+
+  SchemaGroup.fromJson(core.Map _json)
+      : this(
+          choice:
+              _json.containsKey('choice') ? _json['choice'] as core.bool : null,
+          maxOccurs: _json.containsKey('maxOccurs')
+              ? _json['maxOccurs'] as core.int
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => GroupOrSegment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          minOccurs: _json.containsKey('minOccurs')
+              ? _json['minOccurs'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (choice != null) 'choice': choice!,
+        if (maxOccurs != null) 'maxOccurs': maxOccurs!,
+        if (members != null) 'members': members!,
+        if (minOccurs != null) 'minOccurs': minOccurs!,
+        if (name != null) 'name': name!,
+      };
+}
+
+/// A schema package contains a set of schemas and type definitions.
+class SchemaPackage {
+  /// Flag to ignore all min_occurs restrictions in the schema.
+  ///
+  /// This means that incoming messages can omit any group, segment, field,
+  /// component, or subcomponent.
+  core.bool? ignoreMinOccurs;
+
+  /// Schema configs that are layered based on their VersionSources that match
+  /// the incoming message.
+  ///
+  /// Schema configs present in higher indices override those in lower indices
+  /// with the same message type and trigger event if their VersionSources all
+  /// match an incoming message.
+  core.List<Hl7SchemaConfig>? schemas;
+
+  /// Determines how messages that fail to parse are handled.
+  /// Possible string values are:
+  /// - "SCHEMATIZED_PARSING_TYPE_UNSPECIFIED" : Unspecified schematized parsing
+  /// type, equivalent to `SOFT_FAIL`.
+  /// - "SOFT_FAIL" : Messages that fail to parse are still stored and ACKed but
+  /// a parser error is stored in place of the schematized data.
+  /// - "HARD_FAIL" : Messages that fail to parse are rejected from
+  /// ingestion/insertion and return an error code.
+  core.String? schematizedParsingType;
+
+  /// Schema type definitions that are layered based on their VersionSources
+  /// that match the incoming message.
+  ///
+  /// Type definitions present in higher indices override those in lower indices
+  /// with the same type name if their VersionSources all match an incoming
+  /// message.
+  core.List<Hl7TypesConfig>? types;
+
+  /// Determines how unexpected segments (segments not matched to the schema)
+  /// are handled.
+  /// Possible string values are:
+  /// - "UNEXPECTED_SEGMENT_HANDLING_MODE_UNSPECIFIED" : Unspecified handling
+  /// mode, equivalent to FAIL.
+  /// - "FAIL" : Unexpected segments fail to parse and return an error.
+  /// - "SKIP" : Unexpected segments do not fail, but are omitted from the
+  /// output.
+  /// - "PARSE" : Unexpected segments do not fail, but are parsed in place and
+  /// added to the current group. If a segment has a type definition, it is
+  /// used, otherwise it is parsed as VARIES.
+  core.String? unexpectedSegmentHandling;
+
+  SchemaPackage({
+    this.ignoreMinOccurs,
+    this.schemas,
+    this.schematizedParsingType,
+    this.types,
+    this.unexpectedSegmentHandling,
+  });
+
+  SchemaPackage.fromJson(core.Map _json)
+      : this(
+          ignoreMinOccurs: _json.containsKey('ignoreMinOccurs')
+              ? _json['ignoreMinOccurs'] as core.bool
+              : null,
+          schemas: _json.containsKey('schemas')
+              ? (_json['schemas'] as core.List)
+                  .map((value) => Hl7SchemaConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          schematizedParsingType: _json.containsKey('schematizedParsingType')
+              ? _json['schematizedParsingType'] as core.String
+              : null,
+          types: _json.containsKey('types')
+              ? (_json['types'] as core.List)
+                  .map((value) => Hl7TypesConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          unexpectedSegmentHandling:
+              _json.containsKey('unexpectedSegmentHandling')
+                  ? _json['unexpectedSegmentHandling'] as core.String
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (ignoreMinOccurs != null) 'ignoreMinOccurs': ignoreMinOccurs!,
+        if (schemas != null) 'schemas': schemas!,
+        if (schematizedParsingType != null)
+          'schematizedParsingType': schematizedParsingType!,
+        if (types != null) 'types': types!,
+        if (unexpectedSegmentHandling != null)
+          'unexpectedSegmentHandling': unexpectedSegmentHandling!,
+      };
+}
+
+/// An HL7v2 Segment.
+class SchemaSegment {
+  /// The maximum number of times this segment can be present in this group.
+  ///
+  /// 0 or -1 means unbounded.
+  core.int? maxOccurs;
+
+  /// The minimum number of times this segment can be present in this group.
+  core.int? minOccurs;
+
+  /// The Segment type.
+  ///
+  /// For example, "PID".
+  core.String? type;
+
+  SchemaSegment({
+    this.maxOccurs,
+    this.minOccurs,
+    this.type,
+  });
+
+  SchemaSegment.fromJson(core.Map _json)
+      : this(
+          maxOccurs: _json.containsKey('maxOccurs')
+              ? _json['maxOccurs'] as core.int
+              : null,
+          minOccurs: _json.containsKey('minOccurs')
+              ? _json['minOccurs'] as core.int
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (maxOccurs != null) 'maxOccurs': maxOccurs!,
+        if (minOccurs != null) 'minOccurs': minOccurs!,
+        if (type != null) 'type': type!,
+      };
+}
+
+/// The content of an HL7v2 message in a structured format as specified by a
+/// schema.
+class SchematizedData {
+  /// JSON output of the parser.
+  core.String? data;
+
+  /// The error output of the parser.
+  core.String? error;
+
+  SchematizedData({
+    this.data,
+    this.error,
+  });
+
+  SchematizedData.fromJson(core.Map _json)
+      : this(
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+          error:
+              _json.containsKey('error') ? _json['error'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (data != null) 'data': data!,
+        if (error != null) 'error': error!,
       };
 }
 
@@ -7556,13 +11625,16 @@ class SearchResourcesRequest {
   /// [R4](http://hl7.org/implement/standards/fhir/R4/resourcelist.html)).
   core.String? resourceType;
 
-  SearchResourcesRequest();
+  SearchResourcesRequest({
+    this.resourceType,
+  });
 
-  SearchResourcesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('resourceType')) {
-      resourceType = _json['resourceType'] as core.String;
-    }
-  }
+  SearchResourcesRequest.fromJson(core.Map _json)
+      : this(
+          resourceType: _json.containsKey('resourceType')
+              ? _json['resourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (resourceType != null) 'resourceType': resourceType!,
@@ -7594,24 +11666,28 @@ class Segment {
   /// This can be empty if it's missing or isn't applicable.
   core.String? setId;
 
-  Segment();
+  Segment({
+    this.fields,
+    this.segmentId,
+    this.setId,
+  });
 
-  Segment.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('segmentId')) {
-      segmentId = _json['segmentId'] as core.String;
-    }
-    if (_json.containsKey('setId')) {
-      setId = _json['setId'] as core.String;
-    }
-  }
+  Segment.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          segmentId: _json.containsKey('segmentId')
+              ? _json['segmentId'] as core.String
+              : null,
+          setId:
+              _json.containsKey('setId') ? _json['setId'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fields != null) 'fields': fields!,
@@ -7635,21 +11711,86 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
+      };
+}
+
+/// User signature.
+class Signature {
+  /// An image of the user's signature.
+  ///
+  /// Optional.
+  Image? image;
+
+  /// Metadata associated with the user's signature.
+  ///
+  /// For example, the user's name or the user's title.
+  ///
+  /// Optional.
+  core.Map<core.String, core.String>? metadata;
+
+  /// Timestamp of the signature.
+  ///
+  /// Optional.
+  core.String? signatureTime;
+
+  /// User's UUID provided by the client.
+  ///
+  /// Required.
+  core.String? userId;
+
+  Signature({
+    this.image,
+    this.metadata,
+    this.signatureTime,
+    this.userId,
+  });
+
+  Signature.fromJson(core.Map _json)
+      : this(
+          image: _json.containsKey('image')
+              ? Image.fromJson(
+                  _json['image'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          signatureTime: _json.containsKey('signatureTime')
+              ? _json['signatureTime'] as core.String
+              : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (image != null) 'image': image!,
+        if (metadata != null) 'metadata': metadata!,
+        if (signatureTime != null) 'signatureTime': signatureTime!,
+        if (userId != null) 'userId': userId!,
       };
 }
 
@@ -7660,52 +11801,7 @@ class SetIamPolicyRequest {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Contains configuration for streaming FHIR export.
 class StreamConfig {
@@ -7723,22 +11819,23 @@ class StreamConfig {
   /// 1 MB of BigQuery data is not streamed. One resolution in this case is to
   /// delete the incompatible table and let the server recreate one, though the
   /// newly created table only contains data after the table recreation. Results
-  /// are appended to the corresponding BigQuery tables. Different versions of
-  /// the same resource are distinguishable by the meta.versionId and
-  /// meta.lastUpdated columns. The operation (CREATE/UPDATE/DELETE) that
-  /// results in the new version is recorded in the meta.tag. The tables contain
-  /// all historical resource versions since streaming was enabled. For query
-  /// convenience, the server also creates one view per table of the same name
-  /// containing only the current resource version. The streamed data in the
-  /// BigQuery dataset is not guaranteed to be completely unique. The
-  /// combination of the id and meta.versionId columns should ideally identify a
-  /// single unique row. But in rare cases, duplicates may exist. At query time,
-  /// users may use the SQL select statement to keep only one of the duplicate
-  /// rows given an id and meta.versionId pair. Alternatively, the server
-  /// created view mentioned above also filters out duplicates. If a resource
-  /// mutation cannot be streamed to BigQuery, errors are logged to Cloud
-  /// Logging. For more information, see \[Viewing error logs in Cloud
-  /// Logging\](/healthcare/docs/how-tos/logging)).
+  /// are written to BigQuery tables according to the parameters in
+  /// BigQueryDestination.WriteDisposition. Different versions of the same
+  /// resource are distinguishable by the meta.versionId and meta.lastUpdated
+  /// columns. The operation (CREATE/UPDATE/DELETE) that results in the new
+  /// version is recorded in the meta.tag. The tables contain all historical
+  /// resource versions since streaming was enabled. For query convenience, the
+  /// server also creates one view per table of the same name containing only
+  /// the current resource version. The streamed data in the BigQuery dataset is
+  /// not guaranteed to be completely unique. The combination of the id and
+  /// meta.versionId columns should ideally identify a single unique row. But in
+  /// rare cases, duplicates may exist. At query time, users may use the SQL
+  /// select statement to keep only one of the duplicate rows given an id and
+  /// meta.versionId pair. Alternatively, the server created view mentioned
+  /// above also filters out duplicates. If a resource mutation cannot be
+  /// streamed to BigQuery, errors are logged to Cloud Logging. For more
+  /// information, see
+  /// [Viewing error logs in Cloud Logging](https://cloud.google.com/healthcare/docs/how-tos/logging)).
   GoogleCloudHealthcareV1FhirBigQueryDestination? bigqueryDestination;
 
   /// Supply a FHIR resource type (such as "Patient" or "Observation").
@@ -7748,25 +11845,28 @@ class StreamConfig {
   /// stream all the supported resource types in this FHIR store.
   core.List<core.String>? resourceTypes;
 
-  StreamConfig();
+  StreamConfig({
+    this.bigqueryDestination,
+    this.resourceTypes,
+  });
 
-  StreamConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('bigqueryDestination')) {
-      bigqueryDestination =
-          GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(
-              _json['bigqueryDestination']
-                  as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resourceTypes')) {
-      resourceTypes = (_json['resourceTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  StreamConfig.fromJson(core.Map _json)
+      : this(
+          bigqueryDestination: _json.containsKey('bigqueryDestination')
+              ? GoogleCloudHealthcareV1FhirBigQueryDestination.fromJson(
+                  _json['bigqueryDestination']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          resourceTypes: _json.containsKey('resourceTypes')
+              ? (_json['resourceTypes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bigqueryDestination != null)
-          'bigqueryDestination': bigqueryDestination!.toJson(),
+          'bigqueryDestination': bigqueryDestination!,
         if (resourceTypes != null) 'resourceTypes': resourceTypes!,
       };
 }
@@ -7782,15 +11882,18 @@ class TagFilterList {
   /// "00100010".
   core.List<core.String>? tags;
 
-  TagFilterList();
+  TagFilterList({
+    this.tags,
+  });
 
-  TagFilterList.fromJson(core.Map _json) {
-    if (_json.containsKey('tags')) {
-      tags = (_json['tags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  TagFilterList.fromJson(core.Map _json)
+      : this(
+          tags: _json.containsKey('tags')
+              ? (_json['tags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (tags != null) 'tags': tags!,
@@ -7798,69 +11901,320 @@ class TagFilterList {
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 class TextConfig {
   /// The transformations to apply to the detected data.
   core.List<InfoTypeTransformation>? transformations;
 
-  TextConfig();
+  TextConfig({
+    this.transformations,
+  });
 
-  TextConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('transformations')) {
-      transformations = (_json['transformations'] as core.List)
-          .map<InfoTypeTransformation>((value) =>
-              InfoTypeTransformation.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  TextConfig.fromJson(core.Map _json)
+      : this(
+          transformations: _json.containsKey('transformations')
+              ? (_json['transformations'] as core.List)
+                  .map((value) => InfoTypeTransformation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (transformations != null)
-          'transformations':
-              transformations!.map((value) => value.toJson()).toList(),
+        if (transformations != null) 'transformations': transformations!,
+      };
+}
+
+/// A span of text in the provided document.
+class TextSpan {
+  /// The unicode codepoint index of the beginning of this span.
+  core.int? beginOffset;
+
+  /// The original text contained in this span.
+  core.String? content;
+
+  TextSpan({
+    this.beginOffset,
+    this.content,
+  });
+
+  TextSpan.fromJson(core.Map _json)
+      : this(
+          beginOffset: _json.containsKey('beginOffset')
+              ? _json['beginOffset'] as core.int
+              : null,
+          content: _json.containsKey('content')
+              ? _json['content'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (beginOffset != null) 'beginOffset': beginOffset!,
+        if (content != null) 'content': content!,
+      };
+}
+
+/// A type definition for some HL7v2 type (incl.
+///
+/// Segments and Datatypes).
+class Type {
+  /// The (sub) fields this type has (if not primitive).
+  core.List<Field>? fields;
+
+  /// The name of this type.
+  ///
+  /// This would be the segment or datatype name. For example, "PID" or "XPN".
+  core.String? name;
+
+  /// If this is a primitive type then this field is the type of the primitive
+  /// For example, STRING.
+  ///
+  /// Leave unspecified for composite types.
+  /// Possible string values are:
+  /// - "PRIMITIVE_UNSPECIFIED" : Not a primitive.
+  /// - "STRING" : String primitive.
+  /// - "VARIES" : Element that can have unschematized children.
+  /// - "UNESCAPED_STRING" : Like STRING, but all delimiters below this element
+  /// are ignored.
+  core.String? primitive;
+
+  Type({
+    this.fields,
+    this.name,
+    this.primitive,
+  });
+
+  Type.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => Field.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          primitive: _json.containsKey('primitive')
+              ? _json['primitive'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (fields != null) 'fields': fields!,
+        if (name != null) 'name': name!,
+        if (primitive != null) 'primitive': primitive!,
+      };
+}
+
+/// Maps a resource to the associated user and Attributes.
+class UserDataMapping {
+  /// Indicates the time when this mapping was archived.
+  ///
+  /// Output only.
+  core.String? archiveTime;
+
+  /// Indicates whether this mapping is archived.
+  ///
+  /// Output only.
+  core.bool? archived;
+
+  /// A unique identifier for the mapped resource.
+  ///
+  /// Required.
+  core.String? dataId;
+
+  /// Resource name of the User data mapping, of the form
+  /// `projects/{project_id}/locations/{location_id}/datasets/{dataset_id}/consentStores/{consent_store_id}/userDataMappings/{user_data_mapping_id}`.
+  core.String? name;
+
+  /// Attributes of the resource.
+  ///
+  /// Only explicitly set attributes are displayed here. Attribute definitions
+  /// with defaults set implicitly apply to these User data mappings. Attributes
+  /// listed here must be single valued, that is, exactly one value is specified
+  /// for the field "values" in each Attribute.
+  core.List<Attribute>? resourceAttributes;
+
+  /// User's UUID provided by the client.
+  ///
+  /// Required.
+  core.String? userId;
+
+  UserDataMapping({
+    this.archiveTime,
+    this.archived,
+    this.dataId,
+    this.name,
+    this.resourceAttributes,
+    this.userId,
+  });
+
+  UserDataMapping.fromJson(core.Map _json)
+      : this(
+          archiveTime: _json.containsKey('archiveTime')
+              ? _json['archiveTime'] as core.String
+              : null,
+          archived: _json.containsKey('archived')
+              ? _json['archived'] as core.bool
+              : null,
+          dataId: _json.containsKey('dataId')
+              ? _json['dataId'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          resourceAttributes: _json.containsKey('resourceAttributes')
+              ? (_json['resourceAttributes'] as core.List)
+                  .map((value) => Attribute.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          userId: _json.containsKey('userId')
+              ? _json['userId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (archiveTime != null) 'archiveTime': archiveTime!,
+        if (archived != null) 'archived': archived!,
+        if (dataId != null) 'dataId': dataId!,
+        if (name != null) 'name': name!,
+        if (resourceAttributes != null)
+          'resourceAttributes': resourceAttributes!,
+        if (userId != null) 'userId': userId!,
+      };
+}
+
+/// Contains the configuration for FHIR profiles and validation.
+class ValidationConfig {
+  /// Whether to disable FHIRPath validation for incoming resources.
+  ///
+  /// Set this to true to disable checking incoming resources for conformance
+  /// against FHIRPath requirement defined in the FHIR specification. This
+  /// property only affects resource types that do not have profiles configured
+  /// for them, any rules in enabled implementation guides will still be
+  /// enforced.
+  core.bool? disableFhirpathValidation;
+
+  /// Whether to disable profile validation for this FHIR store.
+  ///
+  /// Set this to true to disable checking incoming resources for conformance
+  /// against structure definitions in this FHIR store.
+  core.bool? disableProfileValidation;
+
+  /// Whether to disable reference type validation for incoming resources.
+  ///
+  /// Set this to true to disable checking incoming resources for conformance
+  /// against reference type requirement defined in the FHIR specification. This
+  /// property only affects resource types that do not have profiles configured
+  /// for them, any rules in enabled implementation guides will still be
+  /// enforced.
+  core.bool? disableReferenceTypeValidation;
+
+  /// Whether to disable required fields validation for incoming resources.
+  ///
+  /// Set this to true to disable checking incoming resources for conformance
+  /// against required fields requirement defined in the FHIR specification.
+  /// This property only affects resource types that do not have profiles
+  /// configured for them, any rules in enabled implementation guides will still
+  /// be enforced.
+  core.bool? disableRequiredFieldValidation;
+
+  /// A list of implementation guide URLs in this FHIR store that are used to
+  /// configure the profiles to use for validation.
+  ///
+  /// For example, to use the US Core profiles for validation, set
+  /// `enabled_implementation_guides` to
+  /// `["http://hl7.org/fhir/us/core/ImplementationGuide/ig"]`. If
+  /// `enabled_implementation_guides` is empty or omitted, then incoming
+  /// resources are only required to conform to the base FHIR profiles.
+  /// Otherwise, a resource must conform to at least one profile listed in the
+  /// `global` property of one of the enabled ImplementationGuides. The Cloud
+  /// Healthcare API does not currently enforce all of the rules in a
+  /// StructureDefinition. The following rules are supported: - min/max -
+  /// minValue/maxValue - maxLength - type - fixed\[x\] - pattern\[x\] on simple
+  /// types - slicing, when using "value" as the discriminator type When a URL
+  /// cannot be resolved (for example, in a type assertion), the server does not
+  /// return an error.
+  core.List<core.String>? enabledImplementationGuides;
+
+  ValidationConfig({
+    this.disableFhirpathValidation,
+    this.disableProfileValidation,
+    this.disableReferenceTypeValidation,
+    this.disableRequiredFieldValidation,
+    this.enabledImplementationGuides,
+  });
+
+  ValidationConfig.fromJson(core.Map _json)
+      : this(
+          disableFhirpathValidation:
+              _json.containsKey('disableFhirpathValidation')
+                  ? _json['disableFhirpathValidation'] as core.bool
+                  : null,
+          disableProfileValidation:
+              _json.containsKey('disableProfileValidation')
+                  ? _json['disableProfileValidation'] as core.bool
+                  : null,
+          disableReferenceTypeValidation:
+              _json.containsKey('disableReferenceTypeValidation')
+                  ? _json['disableReferenceTypeValidation'] as core.bool
+                  : null,
+          disableRequiredFieldValidation:
+              _json.containsKey('disableRequiredFieldValidation')
+                  ? _json['disableRequiredFieldValidation'] as core.bool
+                  : null,
+          enabledImplementationGuides:
+              _json.containsKey('enabledImplementationGuides')
+                  ? (_json['enabledImplementationGuides'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (disableFhirpathValidation != null)
+          'disableFhirpathValidation': disableFhirpathValidation!,
+        if (disableProfileValidation != null)
+          'disableProfileValidation': disableProfileValidation!,
+        if (disableReferenceTypeValidation != null)
+          'disableReferenceTypeValidation': disableReferenceTypeValidation!,
+        if (disableRequiredFieldValidation != null)
+          'disableRequiredFieldValidation': disableRequiredFieldValidation!,
+        if (enabledImplementationGuides != null)
+          'enabledImplementationGuides': enabledImplementationGuides!,
+      };
+}
+
+/// Describes a selector for extracting and matching an MSH field to a value.
+class VersionSource {
+  /// The field to extract from the MSH segment.
+  ///
+  /// For example, "3.1" or "18\[1\].1".
+  core.String? mshField;
+
+  /// The value to match with the field.
+  ///
+  /// For example, "My Application Name" or "2.3".
+  core.String? value;
+
+  VersionSource({
+    this.mshField,
+    this.value,
+  });
+
+  VersionSource.fromJson(core.Map _json)
+      : this(
+          mshField: _json.containsKey('mshField')
+              ? _json['mshField'] as core.String
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mshField != null) 'mshField': mshField!,
+        if (value != null) 'value': value!,
       };
 }

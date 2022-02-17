@@ -39,6 +39,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -89,16 +91,20 @@ class EnterprisesResource {
   ///
   /// Request parameters:
   ///
-  /// [agreementAccepted] - This feature is not generally available yet. Whether
-  /// the managed Google Play Agreement is presented and agreed.
+  /// [agreementAccepted] - Whether the enterprise admin has seen and agreed to
+  /// the managed Google Play Agreement
+  /// (https://www.android.com/enterprise/terms/). Always set this to true when
+  /// creating an EMM-managed enterprise. Do not create the enterprise until the
+  /// admin has viewed and accepted the agreement.
   ///
   /// [enterpriseToken] - The enterprise token appended to the callback URL.
+  /// Only set this when creating a customer-managed enterprise.
   ///
   /// [projectId] - The ID of the Google Cloud Platform project which will own
   /// the enterprise.
   ///
   /// [signupUrlName] - The name of the SignupUrl used to sign up for the
-  /// enterprise.
+  /// enterprise. Only set this when creating a customer-managed enterprise.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -118,7 +124,7 @@ class EnterprisesResource {
     core.String? signupUrlName,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (agreementAccepted != null)
         'agreementAccepted': ['${agreementAccepted}'],
@@ -140,14 +146,14 @@ class EnterprisesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// This feature is not generally available yet.
-  ///
   /// Deletes an enterprise.
+  ///
+  /// Only available for EMM-managed enterprises.
   ///
   /// Request parameters:
   ///
-  /// [name] - This feature is not generally available yet. The name of the
-  /// enterprise in the form enterprises/{enterpriseId}.
+  /// [name] - The name of the enterprise in the form
+  /// enterprises/{enterpriseId}.
   /// Value must have pattern `^enterprises/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -215,29 +221,27 @@ class EnterprisesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// This feature is not generally available yet.
+  /// Lists EMM-managed enterprises.
   ///
-  /// Lists enterprises that are managed by an EMM. Only partial views are
-  /// returned.
+  /// Only BASIC fields are returned.
   ///
   /// Request parameters:
   ///
-  /// [pageSize] - This feature is not generally available yet. The requested
-  /// page size. The actual page size may be fixed to a min or max value.
+  /// [pageSize] - The requested page size. The actual page size may be fixed to
+  /// a min or max value.
   ///
-  /// [pageToken] - This feature is not generally available yet. A token
-  /// identifying a page of results returned by the server.
+  /// [pageToken] - A token identifying a page of results returned by the
+  /// server.
   ///
-  /// [projectId] - Required. This feature is not generally available yet. The
-  /// ID of the Cloud project of the EMM the enterprises belongs to.
+  /// [projectId] - Required. The Cloud project ID of the EMM managing the
+  /// enterprises.
   ///
-  /// [view] - This feature is not generally available yet. View that specify
-  /// that partial response should be returned.
+  /// [view] - Specifies which Enterprise fields to return. This method only
+  /// supports BASIC.
   /// Possible string values are:
-  /// - "ENTERPRISE_VIEW_UNSPECIFIED" : This feature is not generally available
-  /// yet. The API will default to the BASIC view for the List method.
-  /// - "BASIC" : This feature is not generally available yet. Includes name and
-  /// enterprise_display_name fields.
+  /// - "ENTERPRISE_VIEW_UNSPECIFIED" : The API will default to the BASIC view
+  /// for the List method.
+  /// - "BASIC" : Includes name and enterprise_display_name fields.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -304,7 +308,7 @@ class EnterprisesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -493,7 +497,7 @@ class EnterprisesDevicesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -585,7 +589,7 @@ class EnterprisesDevicesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -823,7 +827,7 @@ class EnterprisesEnrollmentTokensResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1036,7 +1040,7 @@ class EnterprisesPoliciesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1084,7 +1088,7 @@ class EnterprisesWebAppsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1180,8 +1184,8 @@ class EnterprisesWebAppsResource {
   /// enterprises/{enterpriseId}.
   /// Value must have pattern `^enterprises/\[^/\]+$`.
   ///
-  /// [pageSize] - The requested page size. The actual page size may be fixed to
-  /// a min or max value.
+  /// [pageSize] - The requested page size. This is a hint and the actual page
+  /// size in the response may be different.
   ///
   /// [pageToken] - A token identifying a page of results returned by the
   /// server.
@@ -1248,7 +1252,7 @@ class EnterprisesWebAppsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1298,7 +1302,7 @@ class EnterprisesWebTokensResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1366,7 +1370,7 @@ class SignupUrlsResource {
   }
 }
 
-/// Security policies set to the most secure values by default.
+/// Security policies set to secure values by default.
 ///
 /// To maintain the security posture of a device, we don't recommend overriding
 /// any of the default values.
@@ -1389,6 +1393,39 @@ class AdvancedSecurityOverrides {
   /// - "COMMON_CRITERIA_MODE_ENABLED" : Enables Common Criteria Mode.
   core.String? commonCriteriaMode;
 
+  /// Controls access to developer settings: developer options and safe boot.
+  ///
+  /// Replaces safeBootDisabled (deprecated) and debuggingFeaturesAllowed
+  /// (deprecated).
+  /// Possible string values are:
+  /// - "DEVELOPER_SETTINGS_UNSPECIFIED" : Unspecified. Defaults to
+  /// DEVELOPER_SETTINGS_DISABLED.
+  /// - "DEVELOPER_SETTINGS_DISABLED" : Default. Disables all developer settings
+  /// and prevents the user from accessing them.
+  /// - "DEVELOPER_SETTINGS_ALLOWED" : Allows all developer settings. The user
+  /// can access and optionally configure the settings.
+  core.String? developerSettings;
+
+  /// Whether Google Play Protect verification
+  /// (https://support.google.com/accounts/answer/2812853) is enforced.
+  ///
+  /// Replaces ensureVerifyAppsEnabled (deprecated).
+  /// Possible string values are:
+  /// - "GOOGLE_PLAY_PROTECT_VERIFY_APPS_UNSPECIFIED" : Unspecified. Defaults to
+  /// VERIFY_APPS_ENFORCED.
+  /// - "VERIFY_APPS_ENFORCED" : Default. Force-enables app verification.
+  /// - "VERIFY_APPS_USER_CHOICE" : Allows the user to choose whether to enable
+  /// app verification.
+  core.String? googlePlayProtectVerifyApps;
+
+  /// Personal apps that can read work profile notifications using a
+  /// NotificationListenerService
+  /// (https://developer.android.com/reference/android/service/notification/NotificationListenerService).
+  ///
+  /// By default, no personal apps (aside from system apps) can read work
+  /// notifications. Each value in the list must be a package name.
+  core.List<core.String>? personalAppsThatCanReadWorkNotifications;
+
   /// The policy for untrusted apps (apps from unknown sources) enforced on the
   /// device.
   ///
@@ -1405,20 +1442,46 @@ class AdvancedSecurityOverrides {
   /// device.
   core.String? untrustedAppsPolicy;
 
-  AdvancedSecurityOverrides();
+  AdvancedSecurityOverrides({
+    this.commonCriteriaMode,
+    this.developerSettings,
+    this.googlePlayProtectVerifyApps,
+    this.personalAppsThatCanReadWorkNotifications,
+    this.untrustedAppsPolicy,
+  });
 
-  AdvancedSecurityOverrides.fromJson(core.Map _json) {
-    if (_json.containsKey('commonCriteriaMode')) {
-      commonCriteriaMode = _json['commonCriteriaMode'] as core.String;
-    }
-    if (_json.containsKey('untrustedAppsPolicy')) {
-      untrustedAppsPolicy = _json['untrustedAppsPolicy'] as core.String;
-    }
-  }
+  AdvancedSecurityOverrides.fromJson(core.Map _json)
+      : this(
+          commonCriteriaMode: _json.containsKey('commonCriteriaMode')
+              ? _json['commonCriteriaMode'] as core.String
+              : null,
+          developerSettings: _json.containsKey('developerSettings')
+              ? _json['developerSettings'] as core.String
+              : null,
+          googlePlayProtectVerifyApps:
+              _json.containsKey('googlePlayProtectVerifyApps')
+                  ? _json['googlePlayProtectVerifyApps'] as core.String
+                  : null,
+          personalAppsThatCanReadWorkNotifications: _json
+                  .containsKey('personalAppsThatCanReadWorkNotifications')
+              ? (_json['personalAppsThatCanReadWorkNotifications'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          untrustedAppsPolicy: _json.containsKey('untrustedAppsPolicy')
+              ? _json['untrustedAppsPolicy'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commonCriteriaMode != null)
           'commonCriteriaMode': commonCriteriaMode!,
+        if (developerSettings != null) 'developerSettings': developerSettings!,
+        if (googlePlayProtectVerifyApps != null)
+          'googlePlayProtectVerifyApps': googlePlayProtectVerifyApps!,
+        if (personalAppsThatCanReadWorkNotifications != null)
+          'personalAppsThatCanReadWorkNotifications':
+              personalAppsThatCanReadWorkNotifications!,
         if (untrustedAppsPolicy != null)
           'untrustedAppsPolicy': untrustedAppsPolicy!,
       };
@@ -1432,16 +1495,20 @@ class AlwaysOnVpnPackage {
   /// The package name of the VPN app.
   core.String? packageName;
 
-  AlwaysOnVpnPackage();
+  AlwaysOnVpnPackage({
+    this.lockdownEnabled,
+    this.packageName,
+  });
 
-  AlwaysOnVpnPackage.fromJson(core.Map _json) {
-    if (_json.containsKey('lockdownEnabled')) {
-      lockdownEnabled = _json['lockdownEnabled'] as core.bool;
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-  }
+  AlwaysOnVpnPackage.fromJson(core.Map _json)
+      : this(
+          lockdownEnabled: _json.containsKey('lockdownEnabled')
+              ? _json['lockdownEnabled'] as core.bool
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (lockdownEnabled != null) 'lockdownEnabled': lockdownEnabled!,
@@ -1460,13 +1527,16 @@ class ApiLevelCondition {
   /// satisfied. Must be greater than zero.
   core.int? minApiLevel;
 
-  ApiLevelCondition();
+  ApiLevelCondition({
+    this.minApiLevel,
+  });
 
-  ApiLevelCondition.fromJson(core.Map _json) {
-    if (_json.containsKey('minApiLevel')) {
-      minApiLevel = _json['minApiLevel'] as core.int;
-    }
-  }
+  ApiLevelCondition.fromJson(core.Map _json)
+      : this(
+          minApiLevel: _json.containsKey('minApiLevel')
+              ? _json['minApiLevel'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (minApiLevel != null) 'minApiLevel': minApiLevel!,
@@ -1485,16 +1555,20 @@ class AppTrackInfo {
   /// information.
   core.String? trackId;
 
-  AppTrackInfo();
+  AppTrackInfo({
+    this.trackAlias,
+    this.trackId,
+  });
 
-  AppTrackInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('trackAlias')) {
-      trackAlias = _json['trackAlias'] as core.String;
-    }
-    if (_json.containsKey('trackId')) {
-      trackId = _json['trackId'] as core.String;
-    }
-  }
+  AppTrackInfo.fromJson(core.Map _json)
+      : this(
+          trackAlias: _json.containsKey('trackAlias')
+              ? _json['trackAlias'] as core.String
+              : null,
+          trackId: _json.containsKey('trackId')
+              ? _json['trackId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (trackAlias != null) 'trackAlias': trackAlias!,
@@ -1511,7 +1585,7 @@ class Application {
   core.List<ManagedProperty>? managedProperties;
 
   /// The name of the app in the form
-  /// enterprises/{enterpriseId}/applications/{package_name}.
+  /// enterprises/{enterprise}/applications/{package_name}.
   core.String? name;
 
   /// The permissions required by the app.
@@ -1522,44 +1596,44 @@ class Application {
   /// Localized.
   core.String? title;
 
-  Application();
+  Application({
+    this.appTracks,
+    this.managedProperties,
+    this.name,
+    this.permissions,
+    this.title,
+  });
 
-  Application.fromJson(core.Map _json) {
-    if (_json.containsKey('appTracks')) {
-      appTracks = (_json['appTracks'] as core.List)
-          .map<AppTrackInfo>((value) => AppTrackInfo.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('managedProperties')) {
-      managedProperties = (_json['managedProperties'] as core.List)
-          .map<ManagedProperty>((value) => ManagedProperty.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<ApplicationPermission>((value) => ApplicationPermission.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Application.fromJson(core.Map _json)
+      : this(
+          appTracks: _json.containsKey('appTracks')
+              ? (_json['appTracks'] as core.List)
+                  .map((value) => AppTrackInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          managedProperties: _json.containsKey('managedProperties')
+              ? (_json['managedProperties'] as core.List)
+                  .map((value) => ManagedProperty.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          permissions: _json.containsKey('permissions')
+              ? (_json['permissions'] as core.List)
+                  .map((value) => ApplicationPermission.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (appTracks != null)
-          'appTracks': appTracks!.map((value) => value.toJson()).toList(),
-        if (managedProperties != null)
-          'managedProperties':
-              managedProperties!.map((value) => value.toJson()).toList(),
+        if (appTracks != null) 'appTracks': appTracks!,
+        if (managedProperties != null) 'managedProperties': managedProperties!,
         if (name != null) 'name': name!,
-        if (permissions != null)
-          'permissions': permissions!.map((value) => value.toJson()).toList(),
+        if (permissions != null) 'permissions': permissions!,
         if (title != null) 'title': title!,
       };
 }
@@ -1584,16 +1658,20 @@ class ApplicationEvent {
   /// - "UNPINNED" : The app was unpinned.
   core.String? eventType;
 
-  ApplicationEvent();
+  ApplicationEvent({
+    this.createTime,
+    this.eventType,
+  });
 
-  ApplicationEvent.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('eventType')) {
-      eventType = _json['eventType'] as core.String;
-    }
-  }
+  ApplicationEvent.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          eventType: _json.containsKey('eventType')
+              ? _json['eventType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -1619,19 +1697,22 @@ class ApplicationPermission {
   /// Not localized.
   core.String? permissionId;
 
-  ApplicationPermission();
+  ApplicationPermission({
+    this.description,
+    this.name,
+    this.permissionId,
+  });
 
-  ApplicationPermission.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('permissionId')) {
-      permissionId = _json['permissionId'] as core.String;
-    }
-  }
+  ApplicationPermission.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          permissionId: _json.containsKey('permissionId')
+              ? _json['permissionId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -1651,14 +1732,27 @@ class ApplicationPolicy {
   /// each track are available in AppTrackInfo.
   core.List<core.String>? accessibleTrackIds;
 
-  /// This feature is not generally available yet.
+  /// Controls the auto-update mode for the app.
   /// Possible string values are:
-  /// - "AUTO_UPDATE_MODE_UNSPECIFIED" : This feature is not generally available
-  /// yet.
-  /// - "AUTO_UPDATE_DEFAULT" : This feature is not generally available yet.
-  /// - "AUTO_UPDATE_POSTPONED" : This feature is not generally available yet.
-  /// - "AUTO_UPDATE_HIGH_PRIORITY" : This feature is not generally available
-  /// yet.
+  /// - "AUTO_UPDATE_MODE_UNSPECIFIED" : Unspecified. Defaults to
+  /// AUTO_UPDATE_DEFAULT.
+  /// - "AUTO_UPDATE_DEFAULT" : The app is automatically updated with low
+  /// priority to minimize the impact on the user.The app is updated when all of
+  /// the following constraints are met: The device is not actively used. The
+  /// device is connected to an unmetered network. The device is charging.The
+  /// device is notified about a new update within 24 hours after it is
+  /// published by the developer, after which the app is updated the next time
+  /// the constraints above are met.
+  /// - "AUTO_UPDATE_POSTPONED" : The app is not automatically updated for a
+  /// maximum of 90 days after the app becomes out of date.90 days after the app
+  /// becomes out of date, the latest available version is installed
+  /// automatically with low priority (see AUTO_UPDATE_DEFAULT). After the app
+  /// is updated it is not automatically updated again until 90 days after it
+  /// becomes out of date again.The user can still manually update the app from
+  /// the Play Store at any time.
+  /// - "AUTO_UPDATE_HIGH_PRIORITY" : The app is updated as soon as possible. No
+  /// constraints are applied.The device is notified immediately about a new
+  /// update after it becomes available.
   core.String? autoUpdateMode;
 
   /// Controls whether the app can communicate with itself across a device’s
@@ -1693,6 +1787,11 @@ class ApplicationPolicy {
   ///
   /// When disabled, the app data is still preserved.
   core.bool? disabled;
+
+  /// Configuration to enable this app as an extension app, with the capability
+  /// of interacting with Android Device Policy offline.This field can be set
+  /// for at most one app.
+  ExtensionConfig? extensionConfig;
 
   /// The type of installation to perform.
   /// Possible string values are:
@@ -1732,7 +1831,7 @@ class ApplicationPolicy {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? managedConfiguration;
+  core.Map<core.String, core.Object?>? managedConfiguration;
 
   /// The managed configurations template for the app, saved from the managed
   /// configurations iframe.
@@ -1761,66 +1860,81 @@ class ApplicationPolicy {
   /// which apply to all apps.
   core.List<PermissionGrant>? permissionGrants;
 
-  ApplicationPolicy();
+  ApplicationPolicy({
+    this.accessibleTrackIds,
+    this.autoUpdateMode,
+    this.connectedWorkAndPersonalApp,
+    this.defaultPermissionPolicy,
+    this.delegatedScopes,
+    this.disabled,
+    this.extensionConfig,
+    this.installType,
+    this.lockTaskAllowed,
+    this.managedConfiguration,
+    this.managedConfigurationTemplate,
+    this.minimumVersionCode,
+    this.packageName,
+    this.permissionGrants,
+  });
 
-  ApplicationPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('accessibleTrackIds')) {
-      accessibleTrackIds = (_json['accessibleTrackIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('autoUpdateMode')) {
-      autoUpdateMode = _json['autoUpdateMode'] as core.String;
-    }
-    if (_json.containsKey('connectedWorkAndPersonalApp')) {
-      connectedWorkAndPersonalApp =
-          _json['connectedWorkAndPersonalApp'] as core.String;
-    }
-    if (_json.containsKey('defaultPermissionPolicy')) {
-      defaultPermissionPolicy = _json['defaultPermissionPolicy'] as core.String;
-    }
-    if (_json.containsKey('delegatedScopes')) {
-      delegatedScopes = (_json['delegatedScopes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('installType')) {
-      installType = _json['installType'] as core.String;
-    }
-    if (_json.containsKey('lockTaskAllowed')) {
-      lockTaskAllowed = _json['lockTaskAllowed'] as core.bool;
-    }
-    if (_json.containsKey('managedConfiguration')) {
-      managedConfiguration =
-          (_json['managedConfiguration'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('managedConfigurationTemplate')) {
-      managedConfigurationTemplate = ManagedConfigurationTemplate.fromJson(
-          _json['managedConfigurationTemplate']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('minimumVersionCode')) {
-      minimumVersionCode = _json['minimumVersionCode'] as core.int;
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('permissionGrants')) {
-      permissionGrants = (_json['permissionGrants'] as core.List)
-          .map<PermissionGrant>((value) => PermissionGrant.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ApplicationPolicy.fromJson(core.Map _json)
+      : this(
+          accessibleTrackIds: _json.containsKey('accessibleTrackIds')
+              ? (_json['accessibleTrackIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          autoUpdateMode: _json.containsKey('autoUpdateMode')
+              ? _json['autoUpdateMode'] as core.String
+              : null,
+          connectedWorkAndPersonalApp:
+              _json.containsKey('connectedWorkAndPersonalApp')
+                  ? _json['connectedWorkAndPersonalApp'] as core.String
+                  : null,
+          defaultPermissionPolicy: _json.containsKey('defaultPermissionPolicy')
+              ? _json['defaultPermissionPolicy'] as core.String
+              : null,
+          delegatedScopes: _json.containsKey('delegatedScopes')
+              ? (_json['delegatedScopes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          extensionConfig: _json.containsKey('extensionConfig')
+              ? ExtensionConfig.fromJson(_json['extensionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          installType: _json.containsKey('installType')
+              ? _json['installType'] as core.String
+              : null,
+          lockTaskAllowed: _json.containsKey('lockTaskAllowed')
+              ? _json['lockTaskAllowed'] as core.bool
+              : null,
+          managedConfiguration: _json.containsKey('managedConfiguration')
+              ? _json['managedConfiguration']
+                  as core.Map<core.String, core.dynamic>
+              : null,
+          managedConfigurationTemplate:
+              _json.containsKey('managedConfigurationTemplate')
+                  ? ManagedConfigurationTemplate.fromJson(
+                      _json['managedConfigurationTemplate']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          minimumVersionCode: _json.containsKey('minimumVersionCode')
+              ? _json['minimumVersionCode'] as core.int
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          permissionGrants: _json.containsKey('permissionGrants')
+              ? (_json['permissionGrants'] as core.List)
+                  .map((value) => PermissionGrant.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessibleTrackIds != null)
@@ -1832,19 +1946,17 @@ class ApplicationPolicy {
           'defaultPermissionPolicy': defaultPermissionPolicy!,
         if (delegatedScopes != null) 'delegatedScopes': delegatedScopes!,
         if (disabled != null) 'disabled': disabled!,
+        if (extensionConfig != null) 'extensionConfig': extensionConfig!,
         if (installType != null) 'installType': installType!,
         if (lockTaskAllowed != null) 'lockTaskAllowed': lockTaskAllowed!,
         if (managedConfiguration != null)
           'managedConfiguration': managedConfiguration!,
         if (managedConfigurationTemplate != null)
-          'managedConfigurationTemplate':
-              managedConfigurationTemplate!.toJson(),
+          'managedConfigurationTemplate': managedConfigurationTemplate!,
         if (minimumVersionCode != null)
           'minimumVersionCode': minimumVersionCode!,
         if (packageName != null) 'packageName': packageName!,
-        if (permissionGrants != null)
-          'permissionGrants':
-              permissionGrants!.map((value) => value.toJson()).toList(),
+        if (permissionGrants != null) 'permissionGrants': permissionGrants!,
       };
 }
 
@@ -1907,63 +2019,72 @@ class ApplicationReport {
   /// The app version as displayed to the user.
   core.String? versionName;
 
-  ApplicationReport();
+  ApplicationReport({
+    this.applicationSource,
+    this.displayName,
+    this.events,
+    this.installerPackageName,
+    this.keyedAppStates,
+    this.packageName,
+    this.packageSha256Hash,
+    this.signingKeyCertFingerprints,
+    this.state,
+    this.versionCode,
+    this.versionName,
+  });
 
-  ApplicationReport.fromJson(core.Map _json) {
-    if (_json.containsKey('applicationSource')) {
-      applicationSource = _json['applicationSource'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('events')) {
-      events = (_json['events'] as core.List)
-          .map<ApplicationEvent>((value) => ApplicationEvent.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('installerPackageName')) {
-      installerPackageName = _json['installerPackageName'] as core.String;
-    }
-    if (_json.containsKey('keyedAppStates')) {
-      keyedAppStates = (_json['keyedAppStates'] as core.List)
-          .map<KeyedAppState>((value) => KeyedAppState.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('packageSha256Hash')) {
-      packageSha256Hash = _json['packageSha256Hash'] as core.String;
-    }
-    if (_json.containsKey('signingKeyCertFingerprints')) {
-      signingKeyCertFingerprints =
-          (_json['signingKeyCertFingerprints'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('versionCode')) {
-      versionCode = _json['versionCode'] as core.int;
-    }
-    if (_json.containsKey('versionName')) {
-      versionName = _json['versionName'] as core.String;
-    }
-  }
+  ApplicationReport.fromJson(core.Map _json)
+      : this(
+          applicationSource: _json.containsKey('applicationSource')
+              ? _json['applicationSource'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          events: _json.containsKey('events')
+              ? (_json['events'] as core.List)
+                  .map((value) => ApplicationEvent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          installerPackageName: _json.containsKey('installerPackageName')
+              ? _json['installerPackageName'] as core.String
+              : null,
+          keyedAppStates: _json.containsKey('keyedAppStates')
+              ? (_json['keyedAppStates'] as core.List)
+                  .map((value) => KeyedAppState.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          packageSha256Hash: _json.containsKey('packageSha256Hash')
+              ? _json['packageSha256Hash'] as core.String
+              : null,
+          signingKeyCertFingerprints:
+              _json.containsKey('signingKeyCertFingerprints')
+                  ? (_json['signingKeyCertFingerprints'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          versionCode: _json.containsKey('versionCode')
+              ? _json['versionCode'] as core.int
+              : null,
+          versionName: _json.containsKey('versionName')
+              ? _json['versionName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (applicationSource != null) 'applicationSource': applicationSource!,
         if (displayName != null) 'displayName': displayName!,
-        if (events != null)
-          'events': events!.map((value) => value.toJson()).toList(),
+        if (events != null) 'events': events!,
         if (installerPackageName != null)
           'installerPackageName': installerPackageName!,
-        if (keyedAppStates != null)
-          'keyedAppStates':
-              keyedAppStates!.map((value) => value.toJson()).toList(),
+        if (keyedAppStates != null) 'keyedAppStates': keyedAppStates!,
         if (packageName != null) 'packageName': packageName!,
         if (packageSha256Hash != null) 'packageSha256Hash': packageSha256Hash!,
         if (signingKeyCertFingerprints != null)
@@ -1979,13 +2100,16 @@ class ApplicationReportingSettings {
   /// Whether removed apps are included in application reports.
   core.bool? includeRemovedApps;
 
-  ApplicationReportingSettings();
+  ApplicationReportingSettings({
+    this.includeRemovedApps,
+  });
 
-  ApplicationReportingSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('includeRemovedApps')) {
-      includeRemovedApps = _json['includeRemovedApps'] as core.bool;
-    }
-  }
+  ApplicationReportingSettings.fromJson(core.Map _json)
+      : this(
+          includeRemovedApps: _json.containsKey('includeRemovedApps')
+              ? _json['includeRemovedApps'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (includeRemovedApps != null)
@@ -2019,16 +2143,20 @@ class BlockAction {
   /// including apps in the personal profile.
   core.String? blockScope;
 
-  BlockAction();
+  BlockAction({
+    this.blockAfterDays,
+    this.blockScope,
+  });
 
-  BlockAction.fromJson(core.Map _json) {
-    if (_json.containsKey('blockAfterDays')) {
-      blockAfterDays = _json['blockAfterDays'] as core.int;
-    }
-    if (_json.containsKey('blockScope')) {
-      blockScope = _json['blockScope'] as core.String;
-    }
-  }
+  BlockAction.fromJson(core.Map _json)
+      : this(
+          blockAfterDays: _json.containsKey('blockAfterDays')
+              ? _json['blockAfterDays'] as core.int
+              : null,
+          blockScope: _json.containsKey('blockScope')
+              ? _json['blockScope'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (blockAfterDays != null) 'blockAfterDays': blockAfterDays!,
@@ -2036,42 +2164,62 @@ class BlockAction {
       };
 }
 
-/// A rule for automatically choosing a private key and certificate to
-/// authenticate the device to a server.
+/// Controls apps' access to private keys.
+///
+/// The rule determines which private key, if any, Android Device Policy grants
+/// to the specified app. Access is granted either when the app calls
+/// KeyChain.choosePrivateKeyAlias
+/// (https://developer.android.com/reference/android/security/KeyChain#choosePrivateKeyAlias%28android.app.Activity,%20android.security.KeyChainAliasCallback,%20java.lang.String\[\],%20java.security.Principal\[\],%20java.lang.String,%20int,%20java.lang.String%29)
+/// (or any overloads) to request a private key alias for a given URL, or for
+/// rules that are not URL-specific (that is, if urlPattern is not set, or set
+/// to the empty string or .*) on Android 11 and above, directly so that the app
+/// can call KeyChain.getPrivateKey
+/// (https://developer.android.com/reference/android/security/KeyChain#getPrivateKey%28android.content.Context,%20java.lang.String%29),
+/// without first having to call KeyChain.choosePrivateKeyAlias.When an app
+/// calls KeyChain.choosePrivateKeyAlias if more than one choosePrivateKeyRules
+/// matches, the last matching rule defines which key alias to return.
 class ChoosePrivateKeyRule {
-  /// The package names for which outgoing requests are subject to this rule.
+  /// The package names to which this rule applies.
   ///
-  /// If no package names are specified, then the rule applies to all packages.
-  /// For each package name listed, the rule applies to that package and all
-  /// other packages that shared the same Android UID. The SHA256 hash of the
-  /// signing key signatures of each package_name will be verified against those
-  /// provided by Play
+  /// The hash of the signing certificate for each app is verified against the
+  /// hash provided by Play. If no package names are specified, then the alias
+  /// is provided to all apps that call KeyChain.choosePrivateKeyAlias
+  /// (https://developer.android.com/reference/android/security/KeyChain#choosePrivateKeyAlias%28android.app.Activity,%20android.security.KeyChainAliasCallback,%20java.lang.String\[\],%20java.security.Principal\[\],%20java.lang.String,%20int,%20java.lang.String%29)
+  /// or any overloads (but not without calling KeyChain.choosePrivateKeyAlias,
+  /// even on Android 11 and above). Any app with the same Android UID as a
+  /// package specified here will have access when they call
+  /// KeyChain.choosePrivateKeyAlias.
   core.List<core.String>? packageNames;
 
   /// The alias of the private key to be used.
   core.String? privateKeyAlias;
 
-  /// The URL pattern to match against the URL of the outgoing request.
+  /// The URL pattern to match against the URL of the request.
   ///
-  /// The pattern may contain asterisk (*) wildcards. Any URL is matched if
-  /// unspecified.
+  /// If not set or empty, it matches all URLs. This uses the regular expression
+  /// syntax of java.util.regex.Pattern.
   core.String? urlPattern;
 
-  ChoosePrivateKeyRule();
+  ChoosePrivateKeyRule({
+    this.packageNames,
+    this.privateKeyAlias,
+    this.urlPattern,
+  });
 
-  ChoosePrivateKeyRule.fromJson(core.Map _json) {
-    if (_json.containsKey('packageNames')) {
-      packageNames = (_json['packageNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('privateKeyAlias')) {
-      privateKeyAlias = _json['privateKeyAlias'] as core.String;
-    }
-    if (_json.containsKey('urlPattern')) {
-      urlPattern = _json['urlPattern'] as core.String;
-    }
-  }
+  ChoosePrivateKeyRule.fromJson(core.Map _json)
+      : this(
+          packageNames: _json.containsKey('packageNames')
+              ? (_json['packageNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          privateKeyAlias: _json.containsKey('privateKeyAlias')
+              ? _json['privateKeyAlias'] as core.String
+              : null,
+          urlPattern: _json.containsKey('urlPattern')
+              ? _json['urlPattern'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (packageNames != null) 'packageNames': packageNames!,
@@ -2136,33 +2284,40 @@ class Command {
   /// command is sent to.
   core.String? userName;
 
-  Command();
+  Command({
+    this.createTime,
+    this.duration,
+    this.errorCode,
+    this.newPassword,
+    this.resetPasswordFlags,
+    this.type,
+    this.userName,
+  });
 
-  Command.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('errorCode')) {
-      errorCode = _json['errorCode'] as core.String;
-    }
-    if (_json.containsKey('newPassword')) {
-      newPassword = _json['newPassword'] as core.String;
-    }
-    if (_json.containsKey('resetPasswordFlags')) {
-      resetPasswordFlags = (_json['resetPasswordFlags'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('userName')) {
-      userName = _json['userName'] as core.String;
-    }
-  }
+  Command.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          duration: _json.containsKey('duration')
+              ? _json['duration'] as core.String
+              : null,
+          errorCode: _json.containsKey('errorCode')
+              ? _json['errorCode'] as core.String
+              : null,
+          newPassword: _json.containsKey('newPassword')
+              ? _json['newPassword'] as core.String
+              : null,
+          resetPasswordFlags: _json.containsKey('resetPasswordFlags')
+              ? (_json['resetPasswordFlags'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          userName: _json.containsKey('userName')
+              ? _json['userName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -2191,14 +2346,17 @@ class CommonCriteriaModeInfo {
   /// enabled.
   core.String? commonCriteriaModeStatus;
 
-  CommonCriteriaModeInfo();
+  CommonCriteriaModeInfo({
+    this.commonCriteriaModeStatus,
+  });
 
-  CommonCriteriaModeInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('commonCriteriaModeStatus')) {
-      commonCriteriaModeStatus =
-          _json['commonCriteriaModeStatus'] as core.String;
-    }
-  }
+  CommonCriteriaModeInfo.fromJson(core.Map _json)
+      : this(
+          commonCriteriaModeStatus:
+              _json.containsKey('commonCriteriaModeStatus')
+                  ? _json['commonCriteriaModeStatus'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commonCriteriaModeStatus != null)
@@ -2234,41 +2392,46 @@ class ComplianceRule {
   /// the list, but app data is preserved.
   core.List<core.String>? packageNamesToDisable;
 
-  ComplianceRule();
+  ComplianceRule({
+    this.apiLevelCondition,
+    this.disableApps,
+    this.nonComplianceDetailCondition,
+    this.packageNamesToDisable,
+  });
 
-  ComplianceRule.fromJson(core.Map _json) {
-    if (_json.containsKey('apiLevelCondition')) {
-      apiLevelCondition = ApiLevelCondition.fromJson(
-          _json['apiLevelCondition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('disableApps')) {
-      disableApps = _json['disableApps'] as core.bool;
-    }
-    if (_json.containsKey('nonComplianceDetailCondition')) {
-      nonComplianceDetailCondition = NonComplianceDetailCondition.fromJson(
-          _json['nonComplianceDetailCondition']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('packageNamesToDisable')) {
-      packageNamesToDisable = (_json['packageNamesToDisable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ComplianceRule.fromJson(core.Map _json)
+      : this(
+          apiLevelCondition: _json.containsKey('apiLevelCondition')
+              ? ApiLevelCondition.fromJson(_json['apiLevelCondition']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          disableApps: _json.containsKey('disableApps')
+              ? _json['disableApps'] as core.bool
+              : null,
+          nonComplianceDetailCondition:
+              _json.containsKey('nonComplianceDetailCondition')
+                  ? NonComplianceDetailCondition.fromJson(
+                      _json['nonComplianceDetailCondition']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          packageNamesToDisable: _json.containsKey('packageNamesToDisable')
+              ? (_json['packageNamesToDisable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (apiLevelCondition != null)
-          'apiLevelCondition': apiLevelCondition!.toJson(),
+        if (apiLevelCondition != null) 'apiLevelCondition': apiLevelCondition!,
         if (disableApps != null) 'disableApps': disableApps!,
         if (nonComplianceDetailCondition != null)
-          'nonComplianceDetailCondition':
-              nonComplianceDetailCondition!.toJson(),
+          'nonComplianceDetailCondition': nonComplianceDetailCondition!,
         if (packageNamesToDisable != null)
           'packageNamesToDisable': packageNamesToDisable!,
       };
 }
 
-/// Contact details for LaForge enterprises.
+/// Contact details for managed Google Play enterprises.
 class ContactInfo {
   /// Email address for a point of contact, which will be used to send important
   /// announcements related to managed Google Play.
@@ -2299,34 +2462,43 @@ class ContactInfo {
   /// The phone number is validated but not verified.
   core.String? euRepresentativePhone;
 
-  ContactInfo();
+  ContactInfo({
+    this.contactEmail,
+    this.dataProtectionOfficerEmail,
+    this.dataProtectionOfficerName,
+    this.dataProtectionOfficerPhone,
+    this.euRepresentativeEmail,
+    this.euRepresentativeName,
+    this.euRepresentativePhone,
+  });
 
-  ContactInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('contactEmail')) {
-      contactEmail = _json['contactEmail'] as core.String;
-    }
-    if (_json.containsKey('dataProtectionOfficerEmail')) {
-      dataProtectionOfficerEmail =
-          _json['dataProtectionOfficerEmail'] as core.String;
-    }
-    if (_json.containsKey('dataProtectionOfficerName')) {
-      dataProtectionOfficerName =
-          _json['dataProtectionOfficerName'] as core.String;
-    }
-    if (_json.containsKey('dataProtectionOfficerPhone')) {
-      dataProtectionOfficerPhone =
-          _json['dataProtectionOfficerPhone'] as core.String;
-    }
-    if (_json.containsKey('euRepresentativeEmail')) {
-      euRepresentativeEmail = _json['euRepresentativeEmail'] as core.String;
-    }
-    if (_json.containsKey('euRepresentativeName')) {
-      euRepresentativeName = _json['euRepresentativeName'] as core.String;
-    }
-    if (_json.containsKey('euRepresentativePhone')) {
-      euRepresentativePhone = _json['euRepresentativePhone'] as core.String;
-    }
-  }
+  ContactInfo.fromJson(core.Map _json)
+      : this(
+          contactEmail: _json.containsKey('contactEmail')
+              ? _json['contactEmail'] as core.String
+              : null,
+          dataProtectionOfficerEmail:
+              _json.containsKey('dataProtectionOfficerEmail')
+                  ? _json['dataProtectionOfficerEmail'] as core.String
+                  : null,
+          dataProtectionOfficerName:
+              _json.containsKey('dataProtectionOfficerName')
+                  ? _json['dataProtectionOfficerName'] as core.String
+                  : null,
+          dataProtectionOfficerPhone:
+              _json.containsKey('dataProtectionOfficerPhone')
+                  ? _json['dataProtectionOfficerPhone'] as core.String
+                  : null,
+          euRepresentativeEmail: _json.containsKey('euRepresentativeEmail')
+              ? _json['euRepresentativeEmail'] as core.String
+              : null,
+          euRepresentativeName: _json.containsKey('euRepresentativeName')
+              ? _json['euRepresentativeName'] as core.String
+              : null,
+          euRepresentativePhone: _json.containsKey('euRepresentativePhone')
+              ? _json['euRepresentativePhone'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (contactEmail != null) 'contactEmail': contactEmail!,
@@ -2345,52 +2517,134 @@ class ContactInfo {
       };
 }
 
+/// This feature is not generally available.
+class ContentProviderEndpoint {
+  /// This feature is not generally available.
+  core.String? packageName;
+
+  /// This feature is not generally available.
+  ///
+  /// Required.
+  core.List<core.String>? signingCertsSha256;
+
+  /// This feature is not generally available.
+  core.String? uri;
+
+  ContentProviderEndpoint({
+    this.packageName,
+    this.signingCertsSha256,
+    this.uri,
+  });
+
+  ContentProviderEndpoint.fromJson(core.Map _json)
+      : this(
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          signingCertsSha256: _json.containsKey('signingCertsSha256')
+              ? (_json['signingCertsSha256'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (packageName != null) 'packageName': packageName!,
+        if (signingCertsSha256 != null)
+          'signingCertsSha256': signingCertsSha256!,
+        if (uri != null) 'uri': uri!,
+      };
+}
+
+/// Cross-profile policies applied on the device.
+class CrossProfilePolicies {
+  /// Whether text copied from one profile (personal or work) can be pasted in
+  /// the other profile.
+  /// Possible string values are:
+  /// - "CROSS_PROFILE_COPY_PASTE_UNSPECIFIED" : Unspecified. Defaults to
+  /// COPY_FROM_WORK_TO_PERSONAL_DISALLOWED
+  /// - "COPY_FROM_WORK_TO_PERSONAL_DISALLOWED" : Default. Prevents users from
+  /// pasting into the personal profile text copied from the work profile. Text
+  /// copied from the personal profile can be pasted into the work profile, and
+  /// text copied from the work profile can be pasted into the work profile.
+  /// - "CROSS_PROFILE_COPY_PASTE_ALLOWED" : Text copied in either profile can
+  /// be pasted in the other profile.
+  core.String? crossProfileCopyPaste;
+
+  /// Whether data from one profile (personal or work) can be shared with apps
+  /// in the other profile.
+  ///
+  /// Specifically controls simple data sharing via intents. Management of other
+  /// cross-profile communication channels, such as contact search, copy/paste,
+  /// or connected work & personal apps, are configured separately.
+  /// Possible string values are:
+  /// - "CROSS_PROFILE_DATA_SHARING_UNSPECIFIED" : Unspecified. Defaults to
+  /// DATA_SHARING_FROM_WORK_TO_PERSONAL_DISALLOWED.
+  /// - "CROSS_PROFILE_DATA_SHARING_DISALLOWED" : Prevents data from being
+  /// shared from both the personal profile to the work profile and the work
+  /// profile to the personal profile.
+  /// - "DATA_SHARING_FROM_WORK_TO_PERSONAL_DISALLOWED" : Default. Prevents
+  /// users from sharing data from the work profile to apps in the personal
+  /// profile. Personal data can be shared with work apps.
+  /// - "CROSS_PROFILE_DATA_SHARING_ALLOWED" : Data from either profile can be
+  /// shared with the other profile.
+  core.String? crossProfileDataSharing;
+
+  /// Whether contacts stored in the work profile can be shown in personal
+  /// profile contact searches and incoming calls.
+  /// Possible string values are:
+  /// - "SHOW_WORK_CONTACTS_IN_PERSONAL_PROFILE_UNSPECIFIED" : Unspecified.
+  /// Defaults to SHOW_WORK_CONTACTS_IN_PERSONAL_PROFILE_ALLOWED.
+  /// - "SHOW_WORK_CONTACTS_IN_PERSONAL_PROFILE_DISALLOWED" : Prevents work
+  /// profile contacts from appearing in personal profile contact searches and
+  /// incoming calls
+  /// - "SHOW_WORK_CONTACTS_IN_PERSONAL_PROFILE_ALLOWED" : Default. Allows work
+  /// profile contacts to appear in personal profile contact searches and
+  /// incoming calls
+  core.String? showWorkContactsInPersonalProfile;
+
+  CrossProfilePolicies({
+    this.crossProfileCopyPaste,
+    this.crossProfileDataSharing,
+    this.showWorkContactsInPersonalProfile,
+  });
+
+  CrossProfilePolicies.fromJson(core.Map _json)
+      : this(
+          crossProfileCopyPaste: _json.containsKey('crossProfileCopyPaste')
+              ? _json['crossProfileCopyPaste'] as core.String
+              : null,
+          crossProfileDataSharing: _json.containsKey('crossProfileDataSharing')
+              ? _json['crossProfileDataSharing'] as core.String
+              : null,
+          showWorkContactsInPersonalProfile:
+              _json.containsKey('showWorkContactsInPersonalProfile')
+                  ? _json['showWorkContactsInPersonalProfile'] as core.String
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (crossProfileCopyPaste != null)
+          'crossProfileCopyPaste': crossProfileCopyPaste!,
+        if (crossProfileDataSharing != null)
+          'crossProfileDataSharing': crossProfileDataSharing!,
+        if (showWorkContactsInPersonalProfile != null)
+          'showWorkContactsInPersonalProfile':
+              showWorkContactsInPersonalProfile!,
+      };
+}
+
 /// Represents a whole or partial calendar date, such as a birthday.
 ///
 /// The time of day and time zone are either specified elsewhere or are
 /// insignificant. The date is relative to the Gregorian Calendar. This can
 /// represent one of the following: A full date, with non-zero year, month, and
-/// day values A month and day value, with a zero year, such as an anniversary A
-/// year on its own, with zero month and day values A year and month value, with
-/// a zero day, such as a credit card expiration dateRelated types are
-/// google.type.TimeOfDay and google.protobuf.Timestamp.
-class Date {
-  /// Day of a month.
-  ///
-  /// Must be from 1 to 31 and valid for the year and month, or 0 to specify a
-  /// year by itself or a year and month where the day isn't significant.
-  core.int? day;
-
-  /// Month of a year.
-  ///
-  /// Must be from 1 to 12, or 0 to specify a year without a month and day.
-  core.int? month;
-
-  /// Year of the date.
-  ///
-  /// Must be from 1 to 9999, or 0 to specify a date without a year.
-  core.int? year;
-
-  Date();
-
-  Date.fromJson(core.Map _json) {
-    if (_json.containsKey('day')) {
-      day = _json['day'] as core.int;
-    }
-    if (_json.containsKey('month')) {
-      month = _json['month'] as core.int;
-    }
-    if (_json.containsKey('year')) {
-      year = _json['year'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (day != null) 'day': day!,
-        if (month != null) 'month': month!,
-        if (year != null) 'year': year!,
-      };
-}
+/// day values A month and day, with a zero year (e.g., an anniversary) A year
+/// on its own, with a zero month and a zero day A year and month, with a zero
+/// day (e.g., a credit card expiration date)Related types: *
+/// google.type.TimeOfDay * google.type.DateTime * google.protobuf.Timestamp
+typedef Date = $Date;
 
 /// A device owned by an enterprise.
 ///
@@ -2406,6 +2660,13 @@ class Device {
   /// true in the device's policy.
   core.List<ApplicationReport>? applicationReports;
 
+  /// The password requirements currently applied to the device.
+  ///
+  /// The applied requirements may be slightly different from those specified in
+  /// passwordPolicies in some cases. fieldPath is set based on
+  /// passwordPolicies.
+  core.List<PasswordRequirements>? appliedPasswordPolicies;
+
   /// The name of the policy currently applied to the device.
   core.String? appliedPolicyName;
 
@@ -2417,9 +2678,11 @@ class Device {
   /// - "DEVICE_STATE_UNSPECIFIED" : This value is disallowed.
   /// - "ACTIVE" : The device is active.
   /// - "DISABLED" : The device is disabled.
-  /// - "DELETED" : The device was deleted. This state will never be returned by
-  /// an API call, but is used in the final status report published to Cloud
-  /// Pub/Sub when the device acknowledges the deletion.
+  /// - "DELETED" : The device was deleted. This state is never returned by an
+  /// API call, but is used in the final status report when the device
+  /// acknowledges the deletion. If the device is deleted via the API call, this
+  /// state is published to Pub/Sub. If the user deletes the work profile or
+  /// resets the device, the device state will remain unknown to the server.
   /// - "PROVISIONING" : The device is being provisioned. Newly enrolled devices
   /// are in this state until they have a policy applied.
   core.String? appliedState;
@@ -2495,10 +2758,7 @@ class Device {
   /// device's policy.
   core.List<MemoryEvent>? memoryEvents;
 
-  /// Memory information.
-  ///
-  /// This information is only available if memoryInfoEnabled is true in the
-  /// device's policy.
+  /// Memory information: contains information about device memory and storage.
   MemoryInfo? memoryInfo;
 
   /// The name of the device in the form
@@ -2566,9 +2826,11 @@ class Device {
   /// - "DEVICE_STATE_UNSPECIFIED" : This value is disallowed.
   /// - "ACTIVE" : The device is active.
   /// - "DISABLED" : The device is disabled.
-  /// - "DELETED" : The device was deleted. This state will never be returned by
-  /// an API call, but is used in the final status report published to Cloud
-  /// Pub/Sub when the device acknowledges the deletion.
+  /// - "DELETED" : The device was deleted. This state is never returned by an
+  /// API call, but is used in the final status report when the device
+  /// acknowledges the deletion. If the device is deleted via the API call, this
+  /// state is published to Pub/Sub. If the user deletes the work profile or
+  /// resets the device, the device state will remain unknown to the server.
   /// - "PROVISIONING" : The device is being provisioned. Newly enrolled devices
   /// are in this state until they have a policy applied.
   core.String? state;
@@ -2586,175 +2848,213 @@ class Device {
   /// enterprises/{enterpriseId}/users/{userId}.
   core.String? userName;
 
-  Device();
+  Device({
+    this.apiLevel,
+    this.applicationReports,
+    this.appliedPasswordPolicies,
+    this.appliedPolicyName,
+    this.appliedPolicyVersion,
+    this.appliedState,
+    this.commonCriteriaModeInfo,
+    this.deviceSettings,
+    this.disabledReason,
+    this.displays,
+    this.enrollmentTime,
+    this.enrollmentTokenData,
+    this.enrollmentTokenName,
+    this.hardwareInfo,
+    this.hardwareStatusSamples,
+    this.lastPolicyComplianceReportTime,
+    this.lastPolicySyncTime,
+    this.lastStatusReportTime,
+    this.managementMode,
+    this.memoryEvents,
+    this.memoryInfo,
+    this.name,
+    this.networkInfo,
+    this.nonComplianceDetails,
+    this.ownership,
+    this.policyCompliant,
+    this.policyName,
+    this.powerManagementEvents,
+    this.previousDeviceNames,
+    this.securityPosture,
+    this.softwareInfo,
+    this.state,
+    this.systemProperties,
+    this.user,
+    this.userName,
+  });
 
-  Device.fromJson(core.Map _json) {
-    if (_json.containsKey('apiLevel')) {
-      apiLevel = _json['apiLevel'] as core.int;
-    }
-    if (_json.containsKey('applicationReports')) {
-      applicationReports = (_json['applicationReports'] as core.List)
-          .map<ApplicationReport>((value) => ApplicationReport.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('appliedPolicyName')) {
-      appliedPolicyName = _json['appliedPolicyName'] as core.String;
-    }
-    if (_json.containsKey('appliedPolicyVersion')) {
-      appliedPolicyVersion = _json['appliedPolicyVersion'] as core.String;
-    }
-    if (_json.containsKey('appliedState')) {
-      appliedState = _json['appliedState'] as core.String;
-    }
-    if (_json.containsKey('commonCriteriaModeInfo')) {
-      commonCriteriaModeInfo = CommonCriteriaModeInfo.fromJson(
-          _json['commonCriteriaModeInfo']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('deviceSettings')) {
-      deviceSettings = DeviceSettings.fromJson(
-          _json['deviceSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('disabledReason')) {
-      disabledReason = UserFacingMessage.fromJson(
-          _json['disabledReason'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('displays')) {
-      displays = (_json['displays'] as core.List)
-          .map<Display>((value) =>
-              Display.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('enrollmentTime')) {
-      enrollmentTime = _json['enrollmentTime'] as core.String;
-    }
-    if (_json.containsKey('enrollmentTokenData')) {
-      enrollmentTokenData = _json['enrollmentTokenData'] as core.String;
-    }
-    if (_json.containsKey('enrollmentTokenName')) {
-      enrollmentTokenName = _json['enrollmentTokenName'] as core.String;
-    }
-    if (_json.containsKey('hardwareInfo')) {
-      hardwareInfo = HardwareInfo.fromJson(
-          _json['hardwareInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('hardwareStatusSamples')) {
-      hardwareStatusSamples = (_json['hardwareStatusSamples'] as core.List)
-          .map<HardwareStatus>((value) => HardwareStatus.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('lastPolicyComplianceReportTime')) {
-      lastPolicyComplianceReportTime =
-          _json['lastPolicyComplianceReportTime'] as core.String;
-    }
-    if (_json.containsKey('lastPolicySyncTime')) {
-      lastPolicySyncTime = _json['lastPolicySyncTime'] as core.String;
-    }
-    if (_json.containsKey('lastStatusReportTime')) {
-      lastStatusReportTime = _json['lastStatusReportTime'] as core.String;
-    }
-    if (_json.containsKey('managementMode')) {
-      managementMode = _json['managementMode'] as core.String;
-    }
-    if (_json.containsKey('memoryEvents')) {
-      memoryEvents = (_json['memoryEvents'] as core.List)
-          .map<MemoryEvent>((value) => MemoryEvent.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('memoryInfo')) {
-      memoryInfo = MemoryInfo.fromJson(
-          _json['memoryInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('networkInfo')) {
-      networkInfo = NetworkInfo.fromJson(
-          _json['networkInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('nonComplianceDetails')) {
-      nonComplianceDetails = (_json['nonComplianceDetails'] as core.List)
-          .map<NonComplianceDetail>((value) => NonComplianceDetail.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('ownership')) {
-      ownership = _json['ownership'] as core.String;
-    }
-    if (_json.containsKey('policyCompliant')) {
-      policyCompliant = _json['policyCompliant'] as core.bool;
-    }
-    if (_json.containsKey('policyName')) {
-      policyName = _json['policyName'] as core.String;
-    }
-    if (_json.containsKey('powerManagementEvents')) {
-      powerManagementEvents = (_json['powerManagementEvents'] as core.List)
-          .map<PowerManagementEvent>((value) => PowerManagementEvent.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('previousDeviceNames')) {
-      previousDeviceNames = (_json['previousDeviceNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('securityPosture')) {
-      securityPosture = SecurityPosture.fromJson(
-          _json['securityPosture'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('softwareInfo')) {
-      softwareInfo = SoftwareInfo.fromJson(
-          _json['softwareInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('systemProperties')) {
-      systemProperties =
-          (_json['systemProperties'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('user')) {
-      user =
-          User.fromJson(_json['user'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('userName')) {
-      userName = _json['userName'] as core.String;
-    }
-  }
+  Device.fromJson(core.Map _json)
+      : this(
+          apiLevel: _json.containsKey('apiLevel')
+              ? _json['apiLevel'] as core.int
+              : null,
+          applicationReports: _json.containsKey('applicationReports')
+              ? (_json['applicationReports'] as core.List)
+                  .map((value) => ApplicationReport.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          appliedPasswordPolicies: _json.containsKey('appliedPasswordPolicies')
+              ? (_json['appliedPasswordPolicies'] as core.List)
+                  .map((value) => PasswordRequirements.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          appliedPolicyName: _json.containsKey('appliedPolicyName')
+              ? _json['appliedPolicyName'] as core.String
+              : null,
+          appliedPolicyVersion: _json.containsKey('appliedPolicyVersion')
+              ? _json['appliedPolicyVersion'] as core.String
+              : null,
+          appliedState: _json.containsKey('appliedState')
+              ? _json['appliedState'] as core.String
+              : null,
+          commonCriteriaModeInfo: _json.containsKey('commonCriteriaModeInfo')
+              ? CommonCriteriaModeInfo.fromJson(_json['commonCriteriaModeInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          deviceSettings: _json.containsKey('deviceSettings')
+              ? DeviceSettings.fromJson(_json['deviceSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          disabledReason: _json.containsKey('disabledReason')
+              ? UserFacingMessage.fromJson(_json['disabledReason']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          displays: _json.containsKey('displays')
+              ? (_json['displays'] as core.List)
+                  .map((value) => Display.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          enrollmentTime: _json.containsKey('enrollmentTime')
+              ? _json['enrollmentTime'] as core.String
+              : null,
+          enrollmentTokenData: _json.containsKey('enrollmentTokenData')
+              ? _json['enrollmentTokenData'] as core.String
+              : null,
+          enrollmentTokenName: _json.containsKey('enrollmentTokenName')
+              ? _json['enrollmentTokenName'] as core.String
+              : null,
+          hardwareInfo: _json.containsKey('hardwareInfo')
+              ? HardwareInfo.fromJson(
+                  _json['hardwareInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          hardwareStatusSamples: _json.containsKey('hardwareStatusSamples')
+              ? (_json['hardwareStatusSamples'] as core.List)
+                  .map((value) => HardwareStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          lastPolicyComplianceReportTime:
+              _json.containsKey('lastPolicyComplianceReportTime')
+                  ? _json['lastPolicyComplianceReportTime'] as core.String
+                  : null,
+          lastPolicySyncTime: _json.containsKey('lastPolicySyncTime')
+              ? _json['lastPolicySyncTime'] as core.String
+              : null,
+          lastStatusReportTime: _json.containsKey('lastStatusReportTime')
+              ? _json['lastStatusReportTime'] as core.String
+              : null,
+          managementMode: _json.containsKey('managementMode')
+              ? _json['managementMode'] as core.String
+              : null,
+          memoryEvents: _json.containsKey('memoryEvents')
+              ? (_json['memoryEvents'] as core.List)
+                  .map((value) => MemoryEvent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          memoryInfo: _json.containsKey('memoryInfo')
+              ? MemoryInfo.fromJson(
+                  _json['memoryInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          networkInfo: _json.containsKey('networkInfo')
+              ? NetworkInfo.fromJson(
+                  _json['networkInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          nonComplianceDetails: _json.containsKey('nonComplianceDetails')
+              ? (_json['nonComplianceDetails'] as core.List)
+                  .map((value) => NonComplianceDetail.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          ownership: _json.containsKey('ownership')
+              ? _json['ownership'] as core.String
+              : null,
+          policyCompliant: _json.containsKey('policyCompliant')
+              ? _json['policyCompliant'] as core.bool
+              : null,
+          policyName: _json.containsKey('policyName')
+              ? _json['policyName'] as core.String
+              : null,
+          powerManagementEvents: _json.containsKey('powerManagementEvents')
+              ? (_json['powerManagementEvents'] as core.List)
+                  .map((value) => PowerManagementEvent.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          previousDeviceNames: _json.containsKey('previousDeviceNames')
+              ? (_json['previousDeviceNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          securityPosture: _json.containsKey('securityPosture')
+              ? SecurityPosture.fromJson(_json['securityPosture']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          softwareInfo: _json.containsKey('softwareInfo')
+              ? SoftwareInfo.fromJson(
+                  _json['softwareInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          systemProperties: _json.containsKey('systemProperties')
+              ? (_json['systemProperties']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          user: _json.containsKey('user')
+              ? User.fromJson(
+                  _json['user'] as core.Map<core.String, core.dynamic>)
+              : null,
+          userName: _json.containsKey('userName')
+              ? _json['userName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiLevel != null) 'apiLevel': apiLevel!,
         if (applicationReports != null)
-          'applicationReports':
-              applicationReports!.map((value) => value.toJson()).toList(),
+          'applicationReports': applicationReports!,
+        if (appliedPasswordPolicies != null)
+          'appliedPasswordPolicies': appliedPasswordPolicies!,
         if (appliedPolicyName != null) 'appliedPolicyName': appliedPolicyName!,
         if (appliedPolicyVersion != null)
           'appliedPolicyVersion': appliedPolicyVersion!,
         if (appliedState != null) 'appliedState': appliedState!,
         if (commonCriteriaModeInfo != null)
-          'commonCriteriaModeInfo': commonCriteriaModeInfo!.toJson(),
-        if (deviceSettings != null) 'deviceSettings': deviceSettings!.toJson(),
-        if (disabledReason != null) 'disabledReason': disabledReason!.toJson(),
-        if (displays != null)
-          'displays': displays!.map((value) => value.toJson()).toList(),
+          'commonCriteriaModeInfo': commonCriteriaModeInfo!,
+        if (deviceSettings != null) 'deviceSettings': deviceSettings!,
+        if (disabledReason != null) 'disabledReason': disabledReason!,
+        if (displays != null) 'displays': displays!,
         if (enrollmentTime != null) 'enrollmentTime': enrollmentTime!,
         if (enrollmentTokenData != null)
           'enrollmentTokenData': enrollmentTokenData!,
         if (enrollmentTokenName != null)
           'enrollmentTokenName': enrollmentTokenName!,
-        if (hardwareInfo != null) 'hardwareInfo': hardwareInfo!.toJson(),
+        if (hardwareInfo != null) 'hardwareInfo': hardwareInfo!,
         if (hardwareStatusSamples != null)
-          'hardwareStatusSamples':
-              hardwareStatusSamples!.map((value) => value.toJson()).toList(),
+          'hardwareStatusSamples': hardwareStatusSamples!,
         if (lastPolicyComplianceReportTime != null)
           'lastPolicyComplianceReportTime': lastPolicyComplianceReportTime!,
         if (lastPolicySyncTime != null)
@@ -2762,28 +3062,24 @@ class Device {
         if (lastStatusReportTime != null)
           'lastStatusReportTime': lastStatusReportTime!,
         if (managementMode != null) 'managementMode': managementMode!,
-        if (memoryEvents != null)
-          'memoryEvents': memoryEvents!.map((value) => value.toJson()).toList(),
-        if (memoryInfo != null) 'memoryInfo': memoryInfo!.toJson(),
+        if (memoryEvents != null) 'memoryEvents': memoryEvents!,
+        if (memoryInfo != null) 'memoryInfo': memoryInfo!,
         if (name != null) 'name': name!,
-        if (networkInfo != null) 'networkInfo': networkInfo!.toJson(),
+        if (networkInfo != null) 'networkInfo': networkInfo!,
         if (nonComplianceDetails != null)
-          'nonComplianceDetails':
-              nonComplianceDetails!.map((value) => value.toJson()).toList(),
+          'nonComplianceDetails': nonComplianceDetails!,
         if (ownership != null) 'ownership': ownership!,
         if (policyCompliant != null) 'policyCompliant': policyCompliant!,
         if (policyName != null) 'policyName': policyName!,
         if (powerManagementEvents != null)
-          'powerManagementEvents':
-              powerManagementEvents!.map((value) => value.toJson()).toList(),
+          'powerManagementEvents': powerManagementEvents!,
         if (previousDeviceNames != null)
           'previousDeviceNames': previousDeviceNames!,
-        if (securityPosture != null)
-          'securityPosture': securityPosture!.toJson(),
-        if (softwareInfo != null) 'softwareInfo': softwareInfo!.toJson(),
+        if (securityPosture != null) 'securityPosture': securityPosture!,
+        if (softwareInfo != null) 'softwareInfo': softwareInfo!,
         if (state != null) 'state': state!,
         if (systemProperties != null) 'systemProperties': systemProperties!,
-        if (user != null) 'user': user!.toJson(),
+        if (user != null) 'user': user!,
         if (userName != null) 'userName': userName!,
       };
 }
@@ -2822,37 +3118,46 @@ class DeviceSettings {
   /// Whether installing apps from unknown sources is enabled.
   core.bool? unknownSourcesEnabled;
 
-  /// Whether Verify Apps (Google Play Protect
-  /// (https://support.google.com/googleplay/answer/2812853)) is enabled on the
+  /// Whether Google Play Protect verification
+  /// (https://support.google.com/accounts/answer/2812853) is enforced on the
   /// device.
   core.bool? verifyAppsEnabled;
 
-  DeviceSettings();
+  DeviceSettings({
+    this.adbEnabled,
+    this.developmentSettingsEnabled,
+    this.encryptionStatus,
+    this.isDeviceSecure,
+    this.isEncrypted,
+    this.unknownSourcesEnabled,
+    this.verifyAppsEnabled,
+  });
 
-  DeviceSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('adbEnabled')) {
-      adbEnabled = _json['adbEnabled'] as core.bool;
-    }
-    if (_json.containsKey('developmentSettingsEnabled')) {
-      developmentSettingsEnabled =
-          _json['developmentSettingsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('encryptionStatus')) {
-      encryptionStatus = _json['encryptionStatus'] as core.String;
-    }
-    if (_json.containsKey('isDeviceSecure')) {
-      isDeviceSecure = _json['isDeviceSecure'] as core.bool;
-    }
-    if (_json.containsKey('isEncrypted')) {
-      isEncrypted = _json['isEncrypted'] as core.bool;
-    }
-    if (_json.containsKey('unknownSourcesEnabled')) {
-      unknownSourcesEnabled = _json['unknownSourcesEnabled'] as core.bool;
-    }
-    if (_json.containsKey('verifyAppsEnabled')) {
-      verifyAppsEnabled = _json['verifyAppsEnabled'] as core.bool;
-    }
-  }
+  DeviceSettings.fromJson(core.Map _json)
+      : this(
+          adbEnabled: _json.containsKey('adbEnabled')
+              ? _json['adbEnabled'] as core.bool
+              : null,
+          developmentSettingsEnabled:
+              _json.containsKey('developmentSettingsEnabled')
+                  ? _json['developmentSettingsEnabled'] as core.bool
+                  : null,
+          encryptionStatus: _json.containsKey('encryptionStatus')
+              ? _json['encryptionStatus'] as core.String
+              : null,
+          isDeviceSecure: _json.containsKey('isDeviceSecure')
+              ? _json['isDeviceSecure'] as core.bool
+              : null,
+          isEncrypted: _json.containsKey('isEncrypted')
+              ? _json['isEncrypted'] as core.bool
+              : null,
+          unknownSourcesEnabled: _json.containsKey('unknownSourcesEnabled')
+              ? _json['unknownSourcesEnabled'] as core.bool
+              : null,
+          verifyAppsEnabled: _json.containsKey('verifyAppsEnabled')
+              ? _json['verifyAppsEnabled'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (adbEnabled != null) 'adbEnabled': adbEnabled!,
@@ -2896,31 +3201,34 @@ class Display {
   /// Display width in pixels.
   core.int? width;
 
-  Display();
+  Display({
+    this.density,
+    this.displayId,
+    this.height,
+    this.name,
+    this.refreshRate,
+    this.state,
+    this.width,
+  });
 
-  Display.fromJson(core.Map _json) {
-    if (_json.containsKey('density')) {
-      density = _json['density'] as core.int;
-    }
-    if (_json.containsKey('displayId')) {
-      displayId = _json['displayId'] as core.int;
-    }
-    if (_json.containsKey('height')) {
-      height = _json['height'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('refreshRate')) {
-      refreshRate = _json['refreshRate'] as core.int;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('width')) {
-      width = _json['width'] as core.int;
-    }
-  }
+  Display.fromJson(core.Map _json)
+      : this(
+          density: _json.containsKey('density')
+              ? _json['density'] as core.int
+              : null,
+          displayId: _json.containsKey('displayId')
+              ? _json['displayId'] as core.int
+              : null,
+          height:
+              _json.containsKey('height') ? _json['height'] as core.int : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          refreshRate: _json.containsKey('refreshRate')
+              ? _json['refreshRate'] as core.int
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          width: _json.containsKey('width') ? _json['width'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (density != null) 'density': density!,
@@ -2940,15 +3248,7 @@ class Display {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for Empty is empty JSON
 /// object {}.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// An enrollment token.
 class EnrollmentToken {
@@ -3030,41 +3330,50 @@ class EnrollmentToken {
   /// This is a read-only field generated by the server.
   core.String? value;
 
-  EnrollmentToken();
+  EnrollmentToken({
+    this.additionalData,
+    this.allowPersonalUsage,
+    this.duration,
+    this.expirationTimestamp,
+    this.name,
+    this.oneTimeOnly,
+    this.policyName,
+    this.qrCode,
+    this.user,
+    this.value,
+  });
 
-  EnrollmentToken.fromJson(core.Map _json) {
-    if (_json.containsKey('additionalData')) {
-      additionalData = _json['additionalData'] as core.String;
-    }
-    if (_json.containsKey('allowPersonalUsage')) {
-      allowPersonalUsage = _json['allowPersonalUsage'] as core.String;
-    }
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('expirationTimestamp')) {
-      expirationTimestamp = _json['expirationTimestamp'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('oneTimeOnly')) {
-      oneTimeOnly = _json['oneTimeOnly'] as core.bool;
-    }
-    if (_json.containsKey('policyName')) {
-      policyName = _json['policyName'] as core.String;
-    }
-    if (_json.containsKey('qrCode')) {
-      qrCode = _json['qrCode'] as core.String;
-    }
-    if (_json.containsKey('user')) {
-      user =
-          User.fromJson(_json['user'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  EnrollmentToken.fromJson(core.Map _json)
+      : this(
+          additionalData: _json.containsKey('additionalData')
+              ? _json['additionalData'] as core.String
+              : null,
+          allowPersonalUsage: _json.containsKey('allowPersonalUsage')
+              ? _json['allowPersonalUsage'] as core.String
+              : null,
+          duration: _json.containsKey('duration')
+              ? _json['duration'] as core.String
+              : null,
+          expirationTimestamp: _json.containsKey('expirationTimestamp')
+              ? _json['expirationTimestamp'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          oneTimeOnly: _json.containsKey('oneTimeOnly')
+              ? _json['oneTimeOnly'] as core.bool
+              : null,
+          policyName: _json.containsKey('policyName')
+              ? _json['policyName'] as core.String
+              : null,
+          qrCode: _json.containsKey('qrCode')
+              ? _json['qrCode'] as core.String
+              : null,
+          user: _json.containsKey('user')
+              ? User.fromJson(
+                  _json['user'] as core.Map<core.String, core.dynamic>)
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (additionalData != null) 'additionalData': additionalData!,
@@ -3077,7 +3386,7 @@ class EnrollmentToken {
         if (oneTimeOnly != null) 'oneTimeOnly': oneTimeOnly!,
         if (policyName != null) 'policyName': policyName!,
         if (qrCode != null) 'qrCode': qrCode!,
-        if (user != null) 'user': user!.toJson(),
+        if (user != null) 'user': user!,
         if (value != null) 'value': value!,
       };
 }
@@ -3087,9 +3396,7 @@ class Enterprise {
   /// Deprecated and unused.
   core.bool? appAutoApprovalEnabled;
 
-  /// This feature is not generally available yet.
-  ///
-  /// The enterprise contact info of an EMM owned enterprise
+  /// The enterprise contact info of an EMM-managed enterprise.
   ContactInfo? contactInfo;
 
   /// The types of Google Pub/Sub notifications enabled for the enterprise.
@@ -3111,8 +3418,8 @@ class Enterprise {
   /// A color in RGB format that indicates the predominant color to display in
   /// the device management app UI.
   ///
-  /// The color components are stored as follows: (red << 16) | (green << 8) |
-  /// blue, where the value of each component is between 0 and 255, inclusive.
+  /// The color components are stored as follows: (red \<\< 16) | (green \<\< 8)
+  /// | blue, where the value of each component is between 0 and 255, inclusive.
   core.int? primaryColor;
 
   /// The topic that Cloud Pub/Sub notifications are published to, in the form
@@ -3130,70 +3437,124 @@ class Enterprise {
   /// A page of terms is generated for each value in this list.
   core.List<TermsAndConditions>? termsAndConditions;
 
-  Enterprise();
+  Enterprise({
+    this.appAutoApprovalEnabled,
+    this.contactInfo,
+    this.enabledNotificationTypes,
+    this.enterpriseDisplayName,
+    this.logo,
+    this.name,
+    this.primaryColor,
+    this.pubsubTopic,
+    this.signinDetails,
+    this.termsAndConditions,
+  });
 
-  Enterprise.fromJson(core.Map _json) {
-    if (_json.containsKey('appAutoApprovalEnabled')) {
-      appAutoApprovalEnabled = _json['appAutoApprovalEnabled'] as core.bool;
-    }
-    if (_json.containsKey('contactInfo')) {
-      contactInfo = ContactInfo.fromJson(
-          _json['contactInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('enabledNotificationTypes')) {
-      enabledNotificationTypes =
-          (_json['enabledNotificationTypes'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('enterpriseDisplayName')) {
-      enterpriseDisplayName = _json['enterpriseDisplayName'] as core.String;
-    }
-    if (_json.containsKey('logo')) {
-      logo = ExternalData.fromJson(
-          _json['logo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('primaryColor')) {
-      primaryColor = _json['primaryColor'] as core.int;
-    }
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-    if (_json.containsKey('signinDetails')) {
-      signinDetails = (_json['signinDetails'] as core.List)
-          .map<SigninDetail>((value) => SigninDetail.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('termsAndConditions')) {
-      termsAndConditions = (_json['termsAndConditions'] as core.List)
-          .map<TermsAndConditions>((value) => TermsAndConditions.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Enterprise.fromJson(core.Map _json)
+      : this(
+          appAutoApprovalEnabled: _json.containsKey('appAutoApprovalEnabled')
+              ? _json['appAutoApprovalEnabled'] as core.bool
+              : null,
+          contactInfo: _json.containsKey('contactInfo')
+              ? ContactInfo.fromJson(
+                  _json['contactInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          enabledNotificationTypes:
+              _json.containsKey('enabledNotificationTypes')
+                  ? (_json['enabledNotificationTypes'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          enterpriseDisplayName: _json.containsKey('enterpriseDisplayName')
+              ? _json['enterpriseDisplayName'] as core.String
+              : null,
+          logo: _json.containsKey('logo')
+              ? ExternalData.fromJson(
+                  _json['logo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          primaryColor: _json.containsKey('primaryColor')
+              ? _json['primaryColor'] as core.int
+              : null,
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+          signinDetails: _json.containsKey('signinDetails')
+              ? (_json['signinDetails'] as core.List)
+                  .map((value) => SigninDetail.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          termsAndConditions: _json.containsKey('termsAndConditions')
+              ? (_json['termsAndConditions'] as core.List)
+                  .map((value) => TermsAndConditions.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (appAutoApprovalEnabled != null)
           'appAutoApprovalEnabled': appAutoApprovalEnabled!,
-        if (contactInfo != null) 'contactInfo': contactInfo!.toJson(),
+        if (contactInfo != null) 'contactInfo': contactInfo!,
         if (enabledNotificationTypes != null)
           'enabledNotificationTypes': enabledNotificationTypes!,
         if (enterpriseDisplayName != null)
           'enterpriseDisplayName': enterpriseDisplayName!,
-        if (logo != null) 'logo': logo!.toJson(),
+        if (logo != null) 'logo': logo!,
         if (name != null) 'name': name!,
         if (primaryColor != null) 'primaryColor': primaryColor!,
         if (pubsubTopic != null) 'pubsubTopic': pubsubTopic!,
-        if (signinDetails != null)
-          'signinDetails':
-              signinDetails!.map((value) => value.toJson()).toList(),
+        if (signinDetails != null) 'signinDetails': signinDetails!,
         if (termsAndConditions != null)
-          'termsAndConditions':
-              termsAndConditions!.map((value) => value.toJson()).toList(),
+          'termsAndConditions': termsAndConditions!,
+      };
+}
+
+/// Configuration to enable an app as an extension app, with the capability of
+/// interacting with Android Device Policy offline.
+class ExtensionConfig {
+  /// Fully qualified class name of the receiver service class for Android
+  /// Device Policy to notify the extension app of any local command status
+  /// updates.
+  core.String? notificationReceiver;
+
+  /// Hex-encoded SHA256 hash of the signing certificate of the extension app.
+  ///
+  /// Only hexadecimal string representations of 64 characters are valid.If not
+  /// specified, the signature for the corresponding package name is obtained
+  /// from the Play Store instead.If this list is empty, the signature of the
+  /// extension app on the device must match the signature obtained from the
+  /// Play Store for the app to be able to communicate with Android Device
+  /// Policy.If this list is not empty, the signature of the extension app on
+  /// the device must match one of the entries in this list for the app to be
+  /// able to communicate with Android Device Policy.In production use cases, it
+  /// is recommended to leave this empty.
+  core.List<core.String>? signingKeyFingerprintsSha256;
+
+  ExtensionConfig({
+    this.notificationReceiver,
+    this.signingKeyFingerprintsSha256,
+  });
+
+  ExtensionConfig.fromJson(core.Map _json)
+      : this(
+          notificationReceiver: _json.containsKey('notificationReceiver')
+              ? _json['notificationReceiver'] as core.String
+              : null,
+          signingKeyFingerprintsSha256:
+              _json.containsKey('signingKeyFingerprintsSha256')
+                  ? (_json['signingKeyFingerprintsSha256'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (notificationReceiver != null)
+          'notificationReceiver': notificationReceiver!,
+        if (signingKeyFingerprintsSha256 != null)
+          'signingKeyFingerprintsSha256': signingKeyFingerprintsSha256!,
       };
 }
 
@@ -3216,16 +3577,18 @@ class ExternalData {
   /// in the URL may be used to prevent attackers from discovering the URL.
   core.String? url;
 
-  ExternalData();
+  ExternalData({
+    this.sha256Hash,
+    this.url,
+  });
 
-  ExternalData.fromJson(core.Map _json) {
-    if (_json.containsKey('sha256Hash')) {
-      sha256Hash = _json['sha256Hash'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  ExternalData.fromJson(core.Map _json)
+      : this(
+          sha256Hash: _json.containsKey('sha256Hash')
+              ? _json['sha256Hash'] as core.String
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sha256Hash != null) 'sha256Hash': sha256Hash!,
@@ -3258,22 +3621,26 @@ class FreezePeriod {
   /// Note: year must not be set. For example, {"month": 1,"date": 30}.
   Date? startDate;
 
-  FreezePeriod();
+  FreezePeriod({
+    this.endDate,
+    this.startDate,
+  });
 
-  FreezePeriod.fromJson(core.Map _json) {
-    if (_json.containsKey('endDate')) {
-      endDate = Date.fromJson(
-          _json['endDate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('startDate')) {
-      startDate = Date.fromJson(
-          _json['startDate'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  FreezePeriod.fromJson(core.Map _json)
+      : this(
+          endDate: _json.containsKey('endDate')
+              ? Date.fromJson(
+                  _json['endDate'] as core.Map<core.String, core.dynamic>)
+              : null,
+          startDate: _json.containsKey('startDate')
+              ? Date.fromJson(
+                  _json['startDate'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endDate != null) 'endDate': endDate!.toJson(),
-        if (startDate != null) 'startDate': startDate!.toJson(),
+        if (endDate != null) 'endDate': endDate!,
+        if (startDate != null) 'startDate': startDate!,
       };
 }
 
@@ -3307,6 +3674,17 @@ class HardwareInfo {
   /// For example, MDM9625_104662.22.05.34p.
   core.String? deviceBasebandVersion;
 
+  /// ID that uniquely identifies a personally-owned device in a particular
+  /// organization.
+  ///
+  /// On the same physical device when enrolled with the same organization, this
+  /// ID persists across setups and even factory resets. This ID is available on
+  /// personally-owned devices with a work profile on devices running Android 12
+  /// and above.
+  ///
+  /// Output only.
+  core.String? enterpriseSpecificId;
+
   /// GPU shutdown temperature thresholds in Celsius for each GPU on the device.
   core.List<core.double>? gpuShutdownTemperatures;
 
@@ -3338,74 +3716,92 @@ class HardwareInfo {
   /// Device skin throttling temperature thresholds in Celsius.
   core.List<core.double>? skinThrottlingTemperatures;
 
-  HardwareInfo();
+  HardwareInfo({
+    this.batteryShutdownTemperatures,
+    this.batteryThrottlingTemperatures,
+    this.brand,
+    this.cpuShutdownTemperatures,
+    this.cpuThrottlingTemperatures,
+    this.deviceBasebandVersion,
+    this.enterpriseSpecificId,
+    this.gpuShutdownTemperatures,
+    this.gpuThrottlingTemperatures,
+    this.hardware,
+    this.manufacturer,
+    this.model,
+    this.serialNumber,
+    this.skinShutdownTemperatures,
+    this.skinThrottlingTemperatures,
+  });
 
-  HardwareInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('batteryShutdownTemperatures')) {
-      batteryShutdownTemperatures =
-          (_json['batteryShutdownTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-    if (_json.containsKey('batteryThrottlingTemperatures')) {
-      batteryThrottlingTemperatures =
-          (_json['batteryThrottlingTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-    if (_json.containsKey('brand')) {
-      brand = _json['brand'] as core.String;
-    }
-    if (_json.containsKey('cpuShutdownTemperatures')) {
-      cpuShutdownTemperatures = (_json['cpuShutdownTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('cpuThrottlingTemperatures')) {
-      cpuThrottlingTemperatures =
-          (_json['cpuThrottlingTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-    if (_json.containsKey('deviceBasebandVersion')) {
-      deviceBasebandVersion = _json['deviceBasebandVersion'] as core.String;
-    }
-    if (_json.containsKey('gpuShutdownTemperatures')) {
-      gpuShutdownTemperatures = (_json['gpuShutdownTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('gpuThrottlingTemperatures')) {
-      gpuThrottlingTemperatures =
-          (_json['gpuThrottlingTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-    if (_json.containsKey('hardware')) {
-      hardware = _json['hardware'] as core.String;
-    }
-    if (_json.containsKey('manufacturer')) {
-      manufacturer = _json['manufacturer'] as core.String;
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('serialNumber')) {
-      serialNumber = _json['serialNumber'] as core.String;
-    }
-    if (_json.containsKey('skinShutdownTemperatures')) {
-      skinShutdownTemperatures =
-          (_json['skinShutdownTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-    if (_json.containsKey('skinThrottlingTemperatures')) {
-      skinThrottlingTemperatures =
-          (_json['skinThrottlingTemperatures'] as core.List)
-              .map<core.double>((value) => (value as core.num).toDouble())
-              .toList();
-    }
-  }
+  HardwareInfo.fromJson(core.Map _json)
+      : this(
+          batteryShutdownTemperatures:
+              _json.containsKey('batteryShutdownTemperatures')
+                  ? (_json['batteryShutdownTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+          batteryThrottlingTemperatures:
+              _json.containsKey('batteryThrottlingTemperatures')
+                  ? (_json['batteryThrottlingTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+          brand:
+              _json.containsKey('brand') ? _json['brand'] as core.String : null,
+          cpuShutdownTemperatures: _json.containsKey('cpuShutdownTemperatures')
+              ? (_json['cpuShutdownTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          cpuThrottlingTemperatures:
+              _json.containsKey('cpuThrottlingTemperatures')
+                  ? (_json['cpuThrottlingTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+          deviceBasebandVersion: _json.containsKey('deviceBasebandVersion')
+              ? _json['deviceBasebandVersion'] as core.String
+              : null,
+          enterpriseSpecificId: _json.containsKey('enterpriseSpecificId')
+              ? _json['enterpriseSpecificId'] as core.String
+              : null,
+          gpuShutdownTemperatures: _json.containsKey('gpuShutdownTemperatures')
+              ? (_json['gpuShutdownTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          gpuThrottlingTemperatures:
+              _json.containsKey('gpuThrottlingTemperatures')
+                  ? (_json['gpuThrottlingTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+          hardware: _json.containsKey('hardware')
+              ? _json['hardware'] as core.String
+              : null,
+          manufacturer: _json.containsKey('manufacturer')
+              ? _json['manufacturer'] as core.String
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          serialNumber: _json.containsKey('serialNumber')
+              ? _json['serialNumber'] as core.String
+              : null,
+          skinShutdownTemperatures:
+              _json.containsKey('skinShutdownTemperatures')
+                  ? (_json['skinShutdownTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+          skinThrottlingTemperatures:
+              _json.containsKey('skinThrottlingTemperatures')
+                  ? (_json['skinThrottlingTemperatures'] as core.List)
+                      .map((value) => (value as core.num).toDouble())
+                      .toList()
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (batteryShutdownTemperatures != null)
@@ -3419,6 +3815,8 @@ class HardwareInfo {
           'cpuThrottlingTemperatures': cpuThrottlingTemperatures!,
         if (deviceBasebandVersion != null)
           'deviceBasebandVersion': deviceBasebandVersion!,
+        if (enterpriseSpecificId != null)
+          'enterpriseSpecificId': enterpriseSpecificId!,
         if (gpuShutdownTemperatures != null)
           'gpuShutdownTemperatures': gpuShutdownTemperatures!,
         if (gpuThrottlingTemperatures != null)
@@ -3466,43 +3864,52 @@ class HardwareStatus {
   /// Current device skin temperatures in Celsius.
   core.List<core.double>? skinTemperatures;
 
-  HardwareStatus();
+  HardwareStatus({
+    this.batteryTemperatures,
+    this.cpuTemperatures,
+    this.cpuUsages,
+    this.createTime,
+    this.fanSpeeds,
+    this.gpuTemperatures,
+    this.skinTemperatures,
+  });
 
-  HardwareStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('batteryTemperatures')) {
-      batteryTemperatures = (_json['batteryTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('cpuTemperatures')) {
-      cpuTemperatures = (_json['cpuTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('cpuUsages')) {
-      cpuUsages = (_json['cpuUsages'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('fanSpeeds')) {
-      fanSpeeds = (_json['fanSpeeds'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('gpuTemperatures')) {
-      gpuTemperatures = (_json['gpuTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-    if (_json.containsKey('skinTemperatures')) {
-      skinTemperatures = (_json['skinTemperatures'] as core.List)
-          .map<core.double>((value) => (value as core.num).toDouble())
-          .toList();
-    }
-  }
+  HardwareStatus.fromJson(core.Map _json)
+      : this(
+          batteryTemperatures: _json.containsKey('batteryTemperatures')
+              ? (_json['batteryTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          cpuTemperatures: _json.containsKey('cpuTemperatures')
+              ? (_json['cpuTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          cpuUsages: _json.containsKey('cpuUsages')
+              ? (_json['cpuUsages'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          fanSpeeds: _json.containsKey('fanSpeeds')
+              ? (_json['fanSpeeds'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          gpuTemperatures: _json.containsKey('gpuTemperatures')
+              ? (_json['gpuTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+          skinTemperatures: _json.containsKey('skinTemperatures')
+              ? (_json['skinTemperatures'] as core.List)
+                  .map((value) => (value as core.num).toDouble())
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (batteryTemperatures != null)
@@ -3524,7 +3931,7 @@ class KeyedAppState {
   /// Optionally, a machine-readable value to be read by the EMM.
   ///
   /// For example, setting values that the admin can choose to query against in
-  /// the EMM console (e.g. “notify me if the battery_warning data < 10”).
+  /// the EMM console (e.g. “notify me if the battery_warning data \< 10”).
   core.String? data;
 
   /// The key for the app state.
@@ -3552,28 +3959,32 @@ class KeyedAppState {
   /// fix.
   core.String? severity;
 
-  KeyedAppState();
+  KeyedAppState({
+    this.createTime,
+    this.data,
+    this.key,
+    this.lastUpdateTime,
+    this.message,
+    this.severity,
+  });
 
-  KeyedAppState.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('data')) {
-      data = _json['data'] as core.String;
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('lastUpdateTime')) {
-      lastUpdateTime = _json['lastUpdateTime'] as core.String;
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-  }
+  KeyedAppState.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          data: _json.containsKey('data') ? _json['data'] as core.String : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          lastUpdateTime: _json.containsKey('lastUpdateTime')
+              ? _json['lastUpdateTime'] as core.String
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
@@ -3652,25 +4063,32 @@ class KioskCustomization {
   /// - "HOME_BUTTON_ONLY" : Only the home button is enabled.
   core.String? systemNavigation;
 
-  KioskCustomization();
+  KioskCustomization({
+    this.deviceSettings,
+    this.powerButtonActions,
+    this.statusBar,
+    this.systemErrorWarnings,
+    this.systemNavigation,
+  });
 
-  KioskCustomization.fromJson(core.Map _json) {
-    if (_json.containsKey('deviceSettings')) {
-      deviceSettings = _json['deviceSettings'] as core.String;
-    }
-    if (_json.containsKey('powerButtonActions')) {
-      powerButtonActions = _json['powerButtonActions'] as core.String;
-    }
-    if (_json.containsKey('statusBar')) {
-      statusBar = _json['statusBar'] as core.String;
-    }
-    if (_json.containsKey('systemErrorWarnings')) {
-      systemErrorWarnings = _json['systemErrorWarnings'] as core.String;
-    }
-    if (_json.containsKey('systemNavigation')) {
-      systemNavigation = _json['systemNavigation'] as core.String;
-    }
-  }
+  KioskCustomization.fromJson(core.Map _json)
+      : this(
+          deviceSettings: _json.containsKey('deviceSettings')
+              ? _json['deviceSettings'] as core.String
+              : null,
+          powerButtonActions: _json.containsKey('powerButtonActions')
+              ? _json['powerButtonActions'] as core.String
+              : null,
+          statusBar: _json.containsKey('statusBar')
+              ? _json['statusBar'] as core.String
+              : null,
+          systemErrorWarnings: _json.containsKey('systemErrorWarnings')
+              ? _json['systemErrorWarnings'] as core.String
+              : null,
+          systemNavigation: _json.containsKey('systemNavigation')
+              ? _json['systemNavigation'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deviceSettings != null) 'deviceSettings': deviceSettings!,
@@ -3688,13 +4106,16 @@ class LaunchAppAction {
   /// Package name of app to be launched
   core.String? packageName;
 
-  LaunchAppAction();
+  LaunchAppAction({
+    this.packageName,
+  });
 
-  LaunchAppAction.fromJson(core.Map _json) {
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-  }
+  LaunchAppAction.fromJson(core.Map _json)
+      : this(
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (packageName != null) 'packageName': packageName!,
@@ -3709,58 +4130,58 @@ class ListDevicesResponse {
   /// If there are more results, a token to retrieve next page of results.
   core.String? nextPageToken;
 
-  ListDevicesResponse();
+  ListDevicesResponse({
+    this.devices,
+    this.nextPageToken,
+  });
 
-  ListDevicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('devices')) {
-      devices = (_json['devices'] as core.List)
-          .map<Device>((value) =>
-              Device.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListDevicesResponse.fromJson(core.Map _json)
+      : this(
+          devices: _json.containsKey('devices')
+              ? (_json['devices'] as core.List)
+                  .map((value) => Device.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (devices != null)
-          'devices': devices!.map((value) => value.toJson()).toList(),
+        if (devices != null) 'devices': devices!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
-/// This feature is not generally available yet.
-///
 /// Response to a request to list enterprises.
 class ListEnterprisesResponse {
-  /// This feature is not generally available yet.
-  ///
   /// The list of enterprises.
   core.List<Enterprise>? enterprises;
 
-  /// This feature is not generally available yet.
-  ///
   /// If there are more results, a token to retrieve next page of results.
   core.String? nextPageToken;
 
-  ListEnterprisesResponse();
+  ListEnterprisesResponse({
+    this.enterprises,
+    this.nextPageToken,
+  });
 
-  ListEnterprisesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('enterprises')) {
-      enterprises = (_json['enterprises'] as core.List)
-          .map<Enterprise>((value) =>
-              Enterprise.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListEnterprisesResponse.fromJson(core.Map _json)
+      : this(
+          enterprises: _json.containsKey('enterprises')
+              ? (_json['enterprises'] as core.List)
+                  .map((value) => Enterprise.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (enterprises != null)
-          'enterprises': enterprises!.map((value) => value.toJson()).toList(),
+        if (enterprises != null) 'enterprises': enterprises!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3773,24 +4194,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -3802,24 +4226,27 @@ class ListPoliciesResponse {
   /// The list of policies.
   core.List<Policy>? policies;
 
-  ListPoliciesResponse();
+  ListPoliciesResponse({
+    this.nextPageToken,
+    this.policies,
+  });
 
-  ListPoliciesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('policies')) {
-      policies = (_json['policies'] as core.List)
-          .map<Policy>((value) =>
-              Policy.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListPoliciesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          policies: _json.containsKey('policies')
+              ? (_json['policies'] as core.List)
+                  .map((value) => Policy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (policies != null)
-          'policies': policies!.map((value) => value.toJson()).toList(),
+        if (policies != null) 'policies': policies!,
       };
 }
 
@@ -3831,24 +4258,27 @@ class ListWebAppsResponse {
   /// The list of web apps.
   core.List<WebApp>? webApps;
 
-  ListWebAppsResponse();
+  ListWebAppsResponse({
+    this.nextPageToken,
+    this.webApps,
+  });
 
-  ListWebAppsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('webApps')) {
-      webApps = (_json['webApps'] as core.List)
-          .map<WebApp>((value) =>
-              WebApp.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListWebAppsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          webApps: _json.containsKey('webApps')
+              ? (_json['webApps'] as core.List)
+                  .map((value) => WebApp.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (webApps != null)
-          'webApps': webApps!.map((value) => value.toJson()).toList(),
+        if (webApps != null) 'webApps': webApps!,
       };
 }
 
@@ -3862,23 +4292,27 @@ class ManagedConfigurationTemplate {
   /// The ID of the managed configurations template.
   core.String? templateId;
 
-  ManagedConfigurationTemplate();
+  ManagedConfigurationTemplate({
+    this.configurationVariables,
+    this.templateId,
+  });
 
-  ManagedConfigurationTemplate.fromJson(core.Map _json) {
-    if (_json.containsKey('configurationVariables')) {
-      configurationVariables = (_json['configurationVariables']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('templateId')) {
-      templateId = _json['templateId'] as core.String;
-    }
-  }
+  ManagedConfigurationTemplate.fromJson(core.Map _json)
+      : this(
+          configurationVariables: _json.containsKey('configurationVariables')
+              ? (_json['configurationVariables']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          templateId: _json.containsKey('templateId')
+              ? _json['templateId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (configurationVariables != null)
@@ -3935,47 +4369,47 @@ class ManagedProperty {
   /// - "BUNDLE_ARRAY" : An array of property bundles.
   core.String? type;
 
-  ManagedProperty();
+  ManagedProperty({
+    this.defaultValue,
+    this.description,
+    this.entries,
+    this.key,
+    this.nestedProperties,
+    this.title,
+    this.type,
+  });
 
-  ManagedProperty.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultValue')) {
-      defaultValue = _json['defaultValue'] as core.Object;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('entries')) {
-      entries = (_json['entries'] as core.List)
-          .map<ManagedPropertyEntry>((value) => ManagedPropertyEntry.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('nestedProperties')) {
-      nestedProperties = (_json['nestedProperties'] as core.List)
-          .map<ManagedProperty>((value) => ManagedProperty.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ManagedProperty.fromJson(core.Map _json)
+      : this(
+          defaultValue:
+              _json.containsKey('defaultValue') ? _json['defaultValue'] : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          entries: _json.containsKey('entries')
+              ? (_json['entries'] as core.List)
+                  .map((value) => ManagedPropertyEntry.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          nestedProperties: _json.containsKey('nestedProperties')
+              ? (_json['nestedProperties'] as core.List)
+                  .map((value) => ManagedProperty.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultValue != null) 'defaultValue': defaultValue!,
         if (description != null) 'description': description!,
-        if (entries != null)
-          'entries': entries!.map((value) => value.toJson()).toList(),
+        if (entries != null) 'entries': entries!,
         if (key != null) 'key': key!,
-        if (nestedProperties != null)
-          'nestedProperties':
-              nestedProperties!.map((value) => value.toJson()).toList(),
+        if (nestedProperties != null) 'nestedProperties': nestedProperties!,
         if (title != null) 'title': title!,
         if (type != null) 'type': type!,
       };
@@ -3994,16 +4428,17 @@ class ManagedPropertyEntry {
   /// Not localized.
   core.String? value;
 
-  ManagedPropertyEntry();
+  ManagedPropertyEntry({
+    this.name,
+    this.value,
+  });
 
-  ManagedPropertyEntry.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  ManagedPropertyEntry.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -4035,19 +4470,24 @@ class MemoryEvent {
   /// was measured.
   core.String? eventType;
 
-  MemoryEvent();
+  MemoryEvent({
+    this.byteCount,
+    this.createTime,
+    this.eventType,
+  });
 
-  MemoryEvent.fromJson(core.Map _json) {
-    if (_json.containsKey('byteCount')) {
-      byteCount = _json['byteCount'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('eventType')) {
-      eventType = _json['eventType'] as core.String;
-    }
-  }
+  MemoryEvent.fromJson(core.Map _json)
+      : this(
+          byteCount: _json.containsKey('byteCount')
+              ? _json['byteCount'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          eventType: _json.containsKey('eventType')
+              ? _json['eventType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (byteCount != null) 'byteCount': byteCount!,
@@ -4064,16 +4504,20 @@ class MemoryInfo {
   /// Total RAM on device in bytes.
   core.String? totalRam;
 
-  MemoryInfo();
+  MemoryInfo({
+    this.totalInternalStorage,
+    this.totalRam,
+  });
 
-  MemoryInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('totalInternalStorage')) {
-      totalInternalStorage = _json['totalInternalStorage'] as core.String;
-    }
-    if (_json.containsKey('totalRam')) {
-      totalRam = _json['totalRam'] as core.String;
-    }
-  }
+  MemoryInfo.fromJson(core.Map _json)
+      : this(
+          totalInternalStorage: _json.containsKey('totalInternalStorage')
+              ? _json['totalInternalStorage'] as core.String
+              : null,
+          totalRam: _json.containsKey('totalRam')
+              ? _json['totalRam'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (totalInternalStorage != null)
@@ -4111,37 +4555,38 @@ class NetworkInfo {
   /// For example, 7c:11:11:11:11:11.
   core.String? wifiMacAddress;
 
-  NetworkInfo();
+  NetworkInfo({
+    this.imei,
+    this.meid,
+    this.networkOperatorName,
+    this.telephonyInfos,
+    this.wifiMacAddress,
+  });
 
-  NetworkInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('imei')) {
-      imei = _json['imei'] as core.String;
-    }
-    if (_json.containsKey('meid')) {
-      meid = _json['meid'] as core.String;
-    }
-    if (_json.containsKey('networkOperatorName')) {
-      networkOperatorName = _json['networkOperatorName'] as core.String;
-    }
-    if (_json.containsKey('telephonyInfos')) {
-      telephonyInfos = (_json['telephonyInfos'] as core.List)
-          .map<TelephonyInfo>((value) => TelephonyInfo.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('wifiMacAddress')) {
-      wifiMacAddress = _json['wifiMacAddress'] as core.String;
-    }
-  }
+  NetworkInfo.fromJson(core.Map _json)
+      : this(
+          imei: _json.containsKey('imei') ? _json['imei'] as core.String : null,
+          meid: _json.containsKey('meid') ? _json['meid'] as core.String : null,
+          networkOperatorName: _json.containsKey('networkOperatorName')
+              ? _json['networkOperatorName'] as core.String
+              : null,
+          telephonyInfos: _json.containsKey('telephonyInfos')
+              ? (_json['telephonyInfos'] as core.List)
+                  .map((value) => TelephonyInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          wifiMacAddress: _json.containsKey('wifiMacAddress')
+              ? _json['wifiMacAddress'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (imei != null) 'imei': imei!,
         if (meid != null) 'meid': meid!,
         if (networkOperatorName != null)
           'networkOperatorName': networkOperatorName!,
-        if (telephonyInfos != null)
-          'telephonyInfos':
-              telephonyInfos!.map((value) => value.toJson()).toList(),
+        if (telephonyInfos != null) 'telephonyInfos': telephonyInfos!,
         if (wifiMacAddress != null) 'wifiMacAddress': wifiMacAddress!,
       };
 }
@@ -4226,29 +4671,36 @@ class NonComplianceDetail {
   /// This is the JSON field name of a top-level Policy field.
   core.String? settingName;
 
-  NonComplianceDetail();
+  NonComplianceDetail({
+    this.currentValue,
+    this.fieldPath,
+    this.installationFailureReason,
+    this.nonComplianceReason,
+    this.packageName,
+    this.settingName,
+  });
 
-  NonComplianceDetail.fromJson(core.Map _json) {
-    if (_json.containsKey('currentValue')) {
-      currentValue = _json['currentValue'] as core.Object;
-    }
-    if (_json.containsKey('fieldPath')) {
-      fieldPath = _json['fieldPath'] as core.String;
-    }
-    if (_json.containsKey('installationFailureReason')) {
-      installationFailureReason =
-          _json['installationFailureReason'] as core.String;
-    }
-    if (_json.containsKey('nonComplianceReason')) {
-      nonComplianceReason = _json['nonComplianceReason'] as core.String;
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('settingName')) {
-      settingName = _json['settingName'] as core.String;
-    }
-  }
+  NonComplianceDetail.fromJson(core.Map _json)
+      : this(
+          currentValue:
+              _json.containsKey('currentValue') ? _json['currentValue'] : null,
+          fieldPath: _json.containsKey('fieldPath')
+              ? _json['fieldPath'] as core.String
+              : null,
+          installationFailureReason:
+              _json.containsKey('installationFailureReason')
+                  ? _json['installationFailureReason'] as core.String
+                  : null,
+          nonComplianceReason: _json.containsKey('nonComplianceReason')
+              ? _json['nonComplianceReason'] as core.String
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          settingName: _json.containsKey('settingName')
+              ? _json['settingName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (currentValue != null) 'currentValue': currentValue!,
@@ -4306,25 +4758,65 @@ class NonComplianceDetailCondition {
   /// this condition matches any setting name.
   core.String? settingName;
 
-  NonComplianceDetailCondition();
+  NonComplianceDetailCondition({
+    this.nonComplianceReason,
+    this.packageName,
+    this.settingName,
+  });
 
-  NonComplianceDetailCondition.fromJson(core.Map _json) {
-    if (_json.containsKey('nonComplianceReason')) {
-      nonComplianceReason = _json['nonComplianceReason'] as core.String;
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('settingName')) {
-      settingName = _json['settingName'] as core.String;
-    }
-  }
+  NonComplianceDetailCondition.fromJson(core.Map _json)
+      : this(
+          nonComplianceReason: _json.containsKey('nonComplianceReason')
+              ? _json['nonComplianceReason'] as core.String
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          settingName: _json.containsKey('settingName')
+              ? _json['settingName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nonComplianceReason != null)
           'nonComplianceReason': nonComplianceReason!,
         if (packageName != null) 'packageName': packageName!,
         if (settingName != null) 'settingName': settingName!,
+      };
+}
+
+/// This feature is not generally available.
+class OncCertificateProvider {
+  /// This feature is not generally available.
+  core.List<core.String>? certificateReferences;
+
+  /// This feature is not generally available.
+  ContentProviderEndpoint? contentProviderEndpoint;
+
+  OncCertificateProvider({
+    this.certificateReferences,
+    this.contentProviderEndpoint,
+  });
+
+  OncCertificateProvider.fromJson(core.Map _json)
+      : this(
+          certificateReferences: _json.containsKey('certificateReferences')
+              ? (_json['certificateReferences'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          contentProviderEndpoint: _json.containsKey('contentProviderEndpoint')
+              ? ContentProviderEndpoint.fromJson(
+                  _json['contentProviderEndpoint']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (certificateReferences != null)
+          'certificateReferences': certificateReferences!,
+        if (contentProviderEndpoint != null)
+          'contentProviderEndpoint': contentProviderEndpoint!,
       };
 }
 
@@ -4349,7 +4841,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -4369,42 +4861,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -4416,15 +4901,18 @@ class PackageNameList {
   /// A list of package names.
   core.List<core.String>? packageNames;
 
-  PackageNameList();
+  PackageNameList({
+    this.packageNames,
+  });
 
-  PackageNameList.fromJson(core.Map _json) {
-    if (_json.containsKey('packageNames')) {
-      packageNames = (_json['packageNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  PackageNameList.fromJson(core.Map _json)
+      : this(
+          packageNames: _json.containsKey('packageNames')
+              ? (_json['packageNames'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (packageNames != null) 'packageNames': packageNames!,
@@ -4493,20 +4981,57 @@ class PasswordRequirements {
   /// - "BIOMETRIC_WEAK" : The device must be secured with a low-security
   /// biometric recognition technology, at minimum. This includes technologies
   /// that can recognize the identity of an individual that are roughly
-  /// equivalent to a 3-digit PIN (false detection is less than 1 in 1,000).
+  /// equivalent to a 3-digit PIN (false detection is less than 1 in
+  /// 1,000).This, when applied on personally owned work profile devices on
+  /// Android 12 device-scoped, will be treated as COMPLEXITY_LOW for
+  /// application. See PasswordQuality for details.
   /// - "SOMETHING" : A password is required, but there are no restrictions on
-  /// what the password must contain.
-  /// - "NUMERIC" : The password must contain numeric characters.
+  /// what the password must contain.This, when applied on personally owned work
+  /// profile devices on Android 12 device-scoped, will be treated as
+  /// COMPLEXITY_LOW for application. See PasswordQuality for details.
+  /// - "NUMERIC" : The password must contain numeric characters.This, when
+  /// applied on personally owned work profile devices on Android 12
+  /// device-scoped, will be treated as COMPLEXITY_MEDIUM for application. See
+  /// PasswordQuality for details.
   /// - "NUMERIC_COMPLEX" : The password must contain numeric characters with no
-  /// repeating (4444) or ordered (1234, 4321, 2468) sequences.
+  /// repeating (4444) or ordered (1234, 4321, 2468) sequences.This, when
+  /// applied on personally owned work profile devices on Android 12
+  /// device-scoped, will be treated as COMPLEXITY_MEDIUM for application. See
+  /// PasswordQuality for details.
   /// - "ALPHABETIC" : The password must contain alphabetic (or symbol)
-  /// characters.
+  /// characters.This, when applied on personally owned work profile devices on
+  /// Android 12 device-scoped, will be treated as COMPLEXITY_HIGH for
+  /// application. See PasswordQuality for details.
   /// - "ALPHANUMERIC" : The password must contain both numeric and alphabetic
-  /// (or symbol) characters.
+  /// (or symbol) characters.This, when applied on personally owned work profile
+  /// devices on Android 12 device-scoped, will be treated as COMPLEXITY_HIGH
+  /// for application. See PasswordQuality for details.
   /// - "COMPLEX" : The password must meet the minimum requirements specified in
   /// passwordMinimumLength, passwordMinimumLetters, passwordMinimumSymbols,
   /// etc. For example, if passwordMinimumSymbols is 2, the password must
-  /// contain at least two symbols.
+  /// contain at least two symbols.This, when applied on personally owned work
+  /// profile devices on Android 12 device-scoped, will be treated as
+  /// COMPLEXITY_HIGH for application. In this case, the requirements in
+  /// passwordMinimumLength, passwordMinimumLetters, passwordMinimumSymbols, etc
+  /// are not applied. See PasswordQuality for details.
+  /// - "COMPLEXITY_LOW" : Define the low password complexity band as: pattern
+  /// PIN with repeating (4444) or ordered (1234, 4321, 2468) sequencesThis sets
+  /// the minimum complexity band which the password must meet.Enforcement
+  /// varies among different Android versions, management modes and password
+  /// scopes. See PasswordQuality for details.
+  /// - "COMPLEXITY_MEDIUM" : Define the medium password complexity band as: PIN
+  /// with no repeating (4444) or ordered (1234, 4321, 2468) sequences, length
+  /// at least 4 alphabetic, length at least 4 alphanumeric, length at least
+  /// 4This sets the minimum complexity band which the password must
+  /// meet.Enforcement varies among different Android versions, management modes
+  /// and password scopes. See PasswordQuality for details.
+  /// - "COMPLEXITY_HIGH" : Define the high password complexity band as:On
+  /// Android 12 and above: PIN with no repeating (4444) or ordered (1234, 4321,
+  /// 2468) sequences, length at least 8 alphabetic, length at least 6
+  /// alphanumeric, length at least 6This sets the minimum complexity band which
+  /// the password must meet.Enforcement varies among different Android
+  /// versions, management modes and password scopes. See PasswordQuality for
+  /// details.
   core.String? passwordQuality;
 
   /// The scope that the password requirement applies to.
@@ -4535,51 +5060,69 @@ class PasswordRequirements {
   /// - "REQUIRE_EVERY_DAY" : The timeout period is set to 24 hours.
   core.String? requirePasswordUnlock;
 
-  PasswordRequirements();
+  PasswordRequirements({
+    this.maximumFailedPasswordsForWipe,
+    this.passwordExpirationTimeout,
+    this.passwordHistoryLength,
+    this.passwordMinimumLength,
+    this.passwordMinimumLetters,
+    this.passwordMinimumLowerCase,
+    this.passwordMinimumNonLetter,
+    this.passwordMinimumNumeric,
+    this.passwordMinimumSymbols,
+    this.passwordMinimumUpperCase,
+    this.passwordQuality,
+    this.passwordScope,
+    this.requirePasswordUnlock,
+  });
 
-  PasswordRequirements.fromJson(core.Map _json) {
-    if (_json.containsKey('maximumFailedPasswordsForWipe')) {
-      maximumFailedPasswordsForWipe =
-          _json['maximumFailedPasswordsForWipe'] as core.int;
-    }
-    if (_json.containsKey('passwordExpirationTimeout')) {
-      passwordExpirationTimeout =
-          _json['passwordExpirationTimeout'] as core.String;
-    }
-    if (_json.containsKey('passwordHistoryLength')) {
-      passwordHistoryLength = _json['passwordHistoryLength'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumLength')) {
-      passwordMinimumLength = _json['passwordMinimumLength'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumLetters')) {
-      passwordMinimumLetters = _json['passwordMinimumLetters'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumLowerCase')) {
-      passwordMinimumLowerCase = _json['passwordMinimumLowerCase'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumNonLetter')) {
-      passwordMinimumNonLetter = _json['passwordMinimumNonLetter'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumNumeric')) {
-      passwordMinimumNumeric = _json['passwordMinimumNumeric'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumSymbols')) {
-      passwordMinimumSymbols = _json['passwordMinimumSymbols'] as core.int;
-    }
-    if (_json.containsKey('passwordMinimumUpperCase')) {
-      passwordMinimumUpperCase = _json['passwordMinimumUpperCase'] as core.int;
-    }
-    if (_json.containsKey('passwordQuality')) {
-      passwordQuality = _json['passwordQuality'] as core.String;
-    }
-    if (_json.containsKey('passwordScope')) {
-      passwordScope = _json['passwordScope'] as core.String;
-    }
-    if (_json.containsKey('requirePasswordUnlock')) {
-      requirePasswordUnlock = _json['requirePasswordUnlock'] as core.String;
-    }
-  }
+  PasswordRequirements.fromJson(core.Map _json)
+      : this(
+          maximumFailedPasswordsForWipe:
+              _json.containsKey('maximumFailedPasswordsForWipe')
+                  ? _json['maximumFailedPasswordsForWipe'] as core.int
+                  : null,
+          passwordExpirationTimeout:
+              _json.containsKey('passwordExpirationTimeout')
+                  ? _json['passwordExpirationTimeout'] as core.String
+                  : null,
+          passwordHistoryLength: _json.containsKey('passwordHistoryLength')
+              ? _json['passwordHistoryLength'] as core.int
+              : null,
+          passwordMinimumLength: _json.containsKey('passwordMinimumLength')
+              ? _json['passwordMinimumLength'] as core.int
+              : null,
+          passwordMinimumLetters: _json.containsKey('passwordMinimumLetters')
+              ? _json['passwordMinimumLetters'] as core.int
+              : null,
+          passwordMinimumLowerCase:
+              _json.containsKey('passwordMinimumLowerCase')
+                  ? _json['passwordMinimumLowerCase'] as core.int
+                  : null,
+          passwordMinimumNonLetter:
+              _json.containsKey('passwordMinimumNonLetter')
+                  ? _json['passwordMinimumNonLetter'] as core.int
+                  : null,
+          passwordMinimumNumeric: _json.containsKey('passwordMinimumNumeric')
+              ? _json['passwordMinimumNumeric'] as core.int
+              : null,
+          passwordMinimumSymbols: _json.containsKey('passwordMinimumSymbols')
+              ? _json['passwordMinimumSymbols'] as core.int
+              : null,
+          passwordMinimumUpperCase:
+              _json.containsKey('passwordMinimumUpperCase')
+                  ? _json['passwordMinimumUpperCase'] as core.int
+                  : null,
+          passwordQuality: _json.containsKey('passwordQuality')
+              ? _json['passwordQuality'] as core.String
+              : null,
+          passwordScope: _json.containsKey('passwordScope')
+              ? _json['passwordScope'] as core.String
+              : null,
+          requirePasswordUnlock: _json.containsKey('requirePasswordUnlock')
+              ? _json['requirePasswordUnlock'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maximumFailedPasswordsForWipe != null)
@@ -4625,16 +5168,20 @@ class PermissionGrant {
   /// - "DENY" : Automatically deny a permission.
   core.String? policy;
 
-  PermissionGrant();
+  PermissionGrant({
+    this.permission,
+    this.policy,
+  });
 
-  PermissionGrant.fromJson(core.Map _json) {
-    if (_json.containsKey('permission')) {
-      permission = _json['permission'] as core.String;
-    }
-    if (_json.containsKey('policy')) {
-      policy = _json['policy'] as core.String;
-    }
-  }
+  PermissionGrant.fromJson(core.Map _json)
+      : this(
+          permission: _json.containsKey('permission')
+              ? _json['permission'] as core.String
+              : null,
+          policy: _json.containsKey('policy')
+              ? _json['policy'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (permission != null) 'permission': permission!,
@@ -4671,23 +5218,28 @@ class PersistentPreferredActivity {
   /// an appropriate activity from the app to handle the intent.
   core.String? receiverActivity;
 
-  PersistentPreferredActivity();
+  PersistentPreferredActivity({
+    this.actions,
+    this.categories,
+    this.receiverActivity,
+  });
 
-  PersistentPreferredActivity.fromJson(core.Map _json) {
-    if (_json.containsKey('actions')) {
-      actions = (_json['actions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('categories')) {
-      categories = (_json['categories'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('receiverActivity')) {
-      receiverActivity = _json['receiverActivity'] as core.String;
-    }
-  }
+  PersistentPreferredActivity.fromJson(core.Map _json)
+      : this(
+          actions: _json.containsKey('actions')
+              ? (_json['actions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          categories: _json.containsKey('categories')
+              ? (_json['categories'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          receiverActivity: _json.containsKey('receiverActivity')
+              ? _json['receiverActivity'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (actions != null) 'actions': actions!,
@@ -4710,16 +5262,20 @@ class PersonalApplicationPolicy {
   /// The package name of the application.
   core.String? packageName;
 
-  PersonalApplicationPolicy();
+  PersonalApplicationPolicy({
+    this.installType,
+    this.packageName,
+  });
 
-  PersonalApplicationPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('installType')) {
-      installType = _json['installType'] as core.String;
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-  }
+  PersonalApplicationPolicy.fromJson(core.Map _json)
+      : this(
+          installType: _json.containsKey('installType')
+              ? _json['installType'] as core.String
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (installType != null) 'installType': installType!,
@@ -4762,35 +5318,42 @@ class PersonalUsagePolicies {
   /// Whether screen capture is disabled.
   core.bool? screenCaptureDisabled;
 
-  PersonalUsagePolicies();
+  PersonalUsagePolicies({
+    this.accountTypesWithManagementDisabled,
+    this.cameraDisabled,
+    this.maxDaysWithWorkOff,
+    this.personalApplications,
+    this.personalPlayStoreMode,
+    this.screenCaptureDisabled,
+  });
 
-  PersonalUsagePolicies.fromJson(core.Map _json) {
-    if (_json.containsKey('accountTypesWithManagementDisabled')) {
-      accountTypesWithManagementDisabled =
-          (_json['accountTypesWithManagementDisabled'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('cameraDisabled')) {
-      cameraDisabled = _json['cameraDisabled'] as core.bool;
-    }
-    if (_json.containsKey('maxDaysWithWorkOff')) {
-      maxDaysWithWorkOff = _json['maxDaysWithWorkOff'] as core.int;
-    }
-    if (_json.containsKey('personalApplications')) {
-      personalApplications = (_json['personalApplications'] as core.List)
-          .map<PersonalApplicationPolicy>((value) =>
-              PersonalApplicationPolicy.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('personalPlayStoreMode')) {
-      personalPlayStoreMode = _json['personalPlayStoreMode'] as core.String;
-    }
-    if (_json.containsKey('screenCaptureDisabled')) {
-      screenCaptureDisabled = _json['screenCaptureDisabled'] as core.bool;
-    }
-  }
+  PersonalUsagePolicies.fromJson(core.Map _json)
+      : this(
+          accountTypesWithManagementDisabled:
+              _json.containsKey('accountTypesWithManagementDisabled')
+                  ? (_json['accountTypesWithManagementDisabled'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          cameraDisabled: _json.containsKey('cameraDisabled')
+              ? _json['cameraDisabled'] as core.bool
+              : null,
+          maxDaysWithWorkOff: _json.containsKey('maxDaysWithWorkOff')
+              ? _json['maxDaysWithWorkOff'] as core.int
+              : null,
+          personalApplications: _json.containsKey('personalApplications')
+              ? (_json['personalApplications'] as core.List)
+                  .map((value) => PersonalApplicationPolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          personalPlayStoreMode: _json.containsKey('personalPlayStoreMode')
+              ? _json['personalPlayStoreMode'] as core.String
+              : null,
+          screenCaptureDisabled: _json.containsKey('screenCaptureDisabled')
+              ? _json['screenCaptureDisabled'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountTypesWithManagementDisabled != null)
@@ -4800,8 +5363,7 @@ class PersonalUsagePolicies {
         if (maxDaysWithWorkOff != null)
           'maxDaysWithWorkOff': maxDaysWithWorkOff!,
         if (personalApplications != null)
-          'personalApplications':
-              personalApplications!.map((value) => value.toJson()).toList(),
+          'personalApplications': personalApplications!,
         if (personalPlayStoreMode != null)
           'personalPlayStoreMode': personalPlayStoreMode!,
         if (screenCaptureDisabled != null)
@@ -4823,7 +5385,7 @@ class Policy {
   /// Also mutes the device.
   core.bool? adjustVolumeDisabled;
 
-  /// Security policies set to the most secure values by default.
+  /// Security policies set to secure values by default.
   ///
   /// To maintain the security posture of a device, we don't recommend
   /// overriding any of the default values.
@@ -4840,8 +5402,12 @@ class Policy {
   /// tracks are specified, then the device only uses the production track.
   core.List<core.String>? androidDevicePolicyTracks;
 
-  /// The app auto update policy, which controls when automatic app updates can
-  /// be applied.
+  /// Use autoUpdateMode instead.When autoUpdateMode is set to
+  /// AUTO_UPDATE_POSTPONED or AUTO_UPDATE_HIGH_PRIORITY, this field has no
+  /// effect.The app auto update policy, which controls when automatic app
+  /// updates can be applied.
+  ///
+  /// Deprecated.
   /// Possible string values are:
   /// - "APP_AUTO_UPDATE_POLICY_UNSPECIFIED" : The auto-update policy is not
   /// set. Equivalent to CHOICE_TO_THE_USER.
@@ -4892,18 +5458,43 @@ class Policy {
   /// bluetooth_config_disabled can be bypassed by the user.
   core.bool? bluetoothDisabled;
 
+  /// Controls the use of the camera and whether the user has access to the
+  /// camera access toggle.
+  /// Possible string values are:
+  /// - "CAMERA_ACCESS_UNSPECIFIED" : If camera_disabled is true, this is
+  /// equivalent to CAMERA_ACCESS_DISABLED. Otherwise, this is equivalent to
+  /// CAMERA_ACCESS_USER_CHOICE.
+  /// - "CAMERA_ACCESS_USER_CHOICE" : The field
+  /// camera_disabled(google.android.devicemanagement.v1.Policy.camera_disabled\]
+  /// is ignored. This is the default device behaviour: all cameras on the
+  /// device are available. On Android 12 and above, the user can use the camera
+  /// access toggle.
+  /// - "CAMERA_ACCESS_DISABLED" : The field
+  /// camera_disabled(google.android.devicemanagement.v1.Policy.camera_disabled\]
+  /// is ignored. All cameras on the device are disabled (for fully managed
+  /// devices, this applies device-wide and for work profiles this applies only
+  /// to the work profile).There are no explicit restrictions placed on the
+  /// camera access toggle on Android 12 and above: on fully managed devices,
+  /// the camera access toggle has no effect as all cameras are disabled. On
+  /// devices with a work profile, this toggle has no effect on apps in the work
+  /// profile, but it affects apps outside the work profile.
+  /// - "CAMERA_ACCESS_ENFORCED" : The field
+  /// camera_disabled(google.android.devicemanagement.v1.Policy.camera_disabled\]
+  /// is ignored. All cameras on the device are available. On fully managed
+  /// devices running Android 12 and above, the user is unable to use the camera
+  /// access toggle. On devices which are not fully managed or which run Android
+  /// 11 or below, this is equivalent to CAMERA_ACCESS_USER_CHOICE.
+  core.String? cameraAccess;
+
   /// Whether all cameras on the device are disabled.
   core.bool? cameraDisabled;
 
   /// Whether configuring cell broadcast is disabled.
   core.bool? cellBroadcastsConfigDisabled;
 
-  /// Rules for automatically choosing a private key and certificate to
-  /// authenticate the device to a server.
+  /// Rules for determining apps' access to private keys.
   ///
-  /// The rules are ordered by increasing precedence, so if an outgoing request
-  /// matches more than one rule, the last rule defines which private key to
-  /// use.
+  /// See ChoosePrivateKeyRule for details.
   core.List<ChoosePrivateKeyRule>? choosePrivateKeyRules;
 
   /// Rules declaring which mitigating actions to take when a device is not
@@ -4919,6 +5510,9 @@ class Policy {
 
   /// Whether configuring user credentials is disabled.
   core.bool? credentialsConfigDisabled;
+
+  /// Cross-profile policies applied on the device.
+  CrossProfilePolicies? crossProfilePolicies;
 
   /// Whether roaming data services are disabled.
   core.bool? dataRoamingDisabled;
@@ -4971,8 +5565,7 @@ class Policy {
   /// Whether user installation of apps is disabled.
   core.bool? installAppsDisabled;
 
-  /// Whether the user is allowed to enable the "Unknown Sources" setting, which
-  /// allows installation of apps from unknown sources.
+  /// This field has no effect.
   core.bool? installUnknownSourcesAllowed;
 
   /// Whether the keyguard is disabled.
@@ -5023,6 +5616,32 @@ class Policy {
   /// A value of 0 means there is no restriction.
   core.String? maximumTimeToLock;
 
+  /// Controls the use of the microphone and whether the user has access to the
+  /// microphone access toggle.
+  ///
+  /// This applies only on fully managed devices.
+  /// Possible string values are:
+  /// - "MICROPHONE_ACCESS_UNSPECIFIED" : If unmute_microphone_disabled is true,
+  /// this is equivalent to MICROPHONE_ACCESS_DISABLED. Otherwise, this is
+  /// equivalent to MICROPHONE_ACCESS_USER_CHOICE.
+  /// - "MICROPHONE_ACCESS_USER_CHOICE" : The field
+  /// unmute_microphone_disabled(google.android.devicemanagement.v1.Policy.unmute_microphone_disabled\]
+  /// is ignored. This is the default device behaviour: the microphone on the
+  /// device is available. On Android 12 and above, the user can use the
+  /// microphone access toggle.
+  /// - "MICROPHONE_ACCESS_DISABLED" : The field
+  /// unmute_microphone_disabled(google.android.devicemanagement.v1.Policy.unmute_microphone_disabled\]
+  /// is ignored. The microphone on the device is disabled (for fully managed
+  /// devices, this applies device-wide).The microphone access toggle has no
+  /// effect as the microphone is disabled.
+  /// - "MICROPHONE_ACCESS_ENFORCED" : The field
+  /// unmute_microphone_disabled(google.android.devicemanagement.v1.Policy.unmute_microphone_disabled\]
+  /// is ignored. The microphone on the device is available. On devices running
+  /// Android 12 and above, the user is unable to use the microphone access
+  /// toggle. On devices which run Android 11 or below, this is equivalent to
+  /// MICROPHONE_ACCESS_USER_CHOICE.
+  core.String? microphoneAccess;
+
   /// The minimum allowed Android API level.
   core.int? minimumApiLevel;
 
@@ -5047,11 +5666,16 @@ class Policy {
   /// forgotten and the device will continue booting. This prevents being unable
   /// to connect to a network if there is no suitable network in the last policy
   /// and the device boots into an app in lock task mode, or the user is
-  /// otherwise unable to reach device settings.
+  /// otherwise unable to reach device settings.Note: Setting wifiConfigDisabled
+  /// to true will override this setting under specific circumstances. Please
+  /// see wifiConfigDisabled for further details.
   core.bool? networkEscapeHatchEnabled;
 
   /// Whether resetting network settings is disabled.
   core.bool? networkResetDisabled;
+
+  /// This feature is not generally available.
+  core.List<OncCertificateProvider>? oncCertificateProviders;
 
   /// Network configuration for the device.
   ///
@@ -5059,7 +5683,7 @@ class Policy {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? openNetworkConfiguration;
+  core.Map<core.String, core.Object?>? openNetworkConfiguration;
 
   /// Whether using NFC to beam data from apps is disabled.
   core.bool? outgoingBeamDisabled;
@@ -5076,7 +5700,9 @@ class Policy {
   /// Password requirements.
   ///
   /// The field password_requirements.require_password_unlock must not be set.
-  /// DEPRECATED - Use password_policies.
+  /// DEPRECATED - Use password_policies.Note:Complexity-based values of
+  /// PasswordQuality, that is, COMPLEXITY_LOW, COMPLEXITY_MEDIUM, and
+  /// COMPLEXITY_HIGH, cannot be used here.
   PasswordRequirements? passwordRequirements;
 
   /// Explicit permission or group grants or denials for all apps.
@@ -5120,6 +5746,23 @@ class Policy {
   /// Rules that define the behavior when a particular policy can not be applied
   /// on device
   core.List<PolicyEnforcementRule>? policyEnforcementRules;
+
+  /// Controls whether preferential network service is enabled on the work
+  /// profile.
+  ///
+  /// For example, an organization may have an agreement with a carrier that all
+  /// of the work data from its employees' devices will be sent via a network
+  /// service dedicated for enterprise use. An example of a supported
+  /// preferential network service is the enterprise slice on 5G networks. This
+  /// has no effect on fully managed devices.
+  /// Possible string values are:
+  /// - "PREFERENTIAL_NETWORK_SERVICE_UNSPECIFIED" : Unspecified. Defaults to
+  /// PREFERENTIAL_NETWORK_SERVICES_DISABLED.
+  /// - "PREFERENTIAL_NETWORK_SERVICE_DISABLED" : Preferential network service
+  /// is disabled on the work profile.
+  /// - "PREFERENTIAL_NETWORK_SERVICE_ENABLED" : Preferential network service is
+  /// enabled on the work profile.
+  core.String? preferentialNetworkService;
 
   /// Allows showing UI on a device for a user to choose a private key alias if
   /// there are no matching rules in ChoosePrivateKeyRules.
@@ -5223,338 +5866,444 @@ class Policy {
   /// Whether configuring VPN is disabled.
   core.bool? vpnConfigDisabled;
 
-  /// Whether configuring Wi-Fi access points is disabled.
+  /// Whether configuring Wi-Fi access points is disabled.Note: If a network
+  /// connection can't be made at boot time and configuring Wi-Fi is disabled
+  /// then network escape hatch will be shown in order to refresh the device
+  /// policy (see networkEscapeHatchEnabled).
   core.bool? wifiConfigDisabled;
 
   /// DEPRECATED - Use wifi_config_disabled.
   core.bool? wifiConfigsLockdownEnabled;
 
-  Policy();
+  Policy({
+    this.accountTypesWithManagementDisabled,
+    this.addUserDisabled,
+    this.adjustVolumeDisabled,
+    this.advancedSecurityOverrides,
+    this.alwaysOnVpnPackage,
+    this.androidDevicePolicyTracks,
+    this.appAutoUpdatePolicy,
+    this.applications,
+    this.autoDateAndTimeZone,
+    this.autoTimeRequired,
+    this.blockApplicationsEnabled,
+    this.bluetoothConfigDisabled,
+    this.bluetoothContactSharingDisabled,
+    this.bluetoothDisabled,
+    this.cameraAccess,
+    this.cameraDisabled,
+    this.cellBroadcastsConfigDisabled,
+    this.choosePrivateKeyRules,
+    this.complianceRules,
+    this.createWindowsDisabled,
+    this.credentialsConfigDisabled,
+    this.crossProfilePolicies,
+    this.dataRoamingDisabled,
+    this.debuggingFeaturesAllowed,
+    this.defaultPermissionPolicy,
+    this.deviceOwnerLockScreenInfo,
+    this.encryptionPolicy,
+    this.ensureVerifyAppsEnabled,
+    this.factoryResetDisabled,
+    this.frpAdminEmails,
+    this.funDisabled,
+    this.installAppsDisabled,
+    this.installUnknownSourcesAllowed,
+    this.keyguardDisabled,
+    this.keyguardDisabledFeatures,
+    this.kioskCustomLauncherEnabled,
+    this.kioskCustomization,
+    this.locationMode,
+    this.longSupportMessage,
+    this.maximumTimeToLock,
+    this.microphoneAccess,
+    this.minimumApiLevel,
+    this.mobileNetworksConfigDisabled,
+    this.modifyAccountsDisabled,
+    this.mountPhysicalMediaDisabled,
+    this.name,
+    this.networkEscapeHatchEnabled,
+    this.networkResetDisabled,
+    this.oncCertificateProviders,
+    this.openNetworkConfiguration,
+    this.outgoingBeamDisabled,
+    this.outgoingCallsDisabled,
+    this.passwordPolicies,
+    this.passwordRequirements,
+    this.permissionGrants,
+    this.permittedAccessibilityServices,
+    this.permittedInputMethods,
+    this.persistentPreferredActivities,
+    this.personalUsagePolicies,
+    this.playStoreMode,
+    this.policyEnforcementRules,
+    this.preferentialNetworkService,
+    this.privateKeySelectionEnabled,
+    this.recommendedGlobalProxy,
+    this.removeUserDisabled,
+    this.safeBootDisabled,
+    this.screenCaptureDisabled,
+    this.setUserIconDisabled,
+    this.setWallpaperDisabled,
+    this.setupActions,
+    this.shareLocationDisabled,
+    this.shortSupportMessage,
+    this.skipFirstUseHintsEnabled,
+    this.smsDisabled,
+    this.statusBarDisabled,
+    this.statusReportingSettings,
+    this.stayOnPluggedModes,
+    this.systemUpdate,
+    this.tetheringConfigDisabled,
+    this.uninstallAppsDisabled,
+    this.unmuteMicrophoneDisabled,
+    this.usbFileTransferDisabled,
+    this.usbMassStorageEnabled,
+    this.version,
+    this.vpnConfigDisabled,
+    this.wifiConfigDisabled,
+    this.wifiConfigsLockdownEnabled,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('accountTypesWithManagementDisabled')) {
-      accountTypesWithManagementDisabled =
-          (_json['accountTypesWithManagementDisabled'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('addUserDisabled')) {
-      addUserDisabled = _json['addUserDisabled'] as core.bool;
-    }
-    if (_json.containsKey('adjustVolumeDisabled')) {
-      adjustVolumeDisabled = _json['adjustVolumeDisabled'] as core.bool;
-    }
-    if (_json.containsKey('advancedSecurityOverrides')) {
-      advancedSecurityOverrides = AdvancedSecurityOverrides.fromJson(
-          _json['advancedSecurityOverrides']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('alwaysOnVpnPackage')) {
-      alwaysOnVpnPackage = AlwaysOnVpnPackage.fromJson(
-          _json['alwaysOnVpnPackage'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('androidDevicePolicyTracks')) {
-      androidDevicePolicyTracks =
-          (_json['androidDevicePolicyTracks'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('appAutoUpdatePolicy')) {
-      appAutoUpdatePolicy = _json['appAutoUpdatePolicy'] as core.String;
-    }
-    if (_json.containsKey('applications')) {
-      applications = (_json['applications'] as core.List)
-          .map<ApplicationPolicy>((value) => ApplicationPolicy.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('autoDateAndTimeZone')) {
-      autoDateAndTimeZone = _json['autoDateAndTimeZone'] as core.String;
-    }
-    if (_json.containsKey('autoTimeRequired')) {
-      autoTimeRequired = _json['autoTimeRequired'] as core.bool;
-    }
-    if (_json.containsKey('blockApplicationsEnabled')) {
-      blockApplicationsEnabled = _json['blockApplicationsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('bluetoothConfigDisabled')) {
-      bluetoothConfigDisabled = _json['bluetoothConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('bluetoothContactSharingDisabled')) {
-      bluetoothContactSharingDisabled =
-          _json['bluetoothContactSharingDisabled'] as core.bool;
-    }
-    if (_json.containsKey('bluetoothDisabled')) {
-      bluetoothDisabled = _json['bluetoothDisabled'] as core.bool;
-    }
-    if (_json.containsKey('cameraDisabled')) {
-      cameraDisabled = _json['cameraDisabled'] as core.bool;
-    }
-    if (_json.containsKey('cellBroadcastsConfigDisabled')) {
-      cellBroadcastsConfigDisabled =
-          _json['cellBroadcastsConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('choosePrivateKeyRules')) {
-      choosePrivateKeyRules = (_json['choosePrivateKeyRules'] as core.List)
-          .map<ChoosePrivateKeyRule>((value) => ChoosePrivateKeyRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('complianceRules')) {
-      complianceRules = (_json['complianceRules'] as core.List)
-          .map<ComplianceRule>((value) => ComplianceRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('createWindowsDisabled')) {
-      createWindowsDisabled = _json['createWindowsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('credentialsConfigDisabled')) {
-      credentialsConfigDisabled =
-          _json['credentialsConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('dataRoamingDisabled')) {
-      dataRoamingDisabled = _json['dataRoamingDisabled'] as core.bool;
-    }
-    if (_json.containsKey('debuggingFeaturesAllowed')) {
-      debuggingFeaturesAllowed = _json['debuggingFeaturesAllowed'] as core.bool;
-    }
-    if (_json.containsKey('defaultPermissionPolicy')) {
-      defaultPermissionPolicy = _json['defaultPermissionPolicy'] as core.String;
-    }
-    if (_json.containsKey('deviceOwnerLockScreenInfo')) {
-      deviceOwnerLockScreenInfo = UserFacingMessage.fromJson(
-          _json['deviceOwnerLockScreenInfo']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('encryptionPolicy')) {
-      encryptionPolicy = _json['encryptionPolicy'] as core.String;
-    }
-    if (_json.containsKey('ensureVerifyAppsEnabled')) {
-      ensureVerifyAppsEnabled = _json['ensureVerifyAppsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('factoryResetDisabled')) {
-      factoryResetDisabled = _json['factoryResetDisabled'] as core.bool;
-    }
-    if (_json.containsKey('frpAdminEmails')) {
-      frpAdminEmails = (_json['frpAdminEmails'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('funDisabled')) {
-      funDisabled = _json['funDisabled'] as core.bool;
-    }
-    if (_json.containsKey('installAppsDisabled')) {
-      installAppsDisabled = _json['installAppsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('installUnknownSourcesAllowed')) {
-      installUnknownSourcesAllowed =
-          _json['installUnknownSourcesAllowed'] as core.bool;
-    }
-    if (_json.containsKey('keyguardDisabled')) {
-      keyguardDisabled = _json['keyguardDisabled'] as core.bool;
-    }
-    if (_json.containsKey('keyguardDisabledFeatures')) {
-      keyguardDisabledFeatures =
-          (_json['keyguardDisabledFeatures'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('kioskCustomLauncherEnabled')) {
-      kioskCustomLauncherEnabled =
-          _json['kioskCustomLauncherEnabled'] as core.bool;
-    }
-    if (_json.containsKey('kioskCustomization')) {
-      kioskCustomization = KioskCustomization.fromJson(
-          _json['kioskCustomization'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('locationMode')) {
-      locationMode = _json['locationMode'] as core.String;
-    }
-    if (_json.containsKey('longSupportMessage')) {
-      longSupportMessage = UserFacingMessage.fromJson(
-          _json['longSupportMessage'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('maximumTimeToLock')) {
-      maximumTimeToLock = _json['maximumTimeToLock'] as core.String;
-    }
-    if (_json.containsKey('minimumApiLevel')) {
-      minimumApiLevel = _json['minimumApiLevel'] as core.int;
-    }
-    if (_json.containsKey('mobileNetworksConfigDisabled')) {
-      mobileNetworksConfigDisabled =
-          _json['mobileNetworksConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('modifyAccountsDisabled')) {
-      modifyAccountsDisabled = _json['modifyAccountsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('mountPhysicalMediaDisabled')) {
-      mountPhysicalMediaDisabled =
-          _json['mountPhysicalMediaDisabled'] as core.bool;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('networkEscapeHatchEnabled')) {
-      networkEscapeHatchEnabled =
-          _json['networkEscapeHatchEnabled'] as core.bool;
-    }
-    if (_json.containsKey('networkResetDisabled')) {
-      networkResetDisabled = _json['networkResetDisabled'] as core.bool;
-    }
-    if (_json.containsKey('openNetworkConfiguration')) {
-      openNetworkConfiguration = (_json['openNetworkConfiguration']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('outgoingBeamDisabled')) {
-      outgoingBeamDisabled = _json['outgoingBeamDisabled'] as core.bool;
-    }
-    if (_json.containsKey('outgoingCallsDisabled')) {
-      outgoingCallsDisabled = _json['outgoingCallsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('passwordPolicies')) {
-      passwordPolicies = (_json['passwordPolicies'] as core.List)
-          .map<PasswordRequirements>((value) => PasswordRequirements.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('passwordRequirements')) {
-      passwordRequirements = PasswordRequirements.fromJson(
-          _json['passwordRequirements'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('permissionGrants')) {
-      permissionGrants = (_json['permissionGrants'] as core.List)
-          .map<PermissionGrant>((value) => PermissionGrant.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('permittedAccessibilityServices')) {
-      permittedAccessibilityServices = PackageNameList.fromJson(
-          _json['permittedAccessibilityServices']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('permittedInputMethods')) {
-      permittedInputMethods = PackageNameList.fromJson(
-          _json['permittedInputMethods']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('persistentPreferredActivities')) {
-      persistentPreferredActivities =
-          (_json['persistentPreferredActivities'] as core.List)
-              .map<PersistentPreferredActivity>((value) =>
-                  PersistentPreferredActivity.fromJson(
+  Policy.fromJson(core.Map _json)
+      : this(
+          accountTypesWithManagementDisabled:
+              _json.containsKey('accountTypesWithManagementDisabled')
+                  ? (_json['accountTypesWithManagementDisabled'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          addUserDisabled: _json.containsKey('addUserDisabled')
+              ? _json['addUserDisabled'] as core.bool
+              : null,
+          adjustVolumeDisabled: _json.containsKey('adjustVolumeDisabled')
+              ? _json['adjustVolumeDisabled'] as core.bool
+              : null,
+          advancedSecurityOverrides:
+              _json.containsKey('advancedSecurityOverrides')
+                  ? AdvancedSecurityOverrides.fromJson(
+                      _json['advancedSecurityOverrides']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          alwaysOnVpnPackage: _json.containsKey('alwaysOnVpnPackage')
+              ? AlwaysOnVpnPackage.fromJson(_json['alwaysOnVpnPackage']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          androidDevicePolicyTracks:
+              _json.containsKey('androidDevicePolicyTracks')
+                  ? (_json['androidDevicePolicyTracks'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          appAutoUpdatePolicy: _json.containsKey('appAutoUpdatePolicy')
+              ? _json['appAutoUpdatePolicy'] as core.String
+              : null,
+          applications: _json.containsKey('applications')
+              ? (_json['applications'] as core.List)
+                  .map((value) => ApplicationPolicy.fromJson(
                       value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('personalUsagePolicies')) {
-      personalUsagePolicies = PersonalUsagePolicies.fromJson(
-          _json['personalUsagePolicies']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('playStoreMode')) {
-      playStoreMode = _json['playStoreMode'] as core.String;
-    }
-    if (_json.containsKey('policyEnforcementRules')) {
-      policyEnforcementRules = (_json['policyEnforcementRules'] as core.List)
-          .map<PolicyEnforcementRule>((value) => PolicyEnforcementRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('privateKeySelectionEnabled')) {
-      privateKeySelectionEnabled =
-          _json['privateKeySelectionEnabled'] as core.bool;
-    }
-    if (_json.containsKey('recommendedGlobalProxy')) {
-      recommendedGlobalProxy = ProxyInfo.fromJson(
-          _json['recommendedGlobalProxy']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('removeUserDisabled')) {
-      removeUserDisabled = _json['removeUserDisabled'] as core.bool;
-    }
-    if (_json.containsKey('safeBootDisabled')) {
-      safeBootDisabled = _json['safeBootDisabled'] as core.bool;
-    }
-    if (_json.containsKey('screenCaptureDisabled')) {
-      screenCaptureDisabled = _json['screenCaptureDisabled'] as core.bool;
-    }
-    if (_json.containsKey('setUserIconDisabled')) {
-      setUserIconDisabled = _json['setUserIconDisabled'] as core.bool;
-    }
-    if (_json.containsKey('setWallpaperDisabled')) {
-      setWallpaperDisabled = _json['setWallpaperDisabled'] as core.bool;
-    }
-    if (_json.containsKey('setupActions')) {
-      setupActions = (_json['setupActions'] as core.List)
-          .map<SetupAction>((value) => SetupAction.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('shareLocationDisabled')) {
-      shareLocationDisabled = _json['shareLocationDisabled'] as core.bool;
-    }
-    if (_json.containsKey('shortSupportMessage')) {
-      shortSupportMessage = UserFacingMessage.fromJson(
-          _json['shortSupportMessage'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('skipFirstUseHintsEnabled')) {
-      skipFirstUseHintsEnabled = _json['skipFirstUseHintsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('smsDisabled')) {
-      smsDisabled = _json['smsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('statusBarDisabled')) {
-      statusBarDisabled = _json['statusBarDisabled'] as core.bool;
-    }
-    if (_json.containsKey('statusReportingSettings')) {
-      statusReportingSettings = StatusReportingSettings.fromJson(
-          _json['statusReportingSettings']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('stayOnPluggedModes')) {
-      stayOnPluggedModes = (_json['stayOnPluggedModes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('systemUpdate')) {
-      systemUpdate = SystemUpdate.fromJson(
-          _json['systemUpdate'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('tetheringConfigDisabled')) {
-      tetheringConfigDisabled = _json['tetheringConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('uninstallAppsDisabled')) {
-      uninstallAppsDisabled = _json['uninstallAppsDisabled'] as core.bool;
-    }
-    if (_json.containsKey('unmuteMicrophoneDisabled')) {
-      unmuteMicrophoneDisabled = _json['unmuteMicrophoneDisabled'] as core.bool;
-    }
-    if (_json.containsKey('usbFileTransferDisabled')) {
-      usbFileTransferDisabled = _json['usbFileTransferDisabled'] as core.bool;
-    }
-    if (_json.containsKey('usbMassStorageEnabled')) {
-      usbMassStorageEnabled = _json['usbMassStorageEnabled'] as core.bool;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-    if (_json.containsKey('vpnConfigDisabled')) {
-      vpnConfigDisabled = _json['vpnConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('wifiConfigDisabled')) {
-      wifiConfigDisabled = _json['wifiConfigDisabled'] as core.bool;
-    }
-    if (_json.containsKey('wifiConfigsLockdownEnabled')) {
-      wifiConfigsLockdownEnabled =
-          _json['wifiConfigsLockdownEnabled'] as core.bool;
-    }
-  }
+                  .toList()
+              : null,
+          autoDateAndTimeZone: _json.containsKey('autoDateAndTimeZone')
+              ? _json['autoDateAndTimeZone'] as core.String
+              : null,
+          autoTimeRequired: _json.containsKey('autoTimeRequired')
+              ? _json['autoTimeRequired'] as core.bool
+              : null,
+          blockApplicationsEnabled:
+              _json.containsKey('blockApplicationsEnabled')
+                  ? _json['blockApplicationsEnabled'] as core.bool
+                  : null,
+          bluetoothConfigDisabled: _json.containsKey('bluetoothConfigDisabled')
+              ? _json['bluetoothConfigDisabled'] as core.bool
+              : null,
+          bluetoothContactSharingDisabled:
+              _json.containsKey('bluetoothContactSharingDisabled')
+                  ? _json['bluetoothContactSharingDisabled'] as core.bool
+                  : null,
+          bluetoothDisabled: _json.containsKey('bluetoothDisabled')
+              ? _json['bluetoothDisabled'] as core.bool
+              : null,
+          cameraAccess: _json.containsKey('cameraAccess')
+              ? _json['cameraAccess'] as core.String
+              : null,
+          cameraDisabled: _json.containsKey('cameraDisabled')
+              ? _json['cameraDisabled'] as core.bool
+              : null,
+          cellBroadcastsConfigDisabled:
+              _json.containsKey('cellBroadcastsConfigDisabled')
+                  ? _json['cellBroadcastsConfigDisabled'] as core.bool
+                  : null,
+          choosePrivateKeyRules: _json.containsKey('choosePrivateKeyRules')
+              ? (_json['choosePrivateKeyRules'] as core.List)
+                  .map((value) => ChoosePrivateKeyRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          complianceRules: _json.containsKey('complianceRules')
+              ? (_json['complianceRules'] as core.List)
+                  .map((value) => ComplianceRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          createWindowsDisabled: _json.containsKey('createWindowsDisabled')
+              ? _json['createWindowsDisabled'] as core.bool
+              : null,
+          credentialsConfigDisabled:
+              _json.containsKey('credentialsConfigDisabled')
+                  ? _json['credentialsConfigDisabled'] as core.bool
+                  : null,
+          crossProfilePolicies: _json.containsKey('crossProfilePolicies')
+              ? CrossProfilePolicies.fromJson(_json['crossProfilePolicies']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          dataRoamingDisabled: _json.containsKey('dataRoamingDisabled')
+              ? _json['dataRoamingDisabled'] as core.bool
+              : null,
+          debuggingFeaturesAllowed:
+              _json.containsKey('debuggingFeaturesAllowed')
+                  ? _json['debuggingFeaturesAllowed'] as core.bool
+                  : null,
+          defaultPermissionPolicy: _json.containsKey('defaultPermissionPolicy')
+              ? _json['defaultPermissionPolicy'] as core.String
+              : null,
+          deviceOwnerLockScreenInfo: _json
+                  .containsKey('deviceOwnerLockScreenInfo')
+              ? UserFacingMessage.fromJson(_json['deviceOwnerLockScreenInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          encryptionPolicy: _json.containsKey('encryptionPolicy')
+              ? _json['encryptionPolicy'] as core.String
+              : null,
+          ensureVerifyAppsEnabled: _json.containsKey('ensureVerifyAppsEnabled')
+              ? _json['ensureVerifyAppsEnabled'] as core.bool
+              : null,
+          factoryResetDisabled: _json.containsKey('factoryResetDisabled')
+              ? _json['factoryResetDisabled'] as core.bool
+              : null,
+          frpAdminEmails: _json.containsKey('frpAdminEmails')
+              ? (_json['frpAdminEmails'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          funDisabled: _json.containsKey('funDisabled')
+              ? _json['funDisabled'] as core.bool
+              : null,
+          installAppsDisabled: _json.containsKey('installAppsDisabled')
+              ? _json['installAppsDisabled'] as core.bool
+              : null,
+          installUnknownSourcesAllowed:
+              _json.containsKey('installUnknownSourcesAllowed')
+                  ? _json['installUnknownSourcesAllowed'] as core.bool
+                  : null,
+          keyguardDisabled: _json.containsKey('keyguardDisabled')
+              ? _json['keyguardDisabled'] as core.bool
+              : null,
+          keyguardDisabledFeatures:
+              _json.containsKey('keyguardDisabledFeatures')
+                  ? (_json['keyguardDisabledFeatures'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          kioskCustomLauncherEnabled:
+              _json.containsKey('kioskCustomLauncherEnabled')
+                  ? _json['kioskCustomLauncherEnabled'] as core.bool
+                  : null,
+          kioskCustomization: _json.containsKey('kioskCustomization')
+              ? KioskCustomization.fromJson(_json['kioskCustomization']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          locationMode: _json.containsKey('locationMode')
+              ? _json['locationMode'] as core.String
+              : null,
+          longSupportMessage: _json.containsKey('longSupportMessage')
+              ? UserFacingMessage.fromJson(_json['longSupportMessage']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          maximumTimeToLock: _json.containsKey('maximumTimeToLock')
+              ? _json['maximumTimeToLock'] as core.String
+              : null,
+          microphoneAccess: _json.containsKey('microphoneAccess')
+              ? _json['microphoneAccess'] as core.String
+              : null,
+          minimumApiLevel: _json.containsKey('minimumApiLevel')
+              ? _json['minimumApiLevel'] as core.int
+              : null,
+          mobileNetworksConfigDisabled:
+              _json.containsKey('mobileNetworksConfigDisabled')
+                  ? _json['mobileNetworksConfigDisabled'] as core.bool
+                  : null,
+          modifyAccountsDisabled: _json.containsKey('modifyAccountsDisabled')
+              ? _json['modifyAccountsDisabled'] as core.bool
+              : null,
+          mountPhysicalMediaDisabled:
+              _json.containsKey('mountPhysicalMediaDisabled')
+                  ? _json['mountPhysicalMediaDisabled'] as core.bool
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          networkEscapeHatchEnabled:
+              _json.containsKey('networkEscapeHatchEnabled')
+                  ? _json['networkEscapeHatchEnabled'] as core.bool
+                  : null,
+          networkResetDisabled: _json.containsKey('networkResetDisabled')
+              ? _json['networkResetDisabled'] as core.bool
+              : null,
+          oncCertificateProviders: _json.containsKey('oncCertificateProviders')
+              ? (_json['oncCertificateProviders'] as core.List)
+                  .map((value) => OncCertificateProvider.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          openNetworkConfiguration:
+              _json.containsKey('openNetworkConfiguration')
+                  ? _json['openNetworkConfiguration']
+                      as core.Map<core.String, core.dynamic>
+                  : null,
+          outgoingBeamDisabled: _json.containsKey('outgoingBeamDisabled')
+              ? _json['outgoingBeamDisabled'] as core.bool
+              : null,
+          outgoingCallsDisabled: _json.containsKey('outgoingCallsDisabled')
+              ? _json['outgoingCallsDisabled'] as core.bool
+              : null,
+          passwordPolicies: _json.containsKey('passwordPolicies')
+              ? (_json['passwordPolicies'] as core.List)
+                  .map((value) => PasswordRequirements.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          passwordRequirements: _json.containsKey('passwordRequirements')
+              ? PasswordRequirements.fromJson(_json['passwordRequirements']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          permissionGrants: _json.containsKey('permissionGrants')
+              ? (_json['permissionGrants'] as core.List)
+                  .map((value) => PermissionGrant.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          permittedAccessibilityServices: _json
+                  .containsKey('permittedAccessibilityServices')
+              ? PackageNameList.fromJson(_json['permittedAccessibilityServices']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          permittedInputMethods: _json.containsKey('permittedInputMethods')
+              ? PackageNameList.fromJson(_json['permittedInputMethods']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          persistentPreferredActivities:
+              _json.containsKey('persistentPreferredActivities')
+                  ? (_json['persistentPreferredActivities'] as core.List)
+                      .map((value) => PersistentPreferredActivity.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          personalUsagePolicies: _json.containsKey('personalUsagePolicies')
+              ? PersonalUsagePolicies.fromJson(_json['personalUsagePolicies']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          playStoreMode: _json.containsKey('playStoreMode')
+              ? _json['playStoreMode'] as core.String
+              : null,
+          policyEnforcementRules: _json.containsKey('policyEnforcementRules')
+              ? (_json['policyEnforcementRules'] as core.List)
+                  .map((value) => PolicyEnforcementRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          preferentialNetworkService:
+              _json.containsKey('preferentialNetworkService')
+                  ? _json['preferentialNetworkService'] as core.String
+                  : null,
+          privateKeySelectionEnabled:
+              _json.containsKey('privateKeySelectionEnabled')
+                  ? _json['privateKeySelectionEnabled'] as core.bool
+                  : null,
+          recommendedGlobalProxy: _json.containsKey('recommendedGlobalProxy')
+              ? ProxyInfo.fromJson(_json['recommendedGlobalProxy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          removeUserDisabled: _json.containsKey('removeUserDisabled')
+              ? _json['removeUserDisabled'] as core.bool
+              : null,
+          safeBootDisabled: _json.containsKey('safeBootDisabled')
+              ? _json['safeBootDisabled'] as core.bool
+              : null,
+          screenCaptureDisabled: _json.containsKey('screenCaptureDisabled')
+              ? _json['screenCaptureDisabled'] as core.bool
+              : null,
+          setUserIconDisabled: _json.containsKey('setUserIconDisabled')
+              ? _json['setUserIconDisabled'] as core.bool
+              : null,
+          setWallpaperDisabled: _json.containsKey('setWallpaperDisabled')
+              ? _json['setWallpaperDisabled'] as core.bool
+              : null,
+          setupActions: _json.containsKey('setupActions')
+              ? (_json['setupActions'] as core.List)
+                  .map((value) => SetupAction.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          shareLocationDisabled: _json.containsKey('shareLocationDisabled')
+              ? _json['shareLocationDisabled'] as core.bool
+              : null,
+          shortSupportMessage: _json.containsKey('shortSupportMessage')
+              ? UserFacingMessage.fromJson(_json['shortSupportMessage']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          skipFirstUseHintsEnabled:
+              _json.containsKey('skipFirstUseHintsEnabled')
+                  ? _json['skipFirstUseHintsEnabled'] as core.bool
+                  : null,
+          smsDisabled: _json.containsKey('smsDisabled')
+              ? _json['smsDisabled'] as core.bool
+              : null,
+          statusBarDisabled: _json.containsKey('statusBarDisabled')
+              ? _json['statusBarDisabled'] as core.bool
+              : null,
+          statusReportingSettings: _json.containsKey('statusReportingSettings')
+              ? StatusReportingSettings.fromJson(
+                  _json['statusReportingSettings']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          stayOnPluggedModes: _json.containsKey('stayOnPluggedModes')
+              ? (_json['stayOnPluggedModes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          systemUpdate: _json.containsKey('systemUpdate')
+              ? SystemUpdate.fromJson(
+                  _json['systemUpdate'] as core.Map<core.String, core.dynamic>)
+              : null,
+          tetheringConfigDisabled: _json.containsKey('tetheringConfigDisabled')
+              ? _json['tetheringConfigDisabled'] as core.bool
+              : null,
+          uninstallAppsDisabled: _json.containsKey('uninstallAppsDisabled')
+              ? _json['uninstallAppsDisabled'] as core.bool
+              : null,
+          unmuteMicrophoneDisabled:
+              _json.containsKey('unmuteMicrophoneDisabled')
+                  ? _json['unmuteMicrophoneDisabled'] as core.bool
+                  : null,
+          usbFileTransferDisabled: _json.containsKey('usbFileTransferDisabled')
+              ? _json['usbFileTransferDisabled'] as core.bool
+              : null,
+          usbMassStorageEnabled: _json.containsKey('usbMassStorageEnabled')
+              ? _json['usbMassStorageEnabled'] as core.bool
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+          vpnConfigDisabled: _json.containsKey('vpnConfigDisabled')
+              ? _json['vpnConfigDisabled'] as core.bool
+              : null,
+          wifiConfigDisabled: _json.containsKey('wifiConfigDisabled')
+              ? _json['wifiConfigDisabled'] as core.bool
+              : null,
+          wifiConfigsLockdownEnabled:
+              _json.containsKey('wifiConfigsLockdownEnabled')
+                  ? _json['wifiConfigsLockdownEnabled'] as core.bool
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountTypesWithManagementDisabled != null)
@@ -5564,15 +6313,14 @@ class Policy {
         if (adjustVolumeDisabled != null)
           'adjustVolumeDisabled': adjustVolumeDisabled!,
         if (advancedSecurityOverrides != null)
-          'advancedSecurityOverrides': advancedSecurityOverrides!.toJson(),
+          'advancedSecurityOverrides': advancedSecurityOverrides!,
         if (alwaysOnVpnPackage != null)
-          'alwaysOnVpnPackage': alwaysOnVpnPackage!.toJson(),
+          'alwaysOnVpnPackage': alwaysOnVpnPackage!,
         if (androidDevicePolicyTracks != null)
           'androidDevicePolicyTracks': androidDevicePolicyTracks!,
         if (appAutoUpdatePolicy != null)
           'appAutoUpdatePolicy': appAutoUpdatePolicy!,
-        if (applications != null)
-          'applications': applications!.map((value) => value.toJson()).toList(),
+        if (applications != null) 'applications': applications!,
         if (autoDateAndTimeZone != null)
           'autoDateAndTimeZone': autoDateAndTimeZone!,
         if (autoTimeRequired != null) 'autoTimeRequired': autoTimeRequired!,
@@ -5583,19 +6331,19 @@ class Policy {
         if (bluetoothContactSharingDisabled != null)
           'bluetoothContactSharingDisabled': bluetoothContactSharingDisabled!,
         if (bluetoothDisabled != null) 'bluetoothDisabled': bluetoothDisabled!,
+        if (cameraAccess != null) 'cameraAccess': cameraAccess!,
         if (cameraDisabled != null) 'cameraDisabled': cameraDisabled!,
         if (cellBroadcastsConfigDisabled != null)
           'cellBroadcastsConfigDisabled': cellBroadcastsConfigDisabled!,
         if (choosePrivateKeyRules != null)
-          'choosePrivateKeyRules':
-              choosePrivateKeyRules!.map((value) => value.toJson()).toList(),
-        if (complianceRules != null)
-          'complianceRules':
-              complianceRules!.map((value) => value.toJson()).toList(),
+          'choosePrivateKeyRules': choosePrivateKeyRules!,
+        if (complianceRules != null) 'complianceRules': complianceRules!,
         if (createWindowsDisabled != null)
           'createWindowsDisabled': createWindowsDisabled!,
         if (credentialsConfigDisabled != null)
           'credentialsConfigDisabled': credentialsConfigDisabled!,
+        if (crossProfilePolicies != null)
+          'crossProfilePolicies': crossProfilePolicies!,
         if (dataRoamingDisabled != null)
           'dataRoamingDisabled': dataRoamingDisabled!,
         if (debuggingFeaturesAllowed != null)
@@ -5603,7 +6351,7 @@ class Policy {
         if (defaultPermissionPolicy != null)
           'defaultPermissionPolicy': defaultPermissionPolicy!,
         if (deviceOwnerLockScreenInfo != null)
-          'deviceOwnerLockScreenInfo': deviceOwnerLockScreenInfo!.toJson(),
+          'deviceOwnerLockScreenInfo': deviceOwnerLockScreenInfo!,
         if (encryptionPolicy != null) 'encryptionPolicy': encryptionPolicy!,
         if (ensureVerifyAppsEnabled != null)
           'ensureVerifyAppsEnabled': ensureVerifyAppsEnabled!,
@@ -5621,11 +6369,12 @@ class Policy {
         if (kioskCustomLauncherEnabled != null)
           'kioskCustomLauncherEnabled': kioskCustomLauncherEnabled!,
         if (kioskCustomization != null)
-          'kioskCustomization': kioskCustomization!.toJson(),
+          'kioskCustomization': kioskCustomization!,
         if (locationMode != null) 'locationMode': locationMode!,
         if (longSupportMessage != null)
-          'longSupportMessage': longSupportMessage!.toJson(),
+          'longSupportMessage': longSupportMessage!,
         if (maximumTimeToLock != null) 'maximumTimeToLock': maximumTimeToLock!,
+        if (microphoneAccess != null) 'microphoneAccess': microphoneAccess!,
         if (minimumApiLevel != null) 'minimumApiLevel': minimumApiLevel!,
         if (mobileNetworksConfigDisabled != null)
           'mobileNetworksConfigDisabled': mobileNetworksConfigDisabled!,
@@ -5638,39 +6387,35 @@ class Policy {
           'networkEscapeHatchEnabled': networkEscapeHatchEnabled!,
         if (networkResetDisabled != null)
           'networkResetDisabled': networkResetDisabled!,
+        if (oncCertificateProviders != null)
+          'oncCertificateProviders': oncCertificateProviders!,
         if (openNetworkConfiguration != null)
           'openNetworkConfiguration': openNetworkConfiguration!,
         if (outgoingBeamDisabled != null)
           'outgoingBeamDisabled': outgoingBeamDisabled!,
         if (outgoingCallsDisabled != null)
           'outgoingCallsDisabled': outgoingCallsDisabled!,
-        if (passwordPolicies != null)
-          'passwordPolicies':
-              passwordPolicies!.map((value) => value.toJson()).toList(),
+        if (passwordPolicies != null) 'passwordPolicies': passwordPolicies!,
         if (passwordRequirements != null)
-          'passwordRequirements': passwordRequirements!.toJson(),
-        if (permissionGrants != null)
-          'permissionGrants':
-              permissionGrants!.map((value) => value.toJson()).toList(),
+          'passwordRequirements': passwordRequirements!,
+        if (permissionGrants != null) 'permissionGrants': permissionGrants!,
         if (permittedAccessibilityServices != null)
-          'permittedAccessibilityServices':
-              permittedAccessibilityServices!.toJson(),
+          'permittedAccessibilityServices': permittedAccessibilityServices!,
         if (permittedInputMethods != null)
-          'permittedInputMethods': permittedInputMethods!.toJson(),
+          'permittedInputMethods': permittedInputMethods!,
         if (persistentPreferredActivities != null)
-          'persistentPreferredActivities': persistentPreferredActivities!
-              .map((value) => value.toJson())
-              .toList(),
+          'persistentPreferredActivities': persistentPreferredActivities!,
         if (personalUsagePolicies != null)
-          'personalUsagePolicies': personalUsagePolicies!.toJson(),
+          'personalUsagePolicies': personalUsagePolicies!,
         if (playStoreMode != null) 'playStoreMode': playStoreMode!,
         if (policyEnforcementRules != null)
-          'policyEnforcementRules':
-              policyEnforcementRules!.map((value) => value.toJson()).toList(),
+          'policyEnforcementRules': policyEnforcementRules!,
+        if (preferentialNetworkService != null)
+          'preferentialNetworkService': preferentialNetworkService!,
         if (privateKeySelectionEnabled != null)
           'privateKeySelectionEnabled': privateKeySelectionEnabled!,
         if (recommendedGlobalProxy != null)
-          'recommendedGlobalProxy': recommendedGlobalProxy!.toJson(),
+          'recommendedGlobalProxy': recommendedGlobalProxy!,
         if (removeUserDisabled != null)
           'removeUserDisabled': removeUserDisabled!,
         if (safeBootDisabled != null) 'safeBootDisabled': safeBootDisabled!,
@@ -5680,21 +6425,20 @@ class Policy {
           'setUserIconDisabled': setUserIconDisabled!,
         if (setWallpaperDisabled != null)
           'setWallpaperDisabled': setWallpaperDisabled!,
-        if (setupActions != null)
-          'setupActions': setupActions!.map((value) => value.toJson()).toList(),
+        if (setupActions != null) 'setupActions': setupActions!,
         if (shareLocationDisabled != null)
           'shareLocationDisabled': shareLocationDisabled!,
         if (shortSupportMessage != null)
-          'shortSupportMessage': shortSupportMessage!.toJson(),
+          'shortSupportMessage': shortSupportMessage!,
         if (skipFirstUseHintsEnabled != null)
           'skipFirstUseHintsEnabled': skipFirstUseHintsEnabled!,
         if (smsDisabled != null) 'smsDisabled': smsDisabled!,
         if (statusBarDisabled != null) 'statusBarDisabled': statusBarDisabled!,
         if (statusReportingSettings != null)
-          'statusReportingSettings': statusReportingSettings!.toJson(),
+          'statusReportingSettings': statusReportingSettings!,
         if (stayOnPluggedModes != null)
           'stayOnPluggedModes': stayOnPluggedModes!,
-        if (systemUpdate != null) 'systemUpdate': systemUpdate!.toJson(),
+        if (systemUpdate != null) 'systemUpdate': systemUpdate!,
         if (tetheringConfigDisabled != null)
           'tetheringConfigDisabled': tetheringConfigDisabled!,
         if (uninstallAppsDisabled != null)
@@ -5735,26 +6479,31 @@ class PolicyEnforcementRule {
   /// Note: blockAction must also be specified.
   WipeAction? wipeAction;
 
-  PolicyEnforcementRule();
+  PolicyEnforcementRule({
+    this.blockAction,
+    this.settingName,
+    this.wipeAction,
+  });
 
-  PolicyEnforcementRule.fromJson(core.Map _json) {
-    if (_json.containsKey('blockAction')) {
-      blockAction = BlockAction.fromJson(
-          _json['blockAction'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('settingName')) {
-      settingName = _json['settingName'] as core.String;
-    }
-    if (_json.containsKey('wipeAction')) {
-      wipeAction = WipeAction.fromJson(
-          _json['wipeAction'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PolicyEnforcementRule.fromJson(core.Map _json)
+      : this(
+          blockAction: _json.containsKey('blockAction')
+              ? BlockAction.fromJson(
+                  _json['blockAction'] as core.Map<core.String, core.dynamic>)
+              : null,
+          settingName: _json.containsKey('settingName')
+              ? _json['settingName'] as core.String
+              : null,
+          wipeAction: _json.containsKey('wipeAction')
+              ? WipeAction.fromJson(
+                  _json['wipeAction'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (blockAction != null) 'blockAction': blockAction!.toJson(),
+        if (blockAction != null) 'blockAction': blockAction!,
         if (settingName != null) 'settingName': settingName!,
-        if (wipeAction != null) 'wipeAction': wipeAction!.toJson(),
+        if (wipeAction != null) 'wipeAction': wipeAction!,
       };
 }
 
@@ -5774,23 +6523,26 @@ class PostureDetail {
   /// compromised OS (basicIntegrity check fails).
   core.String? securityRisk;
 
-  PostureDetail();
+  PostureDetail({
+    this.advice,
+    this.securityRisk,
+  });
 
-  PostureDetail.fromJson(core.Map _json) {
-    if (_json.containsKey('advice')) {
-      advice = (_json['advice'] as core.List)
-          .map<UserFacingMessage>((value) => UserFacingMessage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('securityRisk')) {
-      securityRisk = _json['securityRisk'] as core.String;
-    }
-  }
+  PostureDetail.fromJson(core.Map _json)
+      : this(
+          advice: _json.containsKey('advice')
+              ? (_json['advice'] as core.List)
+                  .map((value) => UserFacingMessage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          securityRisk: _json.containsKey('securityRisk')
+              ? _json['securityRisk'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (advice != null)
-          'advice': advice!.map((value) => value.toJson()).toList(),
+        if (advice != null) 'advice': advice!,
         if (securityRisk != null) 'securityRisk': securityRisk!,
       };
 }
@@ -5816,19 +6568,24 @@ class PowerManagementEvent {
   /// - "SHUTDOWN" : The device shut down.
   core.String? eventType;
 
-  PowerManagementEvent();
+  PowerManagementEvent({
+    this.batteryLevel,
+    this.createTime,
+    this.eventType,
+  });
 
-  PowerManagementEvent.fromJson(core.Map _json) {
-    if (_json.containsKey('batteryLevel')) {
-      batteryLevel = (_json['batteryLevel'] as core.num).toDouble();
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('eventType')) {
-      eventType = _json['eventType'] as core.String;
-    }
-  }
+  PowerManagementEvent.fromJson(core.Map _json)
+      : this(
+          batteryLevel: _json.containsKey('batteryLevel')
+              ? (_json['batteryLevel'] as core.num).toDouble()
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          eventType: _json.containsKey('eventType')
+              ? _json['eventType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (batteryLevel != null) 'batteryLevel': batteryLevel!,
@@ -5856,24 +6613,26 @@ class ProxyInfo {
   /// The port of the direct proxy.
   core.int? port;
 
-  ProxyInfo();
+  ProxyInfo({
+    this.excludedHosts,
+    this.host,
+    this.pacUri,
+    this.port,
+  });
 
-  ProxyInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('excludedHosts')) {
-      excludedHosts = (_json['excludedHosts'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('pacUri')) {
-      pacUri = _json['pacUri'] as core.String;
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.int;
-    }
-  }
+  ProxyInfo.fromJson(core.Map _json)
+      : this(
+          excludedHosts: _json.containsKey('excludedHosts')
+              ? (_json['excludedHosts'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          pacUri: _json.containsKey('pacUri')
+              ? _json['pacUri'] as core.String
+              : null,
+          port: _json.containsKey('port') ? _json['port'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (excludedHosts != null) 'excludedHosts': excludedHosts!,
@@ -5900,25 +6659,27 @@ class SecurityPosture {
   /// Additional details regarding the security posture of the device.
   core.List<PostureDetail>? postureDetails;
 
-  SecurityPosture();
+  SecurityPosture({
+    this.devicePosture,
+    this.postureDetails,
+  });
 
-  SecurityPosture.fromJson(core.Map _json) {
-    if (_json.containsKey('devicePosture')) {
-      devicePosture = _json['devicePosture'] as core.String;
-    }
-    if (_json.containsKey('postureDetails')) {
-      postureDetails = (_json['postureDetails'] as core.List)
-          .map<PostureDetail>((value) => PostureDetail.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SecurityPosture.fromJson(core.Map _json)
+      : this(
+          devicePosture: _json.containsKey('devicePosture')
+              ? _json['devicePosture'] as core.String
+              : null,
+          postureDetails: _json.containsKey('postureDetails')
+              ? (_json['postureDetails'] as core.List)
+                  .map((value) => PostureDetail.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (devicePosture != null) 'devicePosture': devicePosture!,
-        if (postureDetails != null)
-          'postureDetails':
-              postureDetails!.map((value) => value.toJson()).toList(),
+        if (postureDetails != null) 'postureDetails': postureDetails!,
       };
 }
 
@@ -5933,27 +6694,32 @@ class SetupAction {
   /// Title of this action.
   UserFacingMessage? title;
 
-  SetupAction();
+  SetupAction({
+    this.description,
+    this.launchApp,
+    this.title,
+  });
 
-  SetupAction.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = UserFacingMessage.fromJson(
-          _json['description'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('launchApp')) {
-      launchApp = LaunchAppAction.fromJson(
-          _json['launchApp'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('title')) {
-      title = UserFacingMessage.fromJson(
-          _json['title'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SetupAction.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? UserFacingMessage.fromJson(
+                  _json['description'] as core.Map<core.String, core.dynamic>)
+              : null,
+          launchApp: _json.containsKey('launchApp')
+              ? LaunchAppAction.fromJson(
+                  _json['launchApp'] as core.Map<core.String, core.dynamic>)
+              : null,
+          title: _json.containsKey('title')
+              ? UserFacingMessage.fromJson(
+                  _json['title'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!.toJson(),
-        if (launchApp != null) 'launchApp': launchApp!.toJson(),
-        if (title != null) 'title': title!.toJson(),
+        if (description != null) 'description': description!,
+        if (launchApp != null) 'launchApp': launchApp!,
+        if (title != null) 'title': title!,
       };
 }
 
@@ -5997,22 +6763,28 @@ class SigninDetail {
   /// failed login.
   core.String? signinUrl;
 
-  SigninDetail();
+  SigninDetail({
+    this.allowPersonalUsage,
+    this.qrCode,
+    this.signinEnrollmentToken,
+    this.signinUrl,
+  });
 
-  SigninDetail.fromJson(core.Map _json) {
-    if (_json.containsKey('allowPersonalUsage')) {
-      allowPersonalUsage = _json['allowPersonalUsage'] as core.String;
-    }
-    if (_json.containsKey('qrCode')) {
-      qrCode = _json['qrCode'] as core.String;
-    }
-    if (_json.containsKey('signinEnrollmentToken')) {
-      signinEnrollmentToken = _json['signinEnrollmentToken'] as core.String;
-    }
-    if (_json.containsKey('signinUrl')) {
-      signinUrl = _json['signinUrl'] as core.String;
-    }
-  }
+  SigninDetail.fromJson(core.Map _json)
+      : this(
+          allowPersonalUsage: _json.containsKey('allowPersonalUsage')
+              ? _json['allowPersonalUsage'] as core.String
+              : null,
+          qrCode: _json.containsKey('qrCode')
+              ? _json['qrCode'] as core.String
+              : null,
+          signinEnrollmentToken: _json.containsKey('signinEnrollmentToken')
+              ? _json['signinEnrollmentToken'] as core.String
+              : null,
+          signinUrl: _json.containsKey('signinUrl')
+              ? _json['signinUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowPersonalUsage != null)
@@ -6037,16 +6809,16 @@ class SignupUrl {
   /// The page can't be rendered in an iframe.
   core.String? url;
 
-  SignupUrl();
+  SignupUrl({
+    this.name,
+    this.url,
+  });
 
-  SignupUrl.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  SignupUrl.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -6096,46 +6868,59 @@ class SoftwareInfo {
   /// Information about a potential pending system update.
   SystemUpdateInfo? systemUpdateInfo;
 
-  SoftwareInfo();
+  SoftwareInfo({
+    this.androidBuildNumber,
+    this.androidBuildTime,
+    this.androidDevicePolicyVersionCode,
+    this.androidDevicePolicyVersionName,
+    this.androidVersion,
+    this.bootloaderVersion,
+    this.deviceBuildSignature,
+    this.deviceKernelVersion,
+    this.primaryLanguageCode,
+    this.securityPatchLevel,
+    this.systemUpdateInfo,
+  });
 
-  SoftwareInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('androidBuildNumber')) {
-      androidBuildNumber = _json['androidBuildNumber'] as core.String;
-    }
-    if (_json.containsKey('androidBuildTime')) {
-      androidBuildTime = _json['androidBuildTime'] as core.String;
-    }
-    if (_json.containsKey('androidDevicePolicyVersionCode')) {
-      androidDevicePolicyVersionCode =
-          _json['androidDevicePolicyVersionCode'] as core.int;
-    }
-    if (_json.containsKey('androidDevicePolicyVersionName')) {
-      androidDevicePolicyVersionName =
-          _json['androidDevicePolicyVersionName'] as core.String;
-    }
-    if (_json.containsKey('androidVersion')) {
-      androidVersion = _json['androidVersion'] as core.String;
-    }
-    if (_json.containsKey('bootloaderVersion')) {
-      bootloaderVersion = _json['bootloaderVersion'] as core.String;
-    }
-    if (_json.containsKey('deviceBuildSignature')) {
-      deviceBuildSignature = _json['deviceBuildSignature'] as core.String;
-    }
-    if (_json.containsKey('deviceKernelVersion')) {
-      deviceKernelVersion = _json['deviceKernelVersion'] as core.String;
-    }
-    if (_json.containsKey('primaryLanguageCode')) {
-      primaryLanguageCode = _json['primaryLanguageCode'] as core.String;
-    }
-    if (_json.containsKey('securityPatchLevel')) {
-      securityPatchLevel = _json['securityPatchLevel'] as core.String;
-    }
-    if (_json.containsKey('systemUpdateInfo')) {
-      systemUpdateInfo = SystemUpdateInfo.fromJson(
-          _json['systemUpdateInfo'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SoftwareInfo.fromJson(core.Map _json)
+      : this(
+          androidBuildNumber: _json.containsKey('androidBuildNumber')
+              ? _json['androidBuildNumber'] as core.String
+              : null,
+          androidBuildTime: _json.containsKey('androidBuildTime')
+              ? _json['androidBuildTime'] as core.String
+              : null,
+          androidDevicePolicyVersionCode:
+              _json.containsKey('androidDevicePolicyVersionCode')
+                  ? _json['androidDevicePolicyVersionCode'] as core.int
+                  : null,
+          androidDevicePolicyVersionName:
+              _json.containsKey('androidDevicePolicyVersionName')
+                  ? _json['androidDevicePolicyVersionName'] as core.String
+                  : null,
+          androidVersion: _json.containsKey('androidVersion')
+              ? _json['androidVersion'] as core.String
+              : null,
+          bootloaderVersion: _json.containsKey('bootloaderVersion')
+              ? _json['bootloaderVersion'] as core.String
+              : null,
+          deviceBuildSignature: _json.containsKey('deviceBuildSignature')
+              ? _json['deviceBuildSignature'] as core.String
+              : null,
+          deviceKernelVersion: _json.containsKey('deviceKernelVersion')
+              ? _json['deviceKernelVersion'] as core.String
+              : null,
+          primaryLanguageCode: _json.containsKey('primaryLanguageCode')
+              ? _json['primaryLanguageCode'] as core.String
+              : null,
+          securityPatchLevel: _json.containsKey('securityPatchLevel')
+              ? _json['securityPatchLevel'] as core.String
+              : null,
+          systemUpdateInfo: _json.containsKey('systemUpdateInfo')
+              ? SystemUpdateInfo.fromJson(_json['systemUpdateInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (androidBuildNumber != null)
@@ -6155,8 +6940,7 @@ class SoftwareInfo {
           'primaryLanguageCode': primaryLanguageCode!,
         if (securityPatchLevel != null)
           'securityPatchLevel': securityPatchLevel!,
-        if (systemUpdateInfo != null)
-          'systemUpdateInfo': systemUpdateInfo!.toJson(),
+        if (systemUpdateInfo != null) 'systemUpdateInfo': systemUpdateInfo!,
       };
 }
 
@@ -6167,52 +6951,7 @@ class SoftwareInfo {
 /// three pieces of data: error code, error message, and error details.You can
 /// find out more about this error model and how to work with it in the API
 /// Design Guide (https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Settings controlling the behavior of status reports.
 class StatusReportingSettings {
@@ -6242,7 +6981,7 @@ class StatusReportingSettings {
   /// profiles.
   core.bool? hardwareStatusEnabled;
 
-  /// Whether memory reporting is enabled.
+  /// Whether memory event reporting is enabled.
   core.bool? memoryInfoEnabled;
 
   /// Whether network info reporting is enabled.
@@ -6260,53 +6999,66 @@ class StatusReportingSettings {
   /// Whether system properties reporting is enabled.
   core.bool? systemPropertiesEnabled;
 
-  StatusReportingSettings();
+  StatusReportingSettings({
+    this.applicationReportingSettings,
+    this.applicationReportsEnabled,
+    this.commonCriteriaModeEnabled,
+    this.deviceSettingsEnabled,
+    this.displayInfoEnabled,
+    this.hardwareStatusEnabled,
+    this.memoryInfoEnabled,
+    this.networkInfoEnabled,
+    this.powerManagementEventsEnabled,
+    this.softwareInfoEnabled,
+    this.systemPropertiesEnabled,
+  });
 
-  StatusReportingSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('applicationReportingSettings')) {
-      applicationReportingSettings = ApplicationReportingSettings.fromJson(
-          _json['applicationReportingSettings']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('applicationReportsEnabled')) {
-      applicationReportsEnabled =
-          _json['applicationReportsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('commonCriteriaModeEnabled')) {
-      commonCriteriaModeEnabled =
-          _json['commonCriteriaModeEnabled'] as core.bool;
-    }
-    if (_json.containsKey('deviceSettingsEnabled')) {
-      deviceSettingsEnabled = _json['deviceSettingsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('displayInfoEnabled')) {
-      displayInfoEnabled = _json['displayInfoEnabled'] as core.bool;
-    }
-    if (_json.containsKey('hardwareStatusEnabled')) {
-      hardwareStatusEnabled = _json['hardwareStatusEnabled'] as core.bool;
-    }
-    if (_json.containsKey('memoryInfoEnabled')) {
-      memoryInfoEnabled = _json['memoryInfoEnabled'] as core.bool;
-    }
-    if (_json.containsKey('networkInfoEnabled')) {
-      networkInfoEnabled = _json['networkInfoEnabled'] as core.bool;
-    }
-    if (_json.containsKey('powerManagementEventsEnabled')) {
-      powerManagementEventsEnabled =
-          _json['powerManagementEventsEnabled'] as core.bool;
-    }
-    if (_json.containsKey('softwareInfoEnabled')) {
-      softwareInfoEnabled = _json['softwareInfoEnabled'] as core.bool;
-    }
-    if (_json.containsKey('systemPropertiesEnabled')) {
-      systemPropertiesEnabled = _json['systemPropertiesEnabled'] as core.bool;
-    }
-  }
+  StatusReportingSettings.fromJson(core.Map _json)
+      : this(
+          applicationReportingSettings:
+              _json.containsKey('applicationReportingSettings')
+                  ? ApplicationReportingSettings.fromJson(
+                      _json['applicationReportingSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          applicationReportsEnabled:
+              _json.containsKey('applicationReportsEnabled')
+                  ? _json['applicationReportsEnabled'] as core.bool
+                  : null,
+          commonCriteriaModeEnabled:
+              _json.containsKey('commonCriteriaModeEnabled')
+                  ? _json['commonCriteriaModeEnabled'] as core.bool
+                  : null,
+          deviceSettingsEnabled: _json.containsKey('deviceSettingsEnabled')
+              ? _json['deviceSettingsEnabled'] as core.bool
+              : null,
+          displayInfoEnabled: _json.containsKey('displayInfoEnabled')
+              ? _json['displayInfoEnabled'] as core.bool
+              : null,
+          hardwareStatusEnabled: _json.containsKey('hardwareStatusEnabled')
+              ? _json['hardwareStatusEnabled'] as core.bool
+              : null,
+          memoryInfoEnabled: _json.containsKey('memoryInfoEnabled')
+              ? _json['memoryInfoEnabled'] as core.bool
+              : null,
+          networkInfoEnabled: _json.containsKey('networkInfoEnabled')
+              ? _json['networkInfoEnabled'] as core.bool
+              : null,
+          powerManagementEventsEnabled:
+              _json.containsKey('powerManagementEventsEnabled')
+                  ? _json['powerManagementEventsEnabled'] as core.bool
+                  : null,
+          softwareInfoEnabled: _json.containsKey('softwareInfoEnabled')
+              ? _json['softwareInfoEnabled'] as core.bool
+              : null,
+          systemPropertiesEnabled: _json.containsKey('systemPropertiesEnabled')
+              ? _json['systemPropertiesEnabled'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (applicationReportingSettings != null)
-          'applicationReportingSettings':
-              applicationReportingSettings!.toJson(),
+          'applicationReportingSettings': applicationReportingSettings!,
         if (applicationReportsEnabled != null)
           'applicationReportsEnabled': applicationReportsEnabled!,
         if (commonCriteriaModeEnabled != null)
@@ -6362,35 +7114,40 @@ class SystemUpdate {
   /// - "WINDOWED" : Install automatically within a daily maintenance window.
   /// This also configures Play apps to be updated within the window. This is
   /// strongly recommended for kiosk devices because this is the only way apps
-  /// persistently pinned to the foreground can be updated by Play.
+  /// persistently pinned to the foreground can be updated by Play.If
+  /// autoUpdateMode is set to AUTO_UPDATE_HIGH_PRIORITY for an app, then the
+  /// maintenance window is ignored for that app and it is updated as soon as
+  /// possible even outside of the maintenance window.
   /// - "POSTPONE" : Postpone automatic install up to a maximum of 30 days.
   core.String? type;
 
-  SystemUpdate();
+  SystemUpdate({
+    this.endMinutes,
+    this.freezePeriods,
+    this.startMinutes,
+    this.type,
+  });
 
-  SystemUpdate.fromJson(core.Map _json) {
-    if (_json.containsKey('endMinutes')) {
-      endMinutes = _json['endMinutes'] as core.int;
-    }
-    if (_json.containsKey('freezePeriods')) {
-      freezePeriods = (_json['freezePeriods'] as core.List)
-          .map<FreezePeriod>((value) => FreezePeriod.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('startMinutes')) {
-      startMinutes = _json['startMinutes'] as core.int;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  SystemUpdate.fromJson(core.Map _json)
+      : this(
+          endMinutes: _json.containsKey('endMinutes')
+              ? _json['endMinutes'] as core.int
+              : null,
+          freezePeriods: _json.containsKey('freezePeriods')
+              ? (_json['freezePeriods'] as core.List)
+                  .map((value) => FreezePeriod.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          startMinutes: _json.containsKey('startMinutes')
+              ? _json['startMinutes'] as core.int
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endMinutes != null) 'endMinutes': endMinutes!,
-        if (freezePeriods != null)
-          'freezePeriods':
-              freezePeriods!.map((value) => value.toJson()).toList(),
+        if (freezePeriods != null) 'freezePeriods': freezePeriods!,
         if (startMinutes != null) 'startMinutes': startMinutes!,
         if (type != null) 'type': type!,
       };
@@ -6419,16 +7176,20 @@ class SystemUpdateInfo {
   /// - "OS_UPDATE_AVAILABLE" : There is a pending OS update available.
   core.String? updateStatus;
 
-  SystemUpdateInfo();
+  SystemUpdateInfo({
+    this.updateReceivedTime,
+    this.updateStatus,
+  });
 
-  SystemUpdateInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('updateReceivedTime')) {
-      updateReceivedTime = _json['updateReceivedTime'] as core.String;
-    }
-    if (_json.containsKey('updateStatus')) {
-      updateStatus = _json['updateStatus'] as core.String;
-    }
-  }
+  SystemUpdateInfo.fromJson(core.Map _json)
+      : this(
+          updateReceivedTime: _json.containsKey('updateReceivedTime')
+              ? _json['updateReceivedTime'] as core.String
+              : null,
+          updateStatus: _json.containsKey('updateStatus')
+              ? _json['updateStatus'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (updateReceivedTime != null)
@@ -6447,16 +7208,20 @@ class TelephonyInfo {
   /// The phone number associated with this SIM card.
   core.String? phoneNumber;
 
-  TelephonyInfo();
+  TelephonyInfo({
+    this.carrierName,
+    this.phoneNumber,
+  });
 
-  TelephonyInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('carrierName')) {
-      carrierName = _json['carrierName'] as core.String;
-    }
-    if (_json.containsKey('phoneNumber')) {
-      phoneNumber = _json['phoneNumber'] as core.String;
-    }
-  }
+  TelephonyInfo.fromJson(core.Map _json)
+      : this(
+          carrierName: _json.containsKey('carrierName')
+              ? _json['carrierName'] as core.String
+              : null,
+          phoneNumber: _json.containsKey('phoneNumber')
+              ? _json['phoneNumber'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (carrierName != null) 'carrierName': carrierName!,
@@ -6474,22 +7239,26 @@ class TermsAndConditions {
   /// A short header which appears above the HTML content.
   UserFacingMessage? header;
 
-  TermsAndConditions();
+  TermsAndConditions({
+    this.content,
+    this.header,
+  });
 
-  TermsAndConditions.fromJson(core.Map _json) {
-    if (_json.containsKey('content')) {
-      content = UserFacingMessage.fromJson(
-          _json['content'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('header')) {
-      header = UserFacingMessage.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  TermsAndConditions.fromJson(core.Map _json)
+      : this(
+          content: _json.containsKey('content')
+              ? UserFacingMessage.fromJson(
+                  _json['content'] as core.Map<core.String, core.dynamic>)
+              : null,
+          header: _json.containsKey('header')
+              ? UserFacingMessage.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (content != null) 'content': content!.toJson(),
-        if (header != null) 'header': header!.toJson(),
+        if (content != null) 'content': content!,
+        if (header != null) 'header': header!,
       };
 }
 
@@ -6504,13 +7273,16 @@ class User {
   /// request will fail.
   core.String? accountIdentifier;
 
-  User();
+  User({
+    this.accountIdentifier,
+  });
 
-  User.fromJson(core.Map _json) {
-    if (_json.containsKey('accountIdentifier')) {
-      accountIdentifier = _json['accountIdentifier'] as core.String;
-    }
-  }
+  User.fromJson(core.Map _json)
+      : this(
+          accountIdentifier: _json.containsKey('accountIdentifier')
+              ? _json['accountIdentifier'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountIdentifier != null) 'accountIdentifier': accountIdentifier!,
@@ -6532,23 +7304,27 @@ class UserFacingMessage {
   /// en-US, es-ES, or fr.
   core.Map<core.String, core.String>? localizedMessages;
 
-  UserFacingMessage();
+  UserFacingMessage({
+    this.defaultMessage,
+    this.localizedMessages,
+  });
 
-  UserFacingMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultMessage')) {
-      defaultMessage = _json['defaultMessage'] as core.String;
-    }
-    if (_json.containsKey('localizedMessages')) {
-      localizedMessages =
-          (_json['localizedMessages'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  UserFacingMessage.fromJson(core.Map _json)
+      : this(
+          defaultMessage: _json.containsKey('defaultMessage')
+              ? _json['defaultMessage'] as core.String
+              : null,
+          localizedMessages: _json.containsKey('localizedMessages')
+              ? (_json['localizedMessages']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultMessage != null) 'defaultMessage': defaultMessage!,
@@ -6594,36 +7370,40 @@ class WebApp {
   /// housekeeping to keep the web app up-to-date.
   core.String? versionCode;
 
-  WebApp();
+  WebApp({
+    this.displayMode,
+    this.icons,
+    this.name,
+    this.startUrl,
+    this.title,
+    this.versionCode,
+  });
 
-  WebApp.fromJson(core.Map _json) {
-    if (_json.containsKey('displayMode')) {
-      displayMode = _json['displayMode'] as core.String;
-    }
-    if (_json.containsKey('icons')) {
-      icons = (_json['icons'] as core.List)
-          .map<WebAppIcon>((value) =>
-              WebAppIcon.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('startUrl')) {
-      startUrl = _json['startUrl'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('versionCode')) {
-      versionCode = _json['versionCode'] as core.String;
-    }
-  }
+  WebApp.fromJson(core.Map _json)
+      : this(
+          displayMode: _json.containsKey('displayMode')
+              ? _json['displayMode'] as core.String
+              : null,
+          icons: _json.containsKey('icons')
+              ? (_json['icons'] as core.List)
+                  .map((value) => WebAppIcon.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          startUrl: _json.containsKey('startUrl')
+              ? _json['startUrl'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          versionCode: _json.containsKey('versionCode')
+              ? _json['versionCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayMode != null) 'displayMode': displayMode!,
-        if (icons != null)
-          'icons': icons!.map((value) => value.toJson()).toList(),
+        if (icons != null) 'icons': icons!,
         if (name != null) 'name': name!,
         if (startUrl != null) 'startUrl': startUrl!,
         if (title != null) 'title': title!,
@@ -6634,26 +7414,7 @@ class WebApp {
 /// An icon for a web app.
 ///
 /// Supported formats are: png, jpg and webp.
-class WebAppIcon {
-  /// The actual bytes of the image in a base64url encoded string (c.f. RFC4648,
-  /// section 5 "Base 64 Encoding with URL and Filename Safe Alphabet").
-  ///
-  /// - The image type can be png or jpg. - The image should ideally be square.
-  /// - The image should ideally have a size of 512x512.
-  core.String? imageData;
-
-  WebAppIcon();
-
-  WebAppIcon.fromJson(core.Map _json) {
-    if (_json.containsKey('imageData')) {
-      imageData = _json['imageData'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (imageData != null) 'imageData': imageData!,
-      };
-}
+typedef WebAppIcon = $WebAppIcon;
 
 /// A web token used to access the managed Google Play iframe.
 class WebToken {
@@ -6689,29 +7450,33 @@ class WebToken {
   /// This is a read-only field generated by the server.
   core.String? value;
 
-  WebToken();
+  WebToken({
+    this.enabledFeatures,
+    this.name,
+    this.parentFrameUrl,
+    this.permissions,
+    this.value,
+  });
 
-  WebToken.fromJson(core.Map _json) {
-    if (_json.containsKey('enabledFeatures')) {
-      enabledFeatures = (_json['enabledFeatures'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parentFrameUrl')) {
-      parentFrameUrl = _json['parentFrameUrl'] as core.String;
-    }
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  WebToken.fromJson(core.Map _json)
+      : this(
+          enabledFeatures: _json.containsKey('enabledFeatures')
+              ? (_json['enabledFeatures'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parentFrameUrl: _json.containsKey('parentFrameUrl')
+              ? _json['parentFrameUrl'] as core.String
+              : null,
+          permissions: _json.containsKey('permissions')
+              ? (_json['permissions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enabledFeatures != null) 'enabledFeatures': enabledFeatures!,
@@ -6737,16 +7502,20 @@ class WipeAction {
   /// wipeAfterDays must be greater than blockAfterDays.
   core.int? wipeAfterDays;
 
-  WipeAction();
+  WipeAction({
+    this.preserveFrp,
+    this.wipeAfterDays,
+  });
 
-  WipeAction.fromJson(core.Map _json) {
-    if (_json.containsKey('preserveFrp')) {
-      preserveFrp = _json['preserveFrp'] as core.bool;
-    }
-    if (_json.containsKey('wipeAfterDays')) {
-      wipeAfterDays = _json['wipeAfterDays'] as core.int;
-    }
-  }
+  WipeAction.fromJson(core.Map _json)
+      : this(
+          preserveFrp: _json.containsKey('preserveFrp')
+              ? _json['preserveFrp'] as core.bool
+              : null,
+          wipeAfterDays: _json.containsKey('wipeAfterDays')
+              ? _json['wipeAfterDays'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (preserveFrp != null) 'preserveFrp': preserveFrp!,

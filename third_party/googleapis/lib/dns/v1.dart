@@ -25,6 +25,8 @@
 /// - [PoliciesResource]
 /// - [ProjectsResource]
 /// - [ResourceRecordSetsResource]
+/// - [ResponsePoliciesResource]
+/// - [ResponsePolicyRulesResource]
 library dns.v1;
 
 import 'dart:async' as async;
@@ -34,17 +36,21 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
 class DnsApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
-  /// View your data across Google Cloud Platform services
+  /// View your data across Google Cloud services and see the email address of
+  /// your Google Account
   static const cloudPlatformReadOnlyScope =
       'https://www.googleapis.com/auth/cloud-platform.read-only';
 
@@ -67,6 +73,10 @@ class DnsApi {
   ProjectsResource get projects => ProjectsResource(_requester);
   ResourceRecordSetsResource get resourceRecordSets =>
       ResourceRecordSetsResource(_requester);
+  ResponsePoliciesResource get responsePolicies =>
+      ResponsePoliciesResource(_requester);
+  ResponsePolicyRulesResource get responsePolicyRules =>
+      ResponsePolicyRulesResource(_requester);
 
   DnsApi(http.Client client,
       {core.String rootUrl = 'https://dns.googleapis.com/',
@@ -112,7 +122,7 @@ class ChangesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -255,7 +265,7 @@ class DnsKeysResource {
 
   DnsKeysResource(commons.ApiRequester client) : _requester = client;
 
-  /// Fetch the representation of an existing DnsKey.
+  /// Fetches the representation of an existing DnsKey.
   ///
   /// Request parameters:
   ///
@@ -313,7 +323,7 @@ class DnsKeysResource {
     return DnsKey.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Enumerate DnsKeys to a ResourceRecordSet collection.
+  /// Enumerates DnsKeys to a ResourceRecordSet collection.
   ///
   /// Request parameters:
   ///
@@ -497,7 +507,7 @@ class ManagedZonesResource {
 
   ManagedZonesResource(commons.ApiRequester client) : _requester = client;
 
-  /// Create a new ManagedZone.
+  /// Creates a new ManagedZone.
   ///
   /// [request] - The metadata request object.
   ///
@@ -525,7 +535,7 @@ class ManagedZonesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -545,7 +555,7 @@ class ManagedZonesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Delete a previously created ManagedZone.
+  /// Deletes a previously created ManagedZone.
   ///
   /// Request parameters:
   ///
@@ -590,7 +600,7 @@ class ManagedZonesResource {
     );
   }
 
-  /// Fetch the representation of an existing ManagedZone.
+  /// Fetches the representation of an existing ManagedZone.
   ///
   /// Request parameters:
   ///
@@ -638,7 +648,7 @@ class ManagedZonesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Enumerate ManagedZones that have been created but not yet deleted.
+  /// Enumerates ManagedZones that have been created but not yet deleted.
   ///
   /// Request parameters:
   ///
@@ -689,7 +699,7 @@ class ManagedZonesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Apply a partial update to an existing ManagedZone.
+  /// Applies a partial update to an existing ManagedZone.
   ///
   /// [request] - The metadata request object.
   ///
@@ -721,7 +731,7 @@ class ManagedZonesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -741,7 +751,7 @@ class ManagedZonesResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update an existing ManagedZone.
+  /// Updates an existing ManagedZone.
   ///
   /// [request] - The metadata request object.
   ///
@@ -773,7 +783,7 @@ class ManagedZonesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -799,7 +809,7 @@ class PoliciesResource {
 
   PoliciesResource(commons.ApiRequester client) : _requester = client;
 
-  /// Creates a new Policy
+  /// Creates a new Policy.
   ///
   /// [request] - The metadata request object.
   ///
@@ -827,7 +837,7 @@ class PoliciesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -845,7 +855,7 @@ class PoliciesResource {
     return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Delete a previously created Policy.
+  /// Deletes a previously created Policy.
   ///
   /// Fails if the policy is still being referenced by a network.
   ///
@@ -985,7 +995,7 @@ class PoliciesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Apply a partial update to an existing Policy.
+  /// Applies a partial update to an existing Policy.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1017,7 +1027,7 @@ class PoliciesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -1038,7 +1048,7 @@ class PoliciesResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update an existing Policy.
+  /// Updates an existing Policy.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1070,7 +1080,7 @@ class PoliciesResource {
     core.String? clientOperationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clientOperationId != null) 'clientOperationId': [clientOperationId],
       if ($fields != null) 'fields': [$fields],
@@ -1097,7 +1107,7 @@ class ProjectsResource {
 
   ProjectsResource(commons.ApiRequester client) : _requester = client;
 
-  /// Fetch the representation of an existing Project.
+  /// Fetches the representation of an existing Project.
   ///
   /// Request parameters:
   ///
@@ -1143,7 +1153,177 @@ class ResourceRecordSetsResource {
 
   ResourceRecordSetsResource(commons.ApiRequester client) : _requester = client;
 
-  /// Enumerate ResourceRecordSets that you have created but not yet deleted.
+  /// Creates a new ResourceRecordSet.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [managedZone] - Identifies the managed zone addressed by this request. Can
+  /// be the managed zone name or ID.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResourceRecordSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResourceRecordSet> create(
+    ResourceRecordSet request,
+    core.String project,
+    core.String managedZone, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/managedZones/' +
+        commons.escapeVariable('$managedZone') +
+        '/rrsets';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResourceRecordSet.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a previously created ResourceRecordSet.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [managedZone] - Identifies the managed zone addressed by this request. Can
+  /// be the managed zone name or ID.
+  ///
+  /// [name] - Fully qualified domain name.
+  ///
+  /// [type] - RRSet type.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResourceRecordSetsDeleteResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResourceRecordSetsDeleteResponse> delete(
+    core.String project,
+    core.String managedZone,
+    core.String name,
+    core.String type, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/managedZones/' +
+        commons.escapeVariable('$managedZone') +
+        '/rrsets/' +
+        commons.escapeVariable('$name') +
+        '/' +
+        commons.escapeVariable('$type');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return ResourceRecordSetsDeleteResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Fetches the representation of an existing ResourceRecordSet.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [managedZone] - Identifies the managed zone addressed by this request. Can
+  /// be the managed zone name or ID.
+  ///
+  /// [name] - Fully qualified domain name.
+  ///
+  /// [type] - RRSet type.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResourceRecordSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResourceRecordSet> get(
+    core.String project,
+    core.String managedZone,
+    core.String name,
+    core.String type, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/managedZones/' +
+        commons.escapeVariable('$managedZone') +
+        '/rrsets/' +
+        commons.escapeVariable('$name') +
+        '/' +
+        commons.escapeVariable('$type');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ResourceRecordSet.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Enumerates ResourceRecordSets that you have created but not yet deleted.
   ///
   /// Request parameters:
   ///
@@ -1205,6 +1385,708 @@ class ResourceRecordSetsResource {
     return ResourceRecordSetsListResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
+
+  /// Applies a partial update to an existing ResourceRecordSet.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [managedZone] - Identifies the managed zone addressed by this request. Can
+  /// be the managed zone name or ID.
+  ///
+  /// [name] - Fully qualified domain name.
+  ///
+  /// [type] - RRSet type.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResourceRecordSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResourceRecordSet> patch(
+    ResourceRecordSet request,
+    core.String project,
+    core.String managedZone,
+    core.String name,
+    core.String type, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/managedZones/' +
+        commons.escapeVariable('$managedZone') +
+        '/rrsets/' +
+        commons.escapeVariable('$name') +
+        '/' +
+        commons.escapeVariable('$type');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResourceRecordSet.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ResponsePoliciesResource {
+  final commons.ApiRequester _requester;
+
+  ResponsePoliciesResource(commons.ApiRequester client) : _requester = client;
+
+  /// Creates a new Response Policy
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicy> create(
+    ResponsePolicy request,
+    core.String project, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePolicy.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a previously created Response Policy.
+  ///
+  /// Fails if the response policy is non-empty or still being referenced by a
+  /// network.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy addressed by
+  /// this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<void> delete(
+    core.String project,
+    core.String responsePolicy, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy');
+
+    await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+      downloadOptions: null,
+    );
+  }
+
+  /// Fetches the representation of an existing Response Policy.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy addressed by
+  /// this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicy> get(
+    core.String project,
+    core.String responsePolicy, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ResponsePolicy.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Enumerates all Response Policies associated with a project.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [maxResults] - Optional. Maximum number of results to be returned. If
+  /// unspecified, the server decides how many results to return.
+  ///
+  /// [pageToken] - Optional. A tag returned by a previous list request that was
+  /// truncated. Use this parameter to continue a previous list request.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePoliciesListResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePoliciesListResponse> list(
+    core.String project, {
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ResponsePoliciesListResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Applies a partial update to an existing Response Policy.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Respones Policy addressed by
+  /// this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePoliciesPatchResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePoliciesPatchResponse> patch(
+    ResponsePolicy request,
+    core.String project,
+    core.String responsePolicy, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePoliciesPatchResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates an existing Response Policy.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy addressed by
+  /// this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePoliciesUpdateResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePoliciesUpdateResponse> update(
+    ResponsePolicy request,
+    core.String project,
+    core.String responsePolicy, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy');
+
+    final _response = await _requester.request(
+      _url,
+      'PUT',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePoliciesUpdateResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ResponsePolicyRulesResource {
+  final commons.ApiRequester _requester;
+
+  ResponsePolicyRulesResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a new Response Policy Rule.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy containing
+  /// the Response Policy Rule.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicyRule].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicyRule> create(
+    ResponsePolicyRule request,
+    core.String project,
+    core.String responsePolicy, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePolicyRule.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes a previously created Response Policy Rule.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy containing
+  /// the Response Policy Rule.
+  ///
+  /// [responsePolicyRule] - User assigned name of the Response Policy Rule
+  /// addressed by this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<void> delete(
+    core.String project,
+    core.String responsePolicy,
+    core.String responsePolicyRule, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules/' +
+        commons.escapeVariable('$responsePolicyRule');
+
+    await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+      downloadOptions: null,
+    );
+  }
+
+  /// Fetches the representation of an existing Response Policy Rule.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy containing
+  /// the Response Policy Rule.
+  ///
+  /// [responsePolicyRule] - User assigned name of the Response Policy Rule
+  /// addressed by this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicyRule].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicyRule> get(
+    core.String project,
+    core.String responsePolicy,
+    core.String responsePolicyRule, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules/' +
+        commons.escapeVariable('$responsePolicyRule');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ResponsePolicyRule.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Enumerates all Response Policy Rules associated with a project.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy to list.
+  ///
+  /// [maxResults] - Optional. Maximum number of results to be returned. If
+  /// unspecified, the server decides how many results to return.
+  ///
+  /// [pageToken] - Optional. A tag returned by a previous list request that was
+  /// truncated. Use this parameter to continue a previous list request.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicyRulesListResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicyRulesListResponse> list(
+    core.String project,
+    core.String responsePolicy, {
+    core.int? maxResults,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (maxResults != null) 'maxResults': ['${maxResults}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ResponsePolicyRulesListResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Applies a partial update to an existing Response Policy Rule.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy containing
+  /// the Response Policy Rule.
+  ///
+  /// [responsePolicyRule] - User assigned name of the Response Policy Rule
+  /// addressed by this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicyRulesPatchResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicyRulesPatchResponse> patch(
+    ResponsePolicyRule request,
+    core.String project,
+    core.String responsePolicy,
+    core.String responsePolicyRule, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules/' +
+        commons.escapeVariable('$responsePolicyRule');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePolicyRulesPatchResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates an existing Response Policy Rule.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [project] - Identifies the project addressed by this request.
+  ///
+  /// [responsePolicy] - User assigned name of the Response Policy containing
+  /// the Response Policy Rule.
+  ///
+  /// [responsePolicyRule] - User assigned name of the Response Policy Rule
+  /// addressed by this request.
+  ///
+  /// [clientOperationId] - For mutating operation requests only. An optional
+  /// identifier specified by the client. Must be unique for operation resources
+  /// in the Operations collection.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ResponsePolicyRulesUpdateResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ResponsePolicyRulesUpdateResponse> update(
+    ResponsePolicyRule request,
+    core.String project,
+    core.String responsePolicy,
+    core.String responsePolicyRule, {
+    core.String? clientOperationId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (clientOperationId != null) 'clientOperationId': [clientOperationId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'dns/v1/projects/' +
+        commons.escapeVariable('$project') +
+        '/responsePolicies/' +
+        commons.escapeVariable('$responsePolicy') +
+        '/rules/' +
+        commons.escapeVariable('$responsePolicyRule');
+
+    final _response = await _requester.request(
+      _url,
+      'PUT',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ResponsePolicyRulesUpdateResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 }
 
 /// A Change represents a set of ResourceRecordSet additions and deletions
@@ -1237,49 +2119,52 @@ class Change {
   /// Status of the operation (output only).
   ///
   /// A status of "done" means that the request to update the authoritative
-  /// servers has been sent but the servers might not be updated yet.
+  /// servers has been sent, but the servers might not be updated yet.
   /// Possible string values are:
   /// - "pending"
   /// - "done"
   core.String? status;
 
-  Change();
+  Change({
+    this.additions,
+    this.deletions,
+    this.id,
+    this.isServing,
+    this.kind,
+    this.startTime,
+    this.status,
+  });
 
-  Change.fromJson(core.Map _json) {
-    if (_json.containsKey('additions')) {
-      additions = (_json['additions'] as core.List)
-          .map<ResourceRecordSet>((value) => ResourceRecordSet.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('deletions')) {
-      deletions = (_json['deletions'] as core.List)
-          .map<ResourceRecordSet>((value) => ResourceRecordSet.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('isServing')) {
-      isServing = _json['isServing'] as core.bool;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
+  Change.fromJson(core.Map _json)
+      : this(
+          additions: _json.containsKey('additions')
+              ? (_json['additions'] as core.List)
+                  .map((value) => ResourceRecordSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          deletions: _json.containsKey('deletions')
+              ? (_json['deletions'] as core.List)
+                  .map((value) => ResourceRecordSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          isServing: _json.containsKey('isServing')
+              ? _json['isServing'] as core.bool
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (additions != null)
-          'additions': additions!.map((value) => value.toJson()).toList(),
-        if (deletions != null)
-          'deletions': deletions!.map((value) => value.toJson()).toList(),
+        if (additions != null) 'additions': additions!,
+        if (deletions != null) 'deletions': deletions!,
         if (id != null) 'id': id!,
         if (isServing != null) 'isServing': isServing!,
         if (kind != null) 'kind': kind!,
@@ -1302,39 +2187,42 @@ class ChangesListResponse {
   /// following your last page of results in pagination order.
   ///
   /// To fetch them, make another list request using this value as your
-  /// pagination token. In this way you can retrieve the complete contents of
-  /// even very large collections one page at a time. However, if the contents
-  /// of the collection change between the first and last paginated list
-  /// request, the set of all elements returned are an inconsistent view of the
-  /// collection. There is no way to retrieve a "snapshot" of collections larger
-  /// than the maximum page size.
+  /// pagination token. This lets you retrieve the complete contents of even
+  /// very large collections one page at a time. However, if the contents of the
+  /// collection change between the first and last paginated list request, the
+  /// set of all elements returned are an inconsistent view of the collection.
+  /// You cannot retrieve a "snapshot" of collections larger than the maximum
+  /// page size.
   core.String? nextPageToken;
 
-  ChangesListResponse();
+  ChangesListResponse({
+    this.changes,
+    this.header,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  ChangesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('changes')) {
-      changes = (_json['changes'] as core.List)
-          .map<Change>((value) =>
-              Change.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ChangesListResponse.fromJson(core.Map _json)
+      : this(
+          changes: _json.containsKey('changes')
+              ? (_json['changes'] as core.List)
+                  .map((value) => Change.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (changes != null)
-          'changes': changes!.map((value) => value.toJson()).toList(),
-        if (header != null) 'header': header!.toJson(),
+        if (changes != null) 'changes': changes!,
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -1376,13 +2264,13 @@ class DnsKey {
 
   /// Active keys are used to sign subsequent changes to the ManagedZone.
   ///
-  /// Inactive keys will still be present as DNSKEY Resource Records for the use
-  /// of resolvers validating existing signatures.
+  /// Inactive keys are still present as DNSKEY Resource Records for the use of
+  /// resolvers validating existing signatures.
   core.bool? isActive;
 
   /// Length of the key in bits.
   ///
-  /// Specified at creation time, then immutable.
+  /// Specified at creation time, and then immutable.
   core.int? keyLength;
 
   /// The key tag is a non-cryptographic hash of the a DNSKEY resource record
@@ -1405,7 +2293,7 @@ class DnsKey {
   ///
   /// Keys of type KEY_SIGNING have the Secure Entry Point flag set and, when
   /// active, are used to sign only resource record sets of type DNSKEY.
-  /// Otherwise, the Secure Entry Point flag is cleared and this key is used to
+  /// Otherwise, the Secure Entry Point flag is cleared, and this key is used to
   /// sign only resource record sets of other types. Immutable after creation
   /// time.
   /// Possible string values are:
@@ -1413,53 +2301,58 @@ class DnsKey {
   /// - "zoneSigning"
   core.String? type;
 
-  DnsKey();
+  DnsKey({
+    this.algorithm,
+    this.creationTime,
+    this.description,
+    this.digests,
+    this.id,
+    this.isActive,
+    this.keyLength,
+    this.keyTag,
+    this.kind,
+    this.publicKey,
+    this.type,
+  });
 
-  DnsKey.fromJson(core.Map _json) {
-    if (_json.containsKey('algorithm')) {
-      algorithm = _json['algorithm'] as core.String;
-    }
-    if (_json.containsKey('creationTime')) {
-      creationTime = _json['creationTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('digests')) {
-      digests = (_json['digests'] as core.List)
-          .map<DnsKeyDigest>((value) => DnsKeyDigest.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('isActive')) {
-      isActive = _json['isActive'] as core.bool;
-    }
-    if (_json.containsKey('keyLength')) {
-      keyLength = _json['keyLength'] as core.int;
-    }
-    if (_json.containsKey('keyTag')) {
-      keyTag = _json['keyTag'] as core.int;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('publicKey')) {
-      publicKey = _json['publicKey'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  DnsKey.fromJson(core.Map _json)
+      : this(
+          algorithm: _json.containsKey('algorithm')
+              ? _json['algorithm'] as core.String
+              : null,
+          creationTime: _json.containsKey('creationTime')
+              ? _json['creationTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          digests: _json.containsKey('digests')
+              ? (_json['digests'] as core.List)
+                  .map((value) => DnsKeyDigest.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          isActive: _json.containsKey('isActive')
+              ? _json['isActive'] as core.bool
+              : null,
+          keyLength: _json.containsKey('keyLength')
+              ? _json['keyLength'] as core.int
+              : null,
+          keyTag:
+              _json.containsKey('keyTag') ? _json['keyTag'] as core.int : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          publicKey: _json.containsKey('publicKey')
+              ? _json['publicKey'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (algorithm != null) 'algorithm': algorithm!,
         if (creationTime != null) 'creationTime': creationTime!,
         if (description != null) 'description': description!,
-        if (digests != null)
-          'digests': digests!.map((value) => value.toJson()).toList(),
+        if (digests != null) 'digests': digests!,
         if (id != null) 'id': id!,
         if (isActive != null) 'isActive': isActive!,
         if (keyLength != null) 'keyLength': keyLength!,
@@ -1483,16 +2376,18 @@ class DnsKeyDigest {
   /// - "sha384"
   core.String? type;
 
-  DnsKeyDigest();
+  DnsKeyDigest({
+    this.digest,
+    this.type,
+  });
 
-  DnsKeyDigest.fromJson(core.Map _json) {
-    if (_json.containsKey('digest')) {
-      digest = _json['digest'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  DnsKeyDigest.fromJson(core.Map _json)
+      : this(
+          digest: _json.containsKey('digest')
+              ? _json['digest'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (digest != null) 'digest': digest!,
@@ -1530,22 +2425,26 @@ class DnsKeySpec {
   core.String? keyType;
   core.String? kind;
 
-  DnsKeySpec();
+  DnsKeySpec({
+    this.algorithm,
+    this.keyLength,
+    this.keyType,
+    this.kind,
+  });
 
-  DnsKeySpec.fromJson(core.Map _json) {
-    if (_json.containsKey('algorithm')) {
-      algorithm = _json['algorithm'] as core.String;
-    }
-    if (_json.containsKey('keyLength')) {
-      keyLength = _json['keyLength'] as core.int;
-    }
-    if (_json.containsKey('keyType')) {
-      keyType = _json['keyType'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  DnsKeySpec.fromJson(core.Map _json)
+      : this(
+          algorithm: _json.containsKey('algorithm')
+              ? _json['algorithm'] as core.String
+              : null,
+          keyLength: _json.containsKey('keyLength')
+              ? _json['keyLength'] as core.int
+              : null,
+          keyType: _json.containsKey('keyType')
+              ? _json['keyType'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (algorithm != null) 'algorithm': algorithm!,
@@ -1576,31 +2475,34 @@ class DnsKeysListResponse {
   /// than the maximum page size.
   core.String? nextPageToken;
 
-  DnsKeysListResponse();
+  DnsKeysListResponse({
+    this.dnsKeys,
+    this.header,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  DnsKeysListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('dnsKeys')) {
-      dnsKeys = (_json['dnsKeys'] as core.List)
-          .map<DnsKey>((value) =>
-              DnsKey.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  DnsKeysListResponse.fromJson(core.Map _json)
+      : this(
+          dnsKeys: _json.containsKey('dnsKeys')
+              ? (_json['dnsKeys'] as core.List)
+                  .map((value) => DnsKey.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dnsKeys != null)
-          'dnsKeys': dnsKeys!.map((value) => value.toJson()).toList(),
-        if (header != null) 'header': header!.toJson(),
+        if (dnsKeys != null) 'dnsKeys': dnsKeys!,
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -1612,6 +2514,8 @@ class DnsKeysListResponse {
 /// A ManagedZone is a resource that represents a DNS zone hosted by the Cloud
 /// DNS service.
 class ManagedZone {
+  ManagedZoneCloudLoggingConfig? cloudLoggingConfig;
+
   /// The time that this resource was created on the server.
   ///
   /// This is in RFC3339 text format. Output only.
@@ -1652,8 +2556,8 @@ class ManagedZone {
   /// Optionally specifies the NameServerSet for this ManagedZone.
   ///
   /// A NameServerSet is a set of DNS name servers that all host the same
-  /// ManagedZones. Most users will leave this field unset. If you need to use
-  /// this field, please reach out to your account team.
+  /// ManagedZones. Most users leave this field unset. If you need to use this
+  /// field, contact your account team.
   core.String? nameServerSet;
 
   /// Delegate your managed_zone to these virtual name servers; defined by the
@@ -1679,7 +2583,7 @@ class ManagedZone {
 
   /// This field links to the associated service directory namespace.
   ///
-  /// This field should not be set for public zones or forwarding zones.
+  /// Do not set this field for public zones or forwarding zones.
   ManagedZoneServiceDirectoryConfig? serviceDirectoryConfig;
 
   /// The zone's visibility: public zones are exposed to the Internet, while
@@ -1689,95 +2593,142 @@ class ManagedZone {
   /// - "private"
   core.String? visibility;
 
-  ManagedZone();
+  ManagedZone({
+    this.cloudLoggingConfig,
+    this.creationTime,
+    this.description,
+    this.dnsName,
+    this.dnssecConfig,
+    this.forwardingConfig,
+    this.id,
+    this.kind,
+    this.labels,
+    this.name,
+    this.nameServerSet,
+    this.nameServers,
+    this.peeringConfig,
+    this.privateVisibilityConfig,
+    this.reverseLookupConfig,
+    this.serviceDirectoryConfig,
+    this.visibility,
+  });
 
-  ManagedZone.fromJson(core.Map _json) {
-    if (_json.containsKey('creationTime')) {
-      creationTime = _json['creationTime'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('dnsName')) {
-      dnsName = _json['dnsName'] as core.String;
-    }
-    if (_json.containsKey('dnssecConfig')) {
-      dnssecConfig = ManagedZoneDnsSecConfig.fromJson(
-          _json['dnssecConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('forwardingConfig')) {
-      forwardingConfig = ManagedZoneForwardingConfig.fromJson(
-          _json['forwardingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('nameServerSet')) {
-      nameServerSet = _json['nameServerSet'] as core.String;
-    }
-    if (_json.containsKey('nameServers')) {
-      nameServers = (_json['nameServers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('peeringConfig')) {
-      peeringConfig = ManagedZonePeeringConfig.fromJson(
-          _json['peeringConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('privateVisibilityConfig')) {
-      privateVisibilityConfig = ManagedZonePrivateVisibilityConfig.fromJson(
-          _json['privateVisibilityConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('reverseLookupConfig')) {
-      reverseLookupConfig = ManagedZoneReverseLookupConfig.fromJson(
-          _json['reverseLookupConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('serviceDirectoryConfig')) {
-      serviceDirectoryConfig = ManagedZoneServiceDirectoryConfig.fromJson(
-          _json['serviceDirectoryConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('visibility')) {
-      visibility = _json['visibility'] as core.String;
-    }
-  }
+  ManagedZone.fromJson(core.Map _json)
+      : this(
+          cloudLoggingConfig: _json.containsKey('cloudLoggingConfig')
+              ? ManagedZoneCloudLoggingConfig.fromJson(
+                  _json['cloudLoggingConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          creationTime: _json.containsKey('creationTime')
+              ? _json['creationTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          dnsName: _json.containsKey('dnsName')
+              ? _json['dnsName'] as core.String
+              : null,
+          dnssecConfig: _json.containsKey('dnssecConfig')
+              ? ManagedZoneDnsSecConfig.fromJson(
+                  _json['dnssecConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          forwardingConfig: _json.containsKey('forwardingConfig')
+              ? ManagedZoneForwardingConfig.fromJson(_json['forwardingConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          nameServerSet: _json.containsKey('nameServerSet')
+              ? _json['nameServerSet'] as core.String
+              : null,
+          nameServers: _json.containsKey('nameServers')
+              ? (_json['nameServers'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          peeringConfig: _json.containsKey('peeringConfig')
+              ? ManagedZonePeeringConfig.fromJson(
+                  _json['peeringConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          privateVisibilityConfig: _json.containsKey('privateVisibilityConfig')
+              ? ManagedZonePrivateVisibilityConfig.fromJson(
+                  _json['privateVisibilityConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          reverseLookupConfig: _json.containsKey('reverseLookupConfig')
+              ? ManagedZoneReverseLookupConfig.fromJson(
+                  _json['reverseLookupConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          serviceDirectoryConfig: _json.containsKey('serviceDirectoryConfig')
+              ? ManagedZoneServiceDirectoryConfig.fromJson(
+                  _json['serviceDirectoryConfig']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          visibility: _json.containsKey('visibility')
+              ? _json['visibility'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (cloudLoggingConfig != null)
+          'cloudLoggingConfig': cloudLoggingConfig!,
         if (creationTime != null) 'creationTime': creationTime!,
         if (description != null) 'description': description!,
         if (dnsName != null) 'dnsName': dnsName!,
-        if (dnssecConfig != null) 'dnssecConfig': dnssecConfig!.toJson(),
-        if (forwardingConfig != null)
-          'forwardingConfig': forwardingConfig!.toJson(),
+        if (dnssecConfig != null) 'dnssecConfig': dnssecConfig!,
+        if (forwardingConfig != null) 'forwardingConfig': forwardingConfig!,
         if (id != null) 'id': id!,
         if (kind != null) 'kind': kind!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (nameServerSet != null) 'nameServerSet': nameServerSet!,
         if (nameServers != null) 'nameServers': nameServers!,
-        if (peeringConfig != null) 'peeringConfig': peeringConfig!.toJson(),
+        if (peeringConfig != null) 'peeringConfig': peeringConfig!,
         if (privateVisibilityConfig != null)
-          'privateVisibilityConfig': privateVisibilityConfig!.toJson(),
+          'privateVisibilityConfig': privateVisibilityConfig!,
         if (reverseLookupConfig != null)
-          'reverseLookupConfig': reverseLookupConfig!.toJson(),
+          'reverseLookupConfig': reverseLookupConfig!,
         if (serviceDirectoryConfig != null)
-          'serviceDirectoryConfig': serviceDirectoryConfig!.toJson(),
+          'serviceDirectoryConfig': serviceDirectoryConfig!,
         if (visibility != null) 'visibility': visibility!,
+      };
+}
+
+/// Cloud Logging configurations for publicly visible zones.
+class ManagedZoneCloudLoggingConfig {
+  /// If set, enable query logging for this ManagedZone.
+  ///
+  /// False by default, making logging opt-in.
+  core.bool? enableLogging;
+  core.String? kind;
+
+  ManagedZoneCloudLoggingConfig({
+    this.enableLogging,
+    this.kind,
+  });
+
+  ManagedZoneCloudLoggingConfig.fromJson(core.Map _json)
+      : this(
+          enableLogging: _json.containsKey('enableLogging')
+              ? _json['enableLogging'] as core.bool
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (enableLogging != null) 'enableLogging': enableLogging!,
+        if (kind != null) 'kind': kind!,
       };
 }
 
@@ -1803,30 +2754,31 @@ class ManagedZoneDnsSecConfig {
   /// - "transfer" : DNSSEC is enabled, but in a "transfer" mode.
   core.String? state;
 
-  ManagedZoneDnsSecConfig();
+  ManagedZoneDnsSecConfig({
+    this.defaultKeySpecs,
+    this.kind,
+    this.nonExistence,
+    this.state,
+  });
 
-  ManagedZoneDnsSecConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultKeySpecs')) {
-      defaultKeySpecs = (_json['defaultKeySpecs'] as core.List)
-          .map<DnsKeySpec>((value) =>
-              DnsKeySpec.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nonExistence')) {
-      nonExistence = _json['nonExistence'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  ManagedZoneDnsSecConfig.fromJson(core.Map _json)
+      : this(
+          defaultKeySpecs: _json.containsKey('defaultKeySpecs')
+              ? (_json['defaultKeySpecs'] as core.List)
+                  .map((value) => DnsKeySpec.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nonExistence: _json.containsKey('nonExistence')
+              ? _json['nonExistence'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (defaultKeySpecs != null)
-          'defaultKeySpecs':
-              defaultKeySpecs!.map((value) => value.toJson()).toList(),
+        if (defaultKeySpecs != null) 'defaultKeySpecs': defaultKeySpecs!,
         if (kind != null) 'kind': kind!,
         if (nonExistence != null) 'nonExistence': nonExistence!,
         if (state != null) 'state': state!,
@@ -1842,26 +2794,26 @@ class ManagedZoneForwardingConfig {
   /// is given.
   core.List<ManagedZoneForwardingConfigNameServerTarget>? targetNameServers;
 
-  ManagedZoneForwardingConfig();
+  ManagedZoneForwardingConfig({
+    this.kind,
+    this.targetNameServers,
+  });
 
-  ManagedZoneForwardingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('targetNameServers')) {
-      targetNameServers = (_json['targetNameServers'] as core.List)
-          .map<ManagedZoneForwardingConfigNameServerTarget>((value) =>
-              ManagedZoneForwardingConfigNameServerTarget.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ManagedZoneForwardingConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          targetNameServers: _json.containsKey('targetNameServers')
+              ? (_json['targetNameServers'] as core.List)
+                  .map((value) =>
+                      ManagedZoneForwardingConfigNameServerTarget.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (targetNameServers != null)
-          'targetNameServers':
-              targetNameServers!.map((value) => value.toJson()).toList(),
+        if (targetNameServers != null) 'targetNameServers': targetNameServers!,
       };
 }
 
@@ -1869,9 +2821,9 @@ class ManagedZoneForwardingConfigNameServerTarget {
   /// Forwarding path for this NameServerTarget.
   ///
   /// If unset or set to DEFAULT, Cloud DNS makes forwarding decisions based on
-  /// address ranges; that is, RFC1918 addresses go to the VPC, non-RFC1918
-  /// addresses go to the internet. When set to PRIVATE, Cloud DNS always sends
-  /// queries through VPC for this target.
+  /// IP address ranges; that is, RFC1918 addresses go to the VPC network,
+  /// non-RFC1918 addresses go to the internet. When set to PRIVATE, Cloud DNS
+  /// always sends queries through the VPC network for this target.
   /// Possible string values are:
   /// - "default" : Cloud DNS makes forwarding decisions based on address
   /// ranges; that is, RFC1918 addresses forward to the target through the VPC
@@ -1883,19 +2835,22 @@ class ManagedZoneForwardingConfigNameServerTarget {
   core.String? ipv4Address;
   core.String? kind;
 
-  ManagedZoneForwardingConfigNameServerTarget();
+  ManagedZoneForwardingConfigNameServerTarget({
+    this.forwardingPath,
+    this.ipv4Address,
+    this.kind,
+  });
 
-  ManagedZoneForwardingConfigNameServerTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('forwardingPath')) {
-      forwardingPath = _json['forwardingPath'] as core.String;
-    }
-    if (_json.containsKey('ipv4Address')) {
-      ipv4Address = _json['ipv4Address'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  ManagedZoneForwardingConfigNameServerTarget.fromJson(core.Map _json)
+      : this(
+          forwardingPath: _json.containsKey('forwardingPath')
+              ? _json['forwardingPath'] as core.String
+              : null,
+          ipv4Address: _json.containsKey('ipv4Address')
+              ? _json['ipv4Address'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (forwardingPath != null) 'forwardingPath': forwardingPath!,
@@ -1906,50 +2861,55 @@ class ManagedZoneForwardingConfigNameServerTarget {
 
 class ManagedZoneOperationsListResponse {
   ResponseHeader? header;
+
+  /// Type of resource.
   core.String? kind;
 
   /// The presence of this field indicates that there exist more results
   /// following your last page of results in pagination order.
   ///
   /// To fetch them, make another list request using this value as your page
-  /// token. In this way you can retrieve the complete contents of even very
-  /// large collections one page at a time. However, if the contents of the
-  /// collection change between the first and last paginated list request, the
-  /// set of all elements returned are an inconsistent view of the collection.
-  /// There is no way to retrieve a consistent snapshot of a collection larger
-  /// than the maximum page size.
+  /// token. This lets you retrieve the complete contents of even very large
+  /// collections one page at a time. However, if the contents of the collection
+  /// change between the first and last paginated list request, the set of all
+  /// elements returned are an inconsistent view of the collection. You cannot
+  /// retrieve a consistent snapshot of a collection larger than the maximum
+  /// page size.
   core.String? nextPageToken;
 
   /// The operation resources.
   core.List<Operation>? operations;
 
-  ManagedZoneOperationsListResponse();
+  ManagedZoneOperationsListResponse({
+    this.header,
+    this.kind,
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ManagedZoneOperationsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ManagedZoneOperationsListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -1959,21 +2919,23 @@ class ManagedZonePeeringConfig {
   /// The network with which to peer.
   ManagedZonePeeringConfigTargetNetwork? targetNetwork;
 
-  ManagedZonePeeringConfig();
+  ManagedZonePeeringConfig({
+    this.kind,
+    this.targetNetwork,
+  });
 
-  ManagedZonePeeringConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('targetNetwork')) {
-      targetNetwork = ManagedZonePeeringConfigTargetNetwork.fromJson(
-          _json['targetNetwork'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ManagedZonePeeringConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          targetNetwork: _json.containsKey('targetNetwork')
+              ? ManagedZonePeeringConfigTargetNetwork.fromJson(
+                  _json['targetNetwork'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (targetNetwork != null) 'targetNetwork': targetNetwork!.toJson(),
+        if (targetNetwork != null) 'targetNetwork': targetNetwork!,
       };
 }
 
@@ -1993,19 +2955,22 @@ class ManagedZonePeeringConfigTargetNetwork {
   /// https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
   core.String? networkUrl;
 
-  ManagedZonePeeringConfigTargetNetwork();
+  ManagedZonePeeringConfigTargetNetwork({
+    this.deactivateTime,
+    this.kind,
+    this.networkUrl,
+  });
 
-  ManagedZonePeeringConfigTargetNetwork.fromJson(core.Map _json) {
-    if (_json.containsKey('deactivateTime')) {
-      deactivateTime = _json['deactivateTime'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('networkUrl')) {
-      networkUrl = _json['networkUrl'] as core.String;
-    }
-  }
+  ManagedZonePeeringConfigTargetNetwork.fromJson(core.Map _json)
+      : this(
+          deactivateTime: _json.containsKey('deactivateTime')
+              ? _json['deactivateTime'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networkUrl: _json.containsKey('networkUrl')
+              ? _json['networkUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deactivateTime != null) 'deactivateTime': deactivateTime!,
@@ -2020,25 +2985,26 @@ class ManagedZonePrivateVisibilityConfig {
   /// The list of VPC networks that can see this zone.
   core.List<ManagedZonePrivateVisibilityConfigNetwork>? networks;
 
-  ManagedZonePrivateVisibilityConfig();
+  ManagedZonePrivateVisibilityConfig({
+    this.kind,
+    this.networks,
+  });
 
-  ManagedZonePrivateVisibilityConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('networks')) {
-      networks = (_json['networks'] as core.List)
-          .map<ManagedZonePrivateVisibilityConfigNetwork>((value) =>
-              ManagedZonePrivateVisibilityConfigNetwork.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ManagedZonePrivateVisibilityConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networks: _json.containsKey('networks')
+              ? (_json['networks'] as core.List)
+                  .map((value) =>
+                      ManagedZonePrivateVisibilityConfigNetwork.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (networks != null)
-          'networks': networks!.map((value) => value.toJson()).toList(),
+        if (networks != null) 'networks': networks!,
       };
 }
 
@@ -2047,20 +3013,22 @@ class ManagedZonePrivateVisibilityConfigNetwork {
 
   /// The fully qualified URL of the VPC network to bind to.
   ///
-  /// This should be formatted like
+  /// Format this URL like
   /// https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
   core.String? networkUrl;
 
-  ManagedZonePrivateVisibilityConfigNetwork();
+  ManagedZonePrivateVisibilityConfigNetwork({
+    this.kind,
+    this.networkUrl,
+  });
 
-  ManagedZonePrivateVisibilityConfigNetwork.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('networkUrl')) {
-      networkUrl = _json['networkUrl'] as core.String;
-    }
-  }
+  ManagedZonePrivateVisibilityConfigNetwork.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networkUrl: _json.containsKey('networkUrl')
+              ? _json['networkUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -2071,13 +3039,14 @@ class ManagedZonePrivateVisibilityConfigNetwork {
 class ManagedZoneReverseLookupConfig {
   core.String? kind;
 
-  ManagedZoneReverseLookupConfig();
+  ManagedZoneReverseLookupConfig({
+    this.kind,
+  });
 
-  ManagedZoneReverseLookupConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  ManagedZoneReverseLookupConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -2091,27 +3060,29 @@ class ManagedZoneServiceDirectoryConfig {
   /// Contains information about the namespace associated with the zone.
   ManagedZoneServiceDirectoryConfigNamespace? namespace;
 
-  ManagedZoneServiceDirectoryConfig();
+  ManagedZoneServiceDirectoryConfig({
+    this.kind,
+    this.namespace,
+  });
 
-  ManagedZoneServiceDirectoryConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('namespace')) {
-      namespace = ManagedZoneServiceDirectoryConfigNamespace.fromJson(
-          _json['namespace'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ManagedZoneServiceDirectoryConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          namespace: _json.containsKey('namespace')
+              ? ManagedZoneServiceDirectoryConfigNamespace.fromJson(
+                  _json['namespace'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (namespace != null) 'namespace': namespace!.toJson(),
+        if (namespace != null) 'namespace': namespace!,
       };
 }
 
 class ManagedZoneServiceDirectoryConfigNamespace {
-  /// The time that the namespace backing this zone was deleted, empty string if
-  /// it still exists.
+  /// The time that the namespace backing this zone was deleted; an empty string
+  /// if it still exists.
   ///
   /// This is in RFC3339 text format. Output only.
   core.String? deletionTime;
@@ -2119,23 +3090,26 @@ class ManagedZoneServiceDirectoryConfigNamespace {
 
   /// The fully qualified URL of the namespace associated with the zone.
   ///
-  /// This should be formatted like
+  /// Format must be
   /// https://servicedirectory.googleapis.com/v1/projects/{project}/locations/{location}/namespaces/{namespace}
   core.String? namespaceUrl;
 
-  ManagedZoneServiceDirectoryConfigNamespace();
+  ManagedZoneServiceDirectoryConfigNamespace({
+    this.deletionTime,
+    this.kind,
+    this.namespaceUrl,
+  });
 
-  ManagedZoneServiceDirectoryConfigNamespace.fromJson(core.Map _json) {
-    if (_json.containsKey('deletionTime')) {
-      deletionTime = _json['deletionTime'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('namespaceUrl')) {
-      namespaceUrl = _json['namespaceUrl'] as core.String;
-    }
-  }
+  ManagedZoneServiceDirectoryConfigNamespace.fromJson(core.Map _json)
+      : this(
+          deletionTime: _json.containsKey('deletionTime')
+              ? _json['deletionTime'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          namespaceUrl: _json.containsKey('namespaceUrl')
+              ? _json['namespaceUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deletionTime != null) 'deletionTime': deletionTime!,
@@ -2157,40 +3131,42 @@ class ManagedZonesListResponse {
   /// following your last page of results in pagination order.
   ///
   /// To fetch them, make another list request using this value as your page
-  /// token. In this way you can retrieve the complete contents of even very
-  /// large collections one page at a time. However, if the contents of the
-  /// collection change between the first and last paginated list request, the
-  /// set of all elements returned are an inconsistent view of the collection.
-  /// There is no way to retrieve a consistent snapshot of a collection larger
-  /// than the maximum page size.
+  /// token. This lets you the complete contents of even very large collections
+  /// one page at a time. However, if the contents of the collection change
+  /// between the first and last paginated list request, the set of all elements
+  /// returned are an inconsistent view of the collection. You cannot retrieve a
+  /// consistent snapshot of a collection larger than the maximum page size.
   core.String? nextPageToken;
 
-  ManagedZonesListResponse();
+  ManagedZonesListResponse({
+    this.header,
+    this.kind,
+    this.managedZones,
+    this.nextPageToken,
+  });
 
-  ManagedZonesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('managedZones')) {
-      managedZones = (_json['managedZones'] as core.List)
-          .map<ManagedZone>((value) => ManagedZone.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ManagedZonesListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          managedZones: _json.containsKey('managedZones')
+              ? (_json['managedZones'] as core.List)
+                  .map((value) => ManagedZone.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
-        if (managedZones != null)
-          'managedZones': managedZones!.map((value) => value.toJson()).toList(),
+        if (managedZones != null) 'managedZones': managedZones!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -2243,46 +3219,48 @@ class Operation {
   /// Only populated if the operation targeted a ManagedZone (output only).
   OperationManagedZoneContext? zoneContext;
 
-  Operation();
+  Operation({
+    this.dnsKeyContext,
+    this.id,
+    this.kind,
+    this.startTime,
+    this.status,
+    this.type,
+    this.user,
+    this.zoneContext,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('dnsKeyContext')) {
-      dnsKeyContext = OperationDnsKeyContext.fromJson(
-          _json['dnsKeyContext'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('user')) {
-      user = _json['user'] as core.String;
-    }
-    if (_json.containsKey('zoneContext')) {
-      zoneContext = OperationManagedZoneContext.fromJson(
-          _json['zoneContext'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          dnsKeyContext: _json.containsKey('dnsKeyContext')
+              ? OperationDnsKeyContext.fromJson(
+                  _json['dnsKeyContext'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          user: _json.containsKey('user') ? _json['user'] as core.String : null,
+          zoneContext: _json.containsKey('zoneContext')
+              ? OperationManagedZoneContext.fromJson(
+                  _json['zoneContext'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dnsKeyContext != null) 'dnsKeyContext': dnsKeyContext!.toJson(),
+        if (dnsKeyContext != null) 'dnsKeyContext': dnsKeyContext!,
         if (id != null) 'id': id!,
         if (kind != null) 'kind': kind!,
         if (startTime != null) 'startTime': startTime!,
         if (status != null) 'status': status!,
         if (type != null) 'type': type!,
         if (user != null) 'user': user!,
-        if (zoneContext != null) 'zoneContext': zoneContext!.toJson(),
+        if (zoneContext != null) 'zoneContext': zoneContext!,
       };
 }
 
@@ -2293,22 +3271,26 @@ class OperationDnsKeyContext {
   /// The pre-operation DnsKey resource.
   DnsKey? oldValue;
 
-  OperationDnsKeyContext();
+  OperationDnsKeyContext({
+    this.newValue,
+    this.oldValue,
+  });
 
-  OperationDnsKeyContext.fromJson(core.Map _json) {
-    if (_json.containsKey('newValue')) {
-      newValue = DnsKey.fromJson(
-          _json['newValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oldValue')) {
-      oldValue = DnsKey.fromJson(
-          _json['oldValue'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  OperationDnsKeyContext.fromJson(core.Map _json)
+      : this(
+          newValue: _json.containsKey('newValue')
+              ? DnsKey.fromJson(
+                  _json['newValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oldValue: _json.containsKey('oldValue')
+              ? DnsKey.fromJson(
+                  _json['oldValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (newValue != null) 'newValue': newValue!.toJson(),
-        if (oldValue != null) 'oldValue': oldValue!.toJson(),
+        if (newValue != null) 'newValue': newValue!,
+        if (oldValue != null) 'oldValue': oldValue!,
       };
 }
 
@@ -2319,22 +3301,26 @@ class OperationManagedZoneContext {
   /// The pre-operation ManagedZone resource.
   ManagedZone? oldValue;
 
-  OperationManagedZoneContext();
+  OperationManagedZoneContext({
+    this.newValue,
+    this.oldValue,
+  });
 
-  OperationManagedZoneContext.fromJson(core.Map _json) {
-    if (_json.containsKey('newValue')) {
-      newValue = ManagedZone.fromJson(
-          _json['newValue'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('oldValue')) {
-      oldValue = ManagedZone.fromJson(
-          _json['oldValue'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  OperationManagedZoneContext.fromJson(core.Map _json)
+      : this(
+          newValue: _json.containsKey('newValue')
+              ? ManagedZone.fromJson(
+                  _json['newValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+          oldValue: _json.containsKey('oldValue')
+              ? ManagedZone.fromJson(
+                  _json['oldValue'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (newValue != null) 'newValue': newValue!.toJson(),
-        if (oldValue != null) 'oldValue': oldValue!.toJson(),
+        if (newValue != null) 'newValue': newValue!,
+        if (oldValue != null) 'oldValue': oldValue!,
       };
 }
 
@@ -2348,44 +3334,46 @@ class PoliciesListResponse {
   /// following your last page of results in pagination order.
   ///
   /// To fetch them, make another list request using this value as your page
-  /// token. In this way you can retrieve the complete contents of even very
-  /// large collections one page at a time. However, if the contents of the
-  /// collection change between the first and last paginated list request, the
-  /// set of all elements returned are an inconsistent view of the collection.
-  /// There is no way to retrieve a consistent snapshot of a collection larger
-  /// than the maximum page size.
+  /// token. This lets you the complete contents of even very large collections
+  /// one page at a time. However, if the contents of the collection change
+  /// between the first and last paginated list request, the set of all elements
+  /// returned are an inconsistent view of the collection. You cannot retrieve a
+  /// consistent snapshot of a collection larger than the maximum page size.
   core.String? nextPageToken;
 
   /// The policy resources.
   core.List<Policy>? policies;
 
-  PoliciesListResponse();
+  PoliciesListResponse({
+    this.header,
+    this.kind,
+    this.nextPageToken,
+    this.policies,
+  });
 
-  PoliciesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('policies')) {
-      policies = (_json['policies'] as core.List)
-          .map<Policy>((value) =>
-              Policy.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  PoliciesListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          policies: _json.containsKey('policies')
+              ? (_json['policies'] as core.List)
+                  .map((value) => Policy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (policies != null)
-          'policies': policies!.map((value) => value.toJson()).toList(),
+        if (policies != null) 'policies': policies!,
       };
 }
 
@@ -2393,22 +3381,26 @@ class PoliciesPatchResponse {
   ResponseHeader? header;
   Policy? policy;
 
-  PoliciesPatchResponse();
+  PoliciesPatchResponse({
+    this.header,
+    this.policy,
+  });
 
-  PoliciesPatchResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PoliciesPatchResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
-        if (policy != null) 'policy': policy!.toJson(),
+        if (header != null) 'header': header!,
+        if (policy != null) 'policy': policy!,
       };
 }
 
@@ -2416,22 +3408,26 @@ class PoliciesUpdateResponse {
   ResponseHeader? header;
   Policy? policy;
 
-  PoliciesUpdateResponse();
+  PoliciesUpdateResponse({
+    this.header,
+    this.policy,
+  });
 
-  PoliciesUpdateResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  PoliciesUpdateResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
-        if (policy != null) 'policy': policy!.toJson(),
+        if (header != null) 'header': header!,
+        if (policy != null) 'policy': policy!,
       };
 }
 
@@ -2455,7 +3451,7 @@ class Policy {
   /// applications over VPN connections.
   ///
   /// When enabled, a virtual IP address is allocated from each of the
-  /// sub-networks that are bound to this policy.
+  /// subnetworks that are bound to this policy.
   core.bool? enableInboundForwarding;
 
   /// Controls whether logging is enabled for the networks bound to this policy.
@@ -2473,43 +3469,48 @@ class Policy {
   /// List of network names specifying networks to which this policy is applied.
   core.List<PolicyNetwork>? networks;
 
-  Policy();
+  Policy({
+    this.alternativeNameServerConfig,
+    this.description,
+    this.enableInboundForwarding,
+    this.enableLogging,
+    this.id,
+    this.kind,
+    this.name,
+    this.networks,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('alternativeNameServerConfig')) {
-      alternativeNameServerConfig = PolicyAlternativeNameServerConfig.fromJson(
-          _json['alternativeNameServerConfig']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('enableInboundForwarding')) {
-      enableInboundForwarding = _json['enableInboundForwarding'] as core.bool;
-    }
-    if (_json.containsKey('enableLogging')) {
-      enableLogging = _json['enableLogging'] as core.bool;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('networks')) {
-      networks = (_json['networks'] as core.List)
-          .map<PolicyNetwork>((value) => PolicyNetwork.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          alternativeNameServerConfig:
+              _json.containsKey('alternativeNameServerConfig')
+                  ? PolicyAlternativeNameServerConfig.fromJson(
+                      _json['alternativeNameServerConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          enableInboundForwarding: _json.containsKey('enableInboundForwarding')
+              ? _json['enableInboundForwarding'] as core.bool
+              : null,
+          enableLogging: _json.containsKey('enableLogging')
+              ? _json['enableLogging'] as core.bool
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          networks: _json.containsKey('networks')
+              ? (_json['networks'] as core.List)
+                  .map((value) => PolicyNetwork.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (alternativeNameServerConfig != null)
-          'alternativeNameServerConfig': alternativeNameServerConfig!.toJson(),
+          'alternativeNameServerConfig': alternativeNameServerConfig!,
         if (description != null) 'description': description!,
         if (enableInboundForwarding != null)
           'enableInboundForwarding': enableInboundForwarding!,
@@ -2517,8 +3518,7 @@ class Policy {
         if (id != null) 'id': id!,
         if (kind != null) 'kind': kind!,
         if (name != null) 'name': name!,
-        if (networks != null)
-          'networks': networks!.map((value) => value.toJson()).toList(),
+        if (networks != null) 'networks': networks!,
       };
 }
 
@@ -2533,61 +3533,64 @@ class PolicyAlternativeNameServerConfig {
   core.List<PolicyAlternativeNameServerConfigTargetNameServer>?
       targetNameServers;
 
-  PolicyAlternativeNameServerConfig();
+  PolicyAlternativeNameServerConfig({
+    this.kind,
+    this.targetNameServers,
+  });
 
-  PolicyAlternativeNameServerConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('targetNameServers')) {
-      targetNameServers = (_json['targetNameServers'] as core.List)
-          .map<PolicyAlternativeNameServerConfigTargetNameServer>((value) =>
-              PolicyAlternativeNameServerConfigTargetNameServer.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  PolicyAlternativeNameServerConfig.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          targetNameServers: _json.containsKey('targetNameServers')
+              ? (_json['targetNameServers'] as core.List)
+                  .map((value) =>
+                      PolicyAlternativeNameServerConfigTargetNameServer
+                          .fromJson(
+                              value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (targetNameServers != null)
-          'targetNameServers':
-              targetNameServers!.map((value) => value.toJson()).toList(),
+        if (targetNameServers != null) 'targetNameServers': targetNameServers!,
       };
 }
 
 class PolicyAlternativeNameServerConfigTargetNameServer {
   /// Forwarding path for this TargetNameServer.
   ///
-  /// If unset or set to DEFAULT, Cloud DNS makes forwarding decision based on
-  /// address ranges; that is, RFC1918 addresses go to the VPC, non-RFC1918
-  /// addresses go to the internet. When set to PRIVATE, Cloud DNS always sends
-  /// queries through VPC for this target.
+  /// If unset or set to DEFAULT, Cloud DNS makes forwarding decisions based on
+  /// address ranges; that is, RFC1918 addresses go to the VPC network,
+  /// non-RFC1918 addresses go to the internet. When set to PRIVATE, Cloud DNS
+  /// always sends queries through the VPC network for this target.
   /// Possible string values are:
-  /// - "default" : Cloud DNS will make forwarding decision based on address
+  /// - "default" : Cloud DNS makes forwarding decision based on IP address
   /// ranges; that is, RFC1918 addresses forward to the target through the VPC
   /// and non-RFC1918 addresses forward to the target through the internet
-  /// - "private" : Cloud DNS will always forward to this target through the
-  /// VPC.
+  /// - "private" : Cloud DNS always forwards to this target through the VPC.
   core.String? forwardingPath;
 
   /// IPv4 address to forward to.
   core.String? ipv4Address;
   core.String? kind;
 
-  PolicyAlternativeNameServerConfigTargetNameServer();
+  PolicyAlternativeNameServerConfigTargetNameServer({
+    this.forwardingPath,
+    this.ipv4Address,
+    this.kind,
+  });
 
-  PolicyAlternativeNameServerConfigTargetNameServer.fromJson(core.Map _json) {
-    if (_json.containsKey('forwardingPath')) {
-      forwardingPath = _json['forwardingPath'] as core.String;
-    }
-    if (_json.containsKey('ipv4Address')) {
-      ipv4Address = _json['ipv4Address'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  PolicyAlternativeNameServerConfigTargetNameServer.fromJson(core.Map _json)
+      : this(
+          forwardingPath: _json.containsKey('forwardingPath')
+              ? _json['forwardingPath'] as core.String
+              : null,
+          ipv4Address: _json.containsKey('ipv4Address')
+              ? _json['ipv4Address'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (forwardingPath != null) 'forwardingPath': forwardingPath!,
@@ -2605,16 +3608,18 @@ class PolicyNetwork {
   /// https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
   core.String? networkUrl;
 
-  PolicyNetwork();
+  PolicyNetwork({
+    this.kind,
+    this.networkUrl,
+  });
 
-  PolicyNetwork.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('networkUrl')) {
-      networkUrl = _json['networkUrl'] as core.String;
-    }
-  }
+  PolicyNetwork.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networkUrl: _json.containsKey('networkUrl')
+              ? _json['networkUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -2625,7 +3630,7 @@ class PolicyNetwork {
 /// A project resource.
 ///
 /// The project is a top level container for resources including Cloud DNS
-/// ManagedZones. Projects can be created only in the APIs console.
+/// ManagedZones. Projects can be created only in the APIs console. Next tag: 7.
 class Project {
   /// User assigned unique identifier for the resource (output only).
   core.String? id;
@@ -2638,29 +3643,31 @@ class Project {
   /// Quotas assigned to this project (output only).
   Quota? quota;
 
-  Project();
+  Project({
+    this.id,
+    this.kind,
+    this.number,
+    this.quota,
+  });
 
-  Project.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('number')) {
-      number = _json['number'] as core.String;
-    }
-    if (_json.containsKey('quota')) {
-      quota =
-          Quota.fromJson(_json['quota'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Project.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          number: _json.containsKey('number')
+              ? _json['number'] as core.String
+              : null,
+          quota: _json.containsKey('quota')
+              ? Quota.fromJson(
+                  _json['quota'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
         if (kind != null) 'kind': kind!,
         if (number != null) 'number': number!,
-        if (quota != null) 'quota': quota!.toJson(),
+        if (quota != null) 'quota': quota!,
       };
 }
 
@@ -2668,6 +3675,9 @@ class Project {
 class Quota {
   /// Maximum allowed number of DnsKeys per ManagedZone.
   core.int? dnsKeysPerManagedZone;
+
+  /// Maximum allowed number of items per routing policy.
+  core.int? itemsPerRoutingPolicy;
   core.String? kind;
 
   /// Maximum allowed number of managed zones in the project.
@@ -2683,6 +3693,10 @@ class Quota {
 
   /// Maximum allowed number of networks per policy.
   core.int? networksPerPolicy;
+
+  /// Maximum allowed number of consumer peering zones per target network owned
+  /// by this producer project
+  core.int? peeringZonesPerTargetNetwork;
 
   /// Maximum allowed number of policies per project.
   core.int? policies;
@@ -2714,64 +3728,91 @@ class Quota {
   /// DNSSEC algorithm and key length types that can be used for DnsKeys.
   core.List<DnsKeySpec>? whitelistedKeySpecs;
 
-  Quota();
+  Quota({
+    this.dnsKeysPerManagedZone,
+    this.itemsPerRoutingPolicy,
+    this.kind,
+    this.managedZones,
+    this.managedZonesPerNetwork,
+    this.networksPerManagedZone,
+    this.networksPerPolicy,
+    this.peeringZonesPerTargetNetwork,
+    this.policies,
+    this.resourceRecordsPerRrset,
+    this.rrsetAdditionsPerChange,
+    this.rrsetDeletionsPerChange,
+    this.rrsetsPerManagedZone,
+    this.targetNameServersPerManagedZone,
+    this.targetNameServersPerPolicy,
+    this.totalRrdataSizePerChange,
+    this.whitelistedKeySpecs,
+  });
 
-  Quota.fromJson(core.Map _json) {
-    if (_json.containsKey('dnsKeysPerManagedZone')) {
-      dnsKeysPerManagedZone = _json['dnsKeysPerManagedZone'] as core.int;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('managedZones')) {
-      managedZones = _json['managedZones'] as core.int;
-    }
-    if (_json.containsKey('managedZonesPerNetwork')) {
-      managedZonesPerNetwork = _json['managedZonesPerNetwork'] as core.int;
-    }
-    if (_json.containsKey('networksPerManagedZone')) {
-      networksPerManagedZone = _json['networksPerManagedZone'] as core.int;
-    }
-    if (_json.containsKey('networksPerPolicy')) {
-      networksPerPolicy = _json['networksPerPolicy'] as core.int;
-    }
-    if (_json.containsKey('policies')) {
-      policies = _json['policies'] as core.int;
-    }
-    if (_json.containsKey('resourceRecordsPerRrset')) {
-      resourceRecordsPerRrset = _json['resourceRecordsPerRrset'] as core.int;
-    }
-    if (_json.containsKey('rrsetAdditionsPerChange')) {
-      rrsetAdditionsPerChange = _json['rrsetAdditionsPerChange'] as core.int;
-    }
-    if (_json.containsKey('rrsetDeletionsPerChange')) {
-      rrsetDeletionsPerChange = _json['rrsetDeletionsPerChange'] as core.int;
-    }
-    if (_json.containsKey('rrsetsPerManagedZone')) {
-      rrsetsPerManagedZone = _json['rrsetsPerManagedZone'] as core.int;
-    }
-    if (_json.containsKey('targetNameServersPerManagedZone')) {
-      targetNameServersPerManagedZone =
-          _json['targetNameServersPerManagedZone'] as core.int;
-    }
-    if (_json.containsKey('targetNameServersPerPolicy')) {
-      targetNameServersPerPolicy =
-          _json['targetNameServersPerPolicy'] as core.int;
-    }
-    if (_json.containsKey('totalRrdataSizePerChange')) {
-      totalRrdataSizePerChange = _json['totalRrdataSizePerChange'] as core.int;
-    }
-    if (_json.containsKey('whitelistedKeySpecs')) {
-      whitelistedKeySpecs = (_json['whitelistedKeySpecs'] as core.List)
-          .map<DnsKeySpec>((value) =>
-              DnsKeySpec.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Quota.fromJson(core.Map _json)
+      : this(
+          dnsKeysPerManagedZone: _json.containsKey('dnsKeysPerManagedZone')
+              ? _json['dnsKeysPerManagedZone'] as core.int
+              : null,
+          itemsPerRoutingPolicy: _json.containsKey('itemsPerRoutingPolicy')
+              ? _json['itemsPerRoutingPolicy'] as core.int
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          managedZones: _json.containsKey('managedZones')
+              ? _json['managedZones'] as core.int
+              : null,
+          managedZonesPerNetwork: _json.containsKey('managedZonesPerNetwork')
+              ? _json['managedZonesPerNetwork'] as core.int
+              : null,
+          networksPerManagedZone: _json.containsKey('networksPerManagedZone')
+              ? _json['networksPerManagedZone'] as core.int
+              : null,
+          networksPerPolicy: _json.containsKey('networksPerPolicy')
+              ? _json['networksPerPolicy'] as core.int
+              : null,
+          peeringZonesPerTargetNetwork:
+              _json.containsKey('peeringZonesPerTargetNetwork')
+                  ? _json['peeringZonesPerTargetNetwork'] as core.int
+                  : null,
+          policies: _json.containsKey('policies')
+              ? _json['policies'] as core.int
+              : null,
+          resourceRecordsPerRrset: _json.containsKey('resourceRecordsPerRrset')
+              ? _json['resourceRecordsPerRrset'] as core.int
+              : null,
+          rrsetAdditionsPerChange: _json.containsKey('rrsetAdditionsPerChange')
+              ? _json['rrsetAdditionsPerChange'] as core.int
+              : null,
+          rrsetDeletionsPerChange: _json.containsKey('rrsetDeletionsPerChange')
+              ? _json['rrsetDeletionsPerChange'] as core.int
+              : null,
+          rrsetsPerManagedZone: _json.containsKey('rrsetsPerManagedZone')
+              ? _json['rrsetsPerManagedZone'] as core.int
+              : null,
+          targetNameServersPerManagedZone:
+              _json.containsKey('targetNameServersPerManagedZone')
+                  ? _json['targetNameServersPerManagedZone'] as core.int
+                  : null,
+          targetNameServersPerPolicy:
+              _json.containsKey('targetNameServersPerPolicy')
+                  ? _json['targetNameServersPerPolicy'] as core.int
+                  : null,
+          totalRrdataSizePerChange:
+              _json.containsKey('totalRrdataSizePerChange')
+                  ? _json['totalRrdataSizePerChange'] as core.int
+                  : null,
+          whitelistedKeySpecs: _json.containsKey('whitelistedKeySpecs')
+              ? (_json['whitelistedKeySpecs'] as core.List)
+                  .map((value) => DnsKeySpec.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dnsKeysPerManagedZone != null)
           'dnsKeysPerManagedZone': dnsKeysPerManagedZone!,
+        if (itemsPerRoutingPolicy != null)
+          'itemsPerRoutingPolicy': itemsPerRoutingPolicy!,
         if (kind != null) 'kind': kind!,
         if (managedZones != null) 'managedZones': managedZones!,
         if (managedZonesPerNetwork != null)
@@ -2779,6 +3820,8 @@ class Quota {
         if (networksPerManagedZone != null)
           'networksPerManagedZone': networksPerManagedZone!,
         if (networksPerPolicy != null) 'networksPerPolicy': networksPerPolicy!,
+        if (peeringZonesPerTargetNetwork != null)
+          'peeringZonesPerTargetNetwork': peeringZonesPerTargetNetwork!,
         if (policies != null) 'policies': policies!,
         if (resourceRecordsPerRrset != null)
           'resourceRecordsPerRrset': resourceRecordsPerRrset!,
@@ -2795,17 +3838,221 @@ class Quota {
         if (totalRrdataSizePerChange != null)
           'totalRrdataSizePerChange': totalRrdataSizePerChange!,
         if (whitelistedKeySpecs != null)
-          'whitelistedKeySpecs':
-              whitelistedKeySpecs!.map((value) => value.toJson()).toList(),
+          'whitelistedKeySpecs': whitelistedKeySpecs!,
       };
 }
 
-/// A unit of data that will be returned by the DNS servers.
+/// A RRSetRoutingPolicy represents ResourceRecordSet data that is returned
+/// dynamically with the response varying based on configured properties such as
+/// geolocation or by weighted random selection.
+class RRSetRoutingPolicy {
+  RRSetRoutingPolicyGeoPolicy? geo;
+  core.String? kind;
+  RRSetRoutingPolicyWrrPolicy? wrr;
+
+  RRSetRoutingPolicy({
+    this.geo,
+    this.kind,
+    this.wrr,
+  });
+
+  RRSetRoutingPolicy.fromJson(core.Map _json)
+      : this(
+          geo: _json.containsKey('geo')
+              ? RRSetRoutingPolicyGeoPolicy.fromJson(
+                  _json['geo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          wrr: _json.containsKey('wrr')
+              ? RRSetRoutingPolicyWrrPolicy.fromJson(
+                  _json['wrr'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (geo != null) 'geo': geo!,
+        if (kind != null) 'kind': kind!,
+        if (wrr != null) 'wrr': wrr!,
+      };
+}
+
+/// Configures a RRSetRoutingPolicy that routes based on the geo location of the
+/// querying user.
+class RRSetRoutingPolicyGeoPolicy {
+  /// The primary geo routing configuration.
+  ///
+  /// If there are multiple items with the same location, an error is returned
+  /// instead.
+  core.List<RRSetRoutingPolicyGeoPolicyGeoPolicyItem>? items;
+  core.String? kind;
+
+  RRSetRoutingPolicyGeoPolicy({
+    this.items,
+    this.kind,
+  });
+
+  RRSetRoutingPolicyGeoPolicy.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) =>
+                      RRSetRoutingPolicyGeoPolicyGeoPolicyItem.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (items != null) 'items': items!,
+        if (kind != null) 'kind': kind!,
+      };
+}
+
+/// ResourceRecordSet data for one geo location.
+class RRSetRoutingPolicyGeoPolicyGeoPolicyItem {
+  core.String? kind;
+
+  /// The geo-location granularity is a GCP region.
+  ///
+  /// This location string should correspond to a GCP region. e.g. "us-east1",
+  /// "southamerica-east1", "asia-east1", etc.
+  core.String? location;
+  core.List<core.String>? rrdatas;
+
+  /// DNSSEC generated signatures for all the rrdata within this item.
+  ///
+  /// Note that if health checked targets are provided for DNSSEC enabled zones,
+  /// there's a restriction of 1 ip per item. .
+  core.List<core.String>? signatureRrdatas;
+
+  RRSetRoutingPolicyGeoPolicyGeoPolicyItem({
+    this.kind,
+    this.location,
+    this.rrdatas,
+    this.signatureRrdatas,
+  });
+
+  RRSetRoutingPolicyGeoPolicyGeoPolicyItem.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          rrdatas: _json.containsKey('rrdatas')
+              ? (_json['rrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          signatureRrdatas: _json.containsKey('signatureRrdatas')
+              ? (_json['signatureRrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kind != null) 'kind': kind!,
+        if (location != null) 'location': location!,
+        if (rrdatas != null) 'rrdatas': rrdatas!,
+        if (signatureRrdatas != null) 'signatureRrdatas': signatureRrdatas!,
+      };
+}
+
+/// Configures a RRSetRoutingPolicy that routes in a weighted round robin
+/// fashion.
+class RRSetRoutingPolicyWrrPolicy {
+  core.List<RRSetRoutingPolicyWrrPolicyWrrPolicyItem>? items;
+  core.String? kind;
+
+  RRSetRoutingPolicyWrrPolicy({
+    this.items,
+    this.kind,
+  });
+
+  RRSetRoutingPolicyWrrPolicy.fromJson(core.Map _json)
+      : this(
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) =>
+                      RRSetRoutingPolicyWrrPolicyWrrPolicyItem.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (items != null) 'items': items!,
+        if (kind != null) 'kind': kind!,
+      };
+}
+
+/// A routing block which contains the routing information for one WRR item.
+class RRSetRoutingPolicyWrrPolicyWrrPolicyItem {
+  core.String? kind;
+  core.List<core.String>? rrdatas;
+
+  /// DNSSEC generated signatures for all the rrdata within this item.
+  ///
+  /// Note that if health checked targets are provided for DNSSEC enabled zones,
+  /// there's a restriction of 1 ip per item. .
+  core.List<core.String>? signatureRrdatas;
+
+  /// The weight corresponding to this subset of rrdata.
+  ///
+  /// When multiple WeightedRoundRobinPolicyItems are configured, the
+  /// probability of returning an rrset is proportional to its weight relative
+  /// to the sum of weights configured for all items. This weight should be
+  /// non-negative.
+  core.double? weight;
+
+  RRSetRoutingPolicyWrrPolicyWrrPolicyItem({
+    this.kind,
+    this.rrdatas,
+    this.signatureRrdatas,
+    this.weight,
+  });
+
+  RRSetRoutingPolicyWrrPolicyWrrPolicyItem.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          rrdatas: _json.containsKey('rrdatas')
+              ? (_json['rrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          signatureRrdatas: _json.containsKey('signatureRrdatas')
+              ? (_json['signatureRrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          weight: _json.containsKey('weight')
+              ? (_json['weight'] as core.num).toDouble()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kind != null) 'kind': kind!,
+        if (rrdatas != null) 'rrdatas': rrdatas!,
+        if (signatureRrdatas != null) 'signatureRrdatas': signatureRrdatas!,
+        if (weight != null) 'weight': weight!,
+      };
+}
+
+/// A unit of data that is returned by the DNS servers.
 class ResourceRecordSet {
   core.String? kind;
 
   /// For example, www.example.com.
   core.String? name;
+
+  /// Configures dynamic query responses based on geo location of querying user
+  /// or a weighted round robin based routing policy.
+  ///
+  /// A ResourceRecordSet should only have either rrdata (static) or
+  /// routing_policy (dynamic). An error is returned otherwise.
+  RRSetRoutingPolicy? routingPolicy;
 
   /// As defined in RFC 1035 (section 5) and RFC 1034 (section 3.6.1) -- see
   /// examples.
@@ -2822,42 +4069,50 @@ class ResourceRecordSet {
   /// See the list of Supported DNS record types.
   core.String? type;
 
-  ResourceRecordSet();
+  ResourceRecordSet({
+    this.kind,
+    this.name,
+    this.routingPolicy,
+    this.rrdatas,
+    this.signatureRrdatas,
+    this.ttl,
+    this.type,
+  });
 
-  ResourceRecordSet.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('rrdatas')) {
-      rrdatas = (_json['rrdatas'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('signatureRrdatas')) {
-      signatureRrdatas = (_json['signatureRrdatas'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('ttl')) {
-      ttl = _json['ttl'] as core.int;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ResourceRecordSet.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          routingPolicy: _json.containsKey('routingPolicy')
+              ? RRSetRoutingPolicy.fromJson(
+                  _json['routingPolicy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          rrdatas: _json.containsKey('rrdatas')
+              ? (_json['rrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          signatureRrdatas: _json.containsKey('signatureRrdatas')
+              ? (_json['signatureRrdatas'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          ttl: _json.containsKey('ttl') ? _json['ttl'] as core.int : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
         if (name != null) 'name': name!,
+        if (routingPolicy != null) 'routingPolicy': routingPolicy!,
         if (rrdatas != null) 'rrdatas': rrdatas!,
         if (signatureRrdatas != null) 'signatureRrdatas': signatureRrdatas!,
         if (ttl != null) 'ttl': ttl!,
         if (type != null) 'type': type!,
       };
 }
+
+typedef ResourceRecordSetsDeleteResponse = $Empty;
 
 class ResourceRecordSetsListResponse {
   ResponseHeader? header;
@@ -2880,33 +4135,36 @@ class ResourceRecordSetsListResponse {
   /// The resource record set resources.
   core.List<ResourceRecordSet>? rrsets;
 
-  ResourceRecordSetsListResponse();
+  ResourceRecordSetsListResponse({
+    this.header,
+    this.kind,
+    this.nextPageToken,
+    this.rrsets,
+  });
 
-  ResourceRecordSetsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = ResponseHeader.fromJson(
-          _json['header'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('rrsets')) {
-      rrsets = (_json['rrsets'] as core.List)
-          .map<ResourceRecordSet>((value) => ResourceRecordSet.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ResourceRecordSetsListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          rrsets: _json.containsKey('rrsets')
+              ? (_json['rrsets'] as core.List)
+                  .map((value) => ResourceRecordSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!.toJson(),
+        if (header != null) 'header': header!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (rrsets != null)
-          'rrsets': rrsets!.map((value) => value.toJson()).toList(),
+        if (rrsets != null) 'rrsets': rrsets!,
       };
 }
 
@@ -2918,15 +4176,399 @@ class ResponseHeader {
   /// is generated by the server (output only).
   core.String? operationId;
 
-  ResponseHeader();
+  ResponseHeader({
+    this.operationId,
+  });
 
-  ResponseHeader.fromJson(core.Map _json) {
-    if (_json.containsKey('operationId')) {
-      operationId = _json['operationId'] as core.String;
-    }
-  }
+  ResponseHeader.fromJson(core.Map _json)
+      : this(
+          operationId: _json.containsKey('operationId')
+              ? _json['operationId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operationId != null) 'operationId': operationId!,
+      };
+}
+
+class ResponsePoliciesListResponse {
+  ResponseHeader? header;
+
+  /// The presence of this field indicates that there exist more results
+  /// following your last page of results in pagination order.
+  ///
+  /// To fetch them, make another list request using this value as your page
+  /// token. This lets you the complete contents of even very large collections
+  /// one page at a time. However, if the contents of the collection change
+  /// between the first and last paginated list request, the set of all elements
+  /// returned are an inconsistent view of the collection. You cannot retrieve a
+  /// consistent snapshot of a collection larger than the maximum page size.
+  core.String? nextPageToken;
+
+  /// The Response Policy resources.
+  core.List<ResponsePolicy>? responsePolicies;
+
+  ResponsePoliciesListResponse({
+    this.header,
+    this.nextPageToken,
+    this.responsePolicies,
+  });
+
+  ResponsePoliciesListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          responsePolicies: _json.containsKey('responsePolicies')
+              ? (_json['responsePolicies'] as core.List)
+                  .map((value) => ResponsePolicy.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (responsePolicies != null) 'responsePolicies': responsePolicies!,
+      };
+}
+
+class ResponsePoliciesPatchResponse {
+  ResponseHeader? header;
+  ResponsePolicy? responsePolicy;
+
+  ResponsePoliciesPatchResponse({
+    this.header,
+    this.responsePolicy,
+  });
+
+  ResponsePoliciesPatchResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          responsePolicy: _json.containsKey('responsePolicy')
+              ? ResponsePolicy.fromJson(_json['responsePolicy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (responsePolicy != null) 'responsePolicy': responsePolicy!,
+      };
+}
+
+class ResponsePoliciesUpdateResponse {
+  ResponseHeader? header;
+  ResponsePolicy? responsePolicy;
+
+  ResponsePoliciesUpdateResponse({
+    this.header,
+    this.responsePolicy,
+  });
+
+  ResponsePoliciesUpdateResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          responsePolicy: _json.containsKey('responsePolicy')
+              ? ResponsePolicy.fromJson(_json['responsePolicy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (responsePolicy != null) 'responsePolicy': responsePolicy!,
+      };
+}
+
+/// A Response Policy is a collection of selectors that apply to queries made
+/// against one or more Virtual Private Cloud networks.
+class ResponsePolicy {
+  /// User-provided description for this Response Policy.
+  core.String? description;
+
+  /// Unique identifier for the resource; defined by the server (output only).
+  core.String? id;
+  core.String? kind;
+
+  /// List of network names specifying networks to which this policy is applied.
+  core.List<ResponsePolicyNetwork>? networks;
+
+  /// User assigned name for this Response Policy.
+  core.String? responsePolicyName;
+
+  ResponsePolicy({
+    this.description,
+    this.id,
+    this.kind,
+    this.networks,
+    this.responsePolicyName,
+  });
+
+  ResponsePolicy.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networks: _json.containsKey('networks')
+              ? (_json['networks'] as core.List)
+                  .map((value) => ResponsePolicyNetwork.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          responsePolicyName: _json.containsKey('responsePolicyName')
+              ? _json['responsePolicyName'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (description != null) 'description': description!,
+        if (id != null) 'id': id!,
+        if (kind != null) 'kind': kind!,
+        if (networks != null) 'networks': networks!,
+        if (responsePolicyName != null)
+          'responsePolicyName': responsePolicyName!,
+      };
+}
+
+class ResponsePolicyNetwork {
+  core.String? kind;
+
+  /// The fully qualified URL of the VPC network to bind to.
+  ///
+  /// This should be formatted like
+  /// https://www.googleapis.com/compute/v1/projects/{project}/global/networks/{network}
+  core.String? networkUrl;
+
+  ResponsePolicyNetwork({
+    this.kind,
+    this.networkUrl,
+  });
+
+  ResponsePolicyNetwork.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          networkUrl: _json.containsKey('networkUrl')
+              ? _json['networkUrl'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kind != null) 'kind': kind!,
+        if (networkUrl != null) 'networkUrl': networkUrl!,
+      };
+}
+
+/// A Response Policy Rule is a selector that applies its behavior to queries
+/// that match the selector.
+///
+/// Selectors are DNS names, which may be wildcards or exact matches. Each DNS
+/// query subject to a Response Policy matches at most one ResponsePolicyRule,
+/// as identified by the dns_name field with the longest matching suffix.
+class ResponsePolicyRule {
+  /// Answer this query with a behavior rather than DNS data.
+  /// Possible string values are:
+  /// - "behaviorUnspecified"
+  /// - "bypassResponsePolicy" : Skip a less-specific ResponsePolicyRule and
+  /// continue normal query logic. This can be used in conjunction with a
+  /// wildcard to exempt a subset of the wildcard ResponsePolicyRule from the
+  /// ResponsePolicy behavior and e.g., query the public internet instead. For
+  /// instance, if these rules exist: *.example.com -\> 1.2.3.4 foo.example.com
+  /// -\> PASSTHRU Then a query for 'foo.example.com' skips the wildcard.
+  core.String? behavior;
+
+  /// The DNS name (wildcard or exact) to apply this rule to.
+  ///
+  /// Must be unique within the Response Policy Rule.
+  core.String? dnsName;
+  core.String? kind;
+
+  /// Answer this query directly with DNS data.
+  ///
+  /// These ResourceRecordSets override any other DNS behavior for the matched
+  /// name; in particular they override private zones, the public internet, and
+  /// GCP internal DNS. No SOA nor NS types are allowed.
+  ResponsePolicyRuleLocalData? localData;
+
+  /// An identifier for this rule.
+  ///
+  /// Must be unique with the ResponsePolicy.
+  core.String? ruleName;
+
+  ResponsePolicyRule({
+    this.behavior,
+    this.dnsName,
+    this.kind,
+    this.localData,
+    this.ruleName,
+  });
+
+  ResponsePolicyRule.fromJson(core.Map _json)
+      : this(
+          behavior: _json.containsKey('behavior')
+              ? _json['behavior'] as core.String
+              : null,
+          dnsName: _json.containsKey('dnsName')
+              ? _json['dnsName'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          localData: _json.containsKey('localData')
+              ? ResponsePolicyRuleLocalData.fromJson(
+                  _json['localData'] as core.Map<core.String, core.dynamic>)
+              : null,
+          ruleName: _json.containsKey('ruleName')
+              ? _json['ruleName'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (behavior != null) 'behavior': behavior!,
+        if (dnsName != null) 'dnsName': dnsName!,
+        if (kind != null) 'kind': kind!,
+        if (localData != null) 'localData': localData!,
+        if (ruleName != null) 'ruleName': ruleName!,
+      };
+}
+
+class ResponsePolicyRuleLocalData {
+  /// All resource record sets for this selector, one per resource record type.
+  ///
+  /// The name must match the dns_name.
+  core.List<ResourceRecordSet>? localDatas;
+
+  ResponsePolicyRuleLocalData({
+    this.localDatas,
+  });
+
+  ResponsePolicyRuleLocalData.fromJson(core.Map _json)
+      : this(
+          localDatas: _json.containsKey('localDatas')
+              ? (_json['localDatas'] as core.List)
+                  .map((value) => ResourceRecordSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (localDatas != null) 'localDatas': localDatas!,
+      };
+}
+
+class ResponsePolicyRulesListResponse {
+  ResponseHeader? header;
+
+  /// The presence of this field indicates that there exist more results
+  /// following your last page of results in pagination order.
+  ///
+  /// To fetch them, make another list request using this value as your page
+  /// token. This lets you the complete contents of even very large collections
+  /// one page at a time. However, if the contents of the collection change
+  /// between the first and last paginated list request, the set of all elements
+  /// returned are an inconsistent view of the collection. You cannot retrieve a
+  /// consistent snapshot of a collection larger than the maximum page size.
+  core.String? nextPageToken;
+
+  /// The Response Policy Rule resources.
+  core.List<ResponsePolicyRule>? responsePolicyRules;
+
+  ResponsePolicyRulesListResponse({
+    this.header,
+    this.nextPageToken,
+    this.responsePolicyRules,
+  });
+
+  ResponsePolicyRulesListResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          responsePolicyRules: _json.containsKey('responsePolicyRules')
+              ? (_json['responsePolicyRules'] as core.List)
+                  .map((value) => ResponsePolicyRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (responsePolicyRules != null)
+          'responsePolicyRules': responsePolicyRules!,
+      };
+}
+
+class ResponsePolicyRulesPatchResponse {
+  ResponseHeader? header;
+  ResponsePolicyRule? responsePolicyRule;
+
+  ResponsePolicyRulesPatchResponse({
+    this.header,
+    this.responsePolicyRule,
+  });
+
+  ResponsePolicyRulesPatchResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          responsePolicyRule: _json.containsKey('responsePolicyRule')
+              ? ResponsePolicyRule.fromJson(_json['responsePolicyRule']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (responsePolicyRule != null)
+          'responsePolicyRule': responsePolicyRule!,
+      };
+}
+
+class ResponsePolicyRulesUpdateResponse {
+  ResponseHeader? header;
+  ResponsePolicyRule? responsePolicyRule;
+
+  ResponsePolicyRulesUpdateResponse({
+    this.header,
+    this.responsePolicyRule,
+  });
+
+  ResponsePolicyRulesUpdateResponse.fromJson(core.Map _json)
+      : this(
+          header: _json.containsKey('header')
+              ? ResponseHeader.fromJson(
+                  _json['header'] as core.Map<core.String, core.dynamic>)
+              : null,
+          responsePolicyRule: _json.containsKey('responsePolicyRule')
+              ? ResponsePolicyRule.fromJson(_json['responsePolicyRule']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (header != null) 'header': header!,
+        if (responsePolicyRule != null)
+          'responsePolicyRule': responsePolicyRule!,
       };
 }

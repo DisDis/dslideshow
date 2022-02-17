@@ -31,6 +31,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -39,7 +41,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Provides admission control and telemetry reporting for services integrated
 /// with Service Infrastructure.
 class ServiceControlApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -105,7 +108,7 @@ class ServicesResource {
     core.String serviceName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -161,7 +164,7 @@ class ServicesResource {
     core.String serviceName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -208,22 +211,28 @@ class Api {
   /// "v1alpha1".
   core.String? version;
 
-  Api();
+  Api({
+    this.operation,
+    this.protocol,
+    this.service,
+    this.version,
+  });
 
-  Api.fromJson(core.Map _json) {
-    if (_json.containsKey('operation')) {
-      operation = _json['operation'] as core.String;
-    }
-    if (_json.containsKey('protocol')) {
-      protocol = _json['protocol'] as core.String;
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  Api.fromJson(core.Map _json)
+      : this(
+          operation: _json.containsKey('operation')
+              ? _json['operation'] as core.String
+              : null,
+          protocol: _json.containsKey('protocol')
+              ? _json['protocol'] as core.String
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (operation != null) 'operation': operation!,
@@ -260,7 +269,7 @@ class AttributeContext {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? extensions;
+  core.List<core.Map<core.String, core.Object?>>? extensions;
 
   /// The origin of a network activity.
   ///
@@ -287,262 +296,63 @@ class AttributeContext {
   /// last hop.
   Peer? source;
 
-  AttributeContext();
+  AttributeContext({
+    this.api,
+    this.destination,
+    this.extensions,
+    this.origin,
+    this.request,
+    this.resource,
+    this.response,
+    this.source,
+  });
 
-  AttributeContext.fromJson(core.Map _json) {
-    if (_json.containsKey('api')) {
-      api = Api.fromJson(_json['api'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('destination')) {
-      destination = Peer.fromJson(
-          _json['destination'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('extensions')) {
-      extensions = (_json['extensions'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('origin')) {
-      origin =
-          Peer.fromJson(_json['origin'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('request')) {
-      request = Request.fromJson(
-          _json['request'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resource')) {
-      resource = Resource.fromJson(
-          _json['resource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('response')) {
-      response = Response.fromJson(
-          _json['response'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('source')) {
-      source =
-          Peer.fromJson(_json['source'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  AttributeContext.fromJson(core.Map _json)
+      : this(
+          api: _json.containsKey('api')
+              ? Api.fromJson(
+                  _json['api'] as core.Map<core.String, core.dynamic>)
+              : null,
+          destination: _json.containsKey('destination')
+              ? Peer.fromJson(
+                  _json['destination'] as core.Map<core.String, core.dynamic>)
+              : null,
+          extensions: _json.containsKey('extensions')
+              ? (_json['extensions'] as core.List)
+                  .map((value) => value as core.Map<core.String, core.dynamic>)
+                  .toList()
+              : null,
+          origin: _json.containsKey('origin')
+              ? Peer.fromJson(
+                  _json['origin'] as core.Map<core.String, core.dynamic>)
+              : null,
+          request: _json.containsKey('request')
+              ? Request.fromJson(
+                  _json['request'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resource: _json.containsKey('resource')
+              ? Resource.fromJson(
+                  _json['resource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          response: _json.containsKey('response')
+              ? Response.fromJson(
+                  _json['response'] as core.Map<core.String, core.dynamic>)
+              : null,
+          source: _json.containsKey('source')
+              ? Peer.fromJson(
+                  _json['source'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (api != null) 'api': api!.toJson(),
-        if (destination != null) 'destination': destination!.toJson(),
+        if (api != null) 'api': api!,
+        if (destination != null) 'destination': destination!,
         if (extensions != null) 'extensions': extensions!,
-        if (origin != null) 'origin': origin!.toJson(),
-        if (request != null) 'request': request!.toJson(),
-        if (resource != null) 'resource': resource!.toJson(),
-        if (response != null) 'response': response!.toJson(),
-        if (source != null) 'source': source!.toJson(),
-      };
-}
-
-/// Common audit log format for Google Cloud Platform API operations.
-class AuditLog {
-  /// Authentication information.
-  AuthenticationInfo? authenticationInfo;
-
-  /// Authorization information.
-  ///
-  /// If there are multiple resources or permissions involved, then there is one
-  /// AuthorizationInfo element for each {resource, permission} tuple.
-  core.List<AuthorizationInfo>? authorizationInfo;
-
-  /// Other service-specific data about the request, response, and other
-  /// information associated with the current audited event.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// The name of the service method or operation.
-  ///
-  /// For API calls, this should be the name of the API method. For example,
-  /// "google.cloud.bigquery.v2.TableService.InsertTable"
-  /// "google.logging.v2.ConfigServiceV2.CreateSink"
-  core.String? methodName;
-
-  /// The number of items returned from a List or Query API method, if
-  /// applicable.
-  core.String? numResponseItems;
-
-  /// The operation request.
-  ///
-  /// This may not include all request parameters, such as those that are too
-  /// large, privacy-sensitive, or duplicated elsewhere in the log record. It
-  /// should never include user-generated data, such as file contents. When the
-  /// JSON object represented here has a proto equivalent, the proto name will
-  /// be indicated in the `@type` property.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? request;
-
-  /// Metadata about the operation.
-  RequestMetadata? requestMetadata;
-
-  /// The resource location information.
-  ResourceLocation? resourceLocation;
-
-  /// The resource or collection that is the target of the operation.
-  ///
-  /// The name is a scheme-less URI, not including the API service name. For
-  /// example: "projects/PROJECT_ID/zones/us-central1-a/instances"
-  /// "projects/PROJECT_ID/datasets/DATASET_ID"
-  core.String? resourceName;
-
-  /// The resource's original state before mutation.
-  ///
-  /// Present only for operations which have successfully modified the targeted
-  /// resource(s). In general, this field should contain all changed fields,
-  /// except those that are already been included in `request`, `response`,
-  /// `metadata` or `service_data` fields. When the JSON object represented here
-  /// has a proto equivalent, the proto name will be indicated in the `@type`
-  /// property.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? resourceOriginalState;
-
-  /// The operation response.
-  ///
-  /// This may not include all response elements, such as those that are too
-  /// large, privacy-sensitive, or duplicated elsewhere in the log record. It
-  /// should never include user-generated data, such as file contents. When the
-  /// JSON object represented here has a proto equivalent, the proto name will
-  /// be indicated in the `@type` property.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
-
-  /// Use the `metadata` field instead.
-  ///
-  /// Other service-specific data about the request, response, and other
-  /// activities.
-  ///
-  /// Deprecated.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? serviceData;
-
-  /// The name of the API service performing the operation.
-  ///
-  /// For example, `"compute.googleapis.com"`.
-  core.String? serviceName;
-
-  /// The status of the overall operation.
-  Status? status;
-
-  AuditLog();
-
-  AuditLog.fromJson(core.Map _json) {
-    if (_json.containsKey('authenticationInfo')) {
-      authenticationInfo = AuthenticationInfo.fromJson(
-          _json['authenticationInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('authorizationInfo')) {
-      authorizationInfo = (_json['authorizationInfo'] as core.List)
-          .map<AuthorizationInfo>((value) => AuthorizationInfo.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('methodName')) {
-      methodName = _json['methodName'] as core.String;
-    }
-    if (_json.containsKey('numResponseItems')) {
-      numResponseItems = _json['numResponseItems'] as core.String;
-    }
-    if (_json.containsKey('request')) {
-      request = (_json['request'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('requestMetadata')) {
-      requestMetadata = RequestMetadata.fromJson(
-          _json['requestMetadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resourceLocation')) {
-      resourceLocation = ResourceLocation.fromJson(
-          _json['resourceLocation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resourceName')) {
-      resourceName = _json['resourceName'] as core.String;
-    }
-    if (_json.containsKey('resourceOriginalState')) {
-      resourceOriginalState = (_json['resourceOriginalState']
-              as core.Map<core.String, core.dynamic>)
-          .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('serviceData')) {
-      serviceData =
-          (_json['serviceData'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = Status.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (authenticationInfo != null)
-          'authenticationInfo': authenticationInfo!.toJson(),
-        if (authorizationInfo != null)
-          'authorizationInfo':
-              authorizationInfo!.map((value) => value.toJson()).toList(),
-        if (metadata != null) 'metadata': metadata!,
-        if (methodName != null) 'methodName': methodName!,
-        if (numResponseItems != null) 'numResponseItems': numResponseItems!,
+        if (origin != null) 'origin': origin!,
         if (request != null) 'request': request!,
-        if (requestMetadata != null)
-          'requestMetadata': requestMetadata!.toJson(),
-        if (resourceLocation != null)
-          'resourceLocation': resourceLocation!.toJson(),
-        if (resourceName != null) 'resourceName': resourceName!,
-        if (resourceOriginalState != null)
-          'resourceOriginalState': resourceOriginalState!,
+        if (resource != null) 'resource': resource!,
         if (response != null) 'response': response!,
-        if (serviceData != null) 'serviceData': serviceData!,
-        if (serviceName != null) 'serviceName': serviceName!,
-        if (status != null) 'status': status!.toJson(),
+        if (source != null) 'source': source!,
       };
 }
 
@@ -587,7 +397,7 @@ class Auth {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? claims;
+  core.Map<core.String, core.Object?>? claims;
 
   /// The authorized presenter of the credential.
   ///
@@ -604,34 +414,36 @@ class Auth {
   /// "https://accounts.google.com/{id}"
   core.String? principal;
 
-  Auth();
+  Auth({
+    this.accessLevels,
+    this.audiences,
+    this.claims,
+    this.presenter,
+    this.principal,
+  });
 
-  Auth.fromJson(core.Map _json) {
-    if (_json.containsKey('accessLevels')) {
-      accessLevels = (_json['accessLevels'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('audiences')) {
-      audiences = (_json['audiences'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('claims')) {
-      claims = (_json['claims'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('presenter')) {
-      presenter = _json['presenter'] as core.String;
-    }
-    if (_json.containsKey('principal')) {
-      principal = _json['principal'] as core.String;
-    }
-  }
+  Auth.fromJson(core.Map _json)
+      : this(
+          accessLevels: _json.containsKey('accessLevels')
+              ? (_json['accessLevels'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          audiences: _json.containsKey('audiences')
+              ? (_json['audiences'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          claims: _json.containsKey('claims')
+              ? _json['claims'] as core.Map<core.String, core.dynamic>
+              : null,
+          presenter: _json.containsKey('presenter')
+              ? _json['presenter'] as core.String
+              : null,
+          principal: _json.containsKey('principal')
+              ? _json['principal'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accessLevels != null) 'accessLevels': accessLevels!,
@@ -639,152 +451,6 @@ class Auth {
         if (claims != null) 'claims': claims!,
         if (presenter != null) 'presenter': presenter!,
         if (principal != null) 'principal': principal!,
-      };
-}
-
-/// Authentication information for the operation.
-class AuthenticationInfo {
-  /// The authority selector specified by the requestor, if any.
-  ///
-  /// It is not guaranteed that the principal was allowed to use this authority.
-  core.String? authoritySelector;
-
-  /// The email address of the authenticated user (or service account on behalf
-  /// of third party principal) making the request.
-  ///
-  /// For third party identity callers, the `principal_subject` field is
-  /// populated instead of this field. For privacy reasons, the principal email
-  /// address is sometimes redacted. For more information, see
-  /// [Caller identities in audit logs](https://cloud.google.com/logging/docs/audit#user-id).
-  core.String? principalEmail;
-
-  /// String representation of identity of requesting party.
-  ///
-  /// Populated for both first and third party identities.
-  core.String? principalSubject;
-
-  /// Identity delegation history of an authenticated service account that makes
-  /// the request.
-  ///
-  /// It contains information on the real authorities that try to access GCP
-  /// resources by delegating on a service account. When multiple authorities
-  /// present, they are guaranteed to be sorted based on the original ordering
-  /// of the identity delegation events.
-  core.List<ServiceAccountDelegationInfo>? serviceAccountDelegationInfo;
-
-  /// The name of the service account key used to create or exchange credentials
-  /// for authenticating the service account making the request.
-  ///
-  /// This is a scheme-less URI full resource name. For example:
-  /// "//iam.googleapis.com/projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT}/keys/{key}"
-  core.String? serviceAccountKeyName;
-
-  /// The third party identification (if any) of the authenticated user making
-  /// the request.
-  ///
-  /// When the JSON object represented here has a proto equivalent, the proto
-  /// name will be indicated in the `@type` property.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? thirdPartyPrincipal;
-
-  AuthenticationInfo();
-
-  AuthenticationInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('authoritySelector')) {
-      authoritySelector = _json['authoritySelector'] as core.String;
-    }
-    if (_json.containsKey('principalEmail')) {
-      principalEmail = _json['principalEmail'] as core.String;
-    }
-    if (_json.containsKey('principalSubject')) {
-      principalSubject = _json['principalSubject'] as core.String;
-    }
-    if (_json.containsKey('serviceAccountDelegationInfo')) {
-      serviceAccountDelegationInfo =
-          (_json['serviceAccountDelegationInfo'] as core.List)
-              .map<ServiceAccountDelegationInfo>((value) =>
-                  ServiceAccountDelegationInfo.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('serviceAccountKeyName')) {
-      serviceAccountKeyName = _json['serviceAccountKeyName'] as core.String;
-    }
-    if (_json.containsKey('thirdPartyPrincipal')) {
-      thirdPartyPrincipal =
-          (_json['thirdPartyPrincipal'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (authoritySelector != null) 'authoritySelector': authoritySelector!,
-        if (principalEmail != null) 'principalEmail': principalEmail!,
-        if (principalSubject != null) 'principalSubject': principalSubject!,
-        if (serviceAccountDelegationInfo != null)
-          'serviceAccountDelegationInfo': serviceAccountDelegationInfo!
-              .map((value) => value.toJson())
-              .toList(),
-        if (serviceAccountKeyName != null)
-          'serviceAccountKeyName': serviceAccountKeyName!,
-        if (thirdPartyPrincipal != null)
-          'thirdPartyPrincipal': thirdPartyPrincipal!,
-      };
-}
-
-/// Authorization information for the operation.
-class AuthorizationInfo {
-  /// Whether or not authorization for `resource` and `permission` was granted.
-  core.bool? granted;
-
-  /// The required IAM permission.
-  core.String? permission;
-
-  /// The resource being accessed, as a REST-style or cloud resource string.
-  ///
-  /// For example: bigquery.googleapis.com/projects/PROJECTID/datasets/DATASETID
-  /// or projects/PROJECTID/datasets/DATASETID
-  core.String? resource;
-
-  /// Resource attributes used in IAM condition evaluation.
-  ///
-  /// This field contains resource attributes like resource type and resource
-  /// name. To get the whole view of the attributes used in IAM condition
-  /// evaluation, the user must also look into
-  /// `AuditLog.request_metadata.request_attributes`.
-  Resource? resourceAttributes;
-
-  AuthorizationInfo();
-
-  AuthorizationInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('granted')) {
-      granted = _json['granted'] as core.bool;
-    }
-    if (_json.containsKey('permission')) {
-      permission = _json['permission'] as core.String;
-    }
-    if (_json.containsKey('resource')) {
-      resource = _json['resource'] as core.String;
-    }
-    if (_json.containsKey('resourceAttributes')) {
-      resourceAttributes = Resource.fromJson(
-          _json['resourceAttributes'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (granted != null) 'granted': granted!,
-        if (permission != null) 'permission': permission!,
-        if (resource != null) 'resource': resource!,
-        if (resourceAttributes != null)
-          'resourceAttributes': resourceAttributes!.toJson(),
       };
 }
 
@@ -808,32 +474,36 @@ class CheckRequest {
   /// configuration.
   core.String? serviceConfigId;
 
-  CheckRequest();
+  CheckRequest({
+    this.attributes,
+    this.flags,
+    this.resources,
+    this.serviceConfigId,
+  });
 
-  CheckRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('attributes')) {
-      attributes = AttributeContext.fromJson(
-          _json['attributes'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('flags')) {
-      flags = _json['flags'] as core.String;
-    }
-    if (_json.containsKey('resources')) {
-      resources = (_json['resources'] as core.List)
-          .map<ResourceInfo>((value) => ResourceInfo.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceConfigId')) {
-      serviceConfigId = _json['serviceConfigId'] as core.String;
-    }
-  }
+  CheckRequest.fromJson(core.Map _json)
+      : this(
+          attributes: _json.containsKey('attributes')
+              ? AttributeContext.fromJson(
+                  _json['attributes'] as core.Map<core.String, core.dynamic>)
+              : null,
+          flags:
+              _json.containsKey('flags') ? _json['flags'] as core.String : null,
+          resources: _json.containsKey('resources')
+              ? (_json['resources'] as core.List)
+                  .map((value) => ResourceInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceConfigId: _json.containsKey('serviceConfigId')
+              ? _json['serviceConfigId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (attributes != null) 'attributes': attributes!.toJson(),
+        if (attributes != null) 'attributes': attributes!,
         if (flags != null) 'flags': flags!,
-        if (resources != null)
-          'resources': resources!.map((value) => value.toJson()).toList(),
+        if (resources != null) 'resources': resources!,
         if (serviceConfigId != null) 'serviceConfigId': serviceConfigId!,
       };
 }
@@ -843,70 +513,36 @@ class CheckResponse {
   /// Returns a set of request contexts generated from the `CheckRequest`.
   core.Map<core.String, core.String>? headers;
 
-  /// An 'OK' status allows the operation.
+  /// Operation is allowed when this field is not set.
   ///
-  /// Any other status indicates a denial; \[google.rpc.Status.details\]() would
-  /// contain additional details about the denial.
+  /// Any non-'OK' status indicates a denial; \[google.rpc.Status.details\]()
+  /// would contain additional details about the denial.
   Status? status;
 
-  CheckResponse();
+  CheckResponse({
+    this.headers,
+    this.status,
+  });
 
-  CheckResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('status')) {
-      status = Status.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  CheckResponse.fromJson(core.Map _json)
+      : this(
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          status: _json.containsKey('status')
+              ? Status.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (headers != null) 'headers': headers!,
-        if (status != null) 'status': status!.toJson(),
-      };
-}
-
-/// First party identity principal.
-class FirstPartyPrincipal {
-  /// The email address of a Google account.
-  ///
-  /// .
-  core.String? principalEmail;
-
-  /// Metadata about the service that uses the service account.
-  ///
-  /// .
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? serviceMetadata;
-
-  FirstPartyPrincipal();
-
-  FirstPartyPrincipal.fromJson(core.Map _json) {
-    if (_json.containsKey('principalEmail')) {
-      principalEmail = _json['principalEmail'] as core.String;
-    }
-    if (_json.containsKey('serviceMetadata')) {
-      serviceMetadata =
-          (_json['serviceMetadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (principalEmail != null) 'principalEmail': principalEmail!,
-        if (serviceMetadata != null) 'serviceMetadata': serviceMetadata!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -938,30 +574,33 @@ class Peer {
   /// physical location where this peer is running.
   core.String? regionCode;
 
-  Peer();
+  Peer({
+    this.ip,
+    this.labels,
+    this.port,
+    this.principal,
+    this.regionCode,
+  });
 
-  Peer.fromJson(core.Map _json) {
-    if (_json.containsKey('ip')) {
-      ip = _json['ip'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.String;
-    }
-    if (_json.containsKey('principal')) {
-      principal = _json['principal'] as core.String;
-    }
-    if (_json.containsKey('regionCode')) {
-      regionCode = _json['regionCode'] as core.String;
-    }
-  }
+  Peer.fromJson(core.Map _json)
+      : this(
+          ip: _json.containsKey('ip') ? _json['ip'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          port: _json.containsKey('port') ? _json['port'] as core.String : null,
+          principal: _json.containsKey('principal')
+              ? _json['principal'] as core.String
+              : null,
+          regionCode: _json.containsKey('regionCode')
+              ? _json['regionCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ip != null) 'ip': ip!,
@@ -987,23 +626,26 @@ class ReportRequest {
   /// configuration.
   core.String? serviceConfigId;
 
-  ReportRequest();
+  ReportRequest({
+    this.operations,
+    this.serviceConfigId,
+  });
 
-  ReportRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<AttributeContext>((value) => AttributeContext.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceConfigId')) {
-      serviceConfigId = _json['serviceConfigId'] as core.String;
-    }
-  }
+  ReportRequest.fromJson(core.Map _json)
+      : this(
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => AttributeContext.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceConfigId: _json.containsKey('serviceConfigId')
+              ? _json['serviceConfigId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
         if (serviceConfigId != null) 'serviceConfigId': serviceConfigId!,
       };
 }
@@ -1011,15 +653,7 @@ class ReportRequest {
 /// Response message for the Report method.
 ///
 /// If the request contains any invalid data, the server returns an RPC error.
-class ReportResponse {
-  ReportResponse();
-
-  ReportResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef ReportResponse = $Empty;
 
 /// This message defines attributes for an HTTP request.
 ///
@@ -1052,7 +686,7 @@ class Request {
   /// The HTTP request method, such as `GET`, `POST`.
   core.String? method;
 
-  /// The HTTP URL path.
+  /// The HTTP URL path, excluding the query parameters.
   core.String? path;
 
   /// The network protocol used with the request, such as "http/1.1", "spdy/3",
@@ -1087,55 +721,58 @@ class Request {
   /// request.
   core.String? time;
 
-  Request();
+  Request({
+    this.auth,
+    this.headers,
+    this.host,
+    this.id,
+    this.method,
+    this.path,
+    this.protocol,
+    this.query,
+    this.reason,
+    this.scheme,
+    this.size,
+    this.time,
+  });
 
-  Request.fromJson(core.Map _json) {
-    if (_json.containsKey('auth')) {
-      auth =
-          Auth.fromJson(_json['auth'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('method')) {
-      method = _json['method'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-    if (_json.containsKey('protocol')) {
-      protocol = _json['protocol'] as core.String;
-    }
-    if (_json.containsKey('query')) {
-      query = _json['query'] as core.String;
-    }
-    if (_json.containsKey('reason')) {
-      reason = _json['reason'] as core.String;
-    }
-    if (_json.containsKey('scheme')) {
-      scheme = _json['scheme'] as core.String;
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-    if (_json.containsKey('time')) {
-      time = _json['time'] as core.String;
-    }
-  }
+  Request.fromJson(core.Map _json)
+      : this(
+          auth: _json.containsKey('auth')
+              ? Auth.fromJson(
+                  _json['auth'] as core.Map<core.String, core.dynamic>)
+              : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          method: _json.containsKey('method')
+              ? _json['method'] as core.String
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          protocol: _json.containsKey('protocol')
+              ? _json['protocol'] as core.String
+              : null,
+          query:
+              _json.containsKey('query') ? _json['query'] as core.String : null,
+          reason: _json.containsKey('reason')
+              ? _json['reason'] as core.String
+              : null,
+          scheme: _json.containsKey('scheme')
+              ? _json['scheme'] as core.String
+              : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+          time: _json.containsKey('time') ? _json['time'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auth != null) 'auth': auth!.toJson(),
+        if (auth != null) 'auth': auth!,
         if (headers != null) 'headers': headers!,
         if (host != null) 'host': host!,
         if (id != null) 'id': id!,
@@ -1147,89 +784,6 @@ class Request {
         if (scheme != null) 'scheme': scheme!,
         if (size != null) 'size': size!,
         if (time != null) 'time': time!,
-      };
-}
-
-/// Metadata about the request.
-class RequestMetadata {
-  /// The IP address of the caller.
-  ///
-  /// For caller from internet, this will be public IPv4 or IPv6 address. For
-  /// caller from a Compute Engine VM with external IP address, this will be the
-  /// VM's external IP address. For caller from a Compute Engine VM without
-  /// external IP address, if the VM is in the same organization (or project) as
-  /// the accessed resource, `caller_ip` will be the VM's internal IPv4 address,
-  /// otherwise the `caller_ip` will be redacted to "gce-internal-ip". See
-  /// https://cloud.google.com/compute/docs/vpc/ for more information.
-  core.String? callerIp;
-
-  /// The network of the caller.
-  ///
-  /// Set only if the network host project is part of the same GCP organization
-  /// (or project) as the accessed resource. See
-  /// https://cloud.google.com/compute/docs/vpc/ for more information. This is a
-  /// scheme-less URI full resource name. For example:
-  /// "//compute.googleapis.com/projects/PROJECT_ID/global/networks/NETWORK_ID"
-  core.String? callerNetwork;
-
-  /// The user agent of the caller.
-  ///
-  /// This information is not authenticated and should be treated accordingly.
-  /// For example: + `google-api-python-client/1.4.0`: The request was made by
-  /// the Google API client for Python. + `Cloud SDK Command Line Tool
-  /// apitools-client/1.0 gcloud/0.9.62`: The request was made by the Google
-  /// Cloud SDK CLI (gcloud). + `AppEngine-Google;
-  /// (+http://code.google.com/appengine; appid: s~my-project`: The request was
-  /// made from the `my-project` App Engine app. NOLINT
-  core.String? callerSuppliedUserAgent;
-
-  /// The destination of a network activity, such as accepting a TCP connection.
-  ///
-  /// In a multi hop network activity, the destination represents the receiver
-  /// of the last hop. Only two fields are used in this message, Peer.port and
-  /// Peer.ip. These fields are optionally populated by those services utilizing
-  /// the IAM condition feature.
-  Peer? destinationAttributes;
-
-  /// Request attributes used in IAM condition evaluation.
-  ///
-  /// This field contains request attributes like request time and access levels
-  /// associated with the request. To get the whole view of the attributes used
-  /// in IAM condition evaluation, the user must also look into
-  /// `AuditLog.authentication_info.resource_attributes`.
-  Request? requestAttributes;
-
-  RequestMetadata();
-
-  RequestMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('callerIp')) {
-      callerIp = _json['callerIp'] as core.String;
-    }
-    if (_json.containsKey('callerNetwork')) {
-      callerNetwork = _json['callerNetwork'] as core.String;
-    }
-    if (_json.containsKey('callerSuppliedUserAgent')) {
-      callerSuppliedUserAgent = _json['callerSuppliedUserAgent'] as core.String;
-    }
-    if (_json.containsKey('destinationAttributes')) {
-      destinationAttributes = Peer.fromJson(_json['destinationAttributes']
-          as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestAttributes')) {
-      requestAttributes = Request.fromJson(
-          _json['requestAttributes'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (callerIp != null) 'callerIp': callerIp!,
-        if (callerNetwork != null) 'callerNetwork': callerNetwork!,
-        if (callerSuppliedUserAgent != null)
-          'callerSuppliedUserAgent': callerSuppliedUserAgent!,
-        if (destinationAttributes != null)
-          'destinationAttributes': destinationAttributes!.toJson(),
-        if (requestAttributes != null)
-          'requestAttributes': requestAttributes!.toJson(),
       };
 }
 
@@ -1262,7 +816,7 @@ class Resource {
 
   /// Mutable.
   ///
-  /// The display name set by clients. Must be <= 63 characters.
+  /// The display name set by clients. Must be \<= 63 characters.
   core.String? displayName;
 
   /// An opaque value that uniquely identifies a version or generation of a
@@ -1314,7 +868,7 @@ class Resource {
   ///
   /// The syntax is platform-specific because different platforms define their
   /// resources differently. For Google APIs, the type format must be
-  /// "{service}/{kind}".
+  /// "{service}/{kind}", such as "pubsub.googleapis.com/Topic".
   core.String? type;
 
   /// The unique identifier of the resource.
@@ -1333,57 +887,63 @@ class Resource {
   /// Output only.
   core.String? updateTime;
 
-  Resource();
+  Resource({
+    this.annotations,
+    this.createTime,
+    this.deleteTime,
+    this.displayName,
+    this.etag,
+    this.labels,
+    this.location,
+    this.name,
+    this.service,
+    this.type,
+    this.uid,
+    this.updateTime,
+  });
 
-  Resource.fromJson(core.Map _json) {
-    if (_json.containsKey('annotations')) {
-      annotations =
-          (_json['annotations'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('deleteTime')) {
-      deleteTime = _json['deleteTime'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('uid')) {
-      uid = _json['uid'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Resource.fromJson(core.Map _json)
+      : this(
+          annotations: _json.containsKey('annotations')
+              ? (_json['annotations'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          deleteTime: _json.containsKey('deleteTime')
+              ? _json['deleteTime'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (annotations != null) 'annotations': annotations!,
@@ -1403,6 +963,24 @@ class Resource {
 
 /// Describes a resource referenced in the request.
 class ResourceInfo {
+  /// The identifier of the container of this resource.
+  ///
+  /// For Google Cloud APIs, the resource container must be one of the following
+  /// formats: - `projects/` - `folders/` - `organizations/` For the policy
+  /// enforcement on the container level (VPCSC and Location Policy check), this
+  /// field takes precedence on the container extracted from name when presents.
+  ///
+  /// Optional.
+  core.String? container;
+
+  /// The location of the resource.
+  ///
+  /// The value must be a valid zone, region or multiregion. For example:
+  /// "europe-west4" or "northamerica-northeast1-a"
+  ///
+  /// Optional.
+  core.String? location;
+
   /// The name of the resource referenced in the request.
   core.String? name;
 
@@ -1414,61 +992,35 @@ class ResourceInfo {
   /// The resource type in the format of "{service}/{kind}".
   core.String? type;
 
-  ResourceInfo();
+  ResourceInfo({
+    this.container,
+    this.location,
+    this.name,
+    this.permission,
+    this.type,
+  });
 
-  ResourceInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('permission')) {
-      permission = _json['permission'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ResourceInfo.fromJson(core.Map _json)
+      : this(
+          container: _json.containsKey('container')
+              ? _json['container'] as core.String
+              : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          permission: _json.containsKey('permission')
+              ? _json['permission'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (container != null) 'container': container!,
+        if (location != null) 'location': location!,
         if (name != null) 'name': name!,
         if (permission != null) 'permission': permission!,
         if (type != null) 'type': type!,
-      };
-}
-
-/// Location information about a resource.
-class ResourceLocation {
-  /// The locations of a resource after the execution of the operation.
-  ///
-  /// Requests to create or delete a location based resource must populate the
-  /// 'current_locations' field and not the 'original_locations' field. For
-  /// example: "europe-west1-a" "us-east1" "nam3"
-  core.List<core.String>? currentLocations;
-
-  /// The locations of a resource prior to the execution of the operation.
-  ///
-  /// Requests that mutate the resource's location must populate both the
-  /// 'original_locations' as well as the 'current_locations' fields. For
-  /// example: "europe-west1-a" "us-east1" "nam3"
-  core.List<core.String>? originalLocations;
-
-  ResourceLocation();
-
-  ResourceLocation.fromJson(core.Map _json) {
-    if (_json.containsKey('currentLocations')) {
-      currentLocations = (_json['currentLocations'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('originalLocations')) {
-      originalLocations = (_json['originalLocations'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (currentLocations != null) 'currentLocations': currentLocations!,
-        if (originalLocations != null) 'originalLocations': originalLocations!,
       };
 }
 
@@ -1476,7 +1028,7 @@ class ResourceLocation {
 ///
 /// It generally models semantics of an HTTP response.
 class Response {
-  /// The length of time it takes the backend service to fully respond to a
+  /// The amount of time it takes the backend service to fully respond to a
   /// request.
   ///
   /// Measured from when the destination service starts to send the request to
@@ -1503,30 +1055,31 @@ class Response {
   /// response.
   core.String? time;
 
-  Response();
+  Response({
+    this.backendLatency,
+    this.code,
+    this.headers,
+    this.size,
+    this.time,
+  });
 
-  Response.fromJson(core.Map _json) {
-    if (_json.containsKey('backendLatency')) {
-      backendLatency = _json['backendLatency'] as core.String;
-    }
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-    if (_json.containsKey('time')) {
-      time = _json['time'] as core.String;
-    }
-  }
+  Response.fromJson(core.Map _json)
+      : this(
+          backendLatency: _json.containsKey('backendLatency')
+              ? _json['backendLatency'] as core.String
+              : null,
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+          time: _json.containsKey('time') ? _json['time'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (backendLatency != null) 'backendLatency': backendLatency!,
@@ -1537,73 +1090,6 @@ class Response {
       };
 }
 
-/// Identity delegation history of an authenticated service account.
-class ServiceAccountDelegationInfo {
-  /// First party (Google) identity as the real authority.
-  FirstPartyPrincipal? firstPartyPrincipal;
-
-  /// A string representing the principal_subject associated with the identity.
-  ///
-  /// See go/3pical for more info on how principal_subject is formatted.
-  core.String? principalSubject;
-
-  /// Third party identity as the real authority.
-  ThirdPartyPrincipal? thirdPartyPrincipal;
-
-  ServiceAccountDelegationInfo();
-
-  ServiceAccountDelegationInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('firstPartyPrincipal')) {
-      firstPartyPrincipal = FirstPartyPrincipal.fromJson(
-          _json['firstPartyPrincipal'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('principalSubject')) {
-      principalSubject = _json['principalSubject'] as core.String;
-    }
-    if (_json.containsKey('thirdPartyPrincipal')) {
-      thirdPartyPrincipal = ThirdPartyPrincipal.fromJson(
-          _json['thirdPartyPrincipal'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (firstPartyPrincipal != null)
-          'firstPartyPrincipal': firstPartyPrincipal!.toJson(),
-        if (principalSubject != null) 'principalSubject': principalSubject!,
-        if (thirdPartyPrincipal != null)
-          'thirdPartyPrincipal': thirdPartyPrincipal!.toJson(),
-      };
-}
-
-/// The context of a span, attached to Exemplars in Distribution values during
-/// aggregation.
-///
-/// It contains the name of a span with format:
-/// projects/\[PROJECT_ID_OR_NUMBER\]/traces/\[TRACE_ID\]/spans/\[SPAN_ID\]
-class SpanContext {
-  /// The resource name of the span.
-  ///
-  /// The format is:
-  /// projects/\[PROJECT_ID_OR_NUMBER\]/traces/\[TRACE_ID\]/spans/\[SPAN_ID\]
-  /// `[TRACE_ID]` is a unique identifier for a trace within a project; it is a
-  /// 32-character hexadecimal encoding of a 16-byte array. `[SPAN_ID]` is a
-  /// unique identifier for a span within a trace; it is a 16-character
-  /// hexadecimal encoding of an 8-byte array.
-  core.String? spanName;
-
-  SpanContext();
-
-  SpanContext.fromJson(core.Map _json) {
-    if (_json.containsKey('spanName')) {
-      spanName = _json['spanName'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (spanName != null) 'spanName': spanName!,
-      };
-}
-
 /// The `Status` type defines a logical error model that is suitable for
 /// different programming environments, including REST APIs and RPC APIs.
 ///
@@ -1611,77 +1097,4 @@ class SpanContext {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
-
-/// Third party identity principal.
-class ThirdPartyPrincipal {
-  /// Metadata about third party identity.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? thirdPartyClaims;
-
-  ThirdPartyPrincipal();
-
-  ThirdPartyPrincipal.fromJson(core.Map _json) {
-    if (_json.containsKey('thirdPartyClaims')) {
-      thirdPartyClaims =
-          (_json['thirdPartyClaims'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (thirdPartyClaims != null) 'thirdPartyClaims': thirdPartyClaims!,
-      };
-}
+typedef Status = $Status;

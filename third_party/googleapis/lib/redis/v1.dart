@@ -33,6 +33,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -40,7 +42,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Creates and manages Redis instances on the Google Cloud Platform.
 class CloudRedisApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -116,11 +119,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -206,7 +213,7 @@ class ProjectsLocationsInstancesResource {
     core.String? instanceId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (instanceId != null) 'instanceId': [instanceId],
       if ($fields != null) 'fields': [$fields],
@@ -294,7 +301,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -338,7 +345,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -466,7 +473,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -563,7 +570,7 @@ class ProjectsLocationsInstancesResource {
   /// [updateMask] - Required. Mask of fields to update. At least one path must
   /// be supplied in this field. The elements of the repeated paths field may
   /// only include these fields from Instance: * `displayName` * `labels` *
-  /// `memorySizeGb` * `redisConfig`
+  /// `memorySizeGb` * `redisConfig` * `replica_count`
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -581,7 +588,7 @@ class ProjectsLocationsInstancesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -592,6 +599,51 @@ class ProjectsLocationsInstancesResource {
     final _response = await _requester.request(
       _url,
       'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Reschedule maintenance for a given instance in a given project and
+  /// location.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Redis instance resource name using the form:
+  /// `projects/{project_id}/locations/{location_id}/instances/{instance_id}`
+  /// where `location_id` refers to a GCP region.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/instances/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> rescheduleMaintenance(
+    RescheduleMaintenanceRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$name') + ':rescheduleMaintenance';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
       body: _body,
       queryParams: _queryParams,
     );
@@ -626,7 +678,7 @@ class ProjectsLocationsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -838,15 +890,7 @@ class ProjectsLocationsOperationsResource {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Request for Export.
 class ExportInstanceRequest {
@@ -855,17 +899,20 @@ class ExportInstanceRequest {
   /// Required.
   OutputConfig? outputConfig;
 
-  ExportInstanceRequest();
+  ExportInstanceRequest({
+    this.outputConfig,
+  });
 
-  ExportInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('outputConfig')) {
-      outputConfig = OutputConfig.fromJson(
-          _json['outputConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ExportInstanceRequest.fromJson(core.Map _json)
+      : this(
+          outputConfig: _json.containsKey('outputConfig')
+              ? OutputConfig.fromJson(
+                  _json['outputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (outputConfig != null) 'outputConfig': outputConfig!.toJson(),
+        if (outputConfig != null) 'outputConfig': outputConfig!,
       };
 }
 
@@ -888,13 +935,16 @@ class FailoverInstanceRequest {
   /// loss control.
   core.String? dataProtectionMode;
 
-  FailoverInstanceRequest();
+  FailoverInstanceRequest({
+    this.dataProtectionMode,
+  });
 
-  FailoverInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dataProtectionMode')) {
-      dataProtectionMode = _json['dataProtectionMode'] as core.String;
-    }
-  }
+  FailoverInstanceRequest.fromJson(core.Map _json)
+      : this(
+          dataProtectionMode: _json.containsKey('dataProtectionMode')
+              ? _json['dataProtectionMode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataProtectionMode != null)
@@ -911,13 +961,14 @@ class GcsDestination {
   /// Required.
   core.String? uri;
 
-  GcsDestination();
+  GcsDestination({
+    this.uri,
+  });
 
-  GcsDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  GcsDestination.fromJson(core.Map _json)
+      : this(
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (uri != null) 'uri': uri!,
@@ -933,127 +984,18 @@ class GcsSource {
   /// Required.
   core.String? uri;
 
-  GcsSource();
+  GcsSource({
+    this.uri,
+  });
 
-  GcsSource.fromJson(core.Map _json) {
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  GcsSource.fromJson(core.Map _json)
+      : this(
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (uri != null) 'uri': uri!,
       };
-}
-
-/// This location metadata represents additional configuration options for a
-/// given location where a Redis instance may be created.
-///
-/// All fields are output only. It is returned as content of the
-/// `google.cloud.location.Location.metadata` field.
-class GoogleCloudRedisV1LocationMetadata {
-  /// The set of available zones in the location.
-  ///
-  /// The map is keyed by the lowercase ID of each zone, as defined by GCE.
-  /// These keys can be specified in `location_id` or `alternative_location_id`
-  /// fields when creating a Redis instance.
-  ///
-  /// Output only.
-  core.Map<core.String, GoogleCloudRedisV1ZoneMetadata>? availableZones;
-
-  GoogleCloudRedisV1LocationMetadata();
-
-  GoogleCloudRedisV1LocationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('availableZones')) {
-      availableZones =
-          (_json['availableZones'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          GoogleCloudRedisV1ZoneMetadata.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (availableZones != null)
-          'availableZones': availableZones!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
-      };
-}
-
-/// Represents the v1 metadata of the long-running operation.
-class GoogleCloudRedisV1OperationMetadata {
-  /// API version.
-  core.String? apiVersion;
-
-  /// Specifies if cancellation was requested for the operation.
-  core.bool? cancelRequested;
-
-  /// Creation timestamp.
-  core.String? createTime;
-
-  /// End timestamp.
-  core.String? endTime;
-
-  /// Operation status details.
-  core.String? statusDetail;
-
-  /// Operation target.
-  core.String? target;
-
-  /// Operation verb.
-  core.String? verb;
-
-  GoogleCloudRedisV1OperationMetadata();
-
-  GoogleCloudRedisV1OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('cancelRequested')) {
-      cancelRequested = _json['cancelRequested'] as core.bool;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('statusDetail')) {
-      statusDetail = _json['statusDetail'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-    if (_json.containsKey('verb')) {
-      verb = _json['verb'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (cancelRequested != null) 'cancelRequested': cancelRequested!,
-        if (createTime != null) 'createTime': createTime!,
-        if (endTime != null) 'endTime': endTime!,
-        if (statusDetail != null) 'statusDetail': statusDetail!,
-        if (target != null) 'target': target!,
-        if (verb != null) 'verb': verb!,
-      };
-}
-
-/// Defines specific information for a particular zone.
-///
-/// Currently empty and reserved for future use only.
-class GoogleCloudRedisV1ZoneMetadata {
-  GoogleCloudRedisV1ZoneMetadata();
-
-  GoogleCloudRedisV1ZoneMetadata.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
 }
 
 /// Request for Import.
@@ -1063,17 +1005,20 @@ class ImportInstanceRequest {
   /// Required.
   InputConfig? inputConfig;
 
-  ImportInstanceRequest();
+  ImportInstanceRequest({
+    this.inputConfig,
+  });
 
-  ImportInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('inputConfig')) {
-      inputConfig = InputConfig.fromJson(
-          _json['inputConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ImportInstanceRequest.fromJson(core.Map _json)
+      : this(
+          inputConfig: _json.containsKey('inputConfig')
+              ? InputConfig.fromJson(
+                  _json['inputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (inputConfig != null) 'inputConfig': inputConfig!.toJson(),
+        if (inputConfig != null) 'inputConfig': inputConfig!,
       };
 }
 
@@ -1082,27 +1027,31 @@ class InputConfig {
   /// Google Cloud Storage location where input content is located.
   GcsSource? gcsSource;
 
-  InputConfig();
+  InputConfig({
+    this.gcsSource,
+  });
 
-  InputConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsSource')) {
-      gcsSource = GcsSource.fromJson(
-          _json['gcsSource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  InputConfig.fromJson(core.Map _json)
+      : this(
+          gcsSource: _json.containsKey('gcsSource')
+              ? GcsSource.fromJson(
+                  _json['gcsSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsSource != null) 'gcsSource': gcsSource!.toJson(),
+        if (gcsSource != null) 'gcsSource': gcsSource!,
       };
 }
 
-/// A Google Cloud Redis instance.
+/// A Memorystore for Redis instance.
 class Instance {
-  /// Only applicable to STANDARD_HA tier which protects the instance against
-  /// zonal failures by provisioning it across two zones.
+  /// If specified, at least one node will be provisioned in this zone in
+  /// addition to the zone specified in location_id.
   ///
-  /// If provided, it must be a different zone from the one provided in
-  /// location_id.
+  /// Only applicable to standard tier. If provided, it must be a different zone
+  /// from the one provided in \[location_id\]. Additional nodes beyond the
+  /// first 2 will be placed in zones selected by the service.
   ///
   /// Optional.
   core.String? alternativeLocationId;
@@ -1143,12 +1092,10 @@ class Instance {
   /// Output only.
   core.String? createTime;
 
-  /// The current zone where the Redis endpoint is placed.
+  /// The current zone where the Redis primary node is located.
   ///
-  /// For Basic Tier instances, this will always be the same as the location_id
-  /// provided by the user at creation time. For Standard Tier instances, this
-  /// can be either location_id or alternative_location_id and can change after
-  /// a failover event.
+  /// In basic tier, this will always be the same as \[location_id\]. In
+  /// standard tier, this can be the zone of any node in the instance.
   ///
   /// Output only.
   core.String? currentLocationId;
@@ -1167,13 +1114,25 @@ class Instance {
 
   /// The zone where the instance will be provisioned.
   ///
-  /// If not provided, the service will choose a zone for the instance. For
-  /// STANDARD_HA tier, instances will be created across two zones for
-  /// protection against zonal failures. If alternative_location_id is also
-  /// provided, it must be different from location_id.
+  /// If not provided, the service will choose a zone from the specified region
+  /// for the instance. For standard tier, additional nodes will be added across
+  /// multiple zones for protection against zonal failures. If specified, at
+  /// least one node will be provisioned in this zone.
   ///
   /// Optional.
   core.String? locationId;
+
+  /// The maintenance policy for the instance.
+  ///
+  /// If not provided, maintenance events can be performed at any time.
+  ///
+  /// Optional.
+  MaintenancePolicy? maintenancePolicy;
+
+  /// Date and time of upcoming maintenance events which have been scheduled.
+  ///
+  /// Output only.
+  MaintenanceSchedule? maintenanceSchedule;
 
   /// Redis memory size in GiB.
   ///
@@ -1193,6 +1152,16 @@ class Instance {
   /// Required.
   core.String? name;
 
+  /// Info per node.
+  ///
+  /// Output only.
+  core.List<NodeInfo>? nodes;
+
+  /// Persistence configuration parameters
+  ///
+  /// Optional.
+  PersistenceConfig? persistenceConfig;
+
   /// Cloud IAM identity used by import / export operations to transfer data
   /// to/from Cloud Storage.
   ///
@@ -1206,6 +1175,37 @@ class Instance {
   ///
   /// Output only.
   core.int? port;
+
+  /// Hostname or IP address of the exposed readonly Redis endpoint.
+  ///
+  /// Standard tier only. Targets all healthy replica nodes in instance.
+  /// Replication is asynchronous and replica nodes will exhibit some lag behind
+  /// the primary. Write requests must target 'host'.
+  ///
+  /// Output only.
+  core.String? readEndpoint;
+
+  /// The port number of the exposed readonly redis endpoint.
+  ///
+  /// Standard tier only. Write requests should target 'port'.
+  ///
+  /// Output only.
+  core.int? readEndpointPort;
+
+  /// Read replica mode.
+  ///
+  /// Can only be specified when trying to create the instance.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "READ_REPLICAS_MODE_UNSPECIFIED" : If not set, Memorystore Redis backend
+  /// will default to READ_REPLICAS_DISABLED.
+  /// - "READ_REPLICAS_DISABLED" : If disabled, read endpoint will not be
+  /// provided and the instance cannot scale up or down the number of replicas.
+  /// - "READ_REPLICAS_ENABLED" : If enabled, read endpoint will be provided and
+  /// the instance can scale up and down the number of replicas. Not valid for
+  /// basic tier.
+  core.String? readReplicasMode;
 
   /// Redis configuration parameters, according to
   /// http://redis.io/topics/config.
@@ -1223,19 +1223,45 @@ class Instance {
   /// If not provided, latest supported version will be used. Currently, the
   /// supported values are: * `REDIS_3_2` for Redis 3.2 compatibility *
   /// `REDIS_4_0` for Redis 4.0 compatibility (default) * `REDIS_5_0` for Redis
-  /// 5.0 compatibility * `REDIS_6_0` for Redis 6.0 compatibility
+  /// 5.0 compatibility * `REDIS_6_X` for Redis 6.x compatibility
   ///
   /// Optional.
   core.String? redisVersion;
 
-  /// The CIDR range of internal addresses that are reserved for this instance.
+  /// The number of replica nodes.
   ///
-  /// If not provided, the service will choose an unused /29 block, for example,
-  /// 10.0.0.0/29 or 192.168.0.0/29. Ranges must be unique and non-overlapping
-  /// with existing subnets in an authorized network.
+  /// The valid range for the Standard Tier with read replicas enabled is
+  /// \[1-5\] and defaults to 2. If read replicas are not enabled for a Standard
+  /// Tier instance, the only valid value is 1 and the default is 1. The valid
+  /// value for basic tier is 0 and the default is also 0.
+  ///
+  /// Optional.
+  core.int? replicaCount;
+
+  /// For DIRECT_PEERING mode, the CIDR range of internal addresses that are
+  /// reserved for this instance.
+  ///
+  /// Range must be unique and non-overlapping with existing subnets in an
+  /// authorized network. For PRIVATE_SERVICE_ACCESS mode, the name of one
+  /// allocated IP address ranges associated with this private service access
+  /// connection. If not provided, the service will choose an unused /29 block,
+  /// for example, 10.0.0.0/29 or 192.168.0.0/29. For READ_REPLICAS_ENABLED the
+  /// default block size is /28.
   ///
   /// Optional.
   core.String? reservedIpRange;
+
+  /// Additional ip ranges for node placement, beyond those specified in
+  /// reserved_ip_range.
+  ///
+  /// At most 1 secondary IP range is supported. The mask value must not exceed
+  /// /28. Not supported for BASIC tier. Updates can only add new ranges, once
+  /// added ranges cannot be changed or deleted. Values in this list cannot
+  /// overlap with the reserved_ip_range. Not supported during instance
+  /// creation.
+  ///
+  /// Optional.
+  core.String? secondaryIpRange;
 
   /// List of server CA certificates for the instance.
   ///
@@ -1289,90 +1315,147 @@ class Instance {
   /// - "DISABLED" : TLS is disabled for the instance.
   core.String? transitEncryptionMode;
 
-  Instance();
+  Instance({
+    this.alternativeLocationId,
+    this.authEnabled,
+    this.authorizedNetwork,
+    this.connectMode,
+    this.createTime,
+    this.currentLocationId,
+    this.displayName,
+    this.host,
+    this.labels,
+    this.locationId,
+    this.maintenancePolicy,
+    this.maintenanceSchedule,
+    this.memorySizeGb,
+    this.name,
+    this.nodes,
+    this.persistenceConfig,
+    this.persistenceIamIdentity,
+    this.port,
+    this.readEndpoint,
+    this.readEndpointPort,
+    this.readReplicasMode,
+    this.redisConfigs,
+    this.redisVersion,
+    this.replicaCount,
+    this.reservedIpRange,
+    this.secondaryIpRange,
+    this.serverCaCerts,
+    this.state,
+    this.statusMessage,
+    this.tier,
+    this.transitEncryptionMode,
+  });
 
-  Instance.fromJson(core.Map _json) {
-    if (_json.containsKey('alternativeLocationId')) {
-      alternativeLocationId = _json['alternativeLocationId'] as core.String;
-    }
-    if (_json.containsKey('authEnabled')) {
-      authEnabled = _json['authEnabled'] as core.bool;
-    }
-    if (_json.containsKey('authorizedNetwork')) {
-      authorizedNetwork = _json['authorizedNetwork'] as core.String;
-    }
-    if (_json.containsKey('connectMode')) {
-      connectMode = _json['connectMode'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('currentLocationId')) {
-      currentLocationId = _json['currentLocationId'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('memorySizeGb')) {
-      memorySizeGb = _json['memorySizeGb'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('persistenceIamIdentity')) {
-      persistenceIamIdentity = _json['persistenceIamIdentity'] as core.String;
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.int;
-    }
-    if (_json.containsKey('redisConfigs')) {
-      redisConfigs =
-          (_json['redisConfigs'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('redisVersion')) {
-      redisVersion = _json['redisVersion'] as core.String;
-    }
-    if (_json.containsKey('reservedIpRange')) {
-      reservedIpRange = _json['reservedIpRange'] as core.String;
-    }
-    if (_json.containsKey('serverCaCerts')) {
-      serverCaCerts = (_json['serverCaCerts'] as core.List)
-          .map<TlsCertificate>((value) => TlsCertificate.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('statusMessage')) {
-      statusMessage = _json['statusMessage'] as core.String;
-    }
-    if (_json.containsKey('tier')) {
-      tier = _json['tier'] as core.String;
-    }
-    if (_json.containsKey('transitEncryptionMode')) {
-      transitEncryptionMode = _json['transitEncryptionMode'] as core.String;
-    }
-  }
+  Instance.fromJson(core.Map _json)
+      : this(
+          alternativeLocationId: _json.containsKey('alternativeLocationId')
+              ? _json['alternativeLocationId'] as core.String
+              : null,
+          authEnabled: _json.containsKey('authEnabled')
+              ? _json['authEnabled'] as core.bool
+              : null,
+          authorizedNetwork: _json.containsKey('authorizedNetwork')
+              ? _json['authorizedNetwork'] as core.String
+              : null,
+          connectMode: _json.containsKey('connectMode')
+              ? _json['connectMode'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          currentLocationId: _json.containsKey('currentLocationId')
+              ? _json['currentLocationId'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          locationId: _json.containsKey('locationId')
+              ? _json['locationId'] as core.String
+              : null,
+          maintenancePolicy: _json.containsKey('maintenancePolicy')
+              ? MaintenancePolicy.fromJson(_json['maintenancePolicy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          maintenanceSchedule: _json.containsKey('maintenanceSchedule')
+              ? MaintenanceSchedule.fromJson(_json['maintenanceSchedule']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          memorySizeGb: _json.containsKey('memorySizeGb')
+              ? _json['memorySizeGb'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          nodes: _json.containsKey('nodes')
+              ? (_json['nodes'] as core.List)
+                  .map((value) => NodeInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          persistenceConfig: _json.containsKey('persistenceConfig')
+              ? PersistenceConfig.fromJson(_json['persistenceConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          persistenceIamIdentity: _json.containsKey('persistenceIamIdentity')
+              ? _json['persistenceIamIdentity'] as core.String
+              : null,
+          port: _json.containsKey('port') ? _json['port'] as core.int : null,
+          readEndpoint: _json.containsKey('readEndpoint')
+              ? _json['readEndpoint'] as core.String
+              : null,
+          readEndpointPort: _json.containsKey('readEndpointPort')
+              ? _json['readEndpointPort'] as core.int
+              : null,
+          readReplicasMode: _json.containsKey('readReplicasMode')
+              ? _json['readReplicasMode'] as core.String
+              : null,
+          redisConfigs: _json.containsKey('redisConfigs')
+              ? (_json['redisConfigs'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          redisVersion: _json.containsKey('redisVersion')
+              ? _json['redisVersion'] as core.String
+              : null,
+          replicaCount: _json.containsKey('replicaCount')
+              ? _json['replicaCount'] as core.int
+              : null,
+          reservedIpRange: _json.containsKey('reservedIpRange')
+              ? _json['reservedIpRange'] as core.String
+              : null,
+          secondaryIpRange: _json.containsKey('secondaryIpRange')
+              ? _json['secondaryIpRange'] as core.String
+              : null,
+          serverCaCerts: _json.containsKey('serverCaCerts')
+              ? (_json['serverCaCerts'] as core.List)
+                  .map((value) => TlsCertificate.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          statusMessage: _json.containsKey('statusMessage')
+              ? _json['statusMessage'] as core.String
+              : null,
+          tier: _json.containsKey('tier') ? _json['tier'] as core.String : null,
+          transitEncryptionMode: _json.containsKey('transitEncryptionMode')
+              ? _json['transitEncryptionMode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (alternativeLocationId != null)
@@ -1386,17 +1469,25 @@ class Instance {
         if (host != null) 'host': host!,
         if (labels != null) 'labels': labels!,
         if (locationId != null) 'locationId': locationId!,
+        if (maintenancePolicy != null) 'maintenancePolicy': maintenancePolicy!,
+        if (maintenanceSchedule != null)
+          'maintenanceSchedule': maintenanceSchedule!,
         if (memorySizeGb != null) 'memorySizeGb': memorySizeGb!,
         if (name != null) 'name': name!,
+        if (nodes != null) 'nodes': nodes!,
+        if (persistenceConfig != null) 'persistenceConfig': persistenceConfig!,
         if (persistenceIamIdentity != null)
           'persistenceIamIdentity': persistenceIamIdentity!,
         if (port != null) 'port': port!,
+        if (readEndpoint != null) 'readEndpoint': readEndpoint!,
+        if (readEndpointPort != null) 'readEndpointPort': readEndpointPort!,
+        if (readReplicasMode != null) 'readReplicasMode': readReplicasMode!,
         if (redisConfigs != null) 'redisConfigs': redisConfigs!,
         if (redisVersion != null) 'redisVersion': redisVersion!,
+        if (replicaCount != null) 'replicaCount': replicaCount!,
         if (reservedIpRange != null) 'reservedIpRange': reservedIpRange!,
-        if (serverCaCerts != null)
-          'serverCaCerts':
-              serverCaCerts!.map((value) => value.toJson()).toList(),
+        if (secondaryIpRange != null) 'secondaryIpRange': secondaryIpRange!,
+        if (serverCaCerts != null) 'serverCaCerts': serverCaCerts!,
         if (state != null) 'state': state!,
         if (statusMessage != null) 'statusMessage': statusMessage!,
         if (tier != null) 'tier': tier!,
@@ -1410,13 +1501,16 @@ class InstanceAuthString {
   /// AUTH string set on the instance.
   core.String? authString;
 
-  InstanceAuthString();
+  InstanceAuthString({
+    this.authString,
+  });
 
-  InstanceAuthString.fromJson(core.Map _json) {
-    if (_json.containsKey('authString')) {
-      authString = _json['authString'] as core.String;
-    }
-  }
+  InstanceAuthString.fromJson(core.Map _json)
+      : this(
+          authString: _json.containsKey('authString')
+              ? _json['authString'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (authString != null) 'authString': authString!,
@@ -1445,28 +1539,32 @@ class ListInstancesResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListInstancesResponse();
+  ListInstancesResponse({
+    this.instances,
+    this.nextPageToken,
+    this.unreachable,
+  });
 
-  ListInstancesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('instances')) {
-      instances = (_json['instances'] as core.List)
-          .map<Instance>((value) =>
-              Instance.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListInstancesResponse.fromJson(core.Map _json)
+      : this(
+          instances: _json.containsKey('instances')
+              ? (_json['instances'] as core.List)
+                  .map((value) => Instance.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (instances != null)
-          'instances': instances!.map((value) => value.toJson()).toList(),
+        if (instances != null) 'instances': instances!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
@@ -1480,23 +1578,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1509,24 +1610,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -1557,42 +1661,42 @@ class Location {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// Full resource name for the region.
   ///
   /// For example: "projects/example-project/locations/us-east1".
   core.String? name;
 
-  Location();
+  Location({
+    this.displayName,
+    this.labels,
+    this.locationId,
+    this.metadata,
+    this.name,
+  });
 
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  Location.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          locationId: _json.containsKey('locationId')
+              ? _json['locationId'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -1600,6 +1704,155 @@ class Location {
         if (locationId != null) 'locationId': locationId!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
+      };
+}
+
+/// Maintenance policy for an instance.
+class MaintenancePolicy {
+  /// The time when the policy was created.
+  ///
+  /// Output only.
+  core.String? createTime;
+
+  /// Description of what this policy is for.
+  ///
+  /// Create/Update methods return INVALID_ARGUMENT if the length is greater
+  /// than 512.
+  ///
+  /// Optional.
+  core.String? description;
+
+  /// The time when the policy was last updated.
+  ///
+  /// Output only.
+  core.String? updateTime;
+
+  /// Maintenance window that is applied to resources covered by this policy.
+  ///
+  /// Minimum 1. For the current version, the maximum number of weekly_window is
+  /// expected to be one.
+  ///
+  /// Optional.
+  core.List<WeeklyMaintenanceWindow>? weeklyMaintenanceWindow;
+
+  MaintenancePolicy({
+    this.createTime,
+    this.description,
+    this.updateTime,
+    this.weeklyMaintenanceWindow,
+  });
+
+  MaintenancePolicy.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+          weeklyMaintenanceWindow: _json.containsKey('weeklyMaintenanceWindow')
+              ? (_json['weeklyMaintenanceWindow'] as core.List)
+                  .map((value) => WeeklyMaintenanceWindow.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (createTime != null) 'createTime': createTime!,
+        if (description != null) 'description': description!,
+        if (updateTime != null) 'updateTime': updateTime!,
+        if (weeklyMaintenanceWindow != null)
+          'weeklyMaintenanceWindow': weeklyMaintenanceWindow!,
+      };
+}
+
+/// Upcoming maintenance schedule.
+///
+/// If no maintenance is scheduled, fields are not populated.
+class MaintenanceSchedule {
+  /// If the scheduled maintenance can be rescheduled, default is true.
+  core.bool? canReschedule;
+
+  /// The end time of any upcoming scheduled maintenance for this instance.
+  ///
+  /// Output only.
+  core.String? endTime;
+
+  /// The deadline that the maintenance schedule start time can not go beyond,
+  /// including reschedule.
+  ///
+  /// Output only.
+  core.String? scheduleDeadlineTime;
+
+  /// The start time of any upcoming scheduled maintenance for this instance.
+  ///
+  /// Output only.
+  core.String? startTime;
+
+  MaintenanceSchedule({
+    this.canReschedule,
+    this.endTime,
+    this.scheduleDeadlineTime,
+    this.startTime,
+  });
+
+  MaintenanceSchedule.fromJson(core.Map _json)
+      : this(
+          canReschedule: _json.containsKey('canReschedule')
+              ? _json['canReschedule'] as core.bool
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          scheduleDeadlineTime: _json.containsKey('scheduleDeadlineTime')
+              ? _json['scheduleDeadlineTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (canReschedule != null) 'canReschedule': canReschedule!,
+        if (endTime != null) 'endTime': endTime!,
+        if (scheduleDeadlineTime != null)
+          'scheduleDeadlineTime': scheduleDeadlineTime!,
+        if (startTime != null) 'startTime': startTime!,
+      };
+}
+
+/// Node specific properties.
+class NodeInfo {
+  /// Node identifying string.
+  ///
+  /// e.g. 'node-0', 'node-1'
+  ///
+  /// Output only.
+  core.String? id;
+
+  /// Location of the node.
+  ///
+  /// Output only.
+  core.String? zone;
+
+  NodeInfo({
+    this.id,
+    this.zone,
+  });
+
+  NodeInfo.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          zone: _json.containsKey('zone') ? _json['zone'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (id != null) 'id': id!,
+        if (zone != null) 'zone': zone!,
       };
 }
 
@@ -1628,7 +1881,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -1648,42 +1901,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -1695,17 +1941,141 @@ class OutputConfig {
   /// Google Cloud Storage destination for output content.
   GcsDestination? gcsDestination;
 
-  OutputConfig();
+  OutputConfig({
+    this.gcsDestination,
+  });
 
-  OutputConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('gcsDestination')) {
-      gcsDestination = GcsDestination.fromJson(
-          _json['gcsDestination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  OutputConfig.fromJson(core.Map _json)
+      : this(
+          gcsDestination: _json.containsKey('gcsDestination')
+              ? GcsDestination.fromJson(_json['gcsDestination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (gcsDestination != null) 'gcsDestination': gcsDestination!.toJson(),
+        if (gcsDestination != null) 'gcsDestination': gcsDestination!,
+      };
+}
+
+/// Configuration of the persistence functionality.
+class PersistenceConfig {
+  /// Controls whether Persistence features are enabled.
+  ///
+  /// If not provided, the existing value will be used.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "PERSISTENCE_MODE_UNSPECIFIED" : Not set.
+  /// - "DISABLED" : Persistence is disabled for the instance, and any existing
+  /// snapshots are deleted.
+  /// - "RDB" : RDB based Persistence is enabled.
+  core.String? persistenceMode;
+
+  /// The next time that a snapshot attempt is scheduled to occur.
+  ///
+  /// Output only.
+  core.String? rdbNextSnapshotTime;
+
+  /// Period between RDB snapshots.
+  ///
+  /// Snapshots will be attempted every period starting from the provided
+  /// snapshot start time. For example, a start time of 01/01/2033 06:45 and
+  /// SIX_HOURS snapshot period will do nothing until 01/01/2033, and then
+  /// trigger snapshots every day at 06:45, 12:45, 18:45, and 00:45 the next
+  /// day, and so on. If not provided, TWENTY_FOUR_HOURS will be used as
+  /// default.
+  ///
+  /// Optional.
+  /// Possible string values are:
+  /// - "SNAPSHOT_PERIOD_UNSPECIFIED" : Not set.
+  /// - "ONE_HOUR" : Snapshot every 1 hour.
+  /// - "SIX_HOURS" : Snapshot every 6 hours.
+  /// - "TWELVE_HOURS" : Snapshot every 12 hours.
+  /// - "TWENTY_FOUR_HOURS" : Snapshot every 24 horus.
+  core.String? rdbSnapshotPeriod;
+
+  /// Date and time that the first snapshot was/will be attempted, and to which
+  /// future snapshots will be aligned.
+  ///
+  /// If not provided, the current time will be used.
+  ///
+  /// Optional.
+  core.String? rdbSnapshotStartTime;
+
+  PersistenceConfig({
+    this.persistenceMode,
+    this.rdbNextSnapshotTime,
+    this.rdbSnapshotPeriod,
+    this.rdbSnapshotStartTime,
+  });
+
+  PersistenceConfig.fromJson(core.Map _json)
+      : this(
+          persistenceMode: _json.containsKey('persistenceMode')
+              ? _json['persistenceMode'] as core.String
+              : null,
+          rdbNextSnapshotTime: _json.containsKey('rdbNextSnapshotTime')
+              ? _json['rdbNextSnapshotTime'] as core.String
+              : null,
+          rdbSnapshotPeriod: _json.containsKey('rdbSnapshotPeriod')
+              ? _json['rdbSnapshotPeriod'] as core.String
+              : null,
+          rdbSnapshotStartTime: _json.containsKey('rdbSnapshotStartTime')
+              ? _json['rdbSnapshotStartTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (persistenceMode != null) 'persistenceMode': persistenceMode!,
+        if (rdbNextSnapshotTime != null)
+          'rdbNextSnapshotTime': rdbNextSnapshotTime!,
+        if (rdbSnapshotPeriod != null) 'rdbSnapshotPeriod': rdbSnapshotPeriod!,
+        if (rdbSnapshotStartTime != null)
+          'rdbSnapshotStartTime': rdbSnapshotStartTime!,
+      };
+}
+
+/// Request for RescheduleMaintenance.
+class RescheduleMaintenanceRequest {
+  /// If reschedule type is SPECIFIC_TIME, must set up schedule_time as well.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "RESCHEDULE_TYPE_UNSPECIFIED" : Not set.
+  /// - "IMMEDIATE" : If the user wants to schedule the maintenance to happen
+  /// now.
+  /// - "NEXT_AVAILABLE_WINDOW" : If the user wants to use the existing
+  /// maintenance policy to find the next available window.
+  /// - "SPECIFIC_TIME" : If the user wants to reschedule the maintenance to a
+  /// specific time.
+  core.String? rescheduleType;
+
+  /// Timestamp when the maintenance shall be rescheduled to if
+  /// reschedule_type=SPECIFIC_TIME, in RFC 3339 format, for example
+  /// `2012-11-15T16:19:00.094Z`.
+  ///
+  /// Optional.
+  core.String? scheduleTime;
+
+  RescheduleMaintenanceRequest({
+    this.rescheduleType,
+    this.scheduleTime,
+  });
+
+  RescheduleMaintenanceRequest.fromJson(core.Map _json)
+      : this(
+          rescheduleType: _json.containsKey('rescheduleType')
+              ? _json['rescheduleType'] as core.String
+              : null,
+          scheduleTime: _json.containsKey('scheduleTime')
+              ? _json['scheduleTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (rescheduleType != null) 'rescheduleType': rescheduleType!,
+        if (scheduleTime != null) 'scheduleTime': scheduleTime!,
       };
 }
 
@@ -1716,52 +2086,14 @@ class OutputConfig {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
+typedef Status = $Status;
 
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+/// Represents a time of day.
+///
+/// The date and time zone are either not significant or are specified
+/// elsewhere. An API may choose to allow leap seconds. Related types are
+/// google.type.Date and `google.protobuf.Timestamp`.
+typedef TimeOfDay = $TimeOfDay;
 
 /// TlsCertificate Resource
 class TlsCertificate {
@@ -1788,25 +2120,30 @@ class TlsCertificate {
   /// Sha1 Fingerprint of the certificate.
   core.String? sha1Fingerprint;
 
-  TlsCertificate();
+  TlsCertificate({
+    this.cert,
+    this.createTime,
+    this.expireTime,
+    this.serialNumber,
+    this.sha1Fingerprint,
+  });
 
-  TlsCertificate.fromJson(core.Map _json) {
-    if (_json.containsKey('cert')) {
-      cert = _json['cert'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('expireTime')) {
-      expireTime = _json['expireTime'] as core.String;
-    }
-    if (_json.containsKey('serialNumber')) {
-      serialNumber = _json['serialNumber'] as core.String;
-    }
-    if (_json.containsKey('sha1Fingerprint')) {
-      sha1Fingerprint = _json['sha1Fingerprint'] as core.String;
-    }
-  }
+  TlsCertificate.fromJson(core.Map _json)
+      : this(
+          cert: _json.containsKey('cert') ? _json['cert'] as core.String : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+          serialNumber: _json.containsKey('serialNumber')
+              ? _json['serialNumber'] as core.String
+              : null,
+          sha1Fingerprint: _json.containsKey('sha1Fingerprint')
+              ? _json['sha1Fingerprint'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cert != null) 'cert': cert!,
@@ -1824,15 +2161,73 @@ class UpgradeInstanceRequest {
   /// Required.
   core.String? redisVersion;
 
-  UpgradeInstanceRequest();
+  UpgradeInstanceRequest({
+    this.redisVersion,
+  });
 
-  UpgradeInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('redisVersion')) {
-      redisVersion = _json['redisVersion'] as core.String;
-    }
-  }
+  UpgradeInstanceRequest.fromJson(core.Map _json)
+      : this(
+          redisVersion: _json.containsKey('redisVersion')
+              ? _json['redisVersion'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (redisVersion != null) 'redisVersion': redisVersion!,
+      };
+}
+
+/// Time window in which disruptive maintenance updates occur.
+///
+/// Non-disruptive updates can occur inside or outside this window.
+class WeeklyMaintenanceWindow {
+  /// The day of week that maintenance updates occur.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "DAY_OF_WEEK_UNSPECIFIED" : The day of the week is unspecified.
+  /// - "MONDAY" : Monday
+  /// - "TUESDAY" : Tuesday
+  /// - "WEDNESDAY" : Wednesday
+  /// - "THURSDAY" : Thursday
+  /// - "FRIDAY" : Friday
+  /// - "SATURDAY" : Saturday
+  /// - "SUNDAY" : Sunday
+  core.String? day;
+
+  /// Duration of the maintenance window.
+  ///
+  /// The current window is fixed at 1 hour.
+  ///
+  /// Output only.
+  core.String? duration;
+
+  /// Start time of the window in UTC time.
+  ///
+  /// Required.
+  TimeOfDay? startTime;
+
+  WeeklyMaintenanceWindow({
+    this.day,
+    this.duration,
+    this.startTime,
+  });
+
+  WeeklyMaintenanceWindow.fromJson(core.Map _json)
+      : this(
+          day: _json.containsKey('day') ? _json['day'] as core.String : null,
+          duration: _json.containsKey('duration')
+              ? _json['duration'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? TimeOfDay.fromJson(
+                  _json['startTime'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (day != null) 'day': day!,
+        if (duration != null) 'duration': duration!,
+        if (startTime != null) 'startTime': startTime!,
       };
 }

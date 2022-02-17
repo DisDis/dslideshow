@@ -418,7 +418,7 @@ class AccountsAdunitsResource {
     core.String adClientId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -526,7 +526,7 @@ class AccountsAdunitsResource {
     core.String adUnitId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       'adUnitId': [adUnitId],
       if ($fields != null) 'fields': [$fields],
@@ -573,7 +573,7 @@ class AccountsAdunitsResource {
     core.String adClientId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -986,7 +986,7 @@ class CustomchannelsResource {
     core.String adClientId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1082,7 +1082,7 @@ class CustomchannelsResource {
     core.String customChannelId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       'customChannelId': [customChannelId],
       if ($fields != null) 'fields': [$fields],
@@ -1125,7 +1125,7 @@ class CustomchannelsResource {
     core.String adClientId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1307,7 +1307,7 @@ class UrlchannelsResource {
     core.String adClientId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1389,22 +1389,22 @@ class Account {
   /// One of: PENDING, APPROVED, DISABLED.
   core.String? status;
 
-  Account();
+  Account({
+    this.id,
+    this.kind,
+    this.name,
+    this.status,
+  });
 
-  Account.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
+  Account.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -1424,27 +1424,27 @@ class Accounts {
   /// Kind of list this is, in this case adsensehost#accounts.
   core.String? kind;
 
-  Accounts();
+  Accounts({
+    this.etag,
+    this.items,
+    this.kind,
+  });
 
-  Accounts.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Account>((value) =>
-              Account.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  Accounts.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Account.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
       };
 }
@@ -1466,25 +1466,28 @@ class AdClient {
   /// Whether this ad client supports being reported on.
   core.bool? supportsReporting;
 
-  AdClient();
+  AdClient({
+    this.arcOptIn,
+    this.id,
+    this.kind,
+    this.productCode,
+    this.supportsReporting,
+  });
 
-  AdClient.fromJson(core.Map _json) {
-    if (_json.containsKey('arcOptIn')) {
-      arcOptIn = _json['arcOptIn'] as core.bool;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('productCode')) {
-      productCode = _json['productCode'] as core.String;
-    }
-    if (_json.containsKey('supportsReporting')) {
-      supportsReporting = _json['supportsReporting'] as core.bool;
-    }
-  }
+  AdClient.fromJson(core.Map _json)
+      : this(
+          arcOptIn: _json.containsKey('arcOptIn')
+              ? _json['arcOptIn'] as core.bool
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          productCode: _json.containsKey('productCode')
+              ? _json['productCode'] as core.String
+              : null,
+          supportsReporting: _json.containsKey('supportsReporting')
+              ? _json['supportsReporting'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (arcOptIn != null) 'arcOptIn': arcOptIn!,
@@ -1511,30 +1514,31 @@ class AdClients {
   /// value to this.
   core.String? nextPageToken;
 
-  AdClients();
+  AdClients({
+    this.etag,
+    this.items,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  AdClients.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<AdClient>((value) =>
-              AdClient.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  AdClients.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => AdClient.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -1547,16 +1551,18 @@ class AdCode {
   /// Kind this is, in this case adsensehost#adCode.
   core.String? kind;
 
-  AdCode();
+  AdCode({
+    this.adCode,
+    this.kind,
+  });
 
-  AdCode.fromJson(core.Map _json) {
-    if (_json.containsKey('adCode')) {
-      adCode = _json['adCode'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  AdCode.fromJson(core.Map _json)
+      : this(
+          adCode: _json.containsKey('adCode')
+              ? _json['adCode'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (adCode != null) 'adCode': adCode!,
@@ -1584,25 +1590,27 @@ class AdStyleColors {
   /// The color of the ad url.
   core.String? url;
 
-  AdStyleColors();
+  AdStyleColors({
+    this.background,
+    this.border,
+    this.text,
+    this.title,
+    this.url,
+  });
 
-  AdStyleColors.fromJson(core.Map _json) {
-    if (_json.containsKey('background')) {
-      background = _json['background'] as core.String;
-    }
-    if (_json.containsKey('border')) {
-      border = _json['border'] as core.String;
-    }
-    if (_json.containsKey('text')) {
-      text = _json['text'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  AdStyleColors.fromJson(core.Map _json)
+      : this(
+          background: _json.containsKey('background')
+              ? _json['background'] as core.String
+              : null,
+          border: _json.containsKey('border')
+              ? _json['border'] as core.String
+              : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (background != null) 'background': background!,
@@ -1627,16 +1635,18 @@ class AdStyleFont {
   /// MEDIUM and LARGE.
   core.String? size;
 
-  AdStyleFont();
+  AdStyleFont({
+    this.family,
+    this.size,
+  });
 
-  AdStyleFont.fromJson(core.Map _json) {
-    if (_json.containsKey('family')) {
-      family = _json['family'] as core.String;
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-  }
+  AdStyleFont.fromJson(core.Map _json)
+      : this(
+          family: _json.containsKey('family')
+              ? _json['family'] as core.String
+              : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (family != null) 'family': family!,
@@ -1660,29 +1670,33 @@ class AdStyle {
   /// Kind this is, in this case adsensehost#adStyle.
   core.String? kind;
 
-  AdStyle();
+  AdStyle({
+    this.colors,
+    this.corners,
+    this.font,
+    this.kind,
+  });
 
-  AdStyle.fromJson(core.Map _json) {
-    if (_json.containsKey('colors')) {
-      colors = AdStyleColors.fromJson(
-          _json['colors'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('corners')) {
-      corners = _json['corners'] as core.String;
-    }
-    if (_json.containsKey('font')) {
-      font = AdStyleFont.fromJson(
-          _json['font'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  AdStyle.fromJson(core.Map _json)
+      : this(
+          colors: _json.containsKey('colors')
+              ? AdStyleColors.fromJson(
+                  _json['colors'] as core.Map<core.String, core.dynamic>)
+              : null,
+          corners: _json.containsKey('corners')
+              ? _json['corners'] as core.String
+              : null,
+          font: _json.containsKey('font')
+              ? AdStyleFont.fromJson(
+                  _json['font'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (colors != null) 'colors': colors!.toJson(),
+        if (colors != null) 'colors': colors!,
         if (corners != null) 'corners': corners!,
-        if (font != null) 'font': font!.toJson(),
+        if (font != null) 'font': font!,
         if (kind != null) 'kind': kind!,
       };
 }
@@ -1703,19 +1717,19 @@ class AdUnitContentAdsSettingsBackupOption {
   /// URL to use when type is set to URL.
   core.String? url;
 
-  AdUnitContentAdsSettingsBackupOption();
+  AdUnitContentAdsSettingsBackupOption({
+    this.color,
+    this.type,
+    this.url,
+  });
 
-  AdUnitContentAdsSettingsBackupOption.fromJson(core.Map _json) {
-    if (_json.containsKey('color')) {
-      color = _json['color'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  AdUnitContentAdsSettingsBackupOption.fromJson(core.Map _json)
+      : this(
+          color:
+              _json.containsKey('color') ? _json['color'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (color != null) 'color': color!,
@@ -1740,23 +1754,24 @@ class AdUnitContentAdsSettings {
   /// Possible values are TEXT, TEXT_IMAGE, IMAGE and LINK.
   core.String? type;
 
-  AdUnitContentAdsSettings();
+  AdUnitContentAdsSettings({
+    this.backupOption,
+    this.size,
+    this.type,
+  });
 
-  AdUnitContentAdsSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('backupOption')) {
-      backupOption = AdUnitContentAdsSettingsBackupOption.fromJson(
-          _json['backupOption'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  AdUnitContentAdsSettings.fromJson(core.Map _json)
+      : this(
+          backupOption: _json.containsKey('backupOption')
+              ? AdUnitContentAdsSettingsBackupOption.fromJson(
+                  _json['backupOption'] as core.Map<core.String, core.dynamic>)
+              : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (backupOption != null) 'backupOption': backupOption!.toJson(),
+        if (backupOption != null) 'backupOption': backupOption!,
         if (size != null) 'size': size!,
         if (type != null) 'type': type!,
       };
@@ -1776,22 +1791,24 @@ class AdUnitMobileContentAdsSettings {
   /// Type of this ad unit.
   core.String? type;
 
-  AdUnitMobileContentAdsSettings();
+  AdUnitMobileContentAdsSettings({
+    this.markupLanguage,
+    this.scriptingLanguage,
+    this.size,
+    this.type,
+  });
 
-  AdUnitMobileContentAdsSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('markupLanguage')) {
-      markupLanguage = _json['markupLanguage'] as core.String;
-    }
-    if (_json.containsKey('scriptingLanguage')) {
-      scriptingLanguage = _json['scriptingLanguage'] as core.String;
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  AdUnitMobileContentAdsSettings.fromJson(core.Map _json)
+      : this(
+          markupLanguage: _json.containsKey('markupLanguage')
+              ? _json['markupLanguage'] as core.String
+              : null,
+          scriptingLanguage: _json.containsKey('scriptingLanguage')
+              ? _json['scriptingLanguage'] as core.String
+              : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (markupLanguage != null) 'markupLanguage': markupLanguage!,
@@ -1840,48 +1857,51 @@ class AdUnit {
   /// last seven days.
   core.String? status;
 
-  AdUnit();
+  AdUnit({
+    this.code,
+    this.contentAdsSettings,
+    this.customStyle,
+    this.id,
+    this.kind,
+    this.mobileContentAdsSettings,
+    this.name,
+    this.status,
+  });
 
-  AdUnit.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('contentAdsSettings')) {
-      contentAdsSettings = AdUnitContentAdsSettings.fromJson(
-          _json['contentAdsSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('customStyle')) {
-      customStyle = AdStyle.fromJson(
-          _json['customStyle'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('mobileContentAdsSettings')) {
-      mobileContentAdsSettings = AdUnitMobileContentAdsSettings.fromJson(
-          _json['mobileContentAdsSettings']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
+  AdUnit.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          contentAdsSettings: _json.containsKey('contentAdsSettings')
+              ? AdUnitContentAdsSettings.fromJson(_json['contentAdsSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          customStyle: _json.containsKey('customStyle')
+              ? AdStyle.fromJson(
+                  _json['customStyle'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          mobileContentAdsSettings:
+              _json.containsKey('mobileContentAdsSettings')
+                  ? AdUnitMobileContentAdsSettings.fromJson(
+                      _json['mobileContentAdsSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
         if (contentAdsSettings != null)
-          'contentAdsSettings': contentAdsSettings!.toJson(),
-        if (customStyle != null) 'customStyle': customStyle!.toJson(),
+          'contentAdsSettings': contentAdsSettings!,
+        if (customStyle != null) 'customStyle': customStyle!,
         if (id != null) 'id': id!,
         if (kind != null) 'kind': kind!,
         if (mobileContentAdsSettings != null)
-          'mobileContentAdsSettings': mobileContentAdsSettings!.toJson(),
+          'mobileContentAdsSettings': mobileContentAdsSettings!,
         if (name != null) 'name': name!,
         if (status != null) 'status': status!,
       };
@@ -1903,30 +1923,31 @@ class AdUnits {
   /// value to this.
   core.String? nextPageToken;
 
-  AdUnits();
+  AdUnits({
+    this.etag,
+    this.items,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  AdUnits.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<AdUnit>((value) =>
-              AdUnit.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  AdUnits.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => AdUnit.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -1970,39 +1991,46 @@ class AssociationSession {
   /// The URL of the user's hosted website.
   core.String? websiteUrl;
 
-  AssociationSession();
+  AssociationSession({
+    this.accountId,
+    this.id,
+    this.kind,
+    this.productCodes,
+    this.redirectUrl,
+    this.status,
+    this.userLocale,
+    this.websiteLocale,
+    this.websiteUrl,
+  });
 
-  AssociationSession.fromJson(core.Map _json) {
-    if (_json.containsKey('accountId')) {
-      accountId = _json['accountId'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('productCodes')) {
-      productCodes = (_json['productCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('redirectUrl')) {
-      redirectUrl = _json['redirectUrl'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('userLocale')) {
-      userLocale = _json['userLocale'] as core.String;
-    }
-    if (_json.containsKey('websiteLocale')) {
-      websiteLocale = _json['websiteLocale'] as core.String;
-    }
-    if (_json.containsKey('websiteUrl')) {
-      websiteUrl = _json['websiteUrl'] as core.String;
-    }
-  }
+  AssociationSession.fromJson(core.Map _json)
+      : this(
+          accountId: _json.containsKey('accountId')
+              ? _json['accountId'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          productCodes: _json.containsKey('productCodes')
+              ? (_json['productCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          redirectUrl: _json.containsKey('redirectUrl')
+              ? _json['redirectUrl'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          userLocale: _json.containsKey('userLocale')
+              ? _json['userLocale'] as core.String
+              : null,
+          websiteLocale: _json.containsKey('websiteLocale')
+              ? _json['websiteLocale'] as core.String
+              : null,
+          websiteUrl: _json.containsKey('websiteUrl')
+              ? _json['websiteUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountId != null) 'accountId': accountId!,
@@ -2033,22 +2061,20 @@ class CustomChannel {
   /// Name of this custom channel.
   core.String? name;
 
-  CustomChannel();
+  CustomChannel({
+    this.code,
+    this.id,
+    this.kind,
+    this.name,
+  });
 
-  CustomChannel.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  CustomChannel.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.String : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
@@ -2074,30 +2100,31 @@ class CustomChannels {
   /// value to this.
   core.String? nextPageToken;
 
-  CustomChannels();
+  CustomChannels({
+    this.etag,
+    this.items,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  CustomChannels.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<CustomChannel>((value) => CustomChannel.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  CustomChannels.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => CustomChannel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -2116,19 +2143,20 @@ class ReportHeaders {
   /// METRIC_CURRENCY.
   core.String? type;
 
-  ReportHeaders();
+  ReportHeaders({
+    this.currency,
+    this.name,
+    this.type,
+  });
 
-  ReportHeaders.fromJson(core.Map _json) {
-    if (_json.containsKey('currency')) {
-      currency = _json['currency'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ReportHeaders.fromJson(core.Map _json)
+      : this(
+          currency: _json.containsKey('currency')
+              ? _json['currency'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (currency != null) 'currency': currency!,
@@ -2175,49 +2203,55 @@ class Report {
   /// Any warnings associated with generation of the report.
   core.List<core.String>? warnings;
 
-  Report();
+  Report({
+    this.averages,
+    this.headers,
+    this.kind,
+    this.rows,
+    this.totalMatchedRows,
+    this.totals,
+    this.warnings,
+  });
 
-  Report.fromJson(core.Map _json) {
-    if (_json.containsKey('averages')) {
-      averages = (_json['averages'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('headers')) {
-      headers = (_json['headers'] as core.List)
-          .map<ReportHeaders>((value) => ReportHeaders.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('rows')) {
-      rows = (_json['rows'] as core.List)
-          .map<core.List<core.String>>((value) => (value as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList())
-          .toList();
-    }
-    if (_json.containsKey('totalMatchedRows')) {
-      totalMatchedRows = _json['totalMatchedRows'] as core.String;
-    }
-    if (_json.containsKey('totals')) {
-      totals = (_json['totals'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('warnings')) {
-      warnings = (_json['warnings'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Report.fromJson(core.Map _json)
+      : this(
+          averages: _json.containsKey('averages')
+              ? (_json['averages'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          headers: _json.containsKey('headers')
+              ? (_json['headers'] as core.List)
+                  .map((value) => ReportHeaders.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          rows: _json.containsKey('rows')
+              ? (_json['rows'] as core.List)
+                  .map((value) => (value as core.List)
+                      .map((value) => value as core.String)
+                      .toList())
+                  .toList()
+              : null,
+          totalMatchedRows: _json.containsKey('totalMatchedRows')
+              ? _json['totalMatchedRows'] as core.String
+              : null,
+          totals: _json.containsKey('totals')
+              ? (_json['totals'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          warnings: _json.containsKey('warnings')
+              ? (_json['warnings'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (averages != null) 'averages': averages!,
-        if (headers != null)
-          'headers': headers!.map((value) => value.toJson()).toList(),
+        if (headers != null) 'headers': headers!,
         if (kind != null) 'kind': kind!,
         if (rows != null) 'rows': rows!,
         if (totalMatchedRows != null) 'totalMatchedRows': totalMatchedRows!,
@@ -2241,19 +2275,20 @@ class UrlChannel {
   /// Does not include "http://" or "https://". Example: www.example.com/home
   core.String? urlPattern;
 
-  UrlChannel();
+  UrlChannel({
+    this.id,
+    this.kind,
+    this.urlPattern,
+  });
 
-  UrlChannel.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('urlPattern')) {
-      urlPattern = _json['urlPattern'] as core.String;
-    }
-  }
+  UrlChannel.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          urlPattern: _json.containsKey('urlPattern')
+              ? _json['urlPattern'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -2278,30 +2313,31 @@ class UrlChannels {
   /// value to this.
   core.String? nextPageToken;
 
-  UrlChannels();
+  UrlChannels({
+    this.etag,
+    this.items,
+    this.kind,
+    this.nextPageToken,
+  });
 
-  UrlChannels.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<UrlChannel>((value) =>
-              UrlChannel.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  UrlChannels.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => UrlChannel.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };

@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,16 +20,16 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/policytroubleshooter/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/policytroubleshooter/v1.dart' as api;
 
 import '../test_shared.dart';
 
 core.int buildCounterGoogleCloudPolicytroubleshooterV1AccessTuple = 0;
 api.GoogleCloudPolicytroubleshooterV1AccessTuple
     buildGoogleCloudPolicytroubleshooterV1AccessTuple() {
-  var o = api.GoogleCloudPolicytroubleshooterV1AccessTuple();
+  final o = api.GoogleCloudPolicytroubleshooterV1AccessTuple();
   buildCounterGoogleCloudPolicytroubleshooterV1AccessTuple++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1AccessTuple < 3) {
     o.fullResourceName = 'foo';
@@ -63,38 +62,33 @@ void checkGoogleCloudPolicytroubleshooterV1AccessTuple(
 
 core.Map<core.String,
         api.GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership>
-    buildUnnamed3124() {
-  var o = <core.String,
-      api.GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership>{};
-  o['x'] =
-      buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership();
-  o['y'] =
-      buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership();
-  return o;
-}
+    buildUnnamed0() => {
+          'x':
+              buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership(),
+          'y':
+              buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership(),
+        };
 
-void checkUnnamed3124(
+void checkUnnamed0(
     core.Map<core.String,
             api.GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership>
         o) {
   unittest.expect(o, unittest.hasLength(2));
   checkGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership(
-      o['x']! as api
-          .GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership);
+      o['x']!);
   checkGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership(
-      o['y']! as api
-          .GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership);
+      o['y']!);
 }
 
 core.int buildCounterGoogleCloudPolicytroubleshooterV1BindingExplanation = 0;
 api.GoogleCloudPolicytroubleshooterV1BindingExplanation
     buildGoogleCloudPolicytroubleshooterV1BindingExplanation() {
-  var o = api.GoogleCloudPolicytroubleshooterV1BindingExplanation();
+  final o = api.GoogleCloudPolicytroubleshooterV1BindingExplanation();
   buildCounterGoogleCloudPolicytroubleshooterV1BindingExplanation++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1BindingExplanation < 3) {
     o.access = 'foo';
     o.condition = buildGoogleTypeExpr();
-    o.memberships = buildUnnamed3124();
+    o.memberships = buildUnnamed0();
     o.relevance = 'foo';
     o.role = 'foo';
     o.rolePermission = 'foo';
@@ -112,8 +106,8 @@ void checkGoogleCloudPolicytroubleshooterV1BindingExplanation(
       o.access!,
       unittest.equals('foo'),
     );
-    checkGoogleTypeExpr(o.condition! as api.GoogleTypeExpr);
-    checkUnnamed3124(o.memberships!);
+    checkGoogleTypeExpr(o.condition!);
+    checkUnnamed0(o.memberships!);
     unittest.expect(
       o.relevance!,
       unittest.equals('foo'),
@@ -139,7 +133,7 @@ core.int
     0;
 api.GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership
     buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership() {
-  var o = api
+  final o = api
       .GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership();
   buildCounterGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership <
@@ -170,30 +164,26 @@ void checkGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership
 }
 
 core.List<api.GoogleCloudPolicytroubleshooterV1BindingExplanation>
-    buildUnnamed3125() {
-  var o = <api.GoogleCloudPolicytroubleshooterV1BindingExplanation>[];
-  o.add(buildGoogleCloudPolicytroubleshooterV1BindingExplanation());
-  o.add(buildGoogleCloudPolicytroubleshooterV1BindingExplanation());
-  return o;
-}
+    buildUnnamed1() => [
+          buildGoogleCloudPolicytroubleshooterV1BindingExplanation(),
+          buildGoogleCloudPolicytroubleshooterV1BindingExplanation(),
+        ];
 
-void checkUnnamed3125(
+void checkUnnamed1(
     core.List<api.GoogleCloudPolicytroubleshooterV1BindingExplanation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleCloudPolicytroubleshooterV1BindingExplanation(
-      o[0] as api.GoogleCloudPolicytroubleshooterV1BindingExplanation);
-  checkGoogleCloudPolicytroubleshooterV1BindingExplanation(
-      o[1] as api.GoogleCloudPolicytroubleshooterV1BindingExplanation);
+  checkGoogleCloudPolicytroubleshooterV1BindingExplanation(o[0]);
+  checkGoogleCloudPolicytroubleshooterV1BindingExplanation(o[1]);
 }
 
 core.int buildCounterGoogleCloudPolicytroubleshooterV1ExplainedPolicy = 0;
 api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy
     buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy() {
-  var o = api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy();
+  final o = api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy();
   buildCounterGoogleCloudPolicytroubleshooterV1ExplainedPolicy++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1ExplainedPolicy < 3) {
     o.access = 'foo';
-    o.bindingExplanations = buildUnnamed3125();
+    o.bindingExplanations = buildUnnamed1();
     o.fullResourceName = 'foo';
     o.policy = buildGoogleIamV1Policy();
     o.relevance = 'foo';
@@ -210,12 +200,12 @@ void checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(
       o.access!,
       unittest.equals('foo'),
     );
-    checkUnnamed3125(o.bindingExplanations!);
+    checkUnnamed1(o.bindingExplanations!);
     unittest.expect(
       o.fullResourceName!,
       unittest.equals('foo'),
     );
-    checkGoogleIamV1Policy(o.policy! as api.GoogleIamV1Policy);
+    checkGoogleIamV1Policy(o.policy!);
     unittest.expect(
       o.relevance!,
       unittest.equals('foo'),
@@ -229,7 +219,7 @@ core.int
     0;
 api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest
     buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest() {
-  var o = api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest();
+  final o = api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest();
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest <
       3) {
@@ -244,27 +234,22 @@ void checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest(
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest <
       3) {
-    checkGoogleCloudPolicytroubleshooterV1AccessTuple(
-        o.accessTuple! as api.GoogleCloudPolicytroubleshooterV1AccessTuple);
+    checkGoogleCloudPolicytroubleshooterV1AccessTuple(o.accessTuple!);
   }
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest--;
 }
 
 core.List<api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy>
-    buildUnnamed3126() {
-  var o = <api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy>[];
-  o.add(buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy());
-  o.add(buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy());
-  return o;
-}
+    buildUnnamed2() => [
+          buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy(),
+          buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy(),
+        ];
 
-void checkUnnamed3126(
+void checkUnnamed2(
     core.List<api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(
-      o[0] as api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy);
-  checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(
-      o[1] as api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy);
+  checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(o[0]);
+  checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(o[1]);
 }
 
 core.int
@@ -272,12 +257,13 @@ core.int
     0;
 api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse
     buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse() {
-  var o = api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse();
+  final o =
+      api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse();
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse++;
   if (buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse <
       3) {
     o.access = 'foo';
-    o.explainedPolicies = buildUnnamed3126();
+    o.explainedPolicies = buildUnnamed2();
   }
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse--;
   return o;
@@ -292,30 +278,28 @@ void checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse(
       o.access!,
       unittest.equals('foo'),
     );
-    checkUnnamed3126(o.explainedPolicies!);
+    checkUnnamed2(o.explainedPolicies!);
   }
   buildCounterGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse--;
 }
 
-core.List<api.GoogleIamV1AuditLogConfig> buildUnnamed3127() {
-  var o = <api.GoogleIamV1AuditLogConfig>[];
-  o.add(buildGoogleIamV1AuditLogConfig());
-  o.add(buildGoogleIamV1AuditLogConfig());
-  return o;
-}
+core.List<api.GoogleIamV1AuditLogConfig> buildUnnamed3() => [
+      buildGoogleIamV1AuditLogConfig(),
+      buildGoogleIamV1AuditLogConfig(),
+    ];
 
-void checkUnnamed3127(core.List<api.GoogleIamV1AuditLogConfig> o) {
+void checkUnnamed3(core.List<api.GoogleIamV1AuditLogConfig> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleIamV1AuditLogConfig(o[0] as api.GoogleIamV1AuditLogConfig);
-  checkGoogleIamV1AuditLogConfig(o[1] as api.GoogleIamV1AuditLogConfig);
+  checkGoogleIamV1AuditLogConfig(o[0]);
+  checkGoogleIamV1AuditLogConfig(o[1]);
 }
 
 core.int buildCounterGoogleIamV1AuditConfig = 0;
 api.GoogleIamV1AuditConfig buildGoogleIamV1AuditConfig() {
-  var o = api.GoogleIamV1AuditConfig();
+  final o = api.GoogleIamV1AuditConfig();
   buildCounterGoogleIamV1AuditConfig++;
   if (buildCounterGoogleIamV1AuditConfig < 3) {
-    o.auditLogConfigs = buildUnnamed3127();
+    o.auditLogConfigs = buildUnnamed3();
     o.service = 'foo';
   }
   buildCounterGoogleIamV1AuditConfig--;
@@ -325,7 +309,7 @@ api.GoogleIamV1AuditConfig buildGoogleIamV1AuditConfig() {
 void checkGoogleIamV1AuditConfig(api.GoogleIamV1AuditConfig o) {
   buildCounterGoogleIamV1AuditConfig++;
   if (buildCounterGoogleIamV1AuditConfig < 3) {
-    checkUnnamed3127(o.auditLogConfigs!);
+    checkUnnamed3(o.auditLogConfigs!);
     unittest.expect(
       o.service!,
       unittest.equals('foo'),
@@ -334,14 +318,12 @@ void checkGoogleIamV1AuditConfig(api.GoogleIamV1AuditConfig o) {
   buildCounterGoogleIamV1AuditConfig--;
 }
 
-core.List<core.String> buildUnnamed3128() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed4() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed3128(core.List<core.String> o) {
+void checkUnnamed4(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -355,10 +337,10 @@ void checkUnnamed3128(core.List<core.String> o) {
 
 core.int buildCounterGoogleIamV1AuditLogConfig = 0;
 api.GoogleIamV1AuditLogConfig buildGoogleIamV1AuditLogConfig() {
-  var o = api.GoogleIamV1AuditLogConfig();
+  final o = api.GoogleIamV1AuditLogConfig();
   buildCounterGoogleIamV1AuditLogConfig++;
   if (buildCounterGoogleIamV1AuditLogConfig < 3) {
-    o.exemptedMembers = buildUnnamed3128();
+    o.exemptedMembers = buildUnnamed4();
     o.logType = 'foo';
   }
   buildCounterGoogleIamV1AuditLogConfig--;
@@ -368,7 +350,7 @@ api.GoogleIamV1AuditLogConfig buildGoogleIamV1AuditLogConfig() {
 void checkGoogleIamV1AuditLogConfig(api.GoogleIamV1AuditLogConfig o) {
   buildCounterGoogleIamV1AuditLogConfig++;
   if (buildCounterGoogleIamV1AuditLogConfig < 3) {
-    checkUnnamed3128(o.exemptedMembers!);
+    checkUnnamed4(o.exemptedMembers!);
     unittest.expect(
       o.logType!,
       unittest.equals('foo'),
@@ -377,14 +359,12 @@ void checkGoogleIamV1AuditLogConfig(api.GoogleIamV1AuditLogConfig o) {
   buildCounterGoogleIamV1AuditLogConfig--;
 }
 
-core.List<core.String> buildUnnamed3129() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed5() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed3129(core.List<core.String> o) {
+void checkUnnamed5(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -398,11 +378,11 @@ void checkUnnamed3129(core.List<core.String> o) {
 
 core.int buildCounterGoogleIamV1Binding = 0;
 api.GoogleIamV1Binding buildGoogleIamV1Binding() {
-  var o = api.GoogleIamV1Binding();
+  final o = api.GoogleIamV1Binding();
   buildCounterGoogleIamV1Binding++;
   if (buildCounterGoogleIamV1Binding < 3) {
     o.condition = buildGoogleTypeExpr();
-    o.members = buildUnnamed3129();
+    o.members = buildUnnamed5();
     o.role = 'foo';
   }
   buildCounterGoogleIamV1Binding--;
@@ -412,8 +392,8 @@ api.GoogleIamV1Binding buildGoogleIamV1Binding() {
 void checkGoogleIamV1Binding(api.GoogleIamV1Binding o) {
   buildCounterGoogleIamV1Binding++;
   if (buildCounterGoogleIamV1Binding < 3) {
-    checkGoogleTypeExpr(o.condition! as api.GoogleTypeExpr);
-    checkUnnamed3129(o.members!);
+    checkGoogleTypeExpr(o.condition!);
+    checkUnnamed5(o.members!);
     unittest.expect(
       o.role!,
       unittest.equals('foo'),
@@ -422,39 +402,35 @@ void checkGoogleIamV1Binding(api.GoogleIamV1Binding o) {
   buildCounterGoogleIamV1Binding--;
 }
 
-core.List<api.GoogleIamV1AuditConfig> buildUnnamed3130() {
-  var o = <api.GoogleIamV1AuditConfig>[];
-  o.add(buildGoogleIamV1AuditConfig());
-  o.add(buildGoogleIamV1AuditConfig());
-  return o;
-}
+core.List<api.GoogleIamV1AuditConfig> buildUnnamed6() => [
+      buildGoogleIamV1AuditConfig(),
+      buildGoogleIamV1AuditConfig(),
+    ];
 
-void checkUnnamed3130(core.List<api.GoogleIamV1AuditConfig> o) {
+void checkUnnamed6(core.List<api.GoogleIamV1AuditConfig> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleIamV1AuditConfig(o[0] as api.GoogleIamV1AuditConfig);
-  checkGoogleIamV1AuditConfig(o[1] as api.GoogleIamV1AuditConfig);
+  checkGoogleIamV1AuditConfig(o[0]);
+  checkGoogleIamV1AuditConfig(o[1]);
 }
 
-core.List<api.GoogleIamV1Binding> buildUnnamed3131() {
-  var o = <api.GoogleIamV1Binding>[];
-  o.add(buildGoogleIamV1Binding());
-  o.add(buildGoogleIamV1Binding());
-  return o;
-}
+core.List<api.GoogleIamV1Binding> buildUnnamed7() => [
+      buildGoogleIamV1Binding(),
+      buildGoogleIamV1Binding(),
+    ];
 
-void checkUnnamed3131(core.List<api.GoogleIamV1Binding> o) {
+void checkUnnamed7(core.List<api.GoogleIamV1Binding> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleIamV1Binding(o[0] as api.GoogleIamV1Binding);
-  checkGoogleIamV1Binding(o[1] as api.GoogleIamV1Binding);
+  checkGoogleIamV1Binding(o[0]);
+  checkGoogleIamV1Binding(o[1]);
 }
 
 core.int buildCounterGoogleIamV1Policy = 0;
 api.GoogleIamV1Policy buildGoogleIamV1Policy() {
-  var o = api.GoogleIamV1Policy();
+  final o = api.GoogleIamV1Policy();
   buildCounterGoogleIamV1Policy++;
   if (buildCounterGoogleIamV1Policy < 3) {
-    o.auditConfigs = buildUnnamed3130();
-    o.bindings = buildUnnamed3131();
+    o.auditConfigs = buildUnnamed6();
+    o.bindings = buildUnnamed7();
     o.etag = 'foo';
     o.version = 42;
   }
@@ -465,8 +441,8 @@ api.GoogleIamV1Policy buildGoogleIamV1Policy() {
 void checkGoogleIamV1Policy(api.GoogleIamV1Policy o) {
   buildCounterGoogleIamV1Policy++;
   if (buildCounterGoogleIamV1Policy < 3) {
-    checkUnnamed3130(o.auditConfigs!);
-    checkUnnamed3131(o.bindings!);
+    checkUnnamed6(o.auditConfigs!);
+    checkUnnamed7(o.bindings!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -481,7 +457,7 @@ void checkGoogleIamV1Policy(api.GoogleIamV1Policy o) {
 
 core.int buildCounterGoogleTypeExpr = 0;
 api.GoogleTypeExpr buildGoogleTypeExpr() {
-  var o = api.GoogleTypeExpr();
+  final o = api.GoogleTypeExpr();
   buildCounterGoogleTypeExpr++;
   if (buildCounterGoogleTypeExpr < 3) {
     o.description = 'foo';
@@ -519,24 +495,23 @@ void checkGoogleTypeExpr(api.GoogleTypeExpr o) {
 void main() {
   unittest.group('obj-schema-GoogleCloudPolicytroubleshooterV1AccessTuple', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleCloudPolicytroubleshooterV1AccessTuple();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleCloudPolicytroubleshooterV1AccessTuple.fromJson(
+      final o = buildGoogleCloudPolicytroubleshooterV1AccessTuple();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleCloudPolicytroubleshooterV1AccessTuple.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleCloudPolicytroubleshooterV1AccessTuple(
-          od as api.GoogleCloudPolicytroubleshooterV1AccessTuple);
+      checkGoogleCloudPolicytroubleshooterV1AccessTuple(od);
     });
   });
 
   unittest.group(
       'obj-schema-GoogleCloudPolicytroubleshooterV1BindingExplanation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleCloudPolicytroubleshooterV1BindingExplanation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleCloudPolicytroubleshooterV1BindingExplanation.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleCloudPolicytroubleshooterV1BindingExplanation(
-          od as api.GoogleCloudPolicytroubleshooterV1BindingExplanation);
+      final o = buildGoogleCloudPolicytroubleshooterV1BindingExplanation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.GoogleCloudPolicytroubleshooterV1BindingExplanation.fromJson(
+              oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleCloudPolicytroubleshooterV1BindingExplanation(od);
     });
   });
 
@@ -544,27 +519,25 @@ void main() {
       'obj-schema-GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership',
       () {
     unittest.test('to-json--from-json', () async {
-      var o =
+      final o =
           buildGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership
               .fromJson(oJson as core.Map<core.String, core.dynamic>);
       checkGoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership(
-          od as api
-              .GoogleCloudPolicytroubleshooterV1BindingExplanationAnnotatedMembership);
+          od);
     });
   });
 
   unittest.group('obj-schema-GoogleCloudPolicytroubleshooterV1ExplainedPolicy',
       () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy.fromJson(
+      final o = buildGoogleCloudPolicytroubleshooterV1ExplainedPolicy();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(
-          od as api.GoogleCloudPolicytroubleshooterV1ExplainedPolicy);
+      checkGoogleCloudPolicytroubleshooterV1ExplainedPolicy(od);
     });
   });
 
@@ -572,13 +545,13 @@ void main() {
       'obj-schema-GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest',
       () {
     unittest.test('to-json--from-json', () async {
-      var o =
+      final o =
           buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest
-          .fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest(od
-          as api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest);
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest
+              .fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest(od);
     });
   });
 
@@ -586,107 +559,103 @@ void main() {
       'obj-schema-GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse',
       () {
     unittest.test('to-json--from-json', () async {
-      var o =
+      final o =
           buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse
               .fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse(od
-          as api
-              .GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse);
+      checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse(od);
     });
   });
 
   unittest.group('obj-schema-GoogleIamV1AuditConfig', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleIamV1AuditConfig();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleIamV1AuditConfig.fromJson(
+      final o = buildGoogleIamV1AuditConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleIamV1AuditConfig.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleIamV1AuditConfig(od as api.GoogleIamV1AuditConfig);
+      checkGoogleIamV1AuditConfig(od);
     });
   });
 
   unittest.group('obj-schema-GoogleIamV1AuditLogConfig', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleIamV1AuditLogConfig();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleIamV1AuditLogConfig.fromJson(
+      final o = buildGoogleIamV1AuditLogConfig();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleIamV1AuditLogConfig.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleIamV1AuditLogConfig(od as api.GoogleIamV1AuditLogConfig);
+      checkGoogleIamV1AuditLogConfig(od);
     });
   });
 
   unittest.group('obj-schema-GoogleIamV1Binding', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleIamV1Binding();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleIamV1Binding.fromJson(
+      final o = buildGoogleIamV1Binding();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleIamV1Binding.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleIamV1Binding(od as api.GoogleIamV1Binding);
+      checkGoogleIamV1Binding(od);
     });
   });
 
   unittest.group('obj-schema-GoogleIamV1Policy', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleIamV1Policy();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleIamV1Policy.fromJson(
+      final o = buildGoogleIamV1Policy();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleIamV1Policy.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleIamV1Policy(od as api.GoogleIamV1Policy);
+      checkGoogleIamV1Policy(od);
     });
   });
 
   unittest.group('obj-schema-GoogleTypeExpr', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleTypeExpr();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleTypeExpr.fromJson(
+      final o = buildGoogleTypeExpr();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleTypeExpr.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleTypeExpr(od as api.GoogleTypeExpr);
+      checkGoogleTypeExpr(od);
     });
   });
 
   unittest.group('resource-IamResource', () {
     unittest.test('method--troubleshoot', () async {
-      var mock = HttpServerMock();
-      var res = api.PolicyTroubleshooterApi(mock).iam;
-      var arg_request =
+      final mock = HttpServerMock();
+      final res = api.PolicyTroubleshooterApi(mock).iam;
+      final arg_request =
           buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest();
-      var arg_$fields = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest
                 .fromJson(json as core.Map<core.String, core.dynamic>);
-        checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest(obj
-            as api
-                .GoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest);
+        checkGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("v1/iam:troubleshoot"),
+          unittest.equals('v1/iam:troubleshoot'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -694,14 +663,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(
+        final resp = convert.json.encode(
             buildGoogleCloudPolicytroubleshooterV1TroubleshootIamPolicyResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);

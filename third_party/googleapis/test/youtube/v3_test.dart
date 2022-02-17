@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,46 +20,42 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/youtube/v3.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/youtube/v3.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<api.AbuseType> buildUnnamed529() {
-  var o = <api.AbuseType>[];
-  o.add(buildAbuseType());
-  o.add(buildAbuseType());
-  return o;
-}
+core.List<api.AbuseType> buildUnnamed0() => [
+      buildAbuseType(),
+      buildAbuseType(),
+    ];
 
-void checkUnnamed529(core.List<api.AbuseType> o) {
+void checkUnnamed0(core.List<api.AbuseType> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAbuseType(o[0] as api.AbuseType);
-  checkAbuseType(o[1] as api.AbuseType);
+  checkAbuseType(o[0]);
+  checkAbuseType(o[1]);
 }
 
-core.List<api.RelatedEntity> buildUnnamed530() {
-  var o = <api.RelatedEntity>[];
-  o.add(buildRelatedEntity());
-  o.add(buildRelatedEntity());
-  return o;
-}
+core.List<api.RelatedEntity> buildUnnamed1() => [
+      buildRelatedEntity(),
+      buildRelatedEntity(),
+    ];
 
-void checkUnnamed530(core.List<api.RelatedEntity> o) {
+void checkUnnamed1(core.List<api.RelatedEntity> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkRelatedEntity(o[0] as api.RelatedEntity);
-  checkRelatedEntity(o[1] as api.RelatedEntity);
+  checkRelatedEntity(o[0]);
+  checkRelatedEntity(o[1]);
 }
 
 core.int buildCounterAbuseReport = 0;
 api.AbuseReport buildAbuseReport() {
-  var o = api.AbuseReport();
+  final o = api.AbuseReport();
   buildCounterAbuseReport++;
   if (buildCounterAbuseReport < 3) {
-    o.abuseTypes = buildUnnamed529();
+    o.abuseTypes = buildUnnamed0();
     o.description = 'foo';
-    o.relatedEntities = buildUnnamed530();
+    o.relatedEntities = buildUnnamed1();
     o.subject = buildEntity();
   }
   buildCounterAbuseReport--;
@@ -70,20 +65,20 @@ api.AbuseReport buildAbuseReport() {
 void checkAbuseReport(api.AbuseReport o) {
   buildCounterAbuseReport++;
   if (buildCounterAbuseReport < 3) {
-    checkUnnamed529(o.abuseTypes!);
+    checkUnnamed0(o.abuseTypes!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
     );
-    checkUnnamed530(o.relatedEntities!);
-    checkEntity(o.subject! as api.Entity);
+    checkUnnamed1(o.relatedEntities!);
+    checkEntity(o.subject!);
   }
   buildCounterAbuseReport--;
 }
 
 core.int buildCounterAbuseType = 0;
 api.AbuseType buildAbuseType() {
-  var o = api.AbuseType();
+  final o = api.AbuseType();
   buildCounterAbuseType++;
   if (buildCounterAbuseType < 3) {
     o.id = 'foo';
@@ -103,14 +98,12 @@ void checkAbuseType(api.AbuseType o) {
   buildCounterAbuseType--;
 }
 
-core.List<core.String> buildUnnamed531() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed2() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed531(core.List<core.String> o) {
+void checkUnnamed2(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -124,11 +117,11 @@ void checkUnnamed531(core.List<core.String> o) {
 
 core.int buildCounterAccessPolicy = 0;
 api.AccessPolicy buildAccessPolicy() {
-  var o = api.AccessPolicy();
+  final o = api.AccessPolicy();
   buildCounterAccessPolicy++;
   if (buildCounterAccessPolicy < 3) {
     o.allowed = true;
-    o.exception = buildUnnamed531();
+    o.exception = buildUnnamed2();
   }
   buildCounterAccessPolicy--;
   return o;
@@ -138,14 +131,14 @@ void checkAccessPolicy(api.AccessPolicy o) {
   buildCounterAccessPolicy++;
   if (buildCounterAccessPolicy < 3) {
     unittest.expect(o.allowed!, unittest.isTrue);
-    checkUnnamed531(o.exception!);
+    checkUnnamed2(o.exception!);
   }
   buildCounterAccessPolicy--;
 }
 
 core.int buildCounterActivity = 0;
 api.Activity buildActivity() {
-  var o = api.Activity();
+  final o = api.Activity();
   buildCounterActivity++;
   if (buildCounterActivity < 3) {
     o.contentDetails = buildActivityContentDetails();
@@ -161,8 +154,7 @@ api.Activity buildActivity() {
 void checkActivity(api.Activity o) {
   buildCounterActivity++;
   if (buildCounterActivity < 3) {
-    checkActivityContentDetails(
-        o.contentDetails! as api.ActivityContentDetails);
+    checkActivityContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -175,14 +167,14 @@ void checkActivity(api.Activity o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkActivitySnippet(o.snippet! as api.ActivitySnippet);
+    checkActivitySnippet(o.snippet!);
   }
   buildCounterActivity--;
 }
 
 core.int buildCounterActivityContentDetails = 0;
 api.ActivityContentDetails buildActivityContentDetails() {
-  var o = api.ActivityContentDetails();
+  final o = api.ActivityContentDetails();
   buildCounterActivityContentDetails++;
   if (buildCounterActivityContentDetails < 3) {
     o.bulletin = buildActivityContentDetailsBulletin();
@@ -204,34 +196,24 @@ api.ActivityContentDetails buildActivityContentDetails() {
 void checkActivityContentDetails(api.ActivityContentDetails o) {
   buildCounterActivityContentDetails++;
   if (buildCounterActivityContentDetails < 3) {
-    checkActivityContentDetailsBulletin(
-        o.bulletin! as api.ActivityContentDetailsBulletin);
-    checkActivityContentDetailsChannelItem(
-        o.channelItem! as api.ActivityContentDetailsChannelItem);
-    checkActivityContentDetailsComment(
-        o.comment! as api.ActivityContentDetailsComment);
-    checkActivityContentDetailsFavorite(
-        o.favorite! as api.ActivityContentDetailsFavorite);
-    checkActivityContentDetailsLike(o.like! as api.ActivityContentDetailsLike);
-    checkActivityContentDetailsPlaylistItem(
-        o.playlistItem! as api.ActivityContentDetailsPlaylistItem);
-    checkActivityContentDetailsPromotedItem(
-        o.promotedItem! as api.ActivityContentDetailsPromotedItem);
-    checkActivityContentDetailsRecommendation(
-        o.recommendation! as api.ActivityContentDetailsRecommendation);
-    checkActivityContentDetailsSocial(
-        o.social! as api.ActivityContentDetailsSocial);
-    checkActivityContentDetailsSubscription(
-        o.subscription! as api.ActivityContentDetailsSubscription);
-    checkActivityContentDetailsUpload(
-        o.upload! as api.ActivityContentDetailsUpload);
+    checkActivityContentDetailsBulletin(o.bulletin!);
+    checkActivityContentDetailsChannelItem(o.channelItem!);
+    checkActivityContentDetailsComment(o.comment!);
+    checkActivityContentDetailsFavorite(o.favorite!);
+    checkActivityContentDetailsLike(o.like!);
+    checkActivityContentDetailsPlaylistItem(o.playlistItem!);
+    checkActivityContentDetailsPromotedItem(o.promotedItem!);
+    checkActivityContentDetailsRecommendation(o.recommendation!);
+    checkActivityContentDetailsSocial(o.social!);
+    checkActivityContentDetailsSubscription(o.subscription!);
+    checkActivityContentDetailsUpload(o.upload!);
   }
   buildCounterActivityContentDetails--;
 }
 
 core.int buildCounterActivityContentDetailsBulletin = 0;
 api.ActivityContentDetailsBulletin buildActivityContentDetailsBulletin() {
-  var o = api.ActivityContentDetailsBulletin();
+  final o = api.ActivityContentDetailsBulletin();
   buildCounterActivityContentDetailsBulletin++;
   if (buildCounterActivityContentDetailsBulletin < 3) {
     o.resourceId = buildResourceId();
@@ -243,14 +225,14 @@ api.ActivityContentDetailsBulletin buildActivityContentDetailsBulletin() {
 void checkActivityContentDetailsBulletin(api.ActivityContentDetailsBulletin o) {
   buildCounterActivityContentDetailsBulletin++;
   if (buildCounterActivityContentDetailsBulletin < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsBulletin--;
 }
 
 core.int buildCounterActivityContentDetailsChannelItem = 0;
 api.ActivityContentDetailsChannelItem buildActivityContentDetailsChannelItem() {
-  var o = api.ActivityContentDetailsChannelItem();
+  final o = api.ActivityContentDetailsChannelItem();
   buildCounterActivityContentDetailsChannelItem++;
   if (buildCounterActivityContentDetailsChannelItem < 3) {
     o.resourceId = buildResourceId();
@@ -263,14 +245,14 @@ void checkActivityContentDetailsChannelItem(
     api.ActivityContentDetailsChannelItem o) {
   buildCounterActivityContentDetailsChannelItem++;
   if (buildCounterActivityContentDetailsChannelItem < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsChannelItem--;
 }
 
 core.int buildCounterActivityContentDetailsComment = 0;
 api.ActivityContentDetailsComment buildActivityContentDetailsComment() {
-  var o = api.ActivityContentDetailsComment();
+  final o = api.ActivityContentDetailsComment();
   buildCounterActivityContentDetailsComment++;
   if (buildCounterActivityContentDetailsComment < 3) {
     o.resourceId = buildResourceId();
@@ -282,14 +264,14 @@ api.ActivityContentDetailsComment buildActivityContentDetailsComment() {
 void checkActivityContentDetailsComment(api.ActivityContentDetailsComment o) {
   buildCounterActivityContentDetailsComment++;
   if (buildCounterActivityContentDetailsComment < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsComment--;
 }
 
 core.int buildCounterActivityContentDetailsFavorite = 0;
 api.ActivityContentDetailsFavorite buildActivityContentDetailsFavorite() {
-  var o = api.ActivityContentDetailsFavorite();
+  final o = api.ActivityContentDetailsFavorite();
   buildCounterActivityContentDetailsFavorite++;
   if (buildCounterActivityContentDetailsFavorite < 3) {
     o.resourceId = buildResourceId();
@@ -301,14 +283,14 @@ api.ActivityContentDetailsFavorite buildActivityContentDetailsFavorite() {
 void checkActivityContentDetailsFavorite(api.ActivityContentDetailsFavorite o) {
   buildCounterActivityContentDetailsFavorite++;
   if (buildCounterActivityContentDetailsFavorite < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsFavorite--;
 }
 
 core.int buildCounterActivityContentDetailsLike = 0;
 api.ActivityContentDetailsLike buildActivityContentDetailsLike() {
-  var o = api.ActivityContentDetailsLike();
+  final o = api.ActivityContentDetailsLike();
   buildCounterActivityContentDetailsLike++;
   if (buildCounterActivityContentDetailsLike < 3) {
     o.resourceId = buildResourceId();
@@ -320,7 +302,7 @@ api.ActivityContentDetailsLike buildActivityContentDetailsLike() {
 void checkActivityContentDetailsLike(api.ActivityContentDetailsLike o) {
   buildCounterActivityContentDetailsLike++;
   if (buildCounterActivityContentDetailsLike < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsLike--;
 }
@@ -328,7 +310,7 @@ void checkActivityContentDetailsLike(api.ActivityContentDetailsLike o) {
 core.int buildCounterActivityContentDetailsPlaylistItem = 0;
 api.ActivityContentDetailsPlaylistItem
     buildActivityContentDetailsPlaylistItem() {
-  var o = api.ActivityContentDetailsPlaylistItem();
+  final o = api.ActivityContentDetailsPlaylistItem();
   buildCounterActivityContentDetailsPlaylistItem++;
   if (buildCounterActivityContentDetailsPlaylistItem < 3) {
     o.playlistId = 'foo';
@@ -351,19 +333,17 @@ void checkActivityContentDetailsPlaylistItem(
       o.playlistItemId!,
       unittest.equals('foo'),
     );
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsPlaylistItem--;
 }
 
-core.List<core.String> buildUnnamed532() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed3() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed532(core.List<core.String> o) {
+void checkUnnamed3(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -375,14 +355,12 @@ void checkUnnamed532(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed533() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed4() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed533(core.List<core.String> o) {
+void checkUnnamed4(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -397,7 +375,7 @@ void checkUnnamed533(core.List<core.String> o) {
 core.int buildCounterActivityContentDetailsPromotedItem = 0;
 api.ActivityContentDetailsPromotedItem
     buildActivityContentDetailsPromotedItem() {
-  var o = api.ActivityContentDetailsPromotedItem();
+  final o = api.ActivityContentDetailsPromotedItem();
   buildCounterActivityContentDetailsPromotedItem++;
   if (buildCounterActivityContentDetailsPromotedItem < 3) {
     o.adTag = 'foo';
@@ -407,8 +385,8 @@ api.ActivityContentDetailsPromotedItem
     o.customCtaButtonText = 'foo';
     o.descriptionText = 'foo';
     o.destinationUrl = 'foo';
-    o.forecastingUrl = buildUnnamed532();
-    o.impressionUrl = buildUnnamed533();
+    o.forecastingUrl = buildUnnamed3();
+    o.impressionUrl = buildUnnamed4();
     o.videoId = 'foo';
   }
   buildCounterActivityContentDetailsPromotedItem--;
@@ -447,8 +425,8 @@ void checkActivityContentDetailsPromotedItem(
       o.destinationUrl!,
       unittest.equals('foo'),
     );
-    checkUnnamed532(o.forecastingUrl!);
-    checkUnnamed533(o.impressionUrl!);
+    checkUnnamed3(o.forecastingUrl!);
+    checkUnnamed4(o.impressionUrl!);
     unittest.expect(
       o.videoId!,
       unittest.equals('foo'),
@@ -460,7 +438,7 @@ void checkActivityContentDetailsPromotedItem(
 core.int buildCounterActivityContentDetailsRecommendation = 0;
 api.ActivityContentDetailsRecommendation
     buildActivityContentDetailsRecommendation() {
-  var o = api.ActivityContentDetailsRecommendation();
+  final o = api.ActivityContentDetailsRecommendation();
   buildCounterActivityContentDetailsRecommendation++;
   if (buildCounterActivityContentDetailsRecommendation < 3) {
     o.reason = 'foo';
@@ -479,15 +457,15 @@ void checkActivityContentDetailsRecommendation(
       o.reason!,
       unittest.equals('foo'),
     );
-    checkResourceId(o.resourceId! as api.ResourceId);
-    checkResourceId(o.seedResourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
+    checkResourceId(o.seedResourceId!);
   }
   buildCounterActivityContentDetailsRecommendation--;
 }
 
 core.int buildCounterActivityContentDetailsSocial = 0;
 api.ActivityContentDetailsSocial buildActivityContentDetailsSocial() {
-  var o = api.ActivityContentDetailsSocial();
+  final o = api.ActivityContentDetailsSocial();
   buildCounterActivityContentDetailsSocial++;
   if (buildCounterActivityContentDetailsSocial < 3) {
     o.author = 'foo';
@@ -515,7 +493,7 @@ void checkActivityContentDetailsSocial(api.ActivityContentDetailsSocial o) {
       o.referenceUrl!,
       unittest.equals('foo'),
     );
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -527,7 +505,7 @@ void checkActivityContentDetailsSocial(api.ActivityContentDetailsSocial o) {
 core.int buildCounterActivityContentDetailsSubscription = 0;
 api.ActivityContentDetailsSubscription
     buildActivityContentDetailsSubscription() {
-  var o = api.ActivityContentDetailsSubscription();
+  final o = api.ActivityContentDetailsSubscription();
   buildCounterActivityContentDetailsSubscription++;
   if (buildCounterActivityContentDetailsSubscription < 3) {
     o.resourceId = buildResourceId();
@@ -540,14 +518,14 @@ void checkActivityContentDetailsSubscription(
     api.ActivityContentDetailsSubscription o) {
   buildCounterActivityContentDetailsSubscription++;
   if (buildCounterActivityContentDetailsSubscription < 3) {
-    checkResourceId(o.resourceId! as api.ResourceId);
+    checkResourceId(o.resourceId!);
   }
   buildCounterActivityContentDetailsSubscription--;
 }
 
 core.int buildCounterActivityContentDetailsUpload = 0;
 api.ActivityContentDetailsUpload buildActivityContentDetailsUpload() {
-  var o = api.ActivityContentDetailsUpload();
+  final o = api.ActivityContentDetailsUpload();
   buildCounterActivityContentDetailsUpload++;
   if (buildCounterActivityContentDetailsUpload < 3) {
     o.videoId = 'foo';
@@ -567,27 +545,25 @@ void checkActivityContentDetailsUpload(api.ActivityContentDetailsUpload o) {
   buildCounterActivityContentDetailsUpload--;
 }
 
-core.List<api.Activity> buildUnnamed534() {
-  var o = <api.Activity>[];
-  o.add(buildActivity());
-  o.add(buildActivity());
-  return o;
-}
+core.List<api.Activity> buildUnnamed5() => [
+      buildActivity(),
+      buildActivity(),
+    ];
 
-void checkUnnamed534(core.List<api.Activity> o) {
+void checkUnnamed5(core.List<api.Activity> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkActivity(o[0] as api.Activity);
-  checkActivity(o[1] as api.Activity);
+  checkActivity(o[0]);
+  checkActivity(o[1]);
 }
 
 core.int buildCounterActivityListResponse = 0;
 api.ActivityListResponse buildActivityListResponse() {
-  var o = api.ActivityListResponse();
+  final o = api.ActivityListResponse();
   buildCounterActivityListResponse++;
   if (buildCounterActivityListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed534();
+    o.items = buildUnnamed5();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -610,7 +586,7 @@ void checkActivityListResponse(api.ActivityListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed534(o.items!);
+    checkUnnamed5(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -619,12 +595,12 @@ void checkActivityListResponse(api.ActivityListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -635,14 +611,14 @@ void checkActivityListResponse(api.ActivityListResponse o) {
 
 core.int buildCounterActivitySnippet = 0;
 api.ActivitySnippet buildActivitySnippet() {
-  var o = api.ActivitySnippet();
+  final o = api.ActivitySnippet();
   buildCounterActivitySnippet++;
   if (buildCounterActivitySnippet < 3) {
     o.channelId = 'foo';
     o.channelTitle = 'foo';
     o.description = 'foo';
     o.groupId = 'foo';
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
     o.type = 'foo';
@@ -672,9 +648,9 @@ void checkActivitySnippet(api.ActivitySnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -689,7 +665,7 @@ void checkActivitySnippet(api.ActivitySnippet o) {
 
 core.int buildCounterCaption = 0;
 api.Caption buildCaption() {
-  var o = api.Caption();
+  final o = api.Caption();
   buildCounterCaption++;
   if (buildCounterCaption < 3) {
     o.etag = 'foo';
@@ -716,32 +692,30 @@ void checkCaption(api.Caption o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkCaptionSnippet(o.snippet! as api.CaptionSnippet);
+    checkCaptionSnippet(o.snippet!);
   }
   buildCounterCaption--;
 }
 
-core.List<api.Caption> buildUnnamed535() {
-  var o = <api.Caption>[];
-  o.add(buildCaption());
-  o.add(buildCaption());
-  return o;
-}
+core.List<api.Caption> buildUnnamed6() => [
+      buildCaption(),
+      buildCaption(),
+    ];
 
-void checkUnnamed535(core.List<api.Caption> o) {
+void checkUnnamed6(core.List<api.Caption> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCaption(o[0] as api.Caption);
-  checkCaption(o[1] as api.Caption);
+  checkCaption(o[0]);
+  checkCaption(o[1]);
 }
 
 core.int buildCounterCaptionListResponse = 0;
 api.CaptionListResponse buildCaptionListResponse() {
-  var o = api.CaptionListResponse();
+  final o = api.CaptionListResponse();
   buildCounterCaptionListResponse++;
   if (buildCounterCaptionListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed535();
+    o.items = buildUnnamed6();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -760,7 +734,7 @@ void checkCaptionListResponse(api.CaptionListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed535(o.items!);
+    checkUnnamed6(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -775,7 +749,7 @@ void checkCaptionListResponse(api.CaptionListResponse o) {
 
 core.int buildCounterCaptionSnippet = 0;
 api.CaptionSnippet buildCaptionSnippet() {
-  var o = api.CaptionSnippet();
+  final o = api.CaptionSnippet();
   buildCounterCaptionSnippet++;
   if (buildCounterCaptionSnippet < 3) {
     o.audioTrackType = 'foo';
@@ -786,7 +760,7 @@ api.CaptionSnippet buildCaptionSnippet() {
     o.isEasyReader = true;
     o.isLarge = true;
     o.language = 'foo';
-    o.lastUpdated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.lastUpdated = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.name = 'foo';
     o.status = 'foo';
     o.trackKind = 'foo';
@@ -818,7 +792,7 @@ void checkCaptionSnippet(api.CaptionSnippet o) {
     );
     unittest.expect(
       o.lastUpdated!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.name!,
@@ -842,7 +816,7 @@ void checkCaptionSnippet(api.CaptionSnippet o) {
 
 core.int buildCounterCdnSettings = 0;
 api.CdnSettings buildCdnSettings() {
-  var o = api.CdnSettings();
+  final o = api.CdnSettings();
   buildCounterCdnSettings++;
   if (buildCounterCdnSettings < 3) {
     o.format = 'foo';
@@ -866,7 +840,7 @@ void checkCdnSettings(api.CdnSettings o) {
       o.frameRate!,
       unittest.equals('foo'),
     );
-    checkIngestionInfo(o.ingestionInfo! as api.IngestionInfo);
+    checkIngestionInfo(o.ingestionInfo!);
     unittest.expect(
       o.ingestionType!,
       unittest.equals('foo'),
@@ -879,22 +853,20 @@ void checkCdnSettings(api.CdnSettings o) {
   buildCounterCdnSettings--;
 }
 
-core.Map<core.String, api.ChannelLocalization> buildUnnamed536() {
-  var o = <core.String, api.ChannelLocalization>{};
-  o['x'] = buildChannelLocalization();
-  o['y'] = buildChannelLocalization();
-  return o;
-}
+core.Map<core.String, api.ChannelLocalization> buildUnnamed7() => {
+      'x': buildChannelLocalization(),
+      'y': buildChannelLocalization(),
+    };
 
-void checkUnnamed536(core.Map<core.String, api.ChannelLocalization> o) {
+void checkUnnamed7(core.Map<core.String, api.ChannelLocalization> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkChannelLocalization(o['x']! as api.ChannelLocalization);
-  checkChannelLocalization(o['y']! as api.ChannelLocalization);
+  checkChannelLocalization(o['x']!);
+  checkChannelLocalization(o['y']!);
 }
 
 core.int buildCounterChannel = 0;
 api.Channel buildChannel() {
-  var o = api.Channel();
+  final o = api.Channel();
   buildCounterChannel++;
   if (buildCounterChannel < 3) {
     o.auditDetails = buildChannelAuditDetails();
@@ -905,7 +877,7 @@ api.Channel buildChannel() {
     o.etag = 'foo';
     o.id = 'foo';
     o.kind = 'foo';
-    o.localizations = buildUnnamed536();
+    o.localizations = buildUnnamed7();
     o.snippet = buildChannelSnippet();
     o.statistics = buildChannelStatistics();
     o.status = buildChannelStatus();
@@ -918,14 +890,11 @@ api.Channel buildChannel() {
 void checkChannel(api.Channel o) {
   buildCounterChannel++;
   if (buildCounterChannel < 3) {
-    checkChannelAuditDetails(o.auditDetails! as api.ChannelAuditDetails);
-    checkChannelBrandingSettings(
-        o.brandingSettings! as api.ChannelBrandingSettings);
-    checkChannelContentDetails(o.contentDetails! as api.ChannelContentDetails);
-    checkChannelContentOwnerDetails(
-        o.contentOwnerDetails! as api.ChannelContentOwnerDetails);
-    checkChannelConversionPings(
-        o.conversionPings! as api.ChannelConversionPings);
+    checkChannelAuditDetails(o.auditDetails!);
+    checkChannelBrandingSettings(o.brandingSettings!);
+    checkChannelContentDetails(o.contentDetails!);
+    checkChannelContentOwnerDetails(o.contentOwnerDetails!);
+    checkChannelConversionPings(o.conversionPings!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -938,18 +907,18 @@ void checkChannel(api.Channel o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed536(o.localizations!);
-    checkChannelSnippet(o.snippet! as api.ChannelSnippet);
-    checkChannelStatistics(o.statistics! as api.ChannelStatistics);
-    checkChannelStatus(o.status! as api.ChannelStatus);
-    checkChannelTopicDetails(o.topicDetails! as api.ChannelTopicDetails);
+    checkUnnamed7(o.localizations!);
+    checkChannelSnippet(o.snippet!);
+    checkChannelStatistics(o.statistics!);
+    checkChannelStatus(o.status!);
+    checkChannelTopicDetails(o.topicDetails!);
   }
   buildCounterChannel--;
 }
 
 core.int buildCounterChannelAuditDetails = 0;
 api.ChannelAuditDetails buildChannelAuditDetails() {
-  var o = api.ChannelAuditDetails();
+  final o = api.ChannelAuditDetails();
   buildCounterChannelAuditDetails++;
   if (buildCounterChannelAuditDetails < 3) {
     o.communityGuidelinesGoodStanding = true;
@@ -972,7 +941,7 @@ void checkChannelAuditDetails(api.ChannelAuditDetails o) {
 
 core.int buildCounterChannelBannerResource = 0;
 api.ChannelBannerResource buildChannelBannerResource() {
-  var o = api.ChannelBannerResource();
+  final o = api.ChannelBannerResource();
   buildCounterChannelBannerResource++;
   if (buildCounterChannelBannerResource < 3) {
     o.etag = 'foo';
@@ -1002,26 +971,24 @@ void checkChannelBannerResource(api.ChannelBannerResource o) {
   buildCounterChannelBannerResource--;
 }
 
-core.List<api.PropertyValue> buildUnnamed537() {
-  var o = <api.PropertyValue>[];
-  o.add(buildPropertyValue());
-  o.add(buildPropertyValue());
-  return o;
-}
+core.List<api.PropertyValue> buildUnnamed8() => [
+      buildPropertyValue(),
+      buildPropertyValue(),
+    ];
 
-void checkUnnamed537(core.List<api.PropertyValue> o) {
+void checkUnnamed8(core.List<api.PropertyValue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPropertyValue(o[0] as api.PropertyValue);
-  checkPropertyValue(o[1] as api.PropertyValue);
+  checkPropertyValue(o[0]);
+  checkPropertyValue(o[1]);
 }
 
 core.int buildCounterChannelBrandingSettings = 0;
 api.ChannelBrandingSettings buildChannelBrandingSettings() {
-  var o = api.ChannelBrandingSettings();
+  final o = api.ChannelBrandingSettings();
   buildCounterChannelBrandingSettings++;
   if (buildCounterChannelBrandingSettings < 3) {
     o.channel = buildChannelSettings();
-    o.hints = buildUnnamed537();
+    o.hints = buildUnnamed8();
     o.image = buildImageSettings();
     o.watch = buildWatchSettings();
   }
@@ -1032,10 +999,10 @@ api.ChannelBrandingSettings buildChannelBrandingSettings() {
 void checkChannelBrandingSettings(api.ChannelBrandingSettings o) {
   buildCounterChannelBrandingSettings++;
   if (buildCounterChannelBrandingSettings < 3) {
-    checkChannelSettings(o.channel! as api.ChannelSettings);
-    checkUnnamed537(o.hints!);
-    checkImageSettings(o.image! as api.ImageSettings);
-    checkWatchSettings(o.watch! as api.WatchSettings);
+    checkChannelSettings(o.channel!);
+    checkUnnamed8(o.hints!);
+    checkImageSettings(o.image!);
+    checkWatchSettings(o.watch!);
   }
   buildCounterChannelBrandingSettings--;
 }
@@ -1043,7 +1010,7 @@ void checkChannelBrandingSettings(api.ChannelBrandingSettings o) {
 core.int buildCounterChannelContentDetailsRelatedPlaylists = 0;
 api.ChannelContentDetailsRelatedPlaylists
     buildChannelContentDetailsRelatedPlaylists() {
-  var o = api.ChannelContentDetailsRelatedPlaylists();
+  final o = api.ChannelContentDetailsRelatedPlaylists();
   buildCounterChannelContentDetailsRelatedPlaylists++;
   if (buildCounterChannelContentDetailsRelatedPlaylists < 3) {
     o.favorites = 'foo';
@@ -1086,7 +1053,7 @@ void checkChannelContentDetailsRelatedPlaylists(
 
 core.int buildCounterChannelContentDetails = 0;
 api.ChannelContentDetails buildChannelContentDetails() {
-  var o = api.ChannelContentDetails();
+  final o = api.ChannelContentDetails();
   buildCounterChannelContentDetails++;
   if (buildCounterChannelContentDetails < 3) {
     o.relatedPlaylists = buildChannelContentDetailsRelatedPlaylists();
@@ -1098,19 +1065,18 @@ api.ChannelContentDetails buildChannelContentDetails() {
 void checkChannelContentDetails(api.ChannelContentDetails o) {
   buildCounterChannelContentDetails++;
   if (buildCounterChannelContentDetails < 3) {
-    checkChannelContentDetailsRelatedPlaylists(
-        o.relatedPlaylists! as api.ChannelContentDetailsRelatedPlaylists);
+    checkChannelContentDetailsRelatedPlaylists(o.relatedPlaylists!);
   }
   buildCounterChannelContentDetails--;
 }
 
 core.int buildCounterChannelContentOwnerDetails = 0;
 api.ChannelContentOwnerDetails buildChannelContentOwnerDetails() {
-  var o = api.ChannelContentOwnerDetails();
+  final o = api.ChannelContentOwnerDetails();
   buildCounterChannelContentOwnerDetails++;
   if (buildCounterChannelContentOwnerDetails < 3) {
     o.contentOwner = 'foo';
-    o.timeLinked = core.DateTime.parse("2002-02-27T14:01:02");
+    o.timeLinked = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterChannelContentOwnerDetails--;
   return o;
@@ -1125,7 +1091,7 @@ void checkChannelContentOwnerDetails(api.ChannelContentOwnerDetails o) {
     );
     unittest.expect(
       o.timeLinked!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterChannelContentOwnerDetails--;
@@ -1133,7 +1099,7 @@ void checkChannelContentOwnerDetails(api.ChannelContentOwnerDetails o) {
 
 core.int buildCounterChannelConversionPing = 0;
 api.ChannelConversionPing buildChannelConversionPing() {
-  var o = api.ChannelConversionPing();
+  final o = api.ChannelConversionPing();
   buildCounterChannelConversionPing++;
   if (buildCounterChannelConversionPing < 3) {
     o.context = 'foo';
@@ -1158,25 +1124,23 @@ void checkChannelConversionPing(api.ChannelConversionPing o) {
   buildCounterChannelConversionPing--;
 }
 
-core.List<api.ChannelConversionPing> buildUnnamed538() {
-  var o = <api.ChannelConversionPing>[];
-  o.add(buildChannelConversionPing());
-  o.add(buildChannelConversionPing());
-  return o;
-}
+core.List<api.ChannelConversionPing> buildUnnamed9() => [
+      buildChannelConversionPing(),
+      buildChannelConversionPing(),
+    ];
 
-void checkUnnamed538(core.List<api.ChannelConversionPing> o) {
+void checkUnnamed9(core.List<api.ChannelConversionPing> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkChannelConversionPing(o[0] as api.ChannelConversionPing);
-  checkChannelConversionPing(o[1] as api.ChannelConversionPing);
+  checkChannelConversionPing(o[0]);
+  checkChannelConversionPing(o[1]);
 }
 
 core.int buildCounterChannelConversionPings = 0;
 api.ChannelConversionPings buildChannelConversionPings() {
-  var o = api.ChannelConversionPings();
+  final o = api.ChannelConversionPings();
   buildCounterChannelConversionPings++;
   if (buildCounterChannelConversionPings < 3) {
-    o.pings = buildUnnamed538();
+    o.pings = buildUnnamed9();
   }
   buildCounterChannelConversionPings--;
   return o;
@@ -1185,32 +1149,30 @@ api.ChannelConversionPings buildChannelConversionPings() {
 void checkChannelConversionPings(api.ChannelConversionPings o) {
   buildCounterChannelConversionPings++;
   if (buildCounterChannelConversionPings < 3) {
-    checkUnnamed538(o.pings!);
+    checkUnnamed9(o.pings!);
   }
   buildCounterChannelConversionPings--;
 }
 
-core.List<api.Channel> buildUnnamed539() {
-  var o = <api.Channel>[];
-  o.add(buildChannel());
-  o.add(buildChannel());
-  return o;
-}
+core.List<api.Channel> buildUnnamed10() => [
+      buildChannel(),
+      buildChannel(),
+    ];
 
-void checkUnnamed539(core.List<api.Channel> o) {
+void checkUnnamed10(core.List<api.Channel> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkChannel(o[0] as api.Channel);
-  checkChannel(o[1] as api.Channel);
+  checkChannel(o[0]);
+  checkChannel(o[1]);
 }
 
 core.int buildCounterChannelListResponse = 0;
 api.ChannelListResponse buildChannelListResponse() {
-  var o = api.ChannelListResponse();
+  final o = api.ChannelListResponse();
   buildCounterChannelListResponse++;
   if (buildCounterChannelListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed539();
+    o.items = buildUnnamed10();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -1233,7 +1195,7 @@ void checkChannelListResponse(api.ChannelListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed539(o.items!);
+    checkUnnamed10(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -1242,12 +1204,12 @@ void checkChannelListResponse(api.ChannelListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -1258,7 +1220,7 @@ void checkChannelListResponse(api.ChannelListResponse o) {
 
 core.int buildCounterChannelLocalization = 0;
 api.ChannelLocalization buildChannelLocalization() {
-  var o = api.ChannelLocalization();
+  final o = api.ChannelLocalization();
   buildCounterChannelLocalization++;
   if (buildCounterChannelLocalization < 3) {
     o.description = 'foo';
@@ -1285,7 +1247,7 @@ void checkChannelLocalization(api.ChannelLocalization o) {
 
 core.int buildCounterChannelProfileDetails = 0;
 api.ChannelProfileDetails buildChannelProfileDetails() {
-  var o = api.ChannelProfileDetails();
+  final o = api.ChannelProfileDetails();
   buildCounterChannelProfileDetails++;
   if (buildCounterChannelProfileDetails < 3) {
     o.channelId = 'foo';
@@ -1320,29 +1282,27 @@ void checkChannelProfileDetails(api.ChannelProfileDetails o) {
   buildCounterChannelProfileDetails--;
 }
 
-core.Map<core.String, api.ChannelSectionLocalization> buildUnnamed540() {
-  var o = <core.String, api.ChannelSectionLocalization>{};
-  o['x'] = buildChannelSectionLocalization();
-  o['y'] = buildChannelSectionLocalization();
-  return o;
-}
+core.Map<core.String, api.ChannelSectionLocalization> buildUnnamed11() => {
+      'x': buildChannelSectionLocalization(),
+      'y': buildChannelSectionLocalization(),
+    };
 
-void checkUnnamed540(core.Map<core.String, api.ChannelSectionLocalization> o) {
+void checkUnnamed11(core.Map<core.String, api.ChannelSectionLocalization> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkChannelSectionLocalization(o['x']! as api.ChannelSectionLocalization);
-  checkChannelSectionLocalization(o['y']! as api.ChannelSectionLocalization);
+  checkChannelSectionLocalization(o['x']!);
+  checkChannelSectionLocalization(o['y']!);
 }
 
 core.int buildCounterChannelSection = 0;
 api.ChannelSection buildChannelSection() {
-  var o = api.ChannelSection();
+  final o = api.ChannelSection();
   buildCounterChannelSection++;
   if (buildCounterChannelSection < 3) {
     o.contentDetails = buildChannelSectionContentDetails();
     o.etag = 'foo';
     o.id = 'foo';
     o.kind = 'foo';
-    o.localizations = buildUnnamed540();
+    o.localizations = buildUnnamed11();
     o.snippet = buildChannelSectionSnippet();
     o.targeting = buildChannelSectionTargeting();
   }
@@ -1353,8 +1313,7 @@ api.ChannelSection buildChannelSection() {
 void checkChannelSection(api.ChannelSection o) {
   buildCounterChannelSection++;
   if (buildCounterChannelSection < 3) {
-    checkChannelSectionContentDetails(
-        o.contentDetails! as api.ChannelSectionContentDetails);
+    checkChannelSectionContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -1367,21 +1326,19 @@ void checkChannelSection(api.ChannelSection o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed540(o.localizations!);
-    checkChannelSectionSnippet(o.snippet! as api.ChannelSectionSnippet);
-    checkChannelSectionTargeting(o.targeting! as api.ChannelSectionTargeting);
+    checkUnnamed11(o.localizations!);
+    checkChannelSectionSnippet(o.snippet!);
+    checkChannelSectionTargeting(o.targeting!);
   }
   buildCounterChannelSection--;
 }
 
-core.List<core.String> buildUnnamed541() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed12() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed541(core.List<core.String> o) {
+void checkUnnamed12(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1393,14 +1350,12 @@ void checkUnnamed541(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed542() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed13() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed542(core.List<core.String> o) {
+void checkUnnamed13(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1414,11 +1369,11 @@ void checkUnnamed542(core.List<core.String> o) {
 
 core.int buildCounterChannelSectionContentDetails = 0;
 api.ChannelSectionContentDetails buildChannelSectionContentDetails() {
-  var o = api.ChannelSectionContentDetails();
+  final o = api.ChannelSectionContentDetails();
   buildCounterChannelSectionContentDetails++;
   if (buildCounterChannelSectionContentDetails < 3) {
-    o.channels = buildUnnamed541();
-    o.playlists = buildUnnamed542();
+    o.channels = buildUnnamed12();
+    o.playlists = buildUnnamed13();
   }
   buildCounterChannelSectionContentDetails--;
   return o;
@@ -1427,33 +1382,31 @@ api.ChannelSectionContentDetails buildChannelSectionContentDetails() {
 void checkChannelSectionContentDetails(api.ChannelSectionContentDetails o) {
   buildCounterChannelSectionContentDetails++;
   if (buildCounterChannelSectionContentDetails < 3) {
-    checkUnnamed541(o.channels!);
-    checkUnnamed542(o.playlists!);
+    checkUnnamed12(o.channels!);
+    checkUnnamed13(o.playlists!);
   }
   buildCounterChannelSectionContentDetails--;
 }
 
-core.List<api.ChannelSection> buildUnnamed543() {
-  var o = <api.ChannelSection>[];
-  o.add(buildChannelSection());
-  o.add(buildChannelSection());
-  return o;
-}
+core.List<api.ChannelSection> buildUnnamed14() => [
+      buildChannelSection(),
+      buildChannelSection(),
+    ];
 
-void checkUnnamed543(core.List<api.ChannelSection> o) {
+void checkUnnamed14(core.List<api.ChannelSection> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkChannelSection(o[0] as api.ChannelSection);
-  checkChannelSection(o[1] as api.ChannelSection);
+  checkChannelSection(o[0]);
+  checkChannelSection(o[1]);
 }
 
 core.int buildCounterChannelSectionListResponse = 0;
 api.ChannelSectionListResponse buildChannelSectionListResponse() {
-  var o = api.ChannelSectionListResponse();
+  final o = api.ChannelSectionListResponse();
   buildCounterChannelSectionListResponse++;
   if (buildCounterChannelSectionListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed543();
+    o.items = buildUnnamed14();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -1472,7 +1425,7 @@ void checkChannelSectionListResponse(api.ChannelSectionListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed543(o.items!);
+    checkUnnamed14(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -1487,7 +1440,7 @@ void checkChannelSectionListResponse(api.ChannelSectionListResponse o) {
 
 core.int buildCounterChannelSectionLocalization = 0;
 api.ChannelSectionLocalization buildChannelSectionLocalization() {
-  var o = api.ChannelSectionLocalization();
+  final o = api.ChannelSectionLocalization();
   buildCounterChannelSectionLocalization++;
   if (buildCounterChannelSectionLocalization < 3) {
     o.title = 'foo';
@@ -1509,7 +1462,7 @@ void checkChannelSectionLocalization(api.ChannelSectionLocalization o) {
 
 core.int buildCounterChannelSectionSnippet = 0;
 api.ChannelSectionSnippet buildChannelSectionSnippet() {
-  var o = api.ChannelSectionSnippet();
+  final o = api.ChannelSectionSnippet();
   buildCounterChannelSectionSnippet++;
   if (buildCounterChannelSectionSnippet < 3) {
     o.channelId = 'foo';
@@ -1535,8 +1488,7 @@ void checkChannelSectionSnippet(api.ChannelSectionSnippet o) {
       o.defaultLanguage!,
       unittest.equals('foo'),
     );
-    checkChannelSectionLocalization(
-        o.localized! as api.ChannelSectionLocalization);
+    checkChannelSectionLocalization(o.localized!);
     unittest.expect(
       o.position!,
       unittest.equals(42),
@@ -1557,14 +1509,12 @@ void checkChannelSectionSnippet(api.ChannelSectionSnippet o) {
   buildCounterChannelSectionSnippet--;
 }
 
-core.List<core.String> buildUnnamed544() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed15() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed544(core.List<core.String> o) {
+void checkUnnamed15(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1576,14 +1526,12 @@ void checkUnnamed544(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed545() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed16() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed545(core.List<core.String> o) {
+void checkUnnamed16(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1595,14 +1543,12 @@ void checkUnnamed545(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed546() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed17() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed546(core.List<core.String> o) {
+void checkUnnamed17(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1616,12 +1562,12 @@ void checkUnnamed546(core.List<core.String> o) {
 
 core.int buildCounterChannelSectionTargeting = 0;
 api.ChannelSectionTargeting buildChannelSectionTargeting() {
-  var o = api.ChannelSectionTargeting();
+  final o = api.ChannelSectionTargeting();
   buildCounterChannelSectionTargeting++;
   if (buildCounterChannelSectionTargeting < 3) {
-    o.countries = buildUnnamed544();
-    o.languages = buildUnnamed545();
-    o.regions = buildUnnamed546();
+    o.countries = buildUnnamed15();
+    o.languages = buildUnnamed16();
+    o.regions = buildUnnamed17();
   }
   buildCounterChannelSectionTargeting--;
   return o;
@@ -1630,21 +1576,19 @@ api.ChannelSectionTargeting buildChannelSectionTargeting() {
 void checkChannelSectionTargeting(api.ChannelSectionTargeting o) {
   buildCounterChannelSectionTargeting++;
   if (buildCounterChannelSectionTargeting < 3) {
-    checkUnnamed544(o.countries!);
-    checkUnnamed545(o.languages!);
-    checkUnnamed546(o.regions!);
+    checkUnnamed15(o.countries!);
+    checkUnnamed16(o.languages!);
+    checkUnnamed17(o.regions!);
   }
   buildCounterChannelSectionTargeting--;
 }
 
-core.List<core.String> buildUnnamed547() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed18() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed547(core.List<core.String> o) {
+void checkUnnamed18(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1658,7 +1602,7 @@ void checkUnnamed547(core.List<core.String> o) {
 
 core.int buildCounterChannelSettings = 0;
 api.ChannelSettings buildChannelSettings() {
-  var o = api.ChannelSettings();
+  final o = api.ChannelSettings();
   buildCounterChannelSettings++;
   if (buildCounterChannelSettings < 3) {
     o.country = 'foo';
@@ -1666,7 +1610,7 @@ api.ChannelSettings buildChannelSettings() {
     o.defaultTab = 'foo';
     o.description = 'foo';
     o.featuredChannelsTitle = 'foo';
-    o.featuredChannelsUrls = buildUnnamed547();
+    o.featuredChannelsUrls = buildUnnamed18();
     o.keywords = 'foo';
     o.moderateComments = true;
     o.profileColor = 'foo';
@@ -1703,7 +1647,7 @@ void checkChannelSettings(api.ChannelSettings o) {
       o.featuredChannelsTitle!,
       unittest.equals('foo'),
     );
-    checkUnnamed547(o.featuredChannelsUrls!);
+    checkUnnamed18(o.featuredChannelsUrls!);
     unittest.expect(
       o.keywords!,
       unittest.equals('foo'),
@@ -1733,7 +1677,7 @@ void checkChannelSettings(api.ChannelSettings o) {
 
 core.int buildCounterChannelSnippet = 0;
 api.ChannelSnippet buildChannelSnippet() {
-  var o = api.ChannelSnippet();
+  final o = api.ChannelSnippet();
   buildCounterChannelSnippet++;
   if (buildCounterChannelSnippet < 3) {
     o.country = 'foo';
@@ -1741,7 +1685,7 @@ api.ChannelSnippet buildChannelSnippet() {
     o.defaultLanguage = 'foo';
     o.description = 'foo';
     o.localized = buildChannelLocalization();
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
   }
@@ -1768,12 +1712,12 @@ void checkChannelSnippet(api.ChannelSnippet o) {
       o.description!,
       unittest.equals('foo'),
     );
-    checkChannelLocalization(o.localized! as api.ChannelLocalization);
+    checkChannelLocalization(o.localized!);
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -1784,7 +1728,7 @@ void checkChannelSnippet(api.ChannelSnippet o) {
 
 core.int buildCounterChannelStatistics = 0;
 api.ChannelStatistics buildChannelStatistics() {
-  var o = api.ChannelStatistics();
+  final o = api.ChannelStatistics();
   buildCounterChannelStatistics++;
   if (buildCounterChannelStatistics < 3) {
     o.commentCount = 'foo';
@@ -1823,7 +1767,7 @@ void checkChannelStatistics(api.ChannelStatistics o) {
 
 core.int buildCounterChannelStatus = 0;
 api.ChannelStatus buildChannelStatus() {
-  var o = api.ChannelStatus();
+  final o = api.ChannelStatus();
   buildCounterChannelStatus++;
   if (buildCounterChannelStatus < 3) {
     o.isLinked = true;
@@ -1856,7 +1800,7 @@ void checkChannelStatus(api.ChannelStatus o) {
 
 core.int buildCounterChannelToStoreLinkDetails = 0;
 api.ChannelToStoreLinkDetails buildChannelToStoreLinkDetails() {
-  var o = api.ChannelToStoreLinkDetails();
+  final o = api.ChannelToStoreLinkDetails();
   buildCounterChannelToStoreLinkDetails++;
   if (buildCounterChannelToStoreLinkDetails < 3) {
     o.storeName = 'foo';
@@ -1881,14 +1825,12 @@ void checkChannelToStoreLinkDetails(api.ChannelToStoreLinkDetails o) {
   buildCounterChannelToStoreLinkDetails--;
 }
 
-core.List<core.String> buildUnnamed548() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed19() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed548(core.List<core.String> o) {
+void checkUnnamed19(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1900,14 +1842,12 @@ void checkUnnamed548(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed549() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed20() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed549(core.List<core.String> o) {
+void checkUnnamed20(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1921,11 +1861,11 @@ void checkUnnamed549(core.List<core.String> o) {
 
 core.int buildCounterChannelTopicDetails = 0;
 api.ChannelTopicDetails buildChannelTopicDetails() {
-  var o = api.ChannelTopicDetails();
+  final o = api.ChannelTopicDetails();
   buildCounterChannelTopicDetails++;
   if (buildCounterChannelTopicDetails < 3) {
-    o.topicCategories = buildUnnamed548();
-    o.topicIds = buildUnnamed549();
+    o.topicCategories = buildUnnamed19();
+    o.topicIds = buildUnnamed20();
   }
   buildCounterChannelTopicDetails--;
   return o;
@@ -1934,15 +1874,15 @@ api.ChannelTopicDetails buildChannelTopicDetails() {
 void checkChannelTopicDetails(api.ChannelTopicDetails o) {
   buildCounterChannelTopicDetails++;
   if (buildCounterChannelTopicDetails < 3) {
-    checkUnnamed548(o.topicCategories!);
-    checkUnnamed549(o.topicIds!);
+    checkUnnamed19(o.topicCategories!);
+    checkUnnamed20(o.topicIds!);
   }
   buildCounterChannelTopicDetails--;
 }
 
 core.int buildCounterComment = 0;
 api.Comment buildComment() {
-  var o = api.Comment();
+  final o = api.Comment();
   buildCounterComment++;
   if (buildCounterComment < 3) {
     o.etag = 'foo';
@@ -1969,32 +1909,30 @@ void checkComment(api.Comment o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkCommentSnippet(o.snippet! as api.CommentSnippet);
+    checkCommentSnippet(o.snippet!);
   }
   buildCounterComment--;
 }
 
-core.List<api.Comment> buildUnnamed550() {
-  var o = <api.Comment>[];
-  o.add(buildComment());
-  o.add(buildComment());
-  return o;
-}
+core.List<api.Comment> buildUnnamed21() => [
+      buildComment(),
+      buildComment(),
+    ];
 
-void checkUnnamed550(core.List<api.Comment> o) {
+void checkUnnamed21(core.List<api.Comment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkComment(o[0] as api.Comment);
-  checkComment(o[1] as api.Comment);
+  checkComment(o[0]);
+  checkComment(o[1]);
 }
 
 core.int buildCounterCommentListResponse = 0;
 api.CommentListResponse buildCommentListResponse() {
-  var o = api.CommentListResponse();
+  final o = api.CommentListResponse();
   buildCounterCommentListResponse++;
   if (buildCounterCommentListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed550();
+    o.items = buildUnnamed21();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -2016,7 +1954,7 @@ void checkCommentListResponse(api.CommentListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed550(o.items!);
+    checkUnnamed21(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -2025,8 +1963,8 @@ void checkCommentListResponse(api.CommentListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -2037,7 +1975,7 @@ void checkCommentListResponse(api.CommentListResponse o) {
 
 core.int buildCounterCommentSnippet = 0;
 api.CommentSnippet buildCommentSnippet() {
-  var o = api.CommentSnippet();
+  final o = api.CommentSnippet();
   buildCounterCommentSnippet++;
   if (buildCounterCommentSnippet < 3) {
     o.authorChannelId = buildCommentSnippetAuthorChannelId();
@@ -2049,10 +1987,10 @@ api.CommentSnippet buildCommentSnippet() {
     o.likeCount = 42;
     o.moderationStatus = 'foo';
     o.parentId = 'foo';
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.textDisplay = 'foo';
     o.textOriginal = 'foo';
-    o.updatedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updatedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.videoId = 'foo';
     o.viewerRating = 'foo';
   }
@@ -2063,8 +2001,7 @@ api.CommentSnippet buildCommentSnippet() {
 void checkCommentSnippet(api.CommentSnippet o) {
   buildCounterCommentSnippet++;
   if (buildCounterCommentSnippet < 3) {
-    checkCommentSnippetAuthorChannelId(
-        o.authorChannelId! as api.CommentSnippetAuthorChannelId);
+    checkCommentSnippetAuthorChannelId(o.authorChannelId!);
     unittest.expect(
       o.authorChannelUrl!,
       unittest.equals('foo'),
@@ -2096,7 +2033,7 @@ void checkCommentSnippet(api.CommentSnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.textDisplay!,
@@ -2108,7 +2045,7 @@ void checkCommentSnippet(api.CommentSnippet o) {
     );
     unittest.expect(
       o.updatedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.videoId!,
@@ -2124,7 +2061,7 @@ void checkCommentSnippet(api.CommentSnippet o) {
 
 core.int buildCounterCommentSnippetAuthorChannelId = 0;
 api.CommentSnippetAuthorChannelId buildCommentSnippetAuthorChannelId() {
-  var o = api.CommentSnippetAuthorChannelId();
+  final o = api.CommentSnippetAuthorChannelId();
   buildCounterCommentSnippetAuthorChannelId++;
   if (buildCounterCommentSnippetAuthorChannelId < 3) {
     o.value = 'foo';
@@ -2146,7 +2083,7 @@ void checkCommentSnippetAuthorChannelId(api.CommentSnippetAuthorChannelId o) {
 
 core.int buildCounterCommentThread = 0;
 api.CommentThread buildCommentThread() {
-  var o = api.CommentThread();
+  final o = api.CommentThread();
   buildCounterCommentThread++;
   if (buildCounterCommentThread < 3) {
     o.etag = 'foo';
@@ -2174,33 +2111,31 @@ void checkCommentThread(api.CommentThread o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkCommentThreadReplies(o.replies! as api.CommentThreadReplies);
-    checkCommentThreadSnippet(o.snippet! as api.CommentThreadSnippet);
+    checkCommentThreadReplies(o.replies!);
+    checkCommentThreadSnippet(o.snippet!);
   }
   buildCounterCommentThread--;
 }
 
-core.List<api.CommentThread> buildUnnamed551() {
-  var o = <api.CommentThread>[];
-  o.add(buildCommentThread());
-  o.add(buildCommentThread());
-  return o;
-}
+core.List<api.CommentThread> buildUnnamed22() => [
+      buildCommentThread(),
+      buildCommentThread(),
+    ];
 
-void checkUnnamed551(core.List<api.CommentThread> o) {
+void checkUnnamed22(core.List<api.CommentThread> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCommentThread(o[0] as api.CommentThread);
-  checkCommentThread(o[1] as api.CommentThread);
+  checkCommentThread(o[0]);
+  checkCommentThread(o[1]);
 }
 
 core.int buildCounterCommentThreadListResponse = 0;
 api.CommentThreadListResponse buildCommentThreadListResponse() {
-  var o = api.CommentThreadListResponse();
+  final o = api.CommentThreadListResponse();
   buildCounterCommentThreadListResponse++;
   if (buildCounterCommentThreadListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed551();
+    o.items = buildUnnamed22();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -2222,7 +2157,7 @@ void checkCommentThreadListResponse(api.CommentThreadListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed551(o.items!);
+    checkUnnamed22(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -2231,8 +2166,8 @@ void checkCommentThreadListResponse(api.CommentThreadListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -2241,25 +2176,23 @@ void checkCommentThreadListResponse(api.CommentThreadListResponse o) {
   buildCounterCommentThreadListResponse--;
 }
 
-core.List<api.Comment> buildUnnamed552() {
-  var o = <api.Comment>[];
-  o.add(buildComment());
-  o.add(buildComment());
-  return o;
-}
+core.List<api.Comment> buildUnnamed23() => [
+      buildComment(),
+      buildComment(),
+    ];
 
-void checkUnnamed552(core.List<api.Comment> o) {
+void checkUnnamed23(core.List<api.Comment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkComment(o[0] as api.Comment);
-  checkComment(o[1] as api.Comment);
+  checkComment(o[0]);
+  checkComment(o[1]);
 }
 
 core.int buildCounterCommentThreadReplies = 0;
 api.CommentThreadReplies buildCommentThreadReplies() {
-  var o = api.CommentThreadReplies();
+  final o = api.CommentThreadReplies();
   buildCounterCommentThreadReplies++;
   if (buildCounterCommentThreadReplies < 3) {
-    o.comments = buildUnnamed552();
+    o.comments = buildUnnamed23();
   }
   buildCounterCommentThreadReplies--;
   return o;
@@ -2268,14 +2201,14 @@ api.CommentThreadReplies buildCommentThreadReplies() {
 void checkCommentThreadReplies(api.CommentThreadReplies o) {
   buildCounterCommentThreadReplies++;
   if (buildCounterCommentThreadReplies < 3) {
-    checkUnnamed552(o.comments!);
+    checkUnnamed23(o.comments!);
   }
   buildCounterCommentThreadReplies--;
 }
 
 core.int buildCounterCommentThreadSnippet = 0;
 api.CommentThreadSnippet buildCommentThreadSnippet() {
-  var o = api.CommentThreadSnippet();
+  final o = api.CommentThreadSnippet();
   buildCounterCommentThreadSnippet++;
   if (buildCounterCommentThreadSnippet < 3) {
     o.canReply = true;
@@ -2298,7 +2231,7 @@ void checkCommentThreadSnippet(api.CommentThreadSnippet o) {
       unittest.equals('foo'),
     );
     unittest.expect(o.isPublic!, unittest.isTrue);
-    checkComment(o.topLevelComment! as api.Comment);
+    checkComment(o.topLevelComment!);
     unittest.expect(
       o.totalReplyCount!,
       unittest.equals(42),
@@ -2311,14 +2244,12 @@ void checkCommentThreadSnippet(api.CommentThreadSnippet o) {
   buildCounterCommentThreadSnippet--;
 }
 
-core.List<core.String> buildUnnamed553() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed24() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed553(core.List<core.String> o) {
+void checkUnnamed24(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2330,14 +2261,12 @@ void checkUnnamed553(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed554() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed25() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed554(core.List<core.String> o) {
+void checkUnnamed25(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2351,7 +2280,7 @@ void checkUnnamed554(core.List<core.String> o) {
 
 core.int buildCounterContentRating = 0;
 api.ContentRating buildContentRating() {
-  var o = api.ContentRating();
+  final o = api.ContentRating();
   buildCounterContentRating++;
   if (buildCounterContentRating < 3) {
     o.acbRating = 'foo';
@@ -2374,7 +2303,7 @@ api.ContentRating buildContentRating() {
     o.cscfRating = 'foo';
     o.czfilmRating = 'foo';
     o.djctqRating = 'foo';
-    o.djctqRatingReasons = buildUnnamed553();
+    o.djctqRatingReasons = buildUnnamed24();
     o.ecbmctRating = 'foo';
     o.eefilmRating = 'foo';
     o.egfilmRating = 'foo';
@@ -2383,7 +2312,7 @@ api.ContentRating buildContentRating() {
     o.fcoRating = 'foo';
     o.fmocRating = 'foo';
     o.fpbRating = 'foo';
-    o.fpbRatingReasons = buildUnnamed554();
+    o.fpbRatingReasons = buildUnnamed25();
     o.fskRating = 'foo';
     o.grfilmRating = 'foo';
     o.icaaRating = 'foo';
@@ -2513,7 +2442,7 @@ void checkContentRating(api.ContentRating o) {
       o.djctqRating!,
       unittest.equals('foo'),
     );
-    checkUnnamed553(o.djctqRatingReasons!);
+    checkUnnamed24(o.djctqRatingReasons!);
     unittest.expect(
       o.ecbmctRating!,
       unittest.equals('foo'),
@@ -2546,7 +2475,7 @@ void checkContentRating(api.ContentRating o) {
       o.fpbRating!,
       unittest.equals('foo'),
     );
-    checkUnnamed554(o.fpbRatingReasons!);
+    checkUnnamed25(o.fpbRatingReasons!);
     unittest.expect(
       o.fskRating!,
       unittest.equals('foo'),
@@ -2717,7 +2646,7 @@ void checkContentRating(api.ContentRating o) {
 
 core.int buildCounterEntity = 0;
 api.Entity buildEntity() {
-  var o = api.Entity();
+  final o = api.Entity();
   buildCounterEntity++;
   if (buildCounterEntity < 3) {
     o.id = 'foo';
@@ -2749,7 +2678,7 @@ void checkEntity(api.Entity o) {
 
 core.int buildCounterGeoPoint = 0;
 api.GeoPoint buildGeoPoint() {
-  var o = api.GeoPoint();
+  final o = api.GeoPoint();
   buildCounterGeoPoint++;
   if (buildCounterGeoPoint < 3) {
     o.altitude = 42.0;
@@ -2781,7 +2710,7 @@ void checkGeoPoint(api.GeoPoint o) {
 
 core.int buildCounterI18nLanguage = 0;
 api.I18nLanguage buildI18nLanguage() {
-  var o = api.I18nLanguage();
+  final o = api.I18nLanguage();
   buildCounterI18nLanguage++;
   if (buildCounterI18nLanguage < 3) {
     o.etag = 'foo';
@@ -2808,32 +2737,30 @@ void checkI18nLanguage(api.I18nLanguage o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkI18nLanguageSnippet(o.snippet! as api.I18nLanguageSnippet);
+    checkI18nLanguageSnippet(o.snippet!);
   }
   buildCounterI18nLanguage--;
 }
 
-core.List<api.I18nLanguage> buildUnnamed555() {
-  var o = <api.I18nLanguage>[];
-  o.add(buildI18nLanguage());
-  o.add(buildI18nLanguage());
-  return o;
-}
+core.List<api.I18nLanguage> buildUnnamed26() => [
+      buildI18nLanguage(),
+      buildI18nLanguage(),
+    ];
 
-void checkUnnamed555(core.List<api.I18nLanguage> o) {
+void checkUnnamed26(core.List<api.I18nLanguage> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkI18nLanguage(o[0] as api.I18nLanguage);
-  checkI18nLanguage(o[1] as api.I18nLanguage);
+  checkI18nLanguage(o[0]);
+  checkI18nLanguage(o[1]);
 }
 
 core.int buildCounterI18nLanguageListResponse = 0;
 api.I18nLanguageListResponse buildI18nLanguageListResponse() {
-  var o = api.I18nLanguageListResponse();
+  final o = api.I18nLanguageListResponse();
   buildCounterI18nLanguageListResponse++;
   if (buildCounterI18nLanguageListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed555();
+    o.items = buildUnnamed26();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -2852,7 +2779,7 @@ void checkI18nLanguageListResponse(api.I18nLanguageListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed555(o.items!);
+    checkUnnamed26(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -2867,7 +2794,7 @@ void checkI18nLanguageListResponse(api.I18nLanguageListResponse o) {
 
 core.int buildCounterI18nLanguageSnippet = 0;
 api.I18nLanguageSnippet buildI18nLanguageSnippet() {
-  var o = api.I18nLanguageSnippet();
+  final o = api.I18nLanguageSnippet();
   buildCounterI18nLanguageSnippet++;
   if (buildCounterI18nLanguageSnippet < 3) {
     o.hl = 'foo';
@@ -2894,7 +2821,7 @@ void checkI18nLanguageSnippet(api.I18nLanguageSnippet o) {
 
 core.int buildCounterI18nRegion = 0;
 api.I18nRegion buildI18nRegion() {
-  var o = api.I18nRegion();
+  final o = api.I18nRegion();
   buildCounterI18nRegion++;
   if (buildCounterI18nRegion < 3) {
     o.etag = 'foo';
@@ -2921,32 +2848,30 @@ void checkI18nRegion(api.I18nRegion o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkI18nRegionSnippet(o.snippet! as api.I18nRegionSnippet);
+    checkI18nRegionSnippet(o.snippet!);
   }
   buildCounterI18nRegion--;
 }
 
-core.List<api.I18nRegion> buildUnnamed556() {
-  var o = <api.I18nRegion>[];
-  o.add(buildI18nRegion());
-  o.add(buildI18nRegion());
-  return o;
-}
+core.List<api.I18nRegion> buildUnnamed27() => [
+      buildI18nRegion(),
+      buildI18nRegion(),
+    ];
 
-void checkUnnamed556(core.List<api.I18nRegion> o) {
+void checkUnnamed27(core.List<api.I18nRegion> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkI18nRegion(o[0] as api.I18nRegion);
-  checkI18nRegion(o[1] as api.I18nRegion);
+  checkI18nRegion(o[0]);
+  checkI18nRegion(o[1]);
 }
 
 core.int buildCounterI18nRegionListResponse = 0;
 api.I18nRegionListResponse buildI18nRegionListResponse() {
-  var o = api.I18nRegionListResponse();
+  final o = api.I18nRegionListResponse();
   buildCounterI18nRegionListResponse++;
   if (buildCounterI18nRegionListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed556();
+    o.items = buildUnnamed27();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -2965,7 +2890,7 @@ void checkI18nRegionListResponse(api.I18nRegionListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed556(o.items!);
+    checkUnnamed27(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -2980,7 +2905,7 @@ void checkI18nRegionListResponse(api.I18nRegionListResponse o) {
 
 core.int buildCounterI18nRegionSnippet = 0;
 api.I18nRegionSnippet buildI18nRegionSnippet() {
-  var o = api.I18nRegionSnippet();
+  final o = api.I18nRegionSnippet();
   buildCounterI18nRegionSnippet++;
   if (buildCounterI18nRegionSnippet < 3) {
     o.gl = 'foo';
@@ -3007,7 +2932,7 @@ void checkI18nRegionSnippet(api.I18nRegionSnippet o) {
 
 core.int buildCounterImageSettings = 0;
 api.ImageSettings buildImageSettings() {
-  var o = api.ImageSettings();
+  final o = api.ImageSettings();
   buildCounterImageSettings++;
   if (buildCounterImageSettings < 3) {
     o.backgroundImageUrl = buildLocalizedProperty();
@@ -3040,7 +2965,7 @@ api.ImageSettings buildImageSettings() {
 void checkImageSettings(api.ImageSettings o) {
   buildCounterImageSettings++;
   if (buildCounterImageSettings < 3) {
-    checkLocalizedProperty(o.backgroundImageUrl! as api.LocalizedProperty);
+    checkLocalizedProperty(o.backgroundImageUrl!);
     unittest.expect(
       o.bannerExternalUrl!,
       unittest.equals('foo'),
@@ -3101,14 +3026,10 @@ void checkImageSettings(api.ImageSettings o) {
       o.bannerTvMediumImageUrl!,
       unittest.equals('foo'),
     );
-    checkLocalizedProperty(
-        o.largeBrandedBannerImageImapScript! as api.LocalizedProperty);
-    checkLocalizedProperty(
-        o.largeBrandedBannerImageUrl! as api.LocalizedProperty);
-    checkLocalizedProperty(
-        o.smallBrandedBannerImageImapScript! as api.LocalizedProperty);
-    checkLocalizedProperty(
-        o.smallBrandedBannerImageUrl! as api.LocalizedProperty);
+    checkLocalizedProperty(o.largeBrandedBannerImageImapScript!);
+    checkLocalizedProperty(o.largeBrandedBannerImageUrl!);
+    checkLocalizedProperty(o.smallBrandedBannerImageImapScript!);
+    checkLocalizedProperty(o.smallBrandedBannerImageUrl!);
     unittest.expect(
       o.trackingImageUrl!,
       unittest.equals('foo'),
@@ -3123,7 +3044,7 @@ void checkImageSettings(api.ImageSettings o) {
 
 core.int buildCounterIngestionInfo = 0;
 api.IngestionInfo buildIngestionInfo() {
-  var o = api.IngestionInfo();
+  final o = api.IngestionInfo();
   buildCounterIngestionInfo++;
   if (buildCounterIngestionInfo < 3) {
     o.backupIngestionAddress = 'foo';
@@ -3165,7 +3086,7 @@ void checkIngestionInfo(api.IngestionInfo o) {
 
 core.int buildCounterInvideoBranding = 0;
 api.InvideoBranding buildInvideoBranding() {
-  var o = api.InvideoBranding();
+  final o = api.InvideoBranding();
   buildCounterInvideoBranding++;
   if (buildCounterInvideoBranding < 3) {
     o.imageBytes = 'foo';
@@ -3189,19 +3110,19 @@ void checkInvideoBranding(api.InvideoBranding o) {
       o.imageUrl!,
       unittest.equals('foo'),
     );
-    checkInvideoPosition(o.position! as api.InvideoPosition);
+    checkInvideoPosition(o.position!);
     unittest.expect(
       o.targetChannelId!,
       unittest.equals('foo'),
     );
-    checkInvideoTiming(o.timing! as api.InvideoTiming);
+    checkInvideoTiming(o.timing!);
   }
   buildCounterInvideoBranding--;
 }
 
 core.int buildCounterInvideoPosition = 0;
 api.InvideoPosition buildInvideoPosition() {
-  var o = api.InvideoPosition();
+  final o = api.InvideoPosition();
   buildCounterInvideoPosition++;
   if (buildCounterInvideoPosition < 3) {
     o.cornerPosition = 'foo';
@@ -3228,7 +3149,7 @@ void checkInvideoPosition(api.InvideoPosition o) {
 
 core.int buildCounterInvideoTiming = 0;
 api.InvideoTiming buildInvideoTiming() {
-  var o = api.InvideoTiming();
+  final o = api.InvideoTiming();
   buildCounterInvideoTiming++;
   if (buildCounterInvideoTiming < 3) {
     o.durationMs = 'foo';
@@ -3260,7 +3181,7 @@ void checkInvideoTiming(api.InvideoTiming o) {
 
 core.int buildCounterLanguageTag = 0;
 api.LanguageTag buildLanguageTag() {
-  var o = api.LanguageTag();
+  final o = api.LanguageTag();
   buildCounterLanguageTag++;
   if (buildCounterLanguageTag < 3) {
     o.value = 'foo';
@@ -3282,7 +3203,7 @@ void checkLanguageTag(api.LanguageTag o) {
 
 core.int buildCounterLevelDetails = 0;
 api.LevelDetails buildLevelDetails() {
-  var o = api.LevelDetails();
+  final o = api.LevelDetails();
   buildCounterLevelDetails++;
   if (buildCounterLevelDetails < 3) {
     o.displayName = 'foo';
@@ -3304,7 +3225,7 @@ void checkLevelDetails(api.LevelDetails o) {
 
 core.int buildCounterLiveBroadcast = 0;
 api.LiveBroadcast buildLiveBroadcast() {
-  var o = api.LiveBroadcast();
+  final o = api.LiveBroadcast();
   buildCounterLiveBroadcast++;
   if (buildCounterLiveBroadcast < 3) {
     o.contentDetails = buildLiveBroadcastContentDetails();
@@ -3322,8 +3243,7 @@ api.LiveBroadcast buildLiveBroadcast() {
 void checkLiveBroadcast(api.LiveBroadcast o) {
   buildCounterLiveBroadcast++;
   if (buildCounterLiveBroadcast < 3) {
-    checkLiveBroadcastContentDetails(
-        o.contentDetails! as api.LiveBroadcastContentDetails);
+    checkLiveBroadcastContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -3336,20 +3256,20 @@ void checkLiveBroadcast(api.LiveBroadcast o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkLiveBroadcastSnippet(o.snippet! as api.LiveBroadcastSnippet);
-    checkLiveBroadcastStatistics(o.statistics! as api.LiveBroadcastStatistics);
-    checkLiveBroadcastStatus(o.status! as api.LiveBroadcastStatus);
+    checkLiveBroadcastSnippet(o.snippet!);
+    checkLiveBroadcastStatistics(o.statistics!);
+    checkLiveBroadcastStatus(o.status!);
   }
   buildCounterLiveBroadcast--;
 }
 
 core.int buildCounterLiveBroadcastContentDetails = 0;
 api.LiveBroadcastContentDetails buildLiveBroadcastContentDetails() {
-  var o = api.LiveBroadcastContentDetails();
+  final o = api.LiveBroadcastContentDetails();
   buildCounterLiveBroadcastContentDetails++;
   if (buildCounterLiveBroadcastContentDetails < 3) {
     o.boundStreamId = 'foo';
-    o.boundStreamLastUpdateTimeMs = core.DateTime.parse("2002-02-27T14:01:02");
+    o.boundStreamLastUpdateTimeMs = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.closedCaptionsType = 'foo';
     o.enableAutoStart = true;
     o.enableAutoStop = true;
@@ -3379,7 +3299,7 @@ void checkLiveBroadcastContentDetails(api.LiveBroadcastContentDetails o) {
     );
     unittest.expect(
       o.boundStreamLastUpdateTimeMs!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.closedCaptionsType!,
@@ -3400,7 +3320,7 @@ void checkLiveBroadcastContentDetails(api.LiveBroadcastContentDetails o) {
       o.mesh!,
       unittest.equals('foo'),
     );
-    checkMonitorStreamInfo(o.monitorStream! as api.MonitorStreamInfo);
+    checkMonitorStreamInfo(o.monitorStream!);
     unittest.expect(
       o.projection!,
       unittest.equals('foo'),
@@ -3415,27 +3335,25 @@ void checkLiveBroadcastContentDetails(api.LiveBroadcastContentDetails o) {
   buildCounterLiveBroadcastContentDetails--;
 }
 
-core.List<api.LiveBroadcast> buildUnnamed557() {
-  var o = <api.LiveBroadcast>[];
-  o.add(buildLiveBroadcast());
-  o.add(buildLiveBroadcast());
-  return o;
-}
+core.List<api.LiveBroadcast> buildUnnamed28() => [
+      buildLiveBroadcast(),
+      buildLiveBroadcast(),
+    ];
 
-void checkUnnamed557(core.List<api.LiveBroadcast> o) {
+void checkUnnamed28(core.List<api.LiveBroadcast> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLiveBroadcast(o[0] as api.LiveBroadcast);
-  checkLiveBroadcast(o[1] as api.LiveBroadcast);
+  checkLiveBroadcast(o[0]);
+  checkLiveBroadcast(o[1]);
 }
 
 core.int buildCounterLiveBroadcastListResponse = 0;
 api.LiveBroadcastListResponse buildLiveBroadcastListResponse() {
-  var o = api.LiveBroadcastListResponse();
+  final o = api.LiveBroadcastListResponse();
   buildCounterLiveBroadcastListResponse++;
   if (buildCounterLiveBroadcastListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed557();
+    o.items = buildUnnamed28();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -3458,7 +3376,7 @@ void checkLiveBroadcastListResponse(api.LiveBroadcastListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed557(o.items!);
+    checkUnnamed28(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -3467,12 +3385,12 @@ void checkLiveBroadcastListResponse(api.LiveBroadcastListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -3483,18 +3401,18 @@ void checkLiveBroadcastListResponse(api.LiveBroadcastListResponse o) {
 
 core.int buildCounterLiveBroadcastSnippet = 0;
 api.LiveBroadcastSnippet buildLiveBroadcastSnippet() {
-  var o = api.LiveBroadcastSnippet();
+  final o = api.LiveBroadcastSnippet();
   buildCounterLiveBroadcastSnippet++;
   if (buildCounterLiveBroadcastSnippet < 3) {
-    o.actualEndTime = core.DateTime.parse("2002-02-27T14:01:02");
-    o.actualStartTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.actualEndTime = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.actualStartTime = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.channelId = 'foo';
     o.description = 'foo';
     o.isDefaultBroadcast = true;
     o.liveChatId = 'foo';
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
-    o.scheduledEndTime = core.DateTime.parse("2002-02-27T14:01:02");
-    o.scheduledStartTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.scheduledEndTime = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.scheduledStartTime = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
   }
@@ -3507,11 +3425,11 @@ void checkLiveBroadcastSnippet(api.LiveBroadcastSnippet o) {
   if (buildCounterLiveBroadcastSnippet < 3) {
     unittest.expect(
       o.actualEndTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.actualStartTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.channelId!,
@@ -3528,17 +3446,17 @@ void checkLiveBroadcastSnippet(api.LiveBroadcastSnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.scheduledEndTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.scheduledStartTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -3549,7 +3467,7 @@ void checkLiveBroadcastSnippet(api.LiveBroadcastSnippet o) {
 
 core.int buildCounterLiveBroadcastStatistics = 0;
 api.LiveBroadcastStatistics buildLiveBroadcastStatistics() {
-  var o = api.LiveBroadcastStatistics();
+  final o = api.LiveBroadcastStatistics();
   buildCounterLiveBroadcastStatistics++;
   if (buildCounterLiveBroadcastStatistics < 3) {
     o.totalChatCount = 'foo';
@@ -3571,7 +3489,7 @@ void checkLiveBroadcastStatistics(api.LiveBroadcastStatistics o) {
 
 core.int buildCounterLiveBroadcastStatus = 0;
 api.LiveBroadcastStatus buildLiveBroadcastStatus() {
-  var o = api.LiveBroadcastStatus();
+  final o = api.LiveBroadcastStatus();
   buildCounterLiveBroadcastStatus++;
   if (buildCounterLiveBroadcastStatus < 3) {
     o.lifeCycleStatus = 'foo';
@@ -3612,7 +3530,7 @@ void checkLiveBroadcastStatus(api.LiveBroadcastStatus o) {
 
 core.int buildCounterLiveChatBan = 0;
 api.LiveChatBan buildLiveChatBan() {
-  var o = api.LiveChatBan();
+  final o = api.LiveChatBan();
   buildCounterLiveChatBan++;
   if (buildCounterLiveChatBan < 3) {
     o.etag = 'foo';
@@ -3639,14 +3557,14 @@ void checkLiveChatBan(api.LiveChatBan o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkLiveChatBanSnippet(o.snippet! as api.LiveChatBanSnippet);
+    checkLiveChatBanSnippet(o.snippet!);
   }
   buildCounterLiveChatBan--;
 }
 
 core.int buildCounterLiveChatBanSnippet = 0;
 api.LiveChatBanSnippet buildLiveChatBanSnippet() {
-  var o = api.LiveChatBanSnippet();
+  final o = api.LiveChatBanSnippet();
   buildCounterLiveChatBanSnippet++;
   if (buildCounterLiveChatBanSnippet < 3) {
     o.banDurationSeconds = 'foo';
@@ -3665,8 +3583,7 @@ void checkLiveChatBanSnippet(api.LiveChatBanSnippet o) {
       o.banDurationSeconds!,
       unittest.equals('foo'),
     );
-    checkChannelProfileDetails(
-        o.bannedUserDetails! as api.ChannelProfileDetails);
+    checkChannelProfileDetails(o.bannedUserDetails!);
     unittest.expect(
       o.liveChatId!,
       unittest.equals('foo'),
@@ -3681,7 +3598,7 @@ void checkLiveChatBanSnippet(api.LiveChatBanSnippet o) {
 
 core.int buildCounterLiveChatFanFundingEventDetails = 0;
 api.LiveChatFanFundingEventDetails buildLiveChatFanFundingEventDetails() {
-  var o = api.LiveChatFanFundingEventDetails();
+  final o = api.LiveChatFanFundingEventDetails();
   buildCounterLiveChatFanFundingEventDetails++;
   if (buildCounterLiveChatFanFundingEventDetails < 3) {
     o.amountDisplayString = 'foo';
@@ -3716,9 +3633,43 @@ void checkLiveChatFanFundingEventDetails(api.LiveChatFanFundingEventDetails o) {
   buildCounterLiveChatFanFundingEventDetails--;
 }
 
+core.int buildCounterLiveChatMemberMilestoneChatDetails = 0;
+api.LiveChatMemberMilestoneChatDetails
+    buildLiveChatMemberMilestoneChatDetails() {
+  final o = api.LiveChatMemberMilestoneChatDetails();
+  buildCounterLiveChatMemberMilestoneChatDetails++;
+  if (buildCounterLiveChatMemberMilestoneChatDetails < 3) {
+    o.memberLevelName = 'foo';
+    o.memberMonth = 42;
+    o.userComment = 'foo';
+  }
+  buildCounterLiveChatMemberMilestoneChatDetails--;
+  return o;
+}
+
+void checkLiveChatMemberMilestoneChatDetails(
+    api.LiveChatMemberMilestoneChatDetails o) {
+  buildCounterLiveChatMemberMilestoneChatDetails++;
+  if (buildCounterLiveChatMemberMilestoneChatDetails < 3) {
+    unittest.expect(
+      o.memberLevelName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.memberMonth!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.userComment!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterLiveChatMemberMilestoneChatDetails--;
+}
+
 core.int buildCounterLiveChatMessage = 0;
 api.LiveChatMessage buildLiveChatMessage() {
-  var o = api.LiveChatMessage();
+  final o = api.LiveChatMessage();
   buildCounterLiveChatMessage++;
   if (buildCounterLiveChatMessage < 3) {
     o.authorDetails = buildLiveChatMessageAuthorDetails();
@@ -3734,8 +3685,7 @@ api.LiveChatMessage buildLiveChatMessage() {
 void checkLiveChatMessage(api.LiveChatMessage o) {
   buildCounterLiveChatMessage++;
   if (buildCounterLiveChatMessage < 3) {
-    checkLiveChatMessageAuthorDetails(
-        o.authorDetails! as api.LiveChatMessageAuthorDetails);
+    checkLiveChatMessageAuthorDetails(o.authorDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -3748,14 +3698,14 @@ void checkLiveChatMessage(api.LiveChatMessage o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkLiveChatMessageSnippet(o.snippet! as api.LiveChatMessageSnippet);
+    checkLiveChatMessageSnippet(o.snippet!);
   }
   buildCounterLiveChatMessage--;
 }
 
 core.int buildCounterLiveChatMessageAuthorDetails = 0;
 api.LiveChatMessageAuthorDetails buildLiveChatMessageAuthorDetails() {
-  var o = api.LiveChatMessageAuthorDetails();
+  final o = api.LiveChatMessageAuthorDetails();
   buildCounterLiveChatMessageAuthorDetails++;
   if (buildCounterLiveChatMessageAuthorDetails < 3) {
     o.channelId = 'foo';
@@ -3800,7 +3750,7 @@ void checkLiveChatMessageAuthorDetails(api.LiveChatMessageAuthorDetails o) {
 
 core.int buildCounterLiveChatMessageDeletedDetails = 0;
 api.LiveChatMessageDeletedDetails buildLiveChatMessageDeletedDetails() {
-  var o = api.LiveChatMessageDeletedDetails();
+  final o = api.LiveChatMessageDeletedDetails();
   buildCounterLiveChatMessageDeletedDetails++;
   if (buildCounterLiveChatMessageDeletedDetails < 3) {
     o.deletedMessageId = 'foo';
@@ -3820,30 +3770,28 @@ void checkLiveChatMessageDeletedDetails(api.LiveChatMessageDeletedDetails o) {
   buildCounterLiveChatMessageDeletedDetails--;
 }
 
-core.List<api.LiveChatMessage> buildUnnamed558() {
-  var o = <api.LiveChatMessage>[];
-  o.add(buildLiveChatMessage());
-  o.add(buildLiveChatMessage());
-  return o;
-}
+core.List<api.LiveChatMessage> buildUnnamed29() => [
+      buildLiveChatMessage(),
+      buildLiveChatMessage(),
+    ];
 
-void checkUnnamed558(core.List<api.LiveChatMessage> o) {
+void checkUnnamed29(core.List<api.LiveChatMessage> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLiveChatMessage(o[0] as api.LiveChatMessage);
-  checkLiveChatMessage(o[1] as api.LiveChatMessage);
+  checkLiveChatMessage(o[0]);
+  checkLiveChatMessage(o[1]);
 }
 
 core.int buildCounterLiveChatMessageListResponse = 0;
 api.LiveChatMessageListResponse buildLiveChatMessageListResponse() {
-  var o = api.LiveChatMessageListResponse();
+  final o = api.LiveChatMessageListResponse();
   buildCounterLiveChatMessageListResponse++;
   if (buildCounterLiveChatMessageListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed558();
+    o.items = buildUnnamed29();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
-    o.offlineAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.offlineAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.pageInfo = buildPageInfo();
     o.pollingIntervalMillis = 42;
     o.tokenPagination = buildTokenPagination();
@@ -3864,7 +3812,7 @@ void checkLiveChatMessageListResponse(api.LiveChatMessageListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed558(o.items!);
+    checkUnnamed29(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -3875,14 +3823,14 @@ void checkLiveChatMessageListResponse(api.LiveChatMessageListResponse o) {
     );
     unittest.expect(
       o.offlineAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.pollingIntervalMillis!,
       unittest.equals(42),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -3893,7 +3841,7 @@ void checkLiveChatMessageListResponse(api.LiveChatMessageListResponse o) {
 
 core.int buildCounterLiveChatMessageRetractedDetails = 0;
 api.LiveChatMessageRetractedDetails buildLiveChatMessageRetractedDetails() {
-  var o = api.LiveChatMessageRetractedDetails();
+  final o = api.LiveChatMessageRetractedDetails();
   buildCounterLiveChatMessageRetractedDetails++;
   if (buildCounterLiveChatMessageRetractedDetails < 3) {
     o.retractedMessageId = 'foo';
@@ -3916,7 +3864,7 @@ void checkLiveChatMessageRetractedDetails(
 
 core.int buildCounterLiveChatMessageSnippet = 0;
 api.LiveChatMessageSnippet buildLiveChatMessageSnippet() {
-  var o = api.LiveChatMessageSnippet();
+  final o = api.LiveChatMessageSnippet();
   buildCounterLiveChatMessageSnippet++;
   if (buildCounterLiveChatMessageSnippet < 3) {
     o.authorChannelId = 'foo';
@@ -3924,9 +3872,11 @@ api.LiveChatMessageSnippet buildLiveChatMessageSnippet() {
     o.fanFundingEventDetails = buildLiveChatFanFundingEventDetails();
     o.hasDisplayContent = true;
     o.liveChatId = 'foo';
+    o.memberMilestoneChatDetails = buildLiveChatMemberMilestoneChatDetails();
     o.messageDeletedDetails = buildLiveChatMessageDeletedDetails();
     o.messageRetractedDetails = buildLiveChatMessageRetractedDetails();
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.newSponsorDetails = buildLiveChatNewSponsorDetails();
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.superChatDetails = buildLiveChatSuperChatDetails();
     o.superStickerDetails = buildLiveChatSuperStickerDetails();
     o.textMessageDetails = buildLiveChatTextMessageDetails();
@@ -3948,40 +3898,35 @@ void checkLiveChatMessageSnippet(api.LiveChatMessageSnippet o) {
       o.displayMessage!,
       unittest.equals('foo'),
     );
-    checkLiveChatFanFundingEventDetails(
-        o.fanFundingEventDetails! as api.LiveChatFanFundingEventDetails);
+    checkLiveChatFanFundingEventDetails(o.fanFundingEventDetails!);
     unittest.expect(o.hasDisplayContent!, unittest.isTrue);
     unittest.expect(
       o.liveChatId!,
       unittest.equals('foo'),
     );
-    checkLiveChatMessageDeletedDetails(
-        o.messageDeletedDetails! as api.LiveChatMessageDeletedDetails);
-    checkLiveChatMessageRetractedDetails(
-        o.messageRetractedDetails! as api.LiveChatMessageRetractedDetails);
+    checkLiveChatMemberMilestoneChatDetails(o.memberMilestoneChatDetails!);
+    checkLiveChatMessageDeletedDetails(o.messageDeletedDetails!);
+    checkLiveChatMessageRetractedDetails(o.messageRetractedDetails!);
+    checkLiveChatNewSponsorDetails(o.newSponsorDetails!);
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkLiveChatSuperChatDetails(
-        o.superChatDetails! as api.LiveChatSuperChatDetails);
-    checkLiveChatSuperStickerDetails(
-        o.superStickerDetails! as api.LiveChatSuperStickerDetails);
-    checkLiveChatTextMessageDetails(
-        o.textMessageDetails! as api.LiveChatTextMessageDetails);
+    checkLiveChatSuperChatDetails(o.superChatDetails!);
+    checkLiveChatSuperStickerDetails(o.superStickerDetails!);
+    checkLiveChatTextMessageDetails(o.textMessageDetails!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
     );
-    checkLiveChatUserBannedMessageDetails(
-        o.userBannedDetails! as api.LiveChatUserBannedMessageDetails);
+    checkLiveChatUserBannedMessageDetails(o.userBannedDetails!);
   }
   buildCounterLiveChatMessageSnippet--;
 }
 
 core.int buildCounterLiveChatModerator = 0;
 api.LiveChatModerator buildLiveChatModerator() {
-  var o = api.LiveChatModerator();
+  final o = api.LiveChatModerator();
   buildCounterLiveChatModerator++;
   if (buildCounterLiveChatModerator < 3) {
     o.etag = 'foo';
@@ -4008,32 +3953,30 @@ void checkLiveChatModerator(api.LiveChatModerator o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkLiveChatModeratorSnippet(o.snippet! as api.LiveChatModeratorSnippet);
+    checkLiveChatModeratorSnippet(o.snippet!);
   }
   buildCounterLiveChatModerator--;
 }
 
-core.List<api.LiveChatModerator> buildUnnamed559() {
-  var o = <api.LiveChatModerator>[];
-  o.add(buildLiveChatModerator());
-  o.add(buildLiveChatModerator());
-  return o;
-}
+core.List<api.LiveChatModerator> buildUnnamed30() => [
+      buildLiveChatModerator(),
+      buildLiveChatModerator(),
+    ];
 
-void checkUnnamed559(core.List<api.LiveChatModerator> o) {
+void checkUnnamed30(core.List<api.LiveChatModerator> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLiveChatModerator(o[0] as api.LiveChatModerator);
-  checkLiveChatModerator(o[1] as api.LiveChatModerator);
+  checkLiveChatModerator(o[0]);
+  checkLiveChatModerator(o[1]);
 }
 
 core.int buildCounterLiveChatModeratorListResponse = 0;
 api.LiveChatModeratorListResponse buildLiveChatModeratorListResponse() {
-  var o = api.LiveChatModeratorListResponse();
+  final o = api.LiveChatModeratorListResponse();
   buildCounterLiveChatModeratorListResponse++;
   if (buildCounterLiveChatModeratorListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed559();
+    o.items = buildUnnamed30();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -4056,7 +3999,7 @@ void checkLiveChatModeratorListResponse(api.LiveChatModeratorListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed559(o.items!);
+    checkUnnamed30(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -4065,12 +4008,12 @@ void checkLiveChatModeratorListResponse(api.LiveChatModeratorListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -4081,7 +4024,7 @@ void checkLiveChatModeratorListResponse(api.LiveChatModeratorListResponse o) {
 
 core.int buildCounterLiveChatModeratorSnippet = 0;
 api.LiveChatModeratorSnippet buildLiveChatModeratorSnippet() {
-  var o = api.LiveChatModeratorSnippet();
+  final o = api.LiveChatModeratorSnippet();
   buildCounterLiveChatModeratorSnippet++;
   if (buildCounterLiveChatModeratorSnippet < 3) {
     o.liveChatId = 'foo';
@@ -4098,15 +4041,38 @@ void checkLiveChatModeratorSnippet(api.LiveChatModeratorSnippet o) {
       o.liveChatId!,
       unittest.equals('foo'),
     );
-    checkChannelProfileDetails(
-        o.moderatorDetails! as api.ChannelProfileDetails);
+    checkChannelProfileDetails(o.moderatorDetails!);
   }
   buildCounterLiveChatModeratorSnippet--;
 }
 
+core.int buildCounterLiveChatNewSponsorDetails = 0;
+api.LiveChatNewSponsorDetails buildLiveChatNewSponsorDetails() {
+  final o = api.LiveChatNewSponsorDetails();
+  buildCounterLiveChatNewSponsorDetails++;
+  if (buildCounterLiveChatNewSponsorDetails < 3) {
+    o.isUpgrade = true;
+    o.memberLevelName = 'foo';
+  }
+  buildCounterLiveChatNewSponsorDetails--;
+  return o;
+}
+
+void checkLiveChatNewSponsorDetails(api.LiveChatNewSponsorDetails o) {
+  buildCounterLiveChatNewSponsorDetails++;
+  if (buildCounterLiveChatNewSponsorDetails < 3) {
+    unittest.expect(o.isUpgrade!, unittest.isTrue);
+    unittest.expect(
+      o.memberLevelName!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterLiveChatNewSponsorDetails--;
+}
+
 core.int buildCounterLiveChatSuperChatDetails = 0;
 api.LiveChatSuperChatDetails buildLiveChatSuperChatDetails() {
-  var o = api.LiveChatSuperChatDetails();
+  final o = api.LiveChatSuperChatDetails();
   buildCounterLiveChatSuperChatDetails++;
   if (buildCounterLiveChatSuperChatDetails < 3) {
     o.amountDisplayString = 'foo';
@@ -4148,7 +4114,7 @@ void checkLiveChatSuperChatDetails(api.LiveChatSuperChatDetails o) {
 
 core.int buildCounterLiveChatSuperStickerDetails = 0;
 api.LiveChatSuperStickerDetails buildLiveChatSuperStickerDetails() {
-  var o = api.LiveChatSuperStickerDetails();
+  final o = api.LiveChatSuperStickerDetails();
   buildCounterLiveChatSuperStickerDetails++;
   if (buildCounterLiveChatSuperStickerDetails < 3) {
     o.amountDisplayString = 'foo';
@@ -4176,8 +4142,7 @@ void checkLiveChatSuperStickerDetails(api.LiveChatSuperStickerDetails o) {
       o.currency!,
       unittest.equals('foo'),
     );
-    checkSuperStickerMetadata(
-        o.superStickerMetadata! as api.SuperStickerMetadata);
+    checkSuperStickerMetadata(o.superStickerMetadata!);
     unittest.expect(
       o.tier!,
       unittest.equals(42),
@@ -4188,7 +4153,7 @@ void checkLiveChatSuperStickerDetails(api.LiveChatSuperStickerDetails o) {
 
 core.int buildCounterLiveChatTextMessageDetails = 0;
 api.LiveChatTextMessageDetails buildLiveChatTextMessageDetails() {
-  var o = api.LiveChatTextMessageDetails();
+  final o = api.LiveChatTextMessageDetails();
   buildCounterLiveChatTextMessageDetails++;
   if (buildCounterLiveChatTextMessageDetails < 3) {
     o.messageText = 'foo';
@@ -4210,7 +4175,7 @@ void checkLiveChatTextMessageDetails(api.LiveChatTextMessageDetails o) {
 
 core.int buildCounterLiveChatUserBannedMessageDetails = 0;
 api.LiveChatUserBannedMessageDetails buildLiveChatUserBannedMessageDetails() {
-  var o = api.LiveChatUserBannedMessageDetails();
+  final o = api.LiveChatUserBannedMessageDetails();
   buildCounterLiveChatUserBannedMessageDetails++;
   if (buildCounterLiveChatUserBannedMessageDetails < 3) {
     o.banDurationSeconds = 'foo';
@@ -4233,15 +4198,14 @@ void checkLiveChatUserBannedMessageDetails(
       o.banType!,
       unittest.equals('foo'),
     );
-    checkChannelProfileDetails(
-        o.bannedUserDetails! as api.ChannelProfileDetails);
+    checkChannelProfileDetails(o.bannedUserDetails!);
   }
   buildCounterLiveChatUserBannedMessageDetails--;
 }
 
 core.int buildCounterLiveStream = 0;
 api.LiveStream buildLiveStream() {
-  var o = api.LiveStream();
+  final o = api.LiveStream();
   buildCounterLiveStream++;
   if (buildCounterLiveStream < 3) {
     o.cdn = buildCdnSettings();
@@ -4259,9 +4223,8 @@ api.LiveStream buildLiveStream() {
 void checkLiveStream(api.LiveStream o) {
   buildCounterLiveStream++;
   if (buildCounterLiveStream < 3) {
-    checkCdnSettings(o.cdn! as api.CdnSettings);
-    checkLiveStreamContentDetails(
-        o.contentDetails! as api.LiveStreamContentDetails);
+    checkCdnSettings(o.cdn!);
+    checkLiveStreamContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -4274,15 +4237,15 @@ void checkLiveStream(api.LiveStream o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkLiveStreamSnippet(o.snippet! as api.LiveStreamSnippet);
-    checkLiveStreamStatus(o.status! as api.LiveStreamStatus);
+    checkLiveStreamSnippet(o.snippet!);
+    checkLiveStreamStatus(o.status!);
   }
   buildCounterLiveStream--;
 }
 
 core.int buildCounterLiveStreamConfigurationIssue = 0;
 api.LiveStreamConfigurationIssue buildLiveStreamConfigurationIssue() {
-  var o = api.LiveStreamConfigurationIssue();
+  final o = api.LiveStreamConfigurationIssue();
   buildCounterLiveStreamConfigurationIssue++;
   if (buildCounterLiveStreamConfigurationIssue < 3) {
     o.description = 'foo';
@@ -4319,7 +4282,7 @@ void checkLiveStreamConfigurationIssue(api.LiveStreamConfigurationIssue o) {
 
 core.int buildCounterLiveStreamContentDetails = 0;
 api.LiveStreamContentDetails buildLiveStreamContentDetails() {
-  var o = api.LiveStreamContentDetails();
+  final o = api.LiveStreamContentDetails();
   buildCounterLiveStreamContentDetails++;
   if (buildCounterLiveStreamContentDetails < 3) {
     o.closedCaptionsIngestionUrl = 'foo';
@@ -4341,25 +4304,23 @@ void checkLiveStreamContentDetails(api.LiveStreamContentDetails o) {
   buildCounterLiveStreamContentDetails--;
 }
 
-core.List<api.LiveStreamConfigurationIssue> buildUnnamed560() {
-  var o = <api.LiveStreamConfigurationIssue>[];
-  o.add(buildLiveStreamConfigurationIssue());
-  o.add(buildLiveStreamConfigurationIssue());
-  return o;
-}
+core.List<api.LiveStreamConfigurationIssue> buildUnnamed31() => [
+      buildLiveStreamConfigurationIssue(),
+      buildLiveStreamConfigurationIssue(),
+    ];
 
-void checkUnnamed560(core.List<api.LiveStreamConfigurationIssue> o) {
+void checkUnnamed31(core.List<api.LiveStreamConfigurationIssue> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLiveStreamConfigurationIssue(o[0] as api.LiveStreamConfigurationIssue);
-  checkLiveStreamConfigurationIssue(o[1] as api.LiveStreamConfigurationIssue);
+  checkLiveStreamConfigurationIssue(o[0]);
+  checkLiveStreamConfigurationIssue(o[1]);
 }
 
 core.int buildCounterLiveStreamHealthStatus = 0;
 api.LiveStreamHealthStatus buildLiveStreamHealthStatus() {
-  var o = api.LiveStreamHealthStatus();
+  final o = api.LiveStreamHealthStatus();
   buildCounterLiveStreamHealthStatus++;
   if (buildCounterLiveStreamHealthStatus < 3) {
-    o.configurationIssues = buildUnnamed560();
+    o.configurationIssues = buildUnnamed31();
     o.lastUpdateTimeSeconds = 'foo';
     o.status = 'foo';
   }
@@ -4370,7 +4331,7 @@ api.LiveStreamHealthStatus buildLiveStreamHealthStatus() {
 void checkLiveStreamHealthStatus(api.LiveStreamHealthStatus o) {
   buildCounterLiveStreamHealthStatus++;
   if (buildCounterLiveStreamHealthStatus < 3) {
-    checkUnnamed560(o.configurationIssues!);
+    checkUnnamed31(o.configurationIssues!);
     unittest.expect(
       o.lastUpdateTimeSeconds!,
       unittest.equals('foo'),
@@ -4383,27 +4344,25 @@ void checkLiveStreamHealthStatus(api.LiveStreamHealthStatus o) {
   buildCounterLiveStreamHealthStatus--;
 }
 
-core.List<api.LiveStream> buildUnnamed561() {
-  var o = <api.LiveStream>[];
-  o.add(buildLiveStream());
-  o.add(buildLiveStream());
-  return o;
-}
+core.List<api.LiveStream> buildUnnamed32() => [
+      buildLiveStream(),
+      buildLiveStream(),
+    ];
 
-void checkUnnamed561(core.List<api.LiveStream> o) {
+void checkUnnamed32(core.List<api.LiveStream> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLiveStream(o[0] as api.LiveStream);
-  checkLiveStream(o[1] as api.LiveStream);
+  checkLiveStream(o[0]);
+  checkLiveStream(o[1]);
 }
 
 core.int buildCounterLiveStreamListResponse = 0;
 api.LiveStreamListResponse buildLiveStreamListResponse() {
-  var o = api.LiveStreamListResponse();
+  final o = api.LiveStreamListResponse();
   buildCounterLiveStreamListResponse++;
   if (buildCounterLiveStreamListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed561();
+    o.items = buildUnnamed32();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -4426,7 +4385,7 @@ void checkLiveStreamListResponse(api.LiveStreamListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed561(o.items!);
+    checkUnnamed32(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -4435,12 +4394,12 @@ void checkLiveStreamListResponse(api.LiveStreamListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -4451,13 +4410,13 @@ void checkLiveStreamListResponse(api.LiveStreamListResponse o) {
 
 core.int buildCounterLiveStreamSnippet = 0;
 api.LiveStreamSnippet buildLiveStreamSnippet() {
-  var o = api.LiveStreamSnippet();
+  final o = api.LiveStreamSnippet();
   buildCounterLiveStreamSnippet++;
   if (buildCounterLiveStreamSnippet < 3) {
     o.channelId = 'foo';
     o.description = 'foo';
     o.isDefaultStream = true;
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.title = 'foo';
   }
   buildCounterLiveStreamSnippet--;
@@ -4478,7 +4437,7 @@ void checkLiveStreamSnippet(api.LiveStreamSnippet o) {
     unittest.expect(o.isDefaultStream!, unittest.isTrue);
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.title!,
@@ -4490,7 +4449,7 @@ void checkLiveStreamSnippet(api.LiveStreamSnippet o) {
 
 core.int buildCounterLiveStreamStatus = 0;
 api.LiveStreamStatus buildLiveStreamStatus() {
-  var o = api.LiveStreamStatus();
+  final o = api.LiveStreamStatus();
   buildCounterLiveStreamStatus++;
   if (buildCounterLiveStreamStatus < 3) {
     o.healthStatus = buildLiveStreamHealthStatus();
@@ -4503,7 +4462,7 @@ api.LiveStreamStatus buildLiveStreamStatus() {
 void checkLiveStreamStatus(api.LiveStreamStatus o) {
   buildCounterLiveStreamStatus++;
   if (buildCounterLiveStreamStatus < 3) {
-    checkLiveStreamHealthStatus(o.healthStatus! as api.LiveStreamHealthStatus);
+    checkLiveStreamHealthStatus(o.healthStatus!);
     unittest.expect(
       o.streamStatus!,
       unittest.equals('foo'),
@@ -4512,27 +4471,25 @@ void checkLiveStreamStatus(api.LiveStreamStatus o) {
   buildCounterLiveStreamStatus--;
 }
 
-core.List<api.LocalizedString> buildUnnamed562() {
-  var o = <api.LocalizedString>[];
-  o.add(buildLocalizedString());
-  o.add(buildLocalizedString());
-  return o;
-}
+core.List<api.LocalizedString> buildUnnamed33() => [
+      buildLocalizedString(),
+      buildLocalizedString(),
+    ];
 
-void checkUnnamed562(core.List<api.LocalizedString> o) {
+void checkUnnamed33(core.List<api.LocalizedString> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocalizedString(o[0] as api.LocalizedString);
-  checkLocalizedString(o[1] as api.LocalizedString);
+  checkLocalizedString(o[0]);
+  checkLocalizedString(o[1]);
 }
 
 core.int buildCounterLocalizedProperty = 0;
 api.LocalizedProperty buildLocalizedProperty() {
-  var o = api.LocalizedProperty();
+  final o = api.LocalizedProperty();
   buildCounterLocalizedProperty++;
   if (buildCounterLocalizedProperty < 3) {
     o.default_ = 'foo';
     o.defaultLanguage = buildLanguageTag();
-    o.localized = buildUnnamed562();
+    o.localized = buildUnnamed33();
   }
   buildCounterLocalizedProperty--;
   return o;
@@ -4545,15 +4502,15 @@ void checkLocalizedProperty(api.LocalizedProperty o) {
       o.default_!,
       unittest.equals('foo'),
     );
-    checkLanguageTag(o.defaultLanguage! as api.LanguageTag);
-    checkUnnamed562(o.localized!);
+    checkLanguageTag(o.defaultLanguage!);
+    checkUnnamed33(o.localized!);
   }
   buildCounterLocalizedProperty--;
 }
 
 core.int buildCounterLocalizedString = 0;
 api.LocalizedString buildLocalizedString() {
-  var o = api.LocalizedString();
+  final o = api.LocalizedString();
   buildCounterLocalizedString++;
   if (buildCounterLocalizedString < 3) {
     o.language = 'foo';
@@ -4580,7 +4537,7 @@ void checkLocalizedString(api.LocalizedString o) {
 
 core.int buildCounterMember = 0;
 api.Member buildMember() {
-  var o = api.Member();
+  final o = api.Member();
   buildCounterMember++;
   if (buildCounterMember < 3) {
     o.etag = 'foo';
@@ -4602,32 +4559,30 @@ void checkMember(api.Member o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkMemberSnippet(o.snippet! as api.MemberSnippet);
+    checkMemberSnippet(o.snippet!);
   }
   buildCounterMember--;
 }
 
-core.List<api.Member> buildUnnamed563() {
-  var o = <api.Member>[];
-  o.add(buildMember());
-  o.add(buildMember());
-  return o;
-}
+core.List<api.Member> buildUnnamed34() => [
+      buildMember(),
+      buildMember(),
+    ];
 
-void checkUnnamed563(core.List<api.Member> o) {
+void checkUnnamed34(core.List<api.Member> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMember(o[0] as api.Member);
-  checkMember(o[1] as api.Member);
+  checkMember(o[0]);
+  checkMember(o[1]);
 }
 
 core.int buildCounterMemberListResponse = 0;
 api.MemberListResponse buildMemberListResponse() {
-  var o = api.MemberListResponse();
+  final o = api.MemberListResponse();
   buildCounterMemberListResponse++;
   if (buildCounterMemberListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed563();
+    o.items = buildUnnamed34();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -4649,7 +4604,7 @@ void checkMemberListResponse(api.MemberListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed563(o.items!);
+    checkUnnamed34(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -4658,8 +4613,8 @@ void checkMemberListResponse(api.MemberListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -4670,7 +4625,7 @@ void checkMemberListResponse(api.MemberListResponse o) {
 
 core.int buildCounterMemberSnippet = 0;
 api.MemberSnippet buildMemberSnippet() {
-  var o = api.MemberSnippet();
+  final o = api.MemberSnippet();
   buildCounterMemberSnippet++;
   if (buildCounterMemberSnippet < 3) {
     o.creatorChannelId = 'foo';
@@ -4688,20 +4643,18 @@ void checkMemberSnippet(api.MemberSnippet o) {
       o.creatorChannelId!,
       unittest.equals('foo'),
     );
-    checkChannelProfileDetails(o.memberDetails! as api.ChannelProfileDetails);
-    checkMembershipsDetails(o.membershipsDetails! as api.MembershipsDetails);
+    checkChannelProfileDetails(o.memberDetails!);
+    checkMembershipsDetails(o.membershipsDetails!);
   }
   buildCounterMemberSnippet--;
 }
 
-core.List<core.String> buildUnnamed564() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed35() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed564(core.List<core.String> o) {
+void checkUnnamed35(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -4713,29 +4666,27 @@ void checkUnnamed564(core.List<core.String> o) {
   );
 }
 
-core.List<api.MembershipsDurationAtLevel> buildUnnamed565() {
-  var o = <api.MembershipsDurationAtLevel>[];
-  o.add(buildMembershipsDurationAtLevel());
-  o.add(buildMembershipsDurationAtLevel());
-  return o;
-}
+core.List<api.MembershipsDurationAtLevel> buildUnnamed36() => [
+      buildMembershipsDurationAtLevel(),
+      buildMembershipsDurationAtLevel(),
+    ];
 
-void checkUnnamed565(core.List<api.MembershipsDurationAtLevel> o) {
+void checkUnnamed36(core.List<api.MembershipsDurationAtLevel> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMembershipsDurationAtLevel(o[0] as api.MembershipsDurationAtLevel);
-  checkMembershipsDurationAtLevel(o[1] as api.MembershipsDurationAtLevel);
+  checkMembershipsDurationAtLevel(o[0]);
+  checkMembershipsDurationAtLevel(o[1]);
 }
 
 core.int buildCounterMembershipsDetails = 0;
 api.MembershipsDetails buildMembershipsDetails() {
-  var o = api.MembershipsDetails();
+  final o = api.MembershipsDetails();
   buildCounterMembershipsDetails++;
   if (buildCounterMembershipsDetails < 3) {
-    o.accessibleLevels = buildUnnamed564();
+    o.accessibleLevels = buildUnnamed35();
     o.highestAccessibleLevel = 'foo';
     o.highestAccessibleLevelDisplayName = 'foo';
     o.membershipsDuration = buildMembershipsDuration();
-    o.membershipsDurationAtLevels = buildUnnamed565();
+    o.membershipsDurationAtLevels = buildUnnamed36();
   }
   buildCounterMembershipsDetails--;
   return o;
@@ -4744,7 +4695,7 @@ api.MembershipsDetails buildMembershipsDetails() {
 void checkMembershipsDetails(api.MembershipsDetails o) {
   buildCounterMembershipsDetails++;
   if (buildCounterMembershipsDetails < 3) {
-    checkUnnamed564(o.accessibleLevels!);
+    checkUnnamed35(o.accessibleLevels!);
     unittest.expect(
       o.highestAccessibleLevel!,
       unittest.equals('foo'),
@@ -4753,15 +4704,15 @@ void checkMembershipsDetails(api.MembershipsDetails o) {
       o.highestAccessibleLevelDisplayName!,
       unittest.equals('foo'),
     );
-    checkMembershipsDuration(o.membershipsDuration! as api.MembershipsDuration);
-    checkUnnamed565(o.membershipsDurationAtLevels!);
+    checkMembershipsDuration(o.membershipsDuration!);
+    checkUnnamed36(o.membershipsDurationAtLevels!);
   }
   buildCounterMembershipsDetails--;
 }
 
 core.int buildCounterMembershipsDuration = 0;
 api.MembershipsDuration buildMembershipsDuration() {
-  var o = api.MembershipsDuration();
+  final o = api.MembershipsDuration();
   buildCounterMembershipsDuration++;
   if (buildCounterMembershipsDuration < 3) {
     o.memberSince = 'foo';
@@ -4788,7 +4739,7 @@ void checkMembershipsDuration(api.MembershipsDuration o) {
 
 core.int buildCounterMembershipsDurationAtLevel = 0;
 api.MembershipsDurationAtLevel buildMembershipsDurationAtLevel() {
-  var o = api.MembershipsDurationAtLevel();
+  final o = api.MembershipsDurationAtLevel();
   buildCounterMembershipsDurationAtLevel++;
   if (buildCounterMembershipsDurationAtLevel < 3) {
     o.level = 'foo';
@@ -4820,7 +4771,7 @@ void checkMembershipsDurationAtLevel(api.MembershipsDurationAtLevel o) {
 
 core.int buildCounterMembershipsLevel = 0;
 api.MembershipsLevel buildMembershipsLevel() {
-  var o = api.MembershipsLevel();
+  final o = api.MembershipsLevel();
   buildCounterMembershipsLevel++;
   if (buildCounterMembershipsLevel < 3) {
     o.etag = 'foo';
@@ -4847,32 +4798,30 @@ void checkMembershipsLevel(api.MembershipsLevel o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkMembershipsLevelSnippet(o.snippet! as api.MembershipsLevelSnippet);
+    checkMembershipsLevelSnippet(o.snippet!);
   }
   buildCounterMembershipsLevel--;
 }
 
-core.List<api.MembershipsLevel> buildUnnamed566() {
-  var o = <api.MembershipsLevel>[];
-  o.add(buildMembershipsLevel());
-  o.add(buildMembershipsLevel());
-  return o;
-}
+core.List<api.MembershipsLevel> buildUnnamed37() => [
+      buildMembershipsLevel(),
+      buildMembershipsLevel(),
+    ];
 
-void checkUnnamed566(core.List<api.MembershipsLevel> o) {
+void checkUnnamed37(core.List<api.MembershipsLevel> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMembershipsLevel(o[0] as api.MembershipsLevel);
-  checkMembershipsLevel(o[1] as api.MembershipsLevel);
+  checkMembershipsLevel(o[0]);
+  checkMembershipsLevel(o[1]);
 }
 
 core.int buildCounterMembershipsLevelListResponse = 0;
 api.MembershipsLevelListResponse buildMembershipsLevelListResponse() {
-  var o = api.MembershipsLevelListResponse();
+  final o = api.MembershipsLevelListResponse();
   buildCounterMembershipsLevelListResponse++;
   if (buildCounterMembershipsLevelListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed566();
+    o.items = buildUnnamed37();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -4891,7 +4840,7 @@ void checkMembershipsLevelListResponse(api.MembershipsLevelListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed566(o.items!);
+    checkUnnamed37(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -4906,7 +4855,7 @@ void checkMembershipsLevelListResponse(api.MembershipsLevelListResponse o) {
 
 core.int buildCounterMembershipsLevelSnippet = 0;
 api.MembershipsLevelSnippet buildMembershipsLevelSnippet() {
-  var o = api.MembershipsLevelSnippet();
+  final o = api.MembershipsLevelSnippet();
   buildCounterMembershipsLevelSnippet++;
   if (buildCounterMembershipsLevelSnippet < 3) {
     o.creatorChannelId = 'foo';
@@ -4923,14 +4872,14 @@ void checkMembershipsLevelSnippet(api.MembershipsLevelSnippet o) {
       o.creatorChannelId!,
       unittest.equals('foo'),
     );
-    checkLevelDetails(o.levelDetails! as api.LevelDetails);
+    checkLevelDetails(o.levelDetails!);
   }
   buildCounterMembershipsLevelSnippet--;
 }
 
 core.int buildCounterMonitorStreamInfo = 0;
 api.MonitorStreamInfo buildMonitorStreamInfo() {
-  var o = api.MonitorStreamInfo();
+  final o = api.MonitorStreamInfo();
   buildCounterMonitorStreamInfo++;
   if (buildCounterMonitorStreamInfo < 3) {
     o.broadcastStreamDelayMs = 42;
@@ -4959,7 +4908,7 @@ void checkMonitorStreamInfo(api.MonitorStreamInfo o) {
 
 core.int buildCounterPageInfo = 0;
 api.PageInfo buildPageInfo() {
-  var o = api.PageInfo();
+  final o = api.PageInfo();
   buildCounterPageInfo++;
   if (buildCounterPageInfo < 3) {
     o.resultsPerPage = 42;
@@ -4984,29 +4933,27 @@ void checkPageInfo(api.PageInfo o) {
   buildCounterPageInfo--;
 }
 
-core.Map<core.String, api.PlaylistLocalization> buildUnnamed567() {
-  var o = <core.String, api.PlaylistLocalization>{};
-  o['x'] = buildPlaylistLocalization();
-  o['y'] = buildPlaylistLocalization();
-  return o;
-}
+core.Map<core.String, api.PlaylistLocalization> buildUnnamed38() => {
+      'x': buildPlaylistLocalization(),
+      'y': buildPlaylistLocalization(),
+    };
 
-void checkUnnamed567(core.Map<core.String, api.PlaylistLocalization> o) {
+void checkUnnamed38(core.Map<core.String, api.PlaylistLocalization> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPlaylistLocalization(o['x']! as api.PlaylistLocalization);
-  checkPlaylistLocalization(o['y']! as api.PlaylistLocalization);
+  checkPlaylistLocalization(o['x']!);
+  checkPlaylistLocalization(o['y']!);
 }
 
 core.int buildCounterPlaylist = 0;
 api.Playlist buildPlaylist() {
-  var o = api.Playlist();
+  final o = api.Playlist();
   buildCounterPlaylist++;
   if (buildCounterPlaylist < 3) {
     o.contentDetails = buildPlaylistContentDetails();
     o.etag = 'foo';
     o.id = 'foo';
     o.kind = 'foo';
-    o.localizations = buildUnnamed567();
+    o.localizations = buildUnnamed38();
     o.player = buildPlaylistPlayer();
     o.snippet = buildPlaylistSnippet();
     o.status = buildPlaylistStatus();
@@ -5018,8 +4965,7 @@ api.Playlist buildPlaylist() {
 void checkPlaylist(api.Playlist o) {
   buildCounterPlaylist++;
   if (buildCounterPlaylist < 3) {
-    checkPlaylistContentDetails(
-        o.contentDetails! as api.PlaylistContentDetails);
+    checkPlaylistContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -5032,17 +4978,17 @@ void checkPlaylist(api.Playlist o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed567(o.localizations!);
-    checkPlaylistPlayer(o.player! as api.PlaylistPlayer);
-    checkPlaylistSnippet(o.snippet! as api.PlaylistSnippet);
-    checkPlaylistStatus(o.status! as api.PlaylistStatus);
+    checkUnnamed38(o.localizations!);
+    checkPlaylistPlayer(o.player!);
+    checkPlaylistSnippet(o.snippet!);
+    checkPlaylistStatus(o.status!);
   }
   buildCounterPlaylist--;
 }
 
 core.int buildCounterPlaylistContentDetails = 0;
 api.PlaylistContentDetails buildPlaylistContentDetails() {
-  var o = api.PlaylistContentDetails();
+  final o = api.PlaylistContentDetails();
   buildCounterPlaylistContentDetails++;
   if (buildCounterPlaylistContentDetails < 3) {
     o.itemCount = 42;
@@ -5064,7 +5010,7 @@ void checkPlaylistContentDetails(api.PlaylistContentDetails o) {
 
 core.int buildCounterPlaylistItem = 0;
 api.PlaylistItem buildPlaylistItem() {
-  var o = api.PlaylistItem();
+  final o = api.PlaylistItem();
   buildCounterPlaylistItem++;
   if (buildCounterPlaylistItem < 3) {
     o.contentDetails = buildPlaylistItemContentDetails();
@@ -5081,8 +5027,7 @@ api.PlaylistItem buildPlaylistItem() {
 void checkPlaylistItem(api.PlaylistItem o) {
   buildCounterPlaylistItem++;
   if (buildCounterPlaylistItem < 3) {
-    checkPlaylistItemContentDetails(
-        o.contentDetails! as api.PlaylistItemContentDetails);
+    checkPlaylistItemContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -5095,22 +5040,22 @@ void checkPlaylistItem(api.PlaylistItem o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkPlaylistItemSnippet(o.snippet! as api.PlaylistItemSnippet);
-    checkPlaylistItemStatus(o.status! as api.PlaylistItemStatus);
+    checkPlaylistItemSnippet(o.snippet!);
+    checkPlaylistItemStatus(o.status!);
   }
   buildCounterPlaylistItem--;
 }
 
 core.int buildCounterPlaylistItemContentDetails = 0;
 api.PlaylistItemContentDetails buildPlaylistItemContentDetails() {
-  var o = api.PlaylistItemContentDetails();
+  final o = api.PlaylistItemContentDetails();
   buildCounterPlaylistItemContentDetails++;
   if (buildCounterPlaylistItemContentDetails < 3) {
     o.endAt = 'foo';
     o.note = 'foo';
     o.startAt = 'foo';
     o.videoId = 'foo';
-    o.videoPublishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.videoPublishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterPlaylistItemContentDetails--;
   return o;
@@ -5137,33 +5082,31 @@ void checkPlaylistItemContentDetails(api.PlaylistItemContentDetails o) {
     );
     unittest.expect(
       o.videoPublishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterPlaylistItemContentDetails--;
 }
 
-core.List<api.PlaylistItem> buildUnnamed568() {
-  var o = <api.PlaylistItem>[];
-  o.add(buildPlaylistItem());
-  o.add(buildPlaylistItem());
-  return o;
-}
+core.List<api.PlaylistItem> buildUnnamed39() => [
+      buildPlaylistItem(),
+      buildPlaylistItem(),
+    ];
 
-void checkUnnamed568(core.List<api.PlaylistItem> o) {
+void checkUnnamed39(core.List<api.PlaylistItem> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPlaylistItem(o[0] as api.PlaylistItem);
-  checkPlaylistItem(o[1] as api.PlaylistItem);
+  checkPlaylistItem(o[0]);
+  checkPlaylistItem(o[1]);
 }
 
 core.int buildCounterPlaylistItemListResponse = 0;
 api.PlaylistItemListResponse buildPlaylistItemListResponse() {
-  var o = api.PlaylistItemListResponse();
+  final o = api.PlaylistItemListResponse();
   buildCounterPlaylistItemListResponse++;
   if (buildCounterPlaylistItemListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed568();
+    o.items = buildUnnamed39();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -5186,7 +5129,7 @@ void checkPlaylistItemListResponse(api.PlaylistItemListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed568(o.items!);
+    checkUnnamed39(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -5195,12 +5138,12 @@ void checkPlaylistItemListResponse(api.PlaylistItemListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -5211,7 +5154,7 @@ void checkPlaylistItemListResponse(api.PlaylistItemListResponse o) {
 
 core.int buildCounterPlaylistItemSnippet = 0;
 api.PlaylistItemSnippet buildPlaylistItemSnippet() {
-  var o = api.PlaylistItemSnippet();
+  final o = api.PlaylistItemSnippet();
   buildCounterPlaylistItemSnippet++;
   if (buildCounterPlaylistItemSnippet < 3) {
     o.channelId = 'foo';
@@ -5219,7 +5162,7 @@ api.PlaylistItemSnippet buildPlaylistItemSnippet() {
     o.description = 'foo';
     o.playlistId = 'foo';
     o.position = 42;
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.resourceId = buildResourceId();
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
@@ -5255,10 +5198,10 @@ void checkPlaylistItemSnippet(api.PlaylistItemSnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkResourceId(o.resourceId! as api.ResourceId);
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkResourceId(o.resourceId!);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -5277,7 +5220,7 @@ void checkPlaylistItemSnippet(api.PlaylistItemSnippet o) {
 
 core.int buildCounterPlaylistItemStatus = 0;
 api.PlaylistItemStatus buildPlaylistItemStatus() {
-  var o = api.PlaylistItemStatus();
+  final o = api.PlaylistItemStatus();
   buildCounterPlaylistItemStatus++;
   if (buildCounterPlaylistItemStatus < 3) {
     o.privacyStatus = 'foo';
@@ -5297,27 +5240,25 @@ void checkPlaylistItemStatus(api.PlaylistItemStatus o) {
   buildCounterPlaylistItemStatus--;
 }
 
-core.List<api.Playlist> buildUnnamed569() {
-  var o = <api.Playlist>[];
-  o.add(buildPlaylist());
-  o.add(buildPlaylist());
-  return o;
-}
+core.List<api.Playlist> buildUnnamed40() => [
+      buildPlaylist(),
+      buildPlaylist(),
+    ];
 
-void checkUnnamed569(core.List<api.Playlist> o) {
+void checkUnnamed40(core.List<api.Playlist> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPlaylist(o[0] as api.Playlist);
-  checkPlaylist(o[1] as api.Playlist);
+  checkPlaylist(o[0]);
+  checkPlaylist(o[1]);
 }
 
 core.int buildCounterPlaylistListResponse = 0;
 api.PlaylistListResponse buildPlaylistListResponse() {
-  var o = api.PlaylistListResponse();
+  final o = api.PlaylistListResponse();
   buildCounterPlaylistListResponse++;
   if (buildCounterPlaylistListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed569();
+    o.items = buildUnnamed40();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -5340,7 +5281,7 @@ void checkPlaylistListResponse(api.PlaylistListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed569(o.items!);
+    checkUnnamed40(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -5349,12 +5290,12 @@ void checkPlaylistListResponse(api.PlaylistListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -5365,7 +5306,7 @@ void checkPlaylistListResponse(api.PlaylistListResponse o) {
 
 core.int buildCounterPlaylistLocalization = 0;
 api.PlaylistLocalization buildPlaylistLocalization() {
-  var o = api.PlaylistLocalization();
+  final o = api.PlaylistLocalization();
   buildCounterPlaylistLocalization++;
   if (buildCounterPlaylistLocalization < 3) {
     o.description = 'foo';
@@ -5392,7 +5333,7 @@ void checkPlaylistLocalization(api.PlaylistLocalization o) {
 
 core.int buildCounterPlaylistPlayer = 0;
 api.PlaylistPlayer buildPlaylistPlayer() {
-  var o = api.PlaylistPlayer();
+  final o = api.PlaylistPlayer();
   buildCounterPlaylistPlayer++;
   if (buildCounterPlaylistPlayer < 3) {
     o.embedHtml = 'foo';
@@ -5412,14 +5353,12 @@ void checkPlaylistPlayer(api.PlaylistPlayer o) {
   buildCounterPlaylistPlayer--;
 }
 
-core.List<core.String> buildUnnamed570() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed41() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed570(core.List<core.String> o) {
+void checkUnnamed41(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -5433,7 +5372,7 @@ void checkUnnamed570(core.List<core.String> o) {
 
 core.int buildCounterPlaylistSnippet = 0;
 api.PlaylistSnippet buildPlaylistSnippet() {
-  var o = api.PlaylistSnippet();
+  final o = api.PlaylistSnippet();
   buildCounterPlaylistSnippet++;
   if (buildCounterPlaylistSnippet < 3) {
     o.channelId = 'foo';
@@ -5441,8 +5380,8 @@ api.PlaylistSnippet buildPlaylistSnippet() {
     o.defaultLanguage = 'foo';
     o.description = 'foo';
     o.localized = buildPlaylistLocalization();
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
-    o.tags = buildUnnamed570();
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.tags = buildUnnamed41();
     o.thumbnailVideoId = 'foo';
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
@@ -5470,17 +5409,17 @@ void checkPlaylistSnippet(api.PlaylistSnippet o) {
       o.description!,
       unittest.equals('foo'),
     );
-    checkPlaylistLocalization(o.localized! as api.PlaylistLocalization);
+    checkPlaylistLocalization(o.localized!);
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkUnnamed570(o.tags!);
+    checkUnnamed41(o.tags!);
     unittest.expect(
       o.thumbnailVideoId!,
       unittest.equals('foo'),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -5491,7 +5430,7 @@ void checkPlaylistSnippet(api.PlaylistSnippet o) {
 
 core.int buildCounterPlaylistStatus = 0;
 api.PlaylistStatus buildPlaylistStatus() {
-  var o = api.PlaylistStatus();
+  final o = api.PlaylistStatus();
   buildCounterPlaylistStatus++;
   if (buildCounterPlaylistStatus < 3) {
     o.privacyStatus = 'foo';
@@ -5513,7 +5452,7 @@ void checkPlaylistStatus(api.PlaylistStatus o) {
 
 core.int buildCounterPropertyValue = 0;
 api.PropertyValue buildPropertyValue() {
-  var o = api.PropertyValue();
+  final o = api.PropertyValue();
   buildCounterPropertyValue++;
   if (buildCounterPropertyValue < 3) {
     o.property = 'foo';
@@ -5540,7 +5479,7 @@ void checkPropertyValue(api.PropertyValue o) {
 
 core.int buildCounterRelatedEntity = 0;
 api.RelatedEntity buildRelatedEntity() {
-  var o = api.RelatedEntity();
+  final o = api.RelatedEntity();
   buildCounterRelatedEntity++;
   if (buildCounterRelatedEntity < 3) {
     o.entity = buildEntity();
@@ -5552,14 +5491,14 @@ api.RelatedEntity buildRelatedEntity() {
 void checkRelatedEntity(api.RelatedEntity o) {
   buildCounterRelatedEntity++;
   if (buildCounterRelatedEntity < 3) {
-    checkEntity(o.entity! as api.Entity);
+    checkEntity(o.entity!);
   }
   buildCounterRelatedEntity--;
 }
 
 core.int buildCounterResourceId = 0;
 api.ResourceId buildResourceId() {
-  var o = api.ResourceId();
+  final o = api.ResourceId();
   buildCounterResourceId++;
   if (buildCounterResourceId < 3) {
     o.channelId = 'foo';
@@ -5594,27 +5533,25 @@ void checkResourceId(api.ResourceId o) {
   buildCounterResourceId--;
 }
 
-core.List<api.SearchResult> buildUnnamed571() {
-  var o = <api.SearchResult>[];
-  o.add(buildSearchResult());
-  o.add(buildSearchResult());
-  return o;
-}
+core.List<api.SearchResult> buildUnnamed42() => [
+      buildSearchResult(),
+      buildSearchResult(),
+    ];
 
-void checkUnnamed571(core.List<api.SearchResult> o) {
+void checkUnnamed42(core.List<api.SearchResult> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSearchResult(o[0] as api.SearchResult);
-  checkSearchResult(o[1] as api.SearchResult);
+  checkSearchResult(o[0]);
+  checkSearchResult(o[1]);
 }
 
 core.int buildCounterSearchListResponse = 0;
 api.SearchListResponse buildSearchListResponse() {
-  var o = api.SearchListResponse();
+  final o = api.SearchListResponse();
   buildCounterSearchListResponse++;
   if (buildCounterSearchListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed571();
+    o.items = buildUnnamed42();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -5638,7 +5575,7 @@ void checkSearchListResponse(api.SearchListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed571(o.items!);
+    checkUnnamed42(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -5647,7 +5584,7 @@ void checkSearchListResponse(api.SearchListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
@@ -5656,7 +5593,7 @@ void checkSearchListResponse(api.SearchListResponse o) {
       o.regionCode!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -5667,7 +5604,7 @@ void checkSearchListResponse(api.SearchListResponse o) {
 
 core.int buildCounterSearchResult = 0;
 api.SearchResult buildSearchResult() {
-  var o = api.SearchResult();
+  final o = api.SearchResult();
   buildCounterSearchResult++;
   if (buildCounterSearchResult < 3) {
     o.etag = 'foo';
@@ -5686,26 +5623,26 @@ void checkSearchResult(api.SearchResult o) {
       o.etag!,
       unittest.equals('foo'),
     );
-    checkResourceId(o.id! as api.ResourceId);
+    checkResourceId(o.id!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
     );
-    checkSearchResultSnippet(o.snippet! as api.SearchResultSnippet);
+    checkSearchResultSnippet(o.snippet!);
   }
   buildCounterSearchResult--;
 }
 
 core.int buildCounterSearchResultSnippet = 0;
 api.SearchResultSnippet buildSearchResultSnippet() {
-  var o = api.SearchResultSnippet();
+  final o = api.SearchResultSnippet();
   buildCounterSearchResultSnippet++;
   if (buildCounterSearchResultSnippet < 3) {
     o.channelId = 'foo';
     o.channelTitle = 'foo';
     o.description = 'foo';
     o.liveBroadcastContent = 'foo';
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
   }
@@ -5734,9 +5671,9 @@ void checkSearchResultSnippet(api.SearchResultSnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -5747,7 +5684,7 @@ void checkSearchResultSnippet(api.SearchResultSnippet o) {
 
 core.int buildCounterSubscription = 0;
 api.Subscription buildSubscription() {
-  var o = api.Subscription();
+  final o = api.Subscription();
   buildCounterSubscription++;
   if (buildCounterSubscription < 3) {
     o.contentDetails = buildSubscriptionContentDetails();
@@ -5764,8 +5701,7 @@ api.Subscription buildSubscription() {
 void checkSubscription(api.Subscription o) {
   buildCounterSubscription++;
   if (buildCounterSubscription < 3) {
-    checkSubscriptionContentDetails(
-        o.contentDetails! as api.SubscriptionContentDetails);
+    checkSubscriptionContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
@@ -5778,16 +5714,15 @@ void checkSubscription(api.Subscription o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkSubscriptionSnippet(o.snippet! as api.SubscriptionSnippet);
-    checkSubscriptionSubscriberSnippet(
-        o.subscriberSnippet! as api.SubscriptionSubscriberSnippet);
+    checkSubscriptionSnippet(o.snippet!);
+    checkSubscriptionSubscriberSnippet(o.subscriberSnippet!);
   }
   buildCounterSubscription--;
 }
 
 core.int buildCounterSubscriptionContentDetails = 0;
 api.SubscriptionContentDetails buildSubscriptionContentDetails() {
-  var o = api.SubscriptionContentDetails();
+  final o = api.SubscriptionContentDetails();
   buildCounterSubscriptionContentDetails++;
   if (buildCounterSubscriptionContentDetails < 3) {
     o.activityType = 'foo';
@@ -5817,27 +5752,25 @@ void checkSubscriptionContentDetails(api.SubscriptionContentDetails o) {
   buildCounterSubscriptionContentDetails--;
 }
 
-core.List<api.Subscription> buildUnnamed572() {
-  var o = <api.Subscription>[];
-  o.add(buildSubscription());
-  o.add(buildSubscription());
-  return o;
-}
+core.List<api.Subscription> buildUnnamed43() => [
+      buildSubscription(),
+      buildSubscription(),
+    ];
 
-void checkUnnamed572(core.List<api.Subscription> o) {
+void checkUnnamed43(core.List<api.Subscription> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSubscription(o[0] as api.Subscription);
-  checkSubscription(o[1] as api.Subscription);
+  checkSubscription(o[0]);
+  checkSubscription(o[1]);
 }
 
 core.int buildCounterSubscriptionListResponse = 0;
 api.SubscriptionListResponse buildSubscriptionListResponse() {
-  var o = api.SubscriptionListResponse();
+  final o = api.SubscriptionListResponse();
   buildCounterSubscriptionListResponse++;
   if (buildCounterSubscriptionListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed572();
+    o.items = buildUnnamed43();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -5860,7 +5793,7 @@ void checkSubscriptionListResponse(api.SubscriptionListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed572(o.items!);
+    checkUnnamed43(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -5869,12 +5802,12 @@ void checkSubscriptionListResponse(api.SubscriptionListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -5885,13 +5818,13 @@ void checkSubscriptionListResponse(api.SubscriptionListResponse o) {
 
 core.int buildCounterSubscriptionSnippet = 0;
 api.SubscriptionSnippet buildSubscriptionSnippet() {
-  var o = api.SubscriptionSnippet();
+  final o = api.SubscriptionSnippet();
   buildCounterSubscriptionSnippet++;
   if (buildCounterSubscriptionSnippet < 3) {
     o.channelId = 'foo';
     o.channelTitle = 'foo';
     o.description = 'foo';
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.resourceId = buildResourceId();
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
@@ -5917,10 +5850,10 @@ void checkSubscriptionSnippet(api.SubscriptionSnippet o) {
     );
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkResourceId(o.resourceId! as api.ResourceId);
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkResourceId(o.resourceId!);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -5931,7 +5864,7 @@ void checkSubscriptionSnippet(api.SubscriptionSnippet o) {
 
 core.int buildCounterSubscriptionSubscriberSnippet = 0;
 api.SubscriptionSubscriberSnippet buildSubscriptionSubscriberSnippet() {
-  var o = api.SubscriptionSubscriberSnippet();
+  final o = api.SubscriptionSubscriberSnippet();
   buildCounterSubscriptionSubscriberSnippet++;
   if (buildCounterSubscriptionSubscriberSnippet < 3) {
     o.channelId = 'foo';
@@ -5954,7 +5887,7 @@ void checkSubscriptionSubscriberSnippet(api.SubscriptionSubscriberSnippet o) {
       o.description!,
       unittest.equals('foo'),
     );
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -5965,7 +5898,7 @@ void checkSubscriptionSubscriberSnippet(api.SubscriptionSubscriberSnippet o) {
 
 core.int buildCounterSuperChatEvent = 0;
 api.SuperChatEvent buildSuperChatEvent() {
-  var o = api.SuperChatEvent();
+  final o = api.SuperChatEvent();
   buildCounterSuperChatEvent++;
   if (buildCounterSuperChatEvent < 3) {
     o.etag = 'foo';
@@ -5992,32 +5925,30 @@ void checkSuperChatEvent(api.SuperChatEvent o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkSuperChatEventSnippet(o.snippet! as api.SuperChatEventSnippet);
+    checkSuperChatEventSnippet(o.snippet!);
   }
   buildCounterSuperChatEvent--;
 }
 
-core.List<api.SuperChatEvent> buildUnnamed573() {
-  var o = <api.SuperChatEvent>[];
-  o.add(buildSuperChatEvent());
-  o.add(buildSuperChatEvent());
-  return o;
-}
+core.List<api.SuperChatEvent> buildUnnamed44() => [
+      buildSuperChatEvent(),
+      buildSuperChatEvent(),
+    ];
 
-void checkUnnamed573(core.List<api.SuperChatEvent> o) {
+void checkUnnamed44(core.List<api.SuperChatEvent> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSuperChatEvent(o[0] as api.SuperChatEvent);
-  checkSuperChatEvent(o[1] as api.SuperChatEvent);
+  checkSuperChatEvent(o[0]);
+  checkSuperChatEvent(o[1]);
 }
 
 core.int buildCounterSuperChatEventListResponse = 0;
 api.SuperChatEventListResponse buildSuperChatEventListResponse() {
-  var o = api.SuperChatEventListResponse();
+  final o = api.SuperChatEventListResponse();
   buildCounterSuperChatEventListResponse++;
   if (buildCounterSuperChatEventListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed573();
+    o.items = buildUnnamed44();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -6039,7 +5970,7 @@ void checkSuperChatEventListResponse(api.SuperChatEventListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed573(o.items!);
+    checkUnnamed44(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -6048,8 +5979,8 @@ void checkSuperChatEventListResponse(api.SuperChatEventListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -6060,13 +5991,13 @@ void checkSuperChatEventListResponse(api.SuperChatEventListResponse o) {
 
 core.int buildCounterSuperChatEventSnippet = 0;
 api.SuperChatEventSnippet buildSuperChatEventSnippet() {
-  var o = api.SuperChatEventSnippet();
+  final o = api.SuperChatEventSnippet();
   buildCounterSuperChatEventSnippet++;
   if (buildCounterSuperChatEventSnippet < 3) {
     o.amountMicros = 'foo';
     o.channelId = 'foo';
     o.commentText = 'foo';
-    o.createdAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.createdAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.currency = 'foo';
     o.displayString = 'foo';
     o.isSuperStickerEvent = true;
@@ -6095,7 +6026,7 @@ void checkSuperChatEventSnippet(api.SuperChatEventSnippet o) {
     );
     unittest.expect(
       o.createdAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.currency!,
@@ -6110,17 +6041,15 @@ void checkSuperChatEventSnippet(api.SuperChatEventSnippet o) {
       o.messageType!,
       unittest.equals(42),
     );
-    checkSuperStickerMetadata(
-        o.superStickerMetadata! as api.SuperStickerMetadata);
-    checkChannelProfileDetails(
-        o.supporterDetails! as api.ChannelProfileDetails);
+    checkSuperStickerMetadata(o.superStickerMetadata!);
+    checkChannelProfileDetails(o.supporterDetails!);
   }
   buildCounterSuperChatEventSnippet--;
 }
 
 core.int buildCounterSuperStickerMetadata = 0;
 api.SuperStickerMetadata buildSuperStickerMetadata() {
-  var o = api.SuperStickerMetadata();
+  final o = api.SuperStickerMetadata();
   buildCounterSuperStickerMetadata++;
   if (buildCounterSuperStickerMetadata < 3) {
     o.altText = 'foo';
@@ -6152,9 +6081,10 @@ void checkSuperStickerMetadata(api.SuperStickerMetadata o) {
 
 core.int buildCounterTestItem = 0;
 api.TestItem buildTestItem() {
-  var o = api.TestItem();
+  final o = api.TestItem();
   buildCounterTestItem++;
   if (buildCounterTestItem < 3) {
+    o.featuredPart = true;
     o.gaia = 'foo';
     o.id = 'foo';
     o.snippet = buildTestItemTestItemSnippet();
@@ -6166,6 +6096,7 @@ api.TestItem buildTestItem() {
 void checkTestItem(api.TestItem o) {
   buildCounterTestItem++;
   if (buildCounterTestItem < 3) {
+    unittest.expect(o.featuredPart!, unittest.isTrue);
     unittest.expect(
       o.gaia!,
       unittest.equals('foo'),
@@ -6174,14 +6105,14 @@ void checkTestItem(api.TestItem o) {
       o.id!,
       unittest.equals('foo'),
     );
-    checkTestItemTestItemSnippet(o.snippet! as api.TestItemTestItemSnippet);
+    checkTestItemTestItemSnippet(o.snippet!);
   }
   buildCounterTestItem--;
 }
 
 core.int buildCounterTestItemTestItemSnippet = 0;
 api.TestItemTestItemSnippet buildTestItemTestItemSnippet() {
-  var o = api.TestItemTestItemSnippet();
+  final o = api.TestItemTestItemSnippet();
   buildCounterTestItemTestItemSnippet++;
   if (buildCounterTestItemTestItemSnippet < 3) {}
   buildCounterTestItemTestItemSnippet--;
@@ -6196,7 +6127,7 @@ void checkTestItemTestItemSnippet(api.TestItemTestItemSnippet o) {
 
 core.int buildCounterThirdPartyLink = 0;
 api.ThirdPartyLink buildThirdPartyLink() {
-  var o = api.ThirdPartyLink();
+  final o = api.ThirdPartyLink();
   buildCounterThirdPartyLink++;
   if (buildCounterThirdPartyLink < 3) {
     o.etag = 'foo';
@@ -6224,15 +6155,15 @@ void checkThirdPartyLink(api.ThirdPartyLink o) {
       o.linkingToken!,
       unittest.equals('foo'),
     );
-    checkThirdPartyLinkSnippet(o.snippet! as api.ThirdPartyLinkSnippet);
-    checkThirdPartyLinkStatus(o.status! as api.ThirdPartyLinkStatus);
+    checkThirdPartyLinkSnippet(o.snippet!);
+    checkThirdPartyLinkStatus(o.status!);
   }
   buildCounterThirdPartyLink--;
 }
 
 core.int buildCounterThirdPartyLinkSnippet = 0;
 api.ThirdPartyLinkSnippet buildThirdPartyLinkSnippet() {
-  var o = api.ThirdPartyLinkSnippet();
+  final o = api.ThirdPartyLinkSnippet();
   buildCounterThirdPartyLinkSnippet++;
   if (buildCounterThirdPartyLinkSnippet < 3) {
     o.channelToStoreLink = buildChannelToStoreLinkDetails();
@@ -6245,8 +6176,7 @@ api.ThirdPartyLinkSnippet buildThirdPartyLinkSnippet() {
 void checkThirdPartyLinkSnippet(api.ThirdPartyLinkSnippet o) {
   buildCounterThirdPartyLinkSnippet++;
   if (buildCounterThirdPartyLinkSnippet < 3) {
-    checkChannelToStoreLinkDetails(
-        o.channelToStoreLink! as api.ChannelToStoreLinkDetails);
+    checkChannelToStoreLinkDetails(o.channelToStoreLink!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -6257,7 +6187,7 @@ void checkThirdPartyLinkSnippet(api.ThirdPartyLinkSnippet o) {
 
 core.int buildCounterThirdPartyLinkStatus = 0;
 api.ThirdPartyLinkStatus buildThirdPartyLinkStatus() {
-  var o = api.ThirdPartyLinkStatus();
+  final o = api.ThirdPartyLinkStatus();
   buildCounterThirdPartyLinkStatus++;
   if (buildCounterThirdPartyLinkStatus < 3) {
     o.linkStatus = 'foo';
@@ -6279,7 +6209,7 @@ void checkThirdPartyLinkStatus(api.ThirdPartyLinkStatus o) {
 
 core.int buildCounterThumbnail = 0;
 api.Thumbnail buildThumbnail() {
-  var o = api.Thumbnail();
+  final o = api.Thumbnail();
   buildCounterThumbnail++;
   if (buildCounterThumbnail < 3) {
     o.height = 42;
@@ -6311,7 +6241,7 @@ void checkThumbnail(api.Thumbnail o) {
 
 core.int buildCounterThumbnailDetails = 0;
 api.ThumbnailDetails buildThumbnailDetails() {
-  var o = api.ThumbnailDetails();
+  final o = api.ThumbnailDetails();
   buildCounterThumbnailDetails++;
   if (buildCounterThumbnailDetails < 3) {
     o.default_ = buildThumbnail();
@@ -6327,36 +6257,34 @@ api.ThumbnailDetails buildThumbnailDetails() {
 void checkThumbnailDetails(api.ThumbnailDetails o) {
   buildCounterThumbnailDetails++;
   if (buildCounterThumbnailDetails < 3) {
-    checkThumbnail(o.default_! as api.Thumbnail);
-    checkThumbnail(o.high! as api.Thumbnail);
-    checkThumbnail(o.maxres! as api.Thumbnail);
-    checkThumbnail(o.medium! as api.Thumbnail);
-    checkThumbnail(o.standard! as api.Thumbnail);
+    checkThumbnail(o.default_!);
+    checkThumbnail(o.high!);
+    checkThumbnail(o.maxres!);
+    checkThumbnail(o.medium!);
+    checkThumbnail(o.standard!);
   }
   buildCounterThumbnailDetails--;
 }
 
-core.List<api.ThumbnailDetails> buildUnnamed574() {
-  var o = <api.ThumbnailDetails>[];
-  o.add(buildThumbnailDetails());
-  o.add(buildThumbnailDetails());
-  return o;
-}
+core.List<api.ThumbnailDetails> buildUnnamed45() => [
+      buildThumbnailDetails(),
+      buildThumbnailDetails(),
+    ];
 
-void checkUnnamed574(core.List<api.ThumbnailDetails> o) {
+void checkUnnamed45(core.List<api.ThumbnailDetails> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkThumbnailDetails(o[0] as api.ThumbnailDetails);
-  checkThumbnailDetails(o[1] as api.ThumbnailDetails);
+  checkThumbnailDetails(o[0]);
+  checkThumbnailDetails(o[1]);
 }
 
 core.int buildCounterThumbnailSetResponse = 0;
 api.ThumbnailSetResponse buildThumbnailSetResponse() {
-  var o = api.ThumbnailSetResponse();
+  final o = api.ThumbnailSetResponse();
   buildCounterThumbnailSetResponse++;
   if (buildCounterThumbnailSetResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed574();
+    o.items = buildUnnamed45();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -6375,7 +6303,7 @@ void checkThumbnailSetResponse(api.ThumbnailSetResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed574(o.items!);
+    checkUnnamed45(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -6390,7 +6318,7 @@ void checkThumbnailSetResponse(api.ThumbnailSetResponse o) {
 
 core.int buildCounterTokenPagination = 0;
 api.TokenPagination buildTokenPagination() {
-  var o = api.TokenPagination();
+  final o = api.TokenPagination();
   buildCounterTokenPagination++;
   if (buildCounterTokenPagination < 3) {}
   buildCounterTokenPagination--;
@@ -6403,22 +6331,20 @@ void checkTokenPagination(api.TokenPagination o) {
   buildCounterTokenPagination--;
 }
 
-core.Map<core.String, api.VideoLocalization> buildUnnamed575() {
-  var o = <core.String, api.VideoLocalization>{};
-  o['x'] = buildVideoLocalization();
-  o['y'] = buildVideoLocalization();
-  return o;
-}
+core.Map<core.String, api.VideoLocalization> buildUnnamed46() => {
+      'x': buildVideoLocalization(),
+      'y': buildVideoLocalization(),
+    };
 
-void checkUnnamed575(core.Map<core.String, api.VideoLocalization> o) {
+void checkUnnamed46(core.Map<core.String, api.VideoLocalization> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoLocalization(o['x']! as api.VideoLocalization);
-  checkVideoLocalization(o['y']! as api.VideoLocalization);
+  checkVideoLocalization(o['x']!);
+  checkVideoLocalization(o['y']!);
 }
 
 core.int buildCounterVideo = 0;
 api.Video buildVideo() {
-  var o = api.Video();
+  final o = api.Video();
   buildCounterVideo++;
   if (buildCounterVideo < 3) {
     o.ageGating = buildVideoAgeGating();
@@ -6428,7 +6354,7 @@ api.Video buildVideo() {
     o.id = 'foo';
     o.kind = 'foo';
     o.liveStreamingDetails = buildVideoLiveStreamingDetails();
-    o.localizations = buildUnnamed575();
+    o.localizations = buildUnnamed46();
     o.monetizationDetails = buildVideoMonetizationDetails();
     o.player = buildVideoPlayer();
     o.processingDetails = buildVideoProcessingDetails();
@@ -6447,13 +6373,13 @@ api.Video buildVideo() {
 void checkVideo(api.Video o) {
   buildCounterVideo++;
   if (buildCounterVideo < 3) {
-    checkVideoAgeGating(o.ageGating! as api.VideoAgeGating);
-    checkVideoContentDetails(o.contentDetails! as api.VideoContentDetails);
+    checkVideoAgeGating(o.ageGating!);
+    checkVideoContentDetails(o.contentDetails!);
     unittest.expect(
       o.etag!,
       unittest.equals('foo'),
     );
-    checkVideoFileDetails(o.fileDetails! as api.VideoFileDetails);
+    checkVideoFileDetails(o.fileDetails!);
     unittest.expect(
       o.id!,
       unittest.equals('foo'),
@@ -6462,29 +6388,25 @@ void checkVideo(api.Video o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkVideoLiveStreamingDetails(
-        o.liveStreamingDetails! as api.VideoLiveStreamingDetails);
-    checkUnnamed575(o.localizations!);
-    checkVideoMonetizationDetails(
-        o.monetizationDetails! as api.VideoMonetizationDetails);
-    checkVideoPlayer(o.player! as api.VideoPlayer);
-    checkVideoProcessingDetails(
-        o.processingDetails! as api.VideoProcessingDetails);
-    checkVideoProjectDetails(o.projectDetails! as api.VideoProjectDetails);
-    checkVideoRecordingDetails(
-        o.recordingDetails! as api.VideoRecordingDetails);
-    checkVideoSnippet(o.snippet! as api.VideoSnippet);
-    checkVideoStatistics(o.statistics! as api.VideoStatistics);
-    checkVideoStatus(o.status! as api.VideoStatus);
-    checkVideoSuggestions(o.suggestions! as api.VideoSuggestions);
-    checkVideoTopicDetails(o.topicDetails! as api.VideoTopicDetails);
+    checkVideoLiveStreamingDetails(o.liveStreamingDetails!);
+    checkUnnamed46(o.localizations!);
+    checkVideoMonetizationDetails(o.monetizationDetails!);
+    checkVideoPlayer(o.player!);
+    checkVideoProcessingDetails(o.processingDetails!);
+    checkVideoProjectDetails(o.projectDetails!);
+    checkVideoRecordingDetails(o.recordingDetails!);
+    checkVideoSnippet(o.snippet!);
+    checkVideoStatistics(o.statistics!);
+    checkVideoStatus(o.status!);
+    checkVideoSuggestions(o.suggestions!);
+    checkVideoTopicDetails(o.topicDetails!);
   }
   buildCounterVideo--;
 }
 
 core.int buildCounterVideoAbuseReport = 0;
 api.VideoAbuseReport buildVideoAbuseReport() {
-  var o = api.VideoAbuseReport();
+  final o = api.VideoAbuseReport();
   buildCounterVideoAbuseReport++;
   if (buildCounterVideoAbuseReport < 3) {
     o.comments = 'foo';
@@ -6526,7 +6448,7 @@ void checkVideoAbuseReport(api.VideoAbuseReport o) {
 
 core.int buildCounterVideoAbuseReportReason = 0;
 api.VideoAbuseReportReason buildVideoAbuseReportReason() {
-  var o = api.VideoAbuseReportReason();
+  final o = api.VideoAbuseReportReason();
   buildCounterVideoAbuseReportReason++;
   if (buildCounterVideoAbuseReportReason < 3) {
     o.etag = 'foo';
@@ -6553,34 +6475,31 @@ void checkVideoAbuseReportReason(api.VideoAbuseReportReason o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkVideoAbuseReportReasonSnippet(
-        o.snippet! as api.VideoAbuseReportReasonSnippet);
+    checkVideoAbuseReportReasonSnippet(o.snippet!);
   }
   buildCounterVideoAbuseReportReason--;
 }
 
-core.List<api.VideoAbuseReportReason> buildUnnamed576() {
-  var o = <api.VideoAbuseReportReason>[];
-  o.add(buildVideoAbuseReportReason());
-  o.add(buildVideoAbuseReportReason());
-  return o;
-}
+core.List<api.VideoAbuseReportReason> buildUnnamed47() => [
+      buildVideoAbuseReportReason(),
+      buildVideoAbuseReportReason(),
+    ];
 
-void checkUnnamed576(core.List<api.VideoAbuseReportReason> o) {
+void checkUnnamed47(core.List<api.VideoAbuseReportReason> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoAbuseReportReason(o[0] as api.VideoAbuseReportReason);
-  checkVideoAbuseReportReason(o[1] as api.VideoAbuseReportReason);
+  checkVideoAbuseReportReason(o[0]);
+  checkVideoAbuseReportReason(o[1]);
 }
 
 core.int buildCounterVideoAbuseReportReasonListResponse = 0;
 api.VideoAbuseReportReasonListResponse
     buildVideoAbuseReportReasonListResponse() {
-  var o = api.VideoAbuseReportReasonListResponse();
+  final o = api.VideoAbuseReportReasonListResponse();
   buildCounterVideoAbuseReportReasonListResponse++;
   if (buildCounterVideoAbuseReportReasonListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed576();
+    o.items = buildUnnamed47();
     o.kind = 'foo';
     o.visitorId = 'foo';
   }
@@ -6600,7 +6519,7 @@ void checkVideoAbuseReportReasonListResponse(
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed576(o.items!);
+    checkUnnamed47(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -6613,28 +6532,24 @@ void checkVideoAbuseReportReasonListResponse(
   buildCounterVideoAbuseReportReasonListResponse--;
 }
 
-core.List<api.VideoAbuseReportSecondaryReason> buildUnnamed577() {
-  var o = <api.VideoAbuseReportSecondaryReason>[];
-  o.add(buildVideoAbuseReportSecondaryReason());
-  o.add(buildVideoAbuseReportSecondaryReason());
-  return o;
-}
+core.List<api.VideoAbuseReportSecondaryReason> buildUnnamed48() => [
+      buildVideoAbuseReportSecondaryReason(),
+      buildVideoAbuseReportSecondaryReason(),
+    ];
 
-void checkUnnamed577(core.List<api.VideoAbuseReportSecondaryReason> o) {
+void checkUnnamed48(core.List<api.VideoAbuseReportSecondaryReason> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoAbuseReportSecondaryReason(
-      o[0] as api.VideoAbuseReportSecondaryReason);
-  checkVideoAbuseReportSecondaryReason(
-      o[1] as api.VideoAbuseReportSecondaryReason);
+  checkVideoAbuseReportSecondaryReason(o[0]);
+  checkVideoAbuseReportSecondaryReason(o[1]);
 }
 
 core.int buildCounterVideoAbuseReportReasonSnippet = 0;
 api.VideoAbuseReportReasonSnippet buildVideoAbuseReportReasonSnippet() {
-  var o = api.VideoAbuseReportReasonSnippet();
+  final o = api.VideoAbuseReportReasonSnippet();
   buildCounterVideoAbuseReportReasonSnippet++;
   if (buildCounterVideoAbuseReportReasonSnippet < 3) {
     o.label = 'foo';
-    o.secondaryReasons = buildUnnamed577();
+    o.secondaryReasons = buildUnnamed48();
   }
   buildCounterVideoAbuseReportReasonSnippet--;
   return o;
@@ -6647,14 +6562,14 @@ void checkVideoAbuseReportReasonSnippet(api.VideoAbuseReportReasonSnippet o) {
       o.label!,
       unittest.equals('foo'),
     );
-    checkUnnamed577(o.secondaryReasons!);
+    checkUnnamed48(o.secondaryReasons!);
   }
   buildCounterVideoAbuseReportReasonSnippet--;
 }
 
 core.int buildCounterVideoAbuseReportSecondaryReason = 0;
 api.VideoAbuseReportSecondaryReason buildVideoAbuseReportSecondaryReason() {
-  var o = api.VideoAbuseReportSecondaryReason();
+  final o = api.VideoAbuseReportSecondaryReason();
   buildCounterVideoAbuseReportSecondaryReason++;
   if (buildCounterVideoAbuseReportSecondaryReason < 3) {
     o.id = 'foo';
@@ -6682,7 +6597,7 @@ void checkVideoAbuseReportSecondaryReason(
 
 core.int buildCounterVideoAgeGating = 0;
 api.VideoAgeGating buildVideoAgeGating() {
-  var o = api.VideoAgeGating();
+  final o = api.VideoAgeGating();
   buildCounterVideoAgeGating++;
   if (buildCounterVideoAgeGating < 3) {
     o.alcoholContent = true;
@@ -6708,7 +6623,7 @@ void checkVideoAgeGating(api.VideoAgeGating o) {
 
 core.int buildCounterVideoCategory = 0;
 api.VideoCategory buildVideoCategory() {
-  var o = api.VideoCategory();
+  final o = api.VideoCategory();
   buildCounterVideoCategory++;
   if (buildCounterVideoCategory < 3) {
     o.etag = 'foo';
@@ -6735,32 +6650,30 @@ void checkVideoCategory(api.VideoCategory o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkVideoCategorySnippet(o.snippet! as api.VideoCategorySnippet);
+    checkVideoCategorySnippet(o.snippet!);
   }
   buildCounterVideoCategory--;
 }
 
-core.List<api.VideoCategory> buildUnnamed578() {
-  var o = <api.VideoCategory>[];
-  o.add(buildVideoCategory());
-  o.add(buildVideoCategory());
-  return o;
-}
+core.List<api.VideoCategory> buildUnnamed49() => [
+      buildVideoCategory(),
+      buildVideoCategory(),
+    ];
 
-void checkUnnamed578(core.List<api.VideoCategory> o) {
+void checkUnnamed49(core.List<api.VideoCategory> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoCategory(o[0] as api.VideoCategory);
-  checkVideoCategory(o[1] as api.VideoCategory);
+  checkVideoCategory(o[0]);
+  checkVideoCategory(o[1]);
 }
 
 core.int buildCounterVideoCategoryListResponse = 0;
 api.VideoCategoryListResponse buildVideoCategoryListResponse() {
-  var o = api.VideoCategoryListResponse();
+  final o = api.VideoCategoryListResponse();
   buildCounterVideoCategoryListResponse++;
   if (buildCounterVideoCategoryListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed578();
+    o.items = buildUnnamed49();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -6783,7 +6696,7 @@ void checkVideoCategoryListResponse(api.VideoCategoryListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed578(o.items!);
+    checkUnnamed49(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -6792,12 +6705,12 @@ void checkVideoCategoryListResponse(api.VideoCategoryListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -6808,7 +6721,7 @@ void checkVideoCategoryListResponse(api.VideoCategoryListResponse o) {
 
 core.int buildCounterVideoCategorySnippet = 0;
 api.VideoCategorySnippet buildVideoCategorySnippet() {
-  var o = api.VideoCategorySnippet();
+  final o = api.VideoCategorySnippet();
   buildCounterVideoCategorySnippet++;
   if (buildCounterVideoCategorySnippet < 3) {
     o.assignable = true;
@@ -6837,7 +6750,7 @@ void checkVideoCategorySnippet(api.VideoCategorySnippet o) {
 
 core.int buildCounterVideoContentDetails = 0;
 api.VideoContentDetails buildVideoContentDetails() {
-  var o = api.VideoContentDetails();
+  final o = api.VideoContentDetails();
   buildCounterVideoContentDetails++;
   if (buildCounterVideoContentDetails < 3) {
     o.caption = 'foo';
@@ -6862,8 +6775,8 @@ void checkVideoContentDetails(api.VideoContentDetails o) {
       o.caption!,
       unittest.equals('foo'),
     );
-    checkContentRating(o.contentRating! as api.ContentRating);
-    checkAccessPolicy(o.countryRestriction! as api.AccessPolicy);
+    checkContentRating(o.contentRating!);
+    checkAccessPolicy(o.countryRestriction!);
     unittest.expect(
       o.definition!,
       unittest.equals('foo'),
@@ -6882,20 +6795,17 @@ void checkVideoContentDetails(api.VideoContentDetails o) {
       o.projection!,
       unittest.equals('foo'),
     );
-    checkVideoContentDetailsRegionRestriction(
-        o.regionRestriction! as api.VideoContentDetailsRegionRestriction);
+    checkVideoContentDetailsRegionRestriction(o.regionRestriction!);
   }
   buildCounterVideoContentDetails--;
 }
 
-core.List<core.String> buildUnnamed579() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed50() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed579(core.List<core.String> o) {
+void checkUnnamed50(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -6907,14 +6817,12 @@ void checkUnnamed579(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed580() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed51() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed580(core.List<core.String> o) {
+void checkUnnamed51(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -6929,11 +6837,11 @@ void checkUnnamed580(core.List<core.String> o) {
 core.int buildCounterVideoContentDetailsRegionRestriction = 0;
 api.VideoContentDetailsRegionRestriction
     buildVideoContentDetailsRegionRestriction() {
-  var o = api.VideoContentDetailsRegionRestriction();
+  final o = api.VideoContentDetailsRegionRestriction();
   buildCounterVideoContentDetailsRegionRestriction++;
   if (buildCounterVideoContentDetailsRegionRestriction < 3) {
-    o.allowed = buildUnnamed579();
-    o.blocked = buildUnnamed580();
+    o.allowed = buildUnnamed50();
+    o.blocked = buildUnnamed51();
   }
   buildCounterVideoContentDetailsRegionRestriction--;
   return o;
@@ -6943,44 +6851,40 @@ void checkVideoContentDetailsRegionRestriction(
     api.VideoContentDetailsRegionRestriction o) {
   buildCounterVideoContentDetailsRegionRestriction++;
   if (buildCounterVideoContentDetailsRegionRestriction < 3) {
-    checkUnnamed579(o.allowed!);
-    checkUnnamed580(o.blocked!);
+    checkUnnamed50(o.allowed!);
+    checkUnnamed51(o.blocked!);
   }
   buildCounterVideoContentDetailsRegionRestriction--;
 }
 
-core.List<api.VideoFileDetailsAudioStream> buildUnnamed581() {
-  var o = <api.VideoFileDetailsAudioStream>[];
-  o.add(buildVideoFileDetailsAudioStream());
-  o.add(buildVideoFileDetailsAudioStream());
-  return o;
-}
+core.List<api.VideoFileDetailsAudioStream> buildUnnamed52() => [
+      buildVideoFileDetailsAudioStream(),
+      buildVideoFileDetailsAudioStream(),
+    ];
 
-void checkUnnamed581(core.List<api.VideoFileDetailsAudioStream> o) {
+void checkUnnamed52(core.List<api.VideoFileDetailsAudioStream> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoFileDetailsAudioStream(o[0] as api.VideoFileDetailsAudioStream);
-  checkVideoFileDetailsAudioStream(o[1] as api.VideoFileDetailsAudioStream);
+  checkVideoFileDetailsAudioStream(o[0]);
+  checkVideoFileDetailsAudioStream(o[1]);
 }
 
-core.List<api.VideoFileDetailsVideoStream> buildUnnamed582() {
-  var o = <api.VideoFileDetailsVideoStream>[];
-  o.add(buildVideoFileDetailsVideoStream());
-  o.add(buildVideoFileDetailsVideoStream());
-  return o;
-}
+core.List<api.VideoFileDetailsVideoStream> buildUnnamed53() => [
+      buildVideoFileDetailsVideoStream(),
+      buildVideoFileDetailsVideoStream(),
+    ];
 
-void checkUnnamed582(core.List<api.VideoFileDetailsVideoStream> o) {
+void checkUnnamed53(core.List<api.VideoFileDetailsVideoStream> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoFileDetailsVideoStream(o[0] as api.VideoFileDetailsVideoStream);
-  checkVideoFileDetailsVideoStream(o[1] as api.VideoFileDetailsVideoStream);
+  checkVideoFileDetailsVideoStream(o[0]);
+  checkVideoFileDetailsVideoStream(o[1]);
 }
 
 core.int buildCounterVideoFileDetails = 0;
 api.VideoFileDetails buildVideoFileDetails() {
-  var o = api.VideoFileDetails();
+  final o = api.VideoFileDetails();
   buildCounterVideoFileDetails++;
   if (buildCounterVideoFileDetails < 3) {
-    o.audioStreams = buildUnnamed581();
+    o.audioStreams = buildUnnamed52();
     o.bitrateBps = 'foo';
     o.container = 'foo';
     o.creationTime = 'foo';
@@ -6988,7 +6892,7 @@ api.VideoFileDetails buildVideoFileDetails() {
     o.fileName = 'foo';
     o.fileSize = 'foo';
     o.fileType = 'foo';
-    o.videoStreams = buildUnnamed582();
+    o.videoStreams = buildUnnamed53();
   }
   buildCounterVideoFileDetails--;
   return o;
@@ -6997,7 +6901,7 @@ api.VideoFileDetails buildVideoFileDetails() {
 void checkVideoFileDetails(api.VideoFileDetails o) {
   buildCounterVideoFileDetails++;
   if (buildCounterVideoFileDetails < 3) {
-    checkUnnamed581(o.audioStreams!);
+    checkUnnamed52(o.audioStreams!);
     unittest.expect(
       o.bitrateBps!,
       unittest.equals('foo'),
@@ -7026,14 +6930,14 @@ void checkVideoFileDetails(api.VideoFileDetails o) {
       o.fileType!,
       unittest.equals('foo'),
     );
-    checkUnnamed582(o.videoStreams!);
+    checkUnnamed53(o.videoStreams!);
   }
   buildCounterVideoFileDetails--;
 }
 
 core.int buildCounterVideoFileDetailsAudioStream = 0;
 api.VideoFileDetailsAudioStream buildVideoFileDetailsAudioStream() {
-  var o = api.VideoFileDetailsAudioStream();
+  final o = api.VideoFileDetailsAudioStream();
   buildCounterVideoFileDetailsAudioStream++;
   if (buildCounterVideoFileDetailsAudioStream < 3) {
     o.bitrateBps = 'foo';
@@ -7070,7 +6974,7 @@ void checkVideoFileDetailsAudioStream(api.VideoFileDetailsAudioStream o) {
 
 core.int buildCounterVideoFileDetailsVideoStream = 0;
 api.VideoFileDetailsVideoStream buildVideoFileDetailsVideoStream() {
-  var o = api.VideoFileDetailsVideoStream();
+  final o = api.VideoFileDetailsVideoStream();
   buildCounterVideoFileDetailsVideoStream++;
   if (buildCounterVideoFileDetailsVideoStream < 3) {
     o.aspectRatio = 42.0;
@@ -7125,27 +7029,75 @@ void checkVideoFileDetailsVideoStream(api.VideoFileDetailsVideoStream o) {
   buildCounterVideoFileDetailsVideoStream--;
 }
 
-core.List<api.Video> buildUnnamed583() {
-  var o = <api.Video>[];
-  o.add(buildVideo());
-  o.add(buildVideo());
+core.List<api.VideoRating> buildUnnamed54() => [
+      buildVideoRating(),
+      buildVideoRating(),
+    ];
+
+void checkUnnamed54(core.List<api.VideoRating> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkVideoRating(o[0]);
+  checkVideoRating(o[1]);
+}
+
+core.int buildCounterVideoGetRatingResponse = 0;
+api.VideoGetRatingResponse buildVideoGetRatingResponse() {
+  final o = api.VideoGetRatingResponse();
+  buildCounterVideoGetRatingResponse++;
+  if (buildCounterVideoGetRatingResponse < 3) {
+    o.etag = 'foo';
+    o.eventId = 'foo';
+    o.items = buildUnnamed54();
+    o.kind = 'foo';
+    o.visitorId = 'foo';
+  }
+  buildCounterVideoGetRatingResponse--;
   return o;
 }
 
-void checkUnnamed583(core.List<api.Video> o) {
+void checkVideoGetRatingResponse(api.VideoGetRatingResponse o) {
+  buildCounterVideoGetRatingResponse++;
+  if (buildCounterVideoGetRatingResponse < 3) {
+    unittest.expect(
+      o.etag!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.eventId!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed54(o.items!);
+    unittest.expect(
+      o.kind!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.visitorId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterVideoGetRatingResponse--;
+}
+
+core.List<api.Video> buildUnnamed55() => [
+      buildVideo(),
+      buildVideo(),
+    ];
+
+void checkUnnamed55(core.List<api.Video> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideo(o[0] as api.Video);
-  checkVideo(o[1] as api.Video);
+  checkVideo(o[0]);
+  checkVideo(o[1]);
 }
 
 core.int buildCounterVideoListResponse = 0;
 api.VideoListResponse buildVideoListResponse() {
-  var o = api.VideoListResponse();
+  final o = api.VideoListResponse();
   buildCounterVideoListResponse++;
   if (buildCounterVideoListResponse < 3) {
     o.etag = 'foo';
     o.eventId = 'foo';
-    o.items = buildUnnamed583();
+    o.items = buildUnnamed55();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.pageInfo = buildPageInfo();
@@ -7168,7 +7120,7 @@ void checkVideoListResponse(api.VideoListResponse o) {
       o.eventId!,
       unittest.equals('foo'),
     );
-    checkUnnamed583(o.items!);
+    checkUnnamed55(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -7177,12 +7129,12 @@ void checkVideoListResponse(api.VideoListResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
+    checkPageInfo(o.pageInfo!);
     unittest.expect(
       o.prevPageToken!,
       unittest.equals('foo'),
     );
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkTokenPagination(o.tokenPagination!);
     unittest.expect(
       o.visitorId!,
       unittest.equals('foo'),
@@ -7193,15 +7145,15 @@ void checkVideoListResponse(api.VideoListResponse o) {
 
 core.int buildCounterVideoLiveStreamingDetails = 0;
 api.VideoLiveStreamingDetails buildVideoLiveStreamingDetails() {
-  var o = api.VideoLiveStreamingDetails();
+  final o = api.VideoLiveStreamingDetails();
   buildCounterVideoLiveStreamingDetails++;
   if (buildCounterVideoLiveStreamingDetails < 3) {
     o.activeLiveChatId = 'foo';
-    o.actualEndTime = core.DateTime.parse("2002-02-27T14:01:02");
-    o.actualStartTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.actualEndTime = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.actualStartTime = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.concurrentViewers = 'foo';
-    o.scheduledEndTime = core.DateTime.parse("2002-02-27T14:01:02");
-    o.scheduledStartTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.scheduledEndTime = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.scheduledStartTime = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterVideoLiveStreamingDetails--;
   return o;
@@ -7216,11 +7168,11 @@ void checkVideoLiveStreamingDetails(api.VideoLiveStreamingDetails o) {
     );
     unittest.expect(
       o.actualEndTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.actualStartTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.concurrentViewers!,
@@ -7228,11 +7180,11 @@ void checkVideoLiveStreamingDetails(api.VideoLiveStreamingDetails o) {
     );
     unittest.expect(
       o.scheduledEndTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.scheduledStartTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterVideoLiveStreamingDetails--;
@@ -7240,7 +7192,7 @@ void checkVideoLiveStreamingDetails(api.VideoLiveStreamingDetails o) {
 
 core.int buildCounterVideoLocalization = 0;
 api.VideoLocalization buildVideoLocalization() {
-  var o = api.VideoLocalization();
+  final o = api.VideoLocalization();
   buildCounterVideoLocalization++;
   if (buildCounterVideoLocalization < 3) {
     o.description = 'foo';
@@ -7267,7 +7219,7 @@ void checkVideoLocalization(api.VideoLocalization o) {
 
 core.int buildCounterVideoMonetizationDetails = 0;
 api.VideoMonetizationDetails buildVideoMonetizationDetails() {
-  var o = api.VideoMonetizationDetails();
+  final o = api.VideoMonetizationDetails();
   buildCounterVideoMonetizationDetails++;
   if (buildCounterVideoMonetizationDetails < 3) {
     o.access = buildAccessPolicy();
@@ -7279,14 +7231,14 @@ api.VideoMonetizationDetails buildVideoMonetizationDetails() {
 void checkVideoMonetizationDetails(api.VideoMonetizationDetails o) {
   buildCounterVideoMonetizationDetails++;
   if (buildCounterVideoMonetizationDetails < 3) {
-    checkAccessPolicy(o.access! as api.AccessPolicy);
+    checkAccessPolicy(o.access!);
   }
   buildCounterVideoMonetizationDetails--;
 }
 
 core.int buildCounterVideoPlayer = 0;
 api.VideoPlayer buildVideoPlayer() {
-  var o = api.VideoPlayer();
+  final o = api.VideoPlayer();
   buildCounterVideoPlayer++;
   if (buildCounterVideoPlayer < 3) {
     o.embedHeight = 'foo';
@@ -7318,7 +7270,7 @@ void checkVideoPlayer(api.VideoPlayer o) {
 
 core.int buildCounterVideoProcessingDetails = 0;
 api.VideoProcessingDetails buildVideoProcessingDetails() {
-  var o = api.VideoProcessingDetails();
+  final o = api.VideoProcessingDetails();
   buildCounterVideoProcessingDetails++;
   if (buildCounterVideoProcessingDetails < 3) {
     o.editorSuggestionsAvailability = 'foo';
@@ -7353,8 +7305,7 @@ void checkVideoProcessingDetails(api.VideoProcessingDetails o) {
       o.processingIssuesAvailability!,
       unittest.equals('foo'),
     );
-    checkVideoProcessingDetailsProcessingProgress(
-        o.processingProgress! as api.VideoProcessingDetailsProcessingProgress);
+    checkVideoProcessingDetailsProcessingProgress(o.processingProgress!);
     unittest.expect(
       o.processingStatus!,
       unittest.equals('foo'),
@@ -7374,7 +7325,7 @@ void checkVideoProcessingDetails(api.VideoProcessingDetails o) {
 core.int buildCounterVideoProcessingDetailsProcessingProgress = 0;
 api.VideoProcessingDetailsProcessingProgress
     buildVideoProcessingDetailsProcessingProgress() {
-  var o = api.VideoProcessingDetailsProcessingProgress();
+  final o = api.VideoProcessingDetailsProcessingProgress();
   buildCounterVideoProcessingDetailsProcessingProgress++;
   if (buildCounterVideoProcessingDetailsProcessingProgress < 3) {
     o.partsProcessed = 'foo';
@@ -7407,7 +7358,7 @@ void checkVideoProcessingDetailsProcessingProgress(
 
 core.int buildCounterVideoProjectDetails = 0;
 api.VideoProjectDetails buildVideoProjectDetails() {
-  var o = api.VideoProjectDetails();
+  final o = api.VideoProjectDetails();
   buildCounterVideoProjectDetails++;
   if (buildCounterVideoProjectDetails < 3) {}
   buildCounterVideoProjectDetails--;
@@ -7422,7 +7373,7 @@ void checkVideoProjectDetails(api.VideoProjectDetails o) {
 
 core.int buildCounterVideoRating = 0;
 api.VideoRating buildVideoRating() {
-  var o = api.VideoRating();
+  final o = api.VideoRating();
   buildCounterVideoRating++;
   if (buildCounterVideoRating < 3) {
     o.rating = 'foo';
@@ -7447,66 +7398,14 @@ void checkVideoRating(api.VideoRating o) {
   buildCounterVideoRating--;
 }
 
-core.List<api.VideoRating> buildUnnamed584() {
-  var o = <api.VideoRating>[];
-  o.add(buildVideoRating());
-  o.add(buildVideoRating());
-  return o;
-}
-
-void checkUnnamed584(core.List<api.VideoRating> o) {
-  unittest.expect(o, unittest.hasLength(2));
-  checkVideoRating(o[0] as api.VideoRating);
-  checkVideoRating(o[1] as api.VideoRating);
-}
-
-core.int buildCounterVideoRatingListResponse = 0;
-api.VideoRatingListResponse buildVideoRatingListResponse() {
-  var o = api.VideoRatingListResponse();
-  buildCounterVideoRatingListResponse++;
-  if (buildCounterVideoRatingListResponse < 3) {
-    o.etag = 'foo';
-    o.eventId = 'foo';
-    o.items = buildUnnamed584();
-    o.kind = 'foo';
-    o.visitorId = 'foo';
-  }
-  buildCounterVideoRatingListResponse--;
-  return o;
-}
-
-void checkVideoRatingListResponse(api.VideoRatingListResponse o) {
-  buildCounterVideoRatingListResponse++;
-  if (buildCounterVideoRatingListResponse < 3) {
-    unittest.expect(
-      o.etag!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.eventId!,
-      unittest.equals('foo'),
-    );
-    checkUnnamed584(o.items!);
-    unittest.expect(
-      o.kind!,
-      unittest.equals('foo'),
-    );
-    unittest.expect(
-      o.visitorId!,
-      unittest.equals('foo'),
-    );
-  }
-  buildCounterVideoRatingListResponse--;
-}
-
 core.int buildCounterVideoRecordingDetails = 0;
 api.VideoRecordingDetails buildVideoRecordingDetails() {
-  var o = api.VideoRecordingDetails();
+  final o = api.VideoRecordingDetails();
   buildCounterVideoRecordingDetails++;
   if (buildCounterVideoRecordingDetails < 3) {
     o.location = buildGeoPoint();
     o.locationDescription = 'foo';
-    o.recordingDate = core.DateTime.parse("2002-02-27T14:01:02");
+    o.recordingDate = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterVideoRecordingDetails--;
   return o;
@@ -7515,27 +7414,25 @@ api.VideoRecordingDetails buildVideoRecordingDetails() {
 void checkVideoRecordingDetails(api.VideoRecordingDetails o) {
   buildCounterVideoRecordingDetails++;
   if (buildCounterVideoRecordingDetails < 3) {
-    checkGeoPoint(o.location! as api.GeoPoint);
+    checkGeoPoint(o.location!);
     unittest.expect(
       o.locationDescription!,
       unittest.equals('foo'),
     );
     unittest.expect(
       o.recordingDate!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterVideoRecordingDetails--;
 }
 
-core.List<core.String> buildUnnamed585() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed56() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed585(core.List<core.String> o) {
+void checkUnnamed56(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7549,7 +7446,7 @@ void checkUnnamed585(core.List<core.String> o) {
 
 core.int buildCounterVideoSnippet = 0;
 api.VideoSnippet buildVideoSnippet() {
-  var o = api.VideoSnippet();
+  final o = api.VideoSnippet();
   buildCounterVideoSnippet++;
   if (buildCounterVideoSnippet < 3) {
     o.categoryId = 'foo';
@@ -7560,8 +7457,8 @@ api.VideoSnippet buildVideoSnippet() {
     o.description = 'foo';
     o.liveBroadcastContent = 'foo';
     o.localized = buildVideoLocalization();
-    o.publishedAt = core.DateTime.parse("2002-02-27T14:01:02");
-    o.tags = buildUnnamed585();
+    o.publishedAt = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.tags = buildUnnamed56();
     o.thumbnails = buildThumbnailDetails();
     o.title = 'foo';
   }
@@ -7600,13 +7497,13 @@ void checkVideoSnippet(api.VideoSnippet o) {
       o.liveBroadcastContent!,
       unittest.equals('foo'),
     );
-    checkVideoLocalization(o.localized! as api.VideoLocalization);
+    checkVideoLocalization(o.localized!);
     unittest.expect(
       o.publishedAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkUnnamed585(o.tags!);
-    checkThumbnailDetails(o.thumbnails! as api.ThumbnailDetails);
+    checkUnnamed56(o.tags!);
+    checkThumbnailDetails(o.thumbnails!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -7617,7 +7514,7 @@ void checkVideoSnippet(api.VideoSnippet o) {
 
 core.int buildCounterVideoStatistics = 0;
 api.VideoStatistics buildVideoStatistics() {
-  var o = api.VideoStatistics();
+  final o = api.VideoStatistics();
   buildCounterVideoStatistics++;
   if (buildCounterVideoStatistics < 3) {
     o.commentCount = 'foo';
@@ -7659,7 +7556,7 @@ void checkVideoStatistics(api.VideoStatistics o) {
 
 core.int buildCounterVideoStatus = 0;
 api.VideoStatus buildVideoStatus() {
-  var o = api.VideoStatus();
+  final o = api.VideoStatus();
   buildCounterVideoStatus++;
   if (buildCounterVideoStatus < 3) {
     o.embeddable = true;
@@ -7668,7 +7565,7 @@ api.VideoStatus buildVideoStatus() {
     o.madeForKids = true;
     o.privacyStatus = 'foo';
     o.publicStatsViewable = true;
-    o.publishAt = core.DateTime.parse("2002-02-27T14:01:02");
+    o.publishAt = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.rejectionReason = 'foo';
     o.selfDeclaredMadeForKids = true;
     o.uploadStatus = 'foo';
@@ -7697,7 +7594,7 @@ void checkVideoStatus(api.VideoStatus o) {
     unittest.expect(o.publicStatsViewable!, unittest.isTrue);
     unittest.expect(
       o.publishAt!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.rejectionReason!,
@@ -7712,14 +7609,12 @@ void checkVideoStatus(api.VideoStatus o) {
   buildCounterVideoStatus--;
 }
 
-core.List<core.String> buildUnnamed586() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed57() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed586(core.List<core.String> o) {
+void checkUnnamed57(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7731,14 +7626,12 @@ void checkUnnamed586(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed587() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed58() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed587(core.List<core.String> o) {
+void checkUnnamed58(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7750,14 +7643,12 @@ void checkUnnamed587(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed588() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed59() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed588(core.List<core.String> o) {
+void checkUnnamed59(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7769,14 +7660,12 @@ void checkUnnamed588(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed589() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed60() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed589(core.List<core.String> o) {
+void checkUnnamed60(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7788,29 +7677,27 @@ void checkUnnamed589(core.List<core.String> o) {
   );
 }
 
-core.List<api.VideoSuggestionsTagSuggestion> buildUnnamed590() {
-  var o = <api.VideoSuggestionsTagSuggestion>[];
-  o.add(buildVideoSuggestionsTagSuggestion());
-  o.add(buildVideoSuggestionsTagSuggestion());
-  return o;
-}
+core.List<api.VideoSuggestionsTagSuggestion> buildUnnamed61() => [
+      buildVideoSuggestionsTagSuggestion(),
+      buildVideoSuggestionsTagSuggestion(),
+    ];
 
-void checkUnnamed590(core.List<api.VideoSuggestionsTagSuggestion> o) {
+void checkUnnamed61(core.List<api.VideoSuggestionsTagSuggestion> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVideoSuggestionsTagSuggestion(o[0] as api.VideoSuggestionsTagSuggestion);
-  checkVideoSuggestionsTagSuggestion(o[1] as api.VideoSuggestionsTagSuggestion);
+  checkVideoSuggestionsTagSuggestion(o[0]);
+  checkVideoSuggestionsTagSuggestion(o[1]);
 }
 
 core.int buildCounterVideoSuggestions = 0;
 api.VideoSuggestions buildVideoSuggestions() {
-  var o = api.VideoSuggestions();
+  final o = api.VideoSuggestions();
   buildCounterVideoSuggestions++;
   if (buildCounterVideoSuggestions < 3) {
-    o.editorSuggestions = buildUnnamed586();
-    o.processingErrors = buildUnnamed587();
-    o.processingHints = buildUnnamed588();
-    o.processingWarnings = buildUnnamed589();
-    o.tagSuggestions = buildUnnamed590();
+    o.editorSuggestions = buildUnnamed57();
+    o.processingErrors = buildUnnamed58();
+    o.processingHints = buildUnnamed59();
+    o.processingWarnings = buildUnnamed60();
+    o.tagSuggestions = buildUnnamed61();
   }
   buildCounterVideoSuggestions--;
   return o;
@@ -7819,23 +7706,21 @@ api.VideoSuggestions buildVideoSuggestions() {
 void checkVideoSuggestions(api.VideoSuggestions o) {
   buildCounterVideoSuggestions++;
   if (buildCounterVideoSuggestions < 3) {
-    checkUnnamed586(o.editorSuggestions!);
-    checkUnnamed587(o.processingErrors!);
-    checkUnnamed588(o.processingHints!);
-    checkUnnamed589(o.processingWarnings!);
-    checkUnnamed590(o.tagSuggestions!);
+    checkUnnamed57(o.editorSuggestions!);
+    checkUnnamed58(o.processingErrors!);
+    checkUnnamed59(o.processingHints!);
+    checkUnnamed60(o.processingWarnings!);
+    checkUnnamed61(o.tagSuggestions!);
   }
   buildCounterVideoSuggestions--;
 }
 
-core.List<core.String> buildUnnamed591() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed62() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed591(core.List<core.String> o) {
+void checkUnnamed62(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7849,10 +7734,10 @@ void checkUnnamed591(core.List<core.String> o) {
 
 core.int buildCounterVideoSuggestionsTagSuggestion = 0;
 api.VideoSuggestionsTagSuggestion buildVideoSuggestionsTagSuggestion() {
-  var o = api.VideoSuggestionsTagSuggestion();
+  final o = api.VideoSuggestionsTagSuggestion();
   buildCounterVideoSuggestionsTagSuggestion++;
   if (buildCounterVideoSuggestionsTagSuggestion < 3) {
-    o.categoryRestricts = buildUnnamed591();
+    o.categoryRestricts = buildUnnamed62();
     o.tag = 'foo';
   }
   buildCounterVideoSuggestionsTagSuggestion--;
@@ -7862,7 +7747,7 @@ api.VideoSuggestionsTagSuggestion buildVideoSuggestionsTagSuggestion() {
 void checkVideoSuggestionsTagSuggestion(api.VideoSuggestionsTagSuggestion o) {
   buildCounterVideoSuggestionsTagSuggestion++;
   if (buildCounterVideoSuggestionsTagSuggestion < 3) {
-    checkUnnamed591(o.categoryRestricts!);
+    checkUnnamed62(o.categoryRestricts!);
     unittest.expect(
       o.tag!,
       unittest.equals('foo'),
@@ -7871,14 +7756,12 @@ void checkVideoSuggestionsTagSuggestion(api.VideoSuggestionsTagSuggestion o) {
   buildCounterVideoSuggestionsTagSuggestion--;
 }
 
-core.List<core.String> buildUnnamed592() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed63() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed592(core.List<core.String> o) {
+void checkUnnamed63(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7890,14 +7773,12 @@ void checkUnnamed592(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed593() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed64() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed593(core.List<core.String> o) {
+void checkUnnamed64(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7909,14 +7790,12 @@ void checkUnnamed593(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed594() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed65() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed594(core.List<core.String> o) {
+void checkUnnamed65(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -7930,12 +7809,12 @@ void checkUnnamed594(core.List<core.String> o) {
 
 core.int buildCounterVideoTopicDetails = 0;
 api.VideoTopicDetails buildVideoTopicDetails() {
-  var o = api.VideoTopicDetails();
+  final o = api.VideoTopicDetails();
   buildCounterVideoTopicDetails++;
   if (buildCounterVideoTopicDetails < 3) {
-    o.relevantTopicIds = buildUnnamed592();
-    o.topicCategories = buildUnnamed593();
-    o.topicIds = buildUnnamed594();
+    o.relevantTopicIds = buildUnnamed63();
+    o.topicCategories = buildUnnamed64();
+    o.topicIds = buildUnnamed65();
   }
   buildCounterVideoTopicDetails--;
   return o;
@@ -7944,16 +7823,16 @@ api.VideoTopicDetails buildVideoTopicDetails() {
 void checkVideoTopicDetails(api.VideoTopicDetails o) {
   buildCounterVideoTopicDetails++;
   if (buildCounterVideoTopicDetails < 3) {
-    checkUnnamed592(o.relevantTopicIds!);
-    checkUnnamed593(o.topicCategories!);
-    checkUnnamed594(o.topicIds!);
+    checkUnnamed63(o.relevantTopicIds!);
+    checkUnnamed64(o.topicCategories!);
+    checkUnnamed65(o.topicIds!);
   }
   buildCounterVideoTopicDetails--;
 }
 
 core.int buildCounterWatchSettings = 0;
 api.WatchSettings buildWatchSettings() {
-  var o = api.WatchSettings();
+  final o = api.WatchSettings();
   buildCounterWatchSettings++;
   if (buildCounterWatchSettings < 3) {
     o.backgroundColor = 'foo';
@@ -7983,14 +7862,12 @@ void checkWatchSettings(api.WatchSettings o) {
   buildCounterWatchSettings--;
 }
 
-core.List<core.String> buildUnnamed595() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed66() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed595(core.List<core.String> o) {
+void checkUnnamed66(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8002,14 +7879,12 @@ void checkUnnamed595(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed596() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed67() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed596(core.List<core.String> o) {
+void checkUnnamed67(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8021,14 +7896,12 @@ void checkUnnamed596(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed597() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed68() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed597(core.List<core.String> o) {
+void checkUnnamed68(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8040,14 +7913,12 @@ void checkUnnamed597(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed598() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed69() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed598(core.List<core.String> o) {
+void checkUnnamed69(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8059,14 +7930,12 @@ void checkUnnamed598(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed599() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed70() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed599(core.List<core.String> o) {
+void checkUnnamed70(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8078,14 +7947,12 @@ void checkUnnamed599(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed600() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed71() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed600(core.List<core.String> o) {
+void checkUnnamed71(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8097,14 +7964,12 @@ void checkUnnamed600(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed601() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed72() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed601(core.List<core.String> o) {
+void checkUnnamed72(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8116,14 +7981,12 @@ void checkUnnamed601(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed602() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed73() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed602(core.List<core.String> o) {
+void checkUnnamed73(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8135,14 +7998,12 @@ void checkUnnamed602(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed603() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed74() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed603(core.List<core.String> o) {
+void checkUnnamed74(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8154,14 +8015,12 @@ void checkUnnamed603(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed604() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed75() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed604(core.List<core.String> o) {
+void checkUnnamed75(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8173,14 +8032,12 @@ void checkUnnamed604(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed605() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed76() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed605(core.List<core.String> o) {
+void checkUnnamed76(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8192,14 +8049,12 @@ void checkUnnamed605(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed606() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed77() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed606(core.List<core.String> o) {
+void checkUnnamed77(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8211,14 +8066,12 @@ void checkUnnamed606(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed607() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed78() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed607(core.List<core.String> o) {
+void checkUnnamed78(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8230,14 +8083,12 @@ void checkUnnamed607(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed608() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed79() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed608(core.List<core.String> o) {
+void checkUnnamed79(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8249,14 +8100,12 @@ void checkUnnamed608(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed609() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed80() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed609(core.List<core.String> o) {
+void checkUnnamed80(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8268,14 +8117,12 @@ void checkUnnamed609(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed610() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed81() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed610(core.List<core.String> o) {
+void checkUnnamed81(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8287,14 +8134,12 @@ void checkUnnamed610(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed611() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed82() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed611(core.List<core.String> o) {
+void checkUnnamed82(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8306,14 +8151,12 @@ void checkUnnamed611(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed612() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed83() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed612(core.List<core.String> o) {
+void checkUnnamed83(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8325,14 +8168,12 @@ void checkUnnamed612(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed613() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed84() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed613(core.List<core.String> o) {
+void checkUnnamed84(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8344,14 +8185,12 @@ void checkUnnamed613(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed614() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed85() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed614(core.List<core.String> o) {
+void checkUnnamed85(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8363,14 +8202,12 @@ void checkUnnamed614(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed615() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed86() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed615(core.List<core.String> o) {
+void checkUnnamed86(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8382,14 +8219,12 @@ void checkUnnamed615(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed616() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed87() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed616(core.List<core.String> o) {
+void checkUnnamed87(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8401,14 +8236,12 @@ void checkUnnamed616(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed617() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed88() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed617(core.List<core.String> o) {
+void checkUnnamed88(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8420,14 +8253,12 @@ void checkUnnamed617(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed618() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed89() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed618(core.List<core.String> o) {
+void checkUnnamed89(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8439,14 +8270,12 @@ void checkUnnamed618(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed619() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed90() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed619(core.List<core.String> o) {
+void checkUnnamed90(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8458,14 +8287,12 @@ void checkUnnamed619(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed620() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed91() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed620(core.List<core.String> o) {
+void checkUnnamed91(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8477,14 +8304,12 @@ void checkUnnamed620(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed621() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed92() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed621(core.List<core.String> o) {
+void checkUnnamed92(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8496,14 +8321,12 @@ void checkUnnamed621(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed622() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed93() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed622(core.List<core.String> o) {
+void checkUnnamed93(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8515,14 +8338,12 @@ void checkUnnamed622(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed623() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed94() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed623(core.List<core.String> o) {
+void checkUnnamed94(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8534,14 +8355,12 @@ void checkUnnamed623(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed624() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed95() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed624(core.List<core.String> o) {
+void checkUnnamed95(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8553,14 +8372,12 @@ void checkUnnamed624(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed625() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed96() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed625(core.List<core.String> o) {
+void checkUnnamed96(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8572,14 +8389,12 @@ void checkUnnamed625(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed626() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed97() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed626(core.List<core.String> o) {
+void checkUnnamed97(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8591,14 +8406,12 @@ void checkUnnamed626(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed627() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed98() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed627(core.List<core.String> o) {
+void checkUnnamed98(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8610,14 +8423,12 @@ void checkUnnamed627(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed628() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed99() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed628(core.List<core.String> o) {
+void checkUnnamed99(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8629,14 +8440,12 @@ void checkUnnamed628(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed629() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed100() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed629(core.List<core.String> o) {
+void checkUnnamed100(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8648,14 +8457,12 @@ void checkUnnamed629(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed630() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed101() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed630(core.List<core.String> o) {
+void checkUnnamed101(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8667,14 +8474,12 @@ void checkUnnamed630(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed631() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed102() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed631(core.List<core.String> o) {
+void checkUnnamed102(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8686,14 +8491,12 @@ void checkUnnamed631(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed632() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed103() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed632(core.List<core.String> o) {
+void checkUnnamed103(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8705,14 +8508,12 @@ void checkUnnamed632(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed633() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed104() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed633(core.List<core.String> o) {
+void checkUnnamed104(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8724,14 +8525,12 @@ void checkUnnamed633(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed634() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed105() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed634(core.List<core.String> o) {
+void checkUnnamed105(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8743,14 +8542,12 @@ void checkUnnamed634(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed635() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed106() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed635(core.List<core.String> o) {
+void checkUnnamed106(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8762,14 +8559,12 @@ void checkUnnamed635(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed636() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed107() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed636(core.List<core.String> o) {
+void checkUnnamed107(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8781,14 +8576,12 @@ void checkUnnamed636(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed637() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed108() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed637(core.List<core.String> o) {
+void checkUnnamed108(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8800,14 +8593,12 @@ void checkUnnamed637(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed638() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed109() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed638(core.List<core.String> o) {
+void checkUnnamed109(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8819,14 +8610,12 @@ void checkUnnamed638(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed639() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed110() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed639(core.List<core.String> o) {
+void checkUnnamed110(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8838,14 +8627,12 @@ void checkUnnamed639(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed640() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed111() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed640(core.List<core.String> o) {
+void checkUnnamed111(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8857,14 +8644,12 @@ void checkUnnamed640(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed641() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed112() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed641(core.List<core.String> o) {
+void checkUnnamed112(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8876,14 +8661,12 @@ void checkUnnamed641(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed642() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed113() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed642(core.List<core.String> o) {
+void checkUnnamed113(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8895,14 +8678,12 @@ void checkUnnamed642(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed643() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed114() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed643(core.List<core.String> o) {
+void checkUnnamed114(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8914,14 +8695,12 @@ void checkUnnamed643(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed644() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed115() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed644(core.List<core.String> o) {
+void checkUnnamed115(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8933,14 +8712,12 @@ void checkUnnamed644(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed645() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed116() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed645(core.List<core.String> o) {
+void checkUnnamed116(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8952,14 +8729,12 @@ void checkUnnamed645(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed646() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed117() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed646(core.List<core.String> o) {
+void checkUnnamed117(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8971,14 +8746,12 @@ void checkUnnamed646(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed647() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed118() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed647(core.List<core.String> o) {
+void checkUnnamed118(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -8990,14 +8763,12 @@ void checkUnnamed647(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed648() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed119() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed648(core.List<core.String> o) {
+void checkUnnamed119(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9009,14 +8780,12 @@ void checkUnnamed648(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed649() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed120() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed649(core.List<core.String> o) {
+void checkUnnamed120(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9028,14 +8797,12 @@ void checkUnnamed649(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed650() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed121() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed650(core.List<core.String> o) {
+void checkUnnamed121(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9047,14 +8814,12 @@ void checkUnnamed650(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed651() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed122() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed651(core.List<core.String> o) {
+void checkUnnamed122(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9066,14 +8831,12 @@ void checkUnnamed651(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed652() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed123() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed652(core.List<core.String> o) {
+void checkUnnamed123(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9085,14 +8848,12 @@ void checkUnnamed652(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed653() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed124() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed653(core.List<core.String> o) {
+void checkUnnamed124(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9104,14 +8865,12 @@ void checkUnnamed653(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed654() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed125() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed654(core.List<core.String> o) {
+void checkUnnamed125(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9123,14 +8882,12 @@ void checkUnnamed654(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed655() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed126() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed655(core.List<core.String> o) {
+void checkUnnamed126(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9142,14 +8899,12 @@ void checkUnnamed655(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed656() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed127() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed656(core.List<core.String> o) {
+void checkUnnamed127(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9161,14 +8916,12 @@ void checkUnnamed656(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed657() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed128() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed657(core.List<core.String> o) {
+void checkUnnamed128(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9180,14 +8933,12 @@ void checkUnnamed657(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed658() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed129() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed658(core.List<core.String> o) {
+void checkUnnamed129(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9199,14 +8950,12 @@ void checkUnnamed658(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed659() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed130() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed659(core.List<core.String> o) {
+void checkUnnamed130(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9218,14 +8967,12 @@ void checkUnnamed659(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed660() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed131() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed660(core.List<core.String> o) {
+void checkUnnamed131(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9237,14 +8984,12 @@ void checkUnnamed660(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed661() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed132() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed661(core.List<core.String> o) {
+void checkUnnamed132(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9256,14 +9001,12 @@ void checkUnnamed661(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed662() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed133() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed662(core.List<core.String> o) {
+void checkUnnamed133(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9275,14 +9018,12 @@ void checkUnnamed662(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed663() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed134() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed663(core.List<core.String> o) {
+void checkUnnamed134(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -9297,1871 +9038,1870 @@ void checkUnnamed663(core.List<core.String> o) {
 void main() {
   unittest.group('obj-schema-AbuseReport', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAbuseReport();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AbuseReport.fromJson(
+      final o = buildAbuseReport();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AbuseReport.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAbuseReport(od as api.AbuseReport);
+      checkAbuseReport(od);
     });
   });
 
   unittest.group('obj-schema-AbuseType', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAbuseType();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAbuseType();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.AbuseType.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAbuseType(od as api.AbuseType);
+      checkAbuseType(od);
     });
   });
 
   unittest.group('obj-schema-AccessPolicy', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAccessPolicy();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AccessPolicy.fromJson(
+      final o = buildAccessPolicy();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AccessPolicy.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAccessPolicy(od as api.AccessPolicy);
+      checkAccessPolicy(od);
     });
   });
 
   unittest.group('obj-schema-Activity', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivity();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildActivity();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Activity.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkActivity(od as api.Activity);
+      checkActivity(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetails.fromJson(
+      final o = buildActivityContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetails(od as api.ActivityContentDetails);
+      checkActivityContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsBulletin', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsBulletin();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsBulletin.fromJson(
+      final o = buildActivityContentDetailsBulletin();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsBulletin.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsBulletin(
-          od as api.ActivityContentDetailsBulletin);
+      checkActivityContentDetailsBulletin(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsChannelItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsChannelItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsChannelItem.fromJson(
+      final o = buildActivityContentDetailsChannelItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsChannelItem.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsChannelItem(
-          od as api.ActivityContentDetailsChannelItem);
+      checkActivityContentDetailsChannelItem(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsComment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsComment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsComment.fromJson(
+      final o = buildActivityContentDetailsComment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsComment.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsComment(
-          od as api.ActivityContentDetailsComment);
+      checkActivityContentDetailsComment(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsFavorite', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsFavorite();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsFavorite.fromJson(
+      final o = buildActivityContentDetailsFavorite();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsFavorite.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsFavorite(
-          od as api.ActivityContentDetailsFavorite);
+      checkActivityContentDetailsFavorite(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsLike', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsLike();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsLike.fromJson(
+      final o = buildActivityContentDetailsLike();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsLike.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsLike(od as api.ActivityContentDetailsLike);
+      checkActivityContentDetailsLike(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsPlaylistItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsPlaylistItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsPlaylistItem.fromJson(
+      final o = buildActivityContentDetailsPlaylistItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsPlaylistItem.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsPlaylistItem(
-          od as api.ActivityContentDetailsPlaylistItem);
+      checkActivityContentDetailsPlaylistItem(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsPromotedItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsPromotedItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsPromotedItem.fromJson(
+      final o = buildActivityContentDetailsPromotedItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsPromotedItem.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsPromotedItem(
-          od as api.ActivityContentDetailsPromotedItem);
+      checkActivityContentDetailsPromotedItem(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsRecommendation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsRecommendation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsRecommendation.fromJson(
+      final o = buildActivityContentDetailsRecommendation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsRecommendation.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsRecommendation(
-          od as api.ActivityContentDetailsRecommendation);
+      checkActivityContentDetailsRecommendation(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsSocial', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsSocial();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsSocial.fromJson(
+      final o = buildActivityContentDetailsSocial();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsSocial.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsSocial(od as api.ActivityContentDetailsSocial);
+      checkActivityContentDetailsSocial(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsSubscription', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsSubscription();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsSubscription.fromJson(
+      final o = buildActivityContentDetailsSubscription();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsSubscription.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsSubscription(
-          od as api.ActivityContentDetailsSubscription);
+      checkActivityContentDetailsSubscription(od);
     });
   });
 
   unittest.group('obj-schema-ActivityContentDetailsUpload', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityContentDetailsUpload();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityContentDetailsUpload.fromJson(
+      final o = buildActivityContentDetailsUpload();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityContentDetailsUpload.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityContentDetailsUpload(od as api.ActivityContentDetailsUpload);
+      checkActivityContentDetailsUpload(od);
     });
   });
 
   unittest.group('obj-schema-ActivityListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivityListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivityListResponse.fromJson(
+      final o = buildActivityListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivityListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivityListResponse(od as api.ActivityListResponse);
+      checkActivityListResponse(od);
     });
   });
 
   unittest.group('obj-schema-ActivitySnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildActivitySnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ActivitySnippet.fromJson(
+      final o = buildActivitySnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ActivitySnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkActivitySnippet(od as api.ActivitySnippet);
+      checkActivitySnippet(od);
     });
   });
 
   unittest.group('obj-schema-Caption', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCaption();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildCaption();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Caption.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkCaption(od as api.Caption);
+      checkCaption(od);
     });
   });
 
   unittest.group('obj-schema-CaptionListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCaptionListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CaptionListResponse.fromJson(
+      final o = buildCaptionListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CaptionListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCaptionListResponse(od as api.CaptionListResponse);
+      checkCaptionListResponse(od);
     });
   });
 
   unittest.group('obj-schema-CaptionSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCaptionSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CaptionSnippet.fromJson(
+      final o = buildCaptionSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CaptionSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCaptionSnippet(od as api.CaptionSnippet);
+      checkCaptionSnippet(od);
     });
   });
 
   unittest.group('obj-schema-CdnSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCdnSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CdnSettings.fromJson(
+      final o = buildCdnSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CdnSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCdnSettings(od as api.CdnSettings);
+      checkCdnSettings(od);
     });
   });
 
   unittest.group('obj-schema-Channel', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannel();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildChannel();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Channel.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkChannel(od as api.Channel);
+      checkChannel(od);
     });
   });
 
   unittest.group('obj-schema-ChannelAuditDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelAuditDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelAuditDetails.fromJson(
+      final o = buildChannelAuditDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelAuditDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelAuditDetails(od as api.ChannelAuditDetails);
+      checkChannelAuditDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelBannerResource', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelBannerResource();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelBannerResource.fromJson(
+      final o = buildChannelBannerResource();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelBannerResource.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelBannerResource(od as api.ChannelBannerResource);
+      checkChannelBannerResource(od);
     });
   });
 
   unittest.group('obj-schema-ChannelBrandingSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelBrandingSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelBrandingSettings.fromJson(
+      final o = buildChannelBrandingSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelBrandingSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelBrandingSettings(od as api.ChannelBrandingSettings);
+      checkChannelBrandingSettings(od);
     });
   });
 
   unittest.group('obj-schema-ChannelContentDetailsRelatedPlaylists', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelContentDetailsRelatedPlaylists();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelContentDetailsRelatedPlaylists.fromJson(
+      final o = buildChannelContentDetailsRelatedPlaylists();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelContentDetailsRelatedPlaylists.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelContentDetailsRelatedPlaylists(
-          od as api.ChannelContentDetailsRelatedPlaylists);
+      checkChannelContentDetailsRelatedPlaylists(od);
     });
   });
 
   unittest.group('obj-schema-ChannelContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelContentDetails.fromJson(
+      final o = buildChannelContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelContentDetails(od as api.ChannelContentDetails);
+      checkChannelContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelContentOwnerDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelContentOwnerDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelContentOwnerDetails.fromJson(
+      final o = buildChannelContentOwnerDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelContentOwnerDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelContentOwnerDetails(od as api.ChannelContentOwnerDetails);
+      checkChannelContentOwnerDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelConversionPing', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelConversionPing();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelConversionPing.fromJson(
+      final o = buildChannelConversionPing();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelConversionPing.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelConversionPing(od as api.ChannelConversionPing);
+      checkChannelConversionPing(od);
     });
   });
 
   unittest.group('obj-schema-ChannelConversionPings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelConversionPings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelConversionPings.fromJson(
+      final o = buildChannelConversionPings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelConversionPings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelConversionPings(od as api.ChannelConversionPings);
+      checkChannelConversionPings(od);
     });
   });
 
   unittest.group('obj-schema-ChannelListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelListResponse.fromJson(
+      final o = buildChannelListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelListResponse(od as api.ChannelListResponse);
+      checkChannelListResponse(od);
     });
   });
 
   unittest.group('obj-schema-ChannelLocalization', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelLocalization();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelLocalization.fromJson(
+      final o = buildChannelLocalization();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelLocalization.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelLocalization(od as api.ChannelLocalization);
+      checkChannelLocalization(od);
     });
   });
 
   unittest.group('obj-schema-ChannelProfileDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelProfileDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelProfileDetails.fromJson(
+      final o = buildChannelProfileDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelProfileDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelProfileDetails(od as api.ChannelProfileDetails);
+      checkChannelProfileDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSection', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSection();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSection.fromJson(
+      final o = buildChannelSection();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSection.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSection(od as api.ChannelSection);
+      checkChannelSection(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSectionContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSectionContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSectionContentDetails.fromJson(
+      final o = buildChannelSectionContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSectionContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSectionContentDetails(od as api.ChannelSectionContentDetails);
+      checkChannelSectionContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSectionListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSectionListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSectionListResponse.fromJson(
+      final o = buildChannelSectionListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSectionListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSectionListResponse(od as api.ChannelSectionListResponse);
+      checkChannelSectionListResponse(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSectionLocalization', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSectionLocalization();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSectionLocalization.fromJson(
+      final o = buildChannelSectionLocalization();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSectionLocalization.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSectionLocalization(od as api.ChannelSectionLocalization);
+      checkChannelSectionLocalization(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSectionSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSectionSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSectionSnippet.fromJson(
+      final o = buildChannelSectionSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSectionSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSectionSnippet(od as api.ChannelSectionSnippet);
+      checkChannelSectionSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSectionTargeting', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSectionTargeting();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSectionTargeting.fromJson(
+      final o = buildChannelSectionTargeting();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSectionTargeting.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSectionTargeting(od as api.ChannelSectionTargeting);
+      checkChannelSectionTargeting(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSettings.fromJson(
+      final o = buildChannelSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSettings(od as api.ChannelSettings);
+      checkChannelSettings(od);
     });
   });
 
   unittest.group('obj-schema-ChannelSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelSnippet.fromJson(
+      final o = buildChannelSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelSnippet(od as api.ChannelSnippet);
+      checkChannelSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ChannelStatistics', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelStatistics();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelStatistics.fromJson(
+      final o = buildChannelStatistics();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelStatistics.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelStatistics(od as api.ChannelStatistics);
+      checkChannelStatistics(od);
     });
   });
 
   unittest.group('obj-schema-ChannelStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelStatus.fromJson(
+      final o = buildChannelStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelStatus(od as api.ChannelStatus);
+      checkChannelStatus(od);
     });
   });
 
   unittest.group('obj-schema-ChannelToStoreLinkDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelToStoreLinkDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelToStoreLinkDetails.fromJson(
+      final o = buildChannelToStoreLinkDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelToStoreLinkDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelToStoreLinkDetails(od as api.ChannelToStoreLinkDetails);
+      checkChannelToStoreLinkDetails(od);
     });
   });
 
   unittest.group('obj-schema-ChannelTopicDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannelTopicDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ChannelTopicDetails.fromJson(
+      final o = buildChannelTopicDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ChannelTopicDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkChannelTopicDetails(od as api.ChannelTopicDetails);
+      checkChannelTopicDetails(od);
     });
   });
 
   unittest.group('obj-schema-Comment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildComment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildComment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Comment.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkComment(od as api.Comment);
+      checkComment(od);
     });
   });
 
   unittest.group('obj-schema-CommentListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentListResponse.fromJson(
+      final o = buildCommentListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentListResponse(od as api.CommentListResponse);
+      checkCommentListResponse(od);
     });
   });
 
   unittest.group('obj-schema-CommentSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentSnippet.fromJson(
+      final o = buildCommentSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentSnippet(od as api.CommentSnippet);
+      checkCommentSnippet(od);
     });
   });
 
   unittest.group('obj-schema-CommentSnippetAuthorChannelId', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentSnippetAuthorChannelId();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentSnippetAuthorChannelId.fromJson(
+      final o = buildCommentSnippetAuthorChannelId();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentSnippetAuthorChannelId.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentSnippetAuthorChannelId(
-          od as api.CommentSnippetAuthorChannelId);
+      checkCommentSnippetAuthorChannelId(od);
     });
   });
 
   unittest.group('obj-schema-CommentThread', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentThread();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentThread.fromJson(
+      final o = buildCommentThread();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentThread.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentThread(od as api.CommentThread);
+      checkCommentThread(od);
     });
   });
 
   unittest.group('obj-schema-CommentThreadListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentThreadListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentThreadListResponse.fromJson(
+      final o = buildCommentThreadListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentThreadListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentThreadListResponse(od as api.CommentThreadListResponse);
+      checkCommentThreadListResponse(od);
     });
   });
 
   unittest.group('obj-schema-CommentThreadReplies', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentThreadReplies();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentThreadReplies.fromJson(
+      final o = buildCommentThreadReplies();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentThreadReplies.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentThreadReplies(od as api.CommentThreadReplies);
+      checkCommentThreadReplies(od);
     });
   });
 
   unittest.group('obj-schema-CommentThreadSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCommentThreadSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CommentThreadSnippet.fromJson(
+      final o = buildCommentThreadSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CommentThreadSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCommentThreadSnippet(od as api.CommentThreadSnippet);
+      checkCommentThreadSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ContentRating', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildContentRating();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ContentRating.fromJson(
+      final o = buildContentRating();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ContentRating.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkContentRating(od as api.ContentRating);
+      checkContentRating(od);
     });
   });
 
   unittest.group('obj-schema-Entity', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEntity();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildEntity();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Entity.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEntity(od as api.Entity);
+      checkEntity(od);
     });
   });
 
   unittest.group('obj-schema-GeoPoint', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGeoPoint();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildGeoPoint();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.GeoPoint.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkGeoPoint(od as api.GeoPoint);
+      checkGeoPoint(od);
     });
   });
 
   unittest.group('obj-schema-I18nLanguage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nLanguage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.I18nLanguage.fromJson(
+      final o = buildI18nLanguage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.I18nLanguage.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkI18nLanguage(od as api.I18nLanguage);
+      checkI18nLanguage(od);
     });
   });
 
   unittest.group('obj-schema-I18nLanguageListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nLanguageListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.I18nLanguageListResponse.fromJson(
+      final o = buildI18nLanguageListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.I18nLanguageListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkI18nLanguageListResponse(od as api.I18nLanguageListResponse);
+      checkI18nLanguageListResponse(od);
     });
   });
 
   unittest.group('obj-schema-I18nLanguageSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nLanguageSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.I18nLanguageSnippet.fromJson(
+      final o = buildI18nLanguageSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.I18nLanguageSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkI18nLanguageSnippet(od as api.I18nLanguageSnippet);
+      checkI18nLanguageSnippet(od);
     });
   });
 
   unittest.group('obj-schema-I18nRegion', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nRegion();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildI18nRegion();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.I18nRegion.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkI18nRegion(od as api.I18nRegion);
+      checkI18nRegion(od);
     });
   });
 
   unittest.group('obj-schema-I18nRegionListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nRegionListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.I18nRegionListResponse.fromJson(
+      final o = buildI18nRegionListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.I18nRegionListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkI18nRegionListResponse(od as api.I18nRegionListResponse);
+      checkI18nRegionListResponse(od);
     });
   });
 
   unittest.group('obj-schema-I18nRegionSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildI18nRegionSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.I18nRegionSnippet.fromJson(
+      final o = buildI18nRegionSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.I18nRegionSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkI18nRegionSnippet(od as api.I18nRegionSnippet);
+      checkI18nRegionSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ImageSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildImageSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ImageSettings.fromJson(
+      final o = buildImageSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ImageSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkImageSettings(od as api.ImageSettings);
+      checkImageSettings(od);
     });
   });
 
   unittest.group('obj-schema-IngestionInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildIngestionInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.IngestionInfo.fromJson(
+      final o = buildIngestionInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.IngestionInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkIngestionInfo(od as api.IngestionInfo);
+      checkIngestionInfo(od);
     });
   });
 
   unittest.group('obj-schema-InvideoBranding', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInvideoBranding();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InvideoBranding.fromJson(
+      final o = buildInvideoBranding();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InvideoBranding.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInvideoBranding(od as api.InvideoBranding);
+      checkInvideoBranding(od);
     });
   });
 
   unittest.group('obj-schema-InvideoPosition', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInvideoPosition();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InvideoPosition.fromJson(
+      final o = buildInvideoPosition();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InvideoPosition.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInvideoPosition(od as api.InvideoPosition);
+      checkInvideoPosition(od);
     });
   });
 
   unittest.group('obj-schema-InvideoTiming', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInvideoTiming();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InvideoTiming.fromJson(
+      final o = buildInvideoTiming();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InvideoTiming.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInvideoTiming(od as api.InvideoTiming);
+      checkInvideoTiming(od);
     });
   });
 
   unittest.group('obj-schema-LanguageTag', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLanguageTag();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LanguageTag.fromJson(
+      final o = buildLanguageTag();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LanguageTag.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLanguageTag(od as api.LanguageTag);
+      checkLanguageTag(od);
     });
   });
 
   unittest.group('obj-schema-LevelDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLevelDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LevelDetails.fromJson(
+      final o = buildLevelDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LevelDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLevelDetails(od as api.LevelDetails);
+      checkLevelDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcast', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcast();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcast.fromJson(
+      final o = buildLiveBroadcast();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcast.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcast(od as api.LiveBroadcast);
+      checkLiveBroadcast(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcastContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcastContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcastContentDetails.fromJson(
+      final o = buildLiveBroadcastContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcastContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcastContentDetails(od as api.LiveBroadcastContentDetails);
+      checkLiveBroadcastContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcastListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcastListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcastListResponse.fromJson(
+      final o = buildLiveBroadcastListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcastListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcastListResponse(od as api.LiveBroadcastListResponse);
+      checkLiveBroadcastListResponse(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcastSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcastSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcastSnippet.fromJson(
+      final o = buildLiveBroadcastSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcastSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcastSnippet(od as api.LiveBroadcastSnippet);
+      checkLiveBroadcastSnippet(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcastStatistics', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcastStatistics();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcastStatistics.fromJson(
+      final o = buildLiveBroadcastStatistics();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcastStatistics.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcastStatistics(od as api.LiveBroadcastStatistics);
+      checkLiveBroadcastStatistics(od);
     });
   });
 
   unittest.group('obj-schema-LiveBroadcastStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveBroadcastStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveBroadcastStatus.fromJson(
+      final o = buildLiveBroadcastStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveBroadcastStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveBroadcastStatus(od as api.LiveBroadcastStatus);
+      checkLiveBroadcastStatus(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatBan', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatBan();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatBan.fromJson(
+      final o = buildLiveChatBan();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatBan.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatBan(od as api.LiveChatBan);
+      checkLiveChatBan(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatBanSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatBanSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatBanSnippet.fromJson(
+      final o = buildLiveChatBanSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatBanSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatBanSnippet(od as api.LiveChatBanSnippet);
+      checkLiveChatBanSnippet(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatFanFundingEventDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatFanFundingEventDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatFanFundingEventDetails.fromJson(
+      final o = buildLiveChatFanFundingEventDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatFanFundingEventDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatFanFundingEventDetails(
-          od as api.LiveChatFanFundingEventDetails);
+      checkLiveChatFanFundingEventDetails(od);
+    });
+  });
+
+  unittest.group('obj-schema-LiveChatMemberMilestoneChatDetails', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildLiveChatMemberMilestoneChatDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMemberMilestoneChatDetails.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkLiveChatMemberMilestoneChatDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessage.fromJson(
+      final o = buildLiveChatMessage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessage.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessage(od as api.LiveChatMessage);
+      checkLiveChatMessage(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessageAuthorDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessageAuthorDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessageAuthorDetails.fromJson(
+      final o = buildLiveChatMessageAuthorDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessageAuthorDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessageAuthorDetails(od as api.LiveChatMessageAuthorDetails);
+      checkLiveChatMessageAuthorDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessageDeletedDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessageDeletedDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessageDeletedDetails.fromJson(
+      final o = buildLiveChatMessageDeletedDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessageDeletedDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessageDeletedDetails(
-          od as api.LiveChatMessageDeletedDetails);
+      checkLiveChatMessageDeletedDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessageListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessageListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessageListResponse.fromJson(
+      final o = buildLiveChatMessageListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessageListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessageListResponse(od as api.LiveChatMessageListResponse);
+      checkLiveChatMessageListResponse(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessageRetractedDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessageRetractedDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessageRetractedDetails.fromJson(
+      final o = buildLiveChatMessageRetractedDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessageRetractedDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessageRetractedDetails(
-          od as api.LiveChatMessageRetractedDetails);
+      checkLiveChatMessageRetractedDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatMessageSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatMessageSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatMessageSnippet.fromJson(
+      final o = buildLiveChatMessageSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatMessageSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatMessageSnippet(od as api.LiveChatMessageSnippet);
+      checkLiveChatMessageSnippet(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatModerator', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatModerator();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatModerator.fromJson(
+      final o = buildLiveChatModerator();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatModerator.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatModerator(od as api.LiveChatModerator);
+      checkLiveChatModerator(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatModeratorListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatModeratorListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatModeratorListResponse.fromJson(
+      final o = buildLiveChatModeratorListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatModeratorListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatModeratorListResponse(
-          od as api.LiveChatModeratorListResponse);
+      checkLiveChatModeratorListResponse(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatModeratorSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatModeratorSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatModeratorSnippet.fromJson(
+      final o = buildLiveChatModeratorSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatModeratorSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatModeratorSnippet(od as api.LiveChatModeratorSnippet);
+      checkLiveChatModeratorSnippet(od);
+    });
+  });
+
+  unittest.group('obj-schema-LiveChatNewSponsorDetails', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildLiveChatNewSponsorDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatNewSponsorDetails.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkLiveChatNewSponsorDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatSuperChatDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatSuperChatDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatSuperChatDetails.fromJson(
+      final o = buildLiveChatSuperChatDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatSuperChatDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatSuperChatDetails(od as api.LiveChatSuperChatDetails);
+      checkLiveChatSuperChatDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatSuperStickerDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatSuperStickerDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatSuperStickerDetails.fromJson(
+      final o = buildLiveChatSuperStickerDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatSuperStickerDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatSuperStickerDetails(od as api.LiveChatSuperStickerDetails);
+      checkLiveChatSuperStickerDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatTextMessageDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatTextMessageDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatTextMessageDetails.fromJson(
+      final o = buildLiveChatTextMessageDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatTextMessageDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatTextMessageDetails(od as api.LiveChatTextMessageDetails);
+      checkLiveChatTextMessageDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveChatUserBannedMessageDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveChatUserBannedMessageDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveChatUserBannedMessageDetails.fromJson(
+      final o = buildLiveChatUserBannedMessageDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveChatUserBannedMessageDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveChatUserBannedMessageDetails(
-          od as api.LiveChatUserBannedMessageDetails);
+      checkLiveChatUserBannedMessageDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveStream', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStream();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildLiveStream();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.LiveStream.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStream(od as api.LiveStream);
+      checkLiveStream(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamConfigurationIssue', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamConfigurationIssue();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamConfigurationIssue.fromJson(
+      final o = buildLiveStreamConfigurationIssue();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamConfigurationIssue.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamConfigurationIssue(od as api.LiveStreamConfigurationIssue);
+      checkLiveStreamConfigurationIssue(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamContentDetails.fromJson(
+      final o = buildLiveStreamContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamContentDetails(od as api.LiveStreamContentDetails);
+      checkLiveStreamContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamHealthStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamHealthStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamHealthStatus.fromJson(
+      final o = buildLiveStreamHealthStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamHealthStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamHealthStatus(od as api.LiveStreamHealthStatus);
+      checkLiveStreamHealthStatus(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamListResponse.fromJson(
+      final o = buildLiveStreamListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamListResponse(od as api.LiveStreamListResponse);
+      checkLiveStreamListResponse(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamSnippet.fromJson(
+      final o = buildLiveStreamSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamSnippet(od as api.LiveStreamSnippet);
+      checkLiveStreamSnippet(od);
     });
   });
 
   unittest.group('obj-schema-LiveStreamStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLiveStreamStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LiveStreamStatus.fromJson(
+      final o = buildLiveStreamStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LiveStreamStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLiveStreamStatus(od as api.LiveStreamStatus);
+      checkLiveStreamStatus(od);
     });
   });
 
   unittest.group('obj-schema-LocalizedProperty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocalizedProperty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LocalizedProperty.fromJson(
+      final o = buildLocalizedProperty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LocalizedProperty.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLocalizedProperty(od as api.LocalizedProperty);
+      checkLocalizedProperty(od);
     });
   });
 
   unittest.group('obj-schema-LocalizedString', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocalizedString();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LocalizedString.fromJson(
+      final o = buildLocalizedString();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LocalizedString.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLocalizedString(od as api.LocalizedString);
+      checkLocalizedString(od);
     });
   });
 
   unittest.group('obj-schema-Member', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMember();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildMember();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Member.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkMember(od as api.Member);
+      checkMember(od);
     });
   });
 
   unittest.group('obj-schema-MemberListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMemberListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MemberListResponse.fromJson(
+      final o = buildMemberListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MemberListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMemberListResponse(od as api.MemberListResponse);
+      checkMemberListResponse(od);
     });
   });
 
   unittest.group('obj-schema-MemberSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMemberSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MemberSnippet.fromJson(
+      final o = buildMemberSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MemberSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMemberSnippet(od as api.MemberSnippet);
+      checkMemberSnippet(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsDetails.fromJson(
+      final o = buildMembershipsDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsDetails(od as api.MembershipsDetails);
+      checkMembershipsDetails(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsDuration', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsDuration();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsDuration.fromJson(
+      final o = buildMembershipsDuration();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsDuration.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsDuration(od as api.MembershipsDuration);
+      checkMembershipsDuration(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsDurationAtLevel', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsDurationAtLevel();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsDurationAtLevel.fromJson(
+      final o = buildMembershipsDurationAtLevel();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsDurationAtLevel.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsDurationAtLevel(od as api.MembershipsDurationAtLevel);
+      checkMembershipsDurationAtLevel(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsLevel', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsLevel();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsLevel.fromJson(
+      final o = buildMembershipsLevel();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsLevel.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsLevel(od as api.MembershipsLevel);
+      checkMembershipsLevel(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsLevelListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsLevelListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsLevelListResponse.fromJson(
+      final o = buildMembershipsLevelListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsLevelListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsLevelListResponse(od as api.MembershipsLevelListResponse);
+      checkMembershipsLevelListResponse(od);
     });
   });
 
   unittest.group('obj-schema-MembershipsLevelSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMembershipsLevelSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MembershipsLevelSnippet.fromJson(
+      final o = buildMembershipsLevelSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MembershipsLevelSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMembershipsLevelSnippet(od as api.MembershipsLevelSnippet);
+      checkMembershipsLevelSnippet(od);
     });
   });
 
   unittest.group('obj-schema-MonitorStreamInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMonitorStreamInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MonitorStreamInfo.fromJson(
+      final o = buildMonitorStreamInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MonitorStreamInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMonitorStreamInfo(od as api.MonitorStreamInfo);
+      checkMonitorStreamInfo(od);
     });
   });
 
   unittest.group('obj-schema-PageInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPageInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildPageInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.PageInfo.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkPageInfo(od as api.PageInfo);
+      checkPageInfo(od);
     });
   });
 
   unittest.group('obj-schema-Playlist', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylist();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildPlaylist();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Playlist.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylist(od as api.Playlist);
+      checkPlaylist(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistContentDetails.fromJson(
+      final o = buildPlaylistContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistContentDetails(od as api.PlaylistContentDetails);
+      checkPlaylistContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistItem.fromJson(
+      final o = buildPlaylistItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistItem.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistItem(od as api.PlaylistItem);
+      checkPlaylistItem(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistItemContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistItemContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistItemContentDetails.fromJson(
+      final o = buildPlaylistItemContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistItemContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistItemContentDetails(od as api.PlaylistItemContentDetails);
+      checkPlaylistItemContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistItemListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistItemListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistItemListResponse.fromJson(
+      final o = buildPlaylistItemListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistItemListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistItemListResponse(od as api.PlaylistItemListResponse);
+      checkPlaylistItemListResponse(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistItemSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistItemSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistItemSnippet.fromJson(
+      final o = buildPlaylistItemSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistItemSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistItemSnippet(od as api.PlaylistItemSnippet);
+      checkPlaylistItemSnippet(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistItemStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistItemStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistItemStatus.fromJson(
+      final o = buildPlaylistItemStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistItemStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistItemStatus(od as api.PlaylistItemStatus);
+      checkPlaylistItemStatus(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistListResponse.fromJson(
+      final o = buildPlaylistListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistListResponse(od as api.PlaylistListResponse);
+      checkPlaylistListResponse(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistLocalization', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistLocalization();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistLocalization.fromJson(
+      final o = buildPlaylistLocalization();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistLocalization.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistLocalization(od as api.PlaylistLocalization);
+      checkPlaylistLocalization(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistPlayer', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistPlayer();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistPlayer.fromJson(
+      final o = buildPlaylistPlayer();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistPlayer.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistPlayer(od as api.PlaylistPlayer);
+      checkPlaylistPlayer(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistSnippet.fromJson(
+      final o = buildPlaylistSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistSnippet(od as api.PlaylistSnippet);
+      checkPlaylistSnippet(od);
     });
   });
 
   unittest.group('obj-schema-PlaylistStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPlaylistStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PlaylistStatus.fromJson(
+      final o = buildPlaylistStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PlaylistStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPlaylistStatus(od as api.PlaylistStatus);
+      checkPlaylistStatus(od);
     });
   });
 
   unittest.group('obj-schema-PropertyValue', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPropertyValue();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.PropertyValue.fromJson(
+      final o = buildPropertyValue();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.PropertyValue.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkPropertyValue(od as api.PropertyValue);
+      checkPropertyValue(od);
     });
   });
 
   unittest.group('obj-schema-RelatedEntity', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRelatedEntity();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RelatedEntity.fromJson(
+      final o = buildRelatedEntity();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RelatedEntity.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRelatedEntity(od as api.RelatedEntity);
+      checkRelatedEntity(od);
     });
   });
 
   unittest.group('obj-schema-ResourceId', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildResourceId();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildResourceId();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.ResourceId.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkResourceId(od as api.ResourceId);
+      checkResourceId(od);
     });
   });
 
   unittest.group('obj-schema-SearchListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchListResponse.fromJson(
+      final o = buildSearchListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchListResponse(od as api.SearchListResponse);
+      checkSearchListResponse(od);
     });
   });
 
   unittest.group('obj-schema-SearchResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchResult.fromJson(
+      final o = buildSearchResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchResult(od as api.SearchResult);
+      checkSearchResult(od);
     });
   });
 
   unittest.group('obj-schema-SearchResultSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSearchResultSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SearchResultSnippet.fromJson(
+      final o = buildSearchResultSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SearchResultSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSearchResultSnippet(od as api.SearchResultSnippet);
+      checkSearchResultSnippet(od);
     });
   });
 
   unittest.group('obj-schema-Subscription', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscription();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Subscription.fromJson(
+      final o = buildSubscription();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Subscription.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscription(od as api.Subscription);
+      checkSubscription(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionContentDetails.fromJson(
+      final o = buildSubscriptionContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionContentDetails(od as api.SubscriptionContentDetails);
+      checkSubscriptionContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionListResponse.fromJson(
+      final o = buildSubscriptionListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionListResponse(od as api.SubscriptionListResponse);
+      checkSubscriptionListResponse(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionSnippet.fromJson(
+      final o = buildSubscriptionSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionSnippet(od as api.SubscriptionSnippet);
+      checkSubscriptionSnippet(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionSubscriberSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionSubscriberSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionSubscriberSnippet.fromJson(
+      final o = buildSubscriptionSubscriberSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionSubscriberSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionSubscriberSnippet(
-          od as api.SubscriptionSubscriberSnippet);
+      checkSubscriptionSubscriberSnippet(od);
     });
   });
 
   unittest.group('obj-schema-SuperChatEvent', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSuperChatEvent();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SuperChatEvent.fromJson(
+      final o = buildSuperChatEvent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SuperChatEvent.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSuperChatEvent(od as api.SuperChatEvent);
+      checkSuperChatEvent(od);
     });
   });
 
   unittest.group('obj-schema-SuperChatEventListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSuperChatEventListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SuperChatEventListResponse.fromJson(
+      final o = buildSuperChatEventListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SuperChatEventListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSuperChatEventListResponse(od as api.SuperChatEventListResponse);
+      checkSuperChatEventListResponse(od);
     });
   });
 
   unittest.group('obj-schema-SuperChatEventSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSuperChatEventSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SuperChatEventSnippet.fromJson(
+      final o = buildSuperChatEventSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SuperChatEventSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSuperChatEventSnippet(od as api.SuperChatEventSnippet);
+      checkSuperChatEventSnippet(od);
     });
   });
 
   unittest.group('obj-schema-SuperStickerMetadata', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSuperStickerMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SuperStickerMetadata.fromJson(
+      final o = buildSuperStickerMetadata();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SuperStickerMetadata.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSuperStickerMetadata(od as api.SuperStickerMetadata);
+      checkSuperStickerMetadata(od);
     });
   });
 
   unittest.group('obj-schema-TestItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTestItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TestItem.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTestItem(od as api.TestItem);
+      checkTestItem(od);
     });
   });
 
   unittest.group('obj-schema-TestItemTestItemSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTestItemTestItemSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TestItemTestItemSnippet.fromJson(
+      final o = buildTestItemTestItemSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TestItemTestItemSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTestItemTestItemSnippet(od as api.TestItemTestItemSnippet);
+      checkTestItemTestItemSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ThirdPartyLink', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThirdPartyLink();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ThirdPartyLink.fromJson(
+      final o = buildThirdPartyLink();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ThirdPartyLink.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkThirdPartyLink(od as api.ThirdPartyLink);
+      checkThirdPartyLink(od);
     });
   });
 
   unittest.group('obj-schema-ThirdPartyLinkSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThirdPartyLinkSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ThirdPartyLinkSnippet.fromJson(
+      final o = buildThirdPartyLinkSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ThirdPartyLinkSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkThirdPartyLinkSnippet(od as api.ThirdPartyLinkSnippet);
+      checkThirdPartyLinkSnippet(od);
     });
   });
 
   unittest.group('obj-schema-ThirdPartyLinkStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThirdPartyLinkStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ThirdPartyLinkStatus.fromJson(
+      final o = buildThirdPartyLinkStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ThirdPartyLinkStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkThirdPartyLinkStatus(od as api.ThirdPartyLinkStatus);
+      checkThirdPartyLinkStatus(od);
     });
   });
 
   unittest.group('obj-schema-Thumbnail', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThumbnail();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildThumbnail();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Thumbnail.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkThumbnail(od as api.Thumbnail);
+      checkThumbnail(od);
     });
   });
 
   unittest.group('obj-schema-ThumbnailDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThumbnailDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ThumbnailDetails.fromJson(
+      final o = buildThumbnailDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ThumbnailDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkThumbnailDetails(od as api.ThumbnailDetails);
+      checkThumbnailDetails(od);
     });
   });
 
   unittest.group('obj-schema-ThumbnailSetResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildThumbnailSetResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ThumbnailSetResponse.fromJson(
+      final o = buildThumbnailSetResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ThumbnailSetResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkThumbnailSetResponse(od as api.ThumbnailSetResponse);
+      checkThumbnailSetResponse(od);
     });
   });
 
   unittest.group('obj-schema-TokenPagination', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTokenPagination();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TokenPagination.fromJson(
+      final o = buildTokenPagination();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TokenPagination.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTokenPagination(od as api.TokenPagination);
+      checkTokenPagination(od);
     });
   });
 
   unittest.group('obj-schema-Video', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Video.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkVideo(od as api.Video);
+      final o = buildVideo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Video.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkVideo(od);
     });
   });
 
   unittest.group('obj-schema-VideoAbuseReport', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAbuseReport();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAbuseReport.fromJson(
+      final o = buildVideoAbuseReport();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAbuseReport.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAbuseReport(od as api.VideoAbuseReport);
+      checkVideoAbuseReport(od);
     });
   });
 
   unittest.group('obj-schema-VideoAbuseReportReason', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAbuseReportReason();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAbuseReportReason.fromJson(
+      final o = buildVideoAbuseReportReason();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAbuseReportReason.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAbuseReportReason(od as api.VideoAbuseReportReason);
+      checkVideoAbuseReportReason(od);
     });
   });
 
   unittest.group('obj-schema-VideoAbuseReportReasonListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAbuseReportReasonListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAbuseReportReasonListResponse.fromJson(
+      final o = buildVideoAbuseReportReasonListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAbuseReportReasonListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAbuseReportReasonListResponse(
-          od as api.VideoAbuseReportReasonListResponse);
+      checkVideoAbuseReportReasonListResponse(od);
     });
   });
 
   unittest.group('obj-schema-VideoAbuseReportReasonSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAbuseReportReasonSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAbuseReportReasonSnippet.fromJson(
+      final o = buildVideoAbuseReportReasonSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAbuseReportReasonSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAbuseReportReasonSnippet(
-          od as api.VideoAbuseReportReasonSnippet);
+      checkVideoAbuseReportReasonSnippet(od);
     });
   });
 
   unittest.group('obj-schema-VideoAbuseReportSecondaryReason', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAbuseReportSecondaryReason();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAbuseReportSecondaryReason.fromJson(
+      final o = buildVideoAbuseReportSecondaryReason();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAbuseReportSecondaryReason.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAbuseReportSecondaryReason(
-          od as api.VideoAbuseReportSecondaryReason);
+      checkVideoAbuseReportSecondaryReason(od);
     });
   });
 
   unittest.group('obj-schema-VideoAgeGating', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoAgeGating();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoAgeGating.fromJson(
+      final o = buildVideoAgeGating();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoAgeGating.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoAgeGating(od as api.VideoAgeGating);
+      checkVideoAgeGating(od);
     });
   });
 
   unittest.group('obj-schema-VideoCategory', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoCategory();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoCategory.fromJson(
+      final o = buildVideoCategory();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoCategory.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoCategory(od as api.VideoCategory);
+      checkVideoCategory(od);
     });
   });
 
   unittest.group('obj-schema-VideoCategoryListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoCategoryListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoCategoryListResponse.fromJson(
+      final o = buildVideoCategoryListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoCategoryListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoCategoryListResponse(od as api.VideoCategoryListResponse);
+      checkVideoCategoryListResponse(od);
     });
   });
 
   unittest.group('obj-schema-VideoCategorySnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoCategorySnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoCategorySnippet.fromJson(
+      final o = buildVideoCategorySnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoCategorySnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoCategorySnippet(od as api.VideoCategorySnippet);
+      checkVideoCategorySnippet(od);
     });
   });
 
   unittest.group('obj-schema-VideoContentDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoContentDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoContentDetails.fromJson(
+      final o = buildVideoContentDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoContentDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoContentDetails(od as api.VideoContentDetails);
+      checkVideoContentDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoContentDetailsRegionRestriction', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoContentDetailsRegionRestriction();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoContentDetailsRegionRestriction.fromJson(
+      final o = buildVideoContentDetailsRegionRestriction();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoContentDetailsRegionRestriction.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoContentDetailsRegionRestriction(
-          od as api.VideoContentDetailsRegionRestriction);
+      checkVideoContentDetailsRegionRestriction(od);
     });
   });
 
   unittest.group('obj-schema-VideoFileDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoFileDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoFileDetails.fromJson(
+      final o = buildVideoFileDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoFileDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoFileDetails(od as api.VideoFileDetails);
+      checkVideoFileDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoFileDetailsAudioStream', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoFileDetailsAudioStream();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoFileDetailsAudioStream.fromJson(
+      final o = buildVideoFileDetailsAudioStream();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoFileDetailsAudioStream.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoFileDetailsAudioStream(od as api.VideoFileDetailsAudioStream);
+      checkVideoFileDetailsAudioStream(od);
     });
   });
 
   unittest.group('obj-schema-VideoFileDetailsVideoStream', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoFileDetailsVideoStream();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoFileDetailsVideoStream.fromJson(
+      final o = buildVideoFileDetailsVideoStream();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoFileDetailsVideoStream.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoFileDetailsVideoStream(od as api.VideoFileDetailsVideoStream);
+      checkVideoFileDetailsVideoStream(od);
+    });
+  });
+
+  unittest.group('obj-schema-VideoGetRatingResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildVideoGetRatingResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoGetRatingResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkVideoGetRatingResponse(od);
     });
   });
 
   unittest.group('obj-schema-VideoListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoListResponse.fromJson(
+      final o = buildVideoListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoListResponse(od as api.VideoListResponse);
+      checkVideoListResponse(od);
     });
   });
 
   unittest.group('obj-schema-VideoLiveStreamingDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoLiveStreamingDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoLiveStreamingDetails.fromJson(
+      final o = buildVideoLiveStreamingDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoLiveStreamingDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoLiveStreamingDetails(od as api.VideoLiveStreamingDetails);
+      checkVideoLiveStreamingDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoLocalization', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoLocalization();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoLocalization.fromJson(
+      final o = buildVideoLocalization();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoLocalization.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoLocalization(od as api.VideoLocalization);
+      checkVideoLocalization(od);
     });
   });
 
   unittest.group('obj-schema-VideoMonetizationDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoMonetizationDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoMonetizationDetails.fromJson(
+      final o = buildVideoMonetizationDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoMonetizationDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoMonetizationDetails(od as api.VideoMonetizationDetails);
+      checkVideoMonetizationDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoPlayer', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoPlayer();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoPlayer.fromJson(
+      final o = buildVideoPlayer();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoPlayer.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoPlayer(od as api.VideoPlayer);
+      checkVideoPlayer(od);
     });
   });
 
   unittest.group('obj-schema-VideoProcessingDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoProcessingDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoProcessingDetails.fromJson(
+      final o = buildVideoProcessingDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoProcessingDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoProcessingDetails(od as api.VideoProcessingDetails);
+      checkVideoProcessingDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoProcessingDetailsProcessingProgress', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoProcessingDetailsProcessingProgress();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoProcessingDetailsProcessingProgress.fromJson(
+      final o = buildVideoProcessingDetailsProcessingProgress();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoProcessingDetailsProcessingProgress.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoProcessingDetailsProcessingProgress(
-          od as api.VideoProcessingDetailsProcessingProgress);
+      checkVideoProcessingDetailsProcessingProgress(od);
     });
   });
 
   unittest.group('obj-schema-VideoProjectDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoProjectDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoProjectDetails.fromJson(
+      final o = buildVideoProjectDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoProjectDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoProjectDetails(od as api.VideoProjectDetails);
+      checkVideoProjectDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoRating', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoRating();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoRating.fromJson(
+      final o = buildVideoRating();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoRating.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoRating(od as api.VideoRating);
-    });
-  });
-
-  unittest.group('obj-schema-VideoRatingListResponse', () {
-    unittest.test('to-json--from-json', () async {
-      var o = buildVideoRatingListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoRatingListResponse.fromJson(
-          oJson as core.Map<core.String, core.dynamic>);
-      checkVideoRatingListResponse(od as api.VideoRatingListResponse);
+      checkVideoRating(od);
     });
   });
 
   unittest.group('obj-schema-VideoRecordingDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoRecordingDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoRecordingDetails.fromJson(
+      final o = buildVideoRecordingDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoRecordingDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoRecordingDetails(od as api.VideoRecordingDetails);
+      checkVideoRecordingDetails(od);
     });
   });
 
   unittest.group('obj-schema-VideoSnippet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoSnippet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoSnippet.fromJson(
+      final o = buildVideoSnippet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoSnippet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoSnippet(od as api.VideoSnippet);
+      checkVideoSnippet(od);
     });
   });
 
   unittest.group('obj-schema-VideoStatistics', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoStatistics();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoStatistics.fromJson(
+      final o = buildVideoStatistics();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoStatistics.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoStatistics(od as api.VideoStatistics);
+      checkVideoStatistics(od);
     });
   });
 
   unittest.group('obj-schema-VideoStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoStatus.fromJson(
+      final o = buildVideoStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoStatus(od as api.VideoStatus);
+      checkVideoStatus(od);
     });
   });
 
   unittest.group('obj-schema-VideoSuggestions', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoSuggestions();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoSuggestions.fromJson(
+      final o = buildVideoSuggestions();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoSuggestions.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoSuggestions(od as api.VideoSuggestions);
+      checkVideoSuggestions(od);
     });
   });
 
   unittest.group('obj-schema-VideoSuggestionsTagSuggestion', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoSuggestionsTagSuggestion();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoSuggestionsTagSuggestion.fromJson(
+      final o = buildVideoSuggestionsTagSuggestion();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoSuggestionsTagSuggestion.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoSuggestionsTagSuggestion(
-          od as api.VideoSuggestionsTagSuggestion);
+      checkVideoSuggestionsTagSuggestion(od);
     });
   });
 
   unittest.group('obj-schema-VideoTopicDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVideoTopicDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VideoTopicDetails.fromJson(
+      final o = buildVideoTopicDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VideoTopicDetails.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVideoTopicDetails(od as api.VideoTopicDetails);
+      checkVideoTopicDetails(od);
     });
   });
 
   unittest.group('obj-schema-WatchSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildWatchSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.WatchSettings.fromJson(
+      final o = buildWatchSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.WatchSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkWatchSettings(od as api.WatchSettings);
+      checkWatchSettings(od);
     });
   });
 
   unittest.group('resource-AbuseReportsResource', () {
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).abuseReports;
-      var arg_request = buildAbuseReport();
-      var arg_part = buildUnnamed595();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).abuseReports;
+      final arg_request = buildAbuseReport();
+      final arg_part = buildUnnamed66();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.AbuseReport.fromJson(
+        final obj = api.AbuseReport.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkAbuseReport(obj as api.AbuseReport);
+        checkAbuseReport(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 23),
-          unittest.equals("youtube/v3/abuseReports"),
+          unittest.equals('youtube/v3/abuseReports'),
         );
         pathOffset += 23;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11169,18 +10909,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAbuseReport());
+        final resp = convert.json.encode(buildAbuseReport());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -11191,43 +10931,43 @@ void main() {
 
   unittest.group('resource-ActivitiesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).activities;
-      var arg_part = buildUnnamed596();
-      var arg_channelId = 'foo';
-      var arg_home = true;
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_pageToken = 'foo';
-      var arg_publishedAfter = 'foo';
-      var arg_publishedBefore = 'foo';
-      var arg_regionCode = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).activities;
+      final arg_part = buildUnnamed67();
+      final arg_channelId = 'foo';
+      final arg_home = true;
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_pageToken = 'foo';
+      final arg_publishedAfter = 'foo';
+      final arg_publishedBefore = 'foo';
+      final arg_regionCode = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("youtube/v3/activities"),
+          unittest.equals('youtube/v3/activities'),
         );
         pathOffset += 21;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11235,50 +10975,50 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["home"]!.first,
-          unittest.equals("$arg_home"),
+          queryMap['home']!.first,
+          unittest.equals('$arg_home'),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["publishedAfter"]!.first,
+          queryMap['publishedAfter']!.first,
           unittest.equals(arg_publishedAfter),
         );
         unittest.expect(
-          queryMap["publishedBefore"]!.first,
+          queryMap['publishedBefore']!.first,
           unittest.equals(arg_publishedBefore),
         );
         unittest.expect(
-          queryMap["regionCode"]!.first,
+          queryMap['regionCode']!.first,
           unittest.equals(arg_regionCode),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildActivityListResponse());
+        final resp = convert.json.encode(buildActivityListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -11297,37 +11037,37 @@ void main() {
 
   unittest.group('resource-CaptionsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).captions;
-      var arg_id = 'foo';
-      var arg_onBehalfOf = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).captions;
+      final arg_id = 'foo';
+      final arg_onBehalfOf = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/captions"),
+          unittest.equals('youtube/v3/captions'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11335,26 +11075,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOf"]!.first,
+          queryMap['onBehalfOf']!.first,
           unittest.equals(arg_onBehalfOf),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -11367,27 +11107,27 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).captions;
-      var arg_id = 'foo';
-      var arg_onBehalfOf = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_tfmt = 'foo';
-      var arg_tlang = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).captions;
+      final arg_id = 'foo';
+      final arg_onBehalfOf = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_tfmt = 'foo';
+      final arg_tlang = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("youtube/v3/captions/"),
+          unittest.equals('youtube/v3/captions/'),
         );
         pathOffset += 20;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -11397,15 +11137,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11413,30 +11153,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["onBehalfOf"]!.first,
+          queryMap['onBehalfOf']!.first,
           unittest.equals(arg_onBehalfOf),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["tfmt"]!.first,
+          queryMap['tfmt']!.first,
           unittest.equals(arg_tfmt),
         );
         unittest.expect(
-          queryMap["tlang"]!.first,
+          queryMap['tlang']!.first,
           unittest.equals(arg_tlang),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.download(arg_id,
@@ -11451,43 +11191,43 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).captions;
-      var arg_request = buildCaption();
-      var arg_part = buildUnnamed597();
-      var arg_onBehalfOf = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_sync = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).captions;
+      final arg_request = buildCaption();
+      final arg_part = buildUnnamed68();
+      final arg_onBehalfOf = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_sync = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Caption.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCaption(obj as api.Caption);
+        checkCaption(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/captions"),
+          unittest.equals('youtube/v3/captions'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11495,30 +11235,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOf"]!.first,
+          queryMap['onBehalfOf']!.first,
           unittest.equals(arg_onBehalfOf),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["sync"]!.first,
-          unittest.equals("$arg_sync"),
+          queryMap['sync']!.first,
+          unittest.equals('$arg_sync'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCaption());
+        final resp = convert.json.encode(buildCaption());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -11530,39 +11270,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).captions;
-      var arg_part = buildUnnamed598();
-      var arg_videoId = 'foo';
-      var arg_id = buildUnnamed599();
-      var arg_onBehalfOf = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).captions;
+      final arg_part = buildUnnamed69();
+      final arg_videoId = 'foo';
+      final arg_id = buildUnnamed70();
+      final arg_onBehalfOf = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/captions"),
+          unittest.equals('youtube/v3/captions'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11570,34 +11310,34 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["videoId"]!.first,
+          queryMap['videoId']!.first,
           unittest.equals(arg_videoId),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOf"]!.first,
+          queryMap['onBehalfOf']!.first,
           unittest.equals(arg_onBehalfOf),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCaptionListResponse());
+        final resp = convert.json.encode(buildCaptionListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part, arg_videoId,
@@ -11612,43 +11352,43 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).captions;
-      var arg_request = buildCaption();
-      var arg_part = buildUnnamed600();
-      var arg_onBehalfOf = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_sync = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).captions;
+      final arg_request = buildCaption();
+      final arg_part = buildUnnamed71();
+      final arg_onBehalfOf = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_sync = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Caption.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCaption(obj as api.Caption);
+        checkCaption(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/captions"),
+          unittest.equals('youtube/v3/captions'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11656,30 +11396,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOf"]!.first,
+          queryMap['onBehalfOf']!.first,
           unittest.equals(arg_onBehalfOf),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["sync"]!.first,
-          unittest.equals("$arg_sync"),
+          queryMap['sync']!.first,
+          unittest.equals('$arg_sync'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCaption());
+        final resp = convert.json.encode(buildCaption());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -11696,42 +11436,42 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channelBanners;
-      var arg_request = buildChannelBannerResource();
-      var arg_channelId = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channelBanners;
+      final arg_request = buildChannelBannerResource();
+      final arg_channelId = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ChannelBannerResource.fromJson(
+        final obj = api.ChannelBannerResource.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkChannelBannerResource(obj as api.ChannelBannerResource);
+        checkChannelBannerResource(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 32),
-          unittest.equals("youtube/v3/channelBanners/insert"),
+          unittest.equals('youtube/v3/channelBanners/insert'),
         );
         pathOffset += 32;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11739,26 +11479,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannelBannerResource());
+        final resp = convert.json.encode(buildChannelBannerResource());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request,
@@ -11772,36 +11512,36 @@ void main() {
 
   unittest.group('resource-ChannelSectionsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channelSections;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channelSections;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/channelSections"),
+          unittest.equals('youtube/v3/channelSections'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11809,22 +11549,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -11833,42 +11573,42 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channelSections;
-      var arg_request = buildChannelSection();
-      var arg_part = buildUnnamed601();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channelSections;
+      final arg_request = buildChannelSection();
+      final arg_part = buildUnnamed72();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ChannelSection.fromJson(
+        final obj = api.ChannelSection.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkChannelSection(obj as api.ChannelSection);
+        checkChannelSection(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/channelSections"),
+          unittest.equals('youtube/v3/channelSections'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11876,26 +11616,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannelSection());
+        final resp = convert.json.encode(buildChannelSection());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -11906,40 +11646,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channelSections;
-      var arg_part = buildUnnamed602();
-      var arg_channelId = 'foo';
-      var arg_hl = 'foo';
-      var arg_id = buildUnnamed603();
-      var arg_mine = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channelSections;
+      final arg_part = buildUnnamed73();
+      final arg_channelId = 'foo';
+      final arg_hl = 'foo';
+      final arg_id = buildUnnamed74();
+      final arg_mine = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/channelSections"),
+          unittest.equals('youtube/v3/channelSections'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -11947,38 +11687,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannelSectionListResponse());
+        final resp = convert.json.encode(buildChannelSectionListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -11993,41 +11733,41 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channelSections;
-      var arg_request = buildChannelSection();
-      var arg_part = buildUnnamed604();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channelSections;
+      final arg_request = buildChannelSection();
+      final arg_part = buildUnnamed75();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ChannelSection.fromJson(
+        final obj = api.ChannelSection.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkChannelSection(obj as api.ChannelSection);
+        checkChannelSection(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/channelSections"),
+          unittest.equals('youtube/v3/channelSections'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12035,22 +11775,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannelSection());
+        final resp = convert.json.encode(buildChannelSection());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -12062,45 +11802,45 @@ void main() {
 
   unittest.group('resource-ChannelsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channels;
-      var arg_part = buildUnnamed605();
-      var arg_categoryId = 'foo';
-      var arg_forUsername = 'foo';
-      var arg_hl = 'foo';
-      var arg_id = buildUnnamed606();
-      var arg_managedByMe = true;
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_mySubscribers = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channels;
+      final arg_part = buildUnnamed76();
+      final arg_categoryId = 'foo';
+      final arg_forUsername = 'foo';
+      final arg_hl = 'foo';
+      final arg_id = buildUnnamed77();
+      final arg_managedByMe = true;
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_mySubscribers = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/channels"),
+          unittest.equals('youtube/v3/channels'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12108,58 +11848,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["categoryId"]!.first,
+          queryMap['categoryId']!.first,
           unittest.equals(arg_categoryId),
         );
         unittest.expect(
-          queryMap["forUsername"]!.first,
+          queryMap['forUsername']!.first,
           unittest.equals(arg_forUsername),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["managedByMe"]!.first,
-          unittest.equals("$arg_managedByMe"),
+          queryMap['managedByMe']!.first,
+          unittest.equals('$arg_managedByMe'),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["mySubscribers"]!.first,
-          unittest.equals("$arg_mySubscribers"),
+          queryMap['mySubscribers']!.first,
+          unittest.equals('$arg_mySubscribers'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannelListResponse());
+        final resp = convert.json.encode(buildChannelListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -12178,41 +11918,41 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).channels;
-      var arg_request = buildChannel();
-      var arg_part = buildUnnamed607();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).channels;
+      final arg_request = buildChannel();
+      final arg_part = buildUnnamed78();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/channels"),
+          unittest.equals('youtube/v3/channels'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12220,22 +11960,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannel());
+        final resp = convert.json.encode(buildChannel());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -12247,40 +11987,40 @@ void main() {
 
   unittest.group('resource-CommentThreadsResource', () {
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).commentThreads;
-      var arg_request = buildCommentThread();
-      var arg_part = buildUnnamed608();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).commentThreads;
+      final arg_request = buildCommentThread();
+      final arg_part = buildUnnamed79();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CommentThread.fromJson(
+        final obj = api.CommentThread.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCommentThread(obj as api.CommentThread);
+        checkCommentThread(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/commentThreads"),
+          unittest.equals('youtube/v3/commentThreads'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12288,18 +12028,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCommentThread());
+        final resp = convert.json.encode(buildCommentThread());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -12308,45 +12048,45 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).commentThreads;
-      var arg_part = buildUnnamed609();
-      var arg_allThreadsRelatedToChannelId = 'foo';
-      var arg_channelId = 'foo';
-      var arg_id = buildUnnamed610();
-      var arg_maxResults = 42;
-      var arg_moderationStatus = 'foo';
-      var arg_order = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_searchTerms = 'foo';
-      var arg_textFormat = 'foo';
-      var arg_videoId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).commentThreads;
+      final arg_part = buildUnnamed80();
+      final arg_allThreadsRelatedToChannelId = 'foo';
+      final arg_channelId = 'foo';
+      final arg_id = buildUnnamed81();
+      final arg_maxResults = 42;
+      final arg_moderationStatus = 'foo';
+      final arg_order = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_searchTerms = 'foo';
+      final arg_textFormat = 'foo';
+      final arg_videoId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/commentThreads"),
+          unittest.equals('youtube/v3/commentThreads'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12354,58 +12094,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["allThreadsRelatedToChannelId"]!.first,
+          queryMap['allThreadsRelatedToChannelId']!.first,
           unittest.equals(arg_allThreadsRelatedToChannelId),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["moderationStatus"]!.first,
+          queryMap['moderationStatus']!.first,
           unittest.equals(arg_moderationStatus),
         );
         unittest.expect(
-          queryMap["order"]!.first,
+          queryMap['order']!.first,
           unittest.equals(arg_order),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["searchTerms"]!.first,
+          queryMap['searchTerms']!.first,
           unittest.equals(arg_searchTerms),
         );
         unittest.expect(
-          queryMap["textFormat"]!.first,
+          queryMap['textFormat']!.first,
           unittest.equals(arg_textFormat),
         );
         unittest.expect(
-          queryMap["videoId"]!.first,
+          queryMap['videoId']!.first,
           unittest.equals(arg_videoId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCommentThreadListResponse());
+        final resp = convert.json.encode(buildCommentThreadListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -12422,100 +12162,39 @@ void main() {
           $fields: arg_$fields);
       checkCommentThreadListResponse(response as api.CommentThreadListResponse);
     });
-
-    unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).commentThreads;
-      var arg_request = buildCommentThread();
-      var arg_part = buildUnnamed611();
-      var arg_$fields = 'foo';
-      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CommentThread.fromJson(
-            json as core.Map<core.String, core.dynamic>);
-        checkCommentThread(obj as api.CommentThread);
-
-        var path = (req.url).path;
-        var pathOffset = 0;
-        core.int index;
-        core.String subPart;
-        unittest.expect(
-          path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
-        );
-        pathOffset += 1;
-        unittest.expect(
-          path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/commentThreads"),
-        );
-        pathOffset += 25;
-
-        var query = (req.url).query;
-        var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
-        void addQueryParam(core.String n, core.String v) =>
-            queryMap.putIfAbsent(n, () => []).add(v);
-
-        if (query.isNotEmpty) {
-          for (var part in query.split('&')) {
-            var keyValue = part.split('=');
-            addQueryParam(
-              core.Uri.decodeQueryComponent(keyValue[0]),
-              core.Uri.decodeQueryComponent(keyValue[1]),
-            );
-          }
-        }
-        unittest.expect(
-          queryMap["part"]!,
-          unittest.equals(arg_part),
-        );
-        unittest.expect(
-          queryMap["fields"]!.first,
-          unittest.equals(arg_$fields),
-        );
-
-        var h = {
-          'content-type': 'application/json; charset=utf-8',
-        };
-        var resp = convert.json.encode(buildCommentThread());
-        return async.Future.value(stringResponse(200, h, resp));
-      }), true);
-      final response =
-          await res.update(arg_request, arg_part, $fields: arg_$fields);
-      checkCommentThread(response as api.CommentThread);
-    });
   });
 
   unittest.group('resource-CommentsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/comments"),
+          unittest.equals('youtube/v3/comments'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12523,58 +12202,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_request = buildComment();
-      var arg_part = buildUnnamed612();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_request = buildComment();
+      final arg_part = buildUnnamed82();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Comment.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkComment(obj as api.Comment);
+        checkComment(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/comments"),
+          unittest.equals('youtube/v3/comments'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12582,18 +12261,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildComment());
+        final resp = convert.json.encode(buildComment());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -12602,40 +12281,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_part = buildUnnamed613();
-      var arg_id = buildUnnamed614();
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_parentId = 'foo';
-      var arg_textFormat = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_part = buildUnnamed83();
+      final arg_id = buildUnnamed84();
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_parentId = 'foo';
+      final arg_textFormat = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/comments"),
+          unittest.equals('youtube/v3/comments'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12643,38 +12322,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["parentId"]!.first,
+          queryMap['parentId']!.first,
           unittest.equals(arg_parentId),
         );
         unittest.expect(
-          queryMap["textFormat"]!.first,
+          queryMap['textFormat']!.first,
           unittest.equals(arg_textFormat),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCommentListResponse());
+        final resp = convert.json.encode(buildCommentListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -12688,35 +12367,35 @@ void main() {
     });
 
     unittest.test('method--markAsSpam', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_id = buildUnnamed615();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_id = buildUnnamed85();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 30),
-          unittest.equals("youtube/v3/comments/markAsSpam"),
+          unittest.equals('youtube/v3/comments/markAsSpam'),
         );
         pathOffset += 30;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12724,55 +12403,55 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.markAsSpam(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--setModerationStatus', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_id = buildUnnamed616();
-      var arg_moderationStatus = 'foo';
-      var arg_banAuthor = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_id = buildUnnamed86();
+      final arg_moderationStatus = 'foo';
+      final arg_banAuthor = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 39),
-          unittest.equals("youtube/v3/comments/setModerationStatus"),
+          unittest.equals('youtube/v3/comments/setModerationStatus'),
         );
         pathOffset += 39;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12780,26 +12459,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["moderationStatus"]!.first,
+          queryMap['moderationStatus']!.first,
           unittest.equals(arg_moderationStatus),
         );
         unittest.expect(
-          queryMap["banAuthor"]!.first,
-          unittest.equals("$arg_banAuthor"),
+          queryMap['banAuthor']!.first,
+          unittest.equals('$arg_banAuthor'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.setModerationStatus(arg_id, arg_moderationStatus,
@@ -12807,40 +12486,40 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).comments;
-      var arg_request = buildComment();
-      var arg_part = buildUnnamed617();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).comments;
+      final arg_request = buildComment();
+      final arg_part = buildUnnamed87();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Comment.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkComment(obj as api.Comment);
+        checkComment(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("youtube/v3/comments"),
+          unittest.equals('youtube/v3/comments'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12848,18 +12527,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildComment());
+        final resp = convert.json.encode(buildComment());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -12870,36 +12549,36 @@ void main() {
 
   unittest.group('resource-I18nLanguagesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).i18nLanguages;
-      var arg_part = buildUnnamed618();
-      var arg_hl = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).i18nLanguages;
+      final arg_part = buildUnnamed88();
+      final arg_hl = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/i18nLanguages"),
+          unittest.equals('youtube/v3/i18nLanguages'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12907,22 +12586,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildI18nLanguageListResponse());
+        final resp = convert.json.encode(buildI18nLanguageListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -12933,36 +12612,36 @@ void main() {
 
   unittest.group('resource-I18nRegionsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).i18nRegions;
-      var arg_part = buildUnnamed619();
-      var arg_hl = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).i18nRegions;
+      final arg_part = buildUnnamed89();
+      final arg_hl = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/i18nRegions"),
+          unittest.equals('youtube/v3/i18nRegions'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -12970,22 +12649,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildI18nRegionListResponse());
+        final resp = convert.json.encode(buildI18nRegionListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -12996,39 +12675,39 @@ void main() {
 
   unittest.group('resource-LiveBroadcastsResource', () {
     unittest.test('method--bind', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_id = 'foo';
-      var arg_part = buildUnnamed620();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_streamId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_id = 'foo';
+      final arg_part = buildUnnamed90();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_streamId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 30),
-          unittest.equals("youtube/v3/liveBroadcasts/bind"),
+          unittest.equals('youtube/v3/liveBroadcasts/bind'),
         );
         pathOffset += 30;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13036,34 +12715,34 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["streamId"]!.first,
+          queryMap['streamId']!.first,
           unittest.equals(arg_streamId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveBroadcast());
+        final resp = convert.json.encode(buildLiveBroadcast());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.bind(arg_id, arg_part,
@@ -13075,37 +12754,37 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/liveBroadcasts"),
+          unittest.equals('youtube/v3/liveBroadcasts'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13113,26 +12792,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -13142,42 +12821,42 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_request = buildLiveBroadcast();
-      var arg_part = buildUnnamed621();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_request = buildLiveBroadcast();
+      final arg_part = buildUnnamed91();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveBroadcast.fromJson(
+        final obj = api.LiveBroadcast.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveBroadcast(obj as api.LiveBroadcast);
+        checkLiveBroadcast(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/liveBroadcasts"),
+          unittest.equals('youtube/v3/liveBroadcasts'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13185,26 +12864,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveBroadcast());
+        final resp = convert.json.encode(buildLiveBroadcast());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -13215,43 +12894,43 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_part = buildUnnamed622();
-      var arg_broadcastStatus = 'foo';
-      var arg_broadcastType = 'foo';
-      var arg_id = buildUnnamed623();
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_part = buildUnnamed92();
+      final arg_broadcastStatus = 'foo';
+      final arg_broadcastType = 'foo';
+      final arg_id = buildUnnamed93();
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/liveBroadcasts"),
+          unittest.equals('youtube/v3/liveBroadcasts'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13259,50 +12938,50 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["broadcastStatus"]!.first,
+          queryMap['broadcastStatus']!.first,
           unittest.equals(arg_broadcastStatus),
         );
         unittest.expect(
-          queryMap["broadcastType"]!.first,
+          queryMap['broadcastType']!.first,
           unittest.equals(arg_broadcastType),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveBroadcastListResponse());
+        final resp = convert.json.encode(buildLiveBroadcastListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -13319,39 +12998,39 @@ void main() {
     });
 
     unittest.test('method--transition', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_broadcastStatus = 'foo';
-      var arg_id = 'foo';
-      var arg_part = buildUnnamed624();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_broadcastStatus = 'foo';
+      final arg_id = 'foo';
+      final arg_part = buildUnnamed94();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 36),
-          unittest.equals("youtube/v3/liveBroadcasts/transition"),
+          unittest.equals('youtube/v3/liveBroadcasts/transition'),
         );
         pathOffset += 36;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13359,34 +13038,34 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["broadcastStatus"]!.first,
+          queryMap['broadcastStatus']!.first,
           unittest.equals(arg_broadcastStatus),
         );
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveBroadcast());
+        final resp = convert.json.encode(buildLiveBroadcast());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.transition(
@@ -13398,42 +13077,42 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveBroadcasts;
-      var arg_request = buildLiveBroadcast();
-      var arg_part = buildUnnamed625();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveBroadcasts;
+      final arg_request = buildLiveBroadcast();
+      final arg_part = buildUnnamed95();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveBroadcast.fromJson(
+        final obj = api.LiveBroadcast.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveBroadcast(obj as api.LiveBroadcast);
+        checkLiveBroadcast(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/liveBroadcasts"),
+          unittest.equals('youtube/v3/liveBroadcasts'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13441,26 +13120,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveBroadcast());
+        final resp = convert.json.encode(buildLiveBroadcast());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -13473,35 +13152,35 @@ void main() {
 
   unittest.group('resource-LiveChatBansResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatBans;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatBans;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/liveChat/bans"),
+          unittest.equals('youtube/v3/liveChat/bans'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13509,58 +13188,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatBans;
-      var arg_request = buildLiveChatBan();
-      var arg_part = buildUnnamed626();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatBans;
+      final arg_request = buildLiveChatBan();
+      final arg_part = buildUnnamed96();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveChatBan.fromJson(
+        final obj = api.LiveChatBan.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveChatBan(obj as api.LiveChatBan);
+        checkLiveChatBan(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/liveChat/bans"),
+          unittest.equals('youtube/v3/liveChat/bans'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13568,18 +13247,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveChatBan());
+        final resp = convert.json.encode(buildLiveChatBan());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -13590,35 +13269,35 @@ void main() {
 
   unittest.group('resource-LiveChatMessagesResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatMessages;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatMessages;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 28),
-          unittest.equals("youtube/v3/liveChat/messages"),
+          unittest.equals('youtube/v3/liveChat/messages'),
         );
         pathOffset += 28;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13626,58 +13305,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatMessages;
-      var arg_request = buildLiveChatMessage();
-      var arg_part = buildUnnamed627();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatMessages;
+      final arg_request = buildLiveChatMessage();
+      final arg_part = buildUnnamed97();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveChatMessage.fromJson(
+        final obj = api.LiveChatMessage.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveChatMessage(obj as api.LiveChatMessage);
+        checkLiveChatMessage(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 28),
-          unittest.equals("youtube/v3/liveChat/messages"),
+          unittest.equals('youtube/v3/liveChat/messages'),
         );
         pathOffset += 28;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13685,18 +13364,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveChatMessage());
+        final resp = convert.json.encode(buildLiveChatMessage());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -13705,40 +13384,40 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatMessages;
-      var arg_liveChatId = 'foo';
-      var arg_part = buildUnnamed628();
-      var arg_hl = 'foo';
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_profileImageSize = 42;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatMessages;
+      final arg_liveChatId = 'foo';
+      final arg_part = buildUnnamed98();
+      final arg_hl = 'foo';
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_profileImageSize = 42;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 28),
-          unittest.equals("youtube/v3/liveChat/messages"),
+          unittest.equals('youtube/v3/liveChat/messages'),
         );
         pathOffset += 28;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13746,38 +13425,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["liveChatId"]!.first,
+          queryMap['liveChatId']!.first,
           unittest.equals(arg_liveChatId),
         );
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          core.int.parse(queryMap["profileImageSize"]!.first),
+          core.int.parse(queryMap['profileImageSize']!.first),
           unittest.equals(arg_profileImageSize),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveChatMessageListResponse());
+        final resp = convert.json.encode(buildLiveChatMessageListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_liveChatId, arg_part,
@@ -13793,35 +13472,35 @@ void main() {
 
   unittest.group('resource-LiveChatModeratorsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatModerators;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatModerators;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 30),
-          unittest.equals("youtube/v3/liveChat/moderators"),
+          unittest.equals('youtube/v3/liveChat/moderators'),
         );
         pathOffset += 30;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13829,58 +13508,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatModerators;
-      var arg_request = buildLiveChatModerator();
-      var arg_part = buildUnnamed629();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatModerators;
+      final arg_request = buildLiveChatModerator();
+      final arg_part = buildUnnamed99();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveChatModerator.fromJson(
+        final obj = api.LiveChatModerator.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveChatModerator(obj as api.LiveChatModerator);
+        checkLiveChatModerator(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 30),
-          unittest.equals("youtube/v3/liveChat/moderators"),
+          unittest.equals('youtube/v3/liveChat/moderators'),
         );
         pathOffset += 30;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13888,18 +13567,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveChatModerator());
+        final resp = convert.json.encode(buildLiveChatModerator());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -13908,38 +13587,38 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveChatModerators;
-      var arg_liveChatId = 'foo';
-      var arg_part = buildUnnamed630();
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveChatModerators;
+      final arg_liveChatId = 'foo';
+      final arg_part = buildUnnamed100();
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 30),
-          unittest.equals("youtube/v3/liveChat/moderators"),
+          unittest.equals('youtube/v3/liveChat/moderators'),
         );
         pathOffset += 30;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -13947,30 +13626,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["liveChatId"]!.first,
+          queryMap['liveChatId']!.first,
           unittest.equals(arg_liveChatId),
         );
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveChatModeratorListResponse());
+        final resp = convert.json.encode(buildLiveChatModeratorListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_liveChatId, arg_part,
@@ -13984,37 +13663,37 @@ void main() {
 
   unittest.group('resource-LiveStreamsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveStreams;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveStreams;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/liveStreams"),
+          unittest.equals('youtube/v3/liveStreams'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14022,26 +13701,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -14051,42 +13730,42 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveStreams;
-      var arg_request = buildLiveStream();
-      var arg_part = buildUnnamed631();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveStreams;
+      final arg_request = buildLiveStream();
+      final arg_part = buildUnnamed101();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveStream.fromJson(
+        final obj = api.LiveStream.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveStream(obj as api.LiveStream);
+        checkLiveStream(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/liveStreams"),
+          unittest.equals('youtube/v3/liveStreams'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14094,26 +13773,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveStream());
+        final resp = convert.json.encode(buildLiveStream());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -14124,41 +13803,41 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveStreams;
-      var arg_part = buildUnnamed632();
-      var arg_id = buildUnnamed633();
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveStreams;
+      final arg_part = buildUnnamed102();
+      final arg_id = buildUnnamed103();
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/liveStreams"),
+          unittest.equals('youtube/v3/liveStreams'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14166,42 +13845,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveStreamListResponse());
+        final resp = convert.json.encode(buildLiveStreamListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -14216,42 +13895,42 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).liveStreams;
-      var arg_request = buildLiveStream();
-      var arg_part = buildUnnamed634();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).liveStreams;
+      final arg_request = buildLiveStream();
+      final arg_part = buildUnnamed104();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.LiveStream.fromJson(
+        final obj = api.LiveStream.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkLiveStream(obj as api.LiveStream);
+        checkLiveStream(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/liveStreams"),
+          unittest.equals('youtube/v3/liveStreams'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14259,26 +13938,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildLiveStream());
+        final resp = convert.json.encode(buildLiveStream());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -14291,40 +13970,40 @@ void main() {
 
   unittest.group('resource-MembersResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).members;
-      var arg_part = buildUnnamed635();
-      var arg_filterByMemberChannelId = 'foo';
-      var arg_hasAccessToLevel = 'foo';
-      var arg_maxResults = 42;
-      var arg_mode = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).members;
+      final arg_part = buildUnnamed105();
+      final arg_filterByMemberChannelId = 'foo';
+      final arg_hasAccessToLevel = 'foo';
+      final arg_maxResults = 42;
+      final arg_mode = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 18),
-          unittest.equals("youtube/v3/members"),
+          unittest.equals('youtube/v3/members'),
         );
         pathOffset += 18;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14332,38 +14011,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["filterByMemberChannelId"]!.first,
+          queryMap['filterByMemberChannelId']!.first,
           unittest.equals(arg_filterByMemberChannelId),
         );
         unittest.expect(
-          queryMap["hasAccessToLevel"]!.first,
+          queryMap['hasAccessToLevel']!.first,
           unittest.equals(arg_hasAccessToLevel),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mode"]!.first,
+          queryMap['mode']!.first,
           unittest.equals(arg_mode),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildMemberListResponse());
+        final resp = convert.json.encode(buildMemberListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -14379,35 +14058,35 @@ void main() {
 
   unittest.group('resource-MembershipsLevelsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).membershipsLevels;
-      var arg_part = buildUnnamed636();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).membershipsLevels;
+      final arg_part = buildUnnamed106();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 28),
-          unittest.equals("youtube/v3/membershipsLevels"),
+          unittest.equals('youtube/v3/membershipsLevels'),
         );
         pathOffset += 28;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14415,18 +14094,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildMembershipsLevelListResponse());
+        final resp = convert.json.encode(buildMembershipsLevelListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part, $fields: arg_$fields);
@@ -14437,36 +14116,36 @@ void main() {
 
   unittest.group('resource-PlaylistItemsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlistItems;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlistItems;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/playlistItems"),
+          unittest.equals('youtube/v3/playlistItems'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14474,22 +14153,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -14498,41 +14177,41 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlistItems;
-      var arg_request = buildPlaylistItem();
-      var arg_part = buildUnnamed637();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlistItems;
+      final arg_request = buildPlaylistItem();
+      final arg_part = buildUnnamed107();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.PlaylistItem.fromJson(
+        final obj = api.PlaylistItem.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkPlaylistItem(obj as api.PlaylistItem);
+        checkPlaylistItem(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/playlistItems"),
+          unittest.equals('youtube/v3/playlistItems'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14540,22 +14219,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylistItem());
+        final resp = convert.json.encode(buildPlaylistItem());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -14565,41 +14244,41 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlistItems;
-      var arg_part = buildUnnamed638();
-      var arg_id = buildUnnamed639();
-      var arg_maxResults = 42;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_playlistId = 'foo';
-      var arg_videoId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlistItems;
+      final arg_part = buildUnnamed108();
+      final arg_id = buildUnnamed109();
+      final arg_maxResults = 42;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_playlistId = 'foo';
+      final arg_videoId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/playlistItems"),
+          unittest.equals('youtube/v3/playlistItems'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14607,42 +14286,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["playlistId"]!.first,
+          queryMap['playlistId']!.first,
           unittest.equals(arg_playlistId),
         );
         unittest.expect(
-          queryMap["videoId"]!.first,
+          queryMap['videoId']!.first,
           unittest.equals(arg_videoId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylistItemListResponse());
+        final resp = convert.json.encode(buildPlaylistItemListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -14657,41 +14336,41 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlistItems;
-      var arg_request = buildPlaylistItem();
-      var arg_part = buildUnnamed640();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlistItems;
+      final arg_request = buildPlaylistItem();
+      final arg_part = buildUnnamed110();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.PlaylistItem.fromJson(
+        final obj = api.PlaylistItem.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkPlaylistItem(obj as api.PlaylistItem);
+        checkPlaylistItem(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/playlistItems"),
+          unittest.equals('youtube/v3/playlistItems'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14699,22 +14378,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylistItem());
+        final resp = convert.json.encode(buildPlaylistItem());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -14726,36 +14405,36 @@ void main() {
 
   unittest.group('resource-PlaylistsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlists;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlists;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("youtube/v3/playlists"),
+          unittest.equals('youtube/v3/playlists'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14763,22 +14442,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -14787,42 +14466,42 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlists;
-      var arg_request = buildPlaylist();
-      var arg_part = buildUnnamed641();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlists;
+      final arg_request = buildPlaylist();
+      final arg_part = buildUnnamed111();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Playlist.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkPlaylist(obj as api.Playlist);
+        checkPlaylist(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("youtube/v3/playlists"),
+          unittest.equals('youtube/v3/playlists'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14830,26 +14509,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylist());
+        final resp = convert.json.encode(buildPlaylist());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -14860,43 +14539,43 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlists;
-      var arg_part = buildUnnamed642();
-      var arg_channelId = 'foo';
-      var arg_hl = 'foo';
-      var arg_id = buildUnnamed643();
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlists;
+      final arg_part = buildUnnamed112();
+      final arg_channelId = 'foo';
+      final arg_hl = 'foo';
+      final arg_id = buildUnnamed113();
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("youtube/v3/playlists"),
+          unittest.equals('youtube/v3/playlists'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -14904,50 +14583,50 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylistListResponse());
+        final resp = convert.json.encode(buildPlaylistListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -14964,41 +14643,41 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).playlists;
-      var arg_request = buildPlaylist();
-      var arg_part = buildUnnamed644();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).playlists;
+      final arg_request = buildPlaylist();
+      final arg_part = buildUnnamed114();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Playlist.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkPlaylist(obj as api.Playlist);
+        checkPlaylist(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("youtube/v3/playlists"),
+          unittest.equals('youtube/v3/playlists'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15006,22 +14685,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildPlaylist());
+        final resp = convert.json.encode(buildPlaylist());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -15033,65 +14712,65 @@ void main() {
 
   unittest.group('resource-SearchResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).search;
-      var arg_part = buildUnnamed645();
-      var arg_channelId = 'foo';
-      var arg_channelType = 'foo';
-      var arg_eventType = 'foo';
-      var arg_forContentOwner = true;
-      var arg_forDeveloper = true;
-      var arg_forMine = true;
-      var arg_location = 'foo';
-      var arg_locationRadius = 'foo';
-      var arg_maxResults = 42;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_order = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_publishedAfter = 'foo';
-      var arg_publishedBefore = 'foo';
-      var arg_q = 'foo';
-      var arg_regionCode = 'foo';
-      var arg_relatedToVideoId = 'foo';
-      var arg_relevanceLanguage = 'foo';
-      var arg_safeSearch = 'foo';
-      var arg_topicId = 'foo';
-      var arg_type = buildUnnamed646();
-      var arg_videoCaption = 'foo';
-      var arg_videoCategoryId = 'foo';
-      var arg_videoDefinition = 'foo';
-      var arg_videoDimension = 'foo';
-      var arg_videoDuration = 'foo';
-      var arg_videoEmbeddable = 'foo';
-      var arg_videoLicense = 'foo';
-      var arg_videoSyndicated = 'foo';
-      var arg_videoType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).search;
+      final arg_part = buildUnnamed115();
+      final arg_channelId = 'foo';
+      final arg_channelType = 'foo';
+      final arg_eventType = 'foo';
+      final arg_forContentOwner = true;
+      final arg_forDeveloper = true;
+      final arg_forMine = true;
+      final arg_location = 'foo';
+      final arg_locationRadius = 'foo';
+      final arg_maxResults = 42;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_order = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_publishedAfter = 'foo';
+      final arg_publishedBefore = 'foo';
+      final arg_q = 'foo';
+      final arg_regionCode = 'foo';
+      final arg_relatedToVideoId = 'foo';
+      final arg_relevanceLanguage = 'foo';
+      final arg_safeSearch = 'foo';
+      final arg_topicId = 'foo';
+      final arg_type = buildUnnamed116();
+      final arg_videoCaption = 'foo';
+      final arg_videoCategoryId = 'foo';
+      final arg_videoDefinition = 'foo';
+      final arg_videoDimension = 'foo';
+      final arg_videoDuration = 'foo';
+      final arg_videoEmbeddable = 'foo';
+      final arg_videoLicense = 'foo';
+      final arg_videoSyndicated = 'foo';
+      final arg_videoType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("youtube/v3/search"),
+          unittest.equals('youtube/v3/search'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15099,138 +14778,138 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["channelType"]!.first,
+          queryMap['channelType']!.first,
           unittest.equals(arg_channelType),
         );
         unittest.expect(
-          queryMap["eventType"]!.first,
+          queryMap['eventType']!.first,
           unittest.equals(arg_eventType),
         );
         unittest.expect(
-          queryMap["forContentOwner"]!.first,
-          unittest.equals("$arg_forContentOwner"),
+          queryMap['forContentOwner']!.first,
+          unittest.equals('$arg_forContentOwner'),
         );
         unittest.expect(
-          queryMap["forDeveloper"]!.first,
-          unittest.equals("$arg_forDeveloper"),
+          queryMap['forDeveloper']!.first,
+          unittest.equals('$arg_forDeveloper'),
         );
         unittest.expect(
-          queryMap["forMine"]!.first,
-          unittest.equals("$arg_forMine"),
+          queryMap['forMine']!.first,
+          unittest.equals('$arg_forMine'),
         );
         unittest.expect(
-          queryMap["location"]!.first,
+          queryMap['location']!.first,
           unittest.equals(arg_location),
         );
         unittest.expect(
-          queryMap["locationRadius"]!.first,
+          queryMap['locationRadius']!.first,
           unittest.equals(arg_locationRadius),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["order"]!.first,
+          queryMap['order']!.first,
           unittest.equals(arg_order),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["publishedAfter"]!.first,
+          queryMap['publishedAfter']!.first,
           unittest.equals(arg_publishedAfter),
         );
         unittest.expect(
-          queryMap["publishedBefore"]!.first,
+          queryMap['publishedBefore']!.first,
           unittest.equals(arg_publishedBefore),
         );
         unittest.expect(
-          queryMap["q"]!.first,
+          queryMap['q']!.first,
           unittest.equals(arg_q),
         );
         unittest.expect(
-          queryMap["regionCode"]!.first,
+          queryMap['regionCode']!.first,
           unittest.equals(arg_regionCode),
         );
         unittest.expect(
-          queryMap["relatedToVideoId"]!.first,
+          queryMap['relatedToVideoId']!.first,
           unittest.equals(arg_relatedToVideoId),
         );
         unittest.expect(
-          queryMap["relevanceLanguage"]!.first,
+          queryMap['relevanceLanguage']!.first,
           unittest.equals(arg_relevanceLanguage),
         );
         unittest.expect(
-          queryMap["safeSearch"]!.first,
+          queryMap['safeSearch']!.first,
           unittest.equals(arg_safeSearch),
         );
         unittest.expect(
-          queryMap["topicId"]!.first,
+          queryMap['topicId']!.first,
           unittest.equals(arg_topicId),
         );
         unittest.expect(
-          queryMap["type"]!,
+          queryMap['type']!,
           unittest.equals(arg_type),
         );
         unittest.expect(
-          queryMap["videoCaption"]!.first,
+          queryMap['videoCaption']!.first,
           unittest.equals(arg_videoCaption),
         );
         unittest.expect(
-          queryMap["videoCategoryId"]!.first,
+          queryMap['videoCategoryId']!.first,
           unittest.equals(arg_videoCategoryId),
         );
         unittest.expect(
-          queryMap["videoDefinition"]!.first,
+          queryMap['videoDefinition']!.first,
           unittest.equals(arg_videoDefinition),
         );
         unittest.expect(
-          queryMap["videoDimension"]!.first,
+          queryMap['videoDimension']!.first,
           unittest.equals(arg_videoDimension),
         );
         unittest.expect(
-          queryMap["videoDuration"]!.first,
+          queryMap['videoDuration']!.first,
           unittest.equals(arg_videoDuration),
         );
         unittest.expect(
-          queryMap["videoEmbeddable"]!.first,
+          queryMap['videoEmbeddable']!.first,
           unittest.equals(arg_videoEmbeddable),
         );
         unittest.expect(
-          queryMap["videoLicense"]!.first,
+          queryMap['videoLicense']!.first,
           unittest.equals(arg_videoLicense),
         );
         unittest.expect(
-          queryMap["videoSyndicated"]!.first,
+          queryMap['videoSyndicated']!.first,
           unittest.equals(arg_videoSyndicated),
         );
         unittest.expect(
-          queryMap["videoType"]!.first,
+          queryMap['videoType']!.first,
           unittest.equals(arg_videoType),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSearchListResponse());
+        final resp = convert.json.encode(buildSearchListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -15271,35 +14950,35 @@ void main() {
 
   unittest.group('resource-SubscriptionsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).subscriptions;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).subscriptions;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/subscriptions"),
+          unittest.equals('youtube/v3/subscriptions'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15307,58 +14986,58 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id, $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).subscriptions;
-      var arg_request = buildSubscription();
-      var arg_part = buildUnnamed647();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).subscriptions;
+      final arg_request = buildSubscription();
+      final arg_part = buildUnnamed117();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Subscription.fromJson(
+        final obj = api.Subscription.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSubscription(obj as api.Subscription);
+        checkSubscription(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/subscriptions"),
+          unittest.equals('youtube/v3/subscriptions'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15366,18 +15045,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSubscription());
+        final resp = convert.json.encode(buildSubscription());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -15386,46 +15065,46 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).subscriptions;
-      var arg_part = buildUnnamed648();
-      var arg_channelId = 'foo';
-      var arg_forChannelId = 'foo';
-      var arg_id = buildUnnamed649();
-      var arg_maxResults = 42;
-      var arg_mine = true;
-      var arg_myRecentSubscribers = true;
-      var arg_mySubscribers = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_order = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).subscriptions;
+      final arg_part = buildUnnamed118();
+      final arg_channelId = 'foo';
+      final arg_forChannelId = 'foo';
+      final arg_id = buildUnnamed119();
+      final arg_maxResults = 42;
+      final arg_mine = true;
+      final arg_myRecentSubscribers = true;
+      final arg_mySubscribers = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_order = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("youtube/v3/subscriptions"),
+          unittest.equals('youtube/v3/subscriptions'),
         );
         pathOffset += 24;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15433,62 +15112,62 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["forChannelId"]!.first,
+          queryMap['forChannelId']!.first,
           unittest.equals(arg_forChannelId),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["mine"]!.first,
-          unittest.equals("$arg_mine"),
+          queryMap['mine']!.first,
+          unittest.equals('$arg_mine'),
         );
         unittest.expect(
-          queryMap["myRecentSubscribers"]!.first,
-          unittest.equals("$arg_myRecentSubscribers"),
+          queryMap['myRecentSubscribers']!.first,
+          unittest.equals('$arg_myRecentSubscribers'),
         );
         unittest.expect(
-          queryMap["mySubscribers"]!.first,
-          unittest.equals("$arg_mySubscribers"),
+          queryMap['mySubscribers']!.first,
+          unittest.equals('$arg_mySubscribers'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["order"]!.first,
+          queryMap['order']!.first,
           unittest.equals(arg_order),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSubscriptionListResponse());
+        final resp = convert.json.encode(buildSubscriptionListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -15510,38 +15189,38 @@ void main() {
 
   unittest.group('resource-SuperChatEventsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).superChatEvents;
-      var arg_part = buildUnnamed650();
-      var arg_hl = 'foo';
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).superChatEvents;
+      final arg_part = buildUnnamed120();
+      final arg_hl = 'foo';
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/superChatEvents"),
+          unittest.equals('youtube/v3/superChatEvents'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15549,30 +15228,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSuperChatEventListResponse());
+        final resp = convert.json.encode(buildSuperChatEventListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -15587,40 +15266,41 @@ void main() {
 
   unittest.group('resource-TestsResource', () {
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).tests;
-      var arg_request = buildTestItem();
-      var arg_part = buildUnnamed651();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).tests;
+      final arg_request = buildTestItem();
+      final arg_part = buildUnnamed121();
+      final arg_externalChannelId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.TestItem.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTestItem(obj as api.TestItem);
+        checkTestItem(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("youtube/v3/tests"),
+          unittest.equals('youtube/v3/tests'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15628,59 +15308,64 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['externalChannelId']!.first,
+          unittest.equals(arg_externalChannelId),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTestItem());
+        final resp = convert.json.encode(buildTestItem());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.insert(arg_request, arg_part, $fields: arg_$fields);
+      final response = await res.insert(arg_request, arg_part,
+          externalChannelId: arg_externalChannelId, $fields: arg_$fields);
       checkTestItem(response as api.TestItem);
     });
   });
 
   unittest.group('resource-ThirdPartyLinksResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).thirdPartyLinks;
-      var arg_linkingToken = 'foo';
-      var arg_type = 'foo';
-      var arg_part = buildUnnamed652();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).thirdPartyLinks;
+      final arg_linkingToken = 'foo';
+      final arg_type = 'foo';
+      final arg_externalChannelId = 'foo';
+      final arg_part = buildUnnamed122();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/thirdPartyLinks"),
+          unittest.equals('youtube/v3/thirdPartyLinks'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15688,67 +15373,74 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["linkingToken"]!.first,
+          queryMap['linkingToken']!.first,
           unittest.equals(arg_linkingToken),
         );
         unittest.expect(
-          queryMap["type"]!.first,
+          queryMap['type']!.first,
           unittest.equals(arg_type),
         );
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['externalChannelId']!.first,
+          unittest.equals(arg_externalChannelId),
+        );
+        unittest.expect(
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_linkingToken, arg_type,
-          part: arg_part, $fields: arg_$fields);
+          externalChannelId: arg_externalChannelId,
+          part: arg_part,
+          $fields: arg_$fields);
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).thirdPartyLinks;
-      var arg_request = buildThirdPartyLink();
-      var arg_part = buildUnnamed653();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).thirdPartyLinks;
+      final arg_request = buildThirdPartyLink();
+      final arg_part = buildUnnamed123();
+      final arg_externalChannelId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ThirdPartyLink.fromJson(
+        final obj = api.ThirdPartyLink.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkThirdPartyLink(obj as api.ThirdPartyLink);
+        checkThirdPartyLink(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/thirdPartyLinks"),
+          unittest.equals('youtube/v3/thirdPartyLinks'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15756,57 +15448,62 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['externalChannelId']!.first,
+          unittest.equals(arg_externalChannelId),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildThirdPartyLink());
+        final resp = convert.json.encode(buildThirdPartyLink());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.insert(arg_request, arg_part, $fields: arg_$fields);
+      final response = await res.insert(arg_request, arg_part,
+          externalChannelId: arg_externalChannelId, $fields: arg_$fields);
       checkThirdPartyLink(response as api.ThirdPartyLink);
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).thirdPartyLinks;
-      var arg_part = buildUnnamed654();
-      var arg_linkingToken = 'foo';
-      var arg_type = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).thirdPartyLinks;
+      final arg_part = buildUnnamed124();
+      final arg_externalChannelId = 'foo';
+      final arg_linkingToken = 'foo';
+      final arg_type = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/thirdPartyLinks"),
+          unittest.equals('youtube/v3/thirdPartyLinks'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15814,68 +15511,76 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["linkingToken"]!.first,
+          queryMap['externalChannelId']!.first,
+          unittest.equals(arg_externalChannelId),
+        );
+        unittest.expect(
+          queryMap['linkingToken']!.first,
           unittest.equals(arg_linkingToken),
         );
         unittest.expect(
-          queryMap["type"]!.first,
+          queryMap['type']!.first,
           unittest.equals(arg_type),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildThirdPartyLink());
+        final resp = convert.json.encode(buildThirdPartyLink());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
-          linkingToken: arg_linkingToken, type: arg_type, $fields: arg_$fields);
+          externalChannelId: arg_externalChannelId,
+          linkingToken: arg_linkingToken,
+          type: arg_type,
+          $fields: arg_$fields);
       checkThirdPartyLink(response as api.ThirdPartyLink);
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).thirdPartyLinks;
-      var arg_request = buildThirdPartyLink();
-      var arg_part = buildUnnamed655();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).thirdPartyLinks;
+      final arg_request = buildThirdPartyLink();
+      final arg_part = buildUnnamed125();
+      final arg_externalChannelId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ThirdPartyLink.fromJson(
+        final obj = api.ThirdPartyLink.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkThirdPartyLink(obj as api.ThirdPartyLink);
+        checkThirdPartyLink(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/thirdPartyLinks"),
+          unittest.equals('youtube/v3/thirdPartyLinks'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15883,22 +15588,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['externalChannelId']!.first,
+          unittest.equals(arg_externalChannelId),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildThirdPartyLink());
+        final resp = convert.json.encode(buildThirdPartyLink());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.update(arg_request, arg_part, $fields: arg_$fields);
+      final response = await res.update(arg_request, arg_part,
+          externalChannelId: arg_externalChannelId, $fields: arg_$fields);
       checkThirdPartyLink(response as api.ThirdPartyLink);
     });
   });
@@ -15908,36 +15617,36 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).thumbnails;
-      var arg_videoId = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).thumbnails;
+      final arg_videoId = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/thumbnails/set"),
+          unittest.equals('youtube/v3/thumbnails/set'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -15945,22 +15654,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["videoId"]!.first,
+          queryMap['videoId']!.first,
           unittest.equals(arg_videoId),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildThumbnailSetResponse());
+        final resp = convert.json.encode(buildThumbnailSetResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.set(arg_videoId,
@@ -15972,36 +15681,36 @@ void main() {
 
   unittest.group('resource-VideoAbuseReportReasonsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videoAbuseReportReasons;
-      var arg_part = buildUnnamed656();
-      var arg_hl = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videoAbuseReportReasons;
+      final arg_part = buildUnnamed126();
+      final arg_hl = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 34),
-          unittest.equals("youtube/v3/videoAbuseReportReasons"),
+          unittest.equals('youtube/v3/videoAbuseReportReasons'),
         );
         pathOffset += 34;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16009,22 +15718,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp =
+        final resp =
             convert.json.encode(buildVideoAbuseReportReasonListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -16037,38 +15746,38 @@ void main() {
 
   unittest.group('resource-VideoCategoriesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videoCategories;
-      var arg_part = buildUnnamed657();
-      var arg_hl = 'foo';
-      var arg_id = buildUnnamed658();
-      var arg_regionCode = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videoCategories;
+      final arg_part = buildUnnamed127();
+      final arg_hl = 'foo';
+      final arg_id = buildUnnamed128();
+      final arg_regionCode = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("youtube/v3/videoCategories"),
+          unittest.equals('youtube/v3/videoCategories'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16076,30 +15785,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["regionCode"]!.first,
+          queryMap['regionCode']!.first,
           unittest.equals(arg_regionCode),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVideoCategoryListResponse());
+        final resp = convert.json.encode(buildVideoCategoryListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -16113,36 +15822,36 @@ void main() {
 
   unittest.group('resource-VideosResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_id = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_id = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("youtube/v3/videos"),
+          unittest.equals('youtube/v3/videos'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16150,22 +15859,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_id,
@@ -16174,36 +15883,36 @@ void main() {
     });
 
     unittest.test('method--getRating', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_id = buildUnnamed659();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_id = buildUnnamed129();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 27),
-          unittest.equals("youtube/v3/videos/getRating"),
+          unittest.equals('youtube/v3/videos/getRating'),
         );
         pathOffset += 27;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16211,73 +15920,73 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVideoRatingListResponse());
+        final resp = convert.json.encode(buildVideoGetRatingResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.getRating(arg_id,
           onBehalfOfContentOwner: arg_onBehalfOfContentOwner,
           $fields: arg_$fields);
-      checkVideoRatingListResponse(response as api.VideoRatingListResponse);
+      checkVideoGetRatingResponse(response as api.VideoGetRatingResponse);
     });
 
     unittest.test('method--insert', () async {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_request = buildVideo();
-      var arg_part = buildUnnamed660();
-      var arg_autoLevels = true;
-      var arg_notifySubscribers = true;
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_onBehalfOfContentOwnerChannel = 'foo';
-      var arg_stabilize = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_request = buildVideo();
+      final arg_part = buildUnnamed130();
+      final arg_autoLevels = true;
+      final arg_notifySubscribers = true;
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_onBehalfOfContentOwnerChannel = 'foo';
+      final arg_stabilize = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Video.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkVideo(obj as api.Video);
+        checkVideo(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("youtube/v3/videos"),
+          unittest.equals('youtube/v3/videos'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16285,38 +15994,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["autoLevels"]!.first,
-          unittest.equals("$arg_autoLevels"),
+          queryMap['autoLevels']!.first,
+          unittest.equals('$arg_autoLevels'),
         );
         unittest.expect(
-          queryMap["notifySubscribers"]!.first,
-          unittest.equals("$arg_notifySubscribers"),
+          queryMap['notifySubscribers']!.first,
+          unittest.equals('$arg_notifySubscribers'),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwnerChannel"]!.first,
+          queryMap['onBehalfOfContentOwnerChannel']!.first,
           unittest.equals(arg_onBehalfOfContentOwnerChannel),
         );
         unittest.expect(
-          queryMap["stabilize"]!.first,
-          unittest.equals("$arg_stabilize"),
+          queryMap['stabilize']!.first,
+          unittest.equals('$arg_stabilize'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVideo());
+        final resp = convert.json.encode(buildVideo());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_part,
@@ -16330,47 +16039,47 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_part = buildUnnamed661();
-      var arg_chart = 'foo';
-      var arg_hl = 'foo';
-      var arg_id = buildUnnamed662();
-      var arg_locale = 'foo';
-      var arg_maxHeight = 42;
-      var arg_maxResults = 42;
-      var arg_maxWidth = 42;
-      var arg_myRating = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_regionCode = 'foo';
-      var arg_videoCategoryId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_part = buildUnnamed131();
+      final arg_chart = 'foo';
+      final arg_hl = 'foo';
+      final arg_id = buildUnnamed132();
+      final arg_locale = 'foo';
+      final arg_maxHeight = 42;
+      final arg_maxResults = 42;
+      final arg_maxWidth = 42;
+      final arg_myRating = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_regionCode = 'foo';
+      final arg_videoCategoryId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("youtube/v3/videos"),
+          unittest.equals('youtube/v3/videos'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16378,66 +16087,66 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["chart"]!.first,
+          queryMap['chart']!.first,
           unittest.equals(arg_chart),
         );
         unittest.expect(
-          queryMap["hl"]!.first,
+          queryMap['hl']!.first,
           unittest.equals(arg_hl),
         );
         unittest.expect(
-          queryMap["id"]!,
+          queryMap['id']!,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["locale"]!.first,
+          queryMap['locale']!.first,
           unittest.equals(arg_locale),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxHeight"]!.first),
+          core.int.parse(queryMap['maxHeight']!.first),
           unittest.equals(arg_maxHeight),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxWidth"]!.first),
+          core.int.parse(queryMap['maxWidth']!.first),
           unittest.equals(arg_maxWidth),
         );
         unittest.expect(
-          queryMap["myRating"]!.first,
+          queryMap['myRating']!.first,
           unittest.equals(arg_myRating),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["regionCode"]!.first,
+          queryMap['regionCode']!.first,
           unittest.equals(arg_regionCode),
         );
         unittest.expect(
-          queryMap["videoCategoryId"]!.first,
+          queryMap['videoCategoryId']!.first,
           unittest.equals(arg_videoCategoryId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVideoListResponse());
+        final resp = convert.json.encode(buildVideoListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_part,
@@ -16458,36 +16167,36 @@ void main() {
     });
 
     unittest.test('method--rate', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_id = 'foo';
-      var arg_rating = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_id = 'foo';
+      final arg_rating = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("youtube/v3/videos/rate"),
+          unittest.equals('youtube/v3/videos/rate'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16495,62 +16204,62 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["id"]!.first,
+          queryMap['id']!.first,
           unittest.equals(arg_id),
         );
         unittest.expect(
-          queryMap["rating"]!.first,
+          queryMap['rating']!.first,
           unittest.equals(arg_rating),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.rate(arg_id, arg_rating, $fields: arg_$fields);
     });
 
     unittest.test('method--reportAbuse', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_request = buildVideoAbuseReport();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_request = buildVideoAbuseReport();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.VideoAbuseReport.fromJson(
+        final obj = api.VideoAbuseReport.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkVideoAbuseReport(obj as api.VideoAbuseReport);
+        checkVideoAbuseReport(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 29),
-          unittest.equals("youtube/v3/videos/reportAbuse"),
+          unittest.equals('youtube/v3/videos/reportAbuse'),
         );
         pathOffset += 29;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16558,18 +16267,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.reportAbuse(arg_request,
@@ -16578,41 +16287,41 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).videos;
-      var arg_request = buildVideo();
-      var arg_part = buildUnnamed663();
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).videos;
+      final arg_request = buildVideo();
+      final arg_part = buildUnnamed133();
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Video.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkVideo(obj as api.Video);
+        checkVideo(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("youtube/v3/videos"),
+          unittest.equals('youtube/v3/videos'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16620,22 +16329,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["part"]!,
+          queryMap['part']!,
           unittest.equals(arg_part),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVideo());
+        final resp = convert.json.encode(buildVideo());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_part,
@@ -16650,41 +16359,41 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).watermarks;
-      var arg_request = buildInvideoBranding();
-      var arg_channelId = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).watermarks;
+      final arg_request = buildInvideoBranding();
+      final arg_channelId = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.InvideoBranding.fromJson(
+        final obj = api.InvideoBranding.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkInvideoBranding(obj as api.InvideoBranding);
+        checkInvideoBranding(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("youtube/v3/watermarks/set"),
+          unittest.equals('youtube/v3/watermarks/set'),
         );
         pathOffset += 25;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16692,22 +16401,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.set(arg_request, arg_channelId,
@@ -16716,36 +16425,36 @@ void main() {
     });
 
     unittest.test('method--unset', () async {
-      var mock = HttpServerMock();
-      var res = api.YouTubeApi(mock).watermarks;
-      var arg_channelId = 'foo';
-      var arg_onBehalfOfContentOwner = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).watermarks;
+      final arg_channelId = 'foo';
+      final arg_onBehalfOfContentOwner = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 27),
-          unittest.equals("youtube/v3/watermarks/unset"),
+          unittest.equals('youtube/v3/watermarks/unset'),
         );
         pathOffset += 27;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -16753,27 +16462,90 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["channelId"]!.first,
+          queryMap['channelId']!.first,
           unittest.equals(arg_channelId),
         );
         unittest.expect(
-          queryMap["onBehalfOfContentOwner"]!.first,
+          queryMap['onBehalfOfContentOwner']!.first,
           unittest.equals(arg_onBehalfOfContentOwner),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.unset(arg_channelId,
           onBehalfOfContentOwner: arg_onBehalfOfContentOwner,
           $fields: arg_$fields);
+    });
+  });
+
+  unittest.group('resource-YoutubeV3Resource', () {
+    unittest.test('method--updateCommentThreads', () async {
+      final mock = HttpServerMock();
+      final res = api.YouTubeApi(mock).youtube.v3;
+      final arg_request = buildCommentThread();
+      final arg_part = buildUnnamed134();
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj = api.CommentThread.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkCommentThread(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 25),
+          unittest.equals('youtube/v3/commentThreads'),
+        );
+        pathOffset += 25;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['part']!,
+          unittest.equals(arg_part),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildCommentThread());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.updateCommentThreads(arg_request,
+          part: arg_part, $fields: arg_$fields);
+      checkCommentThread(response as api.CommentThread);
     });
   });
 }

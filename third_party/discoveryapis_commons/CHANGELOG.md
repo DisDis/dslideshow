@@ -1,4 +1,13 @@
-## 1.0.0-dev
+## 1.0.2
+
+- Handle the case where the content of error JSON is a `List` of `Map`
+  instances.
+
+## 1.0.1
+
+- Support Unicode file names in `MultipartMediaUploader`.
+
+## 1.0.0
 
 - Add support for null-safety.
 - Require Dart 2.12 or later.

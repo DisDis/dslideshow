@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,28 +20,26 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/classroom/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/classroom/v1.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<api.Material> buildUnnamed498() {
-  var o = <api.Material>[];
-  o.add(buildMaterial());
-  o.add(buildMaterial());
-  return o;
-}
+core.List<api.Material> buildUnnamed0() => [
+      buildMaterial(),
+      buildMaterial(),
+    ];
 
-void checkUnnamed498(core.List<api.Material> o) {
+void checkUnnamed0(core.List<api.Material> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMaterial(o[0] as api.Material);
-  checkMaterial(o[1] as api.Material);
+  checkMaterial(o[0]);
+  checkMaterial(o[1]);
 }
 
 core.int buildCounterAnnouncement = 0;
 api.Announcement buildAnnouncement() {
-  var o = api.Announcement();
+  final o = api.Announcement();
   buildCounterAnnouncement++;
   if (buildCounterAnnouncement < 3) {
     o.alternateLink = 'foo';
@@ -52,7 +49,7 @@ api.Announcement buildAnnouncement() {
     o.creatorUserId = 'foo';
     o.id = 'foo';
     o.individualStudentsOptions = buildIndividualStudentsOptions();
-    o.materials = buildUnnamed498();
+    o.materials = buildUnnamed0();
     o.scheduledTime = 'foo';
     o.state = 'foo';
     o.text = 'foo';
@@ -89,9 +86,8 @@ void checkAnnouncement(api.Announcement o) {
       o.id!,
       unittest.equals('foo'),
     );
-    checkIndividualStudentsOptions(
-        o.individualStudentsOptions! as api.IndividualStudentsOptions);
-    checkUnnamed498(o.materials!);
+    checkIndividualStudentsOptions(o.individualStudentsOptions!);
+    checkUnnamed0(o.materials!);
     unittest.expect(
       o.scheduledTime!,
       unittest.equals('foo'),
@@ -114,7 +110,7 @@ void checkAnnouncement(api.Announcement o) {
 
 core.int buildCounterAssignment = 0;
 api.Assignment buildAssignment() {
-  var o = api.Assignment();
+  final o = api.Assignment();
   buildCounterAssignment++;
   if (buildCounterAssignment < 3) {
     o.studentWorkFolder = buildDriveFolder();
@@ -126,30 +122,28 @@ api.Assignment buildAssignment() {
 void checkAssignment(api.Assignment o) {
   buildCounterAssignment++;
   if (buildCounterAssignment < 3) {
-    checkDriveFolder(o.studentWorkFolder! as api.DriveFolder);
+    checkDriveFolder(o.studentWorkFolder!);
   }
   buildCounterAssignment--;
 }
 
-core.List<api.Attachment> buildUnnamed499() {
-  var o = <api.Attachment>[];
-  o.add(buildAttachment());
-  o.add(buildAttachment());
-  return o;
-}
+core.List<api.Attachment> buildUnnamed1() => [
+      buildAttachment(),
+      buildAttachment(),
+    ];
 
-void checkUnnamed499(core.List<api.Attachment> o) {
+void checkUnnamed1(core.List<api.Attachment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAttachment(o[0] as api.Attachment);
-  checkAttachment(o[1] as api.Attachment);
+  checkAttachment(o[0]);
+  checkAttachment(o[1]);
 }
 
 core.int buildCounterAssignmentSubmission = 0;
 api.AssignmentSubmission buildAssignmentSubmission() {
-  var o = api.AssignmentSubmission();
+  final o = api.AssignmentSubmission();
   buildCounterAssignmentSubmission++;
   if (buildCounterAssignmentSubmission < 3) {
-    o.attachments = buildUnnamed499();
+    o.attachments = buildUnnamed1();
   }
   buildCounterAssignmentSubmission--;
   return o;
@@ -158,14 +152,14 @@ api.AssignmentSubmission buildAssignmentSubmission() {
 void checkAssignmentSubmission(api.AssignmentSubmission o) {
   buildCounterAssignmentSubmission++;
   if (buildCounterAssignmentSubmission < 3) {
-    checkUnnamed499(o.attachments!);
+    checkUnnamed1(o.attachments!);
   }
   buildCounterAssignmentSubmission--;
 }
 
 core.int buildCounterAttachment = 0;
 api.Attachment buildAttachment() {
-  var o = api.Attachment();
+  final o = api.Attachment();
   buildCounterAttachment++;
   if (buildCounterAttachment < 3) {
     o.driveFile = buildDriveFile();
@@ -180,17 +174,17 @@ api.Attachment buildAttachment() {
 void checkAttachment(api.Attachment o) {
   buildCounterAttachment++;
   if (buildCounterAttachment < 3) {
-    checkDriveFile(o.driveFile! as api.DriveFile);
-    checkForm(o.form! as api.Form);
-    checkLink(o.link! as api.Link);
-    checkYouTubeVideo(o.youTubeVideo! as api.YouTubeVideo);
+    checkDriveFile(o.driveFile!);
+    checkForm(o.form!);
+    checkLink(o.link!);
+    checkYouTubeVideo(o.youTubeVideo!);
   }
   buildCounterAttachment--;
 }
 
 core.int buildCounterCloudPubsubTopic = 0;
 api.CloudPubsubTopic buildCloudPubsubTopic() {
-  var o = api.CloudPubsubTopic();
+  final o = api.CloudPubsubTopic();
   buildCounterCloudPubsubTopic++;
   if (buildCounterCloudPubsubTopic < 3) {
     o.topicName = 'foo';
@@ -210,33 +204,32 @@ void checkCloudPubsubTopic(api.CloudPubsubTopic o) {
   buildCounterCloudPubsubTopic--;
 }
 
-core.List<api.CourseMaterialSet> buildUnnamed500() {
-  var o = <api.CourseMaterialSet>[];
-  o.add(buildCourseMaterialSet());
-  o.add(buildCourseMaterialSet());
-  return o;
-}
+core.List<api.CourseMaterialSet> buildUnnamed2() => [
+      buildCourseMaterialSet(),
+      buildCourseMaterialSet(),
+    ];
 
-void checkUnnamed500(core.List<api.CourseMaterialSet> o) {
+void checkUnnamed2(core.List<api.CourseMaterialSet> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourseMaterialSet(o[0] as api.CourseMaterialSet);
-  checkCourseMaterialSet(o[1] as api.CourseMaterialSet);
+  checkCourseMaterialSet(o[0]);
+  checkCourseMaterialSet(o[1]);
 }
 
 core.int buildCounterCourse = 0;
 api.Course buildCourse() {
-  var o = api.Course();
+  final o = api.Course();
   buildCounterCourse++;
   if (buildCounterCourse < 3) {
     o.alternateLink = 'foo';
     o.calendarId = 'foo';
     o.courseGroupEmail = 'foo';
-    o.courseMaterialSets = buildUnnamed500();
+    o.courseMaterialSets = buildUnnamed2();
     o.courseState = 'foo';
     o.creationTime = 'foo';
     o.description = 'foo';
     o.descriptionHeading = 'foo';
     o.enrollmentCode = 'foo';
+    o.gradebookSettings = buildGradebookSettings();
     o.guardiansEnabled = true;
     o.id = 'foo';
     o.name = 'foo';
@@ -266,7 +259,7 @@ void checkCourse(api.Course o) {
       o.courseGroupEmail!,
       unittest.equals('foo'),
     );
-    checkUnnamed500(o.courseMaterialSets!);
+    checkUnnamed2(o.courseMaterialSets!);
     unittest.expect(
       o.courseState!,
       unittest.equals('foo'),
@@ -287,6 +280,7 @@ void checkCourse(api.Course o) {
       o.enrollmentCode!,
       unittest.equals('foo'),
     );
+    checkGradebookSettings(o.gradebookSettings!);
     unittest.expect(o.guardiansEnabled!, unittest.isTrue);
     unittest.expect(
       o.id!,
@@ -308,7 +302,7 @@ void checkCourse(api.Course o) {
       o.section!,
       unittest.equals('foo'),
     );
-    checkDriveFolder(o.teacherFolder! as api.DriveFolder);
+    checkDriveFolder(o.teacherFolder!);
     unittest.expect(
       o.teacherGroupEmail!,
       unittest.equals('foo'),
@@ -323,7 +317,7 @@ void checkCourse(api.Course o) {
 
 core.int buildCounterCourseAlias = 0;
 api.CourseAlias buildCourseAlias() {
-  var o = api.CourseAlias();
+  final o = api.CourseAlias();
   buildCounterCourseAlias++;
   if (buildCounterCourseAlias < 3) {
     o.alias = 'foo';
@@ -345,7 +339,7 @@ void checkCourseAlias(api.CourseAlias o) {
 
 core.int buildCounterCourseMaterial = 0;
 api.CourseMaterial buildCourseMaterial() {
-  var o = api.CourseMaterial();
+  final o = api.CourseMaterial();
   buildCounterCourseMaterial++;
   if (buildCounterCourseMaterial < 3) {
     o.driveFile = buildDriveFile();
@@ -360,33 +354,31 @@ api.CourseMaterial buildCourseMaterial() {
 void checkCourseMaterial(api.CourseMaterial o) {
   buildCounterCourseMaterial++;
   if (buildCounterCourseMaterial < 3) {
-    checkDriveFile(o.driveFile! as api.DriveFile);
-    checkForm(o.form! as api.Form);
-    checkLink(o.link! as api.Link);
-    checkYouTubeVideo(o.youTubeVideo! as api.YouTubeVideo);
+    checkDriveFile(o.driveFile!);
+    checkForm(o.form!);
+    checkLink(o.link!);
+    checkYouTubeVideo(o.youTubeVideo!);
   }
   buildCounterCourseMaterial--;
 }
 
-core.List<api.CourseMaterial> buildUnnamed501() {
-  var o = <api.CourseMaterial>[];
-  o.add(buildCourseMaterial());
-  o.add(buildCourseMaterial());
-  return o;
-}
+core.List<api.CourseMaterial> buildUnnamed3() => [
+      buildCourseMaterial(),
+      buildCourseMaterial(),
+    ];
 
-void checkUnnamed501(core.List<api.CourseMaterial> o) {
+void checkUnnamed3(core.List<api.CourseMaterial> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourseMaterial(o[0] as api.CourseMaterial);
-  checkCourseMaterial(o[1] as api.CourseMaterial);
+  checkCourseMaterial(o[0]);
+  checkCourseMaterial(o[1]);
 }
 
 core.int buildCounterCourseMaterialSet = 0;
 api.CourseMaterialSet buildCourseMaterialSet() {
-  var o = api.CourseMaterialSet();
+  final o = api.CourseMaterialSet();
   buildCounterCourseMaterialSet++;
   if (buildCounterCourseMaterialSet < 3) {
-    o.materials = buildUnnamed501();
+    o.materials = buildUnnamed3();
     o.title = 'foo';
   }
   buildCounterCourseMaterialSet--;
@@ -396,7 +388,7 @@ api.CourseMaterialSet buildCourseMaterialSet() {
 void checkCourseMaterialSet(api.CourseMaterialSet o) {
   buildCounterCourseMaterialSet++;
   if (buildCounterCourseMaterialSet < 3) {
-    checkUnnamed501(o.materials!);
+    checkUnnamed3(o.materials!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -407,7 +399,7 @@ void checkCourseMaterialSet(api.CourseMaterialSet o) {
 
 core.int buildCounterCourseRosterChangesInfo = 0;
 api.CourseRosterChangesInfo buildCourseRosterChangesInfo() {
-  var o = api.CourseRosterChangesInfo();
+  final o = api.CourseRosterChangesInfo();
   buildCounterCourseRosterChangesInfo++;
   if (buildCounterCourseRosterChangesInfo < 3) {
     o.courseId = 'foo';
@@ -427,22 +419,20 @@ void checkCourseRosterChangesInfo(api.CourseRosterChangesInfo o) {
   buildCounterCourseRosterChangesInfo--;
 }
 
-core.List<api.Material> buildUnnamed502() {
-  var o = <api.Material>[];
-  o.add(buildMaterial());
-  o.add(buildMaterial());
-  return o;
-}
+core.List<api.Material> buildUnnamed4() => [
+      buildMaterial(),
+      buildMaterial(),
+    ];
 
-void checkUnnamed502(core.List<api.Material> o) {
+void checkUnnamed4(core.List<api.Material> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMaterial(o[0] as api.Material);
-  checkMaterial(o[1] as api.Material);
+  checkMaterial(o[0]);
+  checkMaterial(o[1]);
 }
 
 core.int buildCounterCourseWork = 0;
 api.CourseWork buildCourseWork() {
-  var o = api.CourseWork();
+  final o = api.CourseWork();
   buildCounterCourseWork++;
   if (buildCounterCourseWork < 3) {
     o.alternateLink = 'foo';
@@ -455,9 +445,10 @@ api.CourseWork buildCourseWork() {
     o.description = 'foo';
     o.dueDate = buildDate();
     o.dueTime = buildTimeOfDay();
+    o.gradeCategory = buildGradeCategory();
     o.id = 'foo';
     o.individualStudentsOptions = buildIndividualStudentsOptions();
-    o.materials = buildUnnamed502();
+    o.materials = buildUnnamed4();
     o.maxPoints = 42.0;
     o.multipleChoiceQuestion = buildMultipleChoiceQuestion();
     o.scheduledTime = 'foo';
@@ -483,7 +474,7 @@ void checkCourseWork(api.CourseWork o) {
       o.assigneeMode!,
       unittest.equals('foo'),
     );
-    checkAssignment(o.assignment! as api.Assignment);
+    checkAssignment(o.assignment!);
     unittest.expect(o.associatedWithDeveloper!, unittest.isTrue);
     unittest.expect(
       o.courseId!,
@@ -501,21 +492,20 @@ void checkCourseWork(api.CourseWork o) {
       o.description!,
       unittest.equals('foo'),
     );
-    checkDate(o.dueDate! as api.Date);
-    checkTimeOfDay(o.dueTime! as api.TimeOfDay);
+    checkDate(o.dueDate!);
+    checkTimeOfDay(o.dueTime!);
+    checkGradeCategory(o.gradeCategory!);
     unittest.expect(
       o.id!,
       unittest.equals('foo'),
     );
-    checkIndividualStudentsOptions(
-        o.individualStudentsOptions! as api.IndividualStudentsOptions);
-    checkUnnamed502(o.materials!);
+    checkIndividualStudentsOptions(o.individualStudentsOptions!);
+    checkUnnamed4(o.materials!);
     unittest.expect(
       o.maxPoints!,
       unittest.equals(42.0),
     );
-    checkMultipleChoiceQuestion(
-        o.multipleChoiceQuestion! as api.MultipleChoiceQuestion);
+    checkMultipleChoiceQuestion(o.multipleChoiceQuestion!);
     unittest.expect(
       o.scheduledTime!,
       unittest.equals('foo'),
@@ -550,7 +540,7 @@ void checkCourseWork(api.CourseWork o) {
 
 core.int buildCounterCourseWorkChangesInfo = 0;
 api.CourseWorkChangesInfo buildCourseWorkChangesInfo() {
-  var o = api.CourseWorkChangesInfo();
+  final o = api.CourseWorkChangesInfo();
   buildCounterCourseWorkChangesInfo++;
   if (buildCounterCourseWorkChangesInfo < 3) {
     o.courseId = 'foo';
@@ -570,22 +560,20 @@ void checkCourseWorkChangesInfo(api.CourseWorkChangesInfo o) {
   buildCounterCourseWorkChangesInfo--;
 }
 
-core.List<api.Material> buildUnnamed503() {
-  var o = <api.Material>[];
-  o.add(buildMaterial());
-  o.add(buildMaterial());
-  return o;
-}
+core.List<api.Material> buildUnnamed5() => [
+      buildMaterial(),
+      buildMaterial(),
+    ];
 
-void checkUnnamed503(core.List<api.Material> o) {
+void checkUnnamed5(core.List<api.Material> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkMaterial(o[0] as api.Material);
-  checkMaterial(o[1] as api.Material);
+  checkMaterial(o[0]);
+  checkMaterial(o[1]);
 }
 
 core.int buildCounterCourseWorkMaterial = 0;
 api.CourseWorkMaterial buildCourseWorkMaterial() {
-  var o = api.CourseWorkMaterial();
+  final o = api.CourseWorkMaterial();
   buildCounterCourseWorkMaterial++;
   if (buildCounterCourseWorkMaterial < 3) {
     o.alternateLink = 'foo';
@@ -596,7 +584,7 @@ api.CourseWorkMaterial buildCourseWorkMaterial() {
     o.description = 'foo';
     o.id = 'foo';
     o.individualStudentsOptions = buildIndividualStudentsOptions();
-    o.materials = buildUnnamed503();
+    o.materials = buildUnnamed5();
     o.scheduledTime = 'foo';
     o.state = 'foo';
     o.title = 'foo';
@@ -638,9 +626,8 @@ void checkCourseWorkMaterial(api.CourseWorkMaterial o) {
       o.id!,
       unittest.equals('foo'),
     );
-    checkIndividualStudentsOptions(
-        o.individualStudentsOptions! as api.IndividualStudentsOptions);
-    checkUnnamed503(o.materials!);
+    checkIndividualStudentsOptions(o.individualStudentsOptions!);
+    checkUnnamed5(o.materials!);
     unittest.expect(
       o.scheduledTime!,
       unittest.equals('foo'),
@@ -667,7 +654,7 @@ void checkCourseWorkMaterial(api.CourseWorkMaterial o) {
 
 core.int buildCounterDate = 0;
 api.Date buildDate() {
-  var o = api.Date();
+  final o = api.Date();
   buildCounterDate++;
   if (buildCounterDate < 3) {
     o.day = 42;
@@ -699,7 +686,7 @@ void checkDate(api.Date o) {
 
 core.int buildCounterDriveFile = 0;
 api.DriveFile buildDriveFile() {
-  var o = api.DriveFile();
+  final o = api.DriveFile();
   buildCounterDriveFile++;
   if (buildCounterDriveFile < 3) {
     o.alternateLink = 'foo';
@@ -736,7 +723,7 @@ void checkDriveFile(api.DriveFile o) {
 
 core.int buildCounterDriveFolder = 0;
 api.DriveFolder buildDriveFolder() {
-  var o = api.DriveFolder();
+  final o = api.DriveFolder();
   buildCounterDriveFolder++;
   if (buildCounterDriveFolder < 3) {
     o.alternateLink = 'foo';
@@ -768,7 +755,7 @@ void checkDriveFolder(api.DriveFolder o) {
 
 core.int buildCounterEmpty = 0;
 api.Empty buildEmpty() {
-  var o = api.Empty();
+  final o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
@@ -783,7 +770,7 @@ void checkEmpty(api.Empty o) {
 
 core.int buildCounterFeed = 0;
 api.Feed buildFeed() {
-  var o = api.Feed();
+  final o = api.Feed();
   buildCounterFeed++;
   if (buildCounterFeed < 3) {
     o.courseRosterChangesInfo = buildCourseRosterChangesInfo();
@@ -797,10 +784,8 @@ api.Feed buildFeed() {
 void checkFeed(api.Feed o) {
   buildCounterFeed++;
   if (buildCounterFeed < 3) {
-    checkCourseRosterChangesInfo(
-        o.courseRosterChangesInfo! as api.CourseRosterChangesInfo);
-    checkCourseWorkChangesInfo(
-        o.courseWorkChangesInfo! as api.CourseWorkChangesInfo);
+    checkCourseRosterChangesInfo(o.courseRosterChangesInfo!);
+    checkCourseWorkChangesInfo(o.courseWorkChangesInfo!);
     unittest.expect(
       o.feedType!,
       unittest.equals('foo'),
@@ -811,7 +796,7 @@ void checkFeed(api.Feed o) {
 
 core.int buildCounterForm = 0;
 api.Form buildForm() {
-  var o = api.Form();
+  final o = api.Form();
   buildCounterForm++;
   if (buildCounterForm < 3) {
     o.formUrl = 'foo';
@@ -848,7 +833,7 @@ void checkForm(api.Form o) {
 
 core.int buildCounterGlobalPermission = 0;
 api.GlobalPermission buildGlobalPermission() {
-  var o = api.GlobalPermission();
+  final o = api.GlobalPermission();
   buildCounterGlobalPermission++;
   if (buildCounterGlobalPermission < 3) {
     o.permission = 'foo';
@@ -868,9 +853,46 @@ void checkGlobalPermission(api.GlobalPermission o) {
   buildCounterGlobalPermission--;
 }
 
+core.int buildCounterGradeCategory = 0;
+api.GradeCategory buildGradeCategory() {
+  final o = api.GradeCategory();
+  buildCounterGradeCategory++;
+  if (buildCounterGradeCategory < 3) {
+    o.defaultGradeDenominator = 42;
+    o.id = 'foo';
+    o.name = 'foo';
+    o.weight = 42;
+  }
+  buildCounterGradeCategory--;
+  return o;
+}
+
+void checkGradeCategory(api.GradeCategory o) {
+  buildCounterGradeCategory++;
+  if (buildCounterGradeCategory < 3) {
+    unittest.expect(
+      o.defaultGradeDenominator!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.id!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.weight!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterGradeCategory--;
+}
+
 core.int buildCounterGradeHistory = 0;
 api.GradeHistory buildGradeHistory() {
-  var o = api.GradeHistory();
+  final o = api.GradeHistory();
   buildCounterGradeHistory++;
   if (buildCounterGradeHistory < 3) {
     o.actorUserId = 'foo';
@@ -910,9 +932,49 @@ void checkGradeHistory(api.GradeHistory o) {
   buildCounterGradeHistory--;
 }
 
+core.List<api.GradeCategory> buildUnnamed6() => [
+      buildGradeCategory(),
+      buildGradeCategory(),
+    ];
+
+void checkUnnamed6(core.List<api.GradeCategory> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGradeCategory(o[0]);
+  checkGradeCategory(o[1]);
+}
+
+core.int buildCounterGradebookSettings = 0;
+api.GradebookSettings buildGradebookSettings() {
+  final o = api.GradebookSettings();
+  buildCounterGradebookSettings++;
+  if (buildCounterGradebookSettings < 3) {
+    o.calculationType = 'foo';
+    o.displaySetting = 'foo';
+    o.gradeCategories = buildUnnamed6();
+  }
+  buildCounterGradebookSettings--;
+  return o;
+}
+
+void checkGradebookSettings(api.GradebookSettings o) {
+  buildCounterGradebookSettings++;
+  if (buildCounterGradebookSettings < 3) {
+    unittest.expect(
+      o.calculationType!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.displaySetting!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed6(o.gradeCategories!);
+  }
+  buildCounterGradebookSettings--;
+}
+
 core.int buildCounterGuardian = 0;
 api.Guardian buildGuardian() {
-  var o = api.Guardian();
+  final o = api.Guardian();
   buildCounterGuardian++;
   if (buildCounterGuardian < 3) {
     o.guardianId = 'foo';
@@ -931,7 +993,7 @@ void checkGuardian(api.Guardian o) {
       o.guardianId!,
       unittest.equals('foo'),
     );
-    checkUserProfile(o.guardianProfile! as api.UserProfile);
+    checkUserProfile(o.guardianProfile!);
     unittest.expect(
       o.invitedEmailAddress!,
       unittest.equals('foo'),
@@ -946,7 +1008,7 @@ void checkGuardian(api.Guardian o) {
 
 core.int buildCounterGuardianInvitation = 0;
 api.GuardianInvitation buildGuardianInvitation() {
-  var o = api.GuardianInvitation();
+  final o = api.GuardianInvitation();
   buildCounterGuardianInvitation++;
   if (buildCounterGuardianInvitation < 3) {
     o.creationTime = 'foo';
@@ -986,14 +1048,12 @@ void checkGuardianInvitation(api.GuardianInvitation o) {
   buildCounterGuardianInvitation--;
 }
 
-core.List<core.String> buildUnnamed504() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed7() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed504(core.List<core.String> o) {
+void checkUnnamed7(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1007,10 +1067,10 @@ void checkUnnamed504(core.List<core.String> o) {
 
 core.int buildCounterIndividualStudentsOptions = 0;
 api.IndividualStudentsOptions buildIndividualStudentsOptions() {
-  var o = api.IndividualStudentsOptions();
+  final o = api.IndividualStudentsOptions();
   buildCounterIndividualStudentsOptions++;
   if (buildCounterIndividualStudentsOptions < 3) {
-    o.studentIds = buildUnnamed504();
+    o.studentIds = buildUnnamed7();
   }
   buildCounterIndividualStudentsOptions--;
   return o;
@@ -1019,14 +1079,14 @@ api.IndividualStudentsOptions buildIndividualStudentsOptions() {
 void checkIndividualStudentsOptions(api.IndividualStudentsOptions o) {
   buildCounterIndividualStudentsOptions++;
   if (buildCounterIndividualStudentsOptions < 3) {
-    checkUnnamed504(o.studentIds!);
+    checkUnnamed7(o.studentIds!);
   }
   buildCounterIndividualStudentsOptions--;
 }
 
 core.int buildCounterInvitation = 0;
 api.Invitation buildInvitation() {
-  var o = api.Invitation();
+  final o = api.Invitation();
   buildCounterInvitation++;
   if (buildCounterInvitation < 3) {
     o.courseId = 'foo';
@@ -1063,7 +1123,7 @@ void checkInvitation(api.Invitation o) {
 
 core.int buildCounterLink = 0;
 api.Link buildLink() {
-  var o = api.Link();
+  final o = api.Link();
   buildCounterLink++;
   if (buildCounterLink < 3) {
     o.thumbnailUrl = 'foo';
@@ -1093,25 +1153,23 @@ void checkLink(api.Link o) {
   buildCounterLink--;
 }
 
-core.List<api.Announcement> buildUnnamed505() {
-  var o = <api.Announcement>[];
-  o.add(buildAnnouncement());
-  o.add(buildAnnouncement());
-  return o;
-}
+core.List<api.Announcement> buildUnnamed8() => [
+      buildAnnouncement(),
+      buildAnnouncement(),
+    ];
 
-void checkUnnamed505(core.List<api.Announcement> o) {
+void checkUnnamed8(core.List<api.Announcement> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAnnouncement(o[0] as api.Announcement);
-  checkAnnouncement(o[1] as api.Announcement);
+  checkAnnouncement(o[0]);
+  checkAnnouncement(o[1]);
 }
 
 core.int buildCounterListAnnouncementsResponse = 0;
 api.ListAnnouncementsResponse buildListAnnouncementsResponse() {
-  var o = api.ListAnnouncementsResponse();
+  final o = api.ListAnnouncementsResponse();
   buildCounterListAnnouncementsResponse++;
   if (buildCounterListAnnouncementsResponse < 3) {
-    o.announcements = buildUnnamed505();
+    o.announcements = buildUnnamed8();
     o.nextPageToken = 'foo';
   }
   buildCounterListAnnouncementsResponse--;
@@ -1121,7 +1179,7 @@ api.ListAnnouncementsResponse buildListAnnouncementsResponse() {
 void checkListAnnouncementsResponse(api.ListAnnouncementsResponse o) {
   buildCounterListAnnouncementsResponse++;
   if (buildCounterListAnnouncementsResponse < 3) {
-    checkUnnamed505(o.announcements!);
+    checkUnnamed8(o.announcements!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1130,25 +1188,23 @@ void checkListAnnouncementsResponse(api.ListAnnouncementsResponse o) {
   buildCounterListAnnouncementsResponse--;
 }
 
-core.List<api.CourseAlias> buildUnnamed506() {
-  var o = <api.CourseAlias>[];
-  o.add(buildCourseAlias());
-  o.add(buildCourseAlias());
-  return o;
-}
+core.List<api.CourseAlias> buildUnnamed9() => [
+      buildCourseAlias(),
+      buildCourseAlias(),
+    ];
 
-void checkUnnamed506(core.List<api.CourseAlias> o) {
+void checkUnnamed9(core.List<api.CourseAlias> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourseAlias(o[0] as api.CourseAlias);
-  checkCourseAlias(o[1] as api.CourseAlias);
+  checkCourseAlias(o[0]);
+  checkCourseAlias(o[1]);
 }
 
 core.int buildCounterListCourseAliasesResponse = 0;
 api.ListCourseAliasesResponse buildListCourseAliasesResponse() {
-  var o = api.ListCourseAliasesResponse();
+  final o = api.ListCourseAliasesResponse();
   buildCounterListCourseAliasesResponse++;
   if (buildCounterListCourseAliasesResponse < 3) {
-    o.aliases = buildUnnamed506();
+    o.aliases = buildUnnamed9();
     o.nextPageToken = 'foo';
   }
   buildCounterListCourseAliasesResponse--;
@@ -1158,7 +1214,7 @@ api.ListCourseAliasesResponse buildListCourseAliasesResponse() {
 void checkListCourseAliasesResponse(api.ListCourseAliasesResponse o) {
   buildCounterListCourseAliasesResponse++;
   if (buildCounterListCourseAliasesResponse < 3) {
-    checkUnnamed506(o.aliases!);
+    checkUnnamed9(o.aliases!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1167,25 +1223,23 @@ void checkListCourseAliasesResponse(api.ListCourseAliasesResponse o) {
   buildCounterListCourseAliasesResponse--;
 }
 
-core.List<api.CourseWorkMaterial> buildUnnamed507() {
-  var o = <api.CourseWorkMaterial>[];
-  o.add(buildCourseWorkMaterial());
-  o.add(buildCourseWorkMaterial());
-  return o;
-}
+core.List<api.CourseWorkMaterial> buildUnnamed10() => [
+      buildCourseWorkMaterial(),
+      buildCourseWorkMaterial(),
+    ];
 
-void checkUnnamed507(core.List<api.CourseWorkMaterial> o) {
+void checkUnnamed10(core.List<api.CourseWorkMaterial> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourseWorkMaterial(o[0] as api.CourseWorkMaterial);
-  checkCourseWorkMaterial(o[1] as api.CourseWorkMaterial);
+  checkCourseWorkMaterial(o[0]);
+  checkCourseWorkMaterial(o[1]);
 }
 
 core.int buildCounterListCourseWorkMaterialResponse = 0;
 api.ListCourseWorkMaterialResponse buildListCourseWorkMaterialResponse() {
-  var o = api.ListCourseWorkMaterialResponse();
+  final o = api.ListCourseWorkMaterialResponse();
   buildCounterListCourseWorkMaterialResponse++;
   if (buildCounterListCourseWorkMaterialResponse < 3) {
-    o.courseWorkMaterial = buildUnnamed507();
+    o.courseWorkMaterial = buildUnnamed10();
     o.nextPageToken = 'foo';
   }
   buildCounterListCourseWorkMaterialResponse--;
@@ -1195,7 +1249,7 @@ api.ListCourseWorkMaterialResponse buildListCourseWorkMaterialResponse() {
 void checkListCourseWorkMaterialResponse(api.ListCourseWorkMaterialResponse o) {
   buildCounterListCourseWorkMaterialResponse++;
   if (buildCounterListCourseWorkMaterialResponse < 3) {
-    checkUnnamed507(o.courseWorkMaterial!);
+    checkUnnamed10(o.courseWorkMaterial!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1204,25 +1258,23 @@ void checkListCourseWorkMaterialResponse(api.ListCourseWorkMaterialResponse o) {
   buildCounterListCourseWorkMaterialResponse--;
 }
 
-core.List<api.CourseWork> buildUnnamed508() {
-  var o = <api.CourseWork>[];
-  o.add(buildCourseWork());
-  o.add(buildCourseWork());
-  return o;
-}
+core.List<api.CourseWork> buildUnnamed11() => [
+      buildCourseWork(),
+      buildCourseWork(),
+    ];
 
-void checkUnnamed508(core.List<api.CourseWork> o) {
+void checkUnnamed11(core.List<api.CourseWork> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourseWork(o[0] as api.CourseWork);
-  checkCourseWork(o[1] as api.CourseWork);
+  checkCourseWork(o[0]);
+  checkCourseWork(o[1]);
 }
 
 core.int buildCounterListCourseWorkResponse = 0;
 api.ListCourseWorkResponse buildListCourseWorkResponse() {
-  var o = api.ListCourseWorkResponse();
+  final o = api.ListCourseWorkResponse();
   buildCounterListCourseWorkResponse++;
   if (buildCounterListCourseWorkResponse < 3) {
-    o.courseWork = buildUnnamed508();
+    o.courseWork = buildUnnamed11();
     o.nextPageToken = 'foo';
   }
   buildCounterListCourseWorkResponse--;
@@ -1232,7 +1284,7 @@ api.ListCourseWorkResponse buildListCourseWorkResponse() {
 void checkListCourseWorkResponse(api.ListCourseWorkResponse o) {
   buildCounterListCourseWorkResponse++;
   if (buildCounterListCourseWorkResponse < 3) {
-    checkUnnamed508(o.courseWork!);
+    checkUnnamed11(o.courseWork!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1241,25 +1293,23 @@ void checkListCourseWorkResponse(api.ListCourseWorkResponse o) {
   buildCounterListCourseWorkResponse--;
 }
 
-core.List<api.Course> buildUnnamed509() {
-  var o = <api.Course>[];
-  o.add(buildCourse());
-  o.add(buildCourse());
-  return o;
-}
+core.List<api.Course> buildUnnamed12() => [
+      buildCourse(),
+      buildCourse(),
+    ];
 
-void checkUnnamed509(core.List<api.Course> o) {
+void checkUnnamed12(core.List<api.Course> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCourse(o[0] as api.Course);
-  checkCourse(o[1] as api.Course);
+  checkCourse(o[0]);
+  checkCourse(o[1]);
 }
 
 core.int buildCounterListCoursesResponse = 0;
 api.ListCoursesResponse buildListCoursesResponse() {
-  var o = api.ListCoursesResponse();
+  final o = api.ListCoursesResponse();
   buildCounterListCoursesResponse++;
   if (buildCounterListCoursesResponse < 3) {
-    o.courses = buildUnnamed509();
+    o.courses = buildUnnamed12();
     o.nextPageToken = 'foo';
   }
   buildCounterListCoursesResponse--;
@@ -1269,7 +1319,7 @@ api.ListCoursesResponse buildListCoursesResponse() {
 void checkListCoursesResponse(api.ListCoursesResponse o) {
   buildCounterListCoursesResponse++;
   if (buildCounterListCoursesResponse < 3) {
-    checkUnnamed509(o.courses!);
+    checkUnnamed12(o.courses!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1278,25 +1328,23 @@ void checkListCoursesResponse(api.ListCoursesResponse o) {
   buildCounterListCoursesResponse--;
 }
 
-core.List<api.GuardianInvitation> buildUnnamed510() {
-  var o = <api.GuardianInvitation>[];
-  o.add(buildGuardianInvitation());
-  o.add(buildGuardianInvitation());
-  return o;
-}
+core.List<api.GuardianInvitation> buildUnnamed13() => [
+      buildGuardianInvitation(),
+      buildGuardianInvitation(),
+    ];
 
-void checkUnnamed510(core.List<api.GuardianInvitation> o) {
+void checkUnnamed13(core.List<api.GuardianInvitation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGuardianInvitation(o[0] as api.GuardianInvitation);
-  checkGuardianInvitation(o[1] as api.GuardianInvitation);
+  checkGuardianInvitation(o[0]);
+  checkGuardianInvitation(o[1]);
 }
 
 core.int buildCounterListGuardianInvitationsResponse = 0;
 api.ListGuardianInvitationsResponse buildListGuardianInvitationsResponse() {
-  var o = api.ListGuardianInvitationsResponse();
+  final o = api.ListGuardianInvitationsResponse();
   buildCounterListGuardianInvitationsResponse++;
   if (buildCounterListGuardianInvitationsResponse < 3) {
-    o.guardianInvitations = buildUnnamed510();
+    o.guardianInvitations = buildUnnamed13();
     o.nextPageToken = 'foo';
   }
   buildCounterListGuardianInvitationsResponse--;
@@ -1307,7 +1355,7 @@ void checkListGuardianInvitationsResponse(
     api.ListGuardianInvitationsResponse o) {
   buildCounterListGuardianInvitationsResponse++;
   if (buildCounterListGuardianInvitationsResponse < 3) {
-    checkUnnamed510(o.guardianInvitations!);
+    checkUnnamed13(o.guardianInvitations!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1316,25 +1364,23 @@ void checkListGuardianInvitationsResponse(
   buildCounterListGuardianInvitationsResponse--;
 }
 
-core.List<api.Guardian> buildUnnamed511() {
-  var o = <api.Guardian>[];
-  o.add(buildGuardian());
-  o.add(buildGuardian());
-  return o;
-}
+core.List<api.Guardian> buildUnnamed14() => [
+      buildGuardian(),
+      buildGuardian(),
+    ];
 
-void checkUnnamed511(core.List<api.Guardian> o) {
+void checkUnnamed14(core.List<api.Guardian> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGuardian(o[0] as api.Guardian);
-  checkGuardian(o[1] as api.Guardian);
+  checkGuardian(o[0]);
+  checkGuardian(o[1]);
 }
 
 core.int buildCounterListGuardiansResponse = 0;
 api.ListGuardiansResponse buildListGuardiansResponse() {
-  var o = api.ListGuardiansResponse();
+  final o = api.ListGuardiansResponse();
   buildCounterListGuardiansResponse++;
   if (buildCounterListGuardiansResponse < 3) {
-    o.guardians = buildUnnamed511();
+    o.guardians = buildUnnamed14();
     o.nextPageToken = 'foo';
   }
   buildCounterListGuardiansResponse--;
@@ -1344,7 +1390,7 @@ api.ListGuardiansResponse buildListGuardiansResponse() {
 void checkListGuardiansResponse(api.ListGuardiansResponse o) {
   buildCounterListGuardiansResponse++;
   if (buildCounterListGuardiansResponse < 3) {
-    checkUnnamed511(o.guardians!);
+    checkUnnamed14(o.guardians!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1353,25 +1399,23 @@ void checkListGuardiansResponse(api.ListGuardiansResponse o) {
   buildCounterListGuardiansResponse--;
 }
 
-core.List<api.Invitation> buildUnnamed512() {
-  var o = <api.Invitation>[];
-  o.add(buildInvitation());
-  o.add(buildInvitation());
-  return o;
-}
+core.List<api.Invitation> buildUnnamed15() => [
+      buildInvitation(),
+      buildInvitation(),
+    ];
 
-void checkUnnamed512(core.List<api.Invitation> o) {
+void checkUnnamed15(core.List<api.Invitation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkInvitation(o[0] as api.Invitation);
-  checkInvitation(o[1] as api.Invitation);
+  checkInvitation(o[0]);
+  checkInvitation(o[1]);
 }
 
 core.int buildCounterListInvitationsResponse = 0;
 api.ListInvitationsResponse buildListInvitationsResponse() {
-  var o = api.ListInvitationsResponse();
+  final o = api.ListInvitationsResponse();
   buildCounterListInvitationsResponse++;
   if (buildCounterListInvitationsResponse < 3) {
-    o.invitations = buildUnnamed512();
+    o.invitations = buildUnnamed15();
     o.nextPageToken = 'foo';
   }
   buildCounterListInvitationsResponse--;
@@ -1381,7 +1425,7 @@ api.ListInvitationsResponse buildListInvitationsResponse() {
 void checkListInvitationsResponse(api.ListInvitationsResponse o) {
   buildCounterListInvitationsResponse++;
   if (buildCounterListInvitationsResponse < 3) {
-    checkUnnamed512(o.invitations!);
+    checkUnnamed15(o.invitations!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -1390,26 +1434,24 @@ void checkListInvitationsResponse(api.ListInvitationsResponse o) {
   buildCounterListInvitationsResponse--;
 }
 
-core.List<api.StudentSubmission> buildUnnamed513() {
-  var o = <api.StudentSubmission>[];
-  o.add(buildStudentSubmission());
-  o.add(buildStudentSubmission());
-  return o;
-}
+core.List<api.StudentSubmission> buildUnnamed16() => [
+      buildStudentSubmission(),
+      buildStudentSubmission(),
+    ];
 
-void checkUnnamed513(core.List<api.StudentSubmission> o) {
+void checkUnnamed16(core.List<api.StudentSubmission> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkStudentSubmission(o[0] as api.StudentSubmission);
-  checkStudentSubmission(o[1] as api.StudentSubmission);
+  checkStudentSubmission(o[0]);
+  checkStudentSubmission(o[1]);
 }
 
 core.int buildCounterListStudentSubmissionsResponse = 0;
 api.ListStudentSubmissionsResponse buildListStudentSubmissionsResponse() {
-  var o = api.ListStudentSubmissionsResponse();
+  final o = api.ListStudentSubmissionsResponse();
   buildCounterListStudentSubmissionsResponse++;
   if (buildCounterListStudentSubmissionsResponse < 3) {
     o.nextPageToken = 'foo';
-    o.studentSubmissions = buildUnnamed513();
+    o.studentSubmissions = buildUnnamed16();
   }
   buildCounterListStudentSubmissionsResponse--;
   return o;
@@ -1422,31 +1464,29 @@ void checkListStudentSubmissionsResponse(api.ListStudentSubmissionsResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed513(o.studentSubmissions!);
+    checkUnnamed16(o.studentSubmissions!);
   }
   buildCounterListStudentSubmissionsResponse--;
 }
 
-core.List<api.Student> buildUnnamed514() {
-  var o = <api.Student>[];
-  o.add(buildStudent());
-  o.add(buildStudent());
-  return o;
-}
+core.List<api.Student> buildUnnamed17() => [
+      buildStudent(),
+      buildStudent(),
+    ];
 
-void checkUnnamed514(core.List<api.Student> o) {
+void checkUnnamed17(core.List<api.Student> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkStudent(o[0] as api.Student);
-  checkStudent(o[1] as api.Student);
+  checkStudent(o[0]);
+  checkStudent(o[1]);
 }
 
 core.int buildCounterListStudentsResponse = 0;
 api.ListStudentsResponse buildListStudentsResponse() {
-  var o = api.ListStudentsResponse();
+  final o = api.ListStudentsResponse();
   buildCounterListStudentsResponse++;
   if (buildCounterListStudentsResponse < 3) {
     o.nextPageToken = 'foo';
-    o.students = buildUnnamed514();
+    o.students = buildUnnamed17();
   }
   buildCounterListStudentsResponse--;
   return o;
@@ -1459,31 +1499,29 @@ void checkListStudentsResponse(api.ListStudentsResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed514(o.students!);
+    checkUnnamed17(o.students!);
   }
   buildCounterListStudentsResponse--;
 }
 
-core.List<api.Teacher> buildUnnamed515() {
-  var o = <api.Teacher>[];
-  o.add(buildTeacher());
-  o.add(buildTeacher());
-  return o;
-}
+core.List<api.Teacher> buildUnnamed18() => [
+      buildTeacher(),
+      buildTeacher(),
+    ];
 
-void checkUnnamed515(core.List<api.Teacher> o) {
+void checkUnnamed18(core.List<api.Teacher> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTeacher(o[0] as api.Teacher);
-  checkTeacher(o[1] as api.Teacher);
+  checkTeacher(o[0]);
+  checkTeacher(o[1]);
 }
 
 core.int buildCounterListTeachersResponse = 0;
 api.ListTeachersResponse buildListTeachersResponse() {
-  var o = api.ListTeachersResponse();
+  final o = api.ListTeachersResponse();
   buildCounterListTeachersResponse++;
   if (buildCounterListTeachersResponse < 3) {
     o.nextPageToken = 'foo';
-    o.teachers = buildUnnamed515();
+    o.teachers = buildUnnamed18();
   }
   buildCounterListTeachersResponse--;
   return o;
@@ -1496,31 +1534,29 @@ void checkListTeachersResponse(api.ListTeachersResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed515(o.teachers!);
+    checkUnnamed18(o.teachers!);
   }
   buildCounterListTeachersResponse--;
 }
 
-core.List<api.Topic> buildUnnamed516() {
-  var o = <api.Topic>[];
-  o.add(buildTopic());
-  o.add(buildTopic());
-  return o;
-}
+core.List<api.Topic> buildUnnamed19() => [
+      buildTopic(),
+      buildTopic(),
+    ];
 
-void checkUnnamed516(core.List<api.Topic> o) {
+void checkUnnamed19(core.List<api.Topic> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTopic(o[0] as api.Topic);
-  checkTopic(o[1] as api.Topic);
+  checkTopic(o[0]);
+  checkTopic(o[1]);
 }
 
 core.int buildCounterListTopicResponse = 0;
 api.ListTopicResponse buildListTopicResponse() {
-  var o = api.ListTopicResponse();
+  final o = api.ListTopicResponse();
   buildCounterListTopicResponse++;
   if (buildCounterListTopicResponse < 3) {
     o.nextPageToken = 'foo';
-    o.topic = buildUnnamed516();
+    o.topic = buildUnnamed19();
   }
   buildCounterListTopicResponse--;
   return o;
@@ -1533,14 +1569,14 @@ void checkListTopicResponse(api.ListTopicResponse o) {
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed516(o.topic!);
+    checkUnnamed19(o.topic!);
   }
   buildCounterListTopicResponse--;
 }
 
 core.int buildCounterMaterial = 0;
 api.Material buildMaterial() {
-  var o = api.Material();
+  final o = api.Material();
   buildCounterMaterial++;
   if (buildCounterMaterial < 3) {
     o.driveFile = buildSharedDriveFile();
@@ -1555,10 +1591,10 @@ api.Material buildMaterial() {
 void checkMaterial(api.Material o) {
   buildCounterMaterial++;
   if (buildCounterMaterial < 3) {
-    checkSharedDriveFile(o.driveFile! as api.SharedDriveFile);
-    checkForm(o.form! as api.Form);
-    checkLink(o.link! as api.Link);
-    checkYouTubeVideo(o.youtubeVideo! as api.YouTubeVideo);
+    checkSharedDriveFile(o.driveFile!);
+    checkForm(o.form!);
+    checkLink(o.link!);
+    checkYouTubeVideo(o.youtubeVideo!);
   }
   buildCounterMaterial--;
 }
@@ -1566,7 +1602,7 @@ void checkMaterial(api.Material o) {
 core.int buildCounterModifyAnnouncementAssigneesRequest = 0;
 api.ModifyAnnouncementAssigneesRequest
     buildModifyAnnouncementAssigneesRequest() {
-  var o = api.ModifyAnnouncementAssigneesRequest();
+  final o = api.ModifyAnnouncementAssigneesRequest();
   buildCounterModifyAnnouncementAssigneesRequest++;
   if (buildCounterModifyAnnouncementAssigneesRequest < 3) {
     o.assigneeMode = 'foo';
@@ -1584,31 +1620,28 @@ void checkModifyAnnouncementAssigneesRequest(
       o.assigneeMode!,
       unittest.equals('foo'),
     );
-    checkModifyIndividualStudentsOptions(o.modifyIndividualStudentsOptions!
-        as api.ModifyIndividualStudentsOptions);
+    checkModifyIndividualStudentsOptions(o.modifyIndividualStudentsOptions!);
   }
   buildCounterModifyAnnouncementAssigneesRequest--;
 }
 
-core.List<api.Attachment> buildUnnamed517() {
-  var o = <api.Attachment>[];
-  o.add(buildAttachment());
-  o.add(buildAttachment());
-  return o;
-}
+core.List<api.Attachment> buildUnnamed20() => [
+      buildAttachment(),
+      buildAttachment(),
+    ];
 
-void checkUnnamed517(core.List<api.Attachment> o) {
+void checkUnnamed20(core.List<api.Attachment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAttachment(o[0] as api.Attachment);
-  checkAttachment(o[1] as api.Attachment);
+  checkAttachment(o[0]);
+  checkAttachment(o[1]);
 }
 
 core.int buildCounterModifyAttachmentsRequest = 0;
 api.ModifyAttachmentsRequest buildModifyAttachmentsRequest() {
-  var o = api.ModifyAttachmentsRequest();
+  final o = api.ModifyAttachmentsRequest();
   buildCounterModifyAttachmentsRequest++;
   if (buildCounterModifyAttachmentsRequest < 3) {
-    o.addAttachments = buildUnnamed517();
+    o.addAttachments = buildUnnamed20();
   }
   buildCounterModifyAttachmentsRequest--;
   return o;
@@ -1617,14 +1650,14 @@ api.ModifyAttachmentsRequest buildModifyAttachmentsRequest() {
 void checkModifyAttachmentsRequest(api.ModifyAttachmentsRequest o) {
   buildCounterModifyAttachmentsRequest++;
   if (buildCounterModifyAttachmentsRequest < 3) {
-    checkUnnamed517(o.addAttachments!);
+    checkUnnamed20(o.addAttachments!);
   }
   buildCounterModifyAttachmentsRequest--;
 }
 
 core.int buildCounterModifyCourseWorkAssigneesRequest = 0;
 api.ModifyCourseWorkAssigneesRequest buildModifyCourseWorkAssigneesRequest() {
-  var o = api.ModifyCourseWorkAssigneesRequest();
+  final o = api.ModifyCourseWorkAssigneesRequest();
   buildCounterModifyCourseWorkAssigneesRequest++;
   if (buildCounterModifyCourseWorkAssigneesRequest < 3) {
     o.assigneeMode = 'foo';
@@ -1642,20 +1675,17 @@ void checkModifyCourseWorkAssigneesRequest(
       o.assigneeMode!,
       unittest.equals('foo'),
     );
-    checkModifyIndividualStudentsOptions(o.modifyIndividualStudentsOptions!
-        as api.ModifyIndividualStudentsOptions);
+    checkModifyIndividualStudentsOptions(o.modifyIndividualStudentsOptions!);
   }
   buildCounterModifyCourseWorkAssigneesRequest--;
 }
 
-core.List<core.String> buildUnnamed518() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed21() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed518(core.List<core.String> o) {
+void checkUnnamed21(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1667,14 +1697,12 @@ void checkUnnamed518(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed519() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed22() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed519(core.List<core.String> o) {
+void checkUnnamed22(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1688,11 +1716,11 @@ void checkUnnamed519(core.List<core.String> o) {
 
 core.int buildCounterModifyIndividualStudentsOptions = 0;
 api.ModifyIndividualStudentsOptions buildModifyIndividualStudentsOptions() {
-  var o = api.ModifyIndividualStudentsOptions();
+  final o = api.ModifyIndividualStudentsOptions();
   buildCounterModifyIndividualStudentsOptions++;
   if (buildCounterModifyIndividualStudentsOptions < 3) {
-    o.addStudentIds = buildUnnamed518();
-    o.removeStudentIds = buildUnnamed519();
+    o.addStudentIds = buildUnnamed21();
+    o.removeStudentIds = buildUnnamed22();
   }
   buildCounterModifyIndividualStudentsOptions--;
   return o;
@@ -1702,20 +1730,18 @@ void checkModifyIndividualStudentsOptions(
     api.ModifyIndividualStudentsOptions o) {
   buildCounterModifyIndividualStudentsOptions++;
   if (buildCounterModifyIndividualStudentsOptions < 3) {
-    checkUnnamed518(o.addStudentIds!);
-    checkUnnamed519(o.removeStudentIds!);
+    checkUnnamed21(o.addStudentIds!);
+    checkUnnamed22(o.removeStudentIds!);
   }
   buildCounterModifyIndividualStudentsOptions--;
 }
 
-core.List<core.String> buildUnnamed520() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed23() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed520(core.List<core.String> o) {
+void checkUnnamed23(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1729,10 +1755,10 @@ void checkUnnamed520(core.List<core.String> o) {
 
 core.int buildCounterMultipleChoiceQuestion = 0;
 api.MultipleChoiceQuestion buildMultipleChoiceQuestion() {
-  var o = api.MultipleChoiceQuestion();
+  final o = api.MultipleChoiceQuestion();
   buildCounterMultipleChoiceQuestion++;
   if (buildCounterMultipleChoiceQuestion < 3) {
-    o.choices = buildUnnamed520();
+    o.choices = buildUnnamed23();
   }
   buildCounterMultipleChoiceQuestion--;
   return o;
@@ -1741,14 +1767,14 @@ api.MultipleChoiceQuestion buildMultipleChoiceQuestion() {
 void checkMultipleChoiceQuestion(api.MultipleChoiceQuestion o) {
   buildCounterMultipleChoiceQuestion++;
   if (buildCounterMultipleChoiceQuestion < 3) {
-    checkUnnamed520(o.choices!);
+    checkUnnamed23(o.choices!);
   }
   buildCounterMultipleChoiceQuestion--;
 }
 
 core.int buildCounterMultipleChoiceSubmission = 0;
 api.MultipleChoiceSubmission buildMultipleChoiceSubmission() {
-  var o = api.MultipleChoiceSubmission();
+  final o = api.MultipleChoiceSubmission();
   buildCounterMultipleChoiceSubmission++;
   if (buildCounterMultipleChoiceSubmission < 3) {
     o.answer = 'foo';
@@ -1770,7 +1796,7 @@ void checkMultipleChoiceSubmission(api.MultipleChoiceSubmission o) {
 
 core.int buildCounterName = 0;
 api.Name buildName() {
-  var o = api.Name();
+  final o = api.Name();
   buildCounterName++;
   if (buildCounterName < 3) {
     o.familyName = 'foo';
@@ -1802,7 +1828,7 @@ void checkName(api.Name o) {
 
 core.int buildCounterReclaimStudentSubmissionRequest = 0;
 api.ReclaimStudentSubmissionRequest buildReclaimStudentSubmissionRequest() {
-  var o = api.ReclaimStudentSubmissionRequest();
+  final o = api.ReclaimStudentSubmissionRequest();
   buildCounterReclaimStudentSubmissionRequest++;
   if (buildCounterReclaimStudentSubmissionRequest < 3) {}
   buildCounterReclaimStudentSubmissionRequest--;
@@ -1818,7 +1844,7 @@ void checkReclaimStudentSubmissionRequest(
 
 core.int buildCounterRegistration = 0;
 api.Registration buildRegistration() {
-  var o = api.Registration();
+  final o = api.Registration();
   buildCounterRegistration++;
   if (buildCounterRegistration < 3) {
     o.cloudPubsubTopic = buildCloudPubsubTopic();
@@ -1833,12 +1859,12 @@ api.Registration buildRegistration() {
 void checkRegistration(api.Registration o) {
   buildCounterRegistration++;
   if (buildCounterRegistration < 3) {
-    checkCloudPubsubTopic(o.cloudPubsubTopic! as api.CloudPubsubTopic);
+    checkCloudPubsubTopic(o.cloudPubsubTopic!);
     unittest.expect(
       o.expiryTime!,
       unittest.equals('foo'),
     );
-    checkFeed(o.feed! as api.Feed);
+    checkFeed(o.feed!);
     unittest.expect(
       o.registrationId!,
       unittest.equals('foo'),
@@ -1849,7 +1875,7 @@ void checkRegistration(api.Registration o) {
 
 core.int buildCounterReturnStudentSubmissionRequest = 0;
 api.ReturnStudentSubmissionRequest buildReturnStudentSubmissionRequest() {
-  var o = api.ReturnStudentSubmissionRequest();
+  final o = api.ReturnStudentSubmissionRequest();
   buildCounterReturnStudentSubmissionRequest++;
   if (buildCounterReturnStudentSubmissionRequest < 3) {}
   buildCounterReturnStudentSubmissionRequest--;
@@ -1864,7 +1890,7 @@ void checkReturnStudentSubmissionRequest(api.ReturnStudentSubmissionRequest o) {
 
 core.int buildCounterSharedDriveFile = 0;
 api.SharedDriveFile buildSharedDriveFile() {
-  var o = api.SharedDriveFile();
+  final o = api.SharedDriveFile();
   buildCounterSharedDriveFile++;
   if (buildCounterSharedDriveFile < 3) {
     o.driveFile = buildDriveFile();
@@ -1877,7 +1903,7 @@ api.SharedDriveFile buildSharedDriveFile() {
 void checkSharedDriveFile(api.SharedDriveFile o) {
   buildCounterSharedDriveFile++;
   if (buildCounterSharedDriveFile < 3) {
-    checkDriveFile(o.driveFile! as api.DriveFile);
+    checkDriveFile(o.driveFile!);
     unittest.expect(
       o.shareMode!,
       unittest.equals('foo'),
@@ -1888,7 +1914,7 @@ void checkSharedDriveFile(api.SharedDriveFile o) {
 
 core.int buildCounterShortAnswerSubmission = 0;
 api.ShortAnswerSubmission buildShortAnswerSubmission() {
-  var o = api.ShortAnswerSubmission();
+  final o = api.ShortAnswerSubmission();
   buildCounterShortAnswerSubmission++;
   if (buildCounterShortAnswerSubmission < 3) {
     o.answer = 'foo';
@@ -1910,7 +1936,7 @@ void checkShortAnswerSubmission(api.ShortAnswerSubmission o) {
 
 core.int buildCounterStateHistory = 0;
 api.StateHistory buildStateHistory() {
-  var o = api.StateHistory();
+  final o = api.StateHistory();
   buildCounterStateHistory++;
   if (buildCounterStateHistory < 3) {
     o.actorUserId = 'foo';
@@ -1942,7 +1968,7 @@ void checkStateHistory(api.StateHistory o) {
 
 core.int buildCounterStudent = 0;
 api.Student buildStudent() {
-  var o = api.Student();
+  final o = api.Student();
   buildCounterStudent++;
   if (buildCounterStudent < 3) {
     o.courseId = 'foo';
@@ -1961,8 +1987,8 @@ void checkStudent(api.Student o) {
       o.courseId!,
       unittest.equals('foo'),
     );
-    checkUserProfile(o.profile! as api.UserProfile);
-    checkDriveFolder(o.studentWorkFolder! as api.DriveFolder);
+    checkUserProfile(o.profile!);
+    checkDriveFolder(o.studentWorkFolder!);
     unittest.expect(
       o.userId!,
       unittest.equals('foo'),
@@ -1971,22 +1997,20 @@ void checkStudent(api.Student o) {
   buildCounterStudent--;
 }
 
-core.List<api.SubmissionHistory> buildUnnamed521() {
-  var o = <api.SubmissionHistory>[];
-  o.add(buildSubmissionHistory());
-  o.add(buildSubmissionHistory());
-  return o;
-}
+core.List<api.SubmissionHistory> buildUnnamed24() => [
+      buildSubmissionHistory(),
+      buildSubmissionHistory(),
+    ];
 
-void checkUnnamed521(core.List<api.SubmissionHistory> o) {
+void checkUnnamed24(core.List<api.SubmissionHistory> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSubmissionHistory(o[0] as api.SubmissionHistory);
-  checkSubmissionHistory(o[1] as api.SubmissionHistory);
+  checkSubmissionHistory(o[0]);
+  checkSubmissionHistory(o[1]);
 }
 
 core.int buildCounterStudentSubmission = 0;
 api.StudentSubmission buildStudentSubmission() {
-  var o = api.StudentSubmission();
+  final o = api.StudentSubmission();
   buildCounterStudentSubmission++;
   if (buildCounterStudentSubmission < 3) {
     o.alternateLink = 'foo';
@@ -2003,7 +2027,7 @@ api.StudentSubmission buildStudentSubmission() {
     o.multipleChoiceSubmission = buildMultipleChoiceSubmission();
     o.shortAnswerSubmission = buildShortAnswerSubmission();
     o.state = 'foo';
-    o.submissionHistory = buildUnnamed521();
+    o.submissionHistory = buildUnnamed24();
     o.updateTime = 'foo';
     o.userId = 'foo';
   }
@@ -2022,8 +2046,7 @@ void checkStudentSubmission(api.StudentSubmission o) {
       o.assignedGrade!,
       unittest.equals(42.0),
     );
-    checkAssignmentSubmission(
-        o.assignmentSubmission! as api.AssignmentSubmission);
+    checkAssignmentSubmission(o.assignmentSubmission!);
     unittest.expect(o.associatedWithDeveloper!, unittest.isTrue);
     unittest.expect(
       o.courseId!,
@@ -2050,15 +2073,13 @@ void checkStudentSubmission(api.StudentSubmission o) {
       unittest.equals('foo'),
     );
     unittest.expect(o.late!, unittest.isTrue);
-    checkMultipleChoiceSubmission(
-        o.multipleChoiceSubmission! as api.MultipleChoiceSubmission);
-    checkShortAnswerSubmission(
-        o.shortAnswerSubmission! as api.ShortAnswerSubmission);
+    checkMultipleChoiceSubmission(o.multipleChoiceSubmission!);
+    checkShortAnswerSubmission(o.shortAnswerSubmission!);
     unittest.expect(
       o.state!,
       unittest.equals('foo'),
     );
-    checkUnnamed521(o.submissionHistory!);
+    checkUnnamed24(o.submissionHistory!);
     unittest.expect(
       o.updateTime!,
       unittest.equals('foo'),
@@ -2073,7 +2094,7 @@ void checkStudentSubmission(api.StudentSubmission o) {
 
 core.int buildCounterSubmissionHistory = 0;
 api.SubmissionHistory buildSubmissionHistory() {
-  var o = api.SubmissionHistory();
+  final o = api.SubmissionHistory();
   buildCounterSubmissionHistory++;
   if (buildCounterSubmissionHistory < 3) {
     o.gradeHistory = buildGradeHistory();
@@ -2086,15 +2107,15 @@ api.SubmissionHistory buildSubmissionHistory() {
 void checkSubmissionHistory(api.SubmissionHistory o) {
   buildCounterSubmissionHistory++;
   if (buildCounterSubmissionHistory < 3) {
-    checkGradeHistory(o.gradeHistory! as api.GradeHistory);
-    checkStateHistory(o.stateHistory! as api.StateHistory);
+    checkGradeHistory(o.gradeHistory!);
+    checkStateHistory(o.stateHistory!);
   }
   buildCounterSubmissionHistory--;
 }
 
 core.int buildCounterTeacher = 0;
 api.Teacher buildTeacher() {
-  var o = api.Teacher();
+  final o = api.Teacher();
   buildCounterTeacher++;
   if (buildCounterTeacher < 3) {
     o.courseId = 'foo';
@@ -2112,7 +2133,7 @@ void checkTeacher(api.Teacher o) {
       o.courseId!,
       unittest.equals('foo'),
     );
-    checkUserProfile(o.profile! as api.UserProfile);
+    checkUserProfile(o.profile!);
     unittest.expect(
       o.userId!,
       unittest.equals('foo'),
@@ -2123,7 +2144,7 @@ void checkTeacher(api.Teacher o) {
 
 core.int buildCounterTimeOfDay = 0;
 api.TimeOfDay buildTimeOfDay() {
-  var o = api.TimeOfDay();
+  final o = api.TimeOfDay();
   buildCounterTimeOfDay++;
   if (buildCounterTimeOfDay < 3) {
     o.hours = 42;
@@ -2160,7 +2181,7 @@ void checkTimeOfDay(api.TimeOfDay o) {
 
 core.int buildCounterTopic = 0;
 api.Topic buildTopic() {
-  var o = api.Topic();
+  final o = api.Topic();
   buildCounterTopic++;
   if (buildCounterTopic < 3) {
     o.courseId = 'foo';
@@ -2197,7 +2218,7 @@ void checkTopic(api.Topic o) {
 
 core.int buildCounterTurnInStudentSubmissionRequest = 0;
 api.TurnInStudentSubmissionRequest buildTurnInStudentSubmissionRequest() {
-  var o = api.TurnInStudentSubmissionRequest();
+  final o = api.TurnInStudentSubmissionRequest();
   buildCounterTurnInStudentSubmissionRequest++;
   if (buildCounterTurnInStudentSubmissionRequest < 3) {}
   buildCounterTurnInStudentSubmissionRequest--;
@@ -2210,28 +2231,26 @@ void checkTurnInStudentSubmissionRequest(api.TurnInStudentSubmissionRequest o) {
   buildCounterTurnInStudentSubmissionRequest--;
 }
 
-core.List<api.GlobalPermission> buildUnnamed522() {
-  var o = <api.GlobalPermission>[];
-  o.add(buildGlobalPermission());
-  o.add(buildGlobalPermission());
-  return o;
-}
+core.List<api.GlobalPermission> buildUnnamed25() => [
+      buildGlobalPermission(),
+      buildGlobalPermission(),
+    ];
 
-void checkUnnamed522(core.List<api.GlobalPermission> o) {
+void checkUnnamed25(core.List<api.GlobalPermission> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGlobalPermission(o[0] as api.GlobalPermission);
-  checkGlobalPermission(o[1] as api.GlobalPermission);
+  checkGlobalPermission(o[0]);
+  checkGlobalPermission(o[1]);
 }
 
 core.int buildCounterUserProfile = 0;
 api.UserProfile buildUserProfile() {
-  var o = api.UserProfile();
+  final o = api.UserProfile();
   buildCounterUserProfile++;
   if (buildCounterUserProfile < 3) {
     o.emailAddress = 'foo';
     o.id = 'foo';
     o.name = buildName();
-    o.permissions = buildUnnamed522();
+    o.permissions = buildUnnamed25();
     o.photoUrl = 'foo';
     o.verifiedTeacher = true;
   }
@@ -2250,8 +2269,8 @@ void checkUserProfile(api.UserProfile o) {
       o.id!,
       unittest.equals('foo'),
     );
-    checkName(o.name! as api.Name);
-    checkUnnamed522(o.permissions!);
+    checkName(o.name!);
+    checkUnnamed25(o.permissions!);
     unittest.expect(
       o.photoUrl!,
       unittest.equals('foo'),
@@ -2263,7 +2282,7 @@ void checkUserProfile(api.UserProfile o) {
 
 core.int buildCounterYouTubeVideo = 0;
 api.YouTubeVideo buildYouTubeVideo() {
-  var o = api.YouTubeVideo();
+  final o = api.YouTubeVideo();
   buildCounterYouTubeVideo++;
   if (buildCounterYouTubeVideo < 3) {
     o.alternateLink = 'foo';
@@ -2298,14 +2317,12 @@ void checkYouTubeVideo(api.YouTubeVideo o) {
   buildCounterYouTubeVideo--;
 }
 
-core.List<core.String> buildUnnamed523() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed26() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed523(core.List<core.String> o) {
+void checkUnnamed26(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2317,14 +2334,12 @@ void checkUnnamed523(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed524() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed27() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed524(core.List<core.String> o) {
+void checkUnnamed27(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2336,14 +2351,12 @@ void checkUnnamed524(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed525() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed28() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed525(core.List<core.String> o) {
+void checkUnnamed28(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2355,14 +2368,12 @@ void checkUnnamed525(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed526() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed29() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed526(core.List<core.String> o) {
+void checkUnnamed29(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2374,14 +2385,12 @@ void checkUnnamed526(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed527() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed30() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed527(core.List<core.String> o) {
+void checkUnnamed30(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2393,14 +2402,12 @@ void checkUnnamed527(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed528() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed31() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed528(core.List<core.String> o) {
+void checkUnnamed31(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2415,651 +2422,669 @@ void checkUnnamed528(core.List<core.String> o) {
 void main() {
   unittest.group('obj-schema-Announcement', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAnnouncement();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Announcement.fromJson(
+      final o = buildAnnouncement();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Announcement.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAnnouncement(od as api.Announcement);
+      checkAnnouncement(od);
     });
   });
 
   unittest.group('obj-schema-Assignment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAssignment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAssignment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Assignment.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAssignment(od as api.Assignment);
+      checkAssignment(od);
     });
   });
 
   unittest.group('obj-schema-AssignmentSubmission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAssignmentSubmission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AssignmentSubmission.fromJson(
+      final o = buildAssignmentSubmission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AssignmentSubmission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAssignmentSubmission(od as api.AssignmentSubmission);
+      checkAssignmentSubmission(od);
     });
   });
 
   unittest.group('obj-schema-Attachment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAttachment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAttachment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Attachment.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAttachment(od as api.Attachment);
+      checkAttachment(od);
     });
   });
 
   unittest.group('obj-schema-CloudPubsubTopic', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCloudPubsubTopic();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CloudPubsubTopic.fromJson(
+      final o = buildCloudPubsubTopic();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CloudPubsubTopic.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCloudPubsubTopic(od as api.CloudPubsubTopic);
+      checkCloudPubsubTopic(od);
     });
   });
 
   unittest.group('obj-schema-Course', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildCourse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Course.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkCourse(od as api.Course);
+      checkCourse(od);
     });
   });
 
   unittest.group('obj-schema-CourseAlias', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseAlias();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseAlias.fromJson(
+      final o = buildCourseAlias();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseAlias.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseAlias(od as api.CourseAlias);
+      checkCourseAlias(od);
     });
   });
 
   unittest.group('obj-schema-CourseMaterial', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseMaterial();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseMaterial.fromJson(
+      final o = buildCourseMaterial();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseMaterial.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseMaterial(od as api.CourseMaterial);
+      checkCourseMaterial(od);
     });
   });
 
   unittest.group('obj-schema-CourseMaterialSet', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseMaterialSet();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseMaterialSet.fromJson(
+      final o = buildCourseMaterialSet();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseMaterialSet.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseMaterialSet(od as api.CourseMaterialSet);
+      checkCourseMaterialSet(od);
     });
   });
 
   unittest.group('obj-schema-CourseRosterChangesInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseRosterChangesInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseRosterChangesInfo.fromJson(
+      final o = buildCourseRosterChangesInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseRosterChangesInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseRosterChangesInfo(od as api.CourseRosterChangesInfo);
+      checkCourseRosterChangesInfo(od);
     });
   });
 
   unittest.group('obj-schema-CourseWork', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseWork();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildCourseWork();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.CourseWork.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkCourseWork(od as api.CourseWork);
+      checkCourseWork(od);
     });
   });
 
   unittest.group('obj-schema-CourseWorkChangesInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseWorkChangesInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseWorkChangesInfo.fromJson(
+      final o = buildCourseWorkChangesInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseWorkChangesInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseWorkChangesInfo(od as api.CourseWorkChangesInfo);
+      checkCourseWorkChangesInfo(od);
     });
   });
 
   unittest.group('obj-schema-CourseWorkMaterial', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCourseWorkMaterial();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CourseWorkMaterial.fromJson(
+      final o = buildCourseWorkMaterial();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CourseWorkMaterial.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCourseWorkMaterial(od as api.CourseWorkMaterial);
+      checkCourseWorkMaterial(od);
     });
   });
 
   unittest.group('obj-schema-Date', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDate();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Date.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDate(od as api.Date);
+      final o = buildDate();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Date.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkDate(od);
     });
   });
 
   unittest.group('obj-schema-DriveFile', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDriveFile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildDriveFile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.DriveFile.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDriveFile(od as api.DriveFile);
+      checkDriveFile(od);
     });
   });
 
   unittest.group('obj-schema-DriveFolder', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDriveFolder();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DriveFolder.fromJson(
+      final o = buildDriveFolder();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DriveFolder.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkDriveFolder(od as api.DriveFolder);
+      checkDriveFolder(od);
     });
   });
 
   unittest.group('obj-schema-Empty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEmpty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEmpty(od as api.Empty);
+      final o = buildEmpty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od);
     });
   });
 
   unittest.group('obj-schema-Feed', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFeed();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Feed.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkFeed(od as api.Feed);
+      final o = buildFeed();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Feed.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkFeed(od);
     });
   });
 
   unittest.group('obj-schema-Form', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildForm();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Form.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkForm(od as api.Form);
+      final o = buildForm();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Form.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkForm(od);
     });
   });
 
   unittest.group('obj-schema-GlobalPermission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGlobalPermission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GlobalPermission.fromJson(
+      final o = buildGlobalPermission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GlobalPermission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGlobalPermission(od as api.GlobalPermission);
+      checkGlobalPermission(od);
+    });
+  });
+
+  unittest.group('obj-schema-GradeCategory', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGradeCategory();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GradeCategory.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGradeCategory(od);
     });
   });
 
   unittest.group('obj-schema-GradeHistory', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGradeHistory();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GradeHistory.fromJson(
+      final o = buildGradeHistory();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GradeHistory.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGradeHistory(od as api.GradeHistory);
+      checkGradeHistory(od);
+    });
+  });
+
+  unittest.group('obj-schema-GradebookSettings', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGradebookSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GradebookSettings.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGradebookSettings(od);
     });
   });
 
   unittest.group('obj-schema-Guardian', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGuardian();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildGuardian();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Guardian.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkGuardian(od as api.Guardian);
+      checkGuardian(od);
     });
   });
 
   unittest.group('obj-schema-GuardianInvitation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGuardianInvitation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GuardianInvitation.fromJson(
+      final o = buildGuardianInvitation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GuardianInvitation.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGuardianInvitation(od as api.GuardianInvitation);
+      checkGuardianInvitation(od);
     });
   });
 
   unittest.group('obj-schema-IndividualStudentsOptions', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildIndividualStudentsOptions();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.IndividualStudentsOptions.fromJson(
+      final o = buildIndividualStudentsOptions();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.IndividualStudentsOptions.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkIndividualStudentsOptions(od as api.IndividualStudentsOptions);
+      checkIndividualStudentsOptions(od);
     });
   });
 
   unittest.group('obj-schema-Invitation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInvitation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildInvitation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Invitation.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkInvitation(od as api.Invitation);
+      checkInvitation(od);
     });
   });
 
   unittest.group('obj-schema-Link', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLink();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Link.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkLink(od as api.Link);
+      final o = buildLink();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Link.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkLink(od);
     });
   });
 
   unittest.group('obj-schema-ListAnnouncementsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListAnnouncementsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListAnnouncementsResponse.fromJson(
+      final o = buildListAnnouncementsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListAnnouncementsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListAnnouncementsResponse(od as api.ListAnnouncementsResponse);
+      checkListAnnouncementsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListCourseAliasesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListCourseAliasesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListCourseAliasesResponse.fromJson(
+      final o = buildListCourseAliasesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListCourseAliasesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListCourseAliasesResponse(od as api.ListCourseAliasesResponse);
+      checkListCourseAliasesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListCourseWorkMaterialResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListCourseWorkMaterialResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListCourseWorkMaterialResponse.fromJson(
+      final o = buildListCourseWorkMaterialResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListCourseWorkMaterialResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListCourseWorkMaterialResponse(
-          od as api.ListCourseWorkMaterialResponse);
+      checkListCourseWorkMaterialResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListCourseWorkResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListCourseWorkResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListCourseWorkResponse.fromJson(
+      final o = buildListCourseWorkResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListCourseWorkResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListCourseWorkResponse(od as api.ListCourseWorkResponse);
+      checkListCourseWorkResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListCoursesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListCoursesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListCoursesResponse.fromJson(
+      final o = buildListCoursesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListCoursesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListCoursesResponse(od as api.ListCoursesResponse);
+      checkListCoursesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListGuardianInvitationsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListGuardianInvitationsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListGuardianInvitationsResponse.fromJson(
+      final o = buildListGuardianInvitationsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListGuardianInvitationsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListGuardianInvitationsResponse(
-          od as api.ListGuardianInvitationsResponse);
+      checkListGuardianInvitationsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListGuardiansResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListGuardiansResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListGuardiansResponse.fromJson(
+      final o = buildListGuardiansResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListGuardiansResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListGuardiansResponse(od as api.ListGuardiansResponse);
+      checkListGuardiansResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListInvitationsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListInvitationsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListInvitationsResponse.fromJson(
+      final o = buildListInvitationsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListInvitationsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListInvitationsResponse(od as api.ListInvitationsResponse);
+      checkListInvitationsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListStudentSubmissionsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListStudentSubmissionsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListStudentSubmissionsResponse.fromJson(
+      final o = buildListStudentSubmissionsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListStudentSubmissionsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListStudentSubmissionsResponse(
-          od as api.ListStudentSubmissionsResponse);
+      checkListStudentSubmissionsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListStudentsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListStudentsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListStudentsResponse.fromJson(
+      final o = buildListStudentsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListStudentsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListStudentsResponse(od as api.ListStudentsResponse);
+      checkListStudentsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListTeachersResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListTeachersResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListTeachersResponse.fromJson(
+      final o = buildListTeachersResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListTeachersResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListTeachersResponse(od as api.ListTeachersResponse);
+      checkListTeachersResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListTopicResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListTopicResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListTopicResponse.fromJson(
+      final o = buildListTopicResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListTopicResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListTopicResponse(od as api.ListTopicResponse);
+      checkListTopicResponse(od);
     });
   });
 
   unittest.group('obj-schema-Material', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMaterial();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildMaterial();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Material.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkMaterial(od as api.Material);
+      checkMaterial(od);
     });
   });
 
   unittest.group('obj-schema-ModifyAnnouncementAssigneesRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildModifyAnnouncementAssigneesRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ModifyAnnouncementAssigneesRequest.fromJson(
+      final o = buildModifyAnnouncementAssigneesRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ModifyAnnouncementAssigneesRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkModifyAnnouncementAssigneesRequest(
-          od as api.ModifyAnnouncementAssigneesRequest);
+      checkModifyAnnouncementAssigneesRequest(od);
     });
   });
 
   unittest.group('obj-schema-ModifyAttachmentsRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildModifyAttachmentsRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ModifyAttachmentsRequest.fromJson(
+      final o = buildModifyAttachmentsRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ModifyAttachmentsRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkModifyAttachmentsRequest(od as api.ModifyAttachmentsRequest);
+      checkModifyAttachmentsRequest(od);
     });
   });
 
   unittest.group('obj-schema-ModifyCourseWorkAssigneesRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildModifyCourseWorkAssigneesRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ModifyCourseWorkAssigneesRequest.fromJson(
+      final o = buildModifyCourseWorkAssigneesRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ModifyCourseWorkAssigneesRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkModifyCourseWorkAssigneesRequest(
-          od as api.ModifyCourseWorkAssigneesRequest);
+      checkModifyCourseWorkAssigneesRequest(od);
     });
   });
 
   unittest.group('obj-schema-ModifyIndividualStudentsOptions', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildModifyIndividualStudentsOptions();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ModifyIndividualStudentsOptions.fromJson(
+      final o = buildModifyIndividualStudentsOptions();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ModifyIndividualStudentsOptions.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkModifyIndividualStudentsOptions(
-          od as api.ModifyIndividualStudentsOptions);
+      checkModifyIndividualStudentsOptions(od);
     });
   });
 
   unittest.group('obj-schema-MultipleChoiceQuestion', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMultipleChoiceQuestion();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MultipleChoiceQuestion.fromJson(
+      final o = buildMultipleChoiceQuestion();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MultipleChoiceQuestion.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMultipleChoiceQuestion(od as api.MultipleChoiceQuestion);
+      checkMultipleChoiceQuestion(od);
     });
   });
 
   unittest.group('obj-schema-MultipleChoiceSubmission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildMultipleChoiceSubmission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.MultipleChoiceSubmission.fromJson(
+      final o = buildMultipleChoiceSubmission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.MultipleChoiceSubmission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkMultipleChoiceSubmission(od as api.MultipleChoiceSubmission);
+      checkMultipleChoiceSubmission(od);
     });
   });
 
   unittest.group('obj-schema-Name', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildName();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Name.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkName(od as api.Name);
+      final o = buildName();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Name.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkName(od);
     });
   });
 
   unittest.group('obj-schema-ReclaimStudentSubmissionRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReclaimStudentSubmissionRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReclaimStudentSubmissionRequest.fromJson(
+      final o = buildReclaimStudentSubmissionRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReclaimStudentSubmissionRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReclaimStudentSubmissionRequest(
-          od as api.ReclaimStudentSubmissionRequest);
+      checkReclaimStudentSubmissionRequest(od);
     });
   });
 
   unittest.group('obj-schema-Registration', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRegistration();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Registration.fromJson(
+      final o = buildRegistration();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Registration.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRegistration(od as api.Registration);
+      checkRegistration(od);
     });
   });
 
   unittest.group('obj-schema-ReturnStudentSubmissionRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReturnStudentSubmissionRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReturnStudentSubmissionRequest.fromJson(
+      final o = buildReturnStudentSubmissionRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReturnStudentSubmissionRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReturnStudentSubmissionRequest(
-          od as api.ReturnStudentSubmissionRequest);
+      checkReturnStudentSubmissionRequest(od);
     });
   });
 
   unittest.group('obj-schema-SharedDriveFile', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSharedDriveFile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SharedDriveFile.fromJson(
+      final o = buildSharedDriveFile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SharedDriveFile.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSharedDriveFile(od as api.SharedDriveFile);
+      checkSharedDriveFile(od);
     });
   });
 
   unittest.group('obj-schema-ShortAnswerSubmission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildShortAnswerSubmission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ShortAnswerSubmission.fromJson(
+      final o = buildShortAnswerSubmission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ShortAnswerSubmission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkShortAnswerSubmission(od as api.ShortAnswerSubmission);
+      checkShortAnswerSubmission(od);
     });
   });
 
   unittest.group('obj-schema-StateHistory', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStateHistory();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.StateHistory.fromJson(
+      final o = buildStateHistory();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StateHistory.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkStateHistory(od as api.StateHistory);
+      checkStateHistory(od);
     });
   });
 
   unittest.group('obj-schema-Student', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStudent();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildStudent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Student.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkStudent(od as api.Student);
+      checkStudent(od);
     });
   });
 
   unittest.group('obj-schema-StudentSubmission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStudentSubmission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.StudentSubmission.fromJson(
+      final o = buildStudentSubmission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StudentSubmission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkStudentSubmission(od as api.StudentSubmission);
+      checkStudentSubmission(od);
     });
   });
 
   unittest.group('obj-schema-SubmissionHistory', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubmissionHistory();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubmissionHistory.fromJson(
+      final o = buildSubmissionHistory();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubmissionHistory.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubmissionHistory(od as api.SubmissionHistory);
+      checkSubmissionHistory(od);
     });
   });
 
   unittest.group('obj-schema-Teacher', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTeacher();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTeacher();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Teacher.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTeacher(od as api.Teacher);
+      checkTeacher(od);
     });
   });
 
   unittest.group('obj-schema-TimeOfDay', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTimeOfDay();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTimeOfDay();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TimeOfDay.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTimeOfDay(od as api.TimeOfDay);
+      checkTimeOfDay(od);
     });
   });
 
   unittest.group('obj-schema-Topic', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTopic();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Topic.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTopic(od as api.Topic);
+      final o = buildTopic();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Topic.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkTopic(od);
     });
   });
 
   unittest.group('obj-schema-TurnInStudentSubmissionRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTurnInStudentSubmissionRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TurnInStudentSubmissionRequest.fromJson(
+      final o = buildTurnInStudentSubmissionRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TurnInStudentSubmissionRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTurnInStudentSubmissionRequest(
-          od as api.TurnInStudentSubmissionRequest);
+      checkTurnInStudentSubmissionRequest(od);
     });
   });
 
   unittest.group('obj-schema-UserProfile', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUserProfile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UserProfile.fromJson(
+      final o = buildUserProfile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UserProfile.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUserProfile(od as api.UserProfile);
+      checkUserProfile(od);
     });
   });
 
   unittest.group('obj-schema-YouTubeVideo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildYouTubeVideo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.YouTubeVideo.fromJson(
+      final o = buildYouTubeVideo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.YouTubeVideo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkYouTubeVideo(od as api.YouTubeVideo);
+      checkYouTubeVideo(od);
     });
   });
 
   unittest.group('resource-CoursesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_request = buildCourse();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_request = buildCourse();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Course.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCourse(obj as api.Course);
+        checkCourse(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/courses"),
+          unittest.equals('v1/courses'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3067,14 +3092,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourse());
+        final resp = convert.json.encode(buildCourse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, $fields: arg_$fields);
@@ -3082,23 +3107,23 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3108,15 +3133,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3124,14 +3149,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_id, $fields: arg_$fields);
@@ -3139,23 +3164,23 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3165,15 +3190,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3181,14 +3206,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourse());
+        final resp = convert.json.encode(buildCourse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_id, $fields: arg_$fields);
@@ -3196,39 +3221,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_courseStates = buildUnnamed523();
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_studentId = 'foo';
-      var arg_teacherId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_courseStates = buildUnnamed26();
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_studentId = 'foo';
+      final arg_teacherId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("v1/courses"),
+          unittest.equals('v1/courses'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3236,34 +3261,34 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["courseStates"]!,
+          queryMap['courseStates']!,
           unittest.equals(arg_courseStates),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["studentId"]!.first,
+          queryMap['studentId']!.first,
           unittest.equals(arg_studentId),
         );
         unittest.expect(
-          queryMap["teacherId"]!.first,
+          queryMap['teacherId']!.first,
           unittest.equals(arg_teacherId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListCoursesResponse());
+        final resp = convert.json.encode(buildListCoursesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -3277,29 +3302,29 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_request = buildCourse();
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_request = buildCourse();
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Course.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCourse(obj as api.Course);
+        checkCourse(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3309,15 +3334,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3325,18 +3350,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourse());
+        final resp = convert.json.encode(buildCourse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_id,
@@ -3345,28 +3370,28 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses;
-      var arg_request = buildCourse();
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses;
+      final arg_request = buildCourse();
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Course.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCourse(obj as api.Course);
+        checkCourse(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3376,15 +3401,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3392,14 +3417,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourse());
+        final resp = convert.json.encode(buildCourse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3410,28 +3435,28 @@ void main() {
 
   unittest.group('resource-CoursesAliasesResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.aliases;
-      var arg_request = buildCourseAlias();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.aliases;
+      final arg_request = buildCourseAlias();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CourseAlias.fromJson(
+        final obj = api.CourseAlias.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCourseAlias(obj as api.CourseAlias);
+        checkCourseAlias(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/aliases', pathOffset);
@@ -3445,19 +3470,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/aliases"),
+          unittest.equals('/aliases'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3465,14 +3490,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseAlias());
+        final resp = convert.json.encode(buildCourseAlias());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3481,24 +3506,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.aliases;
-      var arg_courseId = 'foo';
-      var arg_alias = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.aliases;
+      final arg_courseId = 'foo';
+      final arg_alias = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/aliases/', pathOffset);
@@ -3512,7 +3537,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/aliases/"),
+          unittest.equals('/aliases/'),
         );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3522,15 +3547,15 @@ void main() {
           unittest.equals('$arg_alias'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3538,14 +3563,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3554,25 +3579,25 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.aliases;
-      var arg_courseId = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.aliases;
+      final arg_courseId = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/aliases', pathOffset);
@@ -3586,19 +3611,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/aliases"),
+          unittest.equals('/aliases'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3606,22 +3631,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListCourseAliasesResponse());
+        final resp = convert.json.encode(buildListCourseAliasesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -3634,28 +3659,28 @@ void main() {
 
   unittest.group('resource-CoursesAnnouncementsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_request = buildAnnouncement();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_request = buildAnnouncement();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Announcement.fromJson(
+        final obj = api.Announcement.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkAnnouncement(obj as api.Announcement);
+        checkAnnouncement(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements', pathOffset);
@@ -3669,19 +3694,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/announcements"),
+          unittest.equals('/announcements'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3689,14 +3714,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnouncement());
+        final resp = convert.json.encode(buildAnnouncement());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3705,24 +3730,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements/', pathOffset);
@@ -3736,7 +3761,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/announcements/"),
+          unittest.equals('/announcements/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3746,15 +3771,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3762,14 +3787,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3778,24 +3803,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements/', pathOffset);
@@ -3809,7 +3834,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/announcements/"),
+          unittest.equals('/announcements/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3819,15 +3844,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3835,14 +3860,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnouncement());
+        final resp = convert.json.encode(buildAnnouncement());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3851,27 +3876,27 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_courseId = 'foo';
-      var arg_announcementStates = buildUnnamed524();
-      var arg_orderBy = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_courseId = 'foo';
+      final arg_announcementStates = buildUnnamed27();
+      final arg_orderBy = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements', pathOffset);
@@ -3885,19 +3910,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/announcements"),
+          unittest.equals('/announcements'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3905,30 +3930,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["announcementStates"]!,
+          queryMap['announcementStates']!,
           unittest.equals(arg_announcementStates),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListAnnouncementsResponse());
+        final resp = convert.json.encode(buildListAnnouncementsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -3941,30 +3966,29 @@ void main() {
     });
 
     unittest.test('method--modifyAssignees', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_request = buildModifyAnnouncementAssigneesRequest();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_request = buildModifyAnnouncementAssigneesRequest();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ModifyAnnouncementAssigneesRequest.fromJson(
+        final obj = api.ModifyAnnouncementAssigneesRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkModifyAnnouncementAssigneesRequest(
-            obj as api.ModifyAnnouncementAssigneesRequest);
+        checkModifyAnnouncementAssigneesRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements/', pathOffset);
@@ -3978,7 +4002,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/announcements/"),
+          unittest.equals('/announcements/'),
         );
         pathOffset += 15;
         index = path.indexOf(':modifyAssignees', pathOffset);
@@ -3992,19 +4016,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals(":modifyAssignees"),
+          unittest.equals(':modifyAssignees'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4012,14 +4036,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnouncement());
+        final resp = convert.json.encode(buildAnnouncement());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.modifyAssignees(
@@ -4029,30 +4053,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.announcements;
-      var arg_request = buildAnnouncement();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.announcements;
+      final arg_request = buildAnnouncement();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Announcement.fromJson(
+        final obj = api.Announcement.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkAnnouncement(obj as api.Announcement);
+        checkAnnouncement(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/announcements/', pathOffset);
@@ -4066,7 +4090,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/announcements/"),
+          unittest.equals('/announcements/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4076,15 +4100,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4092,18 +4116,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAnnouncement());
+        final resp = convert.json.encode(buildAnnouncement());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_courseId, arg_id,
@@ -4114,28 +4138,28 @@ void main() {
 
   unittest.group('resource-CoursesCourseWorkResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_request = buildCourseWork();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_request = buildCourseWork();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CourseWork.fromJson(
+        final obj = api.CourseWork.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCourseWork(obj as api.CourseWork);
+        checkCourseWork(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork', pathOffset);
@@ -4149,19 +4173,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("/courseWork"),
+          unittest.equals('/courseWork'),
         );
         pathOffset += 11;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4169,14 +4193,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWork());
+        final resp = convert.json.encode(buildCourseWork());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4185,24 +4209,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4216,7 +4240,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4226,15 +4250,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4242,14 +4266,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4258,24 +4282,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4289,7 +4313,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4299,15 +4323,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4315,14 +4339,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWork());
+        final resp = convert.json.encode(buildCourseWork());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4331,27 +4355,27 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_courseId = 'foo';
-      var arg_courseWorkStates = buildUnnamed525();
-      var arg_orderBy = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_courseId = 'foo';
+      final arg_courseWorkStates = buildUnnamed28();
+      final arg_orderBy = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork', pathOffset);
@@ -4365,19 +4389,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("/courseWork"),
+          unittest.equals('/courseWork'),
         );
         pathOffset += 11;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4385,30 +4409,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["courseWorkStates"]!,
+          queryMap['courseWorkStates']!,
           unittest.equals(arg_courseWorkStates),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListCourseWorkResponse());
+        final resp = convert.json.encode(buildListCourseWorkResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -4421,30 +4445,29 @@ void main() {
     });
 
     unittest.test('method--modifyAssignees', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_request = buildModifyCourseWorkAssigneesRequest();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_request = buildModifyCourseWorkAssigneesRequest();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ModifyCourseWorkAssigneesRequest.fromJson(
+        final obj = api.ModifyCourseWorkAssigneesRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkModifyCourseWorkAssigneesRequest(
-            obj as api.ModifyCourseWorkAssigneesRequest);
+        checkModifyCourseWorkAssigneesRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4458,7 +4481,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf(':modifyAssignees', pathOffset);
@@ -4472,19 +4495,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals(":modifyAssignees"),
+          unittest.equals(':modifyAssignees'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4492,14 +4515,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWork());
+        final resp = convert.json.encode(buildCourseWork());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.modifyAssignees(
@@ -4509,30 +4532,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork;
-      var arg_request = buildCourseWork();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork;
+      final arg_request = buildCourseWork();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CourseWork.fromJson(
+        final obj = api.CourseWork.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCourseWork(obj as api.CourseWork);
+        checkCourseWork(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4546,7 +4569,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4556,15 +4579,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4572,18 +4595,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWork());
+        final resp = convert.json.encode(buildCourseWork());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_courseId, arg_id,
@@ -4594,25 +4617,25 @@ void main() {
 
   unittest.group('resource-CoursesCourseWorkStudentSubmissionsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4626,7 +4649,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -4640,7 +4663,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4650,15 +4673,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4666,14 +4689,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildStudentSubmission());
+        final resp = convert.json.encode(buildStudentSubmission());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_courseId, arg_courseWorkId, arg_id,
@@ -4682,29 +4705,29 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_late = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_states = buildUnnamed526();
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_late = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_states = buildUnnamed29();
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4718,7 +4741,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions', pathOffset);
@@ -4732,19 +4755,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 19),
-          unittest.equals("/studentSubmissions"),
+          unittest.equals('/studentSubmissions'),
         );
         pathOffset += 19;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4752,34 +4775,34 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["late"]!.first,
+          queryMap['late']!.first,
           unittest.equals(arg_late),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["states"]!,
+          queryMap['states']!,
           unittest.equals(arg_states),
         );
         unittest.expect(
-          queryMap["userId"]!.first,
+          queryMap['userId']!.first,
           unittest.equals(arg_userId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListStudentSubmissionsResponse());
+        final resp = convert.json.encode(buildListStudentSubmissionsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId, arg_courseWorkId,
@@ -4794,30 +4817,30 @@ void main() {
     });
 
     unittest.test('method--modifyAttachments', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_request = buildModifyAttachmentsRequest();
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_request = buildModifyAttachmentsRequest();
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ModifyAttachmentsRequest.fromJson(
+        final obj = api.ModifyAttachmentsRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkModifyAttachmentsRequest(obj as api.ModifyAttachmentsRequest);
+        checkModifyAttachmentsRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4831,7 +4854,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -4845,7 +4868,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         index = path.indexOf(':modifyAttachments', pathOffset);
@@ -4859,19 +4882,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 18),
-          unittest.equals(":modifyAttachments"),
+          unittest.equals(':modifyAttachments'),
         );
         pathOffset += 18;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4879,14 +4902,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildStudentSubmission());
+        final resp = convert.json.encode(buildStudentSubmission());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.modifyAttachments(
@@ -4896,31 +4919,31 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_request = buildStudentSubmission();
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_request = buildStudentSubmission();
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.StudentSubmission.fromJson(
+        final obj = api.StudentSubmission.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkStudentSubmission(obj as api.StudentSubmission);
+        checkStudentSubmission(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -4934,7 +4957,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -4948,7 +4971,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4958,15 +4981,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4974,18 +4997,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildStudentSubmission());
+        final resp = convert.json.encode(buildStudentSubmission());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(
@@ -4995,31 +5018,30 @@ void main() {
     });
 
     unittest.test('method--reclaim', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_request = buildReclaimStudentSubmissionRequest();
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_request = buildReclaimStudentSubmissionRequest();
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ReclaimStudentSubmissionRequest.fromJson(
+        final obj = api.ReclaimStudentSubmissionRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkReclaimStudentSubmissionRequest(
-            obj as api.ReclaimStudentSubmissionRequest);
+        checkReclaimStudentSubmissionRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -5033,7 +5055,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -5047,7 +5069,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         index = path.indexOf(':reclaim', pathOffset);
@@ -5061,19 +5083,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals(":reclaim"),
+          unittest.equals(':reclaim'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5081,14 +5103,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.reclaim(
@@ -5098,31 +5120,30 @@ void main() {
     });
 
     unittest.test('method--return_', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_request = buildReturnStudentSubmissionRequest();
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_request = buildReturnStudentSubmissionRequest();
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ReturnStudentSubmissionRequest.fromJson(
+        final obj = api.ReturnStudentSubmissionRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkReturnStudentSubmissionRequest(
-            obj as api.ReturnStudentSubmissionRequest);
+        checkReturnStudentSubmissionRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -5136,7 +5157,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -5150,7 +5171,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         index = path.indexOf(':return', pathOffset);
@@ -5164,19 +5185,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":return"),
+          unittest.equals(':return'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5184,14 +5205,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.return_(
@@ -5201,31 +5222,30 @@ void main() {
     });
 
     unittest.test('method--turnIn', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
-      var arg_request = buildTurnInStudentSubmissionRequest();
-      var arg_courseId = 'foo';
-      var arg_courseWorkId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWork.studentSubmissions;
+      final arg_request = buildTurnInStudentSubmissionRequest();
+      final arg_courseId = 'foo';
+      final arg_courseWorkId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.TurnInStudentSubmissionRequest.fromJson(
+        final obj = api.TurnInStudentSubmissionRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkTurnInStudentSubmissionRequest(
-            obj as api.TurnInStudentSubmissionRequest);
+        checkTurnInStudentSubmissionRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWork/', pathOffset);
@@ -5239,7 +5259,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/courseWork/"),
+          unittest.equals('/courseWork/'),
         );
         pathOffset += 12;
         index = path.indexOf('/studentSubmissions/', pathOffset);
@@ -5253,7 +5273,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/studentSubmissions/"),
+          unittest.equals('/studentSubmissions/'),
         );
         pathOffset += 20;
         index = path.indexOf(':turnIn', pathOffset);
@@ -5267,19 +5287,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":turnIn"),
+          unittest.equals(':turnIn'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5287,14 +5307,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.turnIn(
@@ -5306,28 +5326,28 @@ void main() {
 
   unittest.group('resource-CoursesCourseWorkMaterialsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWorkMaterials;
-      var arg_request = buildCourseWorkMaterial();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWorkMaterials;
+      final arg_request = buildCourseWorkMaterial();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CourseWorkMaterial.fromJson(
+        final obj = api.CourseWorkMaterial.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCourseWorkMaterial(obj as api.CourseWorkMaterial);
+        checkCourseWorkMaterial(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWorkMaterials', pathOffset);
@@ -5341,19 +5361,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/courseWorkMaterials"),
+          unittest.equals('/courseWorkMaterials'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5361,14 +5381,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWorkMaterial());
+        final resp = convert.json.encode(buildCourseWorkMaterial());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5377,24 +5397,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWorkMaterials;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWorkMaterials;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWorkMaterials/', pathOffset);
@@ -5408,7 +5428,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("/courseWorkMaterials/"),
+          unittest.equals('/courseWorkMaterials/'),
         );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5418,15 +5438,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5434,14 +5454,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5450,24 +5470,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWorkMaterials;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWorkMaterials;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWorkMaterials/', pathOffset);
@@ -5481,7 +5501,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("/courseWorkMaterials/"),
+          unittest.equals('/courseWorkMaterials/'),
         );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5491,15 +5511,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5507,14 +5527,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWorkMaterial());
+        final resp = convert.json.encode(buildCourseWorkMaterial());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5523,29 +5543,29 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWorkMaterials;
-      var arg_courseId = 'foo';
-      var arg_courseWorkMaterialStates = buildUnnamed527();
-      var arg_materialDriveId = 'foo';
-      var arg_materialLink = 'foo';
-      var arg_orderBy = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWorkMaterials;
+      final arg_courseId = 'foo';
+      final arg_courseWorkMaterialStates = buildUnnamed30();
+      final arg_materialDriveId = 'foo';
+      final arg_materialLink = 'foo';
+      final arg_orderBy = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWorkMaterials', pathOffset);
@@ -5559,19 +5579,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/courseWorkMaterials"),
+          unittest.equals('/courseWorkMaterials'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5579,38 +5599,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["courseWorkMaterialStates"]!,
+          queryMap['courseWorkMaterialStates']!,
           unittest.equals(arg_courseWorkMaterialStates),
         );
         unittest.expect(
-          queryMap["materialDriveId"]!.first,
+          queryMap['materialDriveId']!.first,
           unittest.equals(arg_materialDriveId),
         );
         unittest.expect(
-          queryMap["materialLink"]!.first,
+          queryMap['materialLink']!.first,
           unittest.equals(arg_materialLink),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListCourseWorkMaterialResponse());
+        final resp = convert.json.encode(buildListCourseWorkMaterialResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -5626,30 +5646,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.courseWorkMaterials;
-      var arg_request = buildCourseWorkMaterial();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.courseWorkMaterials;
+      final arg_request = buildCourseWorkMaterial();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CourseWorkMaterial.fromJson(
+        final obj = api.CourseWorkMaterial.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCourseWorkMaterial(obj as api.CourseWorkMaterial);
+        checkCourseWorkMaterial(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/courseWorkMaterials/', pathOffset);
@@ -5663,7 +5683,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("/courseWorkMaterials/"),
+          unittest.equals('/courseWorkMaterials/'),
         );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5673,15 +5693,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5689,18 +5709,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCourseWorkMaterial());
+        final resp = convert.json.encode(buildCourseWorkMaterial());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_courseId, arg_id,
@@ -5711,29 +5731,29 @@ void main() {
 
   unittest.group('resource-CoursesStudentsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.students;
-      var arg_request = buildStudent();
-      var arg_courseId = 'foo';
-      var arg_enrollmentCode = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.students;
+      final arg_request = buildStudent();
+      final arg_courseId = 'foo';
+      final arg_enrollmentCode = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Student.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkStudent(obj as api.Student);
+        checkStudent(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/students', pathOffset);
@@ -5747,19 +5767,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/students"),
+          unittest.equals('/students'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5767,18 +5787,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["enrollmentCode"]!.first,
+          queryMap['enrollmentCode']!.first,
           unittest.equals(arg_enrollmentCode),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildStudent());
+        final resp = convert.json.encode(buildStudent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, arg_courseId,
@@ -5787,24 +5807,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.students;
-      var arg_courseId = 'foo';
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.students;
+      final arg_courseId = 'foo';
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/students/', pathOffset);
@@ -5818,7 +5838,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/students/"),
+          unittest.equals('/students/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5828,15 +5848,15 @@ void main() {
           unittest.equals('$arg_userId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5844,14 +5864,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5860,24 +5880,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.students;
-      var arg_courseId = 'foo';
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.students;
+      final arg_courseId = 'foo';
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/students/', pathOffset);
@@ -5891,7 +5911,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/students/"),
+          unittest.equals('/students/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5901,15 +5921,15 @@ void main() {
           unittest.equals('$arg_userId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5917,14 +5937,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildStudent());
+        final resp = convert.json.encode(buildStudent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5933,25 +5953,25 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.students;
-      var arg_courseId = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.students;
+      final arg_courseId = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/students', pathOffset);
@@ -5965,19 +5985,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/students"),
+          unittest.equals('/students'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5985,22 +6005,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListStudentsResponse());
+        final resp = convert.json.encode(buildListStudentsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -6013,28 +6033,28 @@ void main() {
 
   unittest.group('resource-CoursesTeachersResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.teachers;
-      var arg_request = buildTeacher();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.teachers;
+      final arg_request = buildTeacher();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Teacher.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTeacher(obj as api.Teacher);
+        checkTeacher(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/teachers', pathOffset);
@@ -6048,19 +6068,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/teachers"),
+          unittest.equals('/teachers'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6068,14 +6088,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTeacher());
+        final resp = convert.json.encode(buildTeacher());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6084,24 +6104,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.teachers;
-      var arg_courseId = 'foo';
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.teachers;
+      final arg_courseId = 'foo';
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/teachers/', pathOffset);
@@ -6115,7 +6135,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/teachers/"),
+          unittest.equals('/teachers/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6125,15 +6145,15 @@ void main() {
           unittest.equals('$arg_userId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6141,14 +6161,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6157,24 +6177,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.teachers;
-      var arg_courseId = 'foo';
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.teachers;
+      final arg_courseId = 'foo';
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/teachers/', pathOffset);
@@ -6188,7 +6208,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/teachers/"),
+          unittest.equals('/teachers/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6198,15 +6218,15 @@ void main() {
           unittest.equals('$arg_userId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6214,14 +6234,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTeacher());
+        final resp = convert.json.encode(buildTeacher());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6230,25 +6250,25 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.teachers;
-      var arg_courseId = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.teachers;
+      final arg_courseId = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/teachers', pathOffset);
@@ -6262,19 +6282,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/teachers"),
+          unittest.equals('/teachers'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6282,22 +6302,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListTeachersResponse());
+        final resp = convert.json.encode(buildListTeachersResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -6310,28 +6330,28 @@ void main() {
 
   unittest.group('resource-CoursesTopicsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.topics;
-      var arg_request = buildTopic();
-      var arg_courseId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.topics;
+      final arg_request = buildTopic();
+      final arg_courseId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Topic.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTopic(obj as api.Topic);
+        checkTopic(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/topics', pathOffset);
@@ -6345,19 +6365,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/topics"),
+          unittest.equals('/topics'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6365,14 +6385,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTopic());
+        final resp = convert.json.encode(buildTopic());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6381,24 +6401,24 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.topics;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.topics;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/topics/', pathOffset);
@@ -6412,7 +6432,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/topics/"),
+          unittest.equals('/topics/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6422,15 +6442,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6438,14 +6458,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6454,24 +6474,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.topics;
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.topics;
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/topics/', pathOffset);
@@ -6485,7 +6505,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/topics/"),
+          unittest.equals('/topics/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6495,15 +6515,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6511,14 +6531,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTopic());
+        final resp = convert.json.encode(buildTopic());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6527,25 +6547,25 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.topics;
-      var arg_courseId = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.topics;
+      final arg_courseId = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/topics', pathOffset);
@@ -6559,19 +6579,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/topics"),
+          unittest.equals('/topics'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6579,22 +6599,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListTopicResponse());
+        final resp = convert.json.encode(buildListTopicResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_courseId,
@@ -6605,30 +6625,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).courses.topics;
-      var arg_request = buildTopic();
-      var arg_courseId = 'foo';
-      var arg_id = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).courses.topics;
+      final arg_request = buildTopic();
+      final arg_courseId = 'foo';
+      final arg_id = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Topic.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTopic(obj as api.Topic);
+        checkTopic(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("v1/courses/"),
+          unittest.equals('v1/courses/'),
         );
         pathOffset += 11;
         index = path.indexOf('/topics/', pathOffset);
@@ -6642,7 +6662,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/topics/"),
+          unittest.equals('/topics/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6652,15 +6672,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6668,18 +6688,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTopic());
+        final resp = convert.json.encode(buildTopic());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_courseId, arg_id,
@@ -6690,23 +6710,23 @@ void main() {
 
   unittest.group('resource-InvitationsResource', () {
     unittest.test('method--accept', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).invitations;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).invitations;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("v1/invitations/"),
+          unittest.equals('v1/invitations/'),
         );
         pathOffset += 15;
         index = path.indexOf(':accept', pathOffset);
@@ -6720,19 +6740,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":accept"),
+          unittest.equals(':accept'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6740,14 +6760,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.accept(arg_id, $fields: arg_$fields);
@@ -6755,39 +6775,39 @@ void main() {
     });
 
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).invitations;
-      var arg_request = buildInvitation();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).invitations;
+      final arg_request = buildInvitation();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Invitation.fromJson(
+        final obj = api.Invitation.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkInvitation(obj as api.Invitation);
+        checkInvitation(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("v1/invitations"),
+          unittest.equals('v1/invitations'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6795,14 +6815,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInvitation());
+        final resp = convert.json.encode(buildInvitation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, $fields: arg_$fields);
@@ -6810,23 +6830,23 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).invitations;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).invitations;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("v1/invitations/"),
+          unittest.equals('v1/invitations/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6836,15 +6856,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6852,14 +6872,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_id, $fields: arg_$fields);
@@ -6867,23 +6887,23 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).invitations;
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).invitations;
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("v1/invitations/"),
+          unittest.equals('v1/invitations/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6893,15 +6913,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6909,14 +6929,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInvitation());
+        final resp = convert.json.encode(buildInvitation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_id, $fields: arg_$fields);
@@ -6924,38 +6944,38 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).invitations;
-      var arg_courseId = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).invitations;
+      final arg_courseId = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("v1/invitations"),
+          unittest.equals('v1/invitations'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6963,30 +6983,30 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["courseId"]!.first,
+          queryMap['courseId']!.first,
           unittest.equals(arg_courseId),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["userId"]!.first,
+          queryMap['userId']!.first,
           unittest.equals(arg_userId),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListInvitationsResponse());
+        final resp = convert.json.encode(buildListInvitationsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -7001,39 +7021,39 @@ void main() {
 
   unittest.group('resource-RegistrationsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).registrations;
-      var arg_request = buildRegistration();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).registrations;
+      final arg_request = buildRegistration();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Registration.fromJson(
+        final obj = api.Registration.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkRegistration(obj as api.Registration);
+        checkRegistration(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/registrations"),
+          unittest.equals('v1/registrations'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7041,14 +7061,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRegistration());
+        final resp = convert.json.encode(buildRegistration());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(arg_request, $fields: arg_$fields);
@@ -7056,23 +7076,23 @@ void main() {
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).registrations;
-      var arg_registrationId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).registrations;
+      final arg_registrationId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("v1/registrations/"),
+          unittest.equals('v1/registrations/'),
         );
         pathOffset += 17;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7082,15 +7102,15 @@ void main() {
           unittest.equals('$arg_registrationId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7098,14 +7118,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -7116,23 +7136,23 @@ void main() {
 
   unittest.group('resource-UserProfilesResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles;
-      var arg_userId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles;
+      final arg_userId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7142,15 +7162,15 @@ void main() {
           unittest.equals('$arg_userId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7158,14 +7178,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildUserProfile());
+        final resp = convert.json.encode(buildUserProfile());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_userId, $fields: arg_$fields);
@@ -7175,28 +7195,28 @@ void main() {
 
   unittest.group('resource-UserProfilesGuardianInvitationsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
-      var arg_request = buildGuardianInvitation();
-      var arg_studentId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
+      final arg_request = buildGuardianInvitation();
+      final arg_studentId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.GuardianInvitation.fromJson(
+        final obj = api.GuardianInvitation.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkGuardianInvitation(obj as api.GuardianInvitation);
+        checkGuardianInvitation(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardianInvitations', pathOffset);
@@ -7210,19 +7230,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/guardianInvitations"),
+          unittest.equals('/guardianInvitations'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7230,14 +7250,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGuardianInvitation());
+        final resp = convert.json.encode(buildGuardianInvitation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -7246,24 +7266,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
-      var arg_studentId = 'foo';
-      var arg_invitationId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
+      final arg_studentId = 'foo';
+      final arg_invitationId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardianInvitations/', pathOffset);
@@ -7277,7 +7297,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("/guardianInvitations/"),
+          unittest.equals('/guardianInvitations/'),
         );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7287,15 +7307,15 @@ void main() {
           unittest.equals('$arg_invitationId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7303,14 +7323,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGuardianInvitation());
+        final resp = convert.json.encode(buildGuardianInvitation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -7319,27 +7339,27 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
-      var arg_studentId = 'foo';
-      var arg_invitedEmailAddress = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_states = buildUnnamed528();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
+      final arg_studentId = 'foo';
+      final arg_invitedEmailAddress = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_states = buildUnnamed31();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardianInvitations', pathOffset);
@@ -7353,19 +7373,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/guardianInvitations"),
+          unittest.equals('/guardianInvitations'),
         );
         pathOffset += 20;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7373,30 +7393,31 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["invitedEmailAddress"]!.first,
+          queryMap['invitedEmailAddress']!.first,
           unittest.equals(arg_invitedEmailAddress),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["states"]!,
+          queryMap['states']!,
           unittest.equals(arg_states),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListGuardianInvitationsResponse());
+        final resp =
+            convert.json.encode(buildListGuardianInvitationsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_studentId,
@@ -7410,30 +7431,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
-      var arg_request = buildGuardianInvitation();
-      var arg_studentId = 'foo';
-      var arg_invitationId = 'foo';
-      var arg_updateMask = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardianInvitations;
+      final arg_request = buildGuardianInvitation();
+      final arg_studentId = 'foo';
+      final arg_invitationId = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.GuardianInvitation.fromJson(
+        final obj = api.GuardianInvitation.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkGuardianInvitation(obj as api.GuardianInvitation);
+        checkGuardianInvitation(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardianInvitations/', pathOffset);
@@ -7447,7 +7468,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("/guardianInvitations/"),
+          unittest.equals('/guardianInvitations/'),
         );
         pathOffset += 21;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7457,15 +7478,15 @@ void main() {
           unittest.equals('$arg_invitationId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7473,18 +7494,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["updateMask"]!.first,
+          queryMap['updateMask']!.first,
           unittest.equals(arg_updateMask),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGuardianInvitation());
+        final resp = convert.json.encode(buildGuardianInvitation());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(
@@ -7496,24 +7517,24 @@ void main() {
 
   unittest.group('resource-UserProfilesGuardiansResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardians;
-      var arg_studentId = 'foo';
-      var arg_guardianId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardians;
+      final arg_studentId = 'foo';
+      final arg_guardianId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardians/', pathOffset);
@@ -7527,7 +7548,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("/guardians/"),
+          unittest.equals('/guardians/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7537,15 +7558,15 @@ void main() {
           unittest.equals('$arg_guardianId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7553,14 +7574,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -7569,24 +7590,24 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardians;
-      var arg_studentId = 'foo';
-      var arg_guardianId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardians;
+      final arg_studentId = 'foo';
+      final arg_guardianId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardians/', pathOffset);
@@ -7600,7 +7621,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 11),
-          unittest.equals("/guardians/"),
+          unittest.equals('/guardians/'),
         );
         pathOffset += 11;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7610,15 +7631,15 @@ void main() {
           unittest.equals('$arg_guardianId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7626,14 +7647,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGuardian());
+        final resp = convert.json.encode(buildGuardian());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -7642,26 +7663,26 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.ClassroomApi(mock).userProfiles.guardians;
-      var arg_studentId = 'foo';
-      var arg_invitedEmailAddress = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.ClassroomApi(mock).userProfiles.guardians;
+      final arg_studentId = 'foo';
+      final arg_invitedEmailAddress = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("v1/userProfiles/"),
+          unittest.equals('v1/userProfiles/'),
         );
         pathOffset += 16;
         index = path.indexOf('/guardians', pathOffset);
@@ -7675,19 +7696,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/guardians"),
+          unittest.equals('/guardians'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7695,26 +7716,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["invitedEmailAddress"]!.first,
+          queryMap['invitedEmailAddress']!.first,
           unittest.equals(arg_invitedEmailAddress),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListGuardiansResponse());
+        final resp = convert.json.encode(buildListGuardiansResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_studentId,

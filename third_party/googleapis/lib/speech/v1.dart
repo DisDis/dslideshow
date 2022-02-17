@@ -22,6 +22,10 @@
 /// Create an instance of [SpeechApi] to access these resources:
 ///
 /// - [OperationsResource]
+/// - [ProjectsResource]
+///   - [ProjectsLocationsResource]
+///     - [ProjectsLocationsCustomClassesResource]
+///     - [ProjectsLocationsPhraseSetsResource]
 /// - [SpeechResource]
 library speech.v1;
 
@@ -32,6 +36,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -39,13 +45,15 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// Converts audio to text by applying powerful neural network models.
 class SpeechApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
   final commons.ApiRequester _requester;
 
   OperationsResource get operations => OperationsResource(_requester);
+  ProjectsResource get projects => ProjectsResource(_requester);
   SpeechResource get speech => SpeechResource(_requester);
 
   SpeechApi(http.Client client,
@@ -156,6 +164,499 @@ class OperationsResource {
   }
 }
 
+class ProjectsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsResource get locations =>
+      ProjectsLocationsResource(_requester);
+
+  ProjectsResource(commons.ApiRequester client) : _requester = client;
+}
+
+class ProjectsLocationsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsCustomClassesResource get customClasses =>
+      ProjectsLocationsCustomClassesResource(_requester);
+  ProjectsLocationsPhraseSetsResource get phraseSets =>
+      ProjectsLocationsPhraseSetsResource(_requester);
+
+  ProjectsLocationsResource(commons.ApiRequester client) : _requester = client;
+}
+
+class ProjectsLocationsCustomClassesResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsCustomClassesResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Create a custom class.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent resource where this custom class will be
+  /// created. Format: `projects/{project}/locations/{location}/customClasses`
+  /// Speech-to-Text supports three locations: `global`, `us` (US North
+  /// America), and `eu` (Europe). If you are calling the
+  /// `speech.googleapis.com` endpoint, use the `global` location. To specify a
+  /// region, use a \[regional endpoint\](/speech-to-text/docs/endpoints) with
+  /// matching `us` or `eu` location value.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CustomClass].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CustomClass> create(
+    CreateCustomClassRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/customClasses';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CustomClass.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete a custom class.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the custom class to delete. Format:
+  /// `projects/{project}/locations/{location}/customClasses/{custom_class}`
+  /// Speech-to-Text supports three locations: `global`, `us` (US North
+  /// America), and `eu` (Europe). If you are calling the
+  /// `speech.googleapis.com` endpoint, use the `global` location. To specify a
+  /// region, use a \[regional endpoint\](/speech-to-text/docs/endpoints) with
+  /// matching `us` or `eu` location value.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/customClasses/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Get a custom class.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the custom class to retrieve. Format:
+  /// `projects/{project}/locations/{location}/customClasses/{custom_class}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/customClasses/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CustomClass].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CustomClass> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return CustomClass.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List custom classes.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns this collection of custom
+  /// classes. Format: `projects/{project}/locations/{location}/customClasses`
+  /// Speech-to-Text supports three locations: `global`, `us` (US North
+  /// America), and `eu` (Europe). If you are calling the
+  /// `speech.googleapis.com` endpoint, use the `global` location. To specify a
+  /// region, use a \[regional endpoint\](/speech-to-text/docs/endpoints) with
+  /// matching `us` or `eu` location value.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of custom classes to return. The service
+  /// may return fewer than this value. If unspecified, at most 50 custom
+  /// classes will be returned. The maximum value is 1000; values above 1000
+  /// will be coerced to 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListCustomClass`
+  /// call. Provide this to retrieve the subsequent page. When paginating, all
+  /// other parameters provided to `ListCustomClass` must match the call that
+  /// provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListCustomClassesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListCustomClassesResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/customClasses';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListCustomClassesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update a custom class.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The resource name of the custom class.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/customClasses/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [CustomClass].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<CustomClass> patch(
+    CustomClass request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return CustomClass.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsPhraseSetsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsPhraseSetsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Create a set of phrase hints.
+  ///
+  /// Each item in the set can be a single word or a multi-word phrase. The
+  /// items in the PhraseSet are favored by the recognition model when you send
+  /// a call that includes the PhraseSet.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent resource where this phrase set will be
+  /// created. Format: `projects/{project}/locations/{location}/phraseSets`
+  /// Speech-to-Text supports three locations: `global`, `us` (US North
+  /// America), and `eu` (Europe). If you are calling the
+  /// `speech.googleapis.com` endpoint, use the `global` location. To specify a
+  /// region, use a \[regional endpoint\](/speech-to-text/docs/endpoints) with
+  /// matching `us` or `eu` location value.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [PhraseSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<PhraseSet> create(
+    CreatePhraseSetRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/phraseSets';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return PhraseSet.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete a phrase set.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the phrase set to delete. Format:
+  /// `projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/phraseSets/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Get a phrase set.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the phrase set to retrieve. Format:
+  /// `projects/{project}/locations/{location}/phraseSets/{phrase_set}`
+  /// Speech-to-Text supports three locations: `global`, `us` (US North
+  /// America), and `eu` (Europe). If you are calling the
+  /// `speech.googleapis.com` endpoint, use the `global` location. To specify a
+  /// region, use a \[regional endpoint\](/speech-to-text/docs/endpoints) with
+  /// matching `us` or `eu` location value.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/phraseSets/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [PhraseSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<PhraseSet> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return PhraseSet.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List phrase sets.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns this collection of phrase set.
+  /// Format: `projects/{project}/locations/{location}` Speech-to-Text supports
+  /// three locations: `global`, `us` (US North America), and `eu` (Europe). If
+  /// you are calling the `speech.googleapis.com` endpoint, use the `global`
+  /// location. To specify a region, use a \[regional
+  /// endpoint\](/speech-to-text/docs/endpoints) with matching `us` or `eu`
+  /// location value.
+  /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of phrase sets to return. The service may
+  /// return fewer than this value. If unspecified, at most 50 phrase sets will
+  /// be returned. The maximum value is 1000; values above 1000 will be coerced
+  /// to 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListPhraseSet` call.
+  /// Provide this to retrieve the subsequent page. When paginating, all other
+  /// parameters provided to `ListPhraseSet` must match the call that provided
+  /// the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListPhraseSetResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListPhraseSetResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/phraseSets';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListPhraseSetResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Update a phrase set.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The resource name of the phrase set.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/phraseSets/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [PhraseSet].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<PhraseSet> patch(
+    PhraseSet request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return PhraseSet.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class SpeechResource {
   final commons.ApiRequester _requester;
 
@@ -187,7 +688,7 @@ class SpeechResource {
     LongRunningRecognizeRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -224,7 +725,7 @@ class SpeechResource {
     RecognizeRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -242,6 +743,188 @@ class SpeechResource {
   }
 }
 
+/// An item of the class.
+class ClassItem {
+  /// The class item's value.
+  core.String? value;
+
+  ClassItem({
+    this.value,
+  });
+
+  ClassItem.fromJson(core.Map _json)
+      : this(
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (value != null) 'value': value!,
+      };
+}
+
+/// Message sent by the client for the `CreateCustomClass` method.
+class CreateCustomClassRequest {
+  /// The custom class to create.
+  ///
+  /// Required.
+  CustomClass? customClass;
+
+  /// The ID to use for the custom class, which will become the final component
+  /// of the custom class' resource name.
+  ///
+  /// This value should be 4-63 characters, and valid characters are /a-z-/.
+  ///
+  /// Required.
+  core.String? customClassId;
+
+  CreateCustomClassRequest({
+    this.customClass,
+    this.customClassId,
+  });
+
+  CreateCustomClassRequest.fromJson(core.Map _json)
+      : this(
+          customClass: _json.containsKey('customClass')
+              ? CustomClass.fromJson(
+                  _json['customClass'] as core.Map<core.String, core.dynamic>)
+              : null,
+          customClassId: _json.containsKey('customClassId')
+              ? _json['customClassId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (customClass != null) 'customClass': customClass!,
+        if (customClassId != null) 'customClassId': customClassId!,
+      };
+}
+
+/// Message sent by the client for the `CreatePhraseSet` method.
+class CreatePhraseSetRequest {
+  /// The phrase set to create.
+  ///
+  /// Required.
+  PhraseSet? phraseSet;
+
+  /// The ID to use for the phrase set, which will become the final component of
+  /// the phrase set's resource name.
+  ///
+  /// This value should be 4-63 characters, and valid characters are /a-z-/.
+  ///
+  /// Required.
+  core.String? phraseSetId;
+
+  CreatePhraseSetRequest({
+    this.phraseSet,
+    this.phraseSetId,
+  });
+
+  CreatePhraseSetRequest.fromJson(core.Map _json)
+      : this(
+          phraseSet: _json.containsKey('phraseSet')
+              ? PhraseSet.fromJson(
+                  _json['phraseSet'] as core.Map<core.String, core.dynamic>)
+              : null,
+          phraseSetId: _json.containsKey('phraseSetId')
+              ? _json['phraseSetId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (phraseSet != null) 'phraseSet': phraseSet!,
+        if (phraseSetId != null) 'phraseSetId': phraseSetId!,
+      };
+}
+
+/// A set of words or phrases that represents a common concept likely to appear
+/// in your audio, for example a list of passenger ship names.
+///
+/// CustomClass items can be substituted into placeholders that you set in
+/// PhraseSet phrases.
+class CustomClass {
+  /// If this custom class is a resource, the custom_class_id is the resource id
+  /// of the CustomClass.
+  ///
+  /// Case sensitive.
+  core.String? customClassId;
+
+  /// A collection of class items.
+  core.List<ClassItem>? items;
+
+  /// The resource name of the custom class.
+  core.String? name;
+
+  CustomClass({
+    this.customClassId,
+    this.items,
+    this.name,
+  });
+
+  CustomClass.fromJson(core.Map _json)
+      : this(
+          customClassId: _json.containsKey('customClassId')
+              ? _json['customClassId'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => ClassItem.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (customClassId != null) 'customClassId': customClassId!,
+        if (items != null) 'items': items!,
+        if (name != null) 'name': name!,
+      };
+}
+
+/// A generic empty message that you can re-use to avoid defining duplicated
+/// empty messages in your APIs.
+///
+/// A typical example is to use it as the request or the response type of an API
+/// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
+/// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
+/// object `{}`.
+typedef Empty = $Empty;
+
+/// Message returned to the client by the `ListCustomClasses` method.
+class ListCustomClassesResponse {
+  /// The custom classes.
+  core.List<CustomClass>? customClasses;
+
+  /// A token, which can be sent as `page_token` to retrieve the next page.
+  ///
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
+
+  ListCustomClassesResponse({
+    this.customClasses,
+    this.nextPageToken,
+  });
+
+  ListCustomClassesResponse.fromJson(core.Map _json)
+      : this(
+          customClasses: _json.containsKey('customClasses')
+              ? (_json['customClasses'] as core.List)
+                  .map((value) => CustomClass.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (customClasses != null) 'customClasses': customClasses!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+      };
+}
+
 /// The response message for Operations.ListOperations.
 class ListOperationsResponse {
   /// The standard List next-page token.
@@ -250,73 +933,61 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
-/// Describes the progress of a long-running `LongRunningRecognize` call.
-///
-/// It is included in the `metadata` field of the `Operation` returned by the
-/// `GetOperation` call of the `google::longrunning::Operations` service.
-class LongRunningRecognizeMetadata {
-  /// Time of the most recent processing update.
-  core.String? lastUpdateTime;
-
-  /// Approximate percentage of audio processed thus far.
+/// Message returned to the client by the `ListPhraseSet` method.
+class ListPhraseSetResponse {
+  /// A token, which can be sent as `page_token` to retrieve the next page.
   ///
-  /// Guaranteed to be 100 when the audio is fully processed and the results are
-  /// available.
-  core.int? progressPercent;
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
 
-  /// Time when the request was received.
-  core.String? startTime;
+  /// The phrase set.
+  core.List<PhraseSet>? phraseSets;
 
-  /// The URI of the audio file being transcribed.
-  ///
-  /// Empty if the audio was sent as byte content.
-  ///
-  /// Output only.
-  core.String? uri;
+  ListPhraseSetResponse({
+    this.nextPageToken,
+    this.phraseSets,
+  });
 
-  LongRunningRecognizeMetadata();
-
-  LongRunningRecognizeMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('lastUpdateTime')) {
-      lastUpdateTime = _json['lastUpdateTime'] as core.String;
-    }
-    if (_json.containsKey('progressPercent')) {
-      progressPercent = _json['progressPercent'] as core.int;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  ListPhraseSetResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          phraseSets: _json.containsKey('phraseSets')
+              ? (_json['phraseSets'] as core.List)
+                  .map((value) => PhraseSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (lastUpdateTime != null) 'lastUpdateTime': lastUpdateTime!,
-        if (progressPercent != null) 'progressPercent': progressPercent!,
-        if (startTime != null) 'startTime': startTime!,
-        if (uri != null) 'uri': uri!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (phraseSets != null) 'phraseSets': phraseSets!,
       };
 }
 
@@ -334,52 +1005,37 @@ class LongRunningRecognizeRequest {
   /// Required.
   RecognitionConfig? config;
 
-  LongRunningRecognizeRequest();
+  /// Specifies an optional destination for the recognition results.
+  ///
+  /// Optional.
+  TranscriptOutputConfig? outputConfig;
 
-  LongRunningRecognizeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('audio')) {
-      audio = RecognitionAudio.fromJson(
-          _json['audio'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('config')) {
-      config = RecognitionConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  LongRunningRecognizeRequest({
+    this.audio,
+    this.config,
+    this.outputConfig,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (audio != null) 'audio': audio!.toJson(),
-        if (config != null) 'config': config!.toJson(),
-      };
-}
-
-/// The only message returned to the client by the `LongRunningRecognize`
-/// method.
-///
-/// It contains the result as zero or more sequential `SpeechRecognitionResult`
-/// messages. It is included in the `result.response` field of the `Operation`
-/// returned by the `GetOperation` call of the `google::longrunning::Operations`
-/// service.
-class LongRunningRecognizeResponse {
-  /// Sequential list of transcription results corresponding to sequential
-  /// portions of audio.
-  core.List<SpeechRecognitionResult>? results;
-
-  LongRunningRecognizeResponse();
-
-  LongRunningRecognizeResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('results')) {
-      results = (_json['results'] as core.List)
-          .map<SpeechRecognitionResult>((value) =>
-              SpeechRecognitionResult.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  LongRunningRecognizeRequest.fromJson(core.Map _json)
+      : this(
+          audio: _json.containsKey('audio')
+              ? RecognitionAudio.fromJson(
+                  _json['audio'] as core.Map<core.String, core.dynamic>)
+              : null,
+          config: _json.containsKey('config')
+              ? RecognitionConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+          outputConfig: _json.containsKey('outputConfig')
+              ? TranscriptOutputConfig.fromJson(
+                  _json['outputConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (results != null)
-          'results': results!.map((value) => value.toJson()).toList(),
+        if (audio != null) 'audio': audio!,
+        if (config != null) 'config': config!,
+        if (outputConfig != null) 'outputConfig': outputConfig!,
       };
 }
 
@@ -404,7 +1060,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -424,45 +1080,147 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
+      };
+}
+
+/// A phrases containing words and phrase "hints" so that the speech recognition
+/// is more likely to recognize them.
+///
+/// This can be used to improve the accuracy for specific words and phrases, for
+/// example, if specific commands are typically spoken by the user. This can
+/// also be used to add additional words to the vocabulary of the recognizer.
+/// See [usage limits](https://cloud.google.com/speech-to-text/quotas#content).
+/// List items can also include pre-built or custom classes containing groups of
+/// words that represent common concepts that occur in natural language. For
+/// example, rather than providing a phrase hint for every month of the year
+/// (e.g. "i was born in january", "i was born in febuary", ...), use the
+/// pre-built `$MONTH` class improves the likelihood of correctly transcribing
+/// audio that includes months (e.g. "i was born in $month"). To refer to
+/// pre-built classes, use the class' symbol prepended with `$` e.g. `$MONTH`.
+/// To refer to custom classes that were defined inline in the request, set the
+/// class's `custom_class_id` to a string unique to all class resources and
+/// inline classes. Then use the class' id wrapped in $`{...}` e.g.
+/// "${my-months}". To refer to custom classes resources, use the class' id
+/// wrapped in `${}` (e.g. `${my-months}`). Speech-to-Text supports three
+/// locations: `global`, `us` (US North America), and `eu` (Europe). If you are
+/// calling the `speech.googleapis.com` endpoint, use the `global` location. To
+/// specify a region, use a \[regional
+/// endpoint\](/speech-to-text/docs/endpoints) with matching `us` or `eu`
+/// location value.
+class Phrase {
+  /// Hint Boost.
+  ///
+  /// Overrides the boost set at the phrase set level. Positive value will
+  /// increase the probability that a specific phrase will be recognized over
+  /// other similar sounding phrases. The higher the boost, the higher the
+  /// chance of false positive recognition as well. Negative boost will simply
+  /// be ignored. Though `boost` can accept a wide range of positive values,
+  /// most use cases are best served with values between 0 and 20. We recommend
+  /// using a binary search approach to finding the optimal value for your use
+  /// case. Speech recognition will skip PhraseSets with a boost value of 0.
+  core.double? boost;
+
+  /// The phrase itself.
+  core.String? value;
+
+  Phrase({
+    this.boost,
+    this.value,
+  });
+
+  Phrase.fromJson(core.Map _json)
+      : this(
+          boost: _json.containsKey('boost')
+              ? (_json['boost'] as core.num).toDouble()
+              : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (boost != null) 'boost': boost!,
+        if (value != null) 'value': value!,
+      };
+}
+
+/// Provides "hints" to the speech recognizer to favor specific words and
+/// phrases in the results.
+class PhraseSet {
+  /// Hint Boost.
+  ///
+  /// Positive value will increase the probability that a specific phrase will
+  /// be recognized over other similar sounding phrases. The higher the boost,
+  /// the higher the chance of false positive recognition as well. Negative
+  /// boost values would correspond to anti-biasing. Anti-biasing is not
+  /// enabled, so negative boost will simply be ignored. Though `boost` can
+  /// accept a wide range of positive values, most use cases are best served
+  /// with values between 0 (exclusive) and 20. We recommend using a binary
+  /// search approach to finding the optimal value for your use case. Speech
+  /// recognition will skip PhraseSets with a boost value of 0.
+  core.double? boost;
+
+  /// The resource name of the phrase set.
+  core.String? name;
+
+  /// A list of word and phrases.
+  core.List<Phrase>? phrases;
+
+  PhraseSet({
+    this.boost,
+    this.name,
+    this.phrases,
+  });
+
+  PhraseSet.fromJson(core.Map _json)
+      : this(
+          boost: _json.containsKey('boost')
+              ? (_json['boost'] as core.num).toDouble()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          phrases: _json.containsKey('phrases')
+              ? (_json['phrases'] as core.List)
+                  .map((value) => Phrase.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (boost != null) 'boost': boost!,
+        if (name != null) 'name': name!,
+        if (phrases != null) 'phrases': phrases!,
       };
 }
 
@@ -494,16 +1252,18 @@ class RecognitionAudio {
   /// [Request URIs](https://cloud.google.com/storage/docs/reference-uris).
   core.String? uri;
 
-  RecognitionAudio();
+  RecognitionAudio({
+    this.content,
+    this.uri,
+  });
 
-  RecognitionAudio.fromJson(core.Map _json) {
-    if (_json.containsKey('content')) {
-      content = _json['content'] as core.String;
-    }
-    if (_json.containsKey('uri')) {
-      uri = _json['uri'] as core.String;
-    }
-  }
+  RecognitionAudio.fromJson(core.Map _json)
+      : this(
+          content: _json.containsKey('content')
+              ? _json['content'] as core.String
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (content != null) 'content': content!,
@@ -514,6 +1274,30 @@ class RecognitionAudio {
 /// Provides information to the recognizer that specifies how to process the
 /// request.
 class RecognitionConfig {
+  /// Speech adaptation configuration improves the accuracy of speech
+  /// recognition.
+  ///
+  /// For more information, see the
+  /// [speech adaptation](https://cloud.google.com/speech-to-text/docs/adaptation)
+  /// documentation. When speech adaptation is set it supersedes the
+  /// `speech_contexts` field.
+  SpeechAdaptation? adaptation;
+
+  /// A list of up to 3 additional
+  /// \[BCP-47\](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tags,
+  /// listing possible alternative languages of the supplied audio.
+  ///
+  /// See
+  /// [Language Support](https://cloud.google.com/speech-to-text/docs/languages)
+  /// for a list of the currently supported language codes. If alternative
+  /// languages are listed, recognition result will contain recognition in the
+  /// most likely language detected including the main language_code. The
+  /// recognition result will include the language tag of the language detected
+  /// in the audio. Note: This feature is only supported for Voice Command and
+  /// Voice Search use cases and performance may vary for other use cases (e.g.,
+  /// phone call transcription).
+  core.List<core.String>? alternativeLanguageCodes;
+
   /// The number of channels in the input audio data.
   ///
   /// ONLY set this for MULTI-CHANNEL recognition. Valid values for LINEAR16 and
@@ -542,8 +1326,8 @@ class RecognitionConfig {
   /// value does not add punctuation to result hypotheses.
   core.bool? enableAutomaticPunctuation;
 
-  /// This needs to be set to `true` explicitly and `audio_channel_count` > 1 to
-  /// get each channel recognized separately.
+  /// This needs to be set to `true` explicitly and `audio_channel_count` \> 1
+  /// to get each channel recognized separately.
   ///
   /// The recognition result will contain a `channel_tag` field to state which
   /// channel that result belongs to. If this is not true, we will only
@@ -551,6 +1335,31 @@ class RecognitionConfig {
   /// channels recognized: `audio_channel_count` multiplied by the length of the
   /// audio.
   core.bool? enableSeparateRecognitionPerChannel;
+
+  /// The spoken emoji behavior for the call If not set, uses default behavior
+  /// based on model of choice If 'true', adds spoken emoji formatting for the
+  /// request.
+  ///
+  /// This will replace spoken emojis with the corresponding Unicode symbols in
+  /// the final transcript. If 'false', spoken emojis are not replaced.
+  core.bool? enableSpokenEmojis;
+
+  /// The spoken punctuation behavior for the call If not set, uses default
+  /// behavior based on model of choice e.g. command_and_search will enable
+  /// spoken punctuation by default If 'true', replaces spoken punctuation with
+  /// the corresponding symbols in the request.
+  ///
+  /// For example, "how are you question mark" becomes "how are you?". See
+  /// https://cloud.google.com/speech-to-text/docs/spoken-punctuation for
+  /// support. If 'false', spoken punctuation is not replaced.
+  core.bool? enableSpokenPunctuation;
+
+  /// If `true`, the top result includes a list of words and the confidence for
+  /// those words.
+  ///
+  /// If `false`, no word-level confidence information is returned. The default
+  /// is `false`.
+  core.bool? enableWordConfidence;
 
   /// If `true`, the top result includes a list of words and the start and end
   /// time offsets (timestamps) for those words.
@@ -593,6 +1402,9 @@ class RecognitionConfig {
   /// (octets) as specified in RFC 5574. In other words, each RTP header is
   /// replaced with a single byte containing the block length. Only Speex
   /// wideband is supported. `sample_rate_hertz` must be 16000.
+  /// - "WEBM_OPUS" : Opus encoded audio frames in WebM container
+  /// ([OggOpus](https://wiki.xiph.org/OggOpus)). `sample_rate_hertz` must be
+  /// one of 8000, 12000, 16000, 24000, or 48000.
   core.String? encoding;
 
   /// The language of the supplied audio as a
@@ -625,12 +1437,14 @@ class RecognitionConfig {
   /// command_and_search Best for short queries such as voice commands or voice
   /// search. phone_call Best for audio that originated from a phone call
   /// (typically recorded at an 8khz sampling rate). video Best for audio that
-  /// originated from from video or includes multiple speakers. Ideally the
-  /// audio is recorded at a 16khz or greater sampling rate. This is a premium
-  /// model that costs more than the standard rate. default Best for audio that
-  /// is not one of the specific audio models. For example, long-form audio.
-  /// Ideally the audio is high-fidelity, recorded at a 16khz or greater
-  /// sampling rate.
+  /// originated from video or includes multiple speakers. Ideally the audio is
+  /// recorded at a 16khz or greater sampling rate. This is a premium model that
+  /// costs more than the standard rate. default Best for audio that is not one
+  /// of the specific audio models. For example, long-form audio. Ideally the
+  /// audio is high-fidelity, recorded at a 16khz or greater sampling rate.
+  /// medical_conversation Best for audio that originated from a conversation
+  /// between a medical provider and patient. medical_dictation Best for audio
+  /// that originated from dictation notes by a medical provider.
   core.String? model;
 
   /// If set to `true`, the server will attempt to filter out profanities,
@@ -654,7 +1468,7 @@ class RecognitionConfig {
   ///
   /// A means to provide context to assist the speech recognition. For more
   /// information, see
-  /// [speech adaptation](https://cloud.google.com/speech-to-text/docs/context-strength).
+  /// [speech adaptation](https://cloud.google.com/speech-to-text/docs/adaptation).
   core.List<SpeechContext>? speechContexts;
 
   /// Set to true to use an enhanced model for speech recognition.
@@ -666,81 +1480,126 @@ class RecognitionConfig {
   /// version of the specified model.
   core.bool? useEnhanced;
 
-  RecognitionConfig();
+  RecognitionConfig({
+    this.adaptation,
+    this.alternativeLanguageCodes,
+    this.audioChannelCount,
+    this.diarizationConfig,
+    this.enableAutomaticPunctuation,
+    this.enableSeparateRecognitionPerChannel,
+    this.enableSpokenEmojis,
+    this.enableSpokenPunctuation,
+    this.enableWordConfidence,
+    this.enableWordTimeOffsets,
+    this.encoding,
+    this.languageCode,
+    this.maxAlternatives,
+    this.metadata,
+    this.model,
+    this.profanityFilter,
+    this.sampleRateHertz,
+    this.speechContexts,
+    this.useEnhanced,
+  });
 
-  RecognitionConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('audioChannelCount')) {
-      audioChannelCount = _json['audioChannelCount'] as core.int;
-    }
-    if (_json.containsKey('diarizationConfig')) {
-      diarizationConfig = SpeakerDiarizationConfig.fromJson(
-          _json['diarizationConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('enableAutomaticPunctuation')) {
-      enableAutomaticPunctuation =
-          _json['enableAutomaticPunctuation'] as core.bool;
-    }
-    if (_json.containsKey('enableSeparateRecognitionPerChannel')) {
-      enableSeparateRecognitionPerChannel =
-          _json['enableSeparateRecognitionPerChannel'] as core.bool;
-    }
-    if (_json.containsKey('enableWordTimeOffsets')) {
-      enableWordTimeOffsets = _json['enableWordTimeOffsets'] as core.bool;
-    }
-    if (_json.containsKey('encoding')) {
-      encoding = _json['encoding'] as core.String;
-    }
-    if (_json.containsKey('languageCode')) {
-      languageCode = _json['languageCode'] as core.String;
-    }
-    if (_json.containsKey('maxAlternatives')) {
-      maxAlternatives = _json['maxAlternatives'] as core.int;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = RecognitionMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('model')) {
-      model = _json['model'] as core.String;
-    }
-    if (_json.containsKey('profanityFilter')) {
-      profanityFilter = _json['profanityFilter'] as core.bool;
-    }
-    if (_json.containsKey('sampleRateHertz')) {
-      sampleRateHertz = _json['sampleRateHertz'] as core.int;
-    }
-    if (_json.containsKey('speechContexts')) {
-      speechContexts = (_json['speechContexts'] as core.List)
-          .map<SpeechContext>((value) => SpeechContext.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('useEnhanced')) {
-      useEnhanced = _json['useEnhanced'] as core.bool;
-    }
-  }
+  RecognitionConfig.fromJson(core.Map _json)
+      : this(
+          adaptation: _json.containsKey('adaptation')
+              ? SpeechAdaptation.fromJson(
+                  _json['adaptation'] as core.Map<core.String, core.dynamic>)
+              : null,
+          alternativeLanguageCodes:
+              _json.containsKey('alternativeLanguageCodes')
+                  ? (_json['alternativeLanguageCodes'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          audioChannelCount: _json.containsKey('audioChannelCount')
+              ? _json['audioChannelCount'] as core.int
+              : null,
+          diarizationConfig: _json.containsKey('diarizationConfig')
+              ? SpeakerDiarizationConfig.fromJson(_json['diarizationConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          enableAutomaticPunctuation:
+              _json.containsKey('enableAutomaticPunctuation')
+                  ? _json['enableAutomaticPunctuation'] as core.bool
+                  : null,
+          enableSeparateRecognitionPerChannel:
+              _json.containsKey('enableSeparateRecognitionPerChannel')
+                  ? _json['enableSeparateRecognitionPerChannel'] as core.bool
+                  : null,
+          enableSpokenEmojis: _json.containsKey('enableSpokenEmojis')
+              ? _json['enableSpokenEmojis'] as core.bool
+              : null,
+          enableSpokenPunctuation: _json.containsKey('enableSpokenPunctuation')
+              ? _json['enableSpokenPunctuation'] as core.bool
+              : null,
+          enableWordConfidence: _json.containsKey('enableWordConfidence')
+              ? _json['enableWordConfidence'] as core.bool
+              : null,
+          enableWordTimeOffsets: _json.containsKey('enableWordTimeOffsets')
+              ? _json['enableWordTimeOffsets'] as core.bool
+              : null,
+          encoding: _json.containsKey('encoding')
+              ? _json['encoding'] as core.String
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          maxAlternatives: _json.containsKey('maxAlternatives')
+              ? _json['maxAlternatives'] as core.int
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? RecognitionMetadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          model:
+              _json.containsKey('model') ? _json['model'] as core.String : null,
+          profanityFilter: _json.containsKey('profanityFilter')
+              ? _json['profanityFilter'] as core.bool
+              : null,
+          sampleRateHertz: _json.containsKey('sampleRateHertz')
+              ? _json['sampleRateHertz'] as core.int
+              : null,
+          speechContexts: _json.containsKey('speechContexts')
+              ? (_json['speechContexts'] as core.List)
+                  .map((value) => SpeechContext.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          useEnhanced: _json.containsKey('useEnhanced')
+              ? _json['useEnhanced'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (adaptation != null) 'adaptation': adaptation!,
+        if (alternativeLanguageCodes != null)
+          'alternativeLanguageCodes': alternativeLanguageCodes!,
         if (audioChannelCount != null) 'audioChannelCount': audioChannelCount!,
-        if (diarizationConfig != null)
-          'diarizationConfig': diarizationConfig!.toJson(),
+        if (diarizationConfig != null) 'diarizationConfig': diarizationConfig!,
         if (enableAutomaticPunctuation != null)
           'enableAutomaticPunctuation': enableAutomaticPunctuation!,
         if (enableSeparateRecognitionPerChannel != null)
           'enableSeparateRecognitionPerChannel':
               enableSeparateRecognitionPerChannel!,
+        if (enableSpokenEmojis != null)
+          'enableSpokenEmojis': enableSpokenEmojis!,
+        if (enableSpokenPunctuation != null)
+          'enableSpokenPunctuation': enableSpokenPunctuation!,
+        if (enableWordConfidence != null)
+          'enableWordConfidence': enableWordConfidence!,
         if (enableWordTimeOffsets != null)
           'enableWordTimeOffsets': enableWordTimeOffsets!,
         if (encoding != null) 'encoding': encoding!,
         if (languageCode != null) 'languageCode': languageCode!,
         if (maxAlternatives != null) 'maxAlternatives': maxAlternatives!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (model != null) 'model': model!,
         if (profanityFilter != null) 'profanityFilter': profanityFilter!,
         if (sampleRateHertz != null) 'sampleRateHertz': sampleRateHertz!,
-        if (speechContexts != null)
-          'speechContexts':
-              speechContexts!.map((value) => value.toJson()).toList(),
+        if (speechContexts != null) 'speechContexts': speechContexts!,
         if (useEnhanced != null) 'useEnhanced': useEnhanced!,
       };
 }
@@ -824,34 +1683,45 @@ class RecognitionMetadata {
   /// - "OTHER_INDOOR_DEVICE" : Speech was recorded indoors.
   core.String? recordingDeviceType;
 
-  RecognitionMetadata();
+  RecognitionMetadata({
+    this.audioTopic,
+    this.industryNaicsCodeOfAudio,
+    this.interactionType,
+    this.microphoneDistance,
+    this.originalMediaType,
+    this.originalMimeType,
+    this.recordingDeviceName,
+    this.recordingDeviceType,
+  });
 
-  RecognitionMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('audioTopic')) {
-      audioTopic = _json['audioTopic'] as core.String;
-    }
-    if (_json.containsKey('industryNaicsCodeOfAudio')) {
-      industryNaicsCodeOfAudio = _json['industryNaicsCodeOfAudio'] as core.int;
-    }
-    if (_json.containsKey('interactionType')) {
-      interactionType = _json['interactionType'] as core.String;
-    }
-    if (_json.containsKey('microphoneDistance')) {
-      microphoneDistance = _json['microphoneDistance'] as core.String;
-    }
-    if (_json.containsKey('originalMediaType')) {
-      originalMediaType = _json['originalMediaType'] as core.String;
-    }
-    if (_json.containsKey('originalMimeType')) {
-      originalMimeType = _json['originalMimeType'] as core.String;
-    }
-    if (_json.containsKey('recordingDeviceName')) {
-      recordingDeviceName = _json['recordingDeviceName'] as core.String;
-    }
-    if (_json.containsKey('recordingDeviceType')) {
-      recordingDeviceType = _json['recordingDeviceType'] as core.String;
-    }
-  }
+  RecognitionMetadata.fromJson(core.Map _json)
+      : this(
+          audioTopic: _json.containsKey('audioTopic')
+              ? _json['audioTopic'] as core.String
+              : null,
+          industryNaicsCodeOfAudio:
+              _json.containsKey('industryNaicsCodeOfAudio')
+                  ? _json['industryNaicsCodeOfAudio'] as core.int
+                  : null,
+          interactionType: _json.containsKey('interactionType')
+              ? _json['interactionType'] as core.String
+              : null,
+          microphoneDistance: _json.containsKey('microphoneDistance')
+              ? _json['microphoneDistance'] as core.String
+              : null,
+          originalMediaType: _json.containsKey('originalMediaType')
+              ? _json['originalMediaType'] as core.String
+              : null,
+          originalMimeType: _json.containsKey('originalMimeType')
+              ? _json['originalMimeType'] as core.String
+              : null,
+          recordingDeviceName: _json.containsKey('recordingDeviceName')
+              ? _json['recordingDeviceName'] as core.String
+              : null,
+          recordingDeviceType: _json.containsKey('recordingDeviceType')
+              ? _json['recordingDeviceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audioTopic != null) 'audioTopic': audioTopic!,
@@ -882,22 +1752,26 @@ class RecognizeRequest {
   /// Required.
   RecognitionConfig? config;
 
-  RecognizeRequest();
+  RecognizeRequest({
+    this.audio,
+    this.config,
+  });
 
-  RecognizeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('audio')) {
-      audio = RecognitionAudio.fromJson(
-          _json['audio'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('config')) {
-      config = RecognitionConfig.fromJson(
-          _json['config'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  RecognizeRequest.fromJson(core.Map _json)
+      : this(
+          audio: _json.containsKey('audio')
+              ? RecognitionAudio.fromJson(
+                  _json['audio'] as core.Map<core.String, core.dynamic>)
+              : null,
+          config: _json.containsKey('config')
+              ? RecognitionConfig.fromJson(
+                  _json['config'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (audio != null) 'audio': audio!.toJson(),
-        if (config != null) 'config': config!.toJson(),
+        if (audio != null) 'audio': audio!,
+        if (config != null) 'config': config!,
       };
 }
 
@@ -910,21 +1784,30 @@ class RecognizeResponse {
   /// portions of audio.
   core.List<SpeechRecognitionResult>? results;
 
-  RecognizeResponse();
+  /// When available, billed audio seconds for the corresponding request.
+  core.String? totalBilledTime;
 
-  RecognizeResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('results')) {
-      results = (_json['results'] as core.List)
-          .map<SpeechRecognitionResult>((value) =>
-              SpeechRecognitionResult.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  RecognizeResponse({
+    this.results,
+    this.totalBilledTime,
+  });
+
+  RecognizeResponse.fromJson(core.Map _json)
+      : this(
+          results: _json.containsKey('results')
+              ? (_json['results'] as core.List)
+                  .map((value) => SpeechRecognitionResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          totalBilledTime: _json.containsKey('totalBilledTime')
+              ? _json['totalBilledTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (results != null)
-          'results': results!.map((value) => value.toJson()).toList(),
+        if (results != null) 'results': results!,
+        if (totalBilledTime != null) 'totalBilledTime': totalBilledTime!,
       };
 }
 
@@ -954,22 +1837,29 @@ class SpeakerDiarizationConfig {
   /// Output only.
   core.int? speakerTag;
 
-  SpeakerDiarizationConfig();
+  SpeakerDiarizationConfig({
+    this.enableSpeakerDiarization,
+    this.maxSpeakerCount,
+    this.minSpeakerCount,
+    this.speakerTag,
+  });
 
-  SpeakerDiarizationConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('enableSpeakerDiarization')) {
-      enableSpeakerDiarization = _json['enableSpeakerDiarization'] as core.bool;
-    }
-    if (_json.containsKey('maxSpeakerCount')) {
-      maxSpeakerCount = _json['maxSpeakerCount'] as core.int;
-    }
-    if (_json.containsKey('minSpeakerCount')) {
-      minSpeakerCount = _json['minSpeakerCount'] as core.int;
-    }
-    if (_json.containsKey('speakerTag')) {
-      speakerTag = _json['speakerTag'] as core.int;
-    }
-  }
+  SpeakerDiarizationConfig.fromJson(core.Map _json)
+      : this(
+          enableSpeakerDiarization:
+              _json.containsKey('enableSpeakerDiarization')
+                  ? _json['enableSpeakerDiarization'] as core.bool
+                  : null,
+          maxSpeakerCount: _json.containsKey('maxSpeakerCount')
+              ? _json['maxSpeakerCount'] as core.int
+              : null,
+          minSpeakerCount: _json.containsKey('minSpeakerCount')
+              ? _json['minSpeakerCount'] as core.int
+              : null,
+          speakerTag: _json.containsKey('speakerTag')
+              ? _json['speakerTag'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enableSpeakerDiarization != null)
@@ -980,9 +1870,74 @@ class SpeakerDiarizationConfig {
       };
 }
 
+/// Speech adaptation configuration.
+class SpeechAdaptation {
+  /// A collection of custom classes.
+  ///
+  /// To specify the classes inline, leave the class' `name` blank and fill in
+  /// the rest of its fields, giving it a unique `custom_class_id`. Refer to the
+  /// inline defined class in phrase hints by its `custom_class_id`.
+  core.List<CustomClass>? customClasses;
+
+  /// A collection of phrase set resource names to use.
+  core.List<core.String>? phraseSetReferences;
+
+  /// A collection of phrase sets.
+  ///
+  /// To specify the hints inline, leave the phrase set's `name` blank and fill
+  /// in the rest of its fields. Any phrase set can use any custom class.
+  core.List<PhraseSet>? phraseSets;
+
+  SpeechAdaptation({
+    this.customClasses,
+    this.phraseSetReferences,
+    this.phraseSets,
+  });
+
+  SpeechAdaptation.fromJson(core.Map _json)
+      : this(
+          customClasses: _json.containsKey('customClasses')
+              ? (_json['customClasses'] as core.List)
+                  .map((value) => CustomClass.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          phraseSetReferences: _json.containsKey('phraseSetReferences')
+              ? (_json['phraseSetReferences'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          phraseSets: _json.containsKey('phraseSets')
+              ? (_json['phraseSets'] as core.List)
+                  .map((value) => PhraseSet.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (customClasses != null) 'customClasses': customClasses!,
+        if (phraseSetReferences != null)
+          'phraseSetReferences': phraseSetReferences!,
+        if (phraseSets != null) 'phraseSets': phraseSets!,
+      };
+}
+
 /// Provides "hints" to the speech recognizer to favor specific words and
 /// phrases in the results.
 class SpeechContext {
+  /// Hint Boost.
+  ///
+  /// Positive value will increase the probability that a specific phrase will
+  /// be recognized over other similar sounding phrases. The higher the boost,
+  /// the higher the chance of false positive recognition as well. Negative
+  /// boost values would correspond to anti-biasing. Anti-biasing is not
+  /// enabled, so negative boost will simply be ignored. Though `boost` can
+  /// accept a wide range of positive values, most use cases are best served
+  /// with values between 0 and 20. We recommend using a binary search approach
+  /// to finding the optimal value for your use case.
+  core.double? boost;
+
   /// A list of strings containing words and phrases "hints" so that the speech
   /// recognition is more likely to recognize them.
   ///
@@ -998,17 +1953,25 @@ class SpeechContext {
   /// months.
   core.List<core.String>? phrases;
 
-  SpeechContext();
+  SpeechContext({
+    this.boost,
+    this.phrases,
+  });
 
-  SpeechContext.fromJson(core.Map _json) {
-    if (_json.containsKey('phrases')) {
-      phrases = (_json['phrases'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  SpeechContext.fromJson(core.Map _json)
+      : this(
+          boost: _json.containsKey('boost')
+              ? (_json['boost'] as core.num).toDouble()
+              : null,
+          phrases: _json.containsKey('phrases')
+              ? (_json['phrases'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (boost != null) 'boost': boost!,
         if (phrases != null) 'phrases': phrases!,
       };
 }
@@ -1034,28 +1997,32 @@ class SpeechRecognitionAlternative {
   /// words from the beginning of the audio.
   core.List<WordInfo>? words;
 
-  SpeechRecognitionAlternative();
+  SpeechRecognitionAlternative({
+    this.confidence,
+    this.transcript,
+    this.words,
+  });
 
-  SpeechRecognitionAlternative.fromJson(core.Map _json) {
-    if (_json.containsKey('confidence')) {
-      confidence = (_json['confidence'] as core.num).toDouble();
-    }
-    if (_json.containsKey('transcript')) {
-      transcript = _json['transcript'] as core.String;
-    }
-    if (_json.containsKey('words')) {
-      words = (_json['words'] as core.List)
-          .map<WordInfo>((value) =>
-              WordInfo.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SpeechRecognitionAlternative.fromJson(core.Map _json)
+      : this(
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          transcript: _json.containsKey('transcript')
+              ? _json['transcript'] as core.String
+              : null,
+          words: _json.containsKey('words')
+              ? (_json['words'] as core.List)
+                  .map((value) => WordInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (confidence != null) 'confidence': confidence!,
         if (transcript != null) 'transcript': transcript!,
-        if (words != null)
-          'words': words!.map((value) => value.toJson()).toList(),
+        if (words != null) 'words': words!,
       };
 }
 
@@ -1074,25 +2041,50 @@ class SpeechRecognitionResult {
   /// For audio_channel_count = N, its output values can range from '1' to 'N'.
   core.int? channelTag;
 
-  SpeechRecognitionResult();
+  /// The \[BCP-47\](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) language tag
+  /// of the language in this result.
+  ///
+  /// This language code was detected to have the most likelihood of being
+  /// spoken in the audio.
+  ///
+  /// Output only.
+  core.String? languageCode;
 
-  SpeechRecognitionResult.fromJson(core.Map _json) {
-    if (_json.containsKey('alternatives')) {
-      alternatives = (_json['alternatives'] as core.List)
-          .map<SpeechRecognitionAlternative>((value) =>
-              SpeechRecognitionAlternative.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('channelTag')) {
-      channelTag = _json['channelTag'] as core.int;
-    }
-  }
+  /// Time offset of the end of this result relative to the beginning of the
+  /// audio.
+  core.String? resultEndTime;
+
+  SpeechRecognitionResult({
+    this.alternatives,
+    this.channelTag,
+    this.languageCode,
+    this.resultEndTime,
+  });
+
+  SpeechRecognitionResult.fromJson(core.Map _json)
+      : this(
+          alternatives: _json.containsKey('alternatives')
+              ? (_json['alternatives'] as core.List)
+                  .map((value) => SpeechRecognitionAlternative.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          channelTag: _json.containsKey('channelTag')
+              ? _json['channelTag'] as core.int
+              : null,
+          languageCode: _json.containsKey('languageCode')
+              ? _json['languageCode'] as core.String
+              : null,
+          resultEndTime: _json.containsKey('resultEndTime')
+              ? _json['resultEndTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (alternatives != null)
-          'alternatives': alternatives!.map((value) => value.toJson()).toList(),
+        if (alternatives != null) 'alternatives': alternatives!,
         if (channelTag != null) 'channelTag': channelTag!,
+        if (languageCode != null) 'languageCode': languageCode!,
+        if (resultEndTime != null) 'resultEndTime': resultEndTime!,
       };
 }
 
@@ -1103,55 +2095,44 @@ class SpeechRecognitionResult {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
+typedef Status = $Status;
 
-  /// A list of messages that carry the error details.
+/// Specifies an optional destination for the recognition results.
+class TranscriptOutputConfig {
+  /// Specifies a Cloud Storage URI for the recognition results.
   ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
+  /// Must be specified in the format: `gs://bucket_name/object_name`, and the
+  /// bucket must already exist.
+  core.String? gcsUri;
 
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
+  TranscriptOutputConfig({
+    this.gcsUri,
+  });
 
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
+  TranscriptOutputConfig.fromJson(core.Map _json)
+      : this(
+          gcsUri: _json.containsKey('gcsUri')
+              ? _json['gcsUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
+        if (gcsUri != null) 'gcsUri': gcsUri!,
       };
 }
 
 /// Word-specific information for recognized words.
 class WordInfo {
+  /// The confidence estimate between 0.0 and 1.0.
+  ///
+  /// A higher number indicates an estimated greater likelihood that the
+  /// recognized words are correct. This field is set only for the top
+  /// alternative of a non-streaming result or, of a streaming result where
+  /// `is_final=true`. This field is not guaranteed to be accurate and users
+  /// should not rely on it to be always provided. The default of 0.0 is a
+  /// sentinel value indicating `confidence` was not set.
+  core.double? confidence;
+
   /// Time offset relative to the beginning of the audio, and corresponding to
   /// the end of the spoken word.
   ///
@@ -1181,24 +2162,33 @@ class WordInfo {
   /// The word corresponding to this set of information.
   core.String? word;
 
-  WordInfo();
+  WordInfo({
+    this.confidence,
+    this.endTime,
+    this.speakerTag,
+    this.startTime,
+    this.word,
+  });
 
-  WordInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('speakerTag')) {
-      speakerTag = _json['speakerTag'] as core.int;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('word')) {
-      word = _json['word'] as core.String;
-    }
-  }
+  WordInfo.fromJson(core.Map _json)
+      : this(
+          confidence: _json.containsKey('confidence')
+              ? (_json['confidence'] as core.num).toDouble()
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          speakerTag: _json.containsKey('speakerTag')
+              ? _json['speakerTag'] as core.int
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          word: _json.containsKey('word') ? _json['word'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (confidence != null) 'confidence': confidence!,
         if (endTime != null) 'endTime': endTime!,
         if (speakerTag != null) 'speakerTag': speakerTag!,
         if (startTime != null) 'startTime': startTime!,

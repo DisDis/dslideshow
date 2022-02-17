@@ -15,7 +15,9 @@
 /// Cloud Run Admin API - v1
 ///
 /// Deploy and manage user provided container images that scale automatically
-/// based on HTTP traffic.
+/// based on incoming requests. The Cloud Run Admin API v1 follows the Knative
+/// Serving API specification, while v2 is aligned with Google Cloud AIP-based
+/// API standards, as described in https://google.aip.dev/.
 ///
 /// For more information, see <https://cloud.google.com/run/>
 ///
@@ -25,15 +27,19 @@
 ///   - [NamespacesAuthorizeddomainsResource]
 ///   - [NamespacesConfigurationsResource]
 ///   - [NamespacesDomainmappingsResource]
+///   - [NamespacesExecutionsResource]
+///   - [NamespacesJobsResource]
 ///   - [NamespacesRevisionsResource]
 ///   - [NamespacesRoutesResource]
 ///   - [NamespacesServicesResource]
+///   - [NamespacesTasksResource]
 /// - [ProjectsResource]
 ///   - [ProjectsAuthorizeddomainsResource]
 ///   - [ProjectsLocationsResource]
 ///     - [ProjectsLocationsAuthorizeddomainsResource]
 ///     - [ProjectsLocationsConfigurationsResource]
 ///     - [ProjectsLocationsDomainmappingsResource]
+///     - [ProjectsLocationsJobsResource]
 ///     - [ProjectsLocationsRevisionsResource]
 ///     - [ProjectsLocationsRoutesResource]
 ///     - [ProjectsLocationsServicesResource]
@@ -46,15 +52,22 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
     show ApiRequestError, DetailedApiRequestError;
 
 /// Deploy and manage user provided container images that scale automatically
-/// based on HTTP traffic.
+/// based on incoming requests.
+///
+/// The Cloud Run Admin API v1 follows the Knative Serving API specification,
+/// while v2 is aligned with Google Cloud AIP-based API standards, as described
+/// in https://google.aip.dev/.
 class CloudRunApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -79,11 +92,15 @@ class NamespacesResource {
       NamespacesConfigurationsResource(_requester);
   NamespacesDomainmappingsResource get domainmappings =>
       NamespacesDomainmappingsResource(_requester);
+  NamespacesExecutionsResource get executions =>
+      NamespacesExecutionsResource(_requester);
+  NamespacesJobsResource get jobs => NamespacesJobsResource(_requester);
   NamespacesRevisionsResource get revisions =>
       NamespacesRevisionsResource(_requester);
   NamespacesRoutesResource get routes => NamespacesRoutesResource(_requester);
   NamespacesServicesResource get services =>
       NamespacesServicesResource(_requester);
+  NamespacesTasksResource get tasks => NamespacesTasksResource(_requester);
 
   NamespacesResource(commons.ApiRequester client) : _requester = client;
 }
@@ -194,7 +211,7 @@ class NamespacesConfigurationsResource {
   /// or number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -205,7 +222,7 @@ class NamespacesConfigurationsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -277,6 +294,10 @@ class NamespacesDomainmappingsResource {
   /// or number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -290,10 +311,12 @@ class NamespacesDomainmappingsResource {
   async.Future<DomainMapping> create(
     DomainMapping request,
     core.String parent, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -321,6 +344,10 @@ class NamespacesDomainmappingsResource {
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
   /// [propagationPolicy] - Specifies the propagation policy of delete. Cloud
@@ -341,12 +368,14 @@ class NamespacesDomainmappingsResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -408,7 +437,7 @@ class NamespacesDomainmappingsResource {
   /// or number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -419,7 +448,7 @@ class NamespacesDomainmappingsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -474,6 +503,472 @@ class NamespacesDomainmappingsResource {
   }
 }
 
+class NamespacesExecutionsResource {
+  final commons.ApiRequester _requester;
+
+  NamespacesExecutionsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Delete an execution.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the execution to delete. Replace
+  /// {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/executions/\[^/\]+$`.
+  ///
+  /// [apiVersion] - Optional. Cloud Run currently ignores this parameter.
+  ///
+  /// [kind] - Optional. Cloud Run currently ignores this parameter.
+  ///
+  /// [propagationPolicy] - Optional. Specifies the propagation policy of
+  /// delete. Cloud Run currently ignores this setting, and deletes in the
+  /// background. Please see
+  /// kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/ for
+  /// more information.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Status].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Status> delete(
+    core.String name, {
+    core.String? apiVersion,
+    core.String? kind,
+    core.String? propagationPolicy,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (kind != null) 'kind': [kind],
+      if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Status.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Get information about an execution.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the execution to retrieve. Replace
+  /// {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/executions/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Execution].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Execution> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Execution.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List executions.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The namespace from which the executions should be
+  /// listed. Replace {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+$`.
+  ///
+  /// [continue_] - Optional. Optional encoded string to continue paging.
+  ///
+  /// [fieldSelector] - Optional. Allows to filter resources based on a specific
+  /// value for a field name. Send this in a query string format. i.e.
+  /// 'metadata.name%3Dlorem'. Not currently used by Cloud Run.
+  ///
+  /// [includeUninitialized] - Optional. Not currently used by Cloud Run.
+  ///
+  /// [labelSelector] - Optional. Allows to filter resources based on a label.
+  /// Supported operations are =, !=, exists, in, and notIn.
+  ///
+  /// [limit] - Optional. The maximum number of records that should be returned.
+  ///
+  /// [resourceVersion] - Optional. The baseline resource version from which the
+  /// list or watch operation should start. Not currently used by Cloud Run.
+  ///
+  /// [watch] - Optional. Flag that indicates that the client expects to watch
+  /// this resource as well. Not currently used by Cloud Run.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListExecutionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListExecutionsResponse> list(
+    core.String parent, {
+    core.String? continue_,
+    core.String? fieldSelector,
+    core.bool? includeUninitialized,
+    core.String? labelSelector,
+    core.int? limit,
+    core.String? resourceVersion,
+    core.bool? watch,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (continue_ != null) 'continue': [continue_],
+      if (fieldSelector != null) 'fieldSelector': [fieldSelector],
+      if (includeUninitialized != null)
+        'includeUninitialized': ['${includeUninitialized}'],
+      if (labelSelector != null) 'labelSelector': [labelSelector],
+      if (limit != null) 'limit': ['${limit}'],
+      if (resourceVersion != null) 'resourceVersion': [resourceVersion],
+      if (watch != null) 'watch': ['${watch}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/executions';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListExecutionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class NamespacesJobsResource {
+  final commons.ApiRequester _requester;
+
+  NamespacesJobsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Create a job.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The namespace in which the job should be created.
+  /// Replace {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Job].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Job> create(
+    Job request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/jobs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Job.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Delete a job.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the job to delete. Replace {namespace_id}
+  /// with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [apiVersion] - Optional. Cloud Run currently ignores this parameter.
+  ///
+  /// [kind] - Optional. Cloud Run currently ignores this parameter.
+  ///
+  /// [propagationPolicy] - Optional. Specifies the propagation policy of
+  /// delete. Cloud Run currently ignores this setting, and deletes in the
+  /// background. Please see
+  /// kubernetes.io/docs/concepts/workloads/controllers/garbage-collection/ for
+  /// more information.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Status].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Status> delete(
+    core.String name, {
+    core.String? apiVersion,
+    core.String? kind,
+    core.String? propagationPolicy,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (kind != null) 'kind': [kind],
+      if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Status.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Get information about a job.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the job to retrieve. Replace {namespace_id}
+  /// with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Job].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Job> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Job.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List jobs.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The namespace from which the jobs should be listed.
+  /// Replace {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+$`.
+  ///
+  /// [continue_] - Optional. Optional encoded string to continue paging.
+  ///
+  /// [fieldSelector] - Optional. Allows to filter resources based on a specific
+  /// value for a field name. Send this in a query string format. i.e.
+  /// 'metadata.name%3Dlorem'. Not currently used by Cloud Run.
+  ///
+  /// [includeUninitialized] - Optional. Not currently used by Cloud Run.
+  ///
+  /// [labelSelector] - Optional. Allows to filter resources based on a label.
+  /// Supported operations are =, !=, exists, in, and notIn.
+  ///
+  /// [limit] - Optional. The maximum number of records that should be returned.
+  ///
+  /// [resourceVersion] - Optional. The baseline resource version from which the
+  /// list or watch operation should start. Not currently used by Cloud Run.
+  ///
+  /// [watch] - Optional. Flag that indicates that the client expects to watch
+  /// this resource as well. Not currently used by Cloud Run.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListJobsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListJobsResponse> list(
+    core.String parent, {
+    core.String? continue_,
+    core.String? fieldSelector,
+    core.bool? includeUninitialized,
+    core.String? labelSelector,
+    core.int? limit,
+    core.String? resourceVersion,
+    core.bool? watch,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (continue_ != null) 'continue': [continue_],
+      if (fieldSelector != null) 'fieldSelector': [fieldSelector],
+      if (includeUninitialized != null)
+        'includeUninitialized': ['${includeUninitialized}'],
+      if (labelSelector != null) 'labelSelector': [labelSelector],
+      if (limit != null) 'limit': ['${limit}'],
+      if (resourceVersion != null) 'resourceVersion': [resourceVersion],
+      if (watch != null) 'watch': ['${watch}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/jobs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListJobsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Replace a job.
+  ///
+  /// Only the spec and metadata labels and annotations are modifiable. After
+  /// the Replace request, Cloud Run will work to make the 'status' match the
+  /// requested 'spec'. May provide metadata.resourceVersion to enforce update
+  /// from last read for optimistic concurrency control.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the service being replaced. Replace
+  /// {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Job].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Job> replaceJob(
+    Job request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PUT',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Job.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Trigger creation of a new execution of this job.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the job to run. Replace {namespace_id} with
+  /// the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Execution].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Execution> run(
+    RunJobRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name') + ':run';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Execution.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class NamespacesRevisionsResource {
   final commons.ApiRequester _requester;
 
@@ -489,6 +984,10 @@ class NamespacesRevisionsResource {
   /// Value must have pattern `^namespaces/\[^/\]+/revisions/\[^/\]+$`.
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
+  ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
   ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
@@ -510,12 +1009,14 @@ class NamespacesRevisionsResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -576,7 +1077,7 @@ class NamespacesRevisionsResource {
   /// number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -587,7 +1088,7 @@ class NamespacesRevisionsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -691,7 +1192,7 @@ class NamespacesRoutesResource {
   /// Run (fully managed), replace {namespace_id} with the project ID or number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -702,7 +1203,7 @@ class NamespacesRoutesResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -772,6 +1273,10 @@ class NamespacesServicesResource {
   /// Run (fully managed), replace {namespace_id} with the project ID or number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -785,10 +1290,12 @@ class NamespacesServicesResource {
   async.Future<Service> create(
     Service request,
     core.String parent, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -818,6 +1325,10 @@ class NamespacesServicesResource {
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
   /// [propagationPolicy] - Specifies the propagation policy of delete. Cloud
@@ -838,12 +1349,14 @@ class NamespacesServicesResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -904,7 +1417,7 @@ class NamespacesServicesResource {
   /// number.
   /// Value must have pattern `^namespaces/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -915,7 +1428,7 @@ class NamespacesServicesResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -984,6 +1497,10 @@ class NamespacesServicesResource {
   /// managed), replace {namespace_id} with the project ID or number.
   /// Value must have pattern `^namespaces/\[^/\]+/services/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -997,10 +1514,12 @@ class NamespacesServicesResource {
   async.Future<Service> replaceService(
     Service request,
     core.String name, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1013,6 +1532,121 @@ class NamespacesServicesResource {
       queryParams: _queryParams,
     );
     return Service.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class NamespacesTasksResource {
+  final commons.ApiRequester _requester;
+
+  NamespacesTasksResource(commons.ApiRequester client) : _requester = client;
+
+  /// Get information about a task.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the task to retrieve. Replace
+  /// {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+/tasks/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Task].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Task> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Task.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// List tasks.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The namespace from which the tasks should be listed.
+  /// Replace {namespace_id} with the project ID or number.
+  /// Value must have pattern `^namespaces/\[^/\]+$`.
+  ///
+  /// [continue_] - Optional. Optional encoded string to continue paging.
+  ///
+  /// [fieldSelector] - Optional. Allows to filter resources based on a specific
+  /// value for a field name. Send this in a query string format. i.e.
+  /// 'metadata.name%3Dlorem'. Not currently used by Cloud Run.
+  ///
+  /// [includeUninitialized] - Optional. Not currently used by Cloud Run.
+  ///
+  /// [labelSelector] - Optional. Allows to filter resources based on a label.
+  /// Supported operations are =, !=, exists, in, and notIn.
+  ///
+  /// [limit] - Optional. The maximum number of records that should be returned.
+  ///
+  /// [resourceVersion] - Optional. The baseline resource version from which the
+  /// list or watch operation should start. Not currently used by Cloud Run.
+  ///
+  /// [watch] - Optional. Flag that indicates that the client expects to watch
+  /// this resource as well. Not currently used by Cloud Run.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListTasksResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListTasksResponse> list(
+    core.String parent, {
+    core.String? continue_,
+    core.String? fieldSelector,
+    core.bool? includeUninitialized,
+    core.String? labelSelector,
+    core.int? limit,
+    core.String? resourceVersion,
+    core.bool? watch,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (continue_ != null) 'continue': [continue_],
+      if (fieldSelector != null) 'fieldSelector': [fieldSelector],
+      if (includeUninitialized != null)
+        'includeUninitialized': ['${includeUninitialized}'],
+      if (labelSelector != null) 'labelSelector': [labelSelector],
+      if (limit != null) 'limit': ['${limit}'],
+      if (resourceVersion != null) 'resourceVersion': [resourceVersion],
+      if (watch != null) 'watch': ['${watch}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'apis/run.googleapis.com/v1/' +
+        core.Uri.encodeFull('$parent') +
+        '/tasks';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListTasksResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -1088,6 +1722,8 @@ class ProjectsLocationsResource {
       ProjectsLocationsConfigurationsResource(_requester);
   ProjectsLocationsDomainmappingsResource get domainmappings =>
       ProjectsLocationsDomainmappingsResource(_requester);
+  ProjectsLocationsJobsResource get jobs =>
+      ProjectsLocationsJobsResource(_requester);
   ProjectsLocationsRevisionsResource get revisions =>
       ProjectsLocationsRevisionsResource(_requester);
   ProjectsLocationsRoutesResource get routes =>
@@ -1104,11 +1740,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -1251,7 +1891,7 @@ class ProjectsLocationsConfigurationsResource {
   /// or number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -1262,7 +1902,7 @@ class ProjectsLocationsConfigurationsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -1332,6 +1972,10 @@ class ProjectsLocationsDomainmappingsResource {
   /// or number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1345,10 +1989,12 @@ class ProjectsLocationsDomainmappingsResource {
   async.Future<DomainMapping> create(
     DomainMapping request,
     core.String parent, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1375,6 +2021,10 @@ class ProjectsLocationsDomainmappingsResource {
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
   /// [propagationPolicy] - Specifies the propagation policy of delete. Cloud
@@ -1395,12 +2045,14 @@ class ProjectsLocationsDomainmappingsResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -1463,7 +2115,7 @@ class ProjectsLocationsDomainmappingsResource {
   /// or number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -1474,7 +2126,7 @@ class ProjectsLocationsDomainmappingsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -1527,6 +2179,160 @@ class ProjectsLocationsDomainmappingsResource {
   }
 }
 
+class ProjectsLocationsJobsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsJobsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Get the IAM Access Control policy currently in effect for the given job.
+  ///
+  /// This result does not include any inherited policies.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
+  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> getIamPolicy(
+    core.String resource, {
+    core.int? options_requestedPolicyVersion,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (options_requestedPolicyVersion != null)
+        'options.requestedPolicyVersion': ['${options_requestedPolicyVersion}'],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':getIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Sets the IAM Access control policy for the specified job.
+  ///
+  /// Overwrites any existing policy.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy is being
+  /// specified. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Policy].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Policy> setIamPolicy(
+    SetIamPolicyRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$resource') + ':setIamPolicy';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Returns permissions that a caller has on the specified job.
+  ///
+  /// There are no permissions required for making this API call.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [resource] - REQUIRED: The resource for which the policy detail is being
+  /// requested. See the operation documentation for the appropriate value for
+  /// this field.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/jobs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TestIamPermissionsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TestIamPermissionsResponse> testIamPermissions(
+    TestIamPermissionsRequest request,
+    core.String resource, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'v1/' + core.Uri.encodeFull('$resource') + ':testIamPermissions';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return TestIamPermissionsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class ProjectsLocationsRevisionsResource {
   final commons.ApiRequester _requester;
 
@@ -1543,6 +2349,10 @@ class ProjectsLocationsRevisionsResource {
   /// `^projects/\[^/\]+/locations/\[^/\]+/revisions/\[^/\]+$`.
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
+  ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
   ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
@@ -1564,12 +2374,14 @@ class ProjectsLocationsRevisionsResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -1631,7 +2443,7 @@ class ProjectsLocationsRevisionsResource {
   /// number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -1642,7 +2454,7 @@ class ProjectsLocationsRevisionsResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -1746,7 +2558,7 @@ class ProjectsLocationsRoutesResource {
   /// Run (fully managed), replace {namespace_id} with the project ID or number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -1757,7 +2569,7 @@ class ProjectsLocationsRoutesResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -1826,6 +2638,10 @@ class ProjectsLocationsServicesResource {
   /// Run (fully managed), replace {namespace_id} with the project ID or number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1839,10 +2655,12 @@ class ProjectsLocationsServicesResource {
   async.Future<Service> create(
     Service request,
     core.String parent, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1871,6 +2689,10 @@ class ProjectsLocationsServicesResource {
   ///
   /// [apiVersion] - Cloud Run currently ignores this parameter.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [kind] - Cloud Run currently ignores this parameter.
   ///
   /// [propagationPolicy] - Specifies the propagation policy of delete. Cloud
@@ -1891,12 +2713,14 @@ class ProjectsLocationsServicesResource {
   async.Future<Status> delete(
     core.String name, {
     core.String? apiVersion,
+    core.String? dryRun,
     core.String? kind,
     core.String? propagationPolicy,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
       if (apiVersion != null) 'apiVersion': [apiVersion],
+      if (dryRun != null) 'dryRun': [dryRun],
       if (kind != null) 'kind': [kind],
       if (propagationPolicy != null) 'propagationPolicy': [propagationPolicy],
       if ($fields != null) 'fields': [$fields],
@@ -1962,12 +2786,16 @@ class ProjectsLocationsServicesResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/services/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -2010,7 +2838,7 @@ class ProjectsLocationsServicesResource {
   /// number.
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [continue_] - Optional encoded string to continue paging.
+  /// [continue_] - Optional. Encoded string to continue paging.
   ///
   /// [fieldSelector] - Allows to filter resources based on a specific value for
   /// a field name. Send this in a query string format. i.e.
@@ -2021,7 +2849,7 @@ class ProjectsLocationsServicesResource {
   /// [labelSelector] - Allows to filter resources based on a label. Supported
   /// operations are =, !=, exists, in, and notIn.
   ///
-  /// [limit] - The maximum number of records that should be returned.
+  /// [limit] - Optional. The maximum number of records that should be returned.
   ///
   /// [resourceVersion] - The baseline resource version from which the list or
   /// watch operation should start. Not currently used by Cloud Run.
@@ -2089,6 +2917,10 @@ class ProjectsLocationsServicesResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/services/\[^/\]+$`.
   ///
+  /// [dryRun] - Indicates that the server should validate the request and
+  /// populate default values without persisting the request. Supported values:
+  /// `all`
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -2102,10 +2934,12 @@ class ProjectsLocationsServicesResource {
   async.Future<Service> replaceService(
     Service request,
     core.String name, {
+    core.String? dryRun,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (dryRun != null) 'dryRun': [dryRun],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -2149,7 +2983,7 @@ class ProjectsLocationsServicesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2194,7 +3028,7 @@ class ProjectsLocationsServicesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2217,13 +3051,14 @@ class ProjectsLocationsServicesResource {
 class Addressable {
   core.String? url;
 
-  Addressable();
+  Addressable({
+    this.url,
+  });
 
-  Addressable.fromJson(core.Map _json) {
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  Addressable.fromJson(core.Map _json)
+      : this(
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (url != null) 'url': url!,
@@ -2257,24 +3092,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -2285,39 +3122,7 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
-
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
+typedef AuditLogConfig = $AuditLogConfig;
 
 /// A domain that a user has been authorized to administer.
 ///
@@ -2335,16 +3140,16 @@ class AuthorizedDomain {
   /// `projects/myproject/authorizedDomains/example.com`.
   core.String? name;
 
-  AuthorizedDomain();
+  AuthorizedDomain({
+    this.id,
+    this.name,
+  });
 
-  AuthorizedDomain.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  AuthorizedDomain.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -2352,19 +3157,20 @@ class AuthorizedDomain {
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -2396,38 +3202,40 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// ConfigMapEnvSource selects a ConfigMap to populate the environment variables
-/// with.
+/// Not supported by Cloud Run ConfigMapEnvSource selects a ConfigMap to
+/// populate the environment variables with.
 ///
 /// The contents of the target ConfigMap's Data field will represent the
 /// key-value pairs as environment variables.
@@ -2438,42 +3246,41 @@ class ConfigMapEnvSource {
   /// Use the "name" field instead.
   LocalObjectReference? localObjectReference;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// ConfigMap to select from.
+  /// The ConfigMap to select from.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the ConfigMap must be defined
+  /// (Optional) Specify whether the ConfigMap must be defined
   core.bool? optional;
 
-  ConfigMapEnvSource();
+  ConfigMapEnvSource({
+    this.localObjectReference,
+    this.name,
+    this.optional,
+  });
 
-  ConfigMapEnvSource.fromJson(core.Map _json) {
-    if (_json.containsKey('localObjectReference')) {
-      localObjectReference = LocalObjectReference.fromJson(
-          _json['localObjectReference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-  }
+  ConfigMapEnvSource.fromJson(core.Map _json)
+      : this(
+          localObjectReference: _json.containsKey('localObjectReference')
+              ? LocalObjectReference.fromJson(_json['localObjectReference']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (localObjectReference != null)
-          'localObjectReference': localObjectReference!.toJson(),
+          'localObjectReference': localObjectReference!,
         if (name != null) 'name': name!,
         if (optional != null) 'optional': optional!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// Selects a key from a ConfigMap.
+/// Not supported by Cloud Run Selects a key from a ConfigMap.
 class ConfigMapKeySelector {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// key to select.
+  /// The key to select.
   core.String? key;
 
   /// This field should not be used directly as it is meant to be inlined
@@ -2482,100 +3289,105 @@ class ConfigMapKeySelector {
   /// Use the "name" field instead.
   LocalObjectReference? localObjectReference;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// ConfigMap to select from.
+  /// The ConfigMap to select from.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the ConfigMap or its key must be defined
+  /// (Optional) Specify whether the ConfigMap or its key must be defined
   core.bool? optional;
 
-  ConfigMapKeySelector();
+  ConfigMapKeySelector({
+    this.key,
+    this.localObjectReference,
+    this.name,
+    this.optional,
+  });
 
-  ConfigMapKeySelector.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('localObjectReference')) {
-      localObjectReference = LocalObjectReference.fromJson(
-          _json['localObjectReference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-  }
+  ConfigMapKeySelector.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          localObjectReference: _json.containsKey('localObjectReference')
+              ? LocalObjectReference.fromJson(_json['localObjectReference']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (key != null) 'key': key!,
         if (localObjectReference != null)
-          'localObjectReference': localObjectReference!.toJson(),
+          'localObjectReference': localObjectReference!,
         if (name != null) 'name': name!,
         if (optional != null) 'optional': optional!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// Adapts a ConfigMap into a volume.
+/// Not supported by Cloud Run Adapts a ConfigMap into a volume.
 ///
 /// The contents of the target ConfigMap's Data field will be presented in a
 /// volume as files using the keys in the Data field as the file names, unless
 /// the items element is populated with specific mappings of keys to paths.
 class ConfigMapVolumeSource {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Mode bits to use on created files by default.
+  /// (Optional) Integer representation of mode bits to use on created files by
+  /// default.
   ///
-  /// Must be a value between 0 and 0777. Defaults to 0644. Directories within
-  /// the path are not affected by this setting. This might be in conflict with
-  /// other options that affect the file mode, like fsGroup, and the result can
-  /// be other mode bits set.
+  /// Must be a value between 01 and 0777 (octal). If 0 or not set, it will
+  /// default to 0644. Directories within the path are not affected by this
+  /// setting. Notes * Internally, a umask of 0222 will be applied to any
+  /// non-zero value. * This is an integer representation of the mode bits. So,
+  /// the octal integer value should look exactly as the chmod numeric notation
+  /// with a leading zero. Some examples: for chmod 777 (a=rwx), set to 0777
+  /// (octal) or 511 (base-10). For chmod 640 (u=rw,g=r), set to 0640 (octal) or
+  /// 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493
+  /// (base-10). * This might be in conflict with other options that affect the
+  /// file mode, like fsGroup, and the result can be other mode bits set.
   core.int? defaultMode;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported If unspecified, each key-value pair in the Data field of the
+  /// (Optional) If unspecified, each key-value pair in the Data field of the
   /// referenced Secret will be projected into the volume as a file whose name
   /// is the key and content is the value.
   ///
   /// If specified, the listed keys will be projected into the specified paths,
-  /// and unlisted keys will not be present. If a key is specified which is not
+  /// and unlisted keys will not be present. If a key is specified that is not
   /// present in the Secret, the volume setup will error unless it is marked
   /// optional.
   core.List<KeyToPath>? items;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   /// Name of the config.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the Secret or its keys must be defined.
+  /// (Optional) Specify whether the Secret or its keys must be defined.
   core.bool? optional;
 
-  ConfigMapVolumeSource();
+  ConfigMapVolumeSource({
+    this.defaultMode,
+    this.items,
+    this.name,
+    this.optional,
+  });
 
-  ConfigMapVolumeSource.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultMode')) {
-      defaultMode = _json['defaultMode'] as core.int;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<KeyToPath>((value) =>
-              KeyToPath.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-  }
+  ConfigMapVolumeSource.fromJson(core.Map _json)
+      : this(
+          defaultMode: _json.containsKey('defaultMode')
+              ? _json['defaultMode'] as core.int
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => KeyToPath.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultMode != null) 'defaultMode': defaultMode!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (name != null) 'name': name!,
         if (optional != null) 'optional': optional!,
       };
@@ -2588,7 +3400,7 @@ class ConfigMapVolumeSource {
 /// Users create new Revisions by updating the Configuration's spec. The "latest
 /// created" revision's name is available under status, as is the "latest ready"
 /// revision's name. See also:
-/// https://github.com/knative/serving/blob/master/docs/spec/overview.md#configuration
+/// https://github.com/knative/serving/blob/main/docs/spec/overview.md#configuration
 class Configuration {
   /// The API version for this call such as "serving.knative.dev/v1".
   core.String? apiVersion;
@@ -2607,35 +3419,40 @@ class Configuration {
   /// controller).
   ConfigurationStatus? status;
 
-  Configuration();
+  Configuration({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
 
-  Configuration.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = ConfigurationSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = ConfigurationStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Configuration.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? ConfigurationSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? ConfigurationStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -2646,17 +3463,20 @@ class ConfigurationSpec {
   /// out.
   RevisionTemplate? template;
 
-  ConfigurationSpec();
+  ConfigurationSpec({
+    this.template,
+  });
 
-  ConfigurationSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('template')) {
-      template = RevisionTemplate.fromJson(
-          _json['template'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ConfigurationSpec.fromJson(core.Map _json)
+      : this(
+          template: _json.containsKey('template')
+              ? RevisionTemplate.fromJson(
+                  _json['template'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (template != null) 'template': template!.toJson(),
+        if (template != null) 'template': template!,
       };
 }
 
@@ -2687,31 +3507,35 @@ class ConfigurationStatus {
   /// and the Ready condition's status is True or False.
   core.int? observedGeneration;
 
-  ConfigurationStatus();
+  ConfigurationStatus({
+    this.conditions,
+    this.latestCreatedRevisionName,
+    this.latestReadyRevisionName,
+    this.observedGeneration,
+  });
 
-  ConfigurationStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<GoogleCloudRunV1Condition>((value) =>
-              GoogleCloudRunV1Condition.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('latestCreatedRevisionName')) {
-      latestCreatedRevisionName =
-          _json['latestCreatedRevisionName'] as core.String;
-    }
-    if (_json.containsKey('latestReadyRevisionName')) {
-      latestReadyRevisionName = _json['latestReadyRevisionName'] as core.String;
-    }
-    if (_json.containsKey('observedGeneration')) {
-      observedGeneration = _json['observedGeneration'] as core.int;
-    }
-  }
+  ConfigurationStatus.fromJson(core.Map _json)
+      : this(
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          latestCreatedRevisionName:
+              _json.containsKey('latestCreatedRevisionName')
+                  ? _json['latestCreatedRevisionName'] as core.String
+                  : null,
+          latestReadyRevisionName: _json.containsKey('latestReadyRevisionName')
+              ? _json['latestReadyRevisionName'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (conditions != null) 'conditions': conditions!,
         if (latestCreatedRevisionName != null)
           'latestCreatedRevisionName': latestCreatedRevisionName!,
         if (latestReadyRevisionName != null)
@@ -2727,8 +3551,7 @@ class ConfigurationStatus {
 /// container and the arguments to supply to it. Note that additional arguments
 /// may be supplied by the system to the container at runtime.
 class Container {
-  /// (Optional) Cloud Run fully managed: supported Cloud Run for Anthos:
-  /// supported Arguments to the entrypoint.
+  /// (Optional) Arguments to the entrypoint.
   ///
   /// The docker image's CMD is used if this is not provided. Variable
   /// references $(VAR_NAME) are expanded using the container's environment. If
@@ -2740,12 +3563,10 @@ class Container {
   core.List<core.String>? args;
   core.List<core.String>? command;
 
-  /// (Optional) Cloud Run fully managed: supported Cloud Run for Anthos:
-  /// supported List of environment variables to set in the container.
+  /// (Optional) List of environment variables to set in the container.
   core.List<EnvVar>? env;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported List of sources to populate environment variables in the
+  /// (Optional) List of sources to populate environment variables in the
   /// container.
   ///
   /// The keys defined within a source must be a C_IDENTIFIER. All invalid keys
@@ -2755,28 +3576,29 @@ class Container {
   /// precedence. Cannot be updated.
   core.List<EnvFromSource>? envFrom;
 
-  /// Cloud Run fully managed: only supports containers from Google Container
-  /// Registry Cloud Run for Anthos: supported URL of the Container image.
+  /// Only supports containers from Google Container Registry or Artifact
+  /// Registry URL of the Container image.
   ///
   /// More info: https://kubernetes.io/docs/concepts/containers/images
   core.String? image;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Image pull policy.
+  /// (Optional) Image pull policy.
   ///
   /// One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is
   /// specified, or IfNotPresent otherwise. More info:
   /// https://kubernetes.io/docs/concepts/containers/images#updating-images
   core.String? imagePullPolicy;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Periodic probe of container liveness.
+  /// (Optional) Periodic probe of container liveness.
   ///
   /// Container will be restarted if the probe fails. More info:
   /// https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   Probe? livenessProbe;
 
   /// (Optional) Name of the container specified as a DNS_LABEL.
+  ///
+  /// Currently unused in Cloud Run. More info:
+  /// https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#dns-label-names
   core.String? name;
 
   /// (Optional) List of ports to expose from the container.
@@ -2787,31 +3609,35 @@ class Container {
   /// the PORT environment variable for the container to listen on.
   core.List<ContainerPort>? ports;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Periodic probe of container service readiness.
+  /// (Optional) Periodic probe of container service readiness.
   ///
   /// Container will be removed from service endpoints if the probe fails. More
   /// info:
   /// https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   Probe? readinessProbe;
 
-  /// (Optional) Cloud Run fully managed: supported Cloud Run for Anthos:
-  /// supported Compute Resources required by this container.
+  /// (Optional) Compute Resources required by this container.
   ///
   /// More info:
   /// https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
   ResourceRequirements? resources;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Security options the pod should run with.
+  /// (Optional) Security options the pod should run with.
   ///
   /// More info: https://kubernetes.io/docs/concepts/policy/security-context/
   /// More info:
   /// https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   SecurityContext? securityContext;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Path at which the file to which the container's termination
+  /// (Optional) Startup probe of application within the container.
+  ///
+  /// All other probes are disabled if a startup probe is provided, until it
+  /// succeeds. Container will not be added to service endpoints if the probe
+  /// fails. More info:
+  /// https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
+  Probe? startupProbe;
+
+  /// (Optional) Path at which the file to which the container's termination
   /// message will be written is mounted into the container's filesystem.
   ///
   /// Message written is intended to be brief final status, such as an assertion
@@ -2820,8 +3646,7 @@ class Container {
   /// Defaults to /dev/termination-log.
   core.String? terminationMessagePath;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Indicate how the termination message should be populated.
+  /// (Optional) Indicate how the termination message should be populated.
   ///
   /// File will use the contents of terminationMessagePath to populate the
   /// container status message on both success and failure.
@@ -2831,113 +3656,131 @@ class Container {
   /// smaller. Defaults to File. Cannot be updated.
   core.String? terminationMessagePolicy;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Pod volumes to mount into the container's filesystem.
+  /// (Optional) Volume to mount into the container's filesystem.
+  ///
+  /// Only supports SecretVolumeSources. Pod volumes to mount into the
+  /// container's filesystem.
   core.List<VolumeMount>? volumeMounts;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Container's working directory.
+  /// (Optional) Container's working directory.
   ///
   /// If not specified, the container runtime's default will be used, which
   /// might be configured in the container image.
   core.String? workingDir;
 
-  Container();
+  Container({
+    this.args,
+    this.command,
+    this.env,
+    this.envFrom,
+    this.image,
+    this.imagePullPolicy,
+    this.livenessProbe,
+    this.name,
+    this.ports,
+    this.readinessProbe,
+    this.resources,
+    this.securityContext,
+    this.startupProbe,
+    this.terminationMessagePath,
+    this.terminationMessagePolicy,
+    this.volumeMounts,
+    this.workingDir,
+  });
 
-  Container.fromJson(core.Map _json) {
-    if (_json.containsKey('args')) {
-      args = (_json['args'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('command')) {
-      command = (_json['command'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('env')) {
-      env = (_json['env'] as core.List)
-          .map<EnvVar>((value) =>
-              EnvVar.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('envFrom')) {
-      envFrom = (_json['envFrom'] as core.List)
-          .map<EnvFromSource>((value) => EnvFromSource.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('image')) {
-      image = _json['image'] as core.String;
-    }
-    if (_json.containsKey('imagePullPolicy')) {
-      imagePullPolicy = _json['imagePullPolicy'] as core.String;
-    }
-    if (_json.containsKey('livenessProbe')) {
-      livenessProbe = Probe.fromJson(
-          _json['livenessProbe'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('ports')) {
-      ports = (_json['ports'] as core.List)
-          .map<ContainerPort>((value) => ContainerPort.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('readinessProbe')) {
-      readinessProbe = Probe.fromJson(
-          _json['readinessProbe'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resources')) {
-      resources = ResourceRequirements.fromJson(
-          _json['resources'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('securityContext')) {
-      securityContext = SecurityContext.fromJson(
-          _json['securityContext'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('terminationMessagePath')) {
-      terminationMessagePath = _json['terminationMessagePath'] as core.String;
-    }
-    if (_json.containsKey('terminationMessagePolicy')) {
-      terminationMessagePolicy =
-          _json['terminationMessagePolicy'] as core.String;
-    }
-    if (_json.containsKey('volumeMounts')) {
-      volumeMounts = (_json['volumeMounts'] as core.List)
-          .map<VolumeMount>((value) => VolumeMount.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('workingDir')) {
-      workingDir = _json['workingDir'] as core.String;
-    }
-  }
+  Container.fromJson(core.Map _json)
+      : this(
+          args: _json.containsKey('args')
+              ? (_json['args'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          command: _json.containsKey('command')
+              ? (_json['command'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          env: _json.containsKey('env')
+              ? (_json['env'] as core.List)
+                  .map((value) => EnvVar.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          envFrom: _json.containsKey('envFrom')
+              ? (_json['envFrom'] as core.List)
+                  .map((value) => EnvFromSource.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          image:
+              _json.containsKey('image') ? _json['image'] as core.String : null,
+          imagePullPolicy: _json.containsKey('imagePullPolicy')
+              ? _json['imagePullPolicy'] as core.String
+              : null,
+          livenessProbe: _json.containsKey('livenessProbe')
+              ? Probe.fromJson(
+                  _json['livenessProbe'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          ports: _json.containsKey('ports')
+              ? (_json['ports'] as core.List)
+                  .map((value) => ContainerPort.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          readinessProbe: _json.containsKey('readinessProbe')
+              ? Probe.fromJson(_json['readinessProbe']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resources: _json.containsKey('resources')
+              ? ResourceRequirements.fromJson(
+                  _json['resources'] as core.Map<core.String, core.dynamic>)
+              : null,
+          securityContext: _json.containsKey('securityContext')
+              ? SecurityContext.fromJson(_json['securityContext']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          startupProbe: _json.containsKey('startupProbe')
+              ? Probe.fromJson(
+                  _json['startupProbe'] as core.Map<core.String, core.dynamic>)
+              : null,
+          terminationMessagePath: _json.containsKey('terminationMessagePath')
+              ? _json['terminationMessagePath'] as core.String
+              : null,
+          terminationMessagePolicy:
+              _json.containsKey('terminationMessagePolicy')
+                  ? _json['terminationMessagePolicy'] as core.String
+                  : null,
+          volumeMounts: _json.containsKey('volumeMounts')
+              ? (_json['volumeMounts'] as core.List)
+                  .map((value) => VolumeMount.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          workingDir: _json.containsKey('workingDir')
+              ? _json['workingDir'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (args != null) 'args': args!,
         if (command != null) 'command': command!,
-        if (env != null) 'env': env!.map((value) => value.toJson()).toList(),
-        if (envFrom != null)
-          'envFrom': envFrom!.map((value) => value.toJson()).toList(),
+        if (env != null) 'env': env!,
+        if (envFrom != null) 'envFrom': envFrom!,
         if (image != null) 'image': image!,
         if (imagePullPolicy != null) 'imagePullPolicy': imagePullPolicy!,
-        if (livenessProbe != null) 'livenessProbe': livenessProbe!.toJson(),
+        if (livenessProbe != null) 'livenessProbe': livenessProbe!,
         if (name != null) 'name': name!,
-        if (ports != null)
-          'ports': ports!.map((value) => value.toJson()).toList(),
-        if (readinessProbe != null) 'readinessProbe': readinessProbe!.toJson(),
-        if (resources != null) 'resources': resources!.toJson(),
-        if (securityContext != null)
-          'securityContext': securityContext!.toJson(),
+        if (ports != null) 'ports': ports!,
+        if (readinessProbe != null) 'readinessProbe': readinessProbe!,
+        if (resources != null) 'resources': resources!,
+        if (securityContext != null) 'securityContext': securityContext!,
+        if (startupProbe != null) 'startupProbe': startupProbe!,
         if (terminationMessagePath != null)
           'terminationMessagePath': terminationMessagePath!,
         if (terminationMessagePolicy != null)
           'terminationMessagePolicy': terminationMessagePolicy!,
-        if (volumeMounts != null)
-          'volumeMounts': volumeMounts!.map((value) => value.toJson()).toList(),
+        if (volumeMounts != null) 'volumeMounts': volumeMounts!,
         if (workingDir != null) 'workingDir': workingDir!,
       };
 }
@@ -2946,39 +3789,70 @@ class Container {
 class ContainerPort {
   /// (Optional) Port number the container listens on.
   ///
-  /// This must be a valid port number, 0 < x < 65536.
+  /// This must be a valid port number, 0 \< x \< 65536.
   core.int? containerPort;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported If specified, used to specify which protocol to use.
+  /// (Optional) If specified, used to specify which protocol to use.
   ///
   /// Allowed values are "http1" and "h2c".
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Protocol for port.
+  /// (Optional) Protocol for port.
   ///
   /// Must be "TCP". Defaults to "TCP".
   core.String? protocol;
 
-  ContainerPort();
+  ContainerPort({
+    this.containerPort,
+    this.name,
+    this.protocol,
+  });
 
-  ContainerPort.fromJson(core.Map _json) {
-    if (_json.containsKey('containerPort')) {
-      containerPort = _json['containerPort'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('protocol')) {
-      protocol = _json['protocol'] as core.String;
-    }
-  }
+  ContainerPort.fromJson(core.Map _json)
+      : this(
+          containerPort: _json.containsKey('containerPort')
+              ? _json['containerPort'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          protocol: _json.containsKey('protocol')
+              ? _json['protocol'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (containerPort != null) 'containerPort': containerPort!,
         if (name != null) 'name': name!,
         if (protocol != null) 'protocol': protocol!,
+      };
+}
+
+/// ContainerStatus holds the information of container name and image digest
+/// value.
+class ContainerStatus {
+  /// ImageDigest holds the resolved digest for the image specified, regardless
+  /// of whether a tag or digest was originally specified in the Container
+  /// object.
+  core.String? imageDigest;
+
+  /// The name of the container, if specified.
+  core.String? name;
+
+  ContainerStatus({
+    this.imageDigest,
+    this.name,
+  });
+
+  ContainerStatus.fromJson(core.Map _json)
+      : this(
+          imageDigest: _json.containsKey('imageDigest')
+              ? _json['imageDigest'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (imageDigest != null) 'imageDigest': imageDigest!,
+        if (name != null) 'name': name!,
       };
 }
 
@@ -3001,35 +3875,40 @@ class DomainMapping {
   /// The current status of the DomainMapping.
   DomainMappingStatus? status;
 
-  DomainMapping();
+  DomainMapping({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
 
-  DomainMapping.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = DomainMappingSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = DomainMappingStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DomainMapping.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? DomainMappingSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? DomainMappingStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -3056,19 +3935,24 @@ class DomainMappingSpec {
   /// The route must exist.
   core.String? routeName;
 
-  DomainMappingSpec();
+  DomainMappingSpec({
+    this.certificateMode,
+    this.forceOverride,
+    this.routeName,
+  });
 
-  DomainMappingSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('certificateMode')) {
-      certificateMode = _json['certificateMode'] as core.String;
-    }
-    if (_json.containsKey('forceOverride')) {
-      forceOverride = _json['forceOverride'] as core.bool;
-    }
-    if (_json.containsKey('routeName')) {
-      routeName = _json['routeName'] as core.String;
-    }
-  }
+  DomainMappingSpec.fromJson(core.Map _json)
+      : this(
+          certificateMode: _json.containsKey('certificateMode')
+              ? _json['certificateMode'] as core.String
+              : null,
+          forceOverride: _json.containsKey('forceOverride')
+              ? _json['forceOverride'] as core.bool
+              : null,
+          routeName: _json.containsKey('routeName')
+              ? _json['routeName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (certificateMode != null) 'certificateMode': certificateMode!,
@@ -3103,86 +3987,89 @@ class DomainMappingStatus {
   /// Cloud Run fully managed: not supported Cloud Run on GKE: supported Holds
   /// the URL that will serve the traffic of the DomainMapping.
   ///
-  /// +optional
+  /// Optional.
   core.String? url;
 
-  DomainMappingStatus();
+  DomainMappingStatus({
+    this.conditions,
+    this.mappedRouteName,
+    this.observedGeneration,
+    this.resourceRecords,
+    this.url,
+  });
 
-  DomainMappingStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<GoogleCloudRunV1Condition>((value) =>
-              GoogleCloudRunV1Condition.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('mappedRouteName')) {
-      mappedRouteName = _json['mappedRouteName'] as core.String;
-    }
-    if (_json.containsKey('observedGeneration')) {
-      observedGeneration = _json['observedGeneration'] as core.int;
-    }
-    if (_json.containsKey('resourceRecords')) {
-      resourceRecords = (_json['resourceRecords'] as core.List)
-          .map<ResourceRecord>((value) => ResourceRecord.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  DomainMappingStatus.fromJson(core.Map _json)
+      : this(
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          mappedRouteName: _json.containsKey('mappedRouteName')
+              ? _json['mappedRouteName'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          resourceRecords: _json.containsKey('resourceRecords')
+              ? (_json['resourceRecords'] as core.List)
+                  .map((value) => ResourceRecord.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (conditions != null) 'conditions': conditions!,
         if (mappedRouteName != null) 'mappedRouteName': mappedRouteName!,
         if (observedGeneration != null)
           'observedGeneration': observedGeneration!,
-        if (resourceRecords != null)
-          'resourceRecords':
-              resourceRecords!.map((value) => value.toJson()).toList(),
+        if (resourceRecords != null) 'resourceRecords': resourceRecords!,
         if (url != null) 'url': url!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// EnvFromSource represents the source of a set of ConfigMaps
+/// Not supported by Cloud Run EnvFromSource represents the source of a set of
+/// ConfigMaps
 class EnvFromSource {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported The ConfigMap to select from
+  /// (Optional) The ConfigMap to select from
   ConfigMapEnvSource? configMapRef;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported An optional identifier to prepend to each key in the ConfigMap.
+  /// (Optional) An optional identifier to prepend to each key in the ConfigMap.
   ///
   /// Must be a C_IDENTIFIER.
   core.String? prefix;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported The Secret to select from
+  /// (Optional) The Secret to select from
   SecretEnvSource? secretRef;
 
-  EnvFromSource();
+  EnvFromSource({
+    this.configMapRef,
+    this.prefix,
+    this.secretRef,
+  });
 
-  EnvFromSource.fromJson(core.Map _json) {
-    if (_json.containsKey('configMapRef')) {
-      configMapRef = ConfigMapEnvSource.fromJson(
-          _json['configMapRef'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('prefix')) {
-      prefix = _json['prefix'] as core.String;
-    }
-    if (_json.containsKey('secretRef')) {
-      secretRef = SecretEnvSource.fromJson(
-          _json['secretRef'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EnvFromSource.fromJson(core.Map _json)
+      : this(
+          configMapRef: _json.containsKey('configMapRef')
+              ? ConfigMapEnvSource.fromJson(
+                  _json['configMapRef'] as core.Map<core.String, core.dynamic>)
+              : null,
+          prefix: _json.containsKey('prefix')
+              ? _json['prefix'] as core.String
+              : null,
+          secretRef: _json.containsKey('secretRef')
+              ? SecretEnvSource.fromJson(
+                  _json['secretRef'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (configMapRef != null) 'configMapRef': configMapRef!.toJson(),
+        if (configMapRef != null) 'configMapRef': configMapRef!,
         if (prefix != null) 'prefix': prefix!,
-        if (secretRef != null) 'secretRef': secretRef!.toJson(),
+        if (secretRef != null) 'secretRef': secretRef!,
       };
 }
 
@@ -3203,71 +4090,71 @@ class EnvVar {
   /// whether the variable exists or not. Defaults to "".
   core.String? value;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Source for the environment variable's value.
+  /// (Optional) Source for the environment variable's value.
   ///
+  /// Only supports secret_key_ref. Source for the environment variable's value.
   /// Cannot be used if value is not empty.
   EnvVarSource? valueFrom;
 
-  EnvVar();
+  EnvVar({
+    this.name,
+    this.value,
+    this.valueFrom,
+  });
 
-  EnvVar.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-    if (_json.containsKey('valueFrom')) {
-      valueFrom = EnvVarSource.fromJson(
-          _json['valueFrom'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EnvVar.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+          valueFrom: _json.containsKey('valueFrom')
+              ? EnvVarSource.fromJson(
+                  _json['valueFrom'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
         if (value != null) 'value': value!,
-        if (valueFrom != null) 'valueFrom': valueFrom!.toJson(),
+        if (valueFrom != null) 'valueFrom': valueFrom!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
 /// EnvVarSource represents a source for the value of an EnvVar.
 class EnvVarSource {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Selects a key of a ConfigMap.
+  /// (Optional) Not supported by Cloud Run Selects a key of a ConfigMap.
   ConfigMapKeySelector? configMapKeyRef;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Selects a key of a secret in the pod's namespace
+  /// (Optional) Selects a key (version) of a secret in Secret Manager.
   SecretKeySelector? secretKeyRef;
 
-  EnvVarSource();
+  EnvVarSource({
+    this.configMapKeyRef,
+    this.secretKeyRef,
+  });
 
-  EnvVarSource.fromJson(core.Map _json) {
-    if (_json.containsKey('configMapKeyRef')) {
-      configMapKeyRef = ConfigMapKeySelector.fromJson(
-          _json['configMapKeyRef'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('secretKeyRef')) {
-      secretKeyRef = SecretKeySelector.fromJson(
-          _json['secretKeyRef'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EnvVarSource.fromJson(core.Map _json)
+      : this(
+          configMapKeyRef: _json.containsKey('configMapKeyRef')
+              ? ConfigMapKeySelector.fromJson(_json['configMapKeyRef']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          secretKeyRef: _json.containsKey('secretKeyRef')
+              ? SecretKeySelector.fromJson(
+                  _json['secretKeyRef'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (configMapKeyRef != null)
-          'configMapKeyRef': configMapKeyRef!.toJson(),
-        if (secretKeyRef != null) 'secretKeyRef': secretKeyRef!.toJson(),
+        if (configMapKeyRef != null) 'configMapKeyRef': configMapKeyRef!,
+        if (secretKeyRef != null) 'secretKeyRef': secretKeyRef!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// ExecAction describes a "run in container" action.
+/// Not supported by Cloud Run ExecAction describes a "run in container" action.
 class ExecAction {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Command is the command line to execute inside the container, the
-  /// working directory for the command is root ('/') in the container's
+  /// (Optional) Command is the command line to execute inside the container,
+  /// the working directory for the command is root ('/') in the container's
   /// filesystem.
   ///
   /// The command is simply exec'd, it is not run inside a shell, so traditional
@@ -3276,18 +4163,366 @@ class ExecAction {
   /// live/healthy and non-zero is unhealthy.
   core.List<core.String>? command;
 
-  ExecAction();
+  ExecAction({
+    this.command,
+  });
 
-  ExecAction.fromJson(core.Map _json) {
-    if (_json.containsKey('command')) {
-      command = (_json['command'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ExecAction.fromJson(core.Map _json)
+      : this(
+          command: _json.containsKey('command')
+              ? (_json['command'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (command != null) 'command': command!,
+      };
+}
+
+/// Execution represents the configuration of a single execution.
+///
+/// A execution an immutable resource that references a container image which is
+/// run to completion.
+class Execution {
+  /// APIVersion defines the versioned schema of this representation of an
+  /// object.
+  ///
+  /// Servers should convert recognized schemas to the latest internal value,
+  /// and may reject unrecognized values. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  /// +optional
+  ///
+  /// Optional.
+  core.String? apiVersion;
+
+  /// Kind is a string value representing the REST resource this object
+  /// represents.
+  ///
+  /// Servers may infer this from the endpoint the client submits requests to.
+  /// Cannot be updated. In CamelCase. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  /// +optional
+  ///
+  /// Optional.
+  core.String? kind;
+
+  /// Standard object's metadata.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+  /// +optional
+  ///
+  /// Optional.
+  ObjectMeta? metadata;
+
+  /// Specification of the desired behavior of an execution.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Optional.
+  ExecutionSpec? spec;
+
+  /// Current status of an execution.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Output only.
+  ExecutionStatus? status;
+
+  Execution({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
+
+  Execution.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? ExecutionSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? ExecutionStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
+      };
+}
+
+/// Reference to an Execution.
+///
+/// Use /Executions.GetExecution with the given name to get full execution
+/// including the latest status.
+class ExecutionReference {
+  /// Creation timestamp of the execution.
+  ///
+  /// Optional.
+  core.String? creationTimestamp;
+
+  /// Name of the execution.
+  ///
+  /// Optional.
+  core.String? name;
+
+  ExecutionReference({
+    this.creationTimestamp,
+    this.name,
+  });
+
+  ExecutionReference.fromJson(core.Map _json)
+      : this(
+          creationTimestamp: _json.containsKey('creationTimestamp')
+              ? _json['creationTimestamp'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (creationTimestamp != null) 'creationTimestamp': creationTimestamp!,
+        if (name != null) 'name': name!,
+      };
+}
+
+/// ExecutionSpec describes how the execution will look.
+class ExecutionSpec {
+  /// Specifies the maximum desired number of tasks the execution should run at
+  /// any given time.
+  ///
+  /// Must be \<= task_count. The actual number of tasks running in steady state
+  /// will be less than this number when ((.spec.task_count -
+  /// .status.successful) \< .spec.parallelism), i.e. when the work left to do
+  /// is less than max parallelism. More info:
+  /// https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+  /// +optional
+  ///
+  /// Optional.
+  core.int? parallelism;
+
+  /// Specifies the desired number of tasks the execution should run.
+  ///
+  /// Setting to 1 means that parallelism is limited to 1 and the success of
+  /// that task signals the success of the execution. More info:
+  /// https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+  /// +optional
+  ///
+  /// Optional.
+  core.int? taskCount;
+
+  /// Describes the task(s) that will be created when executing an execution.
+  ///
+  /// Optional.
+  TaskTemplateSpec? template;
+
+  ExecutionSpec({
+    this.parallelism,
+    this.taskCount,
+    this.template,
+  });
+
+  ExecutionSpec.fromJson(core.Map _json)
+      : this(
+          parallelism: _json.containsKey('parallelism')
+              ? _json['parallelism'] as core.int
+              : null,
+          taskCount: _json.containsKey('taskCount')
+              ? _json['taskCount'] as core.int
+              : null,
+          template: _json.containsKey('template')
+              ? TaskTemplateSpec.fromJson(
+                  _json['template'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (parallelism != null) 'parallelism': parallelism!,
+        if (taskCount != null) 'taskCount': taskCount!,
+        if (template != null) 'template': template!,
+      };
+}
+
+/// ExecutionStatus represents the current state of a Execution.
+class ExecutionStatus {
+  /// Represents time when the execution was completed.
+  ///
+  /// It is not guaranteed to be set in happens-before order across separate
+  /// operations. It is represented in RFC3339 form and is in UTC. +optional
+  ///
+  /// Optional.
+  core.String? completionTime;
+
+  /// The latest available observations of an execution's current state.
+  ///
+  /// More info:
+  /// https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+  /// +optional
+  ///
+  /// Optional.
+  core.List<GoogleCloudRunV1Condition>? conditions;
+
+  /// The number of tasks which reached phase Failed.
+  ///
+  /// +optional
+  ///
+  /// Optional.
+  core.int? failedCount;
+
+  /// URI where logs for this execution can be found in Cloud Console.
+  ///
+  /// Optional.
+  core.String? logUri;
+
+  /// The 'generation' of the execution that was last processed by the
+  /// controller.
+  ///
+  /// Optional.
+  core.int? observedGeneration;
+
+  /// The number of actively running tasks.
+  ///
+  /// +optional
+  ///
+  /// Optional.
+  core.int? runningCount;
+
+  /// Represents time when the execution started to run.
+  ///
+  /// It is not guaranteed to be set in happens-before order across separate
+  /// operations. It is represented in RFC3339 form and is in UTC. +optional
+  ///
+  /// Optional.
+  core.String? startTime;
+
+  /// The number of tasks which reached phase Succeeded.
+  ///
+  /// +optional
+  ///
+  /// Optional.
+  core.int? succeededCount;
+
+  ExecutionStatus({
+    this.completionTime,
+    this.conditions,
+    this.failedCount,
+    this.logUri,
+    this.observedGeneration,
+    this.runningCount,
+    this.startTime,
+    this.succeededCount,
+  });
+
+  ExecutionStatus.fromJson(core.Map _json)
+      : this(
+          completionTime: _json.containsKey('completionTime')
+              ? _json['completionTime'] as core.String
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          failedCount: _json.containsKey('failedCount')
+              ? _json['failedCount'] as core.int
+              : null,
+          logUri: _json.containsKey('logUri')
+              ? _json['logUri'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          runningCount: _json.containsKey('runningCount')
+              ? _json['runningCount'] as core.int
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          succeededCount: _json.containsKey('succeededCount')
+              ? _json['succeededCount'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (completionTime != null) 'completionTime': completionTime!,
+        if (conditions != null) 'conditions': conditions!,
+        if (failedCount != null) 'failedCount': failedCount!,
+        if (logUri != null) 'logUri': logUri!,
+        if (observedGeneration != null)
+          'observedGeneration': observedGeneration!,
+        if (runningCount != null) 'runningCount': runningCount!,
+        if (startTime != null) 'startTime': startTime!,
+        if (succeededCount != null) 'succeededCount': succeededCount!,
+      };
+}
+
+/// ExecutionTemplateSpec describes the metadata and spec an Execution should
+/// have when created from a job.
+///
+/// Based on:
+/// https://github.com/kubernetes/api/blob/e771f807/core/v1/types.go#L3179-L3190
+class ExecutionTemplateSpec {
+  /// Optional metadata for this Execution, including labels and annotations.
+  ///
+  /// The following annotation keys set properties of the created execution: *
+  /// `run.googleapis.com/cloudsql-instances` sets Cloud SQL connections.
+  /// Multiple values should be comma separated. *
+  /// `run.googleapis.com/vpc-access-connector` sets a Serverless VPC Access
+  /// connector. * `run.googleapis.com/vpc-access-egress` sets VPC egress.
+  /// Supported values are `all-traffic`, `all` (deprecated), and
+  /// `private-ranges-only`. `all-traffic` and `all` provide the same
+  /// functionality. `all` is deprecated but will continue to be supported.
+  /// Prefer `all-traffic`.
+  ///
+  /// Optional.
+  ObjectMeta? metadata;
+
+  /// ExecutionSpec holds the desired configuration for executions of this job.
+  ///
+  /// Required.
+  ExecutionSpec? spec;
+
+  ExecutionTemplateSpec({
+    this.metadata,
+    this.spec,
+  });
+
+  ExecutionTemplateSpec.fromJson(core.Map _json)
+      : this(
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? ExecutionSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
       };
 }
 
@@ -3297,7 +4532,7 @@ class ExecAction {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -3309,58 +4544,9 @@ class ExecAction {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
+typedef Expr = $Expr;
 
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
-
-/// Condition defines a generic condition for a Resource
+/// Condition defines a generic condition for a Resource.
 class GoogleCloudRunV1Condition {
   /// Last time the condition transitioned from one status to another.
   ///
@@ -3388,33 +4574,39 @@ class GoogleCloudRunV1Condition {
   /// type is used to communicate the status of the reconciliation process.
   ///
   /// See also:
-  /// https://github.com/knative/serving/blob/master/docs/spec/errors.md#error-conditions-and-reporting
+  /// https://github.com/knative/serving/blob/main/docs/spec/errors.md#error-conditions-and-reporting
   /// Types common to all resources include: * "Ready": True when the Resource
   /// is ready.
   core.String? type;
 
-  GoogleCloudRunV1Condition();
+  GoogleCloudRunV1Condition({
+    this.lastTransitionTime,
+    this.message,
+    this.reason,
+    this.severity,
+    this.status,
+    this.type,
+  });
 
-  GoogleCloudRunV1Condition.fromJson(core.Map _json) {
-    if (_json.containsKey('lastTransitionTime')) {
-      lastTransitionTime = _json['lastTransitionTime'] as core.String;
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-    if (_json.containsKey('reason')) {
-      reason = _json['reason'] as core.String;
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  GoogleCloudRunV1Condition.fromJson(core.Map _json)
+      : this(
+          lastTransitionTime: _json.containsKey('lastTransitionTime')
+              ? _json['lastTransitionTime'] as core.String
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+          reason: _json.containsKey('reason')
+              ? _json['reason'] as core.String
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (lastTransitionTime != null)
@@ -3427,81 +4619,86 @@ class GoogleCloudRunV1Condition {
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// HTTPGetAction describes an action based on HTTP Get requests.
+/// The `Status` type defines a logical error model that is suitable for
+/// different programming environments, including REST APIs and RPC APIs.
+///
+/// It is used by [gRPC](https://github.com/grpc). Each `Status` message
+/// contains three pieces of data: error code, error message, and error details.
+/// You can find out more about this error model and how to work with it in the
+/// [API Design Guide](https://cloud.google.com/apis/design/errors).
+typedef GoogleRpcStatus = $Status;
+
+/// Not supported by Cloud Run HTTPGetAction describes an action based on HTTP
+/// Get requests.
 class HTTPGetAction {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Host name to connect to, defaults to the pod IP.
+  /// (Optional) Host name to connect to, defaults to the pod IP.
   ///
   /// You probably want to set "Host" in httpHeaders instead.
   core.String? host;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Custom headers to set in the request.
+  /// (Optional) Custom headers to set in the request.
   ///
   /// HTTP allows repeated headers.
   core.List<HTTPHeader>? httpHeaders;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Path to access on the HTTP server.
+  /// (Optional) Path to access on the HTTP server.
   core.String? path;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Scheme to use for connecting to the host.
+  /// (Optional) Scheme to use for connecting to the host.
   ///
   /// Defaults to HTTP.
   core.String? scheme;
 
-  HTTPGetAction();
+  HTTPGetAction({
+    this.host,
+    this.httpHeaders,
+    this.path,
+    this.scheme,
+  });
 
-  HTTPGetAction.fromJson(core.Map _json) {
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('httpHeaders')) {
-      httpHeaders = (_json['httpHeaders'] as core.List)
-          .map<HTTPHeader>((value) =>
-              HTTPHeader.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-    if (_json.containsKey('scheme')) {
-      scheme = _json['scheme'] as core.String;
-    }
-  }
+  HTTPGetAction.fromJson(core.Map _json)
+      : this(
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          httpHeaders: _json.containsKey('httpHeaders')
+              ? (_json['httpHeaders'] as core.List)
+                  .map((value) => HTTPHeader.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+          scheme: _json.containsKey('scheme')
+              ? _json['scheme'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (host != null) 'host': host!,
-        if (httpHeaders != null)
-          'httpHeaders': httpHeaders!.map((value) => value.toJson()).toList(),
+        if (httpHeaders != null) 'httpHeaders': httpHeaders!,
         if (path != null) 'path': path!,
         if (scheme != null) 'scheme': scheme!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// HTTPHeader describes a custom header to be used in HTTP probes
+/// Not supported by Cloud Run HTTPHeader describes a custom header to be used
+/// in HTTP probes
 class HTTPHeader {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// header field name
+  /// The header field name
   core.String? name;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// header field value
+  /// The header field value
   core.String? value;
 
-  HTTPHeader();
+  HTTPHeader({
+    this.name,
+    this.value,
+  });
 
-  HTTPHeader.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  HTTPHeader.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -3509,42 +4706,231 @@ class HTTPHeader {
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported Maps
-/// a string key to a path within a volume.
+/// Job represents the configuration of a single job.
+///
+/// A job an immutable resource that references a container image which is run
+/// to completion.
+class Job {
+  /// APIVersion defines the versioned schema of this representation of an
+  /// object.
+  ///
+  /// Servers should convert recognized schemas to the latest internal value,
+  /// and may reject unrecognized values. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  /// +optional
+  ///
+  /// Optional.
+  core.String? apiVersion;
+
+  /// Kind is a string value representing the REST resource this object
+  /// represents.
+  ///
+  /// Servers may infer this from the endpoint the client submits requests to.
+  /// Cannot be updated. In CamelCase. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  /// +optional
+  ///
+  /// Optional.
+  core.String? kind;
+
+  /// Standard object's metadata.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+  /// +optional
+  ///
+  /// Optional.
+  ObjectMeta? metadata;
+
+  /// Specification of the desired behavior of a job.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Optional.
+  JobSpec? spec;
+
+  /// Current status of a job.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Output only.
+  JobStatus? status;
+
+  Job({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
+
+  Job.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? JobSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? JobStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
+      };
+}
+
+/// JobSpec describes how the job will look.
+class JobSpec {
+  /// Describes the execution that will be created when running a job.
+  ///
+  /// Optional.
+  ExecutionTemplateSpec? template;
+
+  JobSpec({
+    this.template,
+  });
+
+  JobSpec.fromJson(core.Map _json)
+      : this(
+          template: _json.containsKey('template')
+              ? ExecutionTemplateSpec.fromJson(
+                  _json['template'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (template != null) 'template': template!,
+      };
+}
+
+/// JobStatus represents the current state of a Job.
+class JobStatus {
+  /// The latest available observations of a job's current state.
+  ///
+  /// More info:
+  /// https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+  core.List<GoogleCloudRunV1Condition>? conditions;
+
+  /// Status information for each of the specified containers.
+  ///
+  /// The status includes the resolved digest for specified images, which occurs
+  /// during creation of the job.
+  core.List<ContainerStatus>? containerStatuses;
+
+  /// Number of executions created for this job.
+  core.int? executionCount;
+
+  /// A pointer to the most recently created execution for this job.
+  ///
+  /// This is set regardless of the eventual state of the execution.
+  ExecutionReference? latestCreatedExecution;
+
+  /// The 'generation' of the job that was last processed by the controller.
+  core.int? observedGeneration;
+
+  JobStatus({
+    this.conditions,
+    this.containerStatuses,
+    this.executionCount,
+    this.latestCreatedExecution,
+    this.observedGeneration,
+  });
+
+  JobStatus.fromJson(core.Map _json)
+      : this(
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          containerStatuses: _json.containsKey('containerStatuses')
+              ? (_json['containerStatuses'] as core.List)
+                  .map((value) => ContainerStatus.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          executionCount: _json.containsKey('executionCount')
+              ? _json['executionCount'] as core.int
+              : null,
+          latestCreatedExecution: _json.containsKey('latestCreatedExecution')
+              ? ExecutionReference.fromJson(_json['latestCreatedExecution']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (conditions != null) 'conditions': conditions!,
+        if (containerStatuses != null) 'containerStatuses': containerStatuses!,
+        if (executionCount != null) 'executionCount': executionCount!,
+        if (latestCreatedExecution != null)
+          'latestCreatedExecution': latestCreatedExecution!,
+        if (observedGeneration != null)
+          'observedGeneration': observedGeneration!,
+      };
+}
+
+/// Maps a string key to a path within a volume.
 class KeyToPath {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// key to project.
+  /// The Cloud Secret Manager secret version.
+  ///
+  /// Can be 'latest' for the latest value or an integer for a specific version.
+  /// The key to project.
   core.String? key;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Mode bits to use on this file, must be a value between 0000 and
-  /// 0777.
+  /// (Optional) Mode bits to use on this file, must be a value between 01 and
+  /// 0777 (octal).
   ///
-  /// If not specified, the volume defaultMode will be used. This might be in
-  /// conflict with other options that affect the file mode, like fsGroup, and
-  /// the result can be other mode bits set.
+  /// If 0 or not set, the Volume's default mode will be used. Notes *
+  /// Internally, a umask of 0222 will be applied to any non-zero value. * This
+  /// is an integer representation of the mode bits. So, the octal integer value
+  /// should look exactly as the chmod numeric notation with a leading zero.
+  /// Some examples: for chmod 777 (a=rwx), set to 0777 (octal) or 511
+  /// (base-10). For chmod 640 (u=rw,g=r), set to 0640 (octal) or 416 (base-10).
+  /// For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493 (base-10). *
+  /// This might be in conflict with other options that affect the file mode,
+  /// like fsGroup, and the result can be other mode bits set.
   core.int? mode;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// relative path of the file to map the key to.
+  /// The relative path of the file to map the key to.
   ///
   /// May not be an absolute path. May not contain the path element '..'. May
   /// not start with the string '..'.
   core.String? path;
 
-  KeyToPath();
+  KeyToPath({
+    this.key,
+    this.mode,
+    this.path,
+  });
 
-  KeyToPath.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('mode')) {
-      mode = _json['mode'] as core.int;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-  }
+  KeyToPath.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          mode: _json.containsKey('mode') ? _json['mode'] as core.int : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (key != null) 'key': key!,
@@ -3561,23 +4947,26 @@ class ListAuthorizedDomainsResponse {
   /// Continuation token for fetching the next page of results.
   core.String? nextPageToken;
 
-  ListAuthorizedDomainsResponse();
+  ListAuthorizedDomainsResponse({
+    this.domains,
+    this.nextPageToken,
+  });
 
-  ListAuthorizedDomainsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('domains')) {
-      domains = (_json['domains'] as core.List)
-          .map<AuthorizedDomain>((value) => AuthorizedDomain.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAuthorizedDomainsResponse.fromJson(core.Map _json)
+      : this(
+          domains: _json.containsKey('domains')
+              ? (_json['domains'] as core.List)
+                  .map((value) => AuthorizedDomain.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (domains != null)
-          'domains': domains!.map((value) => value.toJson()).toList(),
+        if (domains != null) 'domains': domains!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3599,38 +4988,42 @@ class ListConfigurationsResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListConfigurationsResponse();
+  ListConfigurationsResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
 
-  ListConfigurationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Configuration>((value) => Configuration.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListConfigurationsResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Configuration.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
@@ -3652,38 +5045,156 @@ class ListDomainMappingsResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListDomainMappingsResponse();
+  ListDomainMappingsResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
 
-  ListDomainMappingsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<DomainMapping>((value) => DomainMapping.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListDomainMappingsResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => DomainMapping.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (unreachable != null) 'unreachable': unreachable!,
+      };
+}
+
+/// ListExecutionsResponse is a list of Executions resources.
+class ListExecutionsResponse {
+  /// The API version for this call such as "run.googleapis.com/v1".
+  core.String? apiVersion;
+
+  /// List of Executions.
+  core.List<Execution>? items;
+
+  /// The kind of this resource, in this case "ExecutionsList".
+  core.String? kind;
+
+  /// Metadata associated with this executions list.
+  ListMeta? metadata;
+
+  /// Locations that could not be reached.
+  core.List<core.String>? unreachable;
+
+  ListExecutionsResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
+
+  ListExecutionsResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Execution.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (items != null) 'items': items!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
+        if (unreachable != null) 'unreachable': unreachable!,
+      };
+}
+
+/// ListJobsResponse is a list of Jobs resources.
+class ListJobsResponse {
+  /// The API version for this call such as "run.googleapis.com/v1".
+  core.String? apiVersion;
+
+  /// List of Jobs.
+  core.List<Job>? items;
+
+  /// The kind of this resource, in this case "JobsList".
+  core.String? kind;
+
+  /// Metadata associated with this jobs list.
+  ListMeta? metadata;
+
+  /// Locations that could not be reached.
+  core.List<core.String>? unreachable;
+
+  ListJobsResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
+
+  ListJobsResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Job.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (items != null) 'items': items!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
@@ -3696,23 +5207,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3747,19 +5261,24 @@ class ListMeta {
   /// Populated by the system. Read-only. +optional
   core.String? selfLink;
 
-  ListMeta();
+  ListMeta({
+    this.continue_,
+    this.resourceVersion,
+    this.selfLink,
+  });
 
-  ListMeta.fromJson(core.Map _json) {
-    if (_json.containsKey('continue')) {
-      continue_ = _json['continue'] as core.String;
-    }
-    if (_json.containsKey('resourceVersion')) {
-      resourceVersion = _json['resourceVersion'] as core.String;
-    }
-    if (_json.containsKey('selfLink')) {
-      selfLink = _json['selfLink'] as core.String;
-    }
-  }
+  ListMeta.fromJson(core.Map _json)
+      : this(
+          continue_: _json.containsKey('continue')
+              ? _json['continue'] as core.String
+              : null,
+          resourceVersion: _json.containsKey('resourceVersion')
+              ? _json['resourceVersion'] as core.String
+              : null,
+          selfLink: _json.containsKey('selfLink')
+              ? _json['selfLink'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (continue_ != null) 'continue': continue_!,
@@ -3785,38 +5304,42 @@ class ListRevisionsResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListRevisionsResponse();
+  ListRevisionsResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
 
-  ListRevisionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Revision>((value) =>
-              Revision.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListRevisionsResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Revision.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
@@ -3838,38 +5361,42 @@ class ListRoutesResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListRoutesResponse();
+  ListRoutesResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
 
-  ListRoutesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Route>((value) =>
-              Route.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListRoutesResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Route.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
@@ -3891,60 +5418,120 @@ class ListServicesResponse {
   /// Locations that could not be reached.
   core.List<core.String>? unreachable;
 
-  ListServicesResponse();
+  ListServicesResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
 
-  ListServicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Service>((value) =>
-              Service.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('unreachable')) {
-      unreachable = (_json['unreachable'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  ListServicesResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Service.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (unreachable != null) 'unreachable': unreachable!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// LocalObjectReference contains enough information to let you locate the
-/// referenced object inside the same namespace.
+/// ListTasksResponse is a list of Tasks resources.
+class ListTasksResponse {
+  /// The API version for this call such as "run.googleapis.com/v1".
+  core.String? apiVersion;
+
+  /// List of Tasks.
+  core.List<Task>? items;
+
+  /// The kind of this resource, in this case "TasksList".
+  core.String? kind;
+
+  /// Metadata associated with this tasks list.
+  ListMeta? metadata;
+
+  /// Locations that could not be reached.
+  core.List<core.String>? unreachable;
+
+  ListTasksResponse({
+    this.apiVersion,
+    this.items,
+    this.kind,
+    this.metadata,
+    this.unreachable,
+  });
+
+  ListTasksResponse.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Task.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          unreachable: _json.containsKey('unreachable')
+              ? (_json['unreachable'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (items != null) 'items': items!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
+        if (unreachable != null) 'unreachable': unreachable!,
+      };
+}
+
+/// Not supported by Cloud Run LocalObjectReference contains enough information
+/// to let you locate the referenced object inside the same namespace.
 class LocalObjectReference {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Name of the referent.
+  /// (Optional) Name of the referent.
   ///
   /// More info:
   /// https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
   core.String? name;
 
-  LocalObjectReference();
+  LocalObjectReference({
+    this.name,
+  });
 
-  LocalObjectReference.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  LocalObjectReference.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -3952,73 +5539,7 @@ class LocalObjectReference {
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// k8s.io.apimachinery.pkg.apis.meta.v1.ObjectMeta is metadata that all
 /// persisted resources must have, which includes all objects users must create.
@@ -4028,11 +5549,11 @@ class ObjectMeta {
   /// metadata.
   ///
   /// They are not queryable and should be preserved when modifying objects.
-  /// More info: http://kubernetes.io/docs/user-guide/annotations
+  /// More info: https://kubernetes.io/docs/user-guide/annotations
   core.Map<core.String, core.String>? annotations;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported The name of the cluster which the object belongs to.
+  /// (Optional) Not supported by Cloud Run The name of the cluster which the
+  /// object belongs to.
   ///
   /// This is used to distinguish resources with same name and namespace in
   /// different clusters. This field is not set anywhere right now and apiserver
@@ -4049,17 +5570,15 @@ class ObjectMeta {
   /// https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
   core.String? creationTimestamp;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Number of seconds allowed for this object to gracefully
-  /// terminate before it will be removed from the system.
+  /// (Optional) Not supported by Cloud Run Number of seconds allowed for this
+  /// object to gracefully terminate before it will be removed from the system.
   ///
   /// Only set when deletionTimestamp is also set. May only be shortened.
   /// Read-only.
   core.int? deletionGracePeriodSeconds;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported DeletionTimestamp is RFC 3339 date and time at which this
-  /// resource will be deleted.
+  /// (Optional) Not supported by Cloud Run DeletionTimestamp is RFC 3339 date
+  /// and time at which this resource will be deleted.
   ///
   /// This field is set by the server when a graceful deletion is requested by
   /// the user, and is not directly settable by a client. The resource is
@@ -4081,17 +5600,17 @@ class ObjectMeta {
   /// https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
   core.String? deletionTimestamp;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Must be empty before the object is deleted from the registry.
+  /// (Optional) Not supported by Cloud Run Must be empty before the object is
+  /// deleted from the registry.
   ///
   /// Each entry is an identifier for the responsible component that will remove
   /// the entry from the list. If the deletionTimestamp of the object is
   /// non-nil, entries in this list can only be removed. +patchStrategy=merge
   core.List<core.String>? finalizers;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported GenerateName is an optional prefix, used by the server, to
-  /// generate a unique name ONLY IF the Name field has not been provided.
+  /// (Optional) Not supported by Cloud Run GenerateName is an optional prefix,
+  /// used by the server, to generate a unique name ONLY IF the Name field has
+  /// not been provided.
   ///
   /// If this field is used, the name returned to the client will be different
   /// than the name passed. This value will also be combined with a unique
@@ -4117,7 +5636,7 @@ class ObjectMeta {
   /// categorize (scope and select) objects.
   ///
   /// May match selectors of replication controllers and routes. More info:
-  /// http://kubernetes.io/docs/user-guide/labels
+  /// https://kubernetes.io/docs/user-guide/labels
   core.Map<core.String, core.String>? labels;
 
   /// Name must be unique within a namespace, within a Cloud Run region.
@@ -4126,7 +5645,7 @@ class ObjectMeta {
   /// client to request the generation of an appropriate name automatically.
   /// Name is primarily intended for creation idempotence and configuration
   /// definition. Cannot be updated. More info:
-  /// http://kubernetes.io/docs/user-guide/identifiers#names +optional
+  /// https://kubernetes.io/docs/user-guide/identifiers#names +optional
   core.String? name;
 
   /// Namespace defines the space within each name must be unique, within a
@@ -4136,22 +5655,26 @@ class ObjectMeta {
   /// project number.
   core.String? namespace;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported List of objects that own this object.
+  /// (Optional) Not supported by Cloud Run List of objects that own this
+  /// object.
   ///
   /// If ALL objects in the list have been deleted, this object will be garbage
   /// collected.
   core.List<OwnerReference>? ownerReferences;
 
-  /// (Optional) An opaque value that represents the internal version of this
-  /// object that can be used by clients to determine when objects have changed.
+  /// An opaque value that represents the internal version of this object that
+  /// can be used by clients to determine when objects have changed.
   ///
   /// May be used for optimistic concurrency, change detection, and the watch
   /// operation on a resource or set of resources. Clients must treat these
-  /// values as opaque and passed unmodified back to the server. They may only
-  /// be valid for a particular resource or set of resources. Populated by the
-  /// system. Read-only. Value must be treated as opaque by clients. More info:
+  /// values as opaque and passed unmodified back to the server or omit the
+  /// value to disable conflict-detection. They may only be valid for a
+  /// particular resource or set of resources. Populated by the system.
+  /// Read-only. Value must be treated as opaque by clients or omitted. More
+  /// info:
   /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
+  ///
+  /// Optional.
   core.String? resourceVersion;
 
   /// (Optional) SelfLink is a URL representing this object.
@@ -4164,75 +5687,88 @@ class ObjectMeta {
   /// It is typically generated by the server on successful creation of a
   /// resource and is not allowed to change on PUT operations. Populated by the
   /// system. Read-only. More info:
-  /// http://kubernetes.io/docs/user-guide/identifiers#uids
+  /// https://kubernetes.io/docs/user-guide/identifiers#uids
   core.String? uid;
 
-  ObjectMeta();
+  ObjectMeta({
+    this.annotations,
+    this.clusterName,
+    this.creationTimestamp,
+    this.deletionGracePeriodSeconds,
+    this.deletionTimestamp,
+    this.finalizers,
+    this.generateName,
+    this.generation,
+    this.labels,
+    this.name,
+    this.namespace,
+    this.ownerReferences,
+    this.resourceVersion,
+    this.selfLink,
+    this.uid,
+  });
 
-  ObjectMeta.fromJson(core.Map _json) {
-    if (_json.containsKey('annotations')) {
-      annotations =
-          (_json['annotations'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('clusterName')) {
-      clusterName = _json['clusterName'] as core.String;
-    }
-    if (_json.containsKey('creationTimestamp')) {
-      creationTimestamp = _json['creationTimestamp'] as core.String;
-    }
-    if (_json.containsKey('deletionGracePeriodSeconds')) {
-      deletionGracePeriodSeconds =
-          _json['deletionGracePeriodSeconds'] as core.int;
-    }
-    if (_json.containsKey('deletionTimestamp')) {
-      deletionTimestamp = _json['deletionTimestamp'] as core.String;
-    }
-    if (_json.containsKey('finalizers')) {
-      finalizers = (_json['finalizers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('generateName')) {
-      generateName = _json['generateName'] as core.String;
-    }
-    if (_json.containsKey('generation')) {
-      generation = _json['generation'] as core.int;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('namespace')) {
-      namespace = _json['namespace'] as core.String;
-    }
-    if (_json.containsKey('ownerReferences')) {
-      ownerReferences = (_json['ownerReferences'] as core.List)
-          .map<OwnerReference>((value) => OwnerReference.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resourceVersion')) {
-      resourceVersion = _json['resourceVersion'] as core.String;
-    }
-    if (_json.containsKey('selfLink')) {
-      selfLink = _json['selfLink'] as core.String;
-    }
-    if (_json.containsKey('uid')) {
-      uid = _json['uid'] as core.String;
-    }
-  }
+  ObjectMeta.fromJson(core.Map _json)
+      : this(
+          annotations: _json.containsKey('annotations')
+              ? (_json['annotations'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          clusterName: _json.containsKey('clusterName')
+              ? _json['clusterName'] as core.String
+              : null,
+          creationTimestamp: _json.containsKey('creationTimestamp')
+              ? _json['creationTimestamp'] as core.String
+              : null,
+          deletionGracePeriodSeconds:
+              _json.containsKey('deletionGracePeriodSeconds')
+                  ? _json['deletionGracePeriodSeconds'] as core.int
+                  : null,
+          deletionTimestamp: _json.containsKey('deletionTimestamp')
+              ? _json['deletionTimestamp'] as core.String
+              : null,
+          finalizers: _json.containsKey('finalizers')
+              ? (_json['finalizers'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          generateName: _json.containsKey('generateName')
+              ? _json['generateName'] as core.String
+              : null,
+          generation: _json.containsKey('generation')
+              ? _json['generation'] as core.int
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          namespace: _json.containsKey('namespace')
+              ? _json['namespace'] as core.String
+              : null,
+          ownerReferences: _json.containsKey('ownerReferences')
+              ? (_json['ownerReferences'] as core.List)
+                  .map((value) => OwnerReference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resourceVersion: _json.containsKey('resourceVersion')
+              ? _json['resourceVersion'] as core.String
+              : null,
+          selfLink: _json.containsKey('selfLink')
+              ? _json['selfLink'] as core.String
+              : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (annotations != null) 'annotations': annotations!,
@@ -4247,9 +5783,7 @@ class ObjectMeta {
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
         if (namespace != null) 'namespace': namespace!,
-        if (ownerReferences != null)
-          'ownerReferences':
-              ownerReferences!.map((value) => value.toJson()).toList(),
+        if (ownerReferences != null) 'ownerReferences': ownerReferences!,
         if (resourceVersion != null) 'resourceVersion': resourceVersion!,
         if (selfLink != null) 'selfLink': selfLink!,
         if (uid != null) 'uid': uid!,
@@ -4282,41 +5816,43 @@ class OwnerReference {
   /// Kind of the referent.
   ///
   /// More info:
-  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
   core.String? kind;
 
   /// Name of the referent.
   ///
-  /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
+  /// More info: https://kubernetes.io/docs/user-guide/identifiers#names
   core.String? name;
 
   /// UID of the referent.
   ///
-  /// More info: http://kubernetes.io/docs/user-guide/identifiers#uids
+  /// More info: https://kubernetes.io/docs/user-guide/identifiers#uids
   core.String? uid;
 
-  OwnerReference();
+  OwnerReference({
+    this.apiVersion,
+    this.blockOwnerDeletion,
+    this.controller,
+    this.kind,
+    this.name,
+    this.uid,
+  });
 
-  OwnerReference.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('blockOwnerDeletion')) {
-      blockOwnerDeletion = _json['blockOwnerDeletion'] as core.bool;
-    }
-    if (_json.containsKey('controller')) {
-      controller = _json['controller'] as core.bool;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('uid')) {
-      uid = _json['uid'] as core.String;
-    }
-  }
+  OwnerReference.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          blockOwnerDeletion: _json.containsKey('blockOwnerDeletion')
+              ? _json['blockOwnerDeletion'] as core.bool
+              : null,
+          controller: _json.containsKey('controller')
+              ? _json['controller'] as core.bool
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
@@ -4333,15 +5869,15 @@ class OwnerReference {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -4350,25 +5886,30 @@ class OwnerReference {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -4410,138 +5951,142 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported Probe
-/// describes a health check to be performed against a container to determine
-/// whether it is alive or ready to receive traffic.
+/// Not supported by Cloud Run Probe describes a health check to be performed
+/// against a container to determine whether it is alive or ready to receive
+/// traffic.
 class Probe {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported One and only one of the following should be specified.
+  /// (Optional) One and only one of the following should be specified.
   ///
   /// Exec specifies the action to take. A field inlined from the Handler
   /// message.
   ExecAction? exec;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Minimum consecutive failures for the probe to be considered
+  /// (Optional) Minimum consecutive failures for the probe to be considered
   /// failed after having succeeded.
   ///
   /// Defaults to 3. Minimum value is 1.
   core.int? failureThreshold;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported HTTPGet specifies the http request to perform.
+  /// (Optional) HTTPGet specifies the http request to perform.
   ///
   /// A field inlined from the Handler message.
   HTTPGetAction? httpGet;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Number of seconds after the container has started before
+  /// (Optional) Number of seconds after the container has started before
   /// liveness probes are initiated.
   ///
   /// More info:
   /// https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   core.int? initialDelaySeconds;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported How often (in seconds) to perform the probe.
+  /// (Optional) How often (in seconds) to perform the probe.
   ///
   /// Default to 10 seconds. Minimum value is 1.
   core.int? periodSeconds;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Minimum consecutive successes for the probe to be considered
+  /// (Optional) Minimum consecutive successes for the probe to be considered
   /// successful after having failed.
   ///
   /// Defaults to 1. Must be 1 for liveness. Minimum value is 1.
   core.int? successThreshold;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported TCPSocket specifies an action involving a TCP port.
+  /// (Optional) TCPSocket specifies an action involving a TCP port.
   ///
   /// TCP hooks not yet supported A field inlined from the Handler message.
   TCPSocketAction? tcpSocket;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Number of seconds after which the probe times out.
+  /// (Optional) Number of seconds after which the probe times out.
   ///
   /// Defaults to 1 second. Minimum value is 1. More info:
   /// https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
   core.int? timeoutSeconds;
 
-  Probe();
+  Probe({
+    this.exec,
+    this.failureThreshold,
+    this.httpGet,
+    this.initialDelaySeconds,
+    this.periodSeconds,
+    this.successThreshold,
+    this.tcpSocket,
+    this.timeoutSeconds,
+  });
 
-  Probe.fromJson(core.Map _json) {
-    if (_json.containsKey('exec')) {
-      exec = ExecAction.fromJson(
-          _json['exec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('failureThreshold')) {
-      failureThreshold = _json['failureThreshold'] as core.int;
-    }
-    if (_json.containsKey('httpGet')) {
-      httpGet = HTTPGetAction.fromJson(
-          _json['httpGet'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('initialDelaySeconds')) {
-      initialDelaySeconds = _json['initialDelaySeconds'] as core.int;
-    }
-    if (_json.containsKey('periodSeconds')) {
-      periodSeconds = _json['periodSeconds'] as core.int;
-    }
-    if (_json.containsKey('successThreshold')) {
-      successThreshold = _json['successThreshold'] as core.int;
-    }
-    if (_json.containsKey('tcpSocket')) {
-      tcpSocket = TCPSocketAction.fromJson(
-          _json['tcpSocket'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('timeoutSeconds')) {
-      timeoutSeconds = _json['timeoutSeconds'] as core.int;
-    }
-  }
+  Probe.fromJson(core.Map _json)
+      : this(
+          exec: _json.containsKey('exec')
+              ? ExecAction.fromJson(
+                  _json['exec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          failureThreshold: _json.containsKey('failureThreshold')
+              ? _json['failureThreshold'] as core.int
+              : null,
+          httpGet: _json.containsKey('httpGet')
+              ? HTTPGetAction.fromJson(
+                  _json['httpGet'] as core.Map<core.String, core.dynamic>)
+              : null,
+          initialDelaySeconds: _json.containsKey('initialDelaySeconds')
+              ? _json['initialDelaySeconds'] as core.int
+              : null,
+          periodSeconds: _json.containsKey('periodSeconds')
+              ? _json['periodSeconds'] as core.int
+              : null,
+          successThreshold: _json.containsKey('successThreshold')
+              ? _json['successThreshold'] as core.int
+              : null,
+          tcpSocket: _json.containsKey('tcpSocket')
+              ? TCPSocketAction.fromJson(
+                  _json['tcpSocket'] as core.Map<core.String, core.dynamic>)
+              : null,
+          timeoutSeconds: _json.containsKey('timeoutSeconds')
+              ? _json['timeoutSeconds'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (exec != null) 'exec': exec!.toJson(),
+        if (exec != null) 'exec': exec!,
         if (failureThreshold != null) 'failureThreshold': failureThreshold!,
-        if (httpGet != null) 'httpGet': httpGet!.toJson(),
+        if (httpGet != null) 'httpGet': httpGet!,
         if (initialDelaySeconds != null)
           'initialDelaySeconds': initialDelaySeconds!,
         if (periodSeconds != null) 'periodSeconds': periodSeconds!,
         if (successThreshold != null) 'successThreshold': successThreshold!,
-        if (tcpSocket != null) 'tcpSocket': tcpSocket!.toJson(),
+        if (tcpSocket != null) 'tcpSocket': tcpSocket!,
         if (timeoutSeconds != null) 'timeoutSeconds': timeoutSeconds!,
       };
 }
@@ -4569,19 +6114,20 @@ class ResourceRecord {
   /// - "CNAME" : A CNAME resource record. Data is a domain name to be aliased.
   core.String? type;
 
-  ResourceRecord();
+  ResourceRecord({
+    this.name,
+    this.rrdata,
+    this.type,
+  });
 
-  ResourceRecord.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('rrdata')) {
-      rrdata = _json['rrdata'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  ResourceRecord.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          rrdata: _json.containsKey('rrdata')
+              ? _json['rrdata'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -4592,46 +6138,46 @@ class ResourceRecord {
 
 /// ResourceRequirements describes the compute resource requirements.
 class ResourceRequirements {
-  /// (Optional) Cloud Run fully managed: Only memory and CPU are supported.
+  /// (Optional) Only memory and CPU are supported.
   ///
-  /// Note: The only supported values for CPU are '1', '2', and '4'. Setting 4
-  /// CPU requires at least 2Gi of memory. Cloud Run for Anthos: supported
   /// Limits describes the maximum amount of compute resources allowed. The
   /// values of the map is string form of the 'quantity' k8s type:
   /// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
   core.Map<core.String, core.String>? limits;
 
-  /// (Optional) Cloud Run fully managed: Only memory and CPU are supported.
+  /// (Optional) Only memory and CPU are supported.
   ///
-  /// Note: The only supported values for CPU are '1' and '2'. Cloud Run for
-  /// Anthos: supported Requests describes the minimum amount of compute
-  /// resources required. If Requests is omitted for a container, it defaults to
-  /// Limits if that is explicitly specified, otherwise to an
-  /// implementation-defined value. The values of the map is string form of the
-  /// 'quantity' k8s type:
+  /// Requests describes the minimum amount of compute resources required. If
+  /// Requests is omitted for a container, it defaults to Limits if that is
+  /// explicitly specified, otherwise to an implementation-defined value. The
+  /// values of the map is string form of the 'quantity' k8s type:
   /// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/apimachinery/pkg/api/resource/quantity.go
   core.Map<core.String, core.String>? requests;
 
-  ResourceRequirements();
+  ResourceRequirements({
+    this.limits,
+    this.requests,
+  });
 
-  ResourceRequirements.fromJson(core.Map _json) {
-    if (_json.containsKey('limits')) {
-      limits = (_json['limits'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('requests')) {
-      requests = (_json['requests'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
+  ResourceRequirements.fromJson(core.Map _json)
+      : this(
+          limits: _json.containsKey('limits')
+              ? (_json['limits'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          requests: _json.containsKey('requests')
+              ? (_json['requests'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (limits != null) 'limits': limits!,
@@ -4643,7 +6189,7 @@ class ResourceRequirements {
 ///
 /// A revision references a container image. Revisions are created by updates to
 /// a Configuration. See also:
-/// https://github.com/knative/serving/blob/master/docs/spec/overview.md#revision
+/// https://github.com/knative/serving/blob/main/docs/spec/overview.md#revision
 class Revision {
   /// The API version for this call such as "serving.knative.dev/v1".
   core.String? apiVersion;
@@ -4662,42 +6208,47 @@ class Revision {
   /// controller).
   RevisionStatus? status;
 
-  Revision();
+  Revision({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
 
-  Revision.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = RevisionSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = RevisionStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Revision.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? RevisionSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? RevisionStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
 
 /// RevisionSpec holds the desired state of the Revision (from the client).
 class RevisionSpec {
-  /// (Optional) ContainerConcurrency specifies the maximum allowed in-flight
-  /// (concurrent) requests per container instance of the Revision.
+  /// ContainerConcurrency specifies the maximum allowed in-flight (concurrent)
+  /// requests per container instance of the Revision.
   ///
   /// Cloud Run fully managed: supported, defaults to 80 Cloud Run for Anthos:
   /// supported, defaults to 0, which means concurrency to the application is
@@ -4711,8 +6262,25 @@ class RevisionSpec {
   /// In the context of a Revision, we disallow a number of fields on this
   /// Container, including: name and lifecycle. In Cloud Run, only a single
   /// container may be provided. The runtime contract is documented here:
-  /// https://github.com/knative/serving/blob/master/docs/runtime-contract.md
+  /// https://github.com/knative/serving/blob/main/docs/runtime-contract.md
   core.List<Container>? containers;
+
+  /// Indicates whether information about services should be injected into pod's
+  /// environment variables, matching the syntax of Docker links.
+  ///
+  /// Cloud Run fully managed: Not supported. Cloud Run for Anthos: supported,
+  /// defaults to true.
+  core.bool? enableServiceLinks;
+
+  /// ImagePullSecrets is a list of references to secrets in the same namespace
+  /// to use for pulling any images in pods that reference this ServiceAccount.
+  ///
+  /// ImagePullSecrets are distinct from Secrets because Secrets can be mounted
+  /// in the pod, but ImagePullSecrets are only accessed by the kubelet. More
+  /// info:
+  /// https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  /// Cloud Run fully managed: Not supported. Cloud Run for Anthos: supported.
+  core.List<LocalObjectReference>? imagePullSecrets;
 
   /// Email address of the IAM service account associated with the revision of
   /// the service.
@@ -4726,48 +6294,67 @@ class RevisionSpec {
   /// responding to a request.
   ///
   /// Cloud Run fully managed: defaults to 300 seconds (5 minutes). Maximum
-  /// allowed value is 900 seconds (15 minutes). Cloud Run for Anthos: defaults
-  /// to 300 seconds (5 minutes). Maximum allowed value is configurable by the
+  /// allowed value is 3600 seconds (1 hour). Cloud Run for Anthos: defaults to
+  /// 300 seconds (5 minutes). Maximum allowed value is configurable by the
   /// cluster operator.
   core.int? timeoutSeconds;
   core.List<Volume>? volumes;
 
-  RevisionSpec();
+  RevisionSpec({
+    this.containerConcurrency,
+    this.containers,
+    this.enableServiceLinks,
+    this.imagePullSecrets,
+    this.serviceAccountName,
+    this.timeoutSeconds,
+    this.volumes,
+  });
 
-  RevisionSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('containerConcurrency')) {
-      containerConcurrency = _json['containerConcurrency'] as core.int;
-    }
-    if (_json.containsKey('containers')) {
-      containers = (_json['containers'] as core.List)
-          .map<Container>((value) =>
-              Container.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceAccountName')) {
-      serviceAccountName = _json['serviceAccountName'] as core.String;
-    }
-    if (_json.containsKey('timeoutSeconds')) {
-      timeoutSeconds = _json['timeoutSeconds'] as core.int;
-    }
-    if (_json.containsKey('volumes')) {
-      volumes = (_json['volumes'] as core.List)
-          .map<Volume>((value) =>
-              Volume.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  RevisionSpec.fromJson(core.Map _json)
+      : this(
+          containerConcurrency: _json.containsKey('containerConcurrency')
+              ? _json['containerConcurrency'] as core.int
+              : null,
+          containers: _json.containsKey('containers')
+              ? (_json['containers'] as core.List)
+                  .map((value) => Container.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          enableServiceLinks: _json.containsKey('enableServiceLinks')
+              ? _json['enableServiceLinks'] as core.bool
+              : null,
+          imagePullSecrets: _json.containsKey('imagePullSecrets')
+              ? (_json['imagePullSecrets'] as core.List)
+                  .map((value) => LocalObjectReference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceAccountName: _json.containsKey('serviceAccountName')
+              ? _json['serviceAccountName'] as core.String
+              : null,
+          timeoutSeconds: _json.containsKey('timeoutSeconds')
+              ? _json['timeoutSeconds'] as core.int
+              : null,
+          volumes: _json.containsKey('volumes')
+              ? (_json['volumes'] as core.List)
+                  .map((value) => Volume.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (containerConcurrency != null)
           'containerConcurrency': containerConcurrency!,
-        if (containers != null)
-          'containers': containers!.map((value) => value.toJson()).toList(),
+        if (containers != null) 'containers': containers!,
+        if (enableServiceLinks != null)
+          'enableServiceLinks': enableServiceLinks!,
+        if (imagePullSecrets != null) 'imagePullSecrets': imagePullSecrets!,
         if (serviceAccountName != null)
           'serviceAccountName': serviceAccountName!,
         if (timeoutSeconds != null) 'timeoutSeconds': timeoutSeconds!,
-        if (volumes != null)
-          'volumes': volumes!.map((value) => value.toJson()).toList(),
+        if (volumes != null) 'volumes': volumes!,
       };
 }
 
@@ -4796,7 +6383,7 @@ class RevisionStatus {
   /// Specifies the generated logging url for this particular revision based on
   /// the revision url template specified in the controller's config.
   ///
-  /// +optional
+  /// Optional.
   core.String? logUrl;
 
   /// ObservedGeneration is the 'Generation' of the Revision that was last
@@ -4810,33 +6397,38 @@ class RevisionStatus {
   /// Not currently used by Cloud Run.
   core.String? serviceName;
 
-  RevisionStatus();
+  RevisionStatus({
+    this.conditions,
+    this.imageDigest,
+    this.logUrl,
+    this.observedGeneration,
+    this.serviceName,
+  });
 
-  RevisionStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<GoogleCloudRunV1Condition>((value) =>
-              GoogleCloudRunV1Condition.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('imageDigest')) {
-      imageDigest = _json['imageDigest'] as core.String;
-    }
-    if (_json.containsKey('logUrl')) {
-      logUrl = _json['logUrl'] as core.String;
-    }
-    if (_json.containsKey('observedGeneration')) {
-      observedGeneration = _json['observedGeneration'] as core.int;
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-  }
+  RevisionStatus.fromJson(core.Map _json)
+      : this(
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          imageDigest: _json.containsKey('imageDigest')
+              ? _json['imageDigest'] as core.String
+              : null,
+          logUrl: _json.containsKey('logUrl')
+              ? _json['logUrl'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (conditions != null) 'conditions': conditions!,
         if (imageDigest != null) 'imageDigest': imageDigest!,
         if (logUrl != null) 'logUrl': logUrl!,
         if (observedGeneration != null)
@@ -4861,28 +6453,35 @@ class RevisionTemplate {
   /// Multiple values should be comma separated. *
   /// `run.googleapis.com/vpc-access-connector` sets a Serverless VPC Access
   /// connector. * `run.googleapis.com/vpc-access-egress` sets VPC egress.
-  /// Supported values are `all` and `private-ranges-only`.
+  /// Supported values are `all-traffic`, `all` (deprecated), and
+  /// `private-ranges-only`. `all-traffic` and `all` provide the same
+  /// functionality. `all` is deprecated but will continue to be supported.
+  /// Prefer `all-traffic`.
   ObjectMeta? metadata;
 
   /// RevisionSpec holds the desired state of the Revision (from the client).
   RevisionSpec? spec;
 
-  RevisionTemplate();
+  RevisionTemplate({
+    this.metadata,
+    this.spec,
+  });
 
-  RevisionTemplate.fromJson(core.Map _json) {
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = RevisionSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  RevisionTemplate.fromJson(core.Map _json)
+      : this(
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? RevisionSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
       };
 }
 
@@ -4893,7 +6492,7 @@ class RevisionTemplate {
 /// the Route is additionally responsible for monitoring the Configuration for
 /// "latest ready" revision changes, and smoothly rolling out latest revisions.
 /// See also:
-/// https://github.com/knative/serving/blob/master/docs/spec/overview.md#route
+/// https://github.com/knative/serving/blob/main/docs/spec/overview.md#route
 /// Cloud Run currently supports referencing a single Configuration to
 /// automatically deploy the "latest ready" Revision from that Configuration.
 class Route {
@@ -4913,35 +6512,40 @@ class Route {
   /// Status communicates the observed state of the Route (from the controller).
   RouteStatus? status;
 
-  Route();
+  Route({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
 
-  Route.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = RouteSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = RouteStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Route.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? RouteSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? RouteStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -4953,20 +6557,22 @@ class RouteSpec {
   /// Cloud Run currently supports a single configurationName.
   core.List<TrafficTarget>? traffic;
 
-  RouteSpec();
+  RouteSpec({
+    this.traffic,
+  });
 
-  RouteSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('traffic')) {
-      traffic = (_json['traffic'] as core.List)
-          .map<TrafficTarget>((value) => TrafficTarget.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  RouteSpec.fromJson(core.Map _json)
+      : this(
+          traffic: _json.containsKey('traffic')
+              ? (_json['traffic'] as core.List)
+                  .map((value) => TrafficTarget.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (traffic != null)
-          'traffic': traffic!.map((value) => value.toJson()).toList(),
+        if (traffic != null) 'traffic': traffic!,
       };
 }
 
@@ -5007,48 +6613,53 @@ class RouteStatus {
   /// https://{route-hash}-{project-hash}-{cluster-level-suffix}.a.run.app
   core.String? url;
 
-  RouteStatus();
+  RouteStatus({
+    this.address,
+    this.conditions,
+    this.observedGeneration,
+    this.traffic,
+    this.url,
+  });
 
-  RouteStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = Addressable.fromJson(
-          _json['address'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<GoogleCloudRunV1Condition>((value) =>
-              GoogleCloudRunV1Condition.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('observedGeneration')) {
-      observedGeneration = _json['observedGeneration'] as core.int;
-    }
-    if (_json.containsKey('traffic')) {
-      traffic = (_json['traffic'] as core.List)
-          .map<TrafficTarget>((value) => TrafficTarget.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  RouteStatus.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? Addressable.fromJson(
+                  _json['address'] as core.Map<core.String, core.dynamic>)
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          traffic: _json.containsKey('traffic')
+              ? (_json['traffic'] as core.List)
+                  .map((value) => TrafficTarget.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (address != null) 'address': address!.toJson(),
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (address != null) 'address': address!,
+        if (conditions != null) 'conditions': conditions!,
         if (observedGeneration != null)
           'observedGeneration': observedGeneration!,
-        if (traffic != null)
-          'traffic': traffic!.map((value) => value.toJson()).toList(),
+        if (traffic != null) 'traffic': traffic!,
         if (url != null) 'url': url!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// SecretEnvSource selects a Secret to populate the environment variables with.
+/// Request message for creating a new execution of a job.
+typedef RunJobRequest = $Empty;
+
+/// Not supported by Cloud Run SecretEnvSource selects a Secret to populate the
+/// environment variables with.
 ///
 /// The contents of the target Secret's Data field will represent the key-value
 /// pairs as environment variables.
@@ -5059,44 +6670,44 @@ class SecretEnvSource {
   /// Use the "name" field instead.
   LocalObjectReference? localObjectReference;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// Secret to select from.
+  /// The Secret to select from.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the Secret must be defined
+  /// (Optional) Specify whether the Secret must be defined
   core.bool? optional;
 
-  SecretEnvSource();
+  SecretEnvSource({
+    this.localObjectReference,
+    this.name,
+    this.optional,
+  });
 
-  SecretEnvSource.fromJson(core.Map _json) {
-    if (_json.containsKey('localObjectReference')) {
-      localObjectReference = LocalObjectReference.fromJson(
-          _json['localObjectReference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-  }
+  SecretEnvSource.fromJson(core.Map _json)
+      : this(
+          localObjectReference: _json.containsKey('localObjectReference')
+              ? LocalObjectReference.fromJson(_json['localObjectReference']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (localObjectReference != null)
-          'localObjectReference': localObjectReference!.toJson(),
+          'localObjectReference': localObjectReference!,
         if (name != null) 'name': name!,
         if (optional != null) 'optional': optional!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
 /// SecretKeySelector selects a key of a Secret.
 class SecretKeySelector {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// key of the secret to select from.
+  /// A Cloud Secret Manager secret version.
   ///
-  /// Must be a valid secret key.
+  /// Must be 'latest' for the latest version or an integer for a specific
+  /// version. The key of the secret to select from. Must be a valid secret key.
   core.String? key;
 
   /// This field should not be used directly as it is meant to be inlined
@@ -5105,114 +6716,137 @@ class SecretKeySelector {
   /// Use the "name" field instead.
   LocalObjectReference? localObjectReference;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
-  /// name of the secret in the pod's namespace to select from.
+  /// The name of the secret in Cloud Secret Manager.
+  ///
+  /// By default, the secret is assumed to be in the same project. If the secret
+  /// is in another project, you must define an alias. An alias definition has
+  /// the form: :projects//secrets/. If multiple alias definitions are needed,
+  /// they must be separated by commas. The alias definitions must be set on the
+  /// run.googleapis.com/secrets annotation. The name of the secret in the pod's
+  /// namespace to select from.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the Secret or its key must be defined
+  /// (Optional) Specify whether the Secret or its key must be defined
   core.bool? optional;
 
-  SecretKeySelector();
+  SecretKeySelector({
+    this.key,
+    this.localObjectReference,
+    this.name,
+    this.optional,
+  });
 
-  SecretKeySelector.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('localObjectReference')) {
-      localObjectReference = LocalObjectReference.fromJson(
-          _json['localObjectReference'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-  }
+  SecretKeySelector.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          localObjectReference: _json.containsKey('localObjectReference')
+              ? LocalObjectReference.fromJson(_json['localObjectReference']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (key != null) 'key': key!,
         if (localObjectReference != null)
-          'localObjectReference': localObjectReference!.toJson(),
+          'localObjectReference': localObjectReference!,
         if (name != null) 'name': name!,
         if (optional != null) 'optional': optional!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported The
+/// The secret's value will be presented as the content of a file whose name is
+/// defined in the item path.
+///
+/// If no items are defined, the name of the file is the secret_name. The
 /// contents of the target Secret's Data field will be presented in a volume as
 /// files using the keys in the Data field as the file names.
 class SecretVolumeSource {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Mode bits to use on created files by default.
+  /// Integer representation of mode bits to use on created files by default.
   ///
-  /// Must be a value between 0000 and 0777. Defaults to 0644. Directories
-  /// within the path are not affected by this setting. This might be in
-  /// conflict with other options that affect the file mode, like fsGroup, and
-  /// the result can be other mode bits set. NOTE: This is an integer
-  /// representation of the mode bits. So, the integer value should look exactly
-  /// as the chmod numeric notation, i.e. Unix chmod "777" (a=rwx) should have
-  /// the integer value 777.
+  /// Must be a value between 01 and 0777 (octal). If 0 or not set, it will
+  /// default to 0644. Directories within the path are not affected by this
+  /// setting. Notes * Internally, a umask of 0222 will be applied to any
+  /// non-zero value. * This is an integer representation of the mode bits. So,
+  /// the octal integer value should look exactly as the chmod numeric notation
+  /// with a leading zero. Some examples: for chmod 777 (a=rwx), set to 0777
+  /// (octal) or 511 (base-10). For chmod 640 (u=rw,g=r), set to 0640 (octal) or
+  /// 416 (base-10). For chmod 755 (u=rwx,g=rx,o=rx), set to 0755 (octal) or 493
+  /// (base-10). * This might be in conflict with other options that affect the
+  /// file mode, like fsGroup, and the result can be other mode bits set.
   core.int? defaultMode;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported If unspecified, each key-value pair in the Data field of the
-  /// referenced Secret will be projected into the volume as a file whose name
-  /// is the key and content is the value.
+  /// (Optional) If unspecified, the volume will expose a file whose name is the
+  /// secret_name.
   ///
-  /// If specified, the listed keys will be projected into the specified paths,
-  /// and unlisted keys will not be present. If a key is specified which is not
-  /// present in the Secret, the volume setup will error unless it is marked
-  /// optional.
+  /// If specified, the key will be used as the version to fetch from Cloud
+  /// Secret Manager and the path will be the name of the file exposed in the
+  /// volume. When items are defined, they must specify a key and a path. If
+  /// unspecified, each key-value pair in the Data field of the referenced
+  /// Secret will be projected into the volume as a file whose name is the key
+  /// and content is the value. If specified, the listed keys will be projected
+  /// into the specified paths, and unlisted keys will not be present. If a key
+  /// is specified that is not present in the Secret, the volume setup will
+  /// error unless it is marked optional.
   core.List<KeyToPath>? items;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Specify whether the Secret or its keys must be defined.
+  /// (Optional) Specify whether the Secret or its keys must be defined.
   core.bool? optional;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-  /// Name of the secret in the container's namespace to use.
+  /// The name of the secret in Cloud Secret Manager.
+  ///
+  /// By default, the secret is assumed to be in the same project. If the secret
+  /// is in another project, you must define an alias. An alias definition has
+  /// the form: :projects//secrets/. If multiple alias definitions are needed,
+  /// they must be separated by commas. The alias definitions must be set on the
+  /// run.googleapis.com/secrets annotation. Name of the secret in the
+  /// container's namespace to use.
   core.String? secretName;
 
-  SecretVolumeSource();
+  SecretVolumeSource({
+    this.defaultMode,
+    this.items,
+    this.optional,
+    this.secretName,
+  });
 
-  SecretVolumeSource.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultMode')) {
-      defaultMode = _json['defaultMode'] as core.int;
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<KeyToPath>((value) =>
-              KeyToPath.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('optional')) {
-      optional = _json['optional'] as core.bool;
-    }
-    if (_json.containsKey('secretName')) {
-      secretName = _json['secretName'] as core.String;
-    }
-  }
+  SecretVolumeSource.fromJson(core.Map _json)
+      : this(
+          defaultMode: _json.containsKey('defaultMode')
+              ? _json['defaultMode'] as core.int
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => KeyToPath.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          optional: _json.containsKey('optional')
+              ? _json['optional'] as core.bool
+              : null,
+          secretName: _json.containsKey('secretName')
+              ? _json['secretName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultMode != null) 'defaultMode': defaultMode!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (optional != null) 'optional': optional!,
         if (secretName != null) 'secretName': secretName!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// SecurityContext holds security configuration that will be applied to a
-/// container.
+/// Not supported by Cloud Run SecurityContext holds security configuration that
+/// will be applied to a container.
 ///
 /// Some fields are present in both SecurityContext and PodSecurityContext. When
 /// both are set, the values in SecurityContext take precedence.
 class SecurityContext {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported The UID to run the entrypoint of the container process.
+  /// (Optional) The UID to run the entrypoint of the container process.
   ///
   /// Defaults to user specified in image metadata if unspecified. May also be
   /// set in PodSecurityContext. If set in both SecurityContext and
@@ -5220,13 +6854,16 @@ class SecurityContext {
   /// precedence.
   core.int? runAsUser;
 
-  SecurityContext();
+  SecurityContext({
+    this.runAsUser,
+  });
 
-  SecurityContext.fromJson(core.Map _json) {
-    if (_json.containsKey('runAsUser')) {
-      runAsUser = _json['runAsUser'] as core.int;
-    }
-  }
+  SecurityContext.fromJson(core.Map _json)
+      : this(
+          runAsUser: _json.containsKey('runAsUser')
+              ? _json['runAsUser'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (runAsUser != null) 'runAsUser': runAsUser!,
@@ -5243,7 +6880,7 @@ class SecurityContext {
 /// a kubernetes Deployment orchestrates ReplicaSets). The Service's controller
 /// will track the statuses of its owned Configuration and Route, reflecting
 /// their statuses and conditions as its own. See also:
-/// https://github.com/knative/serving/blob/master/docs/spec/overview.md#service
+/// https://github.com/knative/serving/blob/main/docs/spec/overview.md#service
 class Service {
   /// The API version for this call such as "serving.knative.dev/v1".
   core.String? apiVersion;
@@ -5253,6 +6890,19 @@ class Service {
 
   /// Metadata associated with this Service, including name, namespace, labels,
   /// and annotations.
+  ///
+  /// Cloud Run (fully managed) uses the following annotation keys to configure
+  /// features on a Service: * `run.googleapis.com/ingress` sets the ingress
+  /// settings for the Service. See \[the ingress settings
+  /// documentation\](/run/docs/securing/ingress) for details on configuring
+  /// ingress settings. * `run.googleapis.com/ingress-status` is output-only and
+  /// contains the currently active ingress settings for the Service.
+  /// `run.googleapis.com/ingress-status` may differ from
+  /// `run.googleapis.com/ingress` while the system is processing a change to
+  /// `run.googleapis.com/ingress` or if the system failed to process a change
+  /// to `run.googleapis.com/ingress`. When the system has processed all changes
+  /// successfully `run.googleapis.com/ingress-status` and
+  /// `run.googleapis.com/ingress` are equal.
   ObjectMeta? metadata;
 
   /// Spec holds the desired state of the Service (from the client).
@@ -5262,35 +6912,40 @@ class Service {
   /// controller).
   ServiceStatus? status;
 
-  Service();
+  Service({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
 
-  Service.fromJson(core.Map _json) {
-    if (_json.containsKey('apiVersion')) {
-      apiVersion = _json['apiVersion'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ObjectMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spec')) {
-      spec = ServiceSpec.fromJson(
-          _json['spec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('status')) {
-      status = ServiceStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Service.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? ServiceSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? ServiceStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiVersion != null) 'apiVersion': apiVersion!,
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (spec != null) 'spec': spec!.toJson(),
-        if (status != null) 'status': status!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
 
@@ -5305,25 +6960,28 @@ class ServiceSpec {
   /// Revisions and Configurations.
   core.List<TrafficTarget>? traffic;
 
-  ServiceSpec();
+  ServiceSpec({
+    this.template,
+    this.traffic,
+  });
 
-  ServiceSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('template')) {
-      template = RevisionTemplate.fromJson(
-          _json['template'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('traffic')) {
-      traffic = (_json['traffic'] as core.List)
-          .map<TrafficTarget>((value) => TrafficTarget.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ServiceSpec.fromJson(core.Map _json)
+      : this(
+          template: _json.containsKey('template')
+              ? RevisionTemplate.fromJson(
+                  _json['template'] as core.Map<core.String, core.dynamic>)
+              : null,
+          traffic: _json.containsKey('traffic')
+              ? (_json['traffic'] as core.List)
+                  .map((value) => TrafficTarget.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (template != null) 'template': template!.toJson(),
-        if (traffic != null)
-          'traffic': traffic!.map((value) => value.toJson()).toList(),
+        if (template != null) 'template': template!,
+        if (traffic != null) 'traffic': traffic!,
       };
 }
 
@@ -5383,53 +7041,57 @@ class ServiceStatus {
   /// https://{route-hash}-{project-hash}-{cluster-level-suffix}.a.run.app
   core.String? url;
 
-  ServiceStatus();
+  ServiceStatus({
+    this.address,
+    this.conditions,
+    this.latestCreatedRevisionName,
+    this.latestReadyRevisionName,
+    this.observedGeneration,
+    this.traffic,
+    this.url,
+  });
 
-  ServiceStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = Addressable.fromJson(
-          _json['address'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('conditions')) {
-      conditions = (_json['conditions'] as core.List)
-          .map<GoogleCloudRunV1Condition>((value) =>
-              GoogleCloudRunV1Condition.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('latestCreatedRevisionName')) {
-      latestCreatedRevisionName =
-          _json['latestCreatedRevisionName'] as core.String;
-    }
-    if (_json.containsKey('latestReadyRevisionName')) {
-      latestReadyRevisionName = _json['latestReadyRevisionName'] as core.String;
-    }
-    if (_json.containsKey('observedGeneration')) {
-      observedGeneration = _json['observedGeneration'] as core.int;
-    }
-    if (_json.containsKey('traffic')) {
-      traffic = (_json['traffic'] as core.List)
-          .map<TrafficTarget>((value) => TrafficTarget.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  ServiceStatus.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? Addressable.fromJson(
+                  _json['address'] as core.Map<core.String, core.dynamic>)
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          latestCreatedRevisionName:
+              _json.containsKey('latestCreatedRevisionName')
+                  ? _json['latestCreatedRevisionName'] as core.String
+                  : null,
+          latestReadyRevisionName: _json.containsKey('latestReadyRevisionName')
+              ? _json['latestReadyRevisionName'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          traffic: _json.containsKey('traffic')
+              ? (_json['traffic'] as core.List)
+                  .map((value) => TrafficTarget.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (address != null) 'address': address!.toJson(),
-        if (conditions != null)
-          'conditions': conditions!.map((value) => value.toJson()).toList(),
+        if (address != null) 'address': address!,
+        if (conditions != null) 'conditions': conditions!,
         if (latestCreatedRevisionName != null)
           'latestCreatedRevisionName': latestCreatedRevisionName!,
         if (latestReadyRevisionName != null)
           'latestReadyRevisionName': latestReadyRevisionName!,
         if (observedGeneration != null)
           'observedGeneration': observedGeneration!,
-        if (traffic != null)
-          'traffic': traffic!.map((value) => value.toJson()).toList(),
+        if (traffic != null) 'traffic': traffic!,
         if (url != null) 'url': url!,
       };
 }
@@ -5449,20 +7111,24 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -5489,7 +7155,7 @@ class Status {
   /// Standard list metadata.
   ///
   /// More info:
-  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
   /// +optional
   ListMeta? metadata;
 
@@ -5503,40 +7169,46 @@ class Status {
   /// Status of the operation.
   ///
   /// One of: "Success" or "Failure". More info:
-  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
   /// +optional
   core.String? status;
 
-  Status();
+  Status({
+    this.code,
+    this.details,
+    this.message,
+    this.metadata,
+    this.reason,
+    this.status,
+  });
 
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = StatusDetails.fromJson(
-          _json['details'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ListMeta.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('reason')) {
-      reason = _json['reason'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
+  Status.fromJson(core.Map _json)
+      : this(
+          code: _json.containsKey('code') ? _json['code'] as core.int : null,
+          details: _json.containsKey('details')
+              ? StatusDetails.fromJson(
+                  _json['details'] as core.Map<core.String, core.dynamic>)
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? ListMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          reason: _json.containsKey('reason')
+              ? _json['reason'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (code != null) 'code': code!,
-        if (details != null) 'details': details!.toJson(),
+        if (details != null) 'details': details!,
         if (message != null) 'message': message!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (reason != null) 'reason': reason!,
         if (status != null) 'status': status!,
       };
@@ -5565,19 +7237,23 @@ class StatusCause {
   /// If this value is empty there is no information available. +optional
   core.String? reason;
 
-  StatusCause();
+  StatusCause({
+    this.field,
+    this.message,
+    this.reason,
+  });
 
-  StatusCause.fromJson(core.Map _json) {
-    if (_json.containsKey('field')) {
-      field = _json['field'] as core.String;
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-    if (_json.containsKey('reason')) {
-      reason = _json['reason'] as core.String;
-    }
-  }
+  StatusCause.fromJson(core.Map _json)
+      : this(
+          field:
+              _json.containsKey('field') ? _json['field'] as core.String : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+          reason: _json.containsKey('reason')
+              ? _json['reason'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (field != null) 'field': field!,
@@ -5610,7 +7286,7 @@ class StatusDetails {
   /// StatusReason.
   ///
   /// On some operations may differ from the requested resource Kind. More info:
-  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
   /// +optional
   core.String? kind;
 
@@ -5630,38 +7306,38 @@ class StatusDetails {
   /// UID of the resource.
   ///
   /// (when there is a single resource which can be described). More info:
-  /// http://kubernetes.io/docs/user-guide/identifiers#uids +optional
+  /// https://kubernetes.io/docs/user-guide/identifiers#uids +optional
   core.String? uid;
 
-  StatusDetails();
+  StatusDetails({
+    this.causes,
+    this.group,
+    this.kind,
+    this.name,
+    this.retryAfterSeconds,
+    this.uid,
+  });
 
-  StatusDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('causes')) {
-      causes = (_json['causes'] as core.List)
-          .map<StatusCause>((value) => StatusCause.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('group')) {
-      group = _json['group'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('retryAfterSeconds')) {
-      retryAfterSeconds = _json['retryAfterSeconds'] as core.int;
-    }
-    if (_json.containsKey('uid')) {
-      uid = _json['uid'] as core.String;
-    }
-  }
+  StatusDetails.fromJson(core.Map _json)
+      : this(
+          causes: _json.containsKey('causes')
+              ? (_json['causes'] as core.List)
+                  .map((value) => StatusCause.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          group:
+              _json.containsKey('group') ? _json['group'] as core.String : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          retryAfterSeconds: _json.containsKey('retryAfterSeconds')
+              ? _json['retryAfterSeconds'] as core.int
+              : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (causes != null)
-          'causes': causes!.map((value) => value.toJson()).toList(),
+        if (causes != null) 'causes': causes!,
         if (group != null) 'group': group!,
         if (kind != null) 'kind': kind!,
         if (name != null) 'name': name!,
@@ -5670,14 +7346,12 @@ class StatusDetails {
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-/// TCPSocketAction describes an action based on opening a socket
+/// Not supported by Cloud Run TCPSocketAction describes an action based on
+/// opening a socket
 class TCPSocketAction {
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Optional: Host name to connect to, defaults to the pod IP.
+  /// (Optional) Optional: Host name to connect to, defaults to the pod IP.
   core.String? host;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   /// Number or name of the port to access on the container.
   ///
   /// Number must be in the range 1 to 65535. Name must be an IANA_SVC_NAME.
@@ -5685,16 +7359,16 @@ class TCPSocketAction {
   /// inability to properly support the IntOrString golang type.
   core.int? port;
 
-  TCPSocketAction();
+  TCPSocketAction({
+    this.host,
+    this.port,
+  });
 
-  TCPSocketAction.fromJson(core.Map _json) {
-    if (_json.containsKey('host')) {
-      host = _json['host'] as core.String;
-    }
-    if (_json.containsKey('port')) {
-      port = _json['port'] as core.int;
-    }
-  }
+  TCPSocketAction.fromJson(core.Map _json)
+      : this(
+          host: _json.containsKey('host') ? _json['host'] as core.String : null,
+          port: _json.containsKey('port') ? _json['port'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (host != null) 'host': host!,
@@ -5702,50 +7376,362 @@ class TCPSocketAction {
       };
 }
 
-/// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
+/// Task represents a single run of a container to completion.
+class Task {
+  /// APIVersion defines the versioned schema of this representation of an
+  /// object.
   ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
+  /// Servers should convert recognized schemas to the latest internal value,
+  /// and may reject unrecognized values. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+  /// +optional
+  ///
+  /// Optional.
+  core.String? apiVersion;
 
-  TestIamPermissionsRequest();
+  /// Kind is a string value representing the REST resource this object
+  /// represents.
+  ///
+  /// Servers may infer this from the endpoint the client submits requests to.
+  /// Cannot be updated. In CamelCase. More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+  /// +optional
+  ///
+  /// Optional.
+  core.String? kind;
 
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  /// Standard object's metadata.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#metadata
+  /// +optional
+  ///
+  /// Optional.
+  ObjectMeta? metadata;
+
+  /// Specification of the desired behavior of an execution.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Optional.
+  TaskSpec? spec;
+
+  /// Current status of an execution.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Output only.
+  TaskStatus? status;
+
+  Task({
+    this.apiVersion,
+    this.kind,
+    this.metadata,
+    this.spec,
+    this.status,
+  });
+
+  Task.fromJson(core.Map _json)
+      : this(
+          apiVersion: _json.containsKey('apiVersion')
+              ? _json['apiVersion'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? ObjectMeta.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          spec: _json.containsKey('spec')
+              ? TaskSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          status: _json.containsKey('status')
+              ? TaskStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
+        if (apiVersion != null) 'apiVersion': apiVersion!,
+        if (kind != null) 'kind': kind!,
+        if (metadata != null) 'metadata': metadata!,
+        if (spec != null) 'spec': spec!,
+        if (status != null) 'status': status!,
       };
 }
+
+/// Result of a task attempt.
+class TaskAttemptResult {
+  /// The exit code of this attempt.
+  ///
+  /// This may be unset if the container was unable to exit cleanly with a code
+  /// due to some other failure. See status field for possible failure details.
+  ///
+  /// Optional.
+  core.int? exitCode;
+
+  /// The status of this attempt.
+  ///
+  /// If the status code is OK, then the attempt succeeded.
+  ///
+  /// Optional.
+  GoogleRpcStatus? status;
+
+  TaskAttemptResult({
+    this.exitCode,
+    this.status,
+  });
+
+  TaskAttemptResult.fromJson(core.Map _json)
+      : this(
+          exitCode: _json.containsKey('exitCode')
+              ? _json['exitCode'] as core.int
+              : null,
+          status: _json.containsKey('status')
+              ? GoogleRpcStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (exitCode != null) 'exitCode': exitCode!,
+        if (status != null) 'status': status!,
+      };
+}
+
+/// TaskSpec is a description of a task.
+class TaskSpec {
+  /// List of containers belonging to the task.
+  ///
+  /// We disallow a number of fields on this Container. Only a single container
+  /// may be provided.
+  ///
+  /// Optional.
+  core.List<Container>? containers;
+
+  /// Number of retries allowed per task, before marking this job failed.
+  ///
+  /// Optional.
+  core.int? maxRetries;
+
+  /// Email address of the IAM service account associated with the task of a job
+  /// execution.
+  ///
+  /// The service account represents the identity of the running task, and
+  /// determines what permissions the task has. If not provided, the task will
+  /// use the project's default service account. +optional
+  ///
+  /// Optional.
+  core.String? serviceAccountName;
+
+  /// Optional duration in seconds the task may be active before the system will
+  /// actively try to mark it failed and kill associated containers.
+  ///
+  /// This applies per attempt of a task, meaning each retry can run for the
+  /// full timeout. +optional
+  ///
+  /// Optional.
+  core.String? timeoutSeconds;
+
+  /// List of volumes that can be mounted by containers belonging to the task.
+  ///
+  /// More info: https://kubernetes.io/docs/concepts/storage/volumes +optional
+  ///
+  /// Optional.
+  core.List<Volume>? volumes;
+
+  TaskSpec({
+    this.containers,
+    this.maxRetries,
+    this.serviceAccountName,
+    this.timeoutSeconds,
+    this.volumes,
+  });
+
+  TaskSpec.fromJson(core.Map _json)
+      : this(
+          containers: _json.containsKey('containers')
+              ? (_json['containers'] as core.List)
+                  .map((value) => Container.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          maxRetries: _json.containsKey('maxRetries')
+              ? _json['maxRetries'] as core.int
+              : null,
+          serviceAccountName: _json.containsKey('serviceAccountName')
+              ? _json['serviceAccountName'] as core.String
+              : null,
+          timeoutSeconds: _json.containsKey('timeoutSeconds')
+              ? _json['timeoutSeconds'] as core.String
+              : null,
+          volumes: _json.containsKey('volumes')
+              ? (_json['volumes'] as core.List)
+                  .map((value) => Volume.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (containers != null) 'containers': containers!,
+        if (maxRetries != null) 'maxRetries': maxRetries!,
+        if (serviceAccountName != null)
+          'serviceAccountName': serviceAccountName!,
+        if (timeoutSeconds != null) 'timeoutSeconds': timeoutSeconds!,
+        if (volumes != null) 'volumes': volumes!,
+      };
+}
+
+/// TaskStatus represents the status of a task of a job execution.
+class TaskStatus {
+  /// Represents time when the task was completed.
+  ///
+  /// It is not guaranteed to be set in happens-before order across separate
+  /// operations. It is represented in RFC3339 form and is in UTC. +optional
+  ///
+  /// Optional.
+  core.String? completionTime;
+
+  /// The latest available observations of a task's current state.
+  ///
+  /// More info:
+  /// https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/
+  /// +optional
+  ///
+  /// Optional.
+  core.List<GoogleCloudRunV1Condition>? conditions;
+
+  /// Index of the task, unique per execution, and beginning at 0.
+  ///
+  /// Required.
+  core.int? index;
+
+  /// Result of the last attempt of this task.
+  ///
+  /// +optional
+  ///
+  /// Optional.
+  TaskAttemptResult? lastAttemptResult;
+
+  /// URI where logs for this task can be found in Cloud Console.
+  ///
+  /// Optional.
+  core.String? logUri;
+
+  /// The 'generation' of the execution that was last processed by the
+  /// controller.
+  ///
+  /// Optional.
+  core.int? observedGeneration;
+
+  /// The number of times this task was retried.
+  ///
+  /// Instances are retried when they fail up to the maxRetries limit. +optional
+  ///
+  /// Optional.
+  core.int? retried;
+
+  /// Represents time when the task started to run.
+  ///
+  /// It is not guaranteed to be set in happens-before order across separate
+  /// operations. It is represented in RFC3339 form and is in UTC. +optional
+  ///
+  /// Optional.
+  core.String? startTime;
+
+  TaskStatus({
+    this.completionTime,
+    this.conditions,
+    this.index,
+    this.lastAttemptResult,
+    this.logUri,
+    this.observedGeneration,
+    this.retried,
+    this.startTime,
+  });
+
+  TaskStatus.fromJson(core.Map _json)
+      : this(
+          completionTime: _json.containsKey('completionTime')
+              ? _json['completionTime'] as core.String
+              : null,
+          conditions: _json.containsKey('conditions')
+              ? (_json['conditions'] as core.List)
+                  .map((value) => GoogleCloudRunV1Condition.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          index: _json.containsKey('index') ? _json['index'] as core.int : null,
+          lastAttemptResult: _json.containsKey('lastAttemptResult')
+              ? TaskAttemptResult.fromJson(_json['lastAttemptResult']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          logUri: _json.containsKey('logUri')
+              ? _json['logUri'] as core.String
+              : null,
+          observedGeneration: _json.containsKey('observedGeneration')
+              ? _json['observedGeneration'] as core.int
+              : null,
+          retried: _json.containsKey('retried')
+              ? _json['retried'] as core.int
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (completionTime != null) 'completionTime': completionTime!,
+        if (conditions != null) 'conditions': conditions!,
+        if (index != null) 'index': index!,
+        if (lastAttemptResult != null) 'lastAttemptResult': lastAttemptResult!,
+        if (logUri != null) 'logUri': logUri!,
+        if (observedGeneration != null)
+          'observedGeneration': observedGeneration!,
+        if (retried != null) 'retried': retried!,
+        if (startTime != null) 'startTime': startTime!,
+      };
+}
+
+/// TaskTemplateSpec describes the data a task should have when created from a
+/// template.
+class TaskTemplateSpec {
+  /// Specification of the desired behavior of the task.
+  ///
+  /// More info:
+  /// https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+  /// +optional
+  ///
+  /// Optional.
+  TaskSpec? spec;
+
+  TaskTemplateSpec({
+    this.spec,
+  });
+
+  TaskTemplateSpec.fromJson(core.Map _json)
+      : this(
+          spec: _json.containsKey('spec')
+              ? TaskSpec.fromJson(
+                  _json['spec'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (spec != null) 'spec': spec!,
+      };
+}
+
+/// Request message for `TestIamPermissions` method.
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// TrafficTarget holds a single entry of the routing table for a Route.
 class TrafficTarget {
@@ -5759,65 +7745,68 @@ class TrafficTarget {
   /// currently supports a single ConfigurationName.
   core.String? configurationName;
 
-  /// LatestRevision may be optionally provided to indicate that the latest
-  /// ready Revision of the Configuration should be used for this traffic
-  /// target.
+  /// LatestRevision may be provided to indicate that the latest ready Revision
+  /// of the Configuration should be used for this traffic target.
   ///
   /// When provided LatestRevision must be true if RevisionName is empty; it
-  /// must be false when RevisionName is non-empty. +optional
+  /// must be false when RevisionName is non-empty.
+  ///
+  /// Optional.
   core.bool? latestRevision;
 
   /// Percent specifies percent of the traffic to this Revision or
   /// Configuration.
   ///
-  /// This defaults to zero if unspecified. Cloud Run currently requires 100
-  /// percent for a single ConfigurationName TrafficTarget entry.
+  /// This defaults to zero if unspecified.
   core.int? percent;
 
   /// RevisionName of a specific revision to which to send this portion of
   /// traffic.
   ///
-  /// This is mutually exclusive with ConfigurationName. Providing RevisionName
-  /// in spec is not currently supported by Cloud Run.
+  /// This is mutually exclusive with ConfigurationName.
   core.String? revisionName;
 
-  /// Tag is optionally used to expose a dedicated url for referencing this
-  /// target exclusively.
+  /// Tag is used to expose a dedicated url for referencing this target
+  /// exclusively.
   ///
-  /// +optional
+  /// Optional.
   core.String? tag;
 
   /// URL displays the URL for accessing tagged traffic targets.
   ///
   /// URL is displayed in status, and is disallowed on spec. URL must contain a
-  /// scheme (e.g. http://) and a hostname, but may not contain anything else
-  /// (e.g. basic auth, url path, etc. Not currently supported in Cloud Run.
+  /// scheme (e.g. https://) and a hostname, but may not contain anything else
+  /// (e.g. basic auth, url path, etc.)
   ///
   /// Output only.
   core.String? url;
 
-  TrafficTarget();
+  TrafficTarget({
+    this.configurationName,
+    this.latestRevision,
+    this.percent,
+    this.revisionName,
+    this.tag,
+    this.url,
+  });
 
-  TrafficTarget.fromJson(core.Map _json) {
-    if (_json.containsKey('configurationName')) {
-      configurationName = _json['configurationName'] as core.String;
-    }
-    if (_json.containsKey('latestRevision')) {
-      latestRevision = _json['latestRevision'] as core.bool;
-    }
-    if (_json.containsKey('percent')) {
-      percent = _json['percent'] as core.int;
-    }
-    if (_json.containsKey('revisionName')) {
-      revisionName = _json['revisionName'] as core.String;
-    }
-    if (_json.containsKey('tag')) {
-      tag = _json['tag'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  TrafficTarget.fromJson(core.Map _json)
+      : this(
+          configurationName: _json.containsKey('configurationName')
+              ? _json['configurationName'] as core.String
+              : null,
+          latestRevision: _json.containsKey('latestRevision')
+              ? _json['latestRevision'] as core.bool
+              : null,
+          percent: _json.containsKey('percent')
+              ? _json['percent'] as core.int
+              : null,
+          revisionName: _json.containsKey('revisionName')
+              ? _json['revisionName'] as core.String
+              : null,
+          tag: _json.containsKey('tag') ? _json['tag'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (configurationName != null) 'configurationName': configurationName!,
@@ -5829,84 +7818,85 @@ class TrafficTarget {
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
 /// Volume represents a named volume in a container.
 class Volume {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   ConfigMapVolumeSource? configMap;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   /// Volume's name.
+  ///
+  /// In Cloud Run Fully Managed, the name 'cloudsql' is reserved.
   core.String? name;
-
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   SecretVolumeSource? secret;
 
-  Volume();
+  Volume({
+    this.configMap,
+    this.name,
+    this.secret,
+  });
 
-  Volume.fromJson(core.Map _json) {
-    if (_json.containsKey('configMap')) {
-      configMap = ConfigMapVolumeSource.fromJson(
-          _json['configMap'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('secret')) {
-      secret = SecretVolumeSource.fromJson(
-          _json['secret'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Volume.fromJson(core.Map _json)
+      : this(
+          configMap: _json.containsKey('configMap')
+              ? ConfigMapVolumeSource.fromJson(
+                  _json['configMap'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          secret: _json.containsKey('secret')
+              ? SecretVolumeSource.fromJson(
+                  _json['secret'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (configMap != null) 'configMap': configMap!.toJson(),
+        if (configMap != null) 'configMap': configMap!,
         if (name != null) 'name': name!,
-        if (secret != null) 'secret': secret!.toJson(),
+        if (secret != null) 'secret': secret!,
       };
 }
 
-/// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
 /// VolumeMount describes a mounting of a Volume within a container.
 class VolumeMount {
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
   /// Path within the container at which the volume should be mounted.
   ///
   /// Must not contain ':'.
   core.String? mountPath;
 
-  /// Cloud Run fully managed: not supported Cloud Run for Anthos: supported
-  /// This must match the Name of a Volume.
+  /// The name of the volume.
+  ///
+  /// There must be a corresponding Volume with the same name.
   core.String? name;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Only true is accepted.
+  /// (Optional) Only true is accepted.
   ///
   /// Defaults to true.
   core.bool? readOnly;
 
-  /// (Optional) Cloud Run fully managed: not supported Cloud Run for Anthos:
-  /// supported Path within the volume from which the container's volume should
+  /// (Optional) Path within the volume from which the container's volume should
   /// be mounted.
   ///
   /// Defaults to "" (volume's root).
   core.String? subPath;
 
-  VolumeMount();
+  VolumeMount({
+    this.mountPath,
+    this.name,
+    this.readOnly,
+    this.subPath,
+  });
 
-  VolumeMount.fromJson(core.Map _json) {
-    if (_json.containsKey('mountPath')) {
-      mountPath = _json['mountPath'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('readOnly')) {
-      readOnly = _json['readOnly'] as core.bool;
-    }
-    if (_json.containsKey('subPath')) {
-      subPath = _json['subPath'] as core.String;
-    }
-  }
+  VolumeMount.fromJson(core.Map _json)
+      : this(
+          mountPath: _json.containsKey('mountPath')
+              ? _json['mountPath'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          readOnly: _json.containsKey('readOnly')
+              ? _json['readOnly'] as core.bool
+              : null,
+          subPath: _json.containsKey('subPath')
+              ? _json['subPath'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (mountPath != null) 'mountPath': mountPath!,

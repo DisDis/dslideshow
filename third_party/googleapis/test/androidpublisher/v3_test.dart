@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,15 +20,15 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/androidpublisher/v3.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/androidpublisher/v3.dart' as api;
 
 import '../test_shared.dart';
 
 core.int buildCounterApk = 0;
 api.Apk buildApk() {
-  var o = api.Apk();
+  final o = api.Apk();
   buildCounterApk++;
   if (buildCounterApk < 3) {
     o.binary = buildApkBinary();
@@ -42,7 +41,7 @@ api.Apk buildApk() {
 void checkApk(api.Apk o) {
   buildCounterApk++;
   if (buildCounterApk < 3) {
-    checkApkBinary(o.binary! as api.ApkBinary);
+    checkApkBinary(o.binary!);
     unittest.expect(
       o.versionCode!,
       unittest.equals(42),
@@ -53,7 +52,7 @@ void checkApk(api.Apk o) {
 
 core.int buildCounterApkBinary = 0;
 api.ApkBinary buildApkBinary() {
-  var o = api.ApkBinary();
+  final o = api.ApkBinary();
   buildCounterApkBinary++;
   if (buildCounterApkBinary < 3) {
     o.sha1 = 'foo';
@@ -80,7 +79,7 @@ void checkApkBinary(api.ApkBinary o) {
 
 core.int buildCounterApksAddExternallyHostedRequest = 0;
 api.ApksAddExternallyHostedRequest buildApksAddExternallyHostedRequest() {
-  var o = api.ApksAddExternallyHostedRequest();
+  final o = api.ApksAddExternallyHostedRequest();
   buildCounterApksAddExternallyHostedRequest++;
   if (buildCounterApksAddExternallyHostedRequest < 3) {
     o.externallyHostedApk = buildExternallyHostedApk();
@@ -92,14 +91,14 @@ api.ApksAddExternallyHostedRequest buildApksAddExternallyHostedRequest() {
 void checkApksAddExternallyHostedRequest(api.ApksAddExternallyHostedRequest o) {
   buildCounterApksAddExternallyHostedRequest++;
   if (buildCounterApksAddExternallyHostedRequest < 3) {
-    checkExternallyHostedApk(o.externallyHostedApk! as api.ExternallyHostedApk);
+    checkExternallyHostedApk(o.externallyHostedApk!);
   }
   buildCounterApksAddExternallyHostedRequest--;
 }
 
 core.int buildCounterApksAddExternallyHostedResponse = 0;
 api.ApksAddExternallyHostedResponse buildApksAddExternallyHostedResponse() {
-  var o = api.ApksAddExternallyHostedResponse();
+  final o = api.ApksAddExternallyHostedResponse();
   buildCounterApksAddExternallyHostedResponse++;
   if (buildCounterApksAddExternallyHostedResponse < 3) {
     o.externallyHostedApk = buildExternallyHostedApk();
@@ -112,30 +111,28 @@ void checkApksAddExternallyHostedResponse(
     api.ApksAddExternallyHostedResponse o) {
   buildCounterApksAddExternallyHostedResponse++;
   if (buildCounterApksAddExternallyHostedResponse < 3) {
-    checkExternallyHostedApk(o.externallyHostedApk! as api.ExternallyHostedApk);
+    checkExternallyHostedApk(o.externallyHostedApk!);
   }
   buildCounterApksAddExternallyHostedResponse--;
 }
 
-core.List<api.Apk> buildUnnamed1108() {
-  var o = <api.Apk>[];
-  o.add(buildApk());
-  o.add(buildApk());
-  return o;
-}
+core.List<api.Apk> buildUnnamed0() => [
+      buildApk(),
+      buildApk(),
+    ];
 
-void checkUnnamed1108(core.List<api.Apk> o) {
+void checkUnnamed0(core.List<api.Apk> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkApk(o[0] as api.Apk);
-  checkApk(o[1] as api.Apk);
+  checkApk(o[0]);
+  checkApk(o[1]);
 }
 
 core.int buildCounterApksListResponse = 0;
 api.ApksListResponse buildApksListResponse() {
-  var o = api.ApksListResponse();
+  final o = api.ApksListResponse();
   buildCounterApksListResponse++;
   if (buildCounterApksListResponse < 3) {
-    o.apks = buildUnnamed1108();
+    o.apks = buildUnnamed0();
     o.kind = 'foo';
   }
   buildCounterApksListResponse--;
@@ -145,7 +142,7 @@ api.ApksListResponse buildApksListResponse() {
 void checkApksListResponse(api.ApksListResponse o) {
   buildCounterApksListResponse++;
   if (buildCounterApksListResponse < 3) {
-    checkUnnamed1108(o.apks!);
+    checkUnnamed0(o.apks!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -156,7 +153,7 @@ void checkApksListResponse(api.ApksListResponse o) {
 
 core.int buildCounterAppDetails = 0;
 api.AppDetails buildAppDetails() {
-  var o = api.AppDetails();
+  final o = api.AppDetails();
   buildCounterAppDetails++;
   if (buildCounterAppDetails < 3) {
     o.contactEmail = 'foo';
@@ -193,7 +190,7 @@ void checkAppDetails(api.AppDetails o) {
 
 core.int buildCounterAppEdit = 0;
 api.AppEdit buildAppEdit() {
-  var o = api.AppEdit();
+  final o = api.AppEdit();
   buildCounterAppEdit++;
   if (buildCounterAppEdit < 3) {
     o.expiryTimeSeconds = 'foo';
@@ -220,7 +217,7 @@ void checkAppEdit(api.AppEdit o) {
 
 core.int buildCounterBundle = 0;
 api.Bundle buildBundle() {
-  var o = api.Bundle();
+  final o = api.Bundle();
   buildCounterBundle++;
   if (buildCounterBundle < 3) {
     o.sha1 = 'foo';
@@ -250,25 +247,23 @@ void checkBundle(api.Bundle o) {
   buildCounterBundle--;
 }
 
-core.List<api.Bundle> buildUnnamed1109() {
-  var o = <api.Bundle>[];
-  o.add(buildBundle());
-  o.add(buildBundle());
-  return o;
-}
+core.List<api.Bundle> buildUnnamed1() => [
+      buildBundle(),
+      buildBundle(),
+    ];
 
-void checkUnnamed1109(core.List<api.Bundle> o) {
+void checkUnnamed1(core.List<api.Bundle> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBundle(o[0] as api.Bundle);
-  checkBundle(o[1] as api.Bundle);
+  checkBundle(o[0]);
+  checkBundle(o[1]);
 }
 
 core.int buildCounterBundlesListResponse = 0;
 api.BundlesListResponse buildBundlesListResponse() {
-  var o = api.BundlesListResponse();
+  final o = api.BundlesListResponse();
   buildCounterBundlesListResponse++;
   if (buildCounterBundlesListResponse < 3) {
-    o.bundles = buildUnnamed1109();
+    o.bundles = buildUnnamed1();
     o.kind = 'foo';
   }
   buildCounterBundlesListResponse--;
@@ -278,7 +273,7 @@ api.BundlesListResponse buildBundlesListResponse() {
 void checkBundlesListResponse(api.BundlesListResponse o) {
   buildCounterBundlesListResponse++;
   if (buildCounterBundlesListResponse < 3) {
-    checkUnnamed1109(o.bundles!);
+    checkUnnamed1(o.bundles!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -289,7 +284,7 @@ void checkBundlesListResponse(api.BundlesListResponse o) {
 
 core.int buildCounterComment = 0;
 api.Comment buildComment() {
-  var o = api.Comment();
+  final o = api.Comment();
   buildCounterComment++;
   if (buildCounterComment < 3) {
     o.developerComment = buildDeveloperComment();
@@ -302,20 +297,116 @@ api.Comment buildComment() {
 void checkComment(api.Comment o) {
   buildCounterComment++;
   if (buildCounterComment < 3) {
-    checkDeveloperComment(o.developerComment! as api.DeveloperComment);
-    checkUserComment(o.userComment! as api.UserComment);
+    checkDeveloperComment(o.developerComment!);
+    checkUserComment(o.userComment!);
   }
   buildCounterComment--;
 }
 
-core.List<core.String> buildUnnamed1110() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
+core.int buildCounterConvertRegionPricesRequest = 0;
+api.ConvertRegionPricesRequest buildConvertRegionPricesRequest() {
+  final o = api.ConvertRegionPricesRequest();
+  buildCounterConvertRegionPricesRequest++;
+  if (buildCounterConvertRegionPricesRequest < 3) {
+    o.price = buildMoney();
+  }
+  buildCounterConvertRegionPricesRequest--;
   return o;
 }
 
-void checkUnnamed1110(core.List<core.String> o) {
+void checkConvertRegionPricesRequest(api.ConvertRegionPricesRequest o) {
+  buildCounterConvertRegionPricesRequest++;
+  if (buildCounterConvertRegionPricesRequest < 3) {
+    checkMoney(o.price!);
+  }
+  buildCounterConvertRegionPricesRequest--;
+}
+
+core.Map<core.String, api.ConvertedRegionPrice> buildUnnamed2() => {
+      'x': buildConvertedRegionPrice(),
+      'y': buildConvertedRegionPrice(),
+    };
+
+void checkUnnamed2(core.Map<core.String, api.ConvertedRegionPrice> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkConvertedRegionPrice(o['x']!);
+  checkConvertedRegionPrice(o['y']!);
+}
+
+core.int buildCounterConvertRegionPricesResponse = 0;
+api.ConvertRegionPricesResponse buildConvertRegionPricesResponse() {
+  final o = api.ConvertRegionPricesResponse();
+  buildCounterConvertRegionPricesResponse++;
+  if (buildCounterConvertRegionPricesResponse < 3) {
+    o.convertedOtherRegionsPrice = buildConvertedOtherRegionsPrice();
+    o.convertedRegionPrices = buildUnnamed2();
+  }
+  buildCounterConvertRegionPricesResponse--;
+  return o;
+}
+
+void checkConvertRegionPricesResponse(api.ConvertRegionPricesResponse o) {
+  buildCounterConvertRegionPricesResponse++;
+  if (buildCounterConvertRegionPricesResponse < 3) {
+    checkConvertedOtherRegionsPrice(o.convertedOtherRegionsPrice!);
+    checkUnnamed2(o.convertedRegionPrices!);
+  }
+  buildCounterConvertRegionPricesResponse--;
+}
+
+core.int buildCounterConvertedOtherRegionsPrice = 0;
+api.ConvertedOtherRegionsPrice buildConvertedOtherRegionsPrice() {
+  final o = api.ConvertedOtherRegionsPrice();
+  buildCounterConvertedOtherRegionsPrice++;
+  if (buildCounterConvertedOtherRegionsPrice < 3) {
+    o.eurPrice = buildMoney();
+    o.usdPrice = buildMoney();
+  }
+  buildCounterConvertedOtherRegionsPrice--;
+  return o;
+}
+
+void checkConvertedOtherRegionsPrice(api.ConvertedOtherRegionsPrice o) {
+  buildCounterConvertedOtherRegionsPrice++;
+  if (buildCounterConvertedOtherRegionsPrice < 3) {
+    checkMoney(o.eurPrice!);
+    checkMoney(o.usdPrice!);
+  }
+  buildCounterConvertedOtherRegionsPrice--;
+}
+
+core.int buildCounterConvertedRegionPrice = 0;
+api.ConvertedRegionPrice buildConvertedRegionPrice() {
+  final o = api.ConvertedRegionPrice();
+  buildCounterConvertedRegionPrice++;
+  if (buildCounterConvertedRegionPrice < 3) {
+    o.price = buildMoney();
+    o.regionCode = 'foo';
+    o.taxAmount = buildMoney();
+  }
+  buildCounterConvertedRegionPrice--;
+  return o;
+}
+
+void checkConvertedRegionPrice(api.ConvertedRegionPrice o) {
+  buildCounterConvertedRegionPrice++;
+  if (buildCounterConvertedRegionPrice < 3) {
+    checkMoney(o.price!);
+    unittest.expect(
+      o.regionCode!,
+      unittest.equals('foo'),
+    );
+    checkMoney(o.taxAmount!);
+  }
+  buildCounterConvertedRegionPrice--;
+}
+
+core.List<core.String> buildUnnamed3() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed3(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -329,10 +420,10 @@ void checkUnnamed1110(core.List<core.String> o) {
 
 core.int buildCounterCountryTargeting = 0;
 api.CountryTargeting buildCountryTargeting() {
-  var o = api.CountryTargeting();
+  final o = api.CountryTargeting();
   buildCounterCountryTargeting++;
   if (buildCounterCountryTargeting < 3) {
-    o.countries = buildUnnamed1110();
+    o.countries = buildUnnamed3();
     o.includeRestOfWorld = true;
   }
   buildCounterCountryTargeting--;
@@ -342,7 +433,7 @@ api.CountryTargeting buildCountryTargeting() {
 void checkCountryTargeting(api.CountryTargeting o) {
   buildCounterCountryTargeting++;
   if (buildCounterCountryTargeting < 3) {
-    checkUnnamed1110(o.countries!);
+    checkUnnamed3(o.countries!);
     unittest.expect(o.includeRestOfWorld!, unittest.isTrue);
   }
   buildCounterCountryTargeting--;
@@ -350,7 +441,7 @@ void checkCountryTargeting(api.CountryTargeting o) {
 
 core.int buildCounterDeobfuscationFile = 0;
 api.DeobfuscationFile buildDeobfuscationFile() {
-  var o = api.DeobfuscationFile();
+  final o = api.DeobfuscationFile();
   buildCounterDeobfuscationFile++;
   if (buildCounterDeobfuscationFile < 3) {
     o.symbolType = 'foo';
@@ -372,7 +463,7 @@ void checkDeobfuscationFile(api.DeobfuscationFile o) {
 
 core.int buildCounterDeobfuscationFilesUploadResponse = 0;
 api.DeobfuscationFilesUploadResponse buildDeobfuscationFilesUploadResponse() {
-  var o = api.DeobfuscationFilesUploadResponse();
+  final o = api.DeobfuscationFilesUploadResponse();
   buildCounterDeobfuscationFilesUploadResponse++;
   if (buildCounterDeobfuscationFilesUploadResponse < 3) {
     o.deobfuscationFile = buildDeobfuscationFile();
@@ -385,14 +476,14 @@ void checkDeobfuscationFilesUploadResponse(
     api.DeobfuscationFilesUploadResponse o) {
   buildCounterDeobfuscationFilesUploadResponse++;
   if (buildCounterDeobfuscationFilesUploadResponse < 3) {
-    checkDeobfuscationFile(o.deobfuscationFile! as api.DeobfuscationFile);
+    checkDeobfuscationFile(o.deobfuscationFile!);
   }
   buildCounterDeobfuscationFilesUploadResponse--;
 }
 
 core.int buildCounterDeveloperComment = 0;
 api.DeveloperComment buildDeveloperComment() {
-  var o = api.DeveloperComment();
+  final o = api.DeveloperComment();
   buildCounterDeveloperComment++;
   if (buildCounterDeveloperComment < 3) {
     o.lastModified = buildTimestamp();
@@ -405,7 +496,7 @@ api.DeveloperComment buildDeveloperComment() {
 void checkDeveloperComment(api.DeveloperComment o) {
   buildCounterDeveloperComment++;
   if (buildCounterDeveloperComment < 3) {
-    checkTimestamp(o.lastModified! as api.Timestamp);
+    checkTimestamp(o.lastModified!);
     unittest.expect(
       o.text!,
       unittest.equals('foo'),
@@ -416,7 +507,7 @@ void checkDeveloperComment(api.DeveloperComment o) {
 
 core.int buildCounterDeviceMetadata = 0;
 api.DeviceMetadata buildDeviceMetadata() {
-  var o = api.DeviceMetadata();
+  final o = api.DeviceMetadata();
   buildCounterDeviceMetadata++;
   if (buildCounterDeviceMetadata < 3) {
     o.cpuMake = 'foo';
@@ -486,14 +577,12 @@ void checkDeviceMetadata(api.DeviceMetadata o) {
   buildCounterDeviceMetadata--;
 }
 
-core.List<core.String> buildUnnamed1111() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed4() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1111(core.List<core.String> o) {
+void checkUnnamed4(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -505,14 +594,12 @@ void checkUnnamed1111(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1112() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed5() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1112(core.List<core.String> o) {
+void checkUnnamed5(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -526,12 +613,12 @@ void checkUnnamed1112(core.List<core.String> o) {
 
 core.int buildCounterDeviceSpec = 0;
 api.DeviceSpec buildDeviceSpec() {
-  var o = api.DeviceSpec();
+  final o = api.DeviceSpec();
   buildCounterDeviceSpec++;
   if (buildCounterDeviceSpec < 3) {
     o.screenDensity = 42;
-    o.supportedAbis = buildUnnamed1111();
-    o.supportedLocales = buildUnnamed1112();
+    o.supportedAbis = buildUnnamed4();
+    o.supportedLocales = buildUnnamed5();
   }
   buildCounterDeviceSpec--;
   return o;
@@ -544,15 +631,15 @@ void checkDeviceSpec(api.DeviceSpec o) {
       o.screenDensity!,
       unittest.equals(42),
     );
-    checkUnnamed1111(o.supportedAbis!);
-    checkUnnamed1112(o.supportedLocales!);
+    checkUnnamed4(o.supportedAbis!);
+    checkUnnamed5(o.supportedLocales!);
   }
   buildCounterDeviceSpec--;
 }
 
 core.int buildCounterExpansionFile = 0;
 api.ExpansionFile buildExpansionFile() {
-  var o = api.ExpansionFile();
+  final o = api.ExpansionFile();
   buildCounterExpansionFile++;
   if (buildCounterExpansionFile < 3) {
     o.fileSize = 'foo';
@@ -579,7 +666,7 @@ void checkExpansionFile(api.ExpansionFile o) {
 
 core.int buildCounterExpansionFilesUploadResponse = 0;
 api.ExpansionFilesUploadResponse buildExpansionFilesUploadResponse() {
-  var o = api.ExpansionFilesUploadResponse();
+  final o = api.ExpansionFilesUploadResponse();
   buildCounterExpansionFilesUploadResponse++;
   if (buildCounterExpansionFilesUploadResponse < 3) {
     o.expansionFile = buildExpansionFile();
@@ -591,19 +678,17 @@ api.ExpansionFilesUploadResponse buildExpansionFilesUploadResponse() {
 void checkExpansionFilesUploadResponse(api.ExpansionFilesUploadResponse o) {
   buildCounterExpansionFilesUploadResponse++;
   if (buildCounterExpansionFilesUploadResponse < 3) {
-    checkExpansionFile(o.expansionFile! as api.ExpansionFile);
+    checkExpansionFile(o.expansionFile!);
   }
   buildCounterExpansionFilesUploadResponse--;
 }
 
-core.List<core.String> buildUnnamed1113() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed6() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1113(core.List<core.String> o) {
+void checkUnnamed6(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -615,14 +700,12 @@ void checkUnnamed1113(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1114() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed7() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1114(core.List<core.String> o) {
+void checkUnnamed7(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -634,14 +717,12 @@ void checkUnnamed1114(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed1115() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed8() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1115(core.List<core.String> o) {
+void checkUnnamed8(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -653,26 +734,24 @@ void checkUnnamed1115(core.List<core.String> o) {
   );
 }
 
-core.List<api.UsesPermission> buildUnnamed1116() {
-  var o = <api.UsesPermission>[];
-  o.add(buildUsesPermission());
-  o.add(buildUsesPermission());
-  return o;
-}
+core.List<api.UsesPermission> buildUnnamed9() => [
+      buildUsesPermission(),
+      buildUsesPermission(),
+    ];
 
-void checkUnnamed1116(core.List<api.UsesPermission> o) {
+void checkUnnamed9(core.List<api.UsesPermission> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkUsesPermission(o[0] as api.UsesPermission);
-  checkUsesPermission(o[1] as api.UsesPermission);
+  checkUsesPermission(o[0]);
+  checkUsesPermission(o[1]);
 }
 
 core.int buildCounterExternallyHostedApk = 0;
 api.ExternallyHostedApk buildExternallyHostedApk() {
-  var o = api.ExternallyHostedApk();
+  final o = api.ExternallyHostedApk();
   buildCounterExternallyHostedApk++;
   if (buildCounterExternallyHostedApk < 3) {
     o.applicationLabel = 'foo';
-    o.certificateBase64s = buildUnnamed1113();
+    o.certificateBase64s = buildUnnamed6();
     o.externallyHostedUrl = 'foo';
     o.fileSha1Base64 = 'foo';
     o.fileSha256Base64 = 'foo';
@@ -680,10 +759,10 @@ api.ExternallyHostedApk buildExternallyHostedApk() {
     o.iconBase64 = 'foo';
     o.maximumSdk = 42;
     o.minimumSdk = 42;
-    o.nativeCodes = buildUnnamed1114();
+    o.nativeCodes = buildUnnamed7();
     o.packageName = 'foo';
-    o.usesFeatures = buildUnnamed1115();
-    o.usesPermissions = buildUnnamed1116();
+    o.usesFeatures = buildUnnamed8();
+    o.usesPermissions = buildUnnamed9();
     o.versionCode = 42;
     o.versionName = 'foo';
   }
@@ -698,7 +777,7 @@ void checkExternallyHostedApk(api.ExternallyHostedApk o) {
       o.applicationLabel!,
       unittest.equals('foo'),
     );
-    checkUnnamed1113(o.certificateBase64s!);
+    checkUnnamed6(o.certificateBase64s!);
     unittest.expect(
       o.externallyHostedUrl!,
       unittest.equals('foo'),
@@ -727,13 +806,13 @@ void checkExternallyHostedApk(api.ExternallyHostedApk o) {
       o.minimumSdk!,
       unittest.equals(42),
     );
-    checkUnnamed1114(o.nativeCodes!);
+    checkUnnamed7(o.nativeCodes!);
     unittest.expect(
       o.packageName!,
       unittest.equals('foo'),
     );
-    checkUnnamed1115(o.usesFeatures!);
-    checkUnnamed1116(o.usesPermissions!);
+    checkUnnamed8(o.usesFeatures!);
+    checkUnnamed9(o.usesPermissions!);
     unittest.expect(
       o.versionCode!,
       unittest.equals(42),
@@ -746,9 +825,271 @@ void checkExternallyHostedApk(api.ExternallyHostedApk o) {
   buildCounterExternallyHostedApk--;
 }
 
+core.List<api.GeneratedApksPerSigningKey> buildUnnamed10() => [
+      buildGeneratedApksPerSigningKey(),
+      buildGeneratedApksPerSigningKey(),
+    ];
+
+void checkUnnamed10(core.List<api.GeneratedApksPerSigningKey> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGeneratedApksPerSigningKey(o[0]);
+  checkGeneratedApksPerSigningKey(o[1]);
+}
+
+core.int buildCounterGeneratedApksListResponse = 0;
+api.GeneratedApksListResponse buildGeneratedApksListResponse() {
+  final o = api.GeneratedApksListResponse();
+  buildCounterGeneratedApksListResponse++;
+  if (buildCounterGeneratedApksListResponse < 3) {
+    o.generatedApks = buildUnnamed10();
+  }
+  buildCounterGeneratedApksListResponse--;
+  return o;
+}
+
+void checkGeneratedApksListResponse(api.GeneratedApksListResponse o) {
+  buildCounterGeneratedApksListResponse++;
+  if (buildCounterGeneratedApksListResponse < 3) {
+    checkUnnamed10(o.generatedApks!);
+  }
+  buildCounterGeneratedApksListResponse--;
+}
+
+core.List<api.GeneratedAssetPackSlice> buildUnnamed11() => [
+      buildGeneratedAssetPackSlice(),
+      buildGeneratedAssetPackSlice(),
+    ];
+
+void checkUnnamed11(core.List<api.GeneratedAssetPackSlice> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGeneratedAssetPackSlice(o[0]);
+  checkGeneratedAssetPackSlice(o[1]);
+}
+
+core.List<api.GeneratedSplitApk> buildUnnamed12() => [
+      buildGeneratedSplitApk(),
+      buildGeneratedSplitApk(),
+    ];
+
+void checkUnnamed12(core.List<api.GeneratedSplitApk> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGeneratedSplitApk(o[0]);
+  checkGeneratedSplitApk(o[1]);
+}
+
+core.List<api.GeneratedStandaloneApk> buildUnnamed13() => [
+      buildGeneratedStandaloneApk(),
+      buildGeneratedStandaloneApk(),
+    ];
+
+void checkUnnamed13(core.List<api.GeneratedStandaloneApk> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGeneratedStandaloneApk(o[0]);
+  checkGeneratedStandaloneApk(o[1]);
+}
+
+core.int buildCounterGeneratedApksPerSigningKey = 0;
+api.GeneratedApksPerSigningKey buildGeneratedApksPerSigningKey() {
+  final o = api.GeneratedApksPerSigningKey();
+  buildCounterGeneratedApksPerSigningKey++;
+  if (buildCounterGeneratedApksPerSigningKey < 3) {
+    o.certificateSha256Hash = 'foo';
+    o.generatedAssetPackSlices = buildUnnamed11();
+    o.generatedSplitApks = buildUnnamed12();
+    o.generatedStandaloneApks = buildUnnamed13();
+    o.generatedUniversalApk = buildGeneratedUniversalApk();
+  }
+  buildCounterGeneratedApksPerSigningKey--;
+  return o;
+}
+
+void checkGeneratedApksPerSigningKey(api.GeneratedApksPerSigningKey o) {
+  buildCounterGeneratedApksPerSigningKey++;
+  if (buildCounterGeneratedApksPerSigningKey < 3) {
+    unittest.expect(
+      o.certificateSha256Hash!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed11(o.generatedAssetPackSlices!);
+    checkUnnamed12(o.generatedSplitApks!);
+    checkUnnamed13(o.generatedStandaloneApks!);
+    checkGeneratedUniversalApk(o.generatedUniversalApk!);
+  }
+  buildCounterGeneratedApksPerSigningKey--;
+}
+
+core.int buildCounterGeneratedAssetPackSlice = 0;
+api.GeneratedAssetPackSlice buildGeneratedAssetPackSlice() {
+  final o = api.GeneratedAssetPackSlice();
+  buildCounterGeneratedAssetPackSlice++;
+  if (buildCounterGeneratedAssetPackSlice < 3) {
+    o.downloadId = 'foo';
+    o.moduleName = 'foo';
+    o.sliceId = 'foo';
+    o.version = 'foo';
+  }
+  buildCounterGeneratedAssetPackSlice--;
+  return o;
+}
+
+void checkGeneratedAssetPackSlice(api.GeneratedAssetPackSlice o) {
+  buildCounterGeneratedAssetPackSlice++;
+  if (buildCounterGeneratedAssetPackSlice < 3) {
+    unittest.expect(
+      o.downloadId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.moduleName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.sliceId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.version!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGeneratedAssetPackSlice--;
+}
+
+core.int buildCounterGeneratedSplitApk = 0;
+api.GeneratedSplitApk buildGeneratedSplitApk() {
+  final o = api.GeneratedSplitApk();
+  buildCounterGeneratedSplitApk++;
+  if (buildCounterGeneratedSplitApk < 3) {
+    o.downloadId = 'foo';
+    o.moduleName = 'foo';
+    o.splitId = 'foo';
+    o.variantId = 42;
+  }
+  buildCounterGeneratedSplitApk--;
+  return o;
+}
+
+void checkGeneratedSplitApk(api.GeneratedSplitApk o) {
+  buildCounterGeneratedSplitApk++;
+  if (buildCounterGeneratedSplitApk < 3) {
+    unittest.expect(
+      o.downloadId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.moduleName!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.splitId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.variantId!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterGeneratedSplitApk--;
+}
+
+core.int buildCounterGeneratedStandaloneApk = 0;
+api.GeneratedStandaloneApk buildGeneratedStandaloneApk() {
+  final o = api.GeneratedStandaloneApk();
+  buildCounterGeneratedStandaloneApk++;
+  if (buildCounterGeneratedStandaloneApk < 3) {
+    o.downloadId = 'foo';
+    o.variantId = 42;
+  }
+  buildCounterGeneratedStandaloneApk--;
+  return o;
+}
+
+void checkGeneratedStandaloneApk(api.GeneratedStandaloneApk o) {
+  buildCounterGeneratedStandaloneApk++;
+  if (buildCounterGeneratedStandaloneApk < 3) {
+    unittest.expect(
+      o.downloadId!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.variantId!,
+      unittest.equals(42),
+    );
+  }
+  buildCounterGeneratedStandaloneApk--;
+}
+
+core.int buildCounterGeneratedUniversalApk = 0;
+api.GeneratedUniversalApk buildGeneratedUniversalApk() {
+  final o = api.GeneratedUniversalApk();
+  buildCounterGeneratedUniversalApk++;
+  if (buildCounterGeneratedUniversalApk < 3) {
+    o.downloadId = 'foo';
+  }
+  buildCounterGeneratedUniversalApk--;
+  return o;
+}
+
+void checkGeneratedUniversalApk(api.GeneratedUniversalApk o) {
+  buildCounterGeneratedUniversalApk++;
+  if (buildCounterGeneratedUniversalApk < 3) {
+    unittest.expect(
+      o.downloadId!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGeneratedUniversalApk--;
+}
+
+core.List<core.String> buildUnnamed14() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed14(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.int buildCounterGrant = 0;
+api.Grant buildGrant() {
+  final o = api.Grant();
+  buildCounterGrant++;
+  if (buildCounterGrant < 3) {
+    o.appLevelPermissions = buildUnnamed14();
+    o.name = 'foo';
+    o.packageName = 'foo';
+  }
+  buildCounterGrant--;
+  return o;
+}
+
+void checkGrant(api.Grant o) {
+  buildCounterGrant++;
+  if (buildCounterGrant < 3) {
+    checkUnnamed14(o.appLevelPermissions!);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.packageName!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterGrant--;
+}
+
 core.int buildCounterImage = 0;
 api.Image buildImage() {
-  var o = api.Image();
+  final o = api.Image();
   buildCounterImage++;
   if (buildCounterImage < 3) {
     o.id = 'foo';
@@ -783,25 +1124,23 @@ void checkImage(api.Image o) {
   buildCounterImage--;
 }
 
-core.List<api.Image> buildUnnamed1117() {
-  var o = <api.Image>[];
-  o.add(buildImage());
-  o.add(buildImage());
-  return o;
-}
+core.List<api.Image> buildUnnamed15() => [
+      buildImage(),
+      buildImage(),
+    ];
 
-void checkUnnamed1117(core.List<api.Image> o) {
+void checkUnnamed15(core.List<api.Image> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkImage(o[0] as api.Image);
-  checkImage(o[1] as api.Image);
+  checkImage(o[0]);
+  checkImage(o[1]);
 }
 
 core.int buildCounterImagesDeleteAllResponse = 0;
 api.ImagesDeleteAllResponse buildImagesDeleteAllResponse() {
-  var o = api.ImagesDeleteAllResponse();
+  final o = api.ImagesDeleteAllResponse();
   buildCounterImagesDeleteAllResponse++;
   if (buildCounterImagesDeleteAllResponse < 3) {
-    o.deleted = buildUnnamed1117();
+    o.deleted = buildUnnamed15();
   }
   buildCounterImagesDeleteAllResponse--;
   return o;
@@ -810,30 +1149,28 @@ api.ImagesDeleteAllResponse buildImagesDeleteAllResponse() {
 void checkImagesDeleteAllResponse(api.ImagesDeleteAllResponse o) {
   buildCounterImagesDeleteAllResponse++;
   if (buildCounterImagesDeleteAllResponse < 3) {
-    checkUnnamed1117(o.deleted!);
+    checkUnnamed15(o.deleted!);
   }
   buildCounterImagesDeleteAllResponse--;
 }
 
-core.List<api.Image> buildUnnamed1118() {
-  var o = <api.Image>[];
-  o.add(buildImage());
-  o.add(buildImage());
-  return o;
-}
+core.List<api.Image> buildUnnamed16() => [
+      buildImage(),
+      buildImage(),
+    ];
 
-void checkUnnamed1118(core.List<api.Image> o) {
+void checkUnnamed16(core.List<api.Image> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkImage(o[0] as api.Image);
-  checkImage(o[1] as api.Image);
+  checkImage(o[0]);
+  checkImage(o[1]);
 }
 
 core.int buildCounterImagesListResponse = 0;
 api.ImagesListResponse buildImagesListResponse() {
-  var o = api.ImagesListResponse();
+  final o = api.ImagesListResponse();
   buildCounterImagesListResponse++;
   if (buildCounterImagesListResponse < 3) {
-    o.images = buildUnnamed1118();
+    o.images = buildUnnamed16();
   }
   buildCounterImagesListResponse--;
   return o;
@@ -842,14 +1179,14 @@ api.ImagesListResponse buildImagesListResponse() {
 void checkImagesListResponse(api.ImagesListResponse o) {
   buildCounterImagesListResponse++;
   if (buildCounterImagesListResponse < 3) {
-    checkUnnamed1118(o.images!);
+    checkUnnamed16(o.images!);
   }
   buildCounterImagesListResponse--;
 }
 
 core.int buildCounterImagesUploadResponse = 0;
 api.ImagesUploadResponse buildImagesUploadResponse() {
-  var o = api.ImagesUploadResponse();
+  final o = api.ImagesUploadResponse();
   buildCounterImagesUploadResponse++;
   if (buildCounterImagesUploadResponse < 3) {
     o.image = buildImage();
@@ -861,52 +1198,52 @@ api.ImagesUploadResponse buildImagesUploadResponse() {
 void checkImagesUploadResponse(api.ImagesUploadResponse o) {
   buildCounterImagesUploadResponse++;
   if (buildCounterImagesUploadResponse < 3) {
-    checkImage(o.image! as api.Image);
+    checkImage(o.image!);
   }
   buildCounterImagesUploadResponse--;
 }
 
-core.Map<core.String, api.InAppProductListing> buildUnnamed1119() {
-  var o = <core.String, api.InAppProductListing>{};
-  o['x'] = buildInAppProductListing();
-  o['y'] = buildInAppProductListing();
-  return o;
-}
+core.Map<core.String, api.InAppProductListing> buildUnnamed17() => {
+      'x': buildInAppProductListing(),
+      'y': buildInAppProductListing(),
+    };
 
-void checkUnnamed1119(core.Map<core.String, api.InAppProductListing> o) {
+void checkUnnamed17(core.Map<core.String, api.InAppProductListing> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkInAppProductListing(o['x']! as api.InAppProductListing);
-  checkInAppProductListing(o['y']! as api.InAppProductListing);
+  checkInAppProductListing(o['x']!);
+  checkInAppProductListing(o['y']!);
 }
 
-core.Map<core.String, api.Price> buildUnnamed1120() {
-  var o = <core.String, api.Price>{};
-  o['x'] = buildPrice();
-  o['y'] = buildPrice();
-  return o;
-}
+core.Map<core.String, api.Price> buildUnnamed18() => {
+      'x': buildPrice(),
+      'y': buildPrice(),
+    };
 
-void checkUnnamed1120(core.Map<core.String, api.Price> o) {
+void checkUnnamed18(core.Map<core.String, api.Price> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkPrice(o['x']! as api.Price);
-  checkPrice(o['y']! as api.Price);
+  checkPrice(o['x']!);
+  checkPrice(o['y']!);
 }
 
 core.int buildCounterInAppProduct = 0;
 api.InAppProduct buildInAppProduct() {
-  var o = api.InAppProduct();
+  final o = api.InAppProduct();
   buildCounterInAppProduct++;
   if (buildCounterInAppProduct < 3) {
     o.defaultLanguage = 'foo';
     o.defaultPrice = buildPrice();
     o.gracePeriod = 'foo';
-    o.listings = buildUnnamed1119();
+    o.listings = buildUnnamed17();
+    o.managedProductTaxesAndComplianceSettings =
+        buildManagedProductTaxAndComplianceSettings();
     o.packageName = 'foo';
-    o.prices = buildUnnamed1120();
+    o.prices = buildUnnamed18();
     o.purchaseType = 'foo';
     o.sku = 'foo';
     o.status = 'foo';
     o.subscriptionPeriod = 'foo';
+    o.subscriptionTaxesAndComplianceSettings =
+        buildSubscriptionTaxAndComplianceSettings();
     o.trialPeriod = 'foo';
   }
   buildCounterInAppProduct--;
@@ -920,17 +1257,19 @@ void checkInAppProduct(api.InAppProduct o) {
       o.defaultLanguage!,
       unittest.equals('foo'),
     );
-    checkPrice(o.defaultPrice! as api.Price);
+    checkPrice(o.defaultPrice!);
     unittest.expect(
       o.gracePeriod!,
       unittest.equals('foo'),
     );
-    checkUnnamed1119(o.listings!);
+    checkUnnamed17(o.listings!);
+    checkManagedProductTaxAndComplianceSettings(
+        o.managedProductTaxesAndComplianceSettings!);
     unittest.expect(
       o.packageName!,
       unittest.equals('foo'),
     );
-    checkUnnamed1120(o.prices!);
+    checkUnnamed18(o.prices!);
     unittest.expect(
       o.purchaseType!,
       unittest.equals('foo'),
@@ -947,6 +1286,8 @@ void checkInAppProduct(api.InAppProduct o) {
       o.subscriptionPeriod!,
       unittest.equals('foo'),
     );
+    checkSubscriptionTaxAndComplianceSettings(
+        o.subscriptionTaxesAndComplianceSettings!);
     unittest.expect(
       o.trialPeriod!,
       unittest.equals('foo'),
@@ -955,14 +1296,12 @@ void checkInAppProduct(api.InAppProduct o) {
   buildCounterInAppProduct--;
 }
 
-core.List<core.String> buildUnnamed1121() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed19() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1121(core.List<core.String> o) {
+void checkUnnamed19(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -976,10 +1315,10 @@ void checkUnnamed1121(core.List<core.String> o) {
 
 core.int buildCounterInAppProductListing = 0;
 api.InAppProductListing buildInAppProductListing() {
-  var o = api.InAppProductListing();
+  final o = api.InAppProductListing();
   buildCounterInAppProductListing++;
   if (buildCounterInAppProductListing < 3) {
-    o.benefits = buildUnnamed1121();
+    o.benefits = buildUnnamed19();
     o.description = 'foo';
     o.title = 'foo';
   }
@@ -990,7 +1329,7 @@ api.InAppProductListing buildInAppProductListing() {
 void checkInAppProductListing(api.InAppProductListing o) {
   buildCounterInAppProductListing++;
   if (buildCounterInAppProductListing < 3) {
-    checkUnnamed1121(o.benefits!);
+    checkUnnamed19(o.benefits!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
@@ -1003,25 +1342,23 @@ void checkInAppProductListing(api.InAppProductListing o) {
   buildCounterInAppProductListing--;
 }
 
-core.List<api.InAppProduct> buildUnnamed1122() {
-  var o = <api.InAppProduct>[];
-  o.add(buildInAppProduct());
-  o.add(buildInAppProduct());
-  return o;
-}
+core.List<api.InAppProduct> buildUnnamed20() => [
+      buildInAppProduct(),
+      buildInAppProduct(),
+    ];
 
-void checkUnnamed1122(core.List<api.InAppProduct> o) {
+void checkUnnamed20(core.List<api.InAppProduct> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkInAppProduct(o[0] as api.InAppProduct);
-  checkInAppProduct(o[1] as api.InAppProduct);
+  checkInAppProduct(o[0]);
+  checkInAppProduct(o[1]);
 }
 
 core.int buildCounterInappproductsListResponse = 0;
 api.InappproductsListResponse buildInappproductsListResponse() {
-  var o = api.InappproductsListResponse();
+  final o = api.InappproductsListResponse();
   buildCounterInappproductsListResponse++;
   if (buildCounterInappproductsListResponse < 3) {
-    o.inappproduct = buildUnnamed1122();
+    o.inappproduct = buildUnnamed20();
     o.kind = 'foo';
     o.pageInfo = buildPageInfo();
     o.tokenPagination = buildTokenPagination();
@@ -1033,20 +1370,20 @@ api.InappproductsListResponse buildInappproductsListResponse() {
 void checkInappproductsListResponse(api.InappproductsListResponse o) {
   buildCounterInappproductsListResponse++;
   if (buildCounterInappproductsListResponse < 3) {
-    checkUnnamed1122(o.inappproduct!);
+    checkUnnamed20(o.inappproduct!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
     );
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
   }
   buildCounterInappproductsListResponse--;
 }
 
 core.int buildCounterInternalAppSharingArtifact = 0;
 api.InternalAppSharingArtifact buildInternalAppSharingArtifact() {
-  var o = api.InternalAppSharingArtifact();
+  final o = api.InternalAppSharingArtifact();
   buildCounterInternalAppSharingArtifact++;
   if (buildCounterInternalAppSharingArtifact < 3) {
     o.certificateFingerprint = 'foo';
@@ -1078,7 +1415,7 @@ void checkInternalAppSharingArtifact(api.InternalAppSharingArtifact o) {
 
 core.int buildCounterIntroductoryPriceInfo = 0;
 api.IntroductoryPriceInfo buildIntroductoryPriceInfo() {
-  var o = api.IntroductoryPriceInfo();
+  final o = api.IntroductoryPriceInfo();
   buildCounterIntroductoryPriceInfo++;
   if (buildCounterIntroductoryPriceInfo < 3) {
     o.introductoryPriceAmountMicros = 'foo';
@@ -1113,9 +1450,44 @@ void checkIntroductoryPriceInfo(api.IntroductoryPriceInfo o) {
   buildCounterIntroductoryPriceInfo--;
 }
 
+core.List<api.User> buildUnnamed21() => [
+      buildUser(),
+      buildUser(),
+    ];
+
+void checkUnnamed21(core.List<api.User> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkUser(o[0]);
+  checkUser(o[1]);
+}
+
+core.int buildCounterListUsersResponse = 0;
+api.ListUsersResponse buildListUsersResponse() {
+  final o = api.ListUsersResponse();
+  buildCounterListUsersResponse++;
+  if (buildCounterListUsersResponse < 3) {
+    o.nextPageToken = 'foo';
+    o.users = buildUnnamed21();
+  }
+  buildCounterListUsersResponse--;
+  return o;
+}
+
+void checkListUsersResponse(api.ListUsersResponse o) {
+  buildCounterListUsersResponse++;
+  if (buildCounterListUsersResponse < 3) {
+    unittest.expect(
+      o.nextPageToken!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed21(o.users!);
+  }
+  buildCounterListUsersResponse--;
+}
+
 core.int buildCounterListing = 0;
 api.Listing buildListing() {
-  var o = api.Listing();
+  final o = api.Listing();
   buildCounterListing++;
   if (buildCounterListing < 3) {
     o.fullDescription = 'foo';
@@ -1155,26 +1527,24 @@ void checkListing(api.Listing o) {
   buildCounterListing--;
 }
 
-core.List<api.Listing> buildUnnamed1123() {
-  var o = <api.Listing>[];
-  o.add(buildListing());
-  o.add(buildListing());
-  return o;
-}
+core.List<api.Listing> buildUnnamed22() => [
+      buildListing(),
+      buildListing(),
+    ];
 
-void checkUnnamed1123(core.List<api.Listing> o) {
+void checkUnnamed22(core.List<api.Listing> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkListing(o[0] as api.Listing);
-  checkListing(o[1] as api.Listing);
+  checkListing(o[0]);
+  checkListing(o[1]);
 }
 
 core.int buildCounterListingsListResponse = 0;
 api.ListingsListResponse buildListingsListResponse() {
-  var o = api.ListingsListResponse();
+  final o = api.ListingsListResponse();
   buildCounterListingsListResponse++;
   if (buildCounterListingsListResponse < 3) {
     o.kind = 'foo';
-    o.listings = buildUnnamed1123();
+    o.listings = buildUnnamed22();
   }
   buildCounterListingsListResponse--;
   return o;
@@ -1187,14 +1557,14 @@ void checkListingsListResponse(api.ListingsListResponse o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed1123(o.listings!);
+    checkUnnamed22(o.listings!);
   }
   buildCounterListingsListResponse--;
 }
 
 core.int buildCounterLocalizedText = 0;
 api.LocalizedText buildLocalizedText() {
-  var o = api.LocalizedText();
+  final o = api.LocalizedText();
   buildCounterLocalizedText++;
   if (buildCounterLocalizedText < 3) {
     o.language = 'foo';
@@ -1219,9 +1589,78 @@ void checkLocalizedText(api.LocalizedText o) {
   buildCounterLocalizedText--;
 }
 
+core.Map<core.String, api.RegionalTaxRateInfo> buildUnnamed23() => {
+      'x': buildRegionalTaxRateInfo(),
+      'y': buildRegionalTaxRateInfo(),
+    };
+
+void checkUnnamed23(core.Map<core.String, api.RegionalTaxRateInfo> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkRegionalTaxRateInfo(o['x']!);
+  checkRegionalTaxRateInfo(o['y']!);
+}
+
+core.int buildCounterManagedProductTaxAndComplianceSettings = 0;
+api.ManagedProductTaxAndComplianceSettings
+    buildManagedProductTaxAndComplianceSettings() {
+  final o = api.ManagedProductTaxAndComplianceSettings();
+  buildCounterManagedProductTaxAndComplianceSettings++;
+  if (buildCounterManagedProductTaxAndComplianceSettings < 3) {
+    o.eeaWithdrawalRightType = 'foo';
+    o.taxRateInfoByRegionCode = buildUnnamed23();
+  }
+  buildCounterManagedProductTaxAndComplianceSettings--;
+  return o;
+}
+
+void checkManagedProductTaxAndComplianceSettings(
+    api.ManagedProductTaxAndComplianceSettings o) {
+  buildCounterManagedProductTaxAndComplianceSettings++;
+  if (buildCounterManagedProductTaxAndComplianceSettings < 3) {
+    unittest.expect(
+      o.eeaWithdrawalRightType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed23(o.taxRateInfoByRegionCode!);
+  }
+  buildCounterManagedProductTaxAndComplianceSettings--;
+}
+
+core.int buildCounterMoney = 0;
+api.Money buildMoney() {
+  final o = api.Money();
+  buildCounterMoney++;
+  if (buildCounterMoney < 3) {
+    o.currencyCode = 'foo';
+    o.nanos = 42;
+    o.units = 'foo';
+  }
+  buildCounterMoney--;
+  return o;
+}
+
+void checkMoney(api.Money o) {
+  buildCounterMoney++;
+  if (buildCounterMoney < 3) {
+    unittest.expect(
+      o.currencyCode!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.nanos!,
+      unittest.equals(42),
+    );
+    unittest.expect(
+      o.units!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterMoney--;
+}
+
 core.int buildCounterPageInfo = 0;
 api.PageInfo buildPageInfo() {
-  var o = api.PageInfo();
+  final o = api.PageInfo();
   buildCounterPageInfo++;
   if (buildCounterPageInfo < 3) {
     o.resultPerPage = 42;
@@ -1253,7 +1692,7 @@ void checkPageInfo(api.PageInfo o) {
 
 core.int buildCounterPrice = 0;
 api.Price buildPrice() {
-  var o = api.Price();
+  final o = api.Price();
   buildCounterPrice++;
   if (buildCounterPrice < 3) {
     o.currency = 'foo';
@@ -1280,7 +1719,7 @@ void checkPrice(api.Price o) {
 
 core.int buildCounterProductPurchase = 0;
 api.ProductPurchase buildProductPurchase() {
-  var o = api.ProductPurchase();
+  final o = api.ProductPurchase();
   buildCounterProductPurchase++;
   if (buildCounterProductPurchase < 3) {
     o.acknowledgementState = 42;
@@ -1368,7 +1807,7 @@ void checkProductPurchase(api.ProductPurchase o) {
 core.int buildCounterProductPurchasesAcknowledgeRequest = 0;
 api.ProductPurchasesAcknowledgeRequest
     buildProductPurchasesAcknowledgeRequest() {
-  var o = api.ProductPurchasesAcknowledgeRequest();
+  final o = api.ProductPurchasesAcknowledgeRequest();
   buildCounterProductPurchasesAcknowledgeRequest++;
   if (buildCounterProductPurchasesAcknowledgeRequest < 3) {
     o.developerPayload = 'foo';
@@ -1389,26 +1828,48 @@ void checkProductPurchasesAcknowledgeRequest(
   buildCounterProductPurchasesAcknowledgeRequest--;
 }
 
-core.List<api.Comment> buildUnnamed1124() {
-  var o = <api.Comment>[];
-  o.add(buildComment());
-  o.add(buildComment());
+core.int buildCounterRegionalTaxRateInfo = 0;
+api.RegionalTaxRateInfo buildRegionalTaxRateInfo() {
+  final o = api.RegionalTaxRateInfo();
+  buildCounterRegionalTaxRateInfo++;
+  if (buildCounterRegionalTaxRateInfo < 3) {
+    o.eligibleForStreamingServiceTaxRate = true;
+    o.taxTier = 'foo';
+  }
+  buildCounterRegionalTaxRateInfo--;
   return o;
 }
 
-void checkUnnamed1124(core.List<api.Comment> o) {
+void checkRegionalTaxRateInfo(api.RegionalTaxRateInfo o) {
+  buildCounterRegionalTaxRateInfo++;
+  if (buildCounterRegionalTaxRateInfo < 3) {
+    unittest.expect(o.eligibleForStreamingServiceTaxRate!, unittest.isTrue);
+    unittest.expect(
+      o.taxTier!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterRegionalTaxRateInfo--;
+}
+
+core.List<api.Comment> buildUnnamed24() => [
+      buildComment(),
+      buildComment(),
+    ];
+
+void checkUnnamed24(core.List<api.Comment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkComment(o[0] as api.Comment);
-  checkComment(o[1] as api.Comment);
+  checkComment(o[0]);
+  checkComment(o[1]);
 }
 
 core.int buildCounterReview = 0;
 api.Review buildReview() {
-  var o = api.Review();
+  final o = api.Review();
   buildCounterReview++;
   if (buildCounterReview < 3) {
     o.authorName = 'foo';
-    o.comments = buildUnnamed1124();
+    o.comments = buildUnnamed24();
     o.reviewId = 'foo';
   }
   buildCounterReview--;
@@ -1422,7 +1883,7 @@ void checkReview(api.Review o) {
       o.authorName!,
       unittest.equals('foo'),
     );
-    checkUnnamed1124(o.comments!);
+    checkUnnamed24(o.comments!);
     unittest.expect(
       o.reviewId!,
       unittest.equals('foo'),
@@ -1433,7 +1894,7 @@ void checkReview(api.Review o) {
 
 core.int buildCounterReviewReplyResult = 0;
 api.ReviewReplyResult buildReviewReplyResult() {
-  var o = api.ReviewReplyResult();
+  final o = api.ReviewReplyResult();
   buildCounterReviewReplyResult++;
   if (buildCounterReviewReplyResult < 3) {
     o.lastEdited = buildTimestamp();
@@ -1446,7 +1907,7 @@ api.ReviewReplyResult buildReviewReplyResult() {
 void checkReviewReplyResult(api.ReviewReplyResult o) {
   buildCounterReviewReplyResult++;
   if (buildCounterReviewReplyResult < 3) {
-    checkTimestamp(o.lastEdited! as api.Timestamp);
+    checkTimestamp(o.lastEdited!);
     unittest.expect(
       o.replyText!,
       unittest.equals('foo'),
@@ -1455,26 +1916,24 @@ void checkReviewReplyResult(api.ReviewReplyResult o) {
   buildCounterReviewReplyResult--;
 }
 
-core.List<api.Review> buildUnnamed1125() {
-  var o = <api.Review>[];
-  o.add(buildReview());
-  o.add(buildReview());
-  return o;
-}
+core.List<api.Review> buildUnnamed25() => [
+      buildReview(),
+      buildReview(),
+    ];
 
-void checkUnnamed1125(core.List<api.Review> o) {
+void checkUnnamed25(core.List<api.Review> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkReview(o[0] as api.Review);
-  checkReview(o[1] as api.Review);
+  checkReview(o[0]);
+  checkReview(o[1]);
 }
 
 core.int buildCounterReviewsListResponse = 0;
 api.ReviewsListResponse buildReviewsListResponse() {
-  var o = api.ReviewsListResponse();
+  final o = api.ReviewsListResponse();
   buildCounterReviewsListResponse++;
   if (buildCounterReviewsListResponse < 3) {
     o.pageInfo = buildPageInfo();
-    o.reviews = buildUnnamed1125();
+    o.reviews = buildUnnamed25();
     o.tokenPagination = buildTokenPagination();
   }
   buildCounterReviewsListResponse--;
@@ -1484,16 +1943,16 @@ api.ReviewsListResponse buildReviewsListResponse() {
 void checkReviewsListResponse(api.ReviewsListResponse o) {
   buildCounterReviewsListResponse++;
   if (buildCounterReviewsListResponse < 3) {
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkUnnamed1125(o.reviews!);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
+    checkPageInfo(o.pageInfo!);
+    checkUnnamed25(o.reviews!);
+    checkTokenPagination(o.tokenPagination!);
   }
   buildCounterReviewsListResponse--;
 }
 
 core.int buildCounterReviewsReplyRequest = 0;
 api.ReviewsReplyRequest buildReviewsReplyRequest() {
-  var o = api.ReviewsReplyRequest();
+  final o = api.ReviewsReplyRequest();
   buildCounterReviewsReplyRequest++;
   if (buildCounterReviewsReplyRequest < 3) {
     o.replyText = 'foo';
@@ -1515,7 +1974,7 @@ void checkReviewsReplyRequest(api.ReviewsReplyRequest o) {
 
 core.int buildCounterReviewsReplyResponse = 0;
 api.ReviewsReplyResponse buildReviewsReplyResponse() {
-  var o = api.ReviewsReplyResponse();
+  final o = api.ReviewsReplyResponse();
   buildCounterReviewsReplyResponse++;
   if (buildCounterReviewsReplyResponse < 3) {
     o.result = buildReviewReplyResult();
@@ -1527,14 +1986,14 @@ api.ReviewsReplyResponse buildReviewsReplyResponse() {
 void checkReviewsReplyResponse(api.ReviewsReplyResponse o) {
   buildCounterReviewsReplyResponse++;
   if (buildCounterReviewsReplyResponse < 3) {
-    checkReviewReplyResult(o.result! as api.ReviewReplyResult);
+    checkReviewReplyResult(o.result!);
   }
   buildCounterReviewsReplyResponse--;
 }
 
 core.int buildCounterSubscriptionCancelSurveyResult = 0;
 api.SubscriptionCancelSurveyResult buildSubscriptionCancelSurveyResult() {
-  var o = api.SubscriptionCancelSurveyResult();
+  final o = api.SubscriptionCancelSurveyResult();
   buildCounterSubscriptionCancelSurveyResult++;
   if (buildCounterSubscriptionCancelSurveyResult < 3) {
     o.cancelSurveyReason = 42;
@@ -1561,7 +2020,7 @@ void checkSubscriptionCancelSurveyResult(api.SubscriptionCancelSurveyResult o) {
 
 core.int buildCounterSubscriptionDeferralInfo = 0;
 api.SubscriptionDeferralInfo buildSubscriptionDeferralInfo() {
-  var o = api.SubscriptionDeferralInfo();
+  final o = api.SubscriptionDeferralInfo();
   buildCounterSubscriptionDeferralInfo++;
   if (buildCounterSubscriptionDeferralInfo < 3) {
     o.desiredExpiryTimeMillis = 'foo';
@@ -1588,7 +2047,7 @@ void checkSubscriptionDeferralInfo(api.SubscriptionDeferralInfo o) {
 
 core.int buildCounterSubscriptionPriceChange = 0;
 api.SubscriptionPriceChange buildSubscriptionPriceChange() {
-  var o = api.SubscriptionPriceChange();
+  final o = api.SubscriptionPriceChange();
   buildCounterSubscriptionPriceChange++;
   if (buildCounterSubscriptionPriceChange < 3) {
     o.newPrice = buildPrice();
@@ -1601,7 +2060,7 @@ api.SubscriptionPriceChange buildSubscriptionPriceChange() {
 void checkSubscriptionPriceChange(api.SubscriptionPriceChange o) {
   buildCounterSubscriptionPriceChange++;
   if (buildCounterSubscriptionPriceChange < 3) {
-    checkPrice(o.newPrice! as api.Price);
+    checkPrice(o.newPrice!);
     unittest.expect(
       o.state!,
       unittest.equals(42),
@@ -1612,7 +2071,7 @@ void checkSubscriptionPriceChange(api.SubscriptionPriceChange o) {
 
 core.int buildCounterSubscriptionPurchase = 0;
 api.SubscriptionPurchase buildSubscriptionPurchase() {
-  var o = api.SubscriptionPurchase();
+  final o = api.SubscriptionPurchase();
   buildCounterSubscriptionPurchase++;
   if (buildCounterSubscriptionPurchase < 3) {
     o.acknowledgementState = 42;
@@ -1665,8 +2124,7 @@ void checkSubscriptionPurchase(api.SubscriptionPurchase o) {
       o.cancelReason!,
       unittest.equals(42),
     );
-    checkSubscriptionCancelSurveyResult(
-        o.cancelSurveyResult! as api.SubscriptionCancelSurveyResult);
+    checkSubscriptionCancelSurveyResult(o.cancelSurveyResult!);
     unittest.expect(
       o.countryCode!,
       unittest.equals('foo'),
@@ -1695,8 +2153,7 @@ void checkSubscriptionPurchase(api.SubscriptionPurchase o) {
       o.givenName!,
       unittest.equals('foo'),
     );
-    checkIntroductoryPriceInfo(
-        o.introductoryPriceInfo! as api.IntroductoryPriceInfo);
+    checkIntroductoryPriceInfo(o.introductoryPriceInfo!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -1725,7 +2182,7 @@ void checkSubscriptionPurchase(api.SubscriptionPurchase o) {
       o.priceAmountMicros!,
       unittest.equals('foo'),
     );
-    checkSubscriptionPriceChange(o.priceChange! as api.SubscriptionPriceChange);
+    checkSubscriptionPriceChange(o.priceChange!);
     unittest.expect(
       o.priceCurrencyCode!,
       unittest.equals('foo'),
@@ -1765,7 +2222,7 @@ void checkSubscriptionPurchase(api.SubscriptionPurchase o) {
 core.int buildCounterSubscriptionPurchasesAcknowledgeRequest = 0;
 api.SubscriptionPurchasesAcknowledgeRequest
     buildSubscriptionPurchasesAcknowledgeRequest() {
-  var o = api.SubscriptionPurchasesAcknowledgeRequest();
+  final o = api.SubscriptionPurchasesAcknowledgeRequest();
   buildCounterSubscriptionPurchasesAcknowledgeRequest++;
   if (buildCounterSubscriptionPurchasesAcknowledgeRequest < 3) {
     o.developerPayload = 'foo';
@@ -1788,7 +2245,7 @@ void checkSubscriptionPurchasesAcknowledgeRequest(
 
 core.int buildCounterSubscriptionPurchasesDeferRequest = 0;
 api.SubscriptionPurchasesDeferRequest buildSubscriptionPurchasesDeferRequest() {
-  var o = api.SubscriptionPurchasesDeferRequest();
+  final o = api.SubscriptionPurchasesDeferRequest();
   buildCounterSubscriptionPurchasesDeferRequest++;
   if (buildCounterSubscriptionPurchasesDeferRequest < 3) {
     o.deferralInfo = buildSubscriptionDeferralInfo();
@@ -1801,8 +2258,7 @@ void checkSubscriptionPurchasesDeferRequest(
     api.SubscriptionPurchasesDeferRequest o) {
   buildCounterSubscriptionPurchasesDeferRequest++;
   if (buildCounterSubscriptionPurchasesDeferRequest < 3) {
-    checkSubscriptionDeferralInfo(
-        o.deferralInfo! as api.SubscriptionDeferralInfo);
+    checkSubscriptionDeferralInfo(o.deferralInfo!);
   }
   buildCounterSubscriptionPurchasesDeferRequest--;
 }
@@ -1810,7 +2266,7 @@ void checkSubscriptionPurchasesDeferRequest(
 core.int buildCounterSubscriptionPurchasesDeferResponse = 0;
 api.SubscriptionPurchasesDeferResponse
     buildSubscriptionPurchasesDeferResponse() {
-  var o = api.SubscriptionPurchasesDeferResponse();
+  final o = api.SubscriptionPurchasesDeferResponse();
   buildCounterSubscriptionPurchasesDeferResponse++;
   if (buildCounterSubscriptionPurchasesDeferResponse < 3) {
     o.newExpiryTimeMillis = 'foo';
@@ -1831,25 +2287,60 @@ void checkSubscriptionPurchasesDeferResponse(
   buildCounterSubscriptionPurchasesDeferResponse--;
 }
 
-core.List<api.Variant> buildUnnamed1126() {
-  var o = <api.Variant>[];
-  o.add(buildVariant());
-  o.add(buildVariant());
+core.Map<core.String, api.RegionalTaxRateInfo> buildUnnamed26() => {
+      'x': buildRegionalTaxRateInfo(),
+      'y': buildRegionalTaxRateInfo(),
+    };
+
+void checkUnnamed26(core.Map<core.String, api.RegionalTaxRateInfo> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkRegionalTaxRateInfo(o['x']!);
+  checkRegionalTaxRateInfo(o['y']!);
+}
+
+core.int buildCounterSubscriptionTaxAndComplianceSettings = 0;
+api.SubscriptionTaxAndComplianceSettings
+    buildSubscriptionTaxAndComplianceSettings() {
+  final o = api.SubscriptionTaxAndComplianceSettings();
+  buildCounterSubscriptionTaxAndComplianceSettings++;
+  if (buildCounterSubscriptionTaxAndComplianceSettings < 3) {
+    o.eeaWithdrawalRightType = 'foo';
+    o.taxRateInfoByRegionCode = buildUnnamed26();
+  }
+  buildCounterSubscriptionTaxAndComplianceSettings--;
   return o;
 }
 
-void checkUnnamed1126(core.List<api.Variant> o) {
+void checkSubscriptionTaxAndComplianceSettings(
+    api.SubscriptionTaxAndComplianceSettings o) {
+  buildCounterSubscriptionTaxAndComplianceSettings++;
+  if (buildCounterSubscriptionTaxAndComplianceSettings < 3) {
+    unittest.expect(
+      o.eeaWithdrawalRightType!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed26(o.taxRateInfoByRegionCode!);
+  }
+  buildCounterSubscriptionTaxAndComplianceSettings--;
+}
+
+core.List<api.Variant> buildUnnamed27() => [
+      buildVariant(),
+      buildVariant(),
+    ];
+
+void checkUnnamed27(core.List<api.Variant> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariant(o[0] as api.Variant);
-  checkVariant(o[1] as api.Variant);
+  checkVariant(o[0]);
+  checkVariant(o[1]);
 }
 
 core.int buildCounterSystemApksListResponse = 0;
 api.SystemApksListResponse buildSystemApksListResponse() {
-  var o = api.SystemApksListResponse();
+  final o = api.SystemApksListResponse();
   buildCounterSystemApksListResponse++;
   if (buildCounterSystemApksListResponse < 3) {
-    o.variants = buildUnnamed1126();
+    o.variants = buildUnnamed27();
   }
   buildCounterSystemApksListResponse--;
   return o;
@@ -1858,19 +2349,17 @@ api.SystemApksListResponse buildSystemApksListResponse() {
 void checkSystemApksListResponse(api.SystemApksListResponse o) {
   buildCounterSystemApksListResponse++;
   if (buildCounterSystemApksListResponse < 3) {
-    checkUnnamed1126(o.variants!);
+    checkUnnamed27(o.variants!);
   }
   buildCounterSystemApksListResponse--;
 }
 
-core.List<core.String> buildUnnamed1127() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed28() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1127(core.List<core.String> o) {
+void checkUnnamed28(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1884,10 +2373,10 @@ void checkUnnamed1127(core.List<core.String> o) {
 
 core.int buildCounterTesters = 0;
 api.Testers buildTesters() {
-  var o = api.Testers();
+  final o = api.Testers();
   buildCounterTesters++;
   if (buildCounterTesters < 3) {
-    o.googleGroups = buildUnnamed1127();
+    o.googleGroups = buildUnnamed28();
   }
   buildCounterTesters--;
   return o;
@@ -1896,14 +2385,14 @@ api.Testers buildTesters() {
 void checkTesters(api.Testers o) {
   buildCounterTesters++;
   if (buildCounterTesters < 3) {
-    checkUnnamed1127(o.googleGroups!);
+    checkUnnamed28(o.googleGroups!);
   }
   buildCounterTesters--;
 }
 
 core.int buildCounterTimestamp = 0;
 api.Timestamp buildTimestamp() {
-  var o = api.Timestamp();
+  final o = api.Timestamp();
   buildCounterTimestamp++;
   if (buildCounterTimestamp < 3) {
     o.nanos = 42;
@@ -1930,7 +2419,7 @@ void checkTimestamp(api.Timestamp o) {
 
 core.int buildCounterTokenPagination = 0;
 api.TokenPagination buildTokenPagination() {
-  var o = api.TokenPagination();
+  final o = api.TokenPagination();
   buildCounterTokenPagination++;
   if (buildCounterTokenPagination < 3) {
     o.nextPageToken = 'foo';
@@ -1955,25 +2444,23 @@ void checkTokenPagination(api.TokenPagination o) {
   buildCounterTokenPagination--;
 }
 
-core.List<api.TrackRelease> buildUnnamed1128() {
-  var o = <api.TrackRelease>[];
-  o.add(buildTrackRelease());
-  o.add(buildTrackRelease());
-  return o;
-}
+core.List<api.TrackRelease> buildUnnamed29() => [
+      buildTrackRelease(),
+      buildTrackRelease(),
+    ];
 
-void checkUnnamed1128(core.List<api.TrackRelease> o) {
+void checkUnnamed29(core.List<api.TrackRelease> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTrackRelease(o[0] as api.TrackRelease);
-  checkTrackRelease(o[1] as api.TrackRelease);
+  checkTrackRelease(o[0]);
+  checkTrackRelease(o[1]);
 }
 
 core.int buildCounterTrack = 0;
 api.Track buildTrack() {
-  var o = api.Track();
+  final o = api.Track();
   buildCounterTrack++;
   if (buildCounterTrack < 3) {
-    o.releases = buildUnnamed1128();
+    o.releases = buildUnnamed29();
     o.track = 'foo';
   }
   buildCounterTrack--;
@@ -1983,7 +2470,7 @@ api.Track buildTrack() {
 void checkTrack(api.Track o) {
   buildCounterTrack++;
   if (buildCounterTrack < 3) {
-    checkUnnamed1128(o.releases!);
+    checkUnnamed29(o.releases!);
     unittest.expect(
       o.track!,
       unittest.equals('foo'),
@@ -1992,27 +2479,57 @@ void checkTrack(api.Track o) {
   buildCounterTrack--;
 }
 
-core.List<api.LocalizedText> buildUnnamed1129() {
-  var o = <api.LocalizedText>[];
-  o.add(buildLocalizedText());
-  o.add(buildLocalizedText());
-  return o;
-}
+core.List<api.TrackTargetedCountry> buildUnnamed30() => [
+      buildTrackTargetedCountry(),
+      buildTrackTargetedCountry(),
+    ];
 
-void checkUnnamed1129(core.List<api.LocalizedText> o) {
+void checkUnnamed30(core.List<api.TrackTargetedCountry> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkLocalizedText(o[0] as api.LocalizedText);
-  checkLocalizedText(o[1] as api.LocalizedText);
+  checkTrackTargetedCountry(o[0]);
+  checkTrackTargetedCountry(o[1]);
 }
 
-core.List<core.String> buildUnnamed1130() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
+core.int buildCounterTrackCountryAvailability = 0;
+api.TrackCountryAvailability buildTrackCountryAvailability() {
+  final o = api.TrackCountryAvailability();
+  buildCounterTrackCountryAvailability++;
+  if (buildCounterTrackCountryAvailability < 3) {
+    o.countries = buildUnnamed30();
+    o.restOfWorld = true;
+    o.syncWithProduction = true;
+  }
+  buildCounterTrackCountryAvailability--;
   return o;
 }
 
-void checkUnnamed1130(core.List<core.String> o) {
+void checkTrackCountryAvailability(api.TrackCountryAvailability o) {
+  buildCounterTrackCountryAvailability++;
+  if (buildCounterTrackCountryAvailability < 3) {
+    checkUnnamed30(o.countries!);
+    unittest.expect(o.restOfWorld!, unittest.isTrue);
+    unittest.expect(o.syncWithProduction!, unittest.isTrue);
+  }
+  buildCounterTrackCountryAvailability--;
+}
+
+core.List<api.LocalizedText> buildUnnamed31() => [
+      buildLocalizedText(),
+      buildLocalizedText(),
+    ];
+
+void checkUnnamed31(core.List<api.LocalizedText> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkLocalizedText(o[0]);
+  checkLocalizedText(o[1]);
+}
+
+core.List<core.String> buildUnnamed32() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed32(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2026,16 +2543,16 @@ void checkUnnamed1130(core.List<core.String> o) {
 
 core.int buildCounterTrackRelease = 0;
 api.TrackRelease buildTrackRelease() {
-  var o = api.TrackRelease();
+  final o = api.TrackRelease();
   buildCounterTrackRelease++;
   if (buildCounterTrackRelease < 3) {
     o.countryTargeting = buildCountryTargeting();
     o.inAppUpdatePriority = 42;
     o.name = 'foo';
-    o.releaseNotes = buildUnnamed1129();
+    o.releaseNotes = buildUnnamed31();
     o.status = 'foo';
     o.userFraction = 42.0;
-    o.versionCodes = buildUnnamed1130();
+    o.versionCodes = buildUnnamed32();
   }
   buildCounterTrackRelease--;
   return o;
@@ -2044,7 +2561,7 @@ api.TrackRelease buildTrackRelease() {
 void checkTrackRelease(api.TrackRelease o) {
   buildCounterTrackRelease++;
   if (buildCounterTrackRelease < 3) {
-    checkCountryTargeting(o.countryTargeting! as api.CountryTargeting);
+    checkCountryTargeting(o.countryTargeting!);
     unittest.expect(
       o.inAppUpdatePriority!,
       unittest.equals(42),
@@ -2053,7 +2570,7 @@ void checkTrackRelease(api.TrackRelease o) {
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed1129(o.releaseNotes!);
+    checkUnnamed31(o.releaseNotes!);
     unittest.expect(
       o.status!,
       unittest.equals('foo'),
@@ -2062,31 +2579,51 @@ void checkTrackRelease(api.TrackRelease o) {
       o.userFraction!,
       unittest.equals(42.0),
     );
-    checkUnnamed1130(o.versionCodes!);
+    checkUnnamed32(o.versionCodes!);
   }
   buildCounterTrackRelease--;
 }
 
-core.List<api.Track> buildUnnamed1131() {
-  var o = <api.Track>[];
-  o.add(buildTrack());
-  o.add(buildTrack());
+core.int buildCounterTrackTargetedCountry = 0;
+api.TrackTargetedCountry buildTrackTargetedCountry() {
+  final o = api.TrackTargetedCountry();
+  buildCounterTrackTargetedCountry++;
+  if (buildCounterTrackTargetedCountry < 3) {
+    o.countryCode = 'foo';
+  }
+  buildCounterTrackTargetedCountry--;
   return o;
 }
 
-void checkUnnamed1131(core.List<api.Track> o) {
+void checkTrackTargetedCountry(api.TrackTargetedCountry o) {
+  buildCounterTrackTargetedCountry++;
+  if (buildCounterTrackTargetedCountry < 3) {
+    unittest.expect(
+      o.countryCode!,
+      unittest.equals('foo'),
+    );
+  }
+  buildCounterTrackTargetedCountry--;
+}
+
+core.List<api.Track> buildUnnamed33() => [
+      buildTrack(),
+      buildTrack(),
+    ];
+
+void checkUnnamed33(core.List<api.Track> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTrack(o[0] as api.Track);
-  checkTrack(o[1] as api.Track);
+  checkTrack(o[0]);
+  checkTrack(o[1]);
 }
 
 core.int buildCounterTracksListResponse = 0;
 api.TracksListResponse buildTracksListResponse() {
-  var o = api.TracksListResponse();
+  final o = api.TracksListResponse();
   buildCounterTracksListResponse++;
   if (buildCounterTracksListResponse < 3) {
     o.kind = 'foo';
-    o.tracks = buildUnnamed1131();
+    o.tracks = buildUnnamed33();
   }
   buildCounterTracksListResponse--;
   return o;
@@ -2099,14 +2636,85 @@ void checkTracksListResponse(api.TracksListResponse o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed1131(o.tracks!);
+    checkUnnamed33(o.tracks!);
   }
   buildCounterTracksListResponse--;
 }
 
+core.List<core.String> buildUnnamed34() => [
+      'foo',
+      'foo',
+    ];
+
+void checkUnnamed34(core.List<core.String> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  unittest.expect(
+    o[0],
+    unittest.equals('foo'),
+  );
+  unittest.expect(
+    o[1],
+    unittest.equals('foo'),
+  );
+}
+
+core.List<api.Grant> buildUnnamed35() => [
+      buildGrant(),
+      buildGrant(),
+    ];
+
+void checkUnnamed35(core.List<api.Grant> o) {
+  unittest.expect(o, unittest.hasLength(2));
+  checkGrant(o[0]);
+  checkGrant(o[1]);
+}
+
+core.int buildCounterUser = 0;
+api.User buildUser() {
+  final o = api.User();
+  buildCounterUser++;
+  if (buildCounterUser < 3) {
+    o.accessState = 'foo';
+    o.developerAccountPermissions = buildUnnamed34();
+    o.email = 'foo';
+    o.expirationTime = 'foo';
+    o.grants = buildUnnamed35();
+    o.name = 'foo';
+    o.partial = true;
+  }
+  buildCounterUser--;
+  return o;
+}
+
+void checkUser(api.User o) {
+  buildCounterUser++;
+  if (buildCounterUser < 3) {
+    unittest.expect(
+      o.accessState!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed34(o.developerAccountPermissions!);
+    unittest.expect(
+      o.email!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(
+      o.expirationTime!,
+      unittest.equals('foo'),
+    );
+    checkUnnamed35(o.grants!);
+    unittest.expect(
+      o.name!,
+      unittest.equals('foo'),
+    );
+    unittest.expect(o.partial!, unittest.isTrue);
+  }
+  buildCounterUser--;
+}
+
 core.int buildCounterUserComment = 0;
 api.UserComment buildUserComment() {
-  var o = api.UserComment();
+  final o = api.UserComment();
   buildCounterUserComment++;
   if (buildCounterUserComment < 3) {
     o.androidOsVersion = 42;
@@ -2145,8 +2753,8 @@ void checkUserComment(api.UserComment o) {
       o.device!,
       unittest.equals('foo'),
     );
-    checkDeviceMetadata(o.deviceMetadata! as api.DeviceMetadata);
-    checkTimestamp(o.lastModified! as api.Timestamp);
+    checkDeviceMetadata(o.deviceMetadata!);
+    checkTimestamp(o.lastModified!);
     unittest.expect(
       o.originalText!,
       unittest.equals('foo'),
@@ -2177,7 +2785,7 @@ void checkUserComment(api.UserComment o) {
 
 core.int buildCounterUsesPermission = 0;
 api.UsesPermission buildUsesPermission() {
-  var o = api.UsesPermission();
+  final o = api.UsesPermission();
   buildCounterUsesPermission++;
   if (buildCounterUsesPermission < 3) {
     o.maxSdkVersion = 42;
@@ -2204,7 +2812,7 @@ void checkUsesPermission(api.UsesPermission o) {
 
 core.int buildCounterVariant = 0;
 api.Variant buildVariant() {
-  var o = api.Variant();
+  final o = api.Variant();
   buildCounterVariant++;
   if (buildCounterVariant < 3) {
     o.deviceSpec = buildDeviceSpec();
@@ -2217,7 +2825,7 @@ api.Variant buildVariant() {
 void checkVariant(api.Variant o) {
   buildCounterVariant++;
   if (buildCounterVariant < 3) {
-    checkDeviceSpec(o.deviceSpec! as api.DeviceSpec);
+    checkDeviceSpec(o.deviceSpec!);
     unittest.expect(
       o.variantId!,
       unittest.equals(42),
@@ -2228,7 +2836,7 @@ void checkVariant(api.Variant o) {
 
 core.int buildCounterVoidedPurchase = 0;
 api.VoidedPurchase buildVoidedPurchase() {
-  var o = api.VoidedPurchase();
+  final o = api.VoidedPurchase();
   buildCounterVoidedPurchase++;
   if (buildCounterVoidedPurchase < 3) {
     o.kind = 'foo';
@@ -2278,27 +2886,25 @@ void checkVoidedPurchase(api.VoidedPurchase o) {
   buildCounterVoidedPurchase--;
 }
 
-core.List<api.VoidedPurchase> buildUnnamed1132() {
-  var o = <api.VoidedPurchase>[];
-  o.add(buildVoidedPurchase());
-  o.add(buildVoidedPurchase());
-  return o;
-}
+core.List<api.VoidedPurchase> buildUnnamed36() => [
+      buildVoidedPurchase(),
+      buildVoidedPurchase(),
+    ];
 
-void checkUnnamed1132(core.List<api.VoidedPurchase> o) {
+void checkUnnamed36(core.List<api.VoidedPurchase> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVoidedPurchase(o[0] as api.VoidedPurchase);
-  checkVoidedPurchase(o[1] as api.VoidedPurchase);
+  checkVoidedPurchase(o[0]);
+  checkVoidedPurchase(o[1]);
 }
 
 core.int buildCounterVoidedPurchasesListResponse = 0;
 api.VoidedPurchasesListResponse buildVoidedPurchasesListResponse() {
-  var o = api.VoidedPurchasesListResponse();
+  final o = api.VoidedPurchasesListResponse();
   buildCounterVoidedPurchasesListResponse++;
   if (buildCounterVoidedPurchasesListResponse < 3) {
     o.pageInfo = buildPageInfo();
     o.tokenPagination = buildTokenPagination();
-    o.voidedPurchases = buildUnnamed1132();
+    o.voidedPurchases = buildUnnamed36();
   }
   buildCounterVoidedPurchasesListResponse--;
   return o;
@@ -2307,9 +2913,9 @@ api.VoidedPurchasesListResponse buildVoidedPurchasesListResponse() {
 void checkVoidedPurchasesListResponse(api.VoidedPurchasesListResponse o) {
   buildCounterVoidedPurchasesListResponse++;
   if (buildCounterVoidedPurchasesListResponse < 3) {
-    checkPageInfo(o.pageInfo! as api.PageInfo);
-    checkTokenPagination(o.tokenPagination! as api.TokenPagination);
-    checkUnnamed1132(o.voidedPurchases!);
+    checkPageInfo(o.pageInfo!);
+    checkTokenPagination(o.tokenPagination!);
+    checkUnnamed36(o.voidedPurchases!);
   }
   buildCounterVoidedPurchasesListResponse--;
 }
@@ -2317,618 +2923,804 @@ void checkVoidedPurchasesListResponse(api.VoidedPurchasesListResponse o) {
 void main() {
   unittest.group('obj-schema-Apk', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApk();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Apk.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkApk(od as api.Apk);
+      final o = buildApk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Apk.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkApk(od);
     });
   });
 
   unittest.group('obj-schema-ApkBinary', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApkBinary();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildApkBinary();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.ApkBinary.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkApkBinary(od as api.ApkBinary);
+      checkApkBinary(od);
     });
   });
 
   unittest.group('obj-schema-ApksAddExternallyHostedRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApksAddExternallyHostedRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ApksAddExternallyHostedRequest.fromJson(
+      final o = buildApksAddExternallyHostedRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ApksAddExternallyHostedRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkApksAddExternallyHostedRequest(
-          od as api.ApksAddExternallyHostedRequest);
+      checkApksAddExternallyHostedRequest(od);
     });
   });
 
   unittest.group('obj-schema-ApksAddExternallyHostedResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApksAddExternallyHostedResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ApksAddExternallyHostedResponse.fromJson(
+      final o = buildApksAddExternallyHostedResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ApksAddExternallyHostedResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkApksAddExternallyHostedResponse(
-          od as api.ApksAddExternallyHostedResponse);
+      checkApksAddExternallyHostedResponse(od);
     });
   });
 
   unittest.group('obj-schema-ApksListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildApksListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ApksListResponse.fromJson(
+      final o = buildApksListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ApksListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkApksListResponse(od as api.ApksListResponse);
+      checkApksListResponse(od);
     });
   });
 
   unittest.group('obj-schema-AppDetails', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAppDetails();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAppDetails();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.AppDetails.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAppDetails(od as api.AppDetails);
+      checkAppDetails(od);
     });
   });
 
   unittest.group('obj-schema-AppEdit', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAppEdit();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAppEdit();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.AppEdit.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAppEdit(od as api.AppEdit);
+      checkAppEdit(od);
     });
   });
 
   unittest.group('obj-schema-Bundle', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBundle();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildBundle();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Bundle.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkBundle(od as api.Bundle);
+      checkBundle(od);
     });
   });
 
   unittest.group('obj-schema-BundlesListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBundlesListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.BundlesListResponse.fromJson(
+      final o = buildBundlesListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.BundlesListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkBundlesListResponse(od as api.BundlesListResponse);
+      checkBundlesListResponse(od);
     });
   });
 
   unittest.group('obj-schema-Comment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildComment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildComment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Comment.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkComment(od as api.Comment);
+      checkComment(od);
+    });
+  });
+
+  unittest.group('obj-schema-ConvertRegionPricesRequest', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildConvertRegionPricesRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConvertRegionPricesRequest.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConvertRegionPricesRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-ConvertRegionPricesResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildConvertRegionPricesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConvertRegionPricesResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConvertRegionPricesResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-ConvertedOtherRegionsPrice', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildConvertedOtherRegionsPrice();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConvertedOtherRegionsPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConvertedOtherRegionsPrice(od);
+    });
+  });
+
+  unittest.group('obj-schema-ConvertedRegionPrice', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildConvertedRegionPrice();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConvertedRegionPrice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkConvertedRegionPrice(od);
     });
   });
 
   unittest.group('obj-schema-CountryTargeting', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCountryTargeting();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CountryTargeting.fromJson(
+      final o = buildCountryTargeting();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CountryTargeting.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCountryTargeting(od as api.CountryTargeting);
+      checkCountryTargeting(od);
     });
   });
 
   unittest.group('obj-schema-DeobfuscationFile', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeobfuscationFile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DeobfuscationFile.fromJson(
+      final o = buildDeobfuscationFile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DeobfuscationFile.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkDeobfuscationFile(od as api.DeobfuscationFile);
+      checkDeobfuscationFile(od);
     });
   });
 
   unittest.group('obj-schema-DeobfuscationFilesUploadResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeobfuscationFilesUploadResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DeobfuscationFilesUploadResponse.fromJson(
+      final o = buildDeobfuscationFilesUploadResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DeobfuscationFilesUploadResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkDeobfuscationFilesUploadResponse(
-          od as api.DeobfuscationFilesUploadResponse);
+      checkDeobfuscationFilesUploadResponse(od);
     });
   });
 
   unittest.group('obj-schema-DeveloperComment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeveloperComment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DeveloperComment.fromJson(
+      final o = buildDeveloperComment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DeveloperComment.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkDeveloperComment(od as api.DeveloperComment);
+      checkDeveloperComment(od);
     });
   });
 
   unittest.group('obj-schema-DeviceMetadata', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeviceMetadata();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.DeviceMetadata.fromJson(
+      final o = buildDeviceMetadata();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.DeviceMetadata.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkDeviceMetadata(od as api.DeviceMetadata);
+      checkDeviceMetadata(od);
     });
   });
 
   unittest.group('obj-schema-DeviceSpec', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDeviceSpec();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildDeviceSpec();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.DeviceSpec.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDeviceSpec(od as api.DeviceSpec);
+      checkDeviceSpec(od);
     });
   });
 
   unittest.group('obj-schema-ExpansionFile', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExpansionFile();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExpansionFile.fromJson(
+      final o = buildExpansionFile();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExpansionFile.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExpansionFile(od as api.ExpansionFile);
+      checkExpansionFile(od);
     });
   });
 
   unittest.group('obj-schema-ExpansionFilesUploadResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExpansionFilesUploadResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExpansionFilesUploadResponse.fromJson(
+      final o = buildExpansionFilesUploadResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExpansionFilesUploadResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExpansionFilesUploadResponse(od as api.ExpansionFilesUploadResponse);
+      checkExpansionFilesUploadResponse(od);
     });
   });
 
   unittest.group('obj-schema-ExternallyHostedApk', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExternallyHostedApk();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExternallyHostedApk.fromJson(
+      final o = buildExternallyHostedApk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExternallyHostedApk.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExternallyHostedApk(od as api.ExternallyHostedApk);
+      checkExternallyHostedApk(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedApksListResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedApksListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedApksListResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedApksListResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedApksPerSigningKey', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedApksPerSigningKey();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedApksPerSigningKey.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedApksPerSigningKey(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedAssetPackSlice', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedAssetPackSlice();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedAssetPackSlice.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedAssetPackSlice(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedSplitApk', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedSplitApk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedSplitApk.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedSplitApk(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedStandaloneApk', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedStandaloneApk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedStandaloneApk.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedStandaloneApk(od);
+    });
+  });
+
+  unittest.group('obj-schema-GeneratedUniversalApk', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGeneratedUniversalApk();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GeneratedUniversalApk.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkGeneratedUniversalApk(od);
+    });
+  });
+
+  unittest.group('obj-schema-Grant', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildGrant();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Grant.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkGrant(od);
     });
   });
 
   unittest.group('obj-schema-Image', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildImage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Image.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkImage(od as api.Image);
+      final o = buildImage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Image.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkImage(od);
     });
   });
 
   unittest.group('obj-schema-ImagesDeleteAllResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildImagesDeleteAllResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ImagesDeleteAllResponse.fromJson(
+      final o = buildImagesDeleteAllResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ImagesDeleteAllResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkImagesDeleteAllResponse(od as api.ImagesDeleteAllResponse);
+      checkImagesDeleteAllResponse(od);
     });
   });
 
   unittest.group('obj-schema-ImagesListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildImagesListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ImagesListResponse.fromJson(
+      final o = buildImagesListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ImagesListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkImagesListResponse(od as api.ImagesListResponse);
+      checkImagesListResponse(od);
     });
   });
 
   unittest.group('obj-schema-ImagesUploadResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildImagesUploadResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ImagesUploadResponse.fromJson(
+      final o = buildImagesUploadResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ImagesUploadResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkImagesUploadResponse(od as api.ImagesUploadResponse);
+      checkImagesUploadResponse(od);
     });
   });
 
   unittest.group('obj-schema-InAppProduct', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInAppProduct();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InAppProduct.fromJson(
+      final o = buildInAppProduct();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InAppProduct.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInAppProduct(od as api.InAppProduct);
+      checkInAppProduct(od);
     });
   });
 
   unittest.group('obj-schema-InAppProductListing', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInAppProductListing();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InAppProductListing.fromJson(
+      final o = buildInAppProductListing();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InAppProductListing.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInAppProductListing(od as api.InAppProductListing);
+      checkInAppProductListing(od);
     });
   });
 
   unittest.group('obj-schema-InappproductsListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInappproductsListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InappproductsListResponse.fromJson(
+      final o = buildInappproductsListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InappproductsListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInappproductsListResponse(od as api.InappproductsListResponse);
+      checkInappproductsListResponse(od);
     });
   });
 
   unittest.group('obj-schema-InternalAppSharingArtifact', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildInternalAppSharingArtifact();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.InternalAppSharingArtifact.fromJson(
+      final o = buildInternalAppSharingArtifact();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.InternalAppSharingArtifact.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkInternalAppSharingArtifact(od as api.InternalAppSharingArtifact);
+      checkInternalAppSharingArtifact(od);
     });
   });
 
   unittest.group('obj-schema-IntroductoryPriceInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildIntroductoryPriceInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.IntroductoryPriceInfo.fromJson(
+      final o = buildIntroductoryPriceInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.IntroductoryPriceInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkIntroductoryPriceInfo(od as api.IntroductoryPriceInfo);
+      checkIntroductoryPriceInfo(od);
+    });
+  });
+
+  unittest.group('obj-schema-ListUsersResponse', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildListUsersResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListUsersResponse.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkListUsersResponse(od);
     });
   });
 
   unittest.group('obj-schema-Listing', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListing();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildListing();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Listing.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkListing(od as api.Listing);
+      checkListing(od);
     });
   });
 
   unittest.group('obj-schema-ListingsListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListingsListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListingsListResponse.fromJson(
+      final o = buildListingsListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListingsListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListingsListResponse(od as api.ListingsListResponse);
+      checkListingsListResponse(od);
     });
   });
 
   unittest.group('obj-schema-LocalizedText', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildLocalizedText();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.LocalizedText.fromJson(
+      final o = buildLocalizedText();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.LocalizedText.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkLocalizedText(od as api.LocalizedText);
+      checkLocalizedText(od);
+    });
+  });
+
+  unittest.group('obj-schema-ManagedProductTaxAndComplianceSettings', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildManagedProductTaxAndComplianceSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ManagedProductTaxAndComplianceSettings.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkManagedProductTaxAndComplianceSettings(od);
+    });
+  });
+
+  unittest.group('obj-schema-Money', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildMoney();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Money.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkMoney(od);
     });
   });
 
   unittest.group('obj-schema-PageInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPageInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildPageInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.PageInfo.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkPageInfo(od as api.PageInfo);
+      checkPageInfo(od);
     });
   });
 
   unittest.group('obj-schema-Price', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildPrice();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Price.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkPrice(od as api.Price);
+      final o = buildPrice();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Price.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkPrice(od);
     });
   });
 
   unittest.group('obj-schema-ProductPurchase', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildProductPurchase();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ProductPurchase.fromJson(
+      final o = buildProductPurchase();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ProductPurchase.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkProductPurchase(od as api.ProductPurchase);
+      checkProductPurchase(od);
     });
   });
 
   unittest.group('obj-schema-ProductPurchasesAcknowledgeRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildProductPurchasesAcknowledgeRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ProductPurchasesAcknowledgeRequest.fromJson(
+      final o = buildProductPurchasesAcknowledgeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ProductPurchasesAcknowledgeRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkProductPurchasesAcknowledgeRequest(
-          od as api.ProductPurchasesAcknowledgeRequest);
+      checkProductPurchasesAcknowledgeRequest(od);
+    });
+  });
+
+  unittest.group('obj-schema-RegionalTaxRateInfo', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildRegionalTaxRateInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RegionalTaxRateInfo.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkRegionalTaxRateInfo(od);
     });
   });
 
   unittest.group('obj-schema-Review', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReview();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildReview();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Review.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkReview(od as api.Review);
+      checkReview(od);
     });
   });
 
   unittest.group('obj-schema-ReviewReplyResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReviewReplyResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReviewReplyResult.fromJson(
+      final o = buildReviewReplyResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReviewReplyResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReviewReplyResult(od as api.ReviewReplyResult);
+      checkReviewReplyResult(od);
     });
   });
 
   unittest.group('obj-schema-ReviewsListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReviewsListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReviewsListResponse.fromJson(
+      final o = buildReviewsListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReviewsListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReviewsListResponse(od as api.ReviewsListResponse);
+      checkReviewsListResponse(od);
     });
   });
 
   unittest.group('obj-schema-ReviewsReplyRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReviewsReplyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReviewsReplyRequest.fromJson(
+      final o = buildReviewsReplyRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReviewsReplyRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReviewsReplyRequest(od as api.ReviewsReplyRequest);
+      checkReviewsReplyRequest(od);
     });
   });
 
   unittest.group('obj-schema-ReviewsReplyResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildReviewsReplyResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ReviewsReplyResponse.fromJson(
+      final o = buildReviewsReplyResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ReviewsReplyResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkReviewsReplyResponse(od as api.ReviewsReplyResponse);
+      checkReviewsReplyResponse(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionCancelSurveyResult', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionCancelSurveyResult();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionCancelSurveyResult.fromJson(
+      final o = buildSubscriptionCancelSurveyResult();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionCancelSurveyResult.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionCancelSurveyResult(
-          od as api.SubscriptionCancelSurveyResult);
+      checkSubscriptionCancelSurveyResult(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionDeferralInfo', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionDeferralInfo();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionDeferralInfo.fromJson(
+      final o = buildSubscriptionDeferralInfo();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionDeferralInfo.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionDeferralInfo(od as api.SubscriptionDeferralInfo);
+      checkSubscriptionDeferralInfo(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionPriceChange', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionPriceChange();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionPriceChange.fromJson(
+      final o = buildSubscriptionPriceChange();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionPriceChange.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionPriceChange(od as api.SubscriptionPriceChange);
+      checkSubscriptionPriceChange(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionPurchase', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionPurchase();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionPurchase.fromJson(
+      final o = buildSubscriptionPurchase();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionPurchase.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionPurchase(od as api.SubscriptionPurchase);
+      checkSubscriptionPurchase(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionPurchasesAcknowledgeRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionPurchasesAcknowledgeRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionPurchasesAcknowledgeRequest.fromJson(
+      final o = buildSubscriptionPurchasesAcknowledgeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionPurchasesAcknowledgeRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionPurchasesAcknowledgeRequest(
-          od as api.SubscriptionPurchasesAcknowledgeRequest);
+      checkSubscriptionPurchasesAcknowledgeRequest(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionPurchasesDeferRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionPurchasesDeferRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionPurchasesDeferRequest.fromJson(
+      final o = buildSubscriptionPurchasesDeferRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionPurchasesDeferRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionPurchasesDeferRequest(
-          od as api.SubscriptionPurchasesDeferRequest);
+      checkSubscriptionPurchasesDeferRequest(od);
     });
   });
 
   unittest.group('obj-schema-SubscriptionPurchasesDeferResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSubscriptionPurchasesDeferResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SubscriptionPurchasesDeferResponse.fromJson(
+      final o = buildSubscriptionPurchasesDeferResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionPurchasesDeferResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSubscriptionPurchasesDeferResponse(
-          od as api.SubscriptionPurchasesDeferResponse);
+      checkSubscriptionPurchasesDeferResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-SubscriptionTaxAndComplianceSettings', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildSubscriptionTaxAndComplianceSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SubscriptionTaxAndComplianceSettings.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkSubscriptionTaxAndComplianceSettings(od);
     });
   });
 
   unittest.group('obj-schema-SystemApksListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSystemApksListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SystemApksListResponse.fromJson(
+      final o = buildSystemApksListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SystemApksListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSystemApksListResponse(od as api.SystemApksListResponse);
+      checkSystemApksListResponse(od);
     });
   });
 
   unittest.group('obj-schema-Testers', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTesters();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTesters();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Testers.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTesters(od as api.Testers);
+      checkTesters(od);
     });
   });
 
   unittest.group('obj-schema-Timestamp', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTimestamp();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTimestamp();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Timestamp.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTimestamp(od as api.Timestamp);
+      checkTimestamp(od);
     });
   });
 
   unittest.group('obj-schema-TokenPagination', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTokenPagination();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TokenPagination.fromJson(
+      final o = buildTokenPagination();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TokenPagination.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTokenPagination(od as api.TokenPagination);
+      checkTokenPagination(od);
     });
   });
 
   unittest.group('obj-schema-Track', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTrack();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Track.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTrack(od as api.Track);
+      final o = buildTrack();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Track.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkTrack(od);
+    });
+  });
+
+  unittest.group('obj-schema-TrackCountryAvailability', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildTrackCountryAvailability();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TrackCountryAvailability.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTrackCountryAvailability(od);
     });
   });
 
   unittest.group('obj-schema-TrackRelease', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTrackRelease();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TrackRelease.fromJson(
+      final o = buildTrackRelease();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TrackRelease.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTrackRelease(od as api.TrackRelease);
+      checkTrackRelease(od);
+    });
+  });
+
+  unittest.group('obj-schema-TrackTargetedCountry', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildTrackTargetedCountry();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TrackTargetedCountry.fromJson(
+          oJson as core.Map<core.String, core.dynamic>);
+      checkTrackTargetedCountry(od);
     });
   });
 
   unittest.group('obj-schema-TracksListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTracksListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.TracksListResponse.fromJson(
+      final o = buildTracksListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.TracksListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkTracksListResponse(od as api.TracksListResponse);
+      checkTracksListResponse(od);
+    });
+  });
+
+  unittest.group('obj-schema-User', () {
+    unittest.test('to-json--from-json', () async {
+      final o = buildUser();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.User.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkUser(od);
     });
   });
 
   unittest.group('obj-schema-UserComment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUserComment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UserComment.fromJson(
+      final o = buildUserComment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UserComment.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUserComment(od as api.UserComment);
+      checkUserComment(od);
     });
   });
 
   unittest.group('obj-schema-UsesPermission', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUsesPermission();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UsesPermission.fromJson(
+      final o = buildUsesPermission();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UsesPermission.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUsesPermission(od as api.UsesPermission);
+      checkUsesPermission(od);
     });
   });
 
   unittest.group('obj-schema-Variant', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVariant();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildVariant();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Variant.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkVariant(od as api.Variant);
+      checkVariant(od);
     });
   });
 
   unittest.group('obj-schema-VoidedPurchase', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVoidedPurchase();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VoidedPurchase.fromJson(
+      final o = buildVoidedPurchase();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VoidedPurchase.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVoidedPurchase(od as api.VoidedPurchase);
+      checkVoidedPurchase(od);
     });
   });
 
   unittest.group('obj-schema-VoidedPurchasesListResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVoidedPurchasesListResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.VoidedPurchasesListResponse.fromJson(
+      final o = buildVoidedPurchasesListResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.VoidedPurchasesListResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkVoidedPurchasesListResponse(od as api.VoidedPurchasesListResponse);
+      checkVoidedPurchasesListResponse(od);
     });
   });
 
   unittest.group('resource-EditsResource', () {
     unittest.test('method--commit', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_changesNotSentForReview = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -2942,7 +3734,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf(':commit', pathOffset);
@@ -2956,19 +3748,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":commit"),
+          unittest.equals(':commit'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2976,40 +3768,45 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['changesNotSentForReview']!.first,
+          unittest.equals('$arg_changesNotSentForReview'),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppEdit());
+        final resp = convert.json.encode(buildAppEdit());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
-      final response =
-          await res.commit(arg_packageName, arg_editId, $fields: arg_$fields);
+      final response = await res.commit(arg_packageName, arg_editId,
+          changesNotSentForReview: arg_changesNotSentForReview,
+          $fields: arg_$fields);
       checkAppEdit(response as api.AppEdit);
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3023,7 +3820,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3033,15 +3830,15 @@ void main() {
           unittest.equals('$arg_editId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3049,38 +3846,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_packageName, arg_editId, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3094,7 +3891,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3104,15 +3901,15 @@ void main() {
           unittest.equals('$arg_editId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3120,14 +3917,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppEdit());
+        final resp = convert.json.encode(buildAppEdit());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3136,28 +3933,28 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits;
-      var arg_request = buildAppEdit();
-      var arg_packageName = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits;
+      final arg_request = buildAppEdit();
+      final arg_packageName = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.AppEdit.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkAppEdit(obj as api.AppEdit);
+        checkAppEdit(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits', pathOffset);
@@ -3171,19 +3968,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/edits"),
+          unittest.equals('/edits'),
         );
         pathOffset += 6;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3191,14 +3988,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppEdit());
+        final resp = convert.json.encode(buildAppEdit());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3207,24 +4004,24 @@ void main() {
     });
 
     unittest.test('method--validate', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3238,7 +4035,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf(':validate', pathOffset);
@@ -3252,19 +4049,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals(":validate"),
+          unittest.equals(':validate'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3272,14 +4069,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppEdit());
+        final resp = convert.json.encode(buildAppEdit());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3290,30 +4087,29 @@ void main() {
 
   unittest.group('resource-EditsApksResource', () {
     unittest.test('method--addexternallyhosted', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.apks;
-      var arg_request = buildApksAddExternallyHostedRequest();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.apks;
+      final arg_request = buildApksAddExternallyHostedRequest();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ApksAddExternallyHostedRequest.fromJson(
+        final obj = api.ApksAddExternallyHostedRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkApksAddExternallyHostedRequest(
-            obj as api.ApksAddExternallyHostedRequest);
+        checkApksAddExternallyHostedRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3327,7 +4123,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/externallyHosted', pathOffset);
@@ -3341,19 +4137,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("/apks/externallyHosted"),
+          unittest.equals('/apks/externallyHosted'),
         );
         pathOffset += 22;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3361,14 +4157,15 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildApksAddExternallyHostedResponse());
+        final resp =
+            convert.json.encode(buildApksAddExternallyHostedResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.addexternallyhosted(
@@ -3379,24 +4176,24 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.apks;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.apks;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3410,7 +4207,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks', pathOffset);
@@ -3424,19 +4221,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/apks"),
+          unittest.equals('/apks'),
         );
         pathOffset += 5;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3444,14 +4241,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildApksListResponse());
+        final resp = convert.json.encode(buildApksListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3463,24 +4260,24 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.apks;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.apks;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3494,7 +4291,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks', pathOffset);
@@ -3508,19 +4305,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/apks"),
+          unittest.equals('/apks'),
         );
         pathOffset += 5;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3528,14 +4325,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildApk());
+        final resp = convert.json.encode(buildApk());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3546,24 +4343,24 @@ void main() {
 
   unittest.group('resource-EditsBundlesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.bundles;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.bundles;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3577,7 +4374,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/bundles', pathOffset);
@@ -3591,19 +4388,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/bundles"),
+          unittest.equals('/bundles'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3611,14 +4408,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildBundlesListResponse());
+        final resp = convert.json.encode(buildBundlesListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3630,25 +4427,25 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.bundles;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_ackBundleInstallationWarning = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.bundles;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_ackBundleInstallationWarning = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3662,7 +4459,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/bundles', pathOffset);
@@ -3676,19 +4473,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/bundles"),
+          unittest.equals('/bundles'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3696,18 +4493,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["ackBundleInstallationWarning"]!.first,
-          unittest.equals("$arg_ackBundleInstallationWarning"),
+          queryMap['ackBundleInstallationWarning']!.first,
+          unittest.equals('$arg_ackBundleInstallationWarning'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildBundle());
+        final resp = convert.json.encode(buildBundle());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.upload(arg_packageName, arg_editId,
@@ -3717,31 +4514,27 @@ void main() {
     });
   });
 
-  unittest.group('resource-EditsDeobfuscationfilesResource', () {
-    unittest.test('method--upload', () async {
-      // TODO: Implement tests for media upload;
-      // TODO: Implement tests for media download;
-
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.deobfuscationfiles;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_apkVersionCode = 42;
-      var arg_deobfuscationFileType = 'foo';
-      var arg_$fields = 'foo';
+  unittest.group('resource-EditsCountryavailabilityResource', () {
+    unittest.test('method--get', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.countryavailability;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3755,7 +4548,101 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
+        );
+        pathOffset += 7;
+        index = path.indexOf('/countryAvailability/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_editId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 21),
+          unittest.equals('/countryAvailability/'),
+        );
+        pathOffset += 21;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_track'),
+        );
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildTrackCountryAvailability());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.get(arg_packageName, arg_editId, arg_track,
+          $fields: arg_$fields);
+      checkTrackCountryAvailability(response as api.TrackCountryAvailability);
+    });
+  });
+
+  unittest.group('resource-EditsDeobfuscationfilesResource', () {
+    unittest.test('method--upload', () async {
+      // TODO: Implement tests for media upload;
+      // TODO: Implement tests for media download;
+
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.deobfuscationfiles;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_apkVersionCode = 42;
+      final arg_deobfuscationFileType = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals('androidpublisher/v3/applications/'),
+        );
+        pathOffset += 33;
+        index = path.indexOf('/edits/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_packageName'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 7),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/', pathOffset);
@@ -3769,7 +4656,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/apks/"),
+          unittest.equals('/apks/'),
         );
         pathOffset += 6;
         index = path.indexOf('/deobfuscationFiles/', pathOffset);
@@ -3783,7 +4670,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/deobfuscationFiles/"),
+          unittest.equals('/deobfuscationFiles/'),
         );
         pathOffset += 20;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3793,15 +4680,15 @@ void main() {
           unittest.equals('$arg_deobfuscationFileType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3809,14 +4696,15 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildDeobfuscationFilesUploadResponse());
+        final resp =
+            convert.json.encode(buildDeobfuscationFilesUploadResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.upload(arg_packageName, arg_editId,
@@ -3829,24 +4717,24 @@ void main() {
 
   unittest.group('resource-EditsDetailsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.details;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.details;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3860,7 +4748,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/details', pathOffset);
@@ -3874,19 +4762,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/details"),
+          unittest.equals('/details'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3894,14 +4782,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppDetails());
+        final resp = convert.json.encode(buildAppDetails());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3910,29 +4798,29 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.details;
-      var arg_request = buildAppDetails();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.details;
+      final arg_request = buildAppDetails();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.AppDetails.fromJson(
+        final obj = api.AppDetails.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkAppDetails(obj as api.AppDetails);
+        checkAppDetails(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -3946,7 +4834,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/details', pathOffset);
@@ -3960,19 +4848,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/details"),
+          unittest.equals('/details'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3980,14 +4868,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppDetails());
+        final resp = convert.json.encode(buildAppDetails());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_packageName, arg_editId,
@@ -3996,29 +4884,29 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.details;
-      var arg_request = buildAppDetails();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.details;
+      final arg_request = buildAppDetails();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.AppDetails.fromJson(
+        final obj = api.AppDetails.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkAppDetails(obj as api.AppDetails);
+        checkAppDetails(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4032,7 +4920,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/details', pathOffset);
@@ -4046,19 +4934,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/details"),
+          unittest.equals('/details'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4066,14 +4954,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAppDetails());
+        final resp = convert.json.encode(buildAppDetails());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(
@@ -4085,26 +4973,26 @@ void main() {
 
   unittest.group('resource-EditsExpansionfilesResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.expansionfiles;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_apkVersionCode = 42;
-      var arg_expansionFileType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.expansionfiles;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_apkVersionCode = 42;
+      final arg_expansionFileType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4118,7 +5006,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/', pathOffset);
@@ -4132,7 +5020,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/apks/"),
+          unittest.equals('/apks/'),
         );
         pathOffset += 6;
         index = path.indexOf('/expansionFiles/', pathOffset);
@@ -4146,7 +5034,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/expansionFiles/"),
+          unittest.equals('/expansionFiles/'),
         );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4156,15 +5044,15 @@ void main() {
           unittest.equals('$arg_expansionFileType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4172,14 +5060,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildExpansionFile());
+        final resp = convert.json.encode(buildExpansionFile());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_editId,
@@ -4189,31 +5077,31 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.expansionfiles;
-      var arg_request = buildExpansionFile();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_apkVersionCode = 42;
-      var arg_expansionFileType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.expansionfiles;
+      final arg_request = buildExpansionFile();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_apkVersionCode = 42;
+      final arg_expansionFileType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ExpansionFile.fromJson(
+        final obj = api.ExpansionFile.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkExpansionFile(obj as api.ExpansionFile);
+        checkExpansionFile(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4227,7 +5115,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/', pathOffset);
@@ -4241,7 +5129,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/apks/"),
+          unittest.equals('/apks/'),
         );
         pathOffset += 6;
         index = path.indexOf('/expansionFiles/', pathOffset);
@@ -4255,7 +5143,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/expansionFiles/"),
+          unittest.equals('/expansionFiles/'),
         );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4265,15 +5153,15 @@ void main() {
           unittest.equals('$arg_expansionFileType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4281,14 +5169,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildExpansionFile());
+        final resp = convert.json.encode(buildExpansionFile());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_packageName, arg_editId,
@@ -4298,31 +5186,31 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.expansionfiles;
-      var arg_request = buildExpansionFile();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_apkVersionCode = 42;
-      var arg_expansionFileType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.expansionfiles;
+      final arg_request = buildExpansionFile();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_apkVersionCode = 42;
+      final arg_expansionFileType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ExpansionFile.fromJson(
+        final obj = api.ExpansionFile.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkExpansionFile(obj as api.ExpansionFile);
+        checkExpansionFile(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4336,7 +5224,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/', pathOffset);
@@ -4350,7 +5238,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/apks/"),
+          unittest.equals('/apks/'),
         );
         pathOffset += 6;
         index = path.indexOf('/expansionFiles/', pathOffset);
@@ -4364,7 +5252,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/expansionFiles/"),
+          unittest.equals('/expansionFiles/'),
         );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4374,15 +5262,15 @@ void main() {
           unittest.equals('$arg_expansionFileType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4390,14 +5278,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildExpansionFile());
+        final resp = convert.json.encode(buildExpansionFile());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_packageName,
@@ -4410,26 +5298,26 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.expansionfiles;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_apkVersionCode = 42;
-      var arg_expansionFileType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.expansionfiles;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_apkVersionCode = 42;
+      final arg_expansionFileType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4443,7 +5331,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/apks/', pathOffset);
@@ -4457,7 +5345,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/apks/"),
+          unittest.equals('/apks/'),
         );
         pathOffset += 6;
         index = path.indexOf('/expansionFiles/', pathOffset);
@@ -4471,7 +5359,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/expansionFiles/"),
+          unittest.equals('/expansionFiles/'),
         );
         pathOffset += 16;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4481,15 +5369,15 @@ void main() {
           unittest.equals('$arg_expansionFileType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4497,14 +5385,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildExpansionFilesUploadResponse());
+        final resp = convert.json.encode(buildExpansionFilesUploadResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.upload(arg_packageName, arg_editId,
@@ -4517,27 +5405,27 @@ void main() {
 
   unittest.group('resource-EditsImagesResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.images;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_imageType = 'foo';
-      var arg_imageId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.images;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_imageType = 'foo';
+      final arg_imageId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4551,7 +5439,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -4565,7 +5453,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         index = path.indexOf('/', pathOffset);
@@ -4579,7 +5467,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         index = path.indexOf('/', pathOffset);
@@ -4593,7 +5481,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4603,15 +5491,15 @@ void main() {
           unittest.equals('$arg_imageId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4619,14 +5507,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(
@@ -4635,26 +5523,26 @@ void main() {
     });
 
     unittest.test('method--deleteall', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.images;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_imageType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.images;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_imageType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4668,7 +5556,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -4682,7 +5570,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         index = path.indexOf('/', pathOffset);
@@ -4696,7 +5584,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4706,15 +5594,15 @@ void main() {
           unittest.equals('$arg_imageType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4722,14 +5610,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildImagesDeleteAllResponse());
+        final resp = convert.json.encode(buildImagesDeleteAllResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.deleteall(
@@ -4739,26 +5627,26 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.images;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_imageType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.images;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_imageType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4772,7 +5660,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -4786,7 +5674,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         index = path.indexOf('/', pathOffset);
@@ -4800,7 +5688,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4810,15 +5698,15 @@ void main() {
           unittest.equals('$arg_imageType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4826,14 +5714,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildImagesListResponse());
+        final resp = convert.json.encode(buildImagesListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -4846,26 +5734,26 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.images;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_imageType = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.images;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_imageType = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4879,7 +5767,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -4893,7 +5781,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         index = path.indexOf('/', pathOffset);
@@ -4907,7 +5795,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4917,15 +5805,15 @@ void main() {
           unittest.equals('$arg_imageType'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4933,14 +5821,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildImagesUploadResponse());
+        final resp = convert.json.encode(buildImagesUploadResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.upload(
@@ -4952,25 +5840,25 @@ void main() {
 
   unittest.group('resource-EditsListingsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -4984,7 +5872,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -4998,7 +5886,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5008,15 +5896,15 @@ void main() {
           unittest.equals('$arg_language'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5024,14 +5912,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_packageName, arg_editId, arg_language,
@@ -5039,24 +5927,24 @@ void main() {
     });
 
     unittest.test('method--deleteall', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5070,7 +5958,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings', pathOffset);
@@ -5084,19 +5972,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/listings"),
+          unittest.equals('/listings'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5104,39 +5992,39 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.deleteall(arg_packageName, arg_editId, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5150,7 +6038,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -5164,7 +6052,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5174,15 +6062,15 @@ void main() {
           unittest.equals('$arg_language'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5190,14 +6078,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListing());
+        final resp = convert.json.encode(buildListing());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_editId, arg_language,
@@ -5206,24 +6094,24 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5237,7 +6125,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings', pathOffset);
@@ -5251,19 +6139,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/listings"),
+          unittest.equals('/listings'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5271,14 +6159,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListingsListResponse());
+        final resp = convert.json.encode(buildListingsListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5287,30 +6175,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_request = buildListing();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_request = buildListing();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Listing.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkListing(obj as api.Listing);
+        checkListing(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5324,7 +6212,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -5338,7 +6226,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5348,15 +6236,15 @@ void main() {
           unittest.equals('$arg_language'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5364,14 +6252,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListing());
+        final resp = convert.json.encode(buildListing());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(
@@ -5381,30 +6269,30 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.listings;
-      var arg_request = buildListing();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_language = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.listings;
+      final arg_request = buildListing();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_language = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Listing.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkListing(obj as api.Listing);
+        checkListing(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5418,7 +6306,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/listings/', pathOffset);
@@ -5432,7 +6320,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/listings/"),
+          unittest.equals('/listings/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5442,15 +6330,15 @@ void main() {
           unittest.equals('$arg_language'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5458,14 +6346,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListing());
+        final resp = convert.json.encode(buildListing());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(
@@ -5477,25 +6365,25 @@ void main() {
 
   unittest.group('resource-EditsTestersResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.testers;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.testers;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5509,7 +6397,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/testers/', pathOffset);
@@ -5523,7 +6411,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/testers/"),
+          unittest.equals('/testers/'),
         );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5533,15 +6421,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5549,14 +6437,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTesters());
+        final resp = convert.json.encode(buildTesters());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_editId, arg_track,
@@ -5565,30 +6453,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.testers;
-      var arg_request = buildTesters();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.testers;
+      final arg_request = buildTesters();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Testers.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTesters(obj as api.Testers);
+        checkTesters(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5602,7 +6490,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/testers/', pathOffset);
@@ -5616,7 +6504,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/testers/"),
+          unittest.equals('/testers/'),
         );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5626,15 +6514,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5642,14 +6530,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTesters());
+        final resp = convert.json.encode(buildTesters());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(
@@ -5659,30 +6547,30 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.testers;
-      var arg_request = buildTesters();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.testers;
+      final arg_request = buildTesters();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Testers.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTesters(obj as api.Testers);
+        checkTesters(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5696,7 +6584,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/testers/', pathOffset);
@@ -5710,7 +6598,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/testers/"),
+          unittest.equals('/testers/'),
         );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5720,15 +6608,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5736,14 +6624,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTesters());
+        final resp = convert.json.encode(buildTesters());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(
@@ -5755,25 +6643,25 @@ void main() {
 
   unittest.group('resource-EditsTracksResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.tracks;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.tracks;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5787,7 +6675,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/tracks/', pathOffset);
@@ -5801,7 +6689,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tracks/"),
+          unittest.equals('/tracks/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5811,15 +6699,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5827,14 +6715,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTrack());
+        final resp = convert.json.encode(buildTrack());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_editId, arg_track,
@@ -5843,24 +6731,24 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.tracks;
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.tracks;
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5874,7 +6762,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/tracks', pathOffset);
@@ -5888,19 +6776,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/tracks"),
+          unittest.equals('/tracks'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5908,14 +6796,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTracksListResponse());
+        final resp = convert.json.encode(buildTracksListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -5924,30 +6812,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.tracks;
-      var arg_request = buildTrack();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.tracks;
+      final arg_request = buildTrack();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Track.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTrack(obj as api.Track);
+        checkTrack(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -5961,7 +6849,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/tracks/', pathOffset);
@@ -5975,7 +6863,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tracks/"),
+          unittest.equals('/tracks/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5985,15 +6873,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6001,14 +6889,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTrack());
+        final resp = convert.json.encode(buildTrack());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(
@@ -6018,30 +6906,30 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).edits.tracks;
-      var arg_request = buildTrack();
-      var arg_packageName = 'foo';
-      var arg_editId = 'foo';
-      var arg_track = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).edits.tracks;
+      final arg_request = buildTrack();
+      final arg_packageName = 'foo';
+      final arg_editId = 'foo';
+      final arg_track = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Track.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkTrack(obj as api.Track);
+        checkTrack(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/edits/', pathOffset);
@@ -6055,7 +6943,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/edits/"),
+          unittest.equals('/edits/'),
         );
         pathOffset += 7;
         index = path.indexOf('/tracks/', pathOffset);
@@ -6069,7 +6957,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tracks/"),
+          unittest.equals('/tracks/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6079,15 +6967,15 @@ void main() {
           unittest.equals('$arg_track'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6095,14 +6983,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildTrack());
+        final resp = convert.json.encode(buildTrack());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(
@@ -6112,26 +7000,373 @@ void main() {
     });
   });
 
-  unittest.group('resource-InappproductsResource', () {
-    unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_packageName = 'foo';
-      var arg_sku = 'foo';
-      var arg_$fields = 'foo';
+  unittest.group('resource-GeneratedapksResource', () {
+    unittest.test('method--download', () async {
+      // TODO: Implement tests for media upload;
+      // TODO: Implement tests for media download;
+
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).generatedapks;
+      final arg_packageName = 'foo';
+      final arg_versionCode = 42;
+      final arg_downloadId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
+        );
+        pathOffset += 33;
+        index = path.indexOf('/generatedApks/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_packageName'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals('/generatedApks/'),
+        );
+        pathOffset += 15;
+        index = path.indexOf('/downloads/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_versionCode'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 11),
+          unittest.equals('/downloads/'),
+        );
+        pathOffset += 11;
+        index = path.indexOf(':download', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_downloadId'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 9),
+          unittest.equals(':download'),
+        );
+        pathOffset += 9;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = '';
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      await res.download(arg_packageName, arg_versionCode, arg_downloadId,
+          $fields: arg_$fields);
+    });
+
+    unittest.test('method--list', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).generatedapks;
+      final arg_packageName = 'foo';
+      final arg_versionCode = 42;
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals('androidpublisher/v3/applications/'),
+        );
+        pathOffset += 33;
+        index = path.indexOf('/generatedApks/', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_packageName'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 15),
+          unittest.equals('/generatedApks/'),
+        );
+        pathOffset += 15;
+        subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
+        pathOffset = path.length;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_versionCode'),
+        );
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildGeneratedApksListResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_packageName, arg_versionCode,
+          $fields: arg_$fields);
+      checkGeneratedApksListResponse(response as api.GeneratedApksListResponse);
+    });
+  });
+
+  unittest.group('resource-GrantsResource', () {
+    unittest.test('method--create', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).grants;
+      final arg_request = buildGrant();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj =
+            api.Grant.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkGrant(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildGrant());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.create(arg_request, arg_parent, $fields: arg_$fields);
+      checkGrant(response as api.Grant);
+    });
+
+    unittest.test('method--delete', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).grants;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = '';
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      await res.delete(arg_name, $fields: arg_$fields);
+    });
+
+    unittest.test('method--patch', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).grants;
+      final arg_request = buildGrant();
+      final arg_name = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj =
+            api.Grant.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkGrant(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['updateMask']!.first,
+          unittest.equals(arg_updateMask),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildGrant());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.patch(arg_request, arg_name,
+          updateMask: arg_updateMask, $fields: arg_$fields);
+      checkGrant(response as api.Grant);
+    });
+  });
+
+  unittest.group('resource-InappproductsResource', () {
+    unittest.test('method--delete', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_packageName = 'foo';
+      final arg_sku = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts/', pathOffset);
@@ -6145,7 +7380,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/inappproducts/"),
+          unittest.equals('/inappproducts/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6155,15 +7390,15 @@ void main() {
           unittest.equals('$arg_sku'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6171,38 +7406,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_packageName, arg_sku, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_packageName = 'foo';
-      var arg_sku = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_packageName = 'foo';
+      final arg_sku = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts/', pathOffset);
@@ -6216,7 +7451,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/inappproducts/"),
+          unittest.equals('/inappproducts/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6226,15 +7461,15 @@ void main() {
           unittest.equals('$arg_sku'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6242,14 +7477,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInAppProduct());
+        final resp = convert.json.encode(buildInAppProduct());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6258,29 +7493,29 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_request = buildInAppProduct();
-      var arg_packageName = 'foo';
-      var arg_autoConvertMissingPrices = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_request = buildInAppProduct();
+      final arg_packageName = 'foo';
+      final arg_autoConvertMissingPrices = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.InAppProduct.fromJson(
+        final obj = api.InAppProduct.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkInAppProduct(obj as api.InAppProduct);
+        checkInAppProduct(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts', pathOffset);
@@ -6294,19 +7529,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/inappproducts"),
+          unittest.equals('/inappproducts'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6314,18 +7549,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["autoConvertMissingPrices"]!.first,
-          unittest.equals("$arg_autoConvertMissingPrices"),
+          queryMap['autoConvertMissingPrices']!.first,
+          unittest.equals('$arg_autoConvertMissingPrices'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInAppProduct());
+        final resp = convert.json.encode(buildInAppProduct());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_packageName,
@@ -6335,26 +7570,26 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_packageName = 'foo';
-      var arg_maxResults = 42;
-      var arg_startIndex = 42;
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_packageName = 'foo';
+      final arg_maxResults = 42;
+      final arg_startIndex = 42;
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts', pathOffset);
@@ -6368,19 +7603,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/inappproducts"),
+          unittest.equals('/inappproducts'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6388,26 +7623,26 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          core.int.parse(queryMap["startIndex"]!.first),
+          core.int.parse(queryMap['startIndex']!.first),
           unittest.equals(arg_startIndex),
         );
         unittest.expect(
-          queryMap["token"]!.first,
+          queryMap['token']!.first,
           unittest.equals(arg_token),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInappproductsListResponse());
+        final resp = convert.json.encode(buildInappproductsListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_packageName,
@@ -6419,30 +7654,30 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_request = buildInAppProduct();
-      var arg_packageName = 'foo';
-      var arg_sku = 'foo';
-      var arg_autoConvertMissingPrices = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_request = buildInAppProduct();
+      final arg_packageName = 'foo';
+      final arg_sku = 'foo';
+      final arg_autoConvertMissingPrices = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.InAppProduct.fromJson(
+        final obj = api.InAppProduct.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkInAppProduct(obj as api.InAppProduct);
+        checkInAppProduct(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts/', pathOffset);
@@ -6456,7 +7691,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/inappproducts/"),
+          unittest.equals('/inappproducts/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6466,15 +7701,15 @@ void main() {
           unittest.equals('$arg_sku'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6482,18 +7717,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["autoConvertMissingPrices"]!.first,
-          unittest.equals("$arg_autoConvertMissingPrices"),
+          queryMap['autoConvertMissingPrices']!.first,
+          unittest.equals('$arg_autoConvertMissingPrices'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInAppProduct());
+        final resp = convert.json.encode(buildInAppProduct());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_packageName, arg_sku,
@@ -6503,30 +7738,31 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).inappproducts;
-      var arg_request = buildInAppProduct();
-      var arg_packageName = 'foo';
-      var arg_sku = 'foo';
-      var arg_autoConvertMissingPrices = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).inappproducts;
+      final arg_request = buildInAppProduct();
+      final arg_packageName = 'foo';
+      final arg_sku = 'foo';
+      final arg_allowMissing = true;
+      final arg_autoConvertMissingPrices = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.InAppProduct.fromJson(
+        final obj = api.InAppProduct.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkInAppProduct(obj as api.InAppProduct);
+        checkInAppProduct(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/inappproducts/', pathOffset);
@@ -6540,7 +7776,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 15),
-          unittest.equals("/inappproducts/"),
+          unittest.equals('/inappproducts/'),
         );
         pathOffset += 15;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6550,15 +7786,15 @@ void main() {
           unittest.equals('$arg_sku'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6566,21 +7802,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["autoConvertMissingPrices"]!.first,
-          unittest.equals("$arg_autoConvertMissingPrices"),
+          queryMap['allowMissing']!.first,
+          unittest.equals('$arg_allowMissing'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['autoConvertMissingPrices']!.first,
+          unittest.equals('$arg_autoConvertMissingPrices'),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInAppProduct());
+        final resp = convert.json.encode(buildInAppProduct());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_packageName, arg_sku,
+          allowMissing: arg_allowMissing,
           autoConvertMissingPrices: arg_autoConvertMissingPrices,
           $fields: arg_$fields);
       checkInAppProduct(response as api.InAppProduct);
@@ -6592,24 +7833,24 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).internalappsharingartifacts;
-      var arg_packageName = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).internalappsharingartifacts;
+      final arg_packageName = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 52),
           unittest
-              .equals("androidpublisher/v3/applications/internalappsharing/"),
+              .equals('androidpublisher/v3/applications/internalappsharing/'),
         );
         pathOffset += 52;
         index = path.indexOf('/artifacts/apk', pathOffset);
@@ -6623,19 +7864,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/artifacts/apk"),
+          unittest.equals('/artifacts/apk'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6643,14 +7884,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInternalAppSharingArtifact());
+        final resp = convert.json.encode(buildInternalAppSharingArtifact());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6663,24 +7904,24 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).internalappsharingartifacts;
-      var arg_packageName = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).internalappsharingartifacts;
+      final arg_packageName = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 52),
           unittest
-              .equals("androidpublisher/v3/applications/internalappsharing/"),
+              .equals('androidpublisher/v3/applications/internalappsharing/'),
         );
         pathOffset += 52;
         index = path.indexOf('/artifacts/bundle', pathOffset);
@@ -6694,19 +7935,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("/artifacts/bundle"),
+          unittest.equals('/artifacts/bundle'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6714,14 +7955,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildInternalAppSharingArtifact());
+        final resp = convert.json.encode(buildInternalAppSharingArtifact());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -6731,27 +7972,102 @@ void main() {
     });
   });
 
-  unittest.group('resource-OrdersResource', () {
-    unittest.test('method--refund', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).orders;
-      var arg_packageName = 'foo';
-      var arg_orderId = 'foo';
-      var arg_revoke = true;
-      var arg_$fields = 'foo';
+  unittest.group('resource-MonetizationResource', () {
+    unittest.test('method--convertRegionPrices', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).monetization;
+      final arg_request = buildConvertRegionPricesRequest();
+      final arg_packageName = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final obj = api.ConvertRegionPricesRequest.fromJson(
+            json as core.Map<core.String, core.dynamic>);
+        checkConvertRegionPricesRequest(obj);
+
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
+        );
+        pathOffset += 33;
+        index = path.indexOf('/pricing:convertRegionPrices', pathOffset);
+        unittest.expect(index >= 0, unittest.isTrue);
+        subPart =
+            core.Uri.decodeQueryComponent(path.substring(pathOffset, index));
+        pathOffset = index;
+        unittest.expect(
+          subPart,
+          unittest.equals('$arg_packageName'),
+        );
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 28),
+          unittest.equals('/pricing:convertRegionPrices'),
+        );
+        pathOffset += 28;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildConvertRegionPricesResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.convertRegionPrices(
+          arg_request, arg_packageName,
+          $fields: arg_$fields);
+      checkConvertRegionPricesResponse(
+          response as api.ConvertRegionPricesResponse);
+    });
+  });
+
+  unittest.group('resource-OrdersResource', () {
+    unittest.test('method--refund', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).orders;
+      final arg_packageName = 'foo';
+      final arg_orderId = 'foo';
+      final arg_revoke = true;
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 33),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/orders/', pathOffset);
@@ -6765,7 +8081,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/orders/"),
+          unittest.equals('/orders/'),
         );
         pathOffset += 8;
         index = path.indexOf(':refund', pathOffset);
@@ -6779,19 +8095,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":refund"),
+          unittest.equals(':refund'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6799,18 +8115,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["revoke"]!.first,
-          unittest.equals("$arg_revoke"),
+          queryMap['revoke']!.first,
+          unittest.equals('$arg_revoke'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.refund(arg_packageName, arg_orderId,
@@ -6820,31 +8136,30 @@ void main() {
 
   unittest.group('resource-PurchasesProductsResource', () {
     unittest.test('method--acknowledge', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.products;
-      var arg_request = buildProductPurchasesAcknowledgeRequest();
-      var arg_packageName = 'foo';
-      var arg_productId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.products;
+      final arg_request = buildProductPurchasesAcknowledgeRequest();
+      final arg_packageName = 'foo';
+      final arg_productId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ProductPurchasesAcknowledgeRequest.fromJson(
+        final obj = api.ProductPurchasesAcknowledgeRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkProductPurchasesAcknowledgeRequest(
-            obj as api.ProductPurchasesAcknowledgeRequest);
+        checkProductPurchasesAcknowledgeRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/products/', pathOffset);
@@ -6858,7 +8173,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/purchases/products/"),
+          unittest.equals('/purchases/products/'),
         );
         pathOffset += 20;
         index = path.indexOf('/tokens/', pathOffset);
@@ -6872,7 +8187,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':acknowledge', pathOffset);
@@ -6886,19 +8201,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals(":acknowledge"),
+          unittest.equals(':acknowledge'),
         );
         pathOffset += 12;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6906,14 +8221,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.acknowledge(
@@ -6922,25 +8237,25 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.products;
-      var arg_packageName = 'foo';
-      var arg_productId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.products;
+      final arg_packageName = 'foo';
+      final arg_productId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/products/', pathOffset);
@@ -6954,7 +8269,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 20),
-          unittest.equals("/purchases/products/"),
+          unittest.equals('/purchases/products/'),
         );
         pathOffset += 20;
         index = path.indexOf('/tokens/', pathOffset);
@@ -6968,7 +8283,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -6978,15 +8293,15 @@ void main() {
           unittest.equals('$arg_token'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -6994,14 +8309,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildProductPurchase());
+        final resp = convert.json.encode(buildProductPurchase());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_productId, arg_token,
@@ -7012,31 +8327,30 @@ void main() {
 
   unittest.group('resource-PurchasesSubscriptionsResource', () {
     unittest.test('method--acknowledge', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_request = buildSubscriptionPurchasesAcknowledgeRequest();
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_request = buildSubscriptionPurchasesAcknowledgeRequest();
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SubscriptionPurchasesAcknowledgeRequest.fromJson(
+        final obj = api.SubscriptionPurchasesAcknowledgeRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSubscriptionPurchasesAcknowledgeRequest(
-            obj as api.SubscriptionPurchasesAcknowledgeRequest);
+        checkSubscriptionPurchasesAcknowledgeRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7050,7 +8364,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7064,7 +8378,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':acknowledge', pathOffset);
@@ -7078,19 +8392,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals(":acknowledge"),
+          unittest.equals(':acknowledge'),
         );
         pathOffset += 12;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7098,14 +8412,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.acknowledge(
@@ -7114,25 +8428,25 @@ void main() {
     });
 
     unittest.test('method--cancel', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7146,7 +8460,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7160,7 +8474,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':cancel', pathOffset);
@@ -7174,19 +8488,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":cancel"),
+          unittest.equals(':cancel'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7194,14 +8508,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.cancel(arg_packageName, arg_subscriptionId, arg_token,
@@ -7209,31 +8523,30 @@ void main() {
     });
 
     unittest.test('method--defer', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_request = buildSubscriptionPurchasesDeferRequest();
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_request = buildSubscriptionPurchasesDeferRequest();
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.SubscriptionPurchasesDeferRequest.fromJson(
+        final obj = api.SubscriptionPurchasesDeferRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkSubscriptionPurchasesDeferRequest(
-            obj as api.SubscriptionPurchasesDeferRequest);
+        checkSubscriptionPurchasesDeferRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7247,7 +8560,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7261,7 +8574,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':defer', pathOffset);
@@ -7275,19 +8588,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals(":defer"),
+          unittest.equals(':defer'),
         );
         pathOffset += 6;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7295,14 +8608,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp =
+        final resp =
             convert.json.encode(buildSubscriptionPurchasesDeferResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -7314,25 +8627,25 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7346,7 +8659,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7360,7 +8673,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7370,15 +8683,15 @@ void main() {
           unittest.equals('$arg_token'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7386,14 +8699,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSubscriptionPurchase());
+        final resp = convert.json.encode(buildSubscriptionPurchase());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(
@@ -7403,25 +8716,25 @@ void main() {
     });
 
     unittest.test('method--refund', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7435,7 +8748,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7449,7 +8762,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':refund', pathOffset);
@@ -7463,19 +8776,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":refund"),
+          unittest.equals(':refund'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7483,14 +8796,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.refund(arg_packageName, arg_subscriptionId, arg_token,
@@ -7498,25 +8811,25 @@ void main() {
     });
 
     unittest.test('method--revoke', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.subscriptions;
-      var arg_packageName = 'foo';
-      var arg_subscriptionId = 'foo';
-      var arg_token = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.subscriptions;
+      final arg_packageName = 'foo';
+      final arg_subscriptionId = 'foo';
+      final arg_token = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/subscriptions/', pathOffset);
@@ -7530,7 +8843,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 25),
-          unittest.equals("/purchases/subscriptions/"),
+          unittest.equals('/purchases/subscriptions/'),
         );
         pathOffset += 25;
         index = path.indexOf('/tokens/', pathOffset);
@@ -7544,7 +8857,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/tokens/"),
+          unittest.equals('/tokens/'),
         );
         pathOffset += 8;
         index = path.indexOf(':revoke', pathOffset);
@@ -7558,19 +8871,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals(":revoke"),
+          unittest.equals(':revoke'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7578,14 +8891,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.revoke(arg_packageName, arg_subscriptionId, arg_token,
@@ -7595,29 +8908,29 @@ void main() {
 
   unittest.group('resource-PurchasesVoidedpurchasesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).purchases.voidedpurchases;
-      var arg_packageName = 'foo';
-      var arg_endTime = 'foo';
-      var arg_maxResults = 42;
-      var arg_startIndex = 42;
-      var arg_startTime = 'foo';
-      var arg_token = 'foo';
-      var arg_type = 42;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).purchases.voidedpurchases;
+      final arg_packageName = 'foo';
+      final arg_endTime = 'foo';
+      final arg_maxResults = 42;
+      final arg_startIndex = 42;
+      final arg_startTime = 'foo';
+      final arg_token = 'foo';
+      final arg_type = 42;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/purchases/voidedpurchases', pathOffset);
@@ -7631,19 +8944,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 26),
-          unittest.equals("/purchases/voidedpurchases"),
+          unittest.equals('/purchases/voidedpurchases'),
         );
         pathOffset += 26;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7651,38 +8964,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["endTime"]!.first,
+          queryMap['endTime']!.first,
           unittest.equals(arg_endTime),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          core.int.parse(queryMap["startIndex"]!.first),
+          core.int.parse(queryMap['startIndex']!.first),
           unittest.equals(arg_startIndex),
         );
         unittest.expect(
-          queryMap["startTime"]!.first,
+          queryMap['startTime']!.first,
           unittest.equals(arg_startTime),
         );
         unittest.expect(
-          queryMap["token"]!.first,
+          queryMap['token']!.first,
           unittest.equals(arg_token),
         );
         unittest.expect(
-          core.int.parse(queryMap["type"]!.first),
+          core.int.parse(queryMap['type']!.first),
           unittest.equals(arg_type),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVoidedPurchasesListResponse());
+        final resp = convert.json.encode(buildVoidedPurchasesListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_packageName,
@@ -7700,25 +9013,25 @@ void main() {
 
   unittest.group('resource-ReviewsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).reviews;
-      var arg_packageName = 'foo';
-      var arg_reviewId = 'foo';
-      var arg_translationLanguage = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).reviews;
+      final arg_packageName = 'foo';
+      final arg_reviewId = 'foo';
+      final arg_translationLanguage = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/reviews/', pathOffset);
@@ -7732,7 +9045,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/reviews/"),
+          unittest.equals('/reviews/'),
         );
         pathOffset += 9;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -7742,15 +9055,15 @@ void main() {
           unittest.equals('$arg_reviewId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7758,18 +9071,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["translationLanguage"]!.first,
+          queryMap['translationLanguage']!.first,
           unittest.equals(arg_translationLanguage),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildReview());
+        final resp = convert.json.encode(buildReview());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_packageName, arg_reviewId,
@@ -7778,27 +9091,27 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).reviews;
-      var arg_packageName = 'foo';
-      var arg_maxResults = 42;
-      var arg_startIndex = 42;
-      var arg_token = 'foo';
-      var arg_translationLanguage = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).reviews;
+      final arg_packageName = 'foo';
+      final arg_maxResults = 42;
+      final arg_startIndex = 42;
+      final arg_token = 'foo';
+      final arg_translationLanguage = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/reviews', pathOffset);
@@ -7812,19 +9125,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/reviews"),
+          unittest.equals('/reviews'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7832,30 +9145,30 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          core.int.parse(queryMap["startIndex"]!.first),
+          core.int.parse(queryMap['startIndex']!.first),
           unittest.equals(arg_startIndex),
         );
         unittest.expect(
-          queryMap["token"]!.first,
+          queryMap['token']!.first,
           unittest.equals(arg_token),
         );
         unittest.expect(
-          queryMap["translationLanguage"]!.first,
+          queryMap['translationLanguage']!.first,
           unittest.equals(arg_translationLanguage),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildReviewsListResponse());
+        final resp = convert.json.encode(buildReviewsListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_packageName,
@@ -7868,29 +9181,29 @@ void main() {
     });
 
     unittest.test('method--reply', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).reviews;
-      var arg_request = buildReviewsReplyRequest();
-      var arg_packageName = 'foo';
-      var arg_reviewId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).reviews;
+      final arg_request = buildReviewsReplyRequest();
+      final arg_packageName = 'foo';
+      final arg_reviewId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.ReviewsReplyRequest.fromJson(
+        final obj = api.ReviewsReplyRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkReviewsReplyRequest(obj as api.ReviewsReplyRequest);
+        checkReviewsReplyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/reviews/', pathOffset);
@@ -7904,7 +9217,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/reviews/"),
+          unittest.equals('/reviews/'),
         );
         pathOffset += 9;
         index = path.indexOf(':reply', pathOffset);
@@ -7918,19 +9231,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals(":reply"),
+          unittest.equals(':reply'),
         );
         pathOffset += 6;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -7938,14 +9251,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildReviewsReplyResponse());
+        final resp = convert.json.encode(buildReviewsReplyResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.reply(
@@ -7957,29 +9270,29 @@ void main() {
 
   unittest.group('resource-SystemapksVariantsResource', () {
     unittest.test('method--create', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).systemapks.variants;
-      var arg_request = buildVariant();
-      var arg_packageName = 'foo';
-      var arg_versionCode = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).systemapks.variants;
+      final arg_request = buildVariant();
+      final arg_packageName = 'foo';
+      final arg_versionCode = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Variant.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkVariant(obj as api.Variant);
+        checkVariant(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/systemApks/', pathOffset);
@@ -7993,7 +9306,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/systemApks/"),
+          unittest.equals('/systemApks/'),
         );
         pathOffset += 12;
         index = path.indexOf('/variants', pathOffset);
@@ -8007,19 +9320,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/variants"),
+          unittest.equals('/variants'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -8027,14 +9340,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVariant());
+        final resp = convert.json.encode(buildVariant());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.create(
@@ -8047,25 +9360,25 @@ void main() {
       // TODO: Implement tests for media upload;
       // TODO: Implement tests for media download;
 
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).systemapks.variants;
-      var arg_packageName = 'foo';
-      var arg_versionCode = 'foo';
-      var arg_variantId = 42;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).systemapks.variants;
+      final arg_packageName = 'foo';
+      final arg_versionCode = 'foo';
+      final arg_variantId = 42;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/systemApks/', pathOffset);
@@ -8079,7 +9392,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/systemApks/"),
+          unittest.equals('/systemApks/'),
         );
         pathOffset += 12;
         index = path.indexOf('/variants/', pathOffset);
@@ -8093,7 +9406,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/variants/"),
+          unittest.equals('/variants/'),
         );
         pathOffset += 10;
         index = path.indexOf(':download', pathOffset);
@@ -8107,19 +9420,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals(":download"),
+          unittest.equals(':download'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -8127,14 +9440,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.download(arg_packageName, arg_versionCode, arg_variantId,
@@ -8142,25 +9455,25 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).systemapks.variants;
-      var arg_packageName = 'foo';
-      var arg_versionCode = 'foo';
-      var arg_variantId = 42;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).systemapks.variants;
+      final arg_packageName = 'foo';
+      final arg_versionCode = 'foo';
+      final arg_variantId = 42;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/systemApks/', pathOffset);
@@ -8174,7 +9487,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/systemApks/"),
+          unittest.equals('/systemApks/'),
         );
         pathOffset += 12;
         index = path.indexOf('/variants/', pathOffset);
@@ -8188,7 +9501,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/variants/"),
+          unittest.equals('/variants/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -8198,15 +9511,15 @@ void main() {
           unittest.equals('$arg_variantId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -8214,14 +9527,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildVariant());
+        final resp = convert.json.encode(buildVariant());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(
@@ -8231,24 +9544,24 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.AndroidPublisherApi(mock).systemapks.variants;
-      var arg_packageName = 'foo';
-      var arg_versionCode = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).systemapks.variants;
+      final arg_packageName = 'foo';
+      final arg_versionCode = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 33),
-          unittest.equals("androidpublisher/v3/applications/"),
+          unittest.equals('androidpublisher/v3/applications/'),
         );
         pathOffset += 33;
         index = path.indexOf('/systemApks/', pathOffset);
@@ -8262,7 +9575,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/systemApks/"),
+          unittest.equals('/systemApks/'),
         );
         pathOffset += 12;
         index = path.indexOf('/variants', pathOffset);
@@ -8276,19 +9589,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("/variants"),
+          unittest.equals('/variants'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -8296,19 +9609,258 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSystemApksListResponse());
+        final resp = convert.json.encode(buildSystemApksListResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_packageName, arg_versionCode,
           $fields: arg_$fields);
       checkSystemApksListResponse(response as api.SystemApksListResponse);
+    });
+  });
+
+  unittest.group('resource-UsersResource', () {
+    unittest.test('method--create', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).users;
+      final arg_request = buildUser();
+      final arg_parent = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj =
+            api.User.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkUser(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildUser());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response =
+          await res.create(arg_request, arg_parent, $fields: arg_$fields);
+      checkUser(response as api.User);
+    });
+
+    unittest.test('method--delete', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).users;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = '';
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      await res.delete(arg_name, $fields: arg_$fields);
+    });
+
+    unittest.test('method--list', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).users;
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          core.int.parse(queryMap['pageSize']!.first),
+          unittest.equals(arg_pageSize),
+        );
+        unittest.expect(
+          queryMap['pageToken']!.first,
+          unittest.equals(arg_pageToken),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildListUsersResponse());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.list(arg_parent,
+          pageSize: arg_pageSize,
+          pageToken: arg_pageToken,
+          $fields: arg_$fields);
+      checkListUsersResponse(response as api.ListUsersResponse);
+    });
+
+    unittest.test('method--patch', () async {
+      final mock = HttpServerMock();
+      final res = api.AndroidPublisherApi(mock).users;
+      final arg_request = buildUser();
+      final arg_name = 'foo';
+      final arg_updateMask = 'foo';
+      final arg_$fields = 'foo';
+      mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
+        final obj =
+            api.User.fromJson(json as core.Map<core.String, core.dynamic>);
+        checkUser(obj);
+
+        final path = (req.url).path;
+        var pathOffset = 0;
+        core.int index;
+        core.String subPart;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 1),
+          unittest.equals('/'),
+        );
+        pathOffset += 1;
+        unittest.expect(
+          path.substring(pathOffset, pathOffset + 20),
+          unittest.equals('androidpublisher/v3/'),
+        );
+        pathOffset += 20;
+        // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
+
+        final query = (req.url).query;
+        var queryOffset = 0;
+        final queryMap = <core.String, core.List<core.String>>{};
+        void addQueryParam(core.String n, core.String v) =>
+            queryMap.putIfAbsent(n, () => []).add(v);
+
+        if (query.isNotEmpty) {
+          for (var part in query.split('&')) {
+            final keyValue = part.split('=');
+            addQueryParam(
+              core.Uri.decodeQueryComponent(keyValue[0]),
+              core.Uri.decodeQueryComponent(keyValue[1]),
+            );
+          }
+        }
+        unittest.expect(
+          queryMap['updateMask']!.first,
+          unittest.equals(arg_updateMask),
+        );
+        unittest.expect(
+          queryMap['fields']!.first,
+          unittest.equals(arg_$fields),
+        );
+
+        final h = {
+          'content-type': 'application/json; charset=utf-8',
+        };
+        final resp = convert.json.encode(buildUser());
+        return async.Future.value(stringResponse(200, h, resp));
+      }), true);
+      final response = await res.patch(arg_request, arg_name,
+          updateMask: arg_updateMask, $fields: arg_$fields);
+      checkUser(response as api.User);
     });
   });
 }

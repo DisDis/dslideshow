@@ -23,6 +23,7 @@
 /// - [EditsResource]
 ///   - [EditsApksResource]
 ///   - [EditsBundlesResource]
+///   - [EditsCountryavailabilityResource]
 ///   - [EditsDeobfuscationfilesResource]
 ///   - [EditsDetailsResource]
 ///   - [EditsExpansionfilesResource]
@@ -30,8 +31,11 @@
 ///   - [EditsListingsResource]
 ///   - [EditsTestersResource]
 ///   - [EditsTracksResource]
+/// - [GeneratedapksResource]
+/// - [GrantsResource]
 /// - [InappproductsResource]
 /// - [InternalappsharingartifactsResource]
+/// - [MonetizationResource]
 /// - [OrdersResource]
 /// - [PurchasesResource]
 ///   - [PurchasesProductsResource]
@@ -40,6 +44,7 @@
 /// - [ReviewsResource]
 /// - [SystemapksResource]
 ///   - [SystemapksVariantsResource]
+/// - [UsersResource]
 library androidpublisher.v3;
 
 import 'dart:async' as async;
@@ -49,6 +54,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -71,13 +78,17 @@ class AndroidPublisherApi {
   final commons.ApiRequester _requester;
 
   EditsResource get edits => EditsResource(_requester);
+  GeneratedapksResource get generatedapks => GeneratedapksResource(_requester);
+  GrantsResource get grants => GrantsResource(_requester);
   InappproductsResource get inappproducts => InappproductsResource(_requester);
   InternalappsharingartifactsResource get internalappsharingartifacts =>
       InternalappsharingartifactsResource(_requester);
+  MonetizationResource get monetization => MonetizationResource(_requester);
   OrdersResource get orders => OrdersResource(_requester);
   PurchasesResource get purchases => PurchasesResource(_requester);
   ReviewsResource get reviews => ReviewsResource(_requester);
   SystemapksResource get systemapks => SystemapksResource(_requester);
+  UsersResource get users => UsersResource(_requester);
 
   AndroidPublisherApi(http.Client client,
       {core.String rootUrl = 'https://androidpublisher.googleapis.com/',
@@ -91,6 +102,8 @@ class EditsResource {
 
   EditsApksResource get apks => EditsApksResource(_requester);
   EditsBundlesResource get bundles => EditsBundlesResource(_requester);
+  EditsCountryavailabilityResource get countryavailability =>
+      EditsCountryavailabilityResource(_requester);
   EditsDeobfuscationfilesResource get deobfuscationfiles =>
       EditsDeobfuscationfilesResource(_requester);
   EditsDetailsResource get details => EditsDetailsResource(_requester);
@@ -111,6 +124,11 @@ class EditsResource {
   ///
   /// [editId] - Identifier of the edit.
   ///
+  /// [changesNotSentForReview] - Indicates that the changes in this edit will
+  /// not be reviewed until they are explicitly sent for review from the Google
+  /// Play Console UI. These changes will be added to any other changes that are
+  /// not yet sent for review.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -124,9 +142,12 @@ class EditsResource {
   async.Future<AppEdit> commit(
     core.String packageName,
     core.String editId, {
+    core.bool? changesNotSentForReview,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (changesNotSentForReview != null)
+        'changesNotSentForReview': ['${changesNotSentForReview}'],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -245,7 +266,7 @@ class EditsResource {
     core.String packageName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -340,7 +361,7 @@ class EditsApksResource {
     core.String editId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -531,7 +552,7 @@ class EditsBundlesResource {
   ///
   /// [editId] - Identifier of the edit.
   ///
-  /// [ackBundleInstallationWarning] - Must be set to true if the bundle
+  /// [ackBundleInstallationWarning] - Must be set to true if the app bundle
   /// installation may trigger a warning on user devices (for example, if
   /// installation size may be over a threshold, typically 100 MB).
   ///
@@ -594,6 +615,59 @@ class EditsBundlesResource {
       uploadOptions: uploadOptions,
     );
     return Bundle.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class EditsCountryavailabilityResource {
+  final commons.ApiRequester _requester;
+
+  EditsCountryavailabilityResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Gets country availability.
+  ///
+  /// Request parameters:
+  ///
+  /// [packageName] - Package name of the app.
+  ///
+  /// [editId] - Identifier of the edit.
+  ///
+  /// [track] - The track to read from.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [TrackCountryAvailability].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<TrackCountryAvailability> get(
+    core.String packageName,
+    core.String editId,
+    core.String track, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/applications/' +
+        commons.escapeVariable('$packageName') +
+        '/edits/' +
+        commons.escapeVariable('$editId') +
+        '/countryAvailability/' +
+        commons.escapeVariable('$track');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return TrackCountryAvailability.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -765,7 +839,7 @@ class EditsDetailsResource {
     core.String editId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -812,7 +886,7 @@ class EditsDetailsResource {
     core.String editId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -938,7 +1012,7 @@ class EditsExpansionfilesResource {
     core.String expansionFileType, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1003,7 +1077,7 @@ class EditsExpansionfilesResource {
     core.String expansionFileType, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1620,7 +1694,7 @@ class EditsListingsResource {
     core.String language, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1671,7 +1745,7 @@ class EditsListingsResource {
     core.String language, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1772,7 +1846,7 @@ class EditsTestersResource {
     core.String track, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1822,7 +1896,7 @@ class EditsTestersResource {
     core.String track, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1965,7 +2039,7 @@ class EditsTracksResource {
     core.String track, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2015,7 +2089,7 @@ class EditsTracksResource {
     core.String track, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2034,6 +2108,238 @@ class EditsTracksResource {
       queryParams: _queryParams,
     );
     return Track.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class GeneratedapksResource {
+  final commons.ApiRequester _requester;
+
+  GeneratedapksResource(commons.ApiRequester client) : _requester = client;
+
+  /// Downloads a single signed APK generated from an app bundle.
+  ///
+  /// Request parameters:
+  ///
+  /// [packageName] - Package name of the app.
+  ///
+  /// [versionCode] - Version code of the app bundle.
+  ///
+  /// [downloadId] - Download ID, which uniquely identifies the APK to download.
+  /// Can be obtained from the response of `generatedapks.list` method.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// [downloadOptions] - Options for downloading. A download can be either a
+  /// Metadata (default) or Media download. Partial Media downloads are possible
+  /// as well.
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<commons.Media?> download(
+    core.String packageName,
+    core.int versionCode,
+    core.String downloadId, {
+    core.String? $fields,
+    commons.DownloadOptions downloadOptions = commons.DownloadOptions.metadata,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/applications/' +
+        commons.escapeVariable('$packageName') +
+        '/generatedApks/' +
+        commons.escapeVariable('$versionCode') +
+        '/downloads/' +
+        commons.escapeVariable('$downloadId') +
+        ':download';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+      downloadOptions: downloadOptions,
+    );
+    if (downloadOptions.isMetadataDownload) {
+      return null;
+    } else {
+      return _response as commons.Media;
+    }
+  }
+
+  /// Returns download metadata for all APKs that were generated from a given
+  /// app bundle.
+  ///
+  /// Request parameters:
+  ///
+  /// [packageName] - Package name of the app.
+  ///
+  /// [versionCode] - Version code of the app bundle.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GeneratedApksListResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GeneratedApksListResponse> list(
+    core.String packageName,
+    core.int versionCode, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/applications/' +
+        commons.escapeVariable('$packageName') +
+        '/generatedApks/' +
+        commons.escapeVariable('$versionCode');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GeneratedApksListResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class GrantsResource {
+  final commons.ApiRequester _requester;
+
+  GrantsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Grant access for a user to the given package.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The user which needs permission. Format:
+  /// developers/{developer}/users/{user}
+  /// Value must have pattern `^developers/\[^/\]+/users/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Grant].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Grant> create(
+    Grant request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'androidpublisher/v3/' + core.Uri.encodeFull('$parent') + '/grants';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Grant.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Removes all access for the user to the given package or developer account.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the grant to delete. Format:
+  /// developers/{developer}/users/{email}/grants/{package_name}
+  /// Value must have pattern
+  /// `^developers/\[^/\]+/users/\[^/\]+/grants/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<void> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/' + core.Uri.encodeFull('$name');
+
+    await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+      downloadOptions: null,
+    );
+  }
+
+  /// Updates access for the user to the given package.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Resource name for this grant, following the pattern
+  /// "developers/{developer}/users/{email}/grants/{package_name}".
+  /// Value must have pattern
+  /// `^developers/\[^/\]+/users/\[^/\]+/grants/\[^/\]+$`.
+  ///
+  /// [updateMask] - Optional. The list of fields to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Grant].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Grant> patch(
+    Grant request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Grant.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -2150,7 +2456,7 @@ class InappproductsResource {
     core.bool? autoConvertMissingPrices,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (autoConvertMissingPrices != null)
         'autoConvertMissingPrices': ['${autoConvertMissingPrices}'],
@@ -2173,13 +2479,20 @@ class InappproductsResource {
 
   /// Lists all in-app products - both managed products and subscriptions.
   ///
+  /// If an app has a large number of in-app products, the response may be
+  /// paginated. In this case the response field `tokenPagination.nextPageToken`
+  /// will be set and the caller should provide its value as a `token` request
+  /// parameter to retrieve the next page.
+  ///
   /// Request parameters:
   ///
   /// [packageName] - Package name of the app.
   ///
-  /// [maxResults] - How many results the list operation should return.
+  /// [maxResults] - Deprecated and ignored. The page size is determined by the
+  /// server.
   ///
-  /// [startIndex] - The index of the first element to return.
+  /// [startIndex] - Deprecated and ignored. Set the `token` parameter to
+  /// rertieve the next page.
   ///
   /// [token] - Pagination token. If empty, list starts at the first product.
   ///
@@ -2252,7 +2565,7 @@ class InappproductsResource {
     core.bool? autoConvertMissingPrices,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (autoConvertMissingPrices != null)
         'autoConvertMissingPrices': ['${autoConvertMissingPrices}'],
@@ -2284,6 +2597,9 @@ class InappproductsResource {
   ///
   /// [sku] - Unique identifier for the in-app product.
   ///
+  /// [allowMissing] - If set to true, and the in-app product with the given
+  /// package_name and sku doesn't exist, the in-app product will be created.
+  ///
   /// [autoConvertMissingPrices] - If true the prices for all regions targeted
   /// by the parent app that don't have a price specified for this in-app
   /// product will be auto converted to the target currency based on the default
@@ -2303,11 +2619,13 @@ class InappproductsResource {
     InAppProduct request,
     core.String packageName,
     core.String sku, {
+    core.bool? allowMissing,
     core.bool? autoConvertMissingPrices,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (allowMissing != null) 'allowMissing': ['${allowMissing}'],
       if (autoConvertMissingPrices != null)
         'autoConvertMissingPrices': ['${autoConvertMissingPrices}'],
       if ($fields != null) 'fields': [$fields],
@@ -2466,12 +2784,64 @@ class InternalappsharingartifactsResource {
   }
 }
 
+class MonetizationResource {
+  final commons.ApiRequester _requester;
+
+  MonetizationResource(commons.ApiRequester client) : _requester = client;
+
+  /// Calculates the region prices, using today's exchange rate and
+  /// country-specific pricing patterns, based on the price in the request for a
+  /// set of regions.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [packageName] - Required. The app package name.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ConvertRegionPricesResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ConvertRegionPricesResponse> convertRegionPrices(
+    ConvertRegionPricesRequest request,
+    core.String packageName, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/applications/' +
+        commons.escapeVariable('$packageName') +
+        '/pricing:convertRegionPrices';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return ConvertRegionPricesResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class OrdersResource {
   final commons.ApiRequester _requester;
 
   OrdersResource(commons.ApiRequester client) : _requester = client;
 
-  /// Refund a user's subscription or in-app purchase order.
+  /// Refunds a user's subscription or in-app purchase order.
+  ///
+  /// Orders older than 1 year cannot be refunded.
   ///
   /// Request parameters:
   ///
@@ -2569,7 +2939,7 @@ class PurchasesProductsResource {
     core.String token, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2677,7 +3047,7 @@ class PurchasesSubscriptionsResource {
     core.String token, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2781,7 +3151,7 @@ class PurchasesSubscriptionsResource {
     core.String token, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3173,7 +3543,7 @@ class ReviewsResource {
     core.String reviewId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3236,7 +3606,7 @@ class SystemapksVariantsResource {
     core.String versionCode, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -3399,6 +3769,181 @@ class SystemapksVariantsResource {
   }
 }
 
+class UsersResource {
+  final commons.ApiRequester _requester;
+
+  UsersResource(commons.ApiRequester client) : _requester = client;
+
+  /// Grant access for a user to the given developer account.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The developer account to add the user to. Format:
+  /// developers/{developer}
+  /// Value must have pattern `^developers/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [User].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<User> create(
+    User request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'androidpublisher/v3/' + core.Uri.encodeFull('$parent') + '/users';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return User.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Removes all access for the user to the given developer account.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The name of the user to delete. Format:
+  /// developers/{developer}/users/{email}
+  /// Value must have pattern `^developers/\[^/\]+/users/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<void> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/' + core.Uri.encodeFull('$name');
+
+    await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+      downloadOptions: null,
+    );
+  }
+
+  /// Lists all users with access to a developer account.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The developer account to fetch users from. Format:
+  /// developers/{developer}
+  /// Value must have pattern `^developers/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of results to return. This must be set to
+  /// -1 to disable pagination.
+  ///
+  /// [pageToken] - A token received from a previous call to this method, in
+  /// order to retrieve further results.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListUsersResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListUsersResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url =
+        'androidpublisher/v3/' + core.Uri.encodeFull('$parent') + '/users';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListUsersResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates access for the user to the developer account.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Resource name for this user, following the pattern
+  /// "developers/{developer}/users/{email}".
+  /// Value must have pattern `^developers/\[^/\]+/users/\[^/\]+$`.
+  ///
+  /// [updateMask] - Optional. The list of fields to be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [User].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<User> patch(
+    User request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'androidpublisher/v3/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return User.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 /// Information about an APK.
 ///
 /// The resource for ApksService.
@@ -3409,20 +3954,24 @@ class Apk {
   /// The version code of the APK, as specified in the manifest file.
   core.int? versionCode;
 
-  Apk();
+  Apk({
+    this.binary,
+    this.versionCode,
+  });
 
-  Apk.fromJson(core.Map _json) {
-    if (_json.containsKey('binary')) {
-      binary = ApkBinary.fromJson(
-          _json['binary'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('versionCode')) {
-      versionCode = _json['versionCode'] as core.int;
-    }
-  }
+  Apk.fromJson(core.Map _json)
+      : this(
+          binary: _json.containsKey('binary')
+              ? ApkBinary.fromJson(
+                  _json['binary'] as core.Map<core.String, core.dynamic>)
+              : null,
+          versionCode: _json.containsKey('versionCode')
+              ? _json['versionCode'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (binary != null) 'binary': binary!.toJson(),
+        if (binary != null) 'binary': binary!,
         if (versionCode != null) 'versionCode': versionCode!,
       };
 }
@@ -3437,16 +3986,18 @@ class ApkBinary {
   /// output of the sha256sum command.
   core.String? sha256;
 
-  ApkBinary();
+  ApkBinary({
+    this.sha1,
+    this.sha256,
+  });
 
-  ApkBinary.fromJson(core.Map _json) {
-    if (_json.containsKey('sha1')) {
-      sha1 = _json['sha1'] as core.String;
-    }
-    if (_json.containsKey('sha256')) {
-      sha256 = _json['sha256'] as core.String;
-    }
-  }
+  ApkBinary.fromJson(core.Map _json)
+      : this(
+          sha1: _json.containsKey('sha1') ? _json['sha1'] as core.String : null,
+          sha256: _json.containsKey('sha256')
+              ? _json['sha256'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sha1 != null) 'sha1': sha1!,
@@ -3459,18 +4010,21 @@ class ApksAddExternallyHostedRequest {
   /// The definition of the externally-hosted APK and where it is located.
   ExternallyHostedApk? externallyHostedApk;
 
-  ApksAddExternallyHostedRequest();
+  ApksAddExternallyHostedRequest({
+    this.externallyHostedApk,
+  });
 
-  ApksAddExternallyHostedRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('externallyHostedApk')) {
-      externallyHostedApk = ExternallyHostedApk.fromJson(
-          _json['externallyHostedApk'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ApksAddExternallyHostedRequest.fromJson(core.Map _json)
+      : this(
+          externallyHostedApk: _json.containsKey('externallyHostedApk')
+              ? ExternallyHostedApk.fromJson(_json['externallyHostedApk']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (externallyHostedApk != null)
-          'externallyHostedApk': externallyHostedApk!.toJson(),
+          'externallyHostedApk': externallyHostedApk!,
       };
 }
 
@@ -3479,18 +4033,21 @@ class ApksAddExternallyHostedResponse {
   /// The definition of the externally-hosted APK and where it is located.
   ExternallyHostedApk? externallyHostedApk;
 
-  ApksAddExternallyHostedResponse();
+  ApksAddExternallyHostedResponse({
+    this.externallyHostedApk,
+  });
 
-  ApksAddExternallyHostedResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('externallyHostedApk')) {
-      externallyHostedApk = ExternallyHostedApk.fromJson(
-          _json['externallyHostedApk'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ApksAddExternallyHostedResponse.fromJson(core.Map _json)
+      : this(
+          externallyHostedApk: _json.containsKey('externallyHostedApk')
+              ? ExternallyHostedApk.fromJson(_json['externallyHostedApk']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (externallyHostedApk != null)
-          'externallyHostedApk': externallyHostedApk!.toJson(),
+          'externallyHostedApk': externallyHostedApk!,
       };
 }
 
@@ -3502,22 +4059,24 @@ class ApksListResponse {
   /// The kind of this response ("androidpublisher#apksListResponse").
   core.String? kind;
 
-  ApksListResponse();
+  ApksListResponse({
+    this.apks,
+    this.kind,
+  });
 
-  ApksListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('apks')) {
-      apks = (_json['apks'] as core.List)
-          .map<Apk>((value) =>
-              Apk.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  ApksListResponse.fromJson(core.Map _json)
+      : this(
+          apks: _json.containsKey('apks')
+              ? (_json['apks'] as core.List)
+                  .map((value) => Apk.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (apks != null) 'apks': apks!.map((value) => value.toJson()).toList(),
+        if (apks != null) 'apks': apks!,
         if (kind != null) 'kind': kind!,
       };
 }
@@ -3538,22 +4097,28 @@ class AppDetails {
   /// Default language code, in BCP 47 format (eg "en-US").
   core.String? defaultLanguage;
 
-  AppDetails();
+  AppDetails({
+    this.contactEmail,
+    this.contactPhone,
+    this.contactWebsite,
+    this.defaultLanguage,
+  });
 
-  AppDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('contactEmail')) {
-      contactEmail = _json['contactEmail'] as core.String;
-    }
-    if (_json.containsKey('contactPhone')) {
-      contactPhone = _json['contactPhone'] as core.String;
-    }
-    if (_json.containsKey('contactWebsite')) {
-      contactWebsite = _json['contactWebsite'] as core.String;
-    }
-    if (_json.containsKey('defaultLanguage')) {
-      defaultLanguage = _json['defaultLanguage'] as core.String;
-    }
-  }
+  AppDetails.fromJson(core.Map _json)
+      : this(
+          contactEmail: _json.containsKey('contactEmail')
+              ? _json['contactEmail'] as core.String
+              : null,
+          contactPhone: _json.containsKey('contactPhone')
+              ? _json['contactPhone'] as core.String
+              : null,
+          contactWebsite: _json.containsKey('contactWebsite')
+              ? _json['contactWebsite'] as core.String
+              : null,
+          defaultLanguage: _json.containsKey('defaultLanguage')
+              ? _json['defaultLanguage'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (contactEmail != null) 'contactEmail': contactEmail!,
@@ -3580,16 +4145,18 @@ class AppEdit {
   /// Output only.
   core.String? id;
 
-  AppEdit();
+  AppEdit({
+    this.expiryTimeSeconds,
+    this.id,
+  });
 
-  AppEdit.fromJson(core.Map _json) {
-    if (_json.containsKey('expiryTimeSeconds')) {
-      expiryTimeSeconds = _json['expiryTimeSeconds'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-  }
+  AppEdit.fromJson(core.Map _json)
+      : this(
+          expiryTimeSeconds: _json.containsKey('expiryTimeSeconds')
+              ? _json['expiryTimeSeconds'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (expiryTimeSeconds != null) 'expiryTimeSeconds': expiryTimeSeconds!,
@@ -3597,7 +4164,7 @@ class AppEdit {
       };
 }
 
-/// Information about a bundle.
+/// Information about an app bundle.
 ///
 /// The resource for BundlesService.
 class Bundle {
@@ -3613,19 +4180,22 @@ class Bundle {
   /// App Bundle's base module APK manifest file.
   core.int? versionCode;
 
-  Bundle();
+  Bundle({
+    this.sha1,
+    this.sha256,
+    this.versionCode,
+  });
 
-  Bundle.fromJson(core.Map _json) {
-    if (_json.containsKey('sha1')) {
-      sha1 = _json['sha1'] as core.String;
-    }
-    if (_json.containsKey('sha256')) {
-      sha256 = _json['sha256'] as core.String;
-    }
-    if (_json.containsKey('versionCode')) {
-      versionCode = _json['versionCode'] as core.int;
-    }
-  }
+  Bundle.fromJson(core.Map _json)
+      : this(
+          sha1: _json.containsKey('sha1') ? _json['sha1'] as core.String : null,
+          sha256: _json.containsKey('sha256')
+              ? _json['sha256'] as core.String
+              : null,
+          versionCode: _json.containsKey('versionCode')
+              ? _json['versionCode'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sha1 != null) 'sha1': sha1!,
@@ -3634,31 +4204,32 @@ class Bundle {
       };
 }
 
-/// Response listing all bundles.
+/// Response listing all app bundles.
 class BundlesListResponse {
-  /// All bundles.
+  /// All app bundles.
   core.List<Bundle>? bundles;
 
   /// The kind of this response ("androidpublisher#bundlesListResponse").
   core.String? kind;
 
-  BundlesListResponse();
+  BundlesListResponse({
+    this.bundles,
+    this.kind,
+  });
 
-  BundlesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('bundles')) {
-      bundles = (_json['bundles'] as core.List)
-          .map<Bundle>((value) =>
-              Bundle.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-  }
+  BundlesListResponse.fromJson(core.Map _json)
+      : this(
+          bundles: _json.containsKey('bundles')
+              ? (_json['bundles'] as core.List)
+                  .map((value) => Bundle.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bundles != null)
-          'bundles': bundles!.map((value) => value.toJson()).toList(),
+        if (bundles != null) 'bundles': bundles!,
         if (kind != null) 'kind': kind!,
       };
 }
@@ -3671,23 +4242,163 @@ class Comment {
   /// A comment from a user.
   UserComment? userComment;
 
-  Comment();
+  Comment({
+    this.developerComment,
+    this.userComment,
+  });
 
-  Comment.fromJson(core.Map _json) {
-    if (_json.containsKey('developerComment')) {
-      developerComment = DeveloperComment.fromJson(
-          _json['developerComment'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('userComment')) {
-      userComment = UserComment.fromJson(
-          _json['userComment'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Comment.fromJson(core.Map _json)
+      : this(
+          developerComment: _json.containsKey('developerComment')
+              ? DeveloperComment.fromJson(_json['developerComment']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          userComment: _json.containsKey('userComment')
+              ? UserComment.fromJson(
+                  _json['userComment'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (developerComment != null)
-          'developerComment': developerComment!.toJson(),
-        if (userComment != null) 'userComment': userComment!.toJson(),
+        if (developerComment != null) 'developerComment': developerComment!,
+        if (userComment != null) 'userComment': userComment!,
+      };
+}
+
+/// Request message for ConvertRegionPrices.
+class ConvertRegionPricesRequest {
+  /// The intital price to convert other regions from.
+  ///
+  /// Tax exclusive.
+  Money? price;
+
+  ConvertRegionPricesRequest({
+    this.price,
+  });
+
+  ConvertRegionPricesRequest.fromJson(core.Map _json)
+      : this(
+          price: _json.containsKey('price')
+              ? Money.fromJson(
+                  _json['price'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (price != null) 'price': price!,
+      };
+}
+
+/// Response message for ConvertRegionPrices.
+class ConvertRegionPricesResponse {
+  /// Converted other regions prices in USD and EUR, to use for countries where
+  /// Play doesn't support a country's local currency.
+  ConvertedOtherRegionsPrice? convertedOtherRegionsPrice;
+
+  /// Map from region code to converted region price.
+  core.Map<core.String, ConvertedRegionPrice>? convertedRegionPrices;
+
+  ConvertRegionPricesResponse({
+    this.convertedOtherRegionsPrice,
+    this.convertedRegionPrices,
+  });
+
+  ConvertRegionPricesResponse.fromJson(core.Map _json)
+      : this(
+          convertedOtherRegionsPrice:
+              _json.containsKey('convertedOtherRegionsPrice')
+                  ? ConvertedOtherRegionsPrice.fromJson(
+                      _json['convertedOtherRegionsPrice']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          convertedRegionPrices: _json.containsKey('convertedRegionPrices')
+              ? (_json['convertedRegionPrices']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    ConvertedRegionPrice.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (convertedOtherRegionsPrice != null)
+          'convertedOtherRegionsPrice': convertedOtherRegionsPrice!,
+        if (convertedRegionPrices != null)
+          'convertedRegionPrices': convertedRegionPrices!,
+      };
+}
+
+/// Converted other regions prices.
+class ConvertedOtherRegionsPrice {
+  /// Price in EUR to use for the "Other regions" location exclusive of taxes.
+  Money? eurPrice;
+
+  /// Price in USD to use for the "Other regions" location exclusive of taxes.
+  Money? usdPrice;
+
+  ConvertedOtherRegionsPrice({
+    this.eurPrice,
+    this.usdPrice,
+  });
+
+  ConvertedOtherRegionsPrice.fromJson(core.Map _json)
+      : this(
+          eurPrice: _json.containsKey('eurPrice')
+              ? Money.fromJson(
+                  _json['eurPrice'] as core.Map<core.String, core.dynamic>)
+              : null,
+          usdPrice: _json.containsKey('usdPrice')
+              ? Money.fromJson(
+                  _json['usdPrice'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (eurPrice != null) 'eurPrice': eurPrice!,
+        if (usdPrice != null) 'usdPrice': usdPrice!,
+      };
+}
+
+/// A converted region price.
+class ConvertedRegionPrice {
+  /// The converted price tax inclusive.
+  Money? price;
+
+  /// The region code of the region.
+  core.String? regionCode;
+
+  /// The tax amount of the converted price.
+  Money? taxAmount;
+
+  ConvertedRegionPrice({
+    this.price,
+    this.regionCode,
+    this.taxAmount,
+  });
+
+  ConvertedRegionPrice.fromJson(core.Map _json)
+      : this(
+          price: _json.containsKey('price')
+              ? Money.fromJson(
+                  _json['price'] as core.Map<core.String, core.dynamic>)
+              : null,
+          regionCode: _json.containsKey('regionCode')
+              ? _json['regionCode'] as core.String
+              : null,
+          taxAmount: _json.containsKey('taxAmount')
+              ? Money.fromJson(
+                  _json['taxAmount'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (price != null) 'price': price!,
+        if (regionCode != null) 'regionCode': regionCode!,
+        if (taxAmount != null) 'taxAmount': taxAmount!,
       };
 }
 
@@ -3700,18 +4411,22 @@ class CountryTargeting {
   /// Include "rest of world" as well as explicitly targeted countries.
   core.bool? includeRestOfWorld;
 
-  CountryTargeting();
+  CountryTargeting({
+    this.countries,
+    this.includeRestOfWorld,
+  });
 
-  CountryTargeting.fromJson(core.Map _json) {
-    if (_json.containsKey('countries')) {
-      countries = (_json['countries'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('includeRestOfWorld')) {
-      includeRestOfWorld = _json['includeRestOfWorld'] as core.bool;
-    }
-  }
+  CountryTargeting.fromJson(core.Map _json)
+      : this(
+          countries: _json.containsKey('countries')
+              ? (_json['countries'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          includeRestOfWorld: _json.containsKey('includeRestOfWorld')
+              ? _json['includeRestOfWorld'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (countries != null) 'countries': countries!,
@@ -3730,13 +4445,16 @@ class DeobfuscationFile {
   /// - "nativeCode" : Native debugging symbols file type.
   core.String? symbolType;
 
-  DeobfuscationFile();
+  DeobfuscationFile({
+    this.symbolType,
+  });
 
-  DeobfuscationFile.fromJson(core.Map _json) {
-    if (_json.containsKey('symbolType')) {
-      symbolType = _json['symbolType'] as core.String;
-    }
-  }
+  DeobfuscationFile.fromJson(core.Map _json)
+      : this(
+          symbolType: _json.containsKey('symbolType')
+              ? _json['symbolType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (symbolType != null) 'symbolType': symbolType!,
@@ -3748,18 +4466,20 @@ class DeobfuscationFilesUploadResponse {
   /// The uploaded Deobfuscation File configuration.
   DeobfuscationFile? deobfuscationFile;
 
-  DeobfuscationFilesUploadResponse();
+  DeobfuscationFilesUploadResponse({
+    this.deobfuscationFile,
+  });
 
-  DeobfuscationFilesUploadResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('deobfuscationFile')) {
-      deobfuscationFile = DeobfuscationFile.fromJson(
-          _json['deobfuscationFile'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  DeobfuscationFilesUploadResponse.fromJson(core.Map _json)
+      : this(
+          deobfuscationFile: _json.containsKey('deobfuscationFile')
+              ? DeobfuscationFile.fromJson(_json['deobfuscationFile']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deobfuscationFile != null)
-          'deobfuscationFile': deobfuscationFile!.toJson(),
+        if (deobfuscationFile != null) 'deobfuscationFile': deobfuscationFile!,
       };
 }
 
@@ -3771,20 +4491,22 @@ class DeveloperComment {
   /// The content of the comment, i.e. reply body.
   core.String? text;
 
-  DeveloperComment();
+  DeveloperComment({
+    this.lastModified,
+    this.text,
+  });
 
-  DeveloperComment.fromJson(core.Map _json) {
-    if (_json.containsKey('lastModified')) {
-      lastModified = Timestamp.fromJson(
-          _json['lastModified'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('text')) {
-      text = _json['text'] as core.String;
-    }
-  }
+  DeveloperComment.fromJson(core.Map _json)
+      : this(
+          lastModified: _json.containsKey('lastModified')
+              ? Timestamp.fromJson(
+                  _json['lastModified'] as core.Map<core.String, core.dynamic>)
+              : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (lastModified != null) 'lastModified': lastModified!.toJson(),
+        if (lastModified != null) 'lastModified': lastModified!,
         if (text != null) 'text': text!,
       };
 }
@@ -3824,43 +4546,54 @@ class DeviceMetadata {
   /// Screen width in pixels
   core.int? screenWidthPx;
 
-  DeviceMetadata();
+  DeviceMetadata({
+    this.cpuMake,
+    this.cpuModel,
+    this.deviceClass,
+    this.glEsVersion,
+    this.manufacturer,
+    this.nativePlatform,
+    this.productName,
+    this.ramMb,
+    this.screenDensityDpi,
+    this.screenHeightPx,
+    this.screenWidthPx,
+  });
 
-  DeviceMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('cpuMake')) {
-      cpuMake = _json['cpuMake'] as core.String;
-    }
-    if (_json.containsKey('cpuModel')) {
-      cpuModel = _json['cpuModel'] as core.String;
-    }
-    if (_json.containsKey('deviceClass')) {
-      deviceClass = _json['deviceClass'] as core.String;
-    }
-    if (_json.containsKey('glEsVersion')) {
-      glEsVersion = _json['glEsVersion'] as core.int;
-    }
-    if (_json.containsKey('manufacturer')) {
-      manufacturer = _json['manufacturer'] as core.String;
-    }
-    if (_json.containsKey('nativePlatform')) {
-      nativePlatform = _json['nativePlatform'] as core.String;
-    }
-    if (_json.containsKey('productName')) {
-      productName = _json['productName'] as core.String;
-    }
-    if (_json.containsKey('ramMb')) {
-      ramMb = _json['ramMb'] as core.int;
-    }
-    if (_json.containsKey('screenDensityDpi')) {
-      screenDensityDpi = _json['screenDensityDpi'] as core.int;
-    }
-    if (_json.containsKey('screenHeightPx')) {
-      screenHeightPx = _json['screenHeightPx'] as core.int;
-    }
-    if (_json.containsKey('screenWidthPx')) {
-      screenWidthPx = _json['screenWidthPx'] as core.int;
-    }
-  }
+  DeviceMetadata.fromJson(core.Map _json)
+      : this(
+          cpuMake: _json.containsKey('cpuMake')
+              ? _json['cpuMake'] as core.String
+              : null,
+          cpuModel: _json.containsKey('cpuModel')
+              ? _json['cpuModel'] as core.String
+              : null,
+          deviceClass: _json.containsKey('deviceClass')
+              ? _json['deviceClass'] as core.String
+              : null,
+          glEsVersion: _json.containsKey('glEsVersion')
+              ? _json['glEsVersion'] as core.int
+              : null,
+          manufacturer: _json.containsKey('manufacturer')
+              ? _json['manufacturer'] as core.String
+              : null,
+          nativePlatform: _json.containsKey('nativePlatform')
+              ? _json['nativePlatform'] as core.String
+              : null,
+          productName: _json.containsKey('productName')
+              ? _json['productName'] as core.String
+              : null,
+          ramMb: _json.containsKey('ramMb') ? _json['ramMb'] as core.int : null,
+          screenDensityDpi: _json.containsKey('screenDensityDpi')
+              ? _json['screenDensityDpi'] as core.int
+              : null,
+          screenHeightPx: _json.containsKey('screenHeightPx')
+              ? _json['screenHeightPx'] as core.int
+              : null,
+          screenWidthPx: _json.containsKey('screenWidthPx')
+              ? _json['screenWidthPx'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cpuMake != null) 'cpuMake': cpuMake!,
@@ -3891,23 +4624,28 @@ class DeviceSpec {
   /// All installed locales represented as BCP-47 strings, e.g. "en-US".
   core.List<core.String>? supportedLocales;
 
-  DeviceSpec();
+  DeviceSpec({
+    this.screenDensity,
+    this.supportedAbis,
+    this.supportedLocales,
+  });
 
-  DeviceSpec.fromJson(core.Map _json) {
-    if (_json.containsKey('screenDensity')) {
-      screenDensity = _json['screenDensity'] as core.int;
-    }
-    if (_json.containsKey('supportedAbis')) {
-      supportedAbis = (_json['supportedAbis'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('supportedLocales')) {
-      supportedLocales = (_json['supportedLocales'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  DeviceSpec.fromJson(core.Map _json)
+      : this(
+          screenDensity: _json.containsKey('screenDensity')
+              ? _json['screenDensity'] as core.int
+              : null,
+          supportedAbis: _json.containsKey('supportedAbis')
+              ? (_json['supportedAbis'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          supportedLocales: _json.containsKey('supportedLocales')
+              ? (_json['supportedLocales'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (screenDensity != null) 'screenDensity': screenDensity!,
@@ -3931,16 +4669,20 @@ class ExpansionFile {
   /// The file_size field will not be set.
   core.int? referencesVersion;
 
-  ExpansionFile();
+  ExpansionFile({
+    this.fileSize,
+    this.referencesVersion,
+  });
 
-  ExpansionFile.fromJson(core.Map _json) {
-    if (_json.containsKey('fileSize')) {
-      fileSize = _json['fileSize'] as core.String;
-    }
-    if (_json.containsKey('referencesVersion')) {
-      referencesVersion = _json['referencesVersion'] as core.int;
-    }
-  }
+  ExpansionFile.fromJson(core.Map _json)
+      : this(
+          fileSize: _json.containsKey('fileSize')
+              ? _json['fileSize'] as core.String
+              : null,
+          referencesVersion: _json.containsKey('referencesVersion')
+              ? _json['referencesVersion'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fileSize != null) 'fileSize': fileSize!,
@@ -3953,17 +4695,20 @@ class ExpansionFilesUploadResponse {
   /// The uploaded expansion file configuration.
   ExpansionFile? expansionFile;
 
-  ExpansionFilesUploadResponse();
+  ExpansionFilesUploadResponse({
+    this.expansionFile,
+  });
 
-  ExpansionFilesUploadResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('expansionFile')) {
-      expansionFile = ExpansionFile.fromJson(
-          _json['expansionFile'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ExpansionFilesUploadResponse.fromJson(core.Map _json)
+      : this(
+          expansionFile: _json.containsKey('expansionFile')
+              ? ExpansionFile.fromJson(
+                  _json['expansionFile'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (expansionFile != null) 'expansionFile': expansionFile!.toJson(),
+        if (expansionFile != null) 'expansionFile': expansionFile!,
       };
 }
 
@@ -4022,64 +4767,81 @@ class ExternallyHostedApk {
   /// The version name of this APK.
   core.String? versionName;
 
-  ExternallyHostedApk();
+  ExternallyHostedApk({
+    this.applicationLabel,
+    this.certificateBase64s,
+    this.externallyHostedUrl,
+    this.fileSha1Base64,
+    this.fileSha256Base64,
+    this.fileSize,
+    this.iconBase64,
+    this.maximumSdk,
+    this.minimumSdk,
+    this.nativeCodes,
+    this.packageName,
+    this.usesFeatures,
+    this.usesPermissions,
+    this.versionCode,
+    this.versionName,
+  });
 
-  ExternallyHostedApk.fromJson(core.Map _json) {
-    if (_json.containsKey('applicationLabel')) {
-      applicationLabel = _json['applicationLabel'] as core.String;
-    }
-    if (_json.containsKey('certificateBase64s')) {
-      certificateBase64s = (_json['certificateBase64s'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('externallyHostedUrl')) {
-      externallyHostedUrl = _json['externallyHostedUrl'] as core.String;
-    }
-    if (_json.containsKey('fileSha1Base64')) {
-      fileSha1Base64 = _json['fileSha1Base64'] as core.String;
-    }
-    if (_json.containsKey('fileSha256Base64')) {
-      fileSha256Base64 = _json['fileSha256Base64'] as core.String;
-    }
-    if (_json.containsKey('fileSize')) {
-      fileSize = _json['fileSize'] as core.String;
-    }
-    if (_json.containsKey('iconBase64')) {
-      iconBase64 = _json['iconBase64'] as core.String;
-    }
-    if (_json.containsKey('maximumSdk')) {
-      maximumSdk = _json['maximumSdk'] as core.int;
-    }
-    if (_json.containsKey('minimumSdk')) {
-      minimumSdk = _json['minimumSdk'] as core.int;
-    }
-    if (_json.containsKey('nativeCodes')) {
-      nativeCodes = (_json['nativeCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('usesFeatures')) {
-      usesFeatures = (_json['usesFeatures'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('usesPermissions')) {
-      usesPermissions = (_json['usesPermissions'] as core.List)
-          .map<UsesPermission>((value) => UsesPermission.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('versionCode')) {
-      versionCode = _json['versionCode'] as core.int;
-    }
-    if (_json.containsKey('versionName')) {
-      versionName = _json['versionName'] as core.String;
-    }
-  }
+  ExternallyHostedApk.fromJson(core.Map _json)
+      : this(
+          applicationLabel: _json.containsKey('applicationLabel')
+              ? _json['applicationLabel'] as core.String
+              : null,
+          certificateBase64s: _json.containsKey('certificateBase64s')
+              ? (_json['certificateBase64s'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          externallyHostedUrl: _json.containsKey('externallyHostedUrl')
+              ? _json['externallyHostedUrl'] as core.String
+              : null,
+          fileSha1Base64: _json.containsKey('fileSha1Base64')
+              ? _json['fileSha1Base64'] as core.String
+              : null,
+          fileSha256Base64: _json.containsKey('fileSha256Base64')
+              ? _json['fileSha256Base64'] as core.String
+              : null,
+          fileSize: _json.containsKey('fileSize')
+              ? _json['fileSize'] as core.String
+              : null,
+          iconBase64: _json.containsKey('iconBase64')
+              ? _json['iconBase64'] as core.String
+              : null,
+          maximumSdk: _json.containsKey('maximumSdk')
+              ? _json['maximumSdk'] as core.int
+              : null,
+          minimumSdk: _json.containsKey('minimumSdk')
+              ? _json['minimumSdk'] as core.int
+              : null,
+          nativeCodes: _json.containsKey('nativeCodes')
+              ? (_json['nativeCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          usesFeatures: _json.containsKey('usesFeatures')
+              ? (_json['usesFeatures'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          usesPermissions: _json.containsKey('usesPermissions')
+              ? (_json['usesPermissions'] as core.List)
+                  .map((value) => UsesPermission.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          versionCode: _json.containsKey('versionCode')
+              ? _json['versionCode'] as core.int
+              : null,
+          versionName: _json.containsKey('versionName')
+              ? _json['versionName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (applicationLabel != null) 'applicationLabel': applicationLabel!,
@@ -4096,11 +4858,303 @@ class ExternallyHostedApk {
         if (nativeCodes != null) 'nativeCodes': nativeCodes!,
         if (packageName != null) 'packageName': packageName!,
         if (usesFeatures != null) 'usesFeatures': usesFeatures!,
-        if (usesPermissions != null)
-          'usesPermissions':
-              usesPermissions!.map((value) => value.toJson()).toList(),
+        if (usesPermissions != null) 'usesPermissions': usesPermissions!,
         if (versionCode != null) 'versionCode': versionCode!,
         if (versionName != null) 'versionName': versionName!,
+      };
+}
+
+/// Response to list generated APKs.
+class GeneratedApksListResponse {
+  /// All generated APKs, grouped by the APK signing key.
+  core.List<GeneratedApksPerSigningKey>? generatedApks;
+
+  GeneratedApksListResponse({
+    this.generatedApks,
+  });
+
+  GeneratedApksListResponse.fromJson(core.Map _json)
+      : this(
+          generatedApks: _json.containsKey('generatedApks')
+              ? (_json['generatedApks'] as core.List)
+                  .map((value) => GeneratedApksPerSigningKey.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (generatedApks != null) 'generatedApks': generatedApks!,
+      };
+}
+
+/// Download metadata for split, standalone and universal APKs, as well as asset
+/// pack slices, signed with a given key.
+class GeneratedApksPerSigningKey {
+  /// SHA256 hash of the APK signing public key certificate.
+  core.String? certificateSha256Hash;
+
+  /// List of asset pack slices which will be served for this app bundle, signed
+  /// with a key corresponding to certificate_sha256_hash.
+  core.List<GeneratedAssetPackSlice>? generatedAssetPackSlices;
+
+  /// List of generated split APKs, signed with a key corresponding to
+  /// certificate_sha256_hash.
+  core.List<GeneratedSplitApk>? generatedSplitApks;
+
+  /// List of generated standalone APKs, signed with a key corresponding to
+  /// certificate_sha256_hash.
+  core.List<GeneratedStandaloneApk>? generatedStandaloneApks;
+
+  /// Generated universal APK, signed with a key corresponding to
+  /// certificate_sha256_hash.
+  ///
+  /// This field is not set if no universal APK was generated for this signing
+  /// key.
+  GeneratedUniversalApk? generatedUniversalApk;
+
+  GeneratedApksPerSigningKey({
+    this.certificateSha256Hash,
+    this.generatedAssetPackSlices,
+    this.generatedSplitApks,
+    this.generatedStandaloneApks,
+    this.generatedUniversalApk,
+  });
+
+  GeneratedApksPerSigningKey.fromJson(core.Map _json)
+      : this(
+          certificateSha256Hash: _json.containsKey('certificateSha256Hash')
+              ? _json['certificateSha256Hash'] as core.String
+              : null,
+          generatedAssetPackSlices:
+              _json.containsKey('generatedAssetPackSlices')
+                  ? (_json['generatedAssetPackSlices'] as core.List)
+                      .map((value) => GeneratedAssetPackSlice.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          generatedSplitApks: _json.containsKey('generatedSplitApks')
+              ? (_json['generatedSplitApks'] as core.List)
+                  .map((value) => GeneratedSplitApk.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          generatedStandaloneApks: _json.containsKey('generatedStandaloneApks')
+              ? (_json['generatedStandaloneApks'] as core.List)
+                  .map((value) => GeneratedStandaloneApk.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          generatedUniversalApk: _json.containsKey('generatedUniversalApk')
+              ? GeneratedUniversalApk.fromJson(_json['generatedUniversalApk']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (certificateSha256Hash != null)
+          'certificateSha256Hash': certificateSha256Hash!,
+        if (generatedAssetPackSlices != null)
+          'generatedAssetPackSlices': generatedAssetPackSlices!,
+        if (generatedSplitApks != null)
+          'generatedSplitApks': generatedSplitApks!,
+        if (generatedStandaloneApks != null)
+          'generatedStandaloneApks': generatedStandaloneApks!,
+        if (generatedUniversalApk != null)
+          'generatedUniversalApk': generatedUniversalApk!,
+      };
+}
+
+/// Download metadata for an asset pack slice.
+class GeneratedAssetPackSlice {
+  /// Download ID, which uniquely identifies the APK to download.
+  ///
+  /// Should be supplied to `generatedapks.download` method.
+  core.String? downloadId;
+
+  /// Name of the module that this asset slice belongs to.
+  core.String? moduleName;
+
+  /// Asset slice ID.
+  core.String? sliceId;
+
+  /// Asset module version.
+  core.String? version;
+
+  GeneratedAssetPackSlice({
+    this.downloadId,
+    this.moduleName,
+    this.sliceId,
+    this.version,
+  });
+
+  GeneratedAssetPackSlice.fromJson(core.Map _json)
+      : this(
+          downloadId: _json.containsKey('downloadId')
+              ? _json['downloadId'] as core.String
+              : null,
+          moduleName: _json.containsKey('moduleName')
+              ? _json['moduleName'] as core.String
+              : null,
+          sliceId: _json.containsKey('sliceId')
+              ? _json['sliceId'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (downloadId != null) 'downloadId': downloadId!,
+        if (moduleName != null) 'moduleName': moduleName!,
+        if (sliceId != null) 'sliceId': sliceId!,
+        if (version != null) 'version': version!,
+      };
+}
+
+/// Download metadata for a split APK.
+class GeneratedSplitApk {
+  /// Download ID, which uniquely identifies the APK to download.
+  ///
+  /// Should be supplied to `generatedapks.download` method.
+  core.String? downloadId;
+
+  /// Name of the module that this APK belongs to.
+  core.String? moduleName;
+
+  /// Split ID.
+  ///
+  /// Empty for the main split of the base module.
+  core.String? splitId;
+
+  /// ID of the generated variant.
+  core.int? variantId;
+
+  GeneratedSplitApk({
+    this.downloadId,
+    this.moduleName,
+    this.splitId,
+    this.variantId,
+  });
+
+  GeneratedSplitApk.fromJson(core.Map _json)
+      : this(
+          downloadId: _json.containsKey('downloadId')
+              ? _json['downloadId'] as core.String
+              : null,
+          moduleName: _json.containsKey('moduleName')
+              ? _json['moduleName'] as core.String
+              : null,
+          splitId: _json.containsKey('splitId')
+              ? _json['splitId'] as core.String
+              : null,
+          variantId: _json.containsKey('variantId')
+              ? _json['variantId'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (downloadId != null) 'downloadId': downloadId!,
+        if (moduleName != null) 'moduleName': moduleName!,
+        if (splitId != null) 'splitId': splitId!,
+        if (variantId != null) 'variantId': variantId!,
+      };
+}
+
+/// Download metadata for a standalone APK.
+class GeneratedStandaloneApk {
+  /// Download ID, which uniquely identifies the APK to download.
+  ///
+  /// Should be supplied to `generatedapks.download` method.
+  core.String? downloadId;
+
+  /// ID of the generated variant.
+  core.int? variantId;
+
+  GeneratedStandaloneApk({
+    this.downloadId,
+    this.variantId,
+  });
+
+  GeneratedStandaloneApk.fromJson(core.Map _json)
+      : this(
+          downloadId: _json.containsKey('downloadId')
+              ? _json['downloadId'] as core.String
+              : null,
+          variantId: _json.containsKey('variantId')
+              ? _json['variantId'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (downloadId != null) 'downloadId': downloadId!,
+        if (variantId != null) 'variantId': variantId!,
+      };
+}
+
+/// Download metadata for a universal APK.
+class GeneratedUniversalApk {
+  /// Download ID, which uniquely identifies the APK to download.
+  ///
+  /// Should be supplied to `generatedapks.download` method.
+  core.String? downloadId;
+
+  GeneratedUniversalApk({
+    this.downloadId,
+  });
+
+  GeneratedUniversalApk.fromJson(core.Map _json)
+      : this(
+          downloadId: _json.containsKey('downloadId')
+              ? _json['downloadId'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (downloadId != null) 'downloadId': downloadId!,
+      };
+}
+
+/// An access grant resource.
+class Grant {
+  /// The permissions granted to the user for this app.
+  core.List<core.String>? appLevelPermissions;
+
+  /// Resource name for this grant, following the pattern
+  /// "developers/{developer}/users/{email}/grants/{package_name}".
+  ///
+  /// Required.
+  core.String? name;
+
+  /// The package name of the app.
+  ///
+  /// Immutable.
+  core.String? packageName;
+
+  Grant({
+    this.appLevelPermissions,
+    this.name,
+    this.packageName,
+  });
+
+  Grant.fromJson(core.Map _json)
+      : this(
+          appLevelPermissions: _json.containsKey('appLevelPermissions')
+              ? (_json['appLevelPermissions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (appLevelPermissions != null)
+          'appLevelPermissions': appLevelPermissions!,
+        if (name != null) 'name': name!,
+        if (packageName != null) 'packageName': packageName!,
       };
 }
 
@@ -4120,22 +5174,22 @@ class Image {
   /// A URL that will serve a preview of the image.
   core.String? url;
 
-  Image();
+  Image({
+    this.id,
+    this.sha1,
+    this.sha256,
+    this.url,
+  });
 
-  Image.fromJson(core.Map _json) {
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('sha1')) {
-      sha1 = _json['sha1'] as core.String;
-    }
-    if (_json.containsKey('sha256')) {
-      sha256 = _json['sha256'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  Image.fromJson(core.Map _json)
+      : this(
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          sha1: _json.containsKey('sha1') ? _json['sha1'] as core.String : null,
+          sha256: _json.containsKey('sha256')
+              ? _json['sha256'] as core.String
+              : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (id != null) 'id': id!,
@@ -4150,20 +5204,22 @@ class ImagesDeleteAllResponse {
   /// The deleted images.
   core.List<Image>? deleted;
 
-  ImagesDeleteAllResponse();
+  ImagesDeleteAllResponse({
+    this.deleted,
+  });
 
-  ImagesDeleteAllResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('deleted')) {
-      deleted = (_json['deleted'] as core.List)
-          .map<Image>((value) =>
-              Image.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ImagesDeleteAllResponse.fromJson(core.Map _json)
+      : this(
+          deleted: _json.containsKey('deleted')
+              ? (_json['deleted'] as core.List)
+                  .map((value) => Image.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deleted != null)
-          'deleted': deleted!.map((value) => value.toJson()).toList(),
+        if (deleted != null) 'deleted': deleted!,
       };
 }
 
@@ -4172,20 +5228,22 @@ class ImagesListResponse {
   /// All listed Images.
   core.List<Image>? images;
 
-  ImagesListResponse();
+  ImagesListResponse({
+    this.images,
+  });
 
-  ImagesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('images')) {
-      images = (_json['images'] as core.List)
-          .map<Image>((value) =>
-              Image.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ImagesListResponse.fromJson(core.Map _json)
+      : this(
+          images: _json.containsKey('images')
+              ? (_json['images'] as core.List)
+                  .map((value) => Image.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (images != null)
-          'images': images!.map((value) => value.toJson()).toList(),
+        if (images != null) 'images': images!,
       };
 }
 
@@ -4194,17 +5252,20 @@ class ImagesUploadResponse {
   /// The uploaded image.
   Image? image;
 
-  ImagesUploadResponse();
+  ImagesUploadResponse({
+    this.image,
+  });
 
-  ImagesUploadResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('image')) {
-      image =
-          Image.fromJson(_json['image'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ImagesUploadResponse.fromJson(core.Map _json)
+      : this(
+          image: _json.containsKey('image')
+              ? Image.fromJson(
+                  _json['image'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (image != null) 'image': image!.toJson(),
+        if (image != null) 'image': image!,
       };
 }
 
@@ -4236,6 +5297,12 @@ class InAppProduct {
   /// Map key is the language of the localized data, as defined by BCP-47, e.g.
   /// "en-US".
   core.Map<core.String, InAppProductListing>? listings;
+
+  /// Details about taxes and legal compliance.
+  ///
+  /// Only applicable to managed products.
+  ManagedProductTaxAndComplianceSettings?
+      managedProductTaxesAndComplianceSettings;
 
   /// Package name of the parent app.
   core.String? packageName;
@@ -4270,78 +5337,110 @@ class InAppProduct {
   /// P6M (six months), and P1Y (one year).
   core.String? subscriptionPeriod;
 
+  /// Details about taxes and legal compliance.
+  ///
+  /// Only applicable to subscription products.
+  SubscriptionTaxAndComplianceSettings? subscriptionTaxesAndComplianceSettings;
+
   /// Trial period, specified in ISO 8601 format.
   ///
   /// Acceptable values are anything between P7D (seven days) and P999D (999
   /// days).
   core.String? trialPeriod;
 
-  InAppProduct();
+  InAppProduct({
+    this.defaultLanguage,
+    this.defaultPrice,
+    this.gracePeriod,
+    this.listings,
+    this.managedProductTaxesAndComplianceSettings,
+    this.packageName,
+    this.prices,
+    this.purchaseType,
+    this.sku,
+    this.status,
+    this.subscriptionPeriod,
+    this.subscriptionTaxesAndComplianceSettings,
+    this.trialPeriod,
+  });
 
-  InAppProduct.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultLanguage')) {
-      defaultLanguage = _json['defaultLanguage'] as core.String;
-    }
-    if (_json.containsKey('defaultPrice')) {
-      defaultPrice = Price.fromJson(
-          _json['defaultPrice'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('gracePeriod')) {
-      gracePeriod = _json['gracePeriod'] as core.String;
-    }
-    if (_json.containsKey('listings')) {
-      listings = (_json['listings'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          InAppProductListing.fromJson(
-              item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('packageName')) {
-      packageName = _json['packageName'] as core.String;
-    }
-    if (_json.containsKey('prices')) {
-      prices = (_json['prices'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          Price.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('purchaseType')) {
-      purchaseType = _json['purchaseType'] as core.String;
-    }
-    if (_json.containsKey('sku')) {
-      sku = _json['sku'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('subscriptionPeriod')) {
-      subscriptionPeriod = _json['subscriptionPeriod'] as core.String;
-    }
-    if (_json.containsKey('trialPeriod')) {
-      trialPeriod = _json['trialPeriod'] as core.String;
-    }
-  }
+  InAppProduct.fromJson(core.Map _json)
+      : this(
+          defaultLanguage: _json.containsKey('defaultLanguage')
+              ? _json['defaultLanguage'] as core.String
+              : null,
+          defaultPrice: _json.containsKey('defaultPrice')
+              ? Price.fromJson(
+                  _json['defaultPrice'] as core.Map<core.String, core.dynamic>)
+              : null,
+          gracePeriod: _json.containsKey('gracePeriod')
+              ? _json['gracePeriod'] as core.String
+              : null,
+          listings: _json.containsKey('listings')
+              ? (_json['listings'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    InAppProductListing.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          managedProductTaxesAndComplianceSettings:
+              _json.containsKey('managedProductTaxesAndComplianceSettings')
+                  ? ManagedProductTaxAndComplianceSettings.fromJson(
+                      _json['managedProductTaxesAndComplianceSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          packageName: _json.containsKey('packageName')
+              ? _json['packageName'] as core.String
+              : null,
+          prices: _json.containsKey('prices')
+              ? (_json['prices'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    Price.fromJson(item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          purchaseType: _json.containsKey('purchaseType')
+              ? _json['purchaseType'] as core.String
+              : null,
+          sku: _json.containsKey('sku') ? _json['sku'] as core.String : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          subscriptionPeriod: _json.containsKey('subscriptionPeriod')
+              ? _json['subscriptionPeriod'] as core.String
+              : null,
+          subscriptionTaxesAndComplianceSettings:
+              _json.containsKey('subscriptionTaxesAndComplianceSettings')
+                  ? SubscriptionTaxAndComplianceSettings.fromJson(
+                      _json['subscriptionTaxesAndComplianceSettings']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          trialPeriod: _json.containsKey('trialPeriod')
+              ? _json['trialPeriod'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (defaultLanguage != null) 'defaultLanguage': defaultLanguage!,
-        if (defaultPrice != null) 'defaultPrice': defaultPrice!.toJson(),
+        if (defaultPrice != null) 'defaultPrice': defaultPrice!,
         if (gracePeriod != null) 'gracePeriod': gracePeriod!,
-        if (listings != null)
-          'listings':
-              listings!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (listings != null) 'listings': listings!,
+        if (managedProductTaxesAndComplianceSettings != null)
+          'managedProductTaxesAndComplianceSettings':
+              managedProductTaxesAndComplianceSettings!,
         if (packageName != null) 'packageName': packageName!,
-        if (prices != null)
-          'prices':
-              prices!.map((key, item) => core.MapEntry(key, item.toJson())),
+        if (prices != null) 'prices': prices!,
         if (purchaseType != null) 'purchaseType': purchaseType!,
         if (sku != null) 'sku': sku!,
         if (status != null) 'status': status!,
         if (subscriptionPeriod != null)
           'subscriptionPeriod': subscriptionPeriod!,
+        if (subscriptionTaxesAndComplianceSettings != null)
+          'subscriptionTaxesAndComplianceSettings':
+              subscriptionTaxesAndComplianceSettings!,
         if (trialPeriod != null) 'trialPeriod': trialPeriod!,
       };
 }
@@ -4357,21 +5456,25 @@ class InAppProductListing {
   /// Title for the store listing.
   core.String? title;
 
-  InAppProductListing();
+  InAppProductListing({
+    this.benefits,
+    this.description,
+    this.title,
+  });
 
-  InAppProductListing.fromJson(core.Map _json) {
-    if (_json.containsKey('benefits')) {
-      benefits = (_json['benefits'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  InAppProductListing.fromJson(core.Map _json)
+      : this(
+          benefits: _json.containsKey('benefits')
+              ? (_json['benefits'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (benefits != null) 'benefits': benefits!,
@@ -4388,41 +5491,43 @@ class InappproductsListResponse {
   /// The kind of this response ("androidpublisher#inappproductsListResponse").
   core.String? kind;
 
-  /// Information about the current page.
+  /// Deprecated and unset.
   PageInfo? pageInfo;
 
   /// Pagination token, to handle a number of products that is over one page.
   TokenPagination? tokenPagination;
 
-  InappproductsListResponse();
+  InappproductsListResponse({
+    this.inappproduct,
+    this.kind,
+    this.pageInfo,
+    this.tokenPagination,
+  });
 
-  InappproductsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('inappproduct')) {
-      inappproduct = (_json['inappproduct'] as core.List)
-          .map<InAppProduct>((value) => InAppProduct.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('pageInfo')) {
-      pageInfo = PageInfo.fromJson(
-          _json['pageInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('tokenPagination')) {
-      tokenPagination = TokenPagination.fromJson(
-          _json['tokenPagination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  InappproductsListResponse.fromJson(core.Map _json)
+      : this(
+          inappproduct: _json.containsKey('inappproduct')
+              ? (_json['inappproduct'] as core.List)
+                  .map((value) => InAppProduct.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          pageInfo: _json.containsKey('pageInfo')
+              ? PageInfo.fromJson(
+                  _json['pageInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          tokenPagination: _json.containsKey('tokenPagination')
+              ? TokenPagination.fromJson(_json['tokenPagination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (inappproduct != null)
-          'inappproduct': inappproduct!.map((value) => value.toJson()).toList(),
+        if (inappproduct != null) 'inappproduct': inappproduct!,
         if (kind != null) 'kind': kind!,
-        if (pageInfo != null) 'pageInfo': pageInfo!.toJson(),
-        if (tokenPagination != null)
-          'tokenPagination': tokenPagination!.toJson(),
+        if (pageInfo != null) 'pageInfo': pageInfo!,
+        if (tokenPagination != null) 'tokenPagination': tokenPagination!,
       };
 }
 
@@ -4443,19 +5548,24 @@ class InternalAppSharingArtifact {
   /// number, matching the output of the sha256sum command.
   core.String? sha256;
 
-  InternalAppSharingArtifact();
+  InternalAppSharingArtifact({
+    this.certificateFingerprint,
+    this.downloadUrl,
+    this.sha256,
+  });
 
-  InternalAppSharingArtifact.fromJson(core.Map _json) {
-    if (_json.containsKey('certificateFingerprint')) {
-      certificateFingerprint = _json['certificateFingerprint'] as core.String;
-    }
-    if (_json.containsKey('downloadUrl')) {
-      downloadUrl = _json['downloadUrl'] as core.String;
-    }
-    if (_json.containsKey('sha256')) {
-      sha256 = _json['sha256'] as core.String;
-    }
-  }
+  InternalAppSharingArtifact.fromJson(core.Map _json)
+      : this(
+          certificateFingerprint: _json.containsKey('certificateFingerprint')
+              ? _json['certificateFingerprint'] as core.String
+              : null,
+          downloadUrl: _json.containsKey('downloadUrl')
+              ? _json['downloadUrl'] as core.String
+              : null,
+          sha256: _json.containsKey('sha256')
+              ? _json['sha256'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (certificateFingerprint != null)
@@ -4490,24 +5600,30 @@ class IntroductoryPriceInfo {
   /// month), "P3M" (three months), "P6M" (six months), and "P1Y" (one year).
   core.String? introductoryPricePeriod;
 
-  IntroductoryPriceInfo();
+  IntroductoryPriceInfo({
+    this.introductoryPriceAmountMicros,
+    this.introductoryPriceCurrencyCode,
+    this.introductoryPriceCycles,
+    this.introductoryPricePeriod,
+  });
 
-  IntroductoryPriceInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('introductoryPriceAmountMicros')) {
-      introductoryPriceAmountMicros =
-          _json['introductoryPriceAmountMicros'] as core.String;
-    }
-    if (_json.containsKey('introductoryPriceCurrencyCode')) {
-      introductoryPriceCurrencyCode =
-          _json['introductoryPriceCurrencyCode'] as core.String;
-    }
-    if (_json.containsKey('introductoryPriceCycles')) {
-      introductoryPriceCycles = _json['introductoryPriceCycles'] as core.int;
-    }
-    if (_json.containsKey('introductoryPricePeriod')) {
-      introductoryPricePeriod = _json['introductoryPricePeriod'] as core.String;
-    }
-  }
+  IntroductoryPriceInfo.fromJson(core.Map _json)
+      : this(
+          introductoryPriceAmountMicros:
+              _json.containsKey('introductoryPriceAmountMicros')
+                  ? _json['introductoryPriceAmountMicros'] as core.String
+                  : null,
+          introductoryPriceCurrencyCode:
+              _json.containsKey('introductoryPriceCurrencyCode')
+                  ? _json['introductoryPriceCurrencyCode'] as core.String
+                  : null,
+          introductoryPriceCycles: _json.containsKey('introductoryPriceCycles')
+              ? _json['introductoryPriceCycles'] as core.int
+              : null,
+          introductoryPricePeriod: _json.containsKey('introductoryPricePeriod')
+              ? _json['introductoryPricePeriod'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (introductoryPriceAmountMicros != null)
@@ -4518,6 +5634,41 @@ class IntroductoryPriceInfo {
           'introductoryPriceCycles': introductoryPriceCycles!,
         if (introductoryPricePeriod != null)
           'introductoryPricePeriod': introductoryPricePeriod!,
+      };
+}
+
+/// A response containing one or more users with access to an account.
+class ListUsersResponse {
+  /// A token to pass to subsequent calls in order to retrieve subsequent
+  /// results.
+  ///
+  /// This will not be set if there are no more results to return.
+  core.String? nextPageToken;
+
+  /// The resulting users.
+  core.List<User>? users;
+
+  ListUsersResponse({
+    this.nextPageToken,
+    this.users,
+  });
+
+  ListUsersResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          users: _json.containsKey('users')
+              ? (_json['users'] as core.List)
+                  .map((value) => User.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
+        if (users != null) 'users': users!,
       };
 }
 
@@ -4541,25 +5692,30 @@ class Listing {
   /// URL of a promotional YouTube video for the app.
   core.String? video;
 
-  Listing();
+  Listing({
+    this.fullDescription,
+    this.language,
+    this.shortDescription,
+    this.title,
+    this.video,
+  });
 
-  Listing.fromJson(core.Map _json) {
-    if (_json.containsKey('fullDescription')) {
-      fullDescription = _json['fullDescription'] as core.String;
-    }
-    if (_json.containsKey('language')) {
-      language = _json['language'] as core.String;
-    }
-    if (_json.containsKey('shortDescription')) {
-      shortDescription = _json['shortDescription'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('video')) {
-      video = _json['video'] as core.String;
-    }
-  }
+  Listing.fromJson(core.Map _json)
+      : this(
+          fullDescription: _json.containsKey('fullDescription')
+              ? _json['fullDescription'] as core.String
+              : null,
+          language: _json.containsKey('language')
+              ? _json['language'] as core.String
+              : null,
+          shortDescription: _json.containsKey('shortDescription')
+              ? _json['shortDescription'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          video:
+              _json.containsKey('video') ? _json['video'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fullDescription != null) 'fullDescription': fullDescription!,
@@ -4578,28 +5734,29 @@ class ListingsListResponse {
   /// All localized listings.
   core.List<Listing>? listings;
 
-  ListingsListResponse();
+  ListingsListResponse({
+    this.kind,
+    this.listings,
+  });
 
-  ListingsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('listings')) {
-      listings = (_json['listings'] as core.List)
-          .map<Listing>((value) =>
-              Listing.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListingsListResponse.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          listings: _json.containsKey('listings')
+              ? (_json['listings'] as core.List)
+                  .map((value) => Listing.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (listings != null)
-          'listings': listings!.map((value) => value.toJson()).toList(),
+        if (listings != null) 'listings': listings!,
       };
 }
 
-/// Release notes specification, i.e. language and text.
+/// Localized text in given language.
 class LocalizedText {
   /// Language localization code (a BCP-47 language tag; for example, "de-AT"
   /// for Austrian German).
@@ -4608,16 +5765,18 @@ class LocalizedText {
   /// The text in the given language.
   core.String? text;
 
-  LocalizedText();
+  LocalizedText({
+    this.language,
+    this.text,
+  });
 
-  LocalizedText.fromJson(core.Map _json) {
-    if (_json.containsKey('language')) {
-      language = _json['language'] as core.String;
-    }
-    if (_json.containsKey('text')) {
-      text = _json['text'] as core.String;
-    }
-  }
+  LocalizedText.fromJson(core.Map _json)
+      : this(
+          language: _json.containsKey('language')
+              ? _json['language'] as core.String
+              : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (language != null) 'language': language!,
@@ -4625,43 +5784,65 @@ class LocalizedText {
       };
 }
 
+/// Details about taxation and legal compliance for managed products.
+class ManagedProductTaxAndComplianceSettings {
+  /// Digital content or service classification for products distributed to
+  /// users in the European Economic Area (EEA).
+  ///
+  /// The withdrawal regime under EEA consumer laws depends on this
+  /// classification. Refer to the
+  /// [Help Center article](https://support.google.com/googleplay/android-developer/answer/10463498)
+  /// for more information.
+  /// Possible string values are:
+  /// - "WITHDRAWAL_RIGHT_TYPE_UNSPECIFIED"
+  /// - "WITHDRAWAL_RIGHT_DIGITAL_CONTENT"
+  /// - "WITHDRAWAL_RIGHT_SERVICE"
+  core.String? eeaWithdrawalRightType;
+
+  /// A mapping from region code to tax rate details.
+  ///
+  /// The keys are region codes as defined by Unicode's "CLDR".
+  core.Map<core.String, RegionalTaxRateInfo>? taxRateInfoByRegionCode;
+
+  ManagedProductTaxAndComplianceSettings({
+    this.eeaWithdrawalRightType,
+    this.taxRateInfoByRegionCode,
+  });
+
+  ManagedProductTaxAndComplianceSettings.fromJson(core.Map _json)
+      : this(
+          eeaWithdrawalRightType: _json.containsKey('eeaWithdrawalRightType')
+              ? _json['eeaWithdrawalRightType'] as core.String
+              : null,
+          taxRateInfoByRegionCode: _json.containsKey('taxRateInfoByRegionCode')
+              ? (_json['taxRateInfoByRegionCode']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    RegionalTaxRateInfo.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (eeaWithdrawalRightType != null)
+          'eeaWithdrawalRightType': eeaWithdrawalRightType!,
+        if (taxRateInfoByRegionCode != null)
+          'taxRateInfoByRegionCode': taxRateInfoByRegionCode!,
+      };
+}
+
+/// Represents an amount of money with its currency type.
+typedef Money = $Money;
+
 /// Information about the current page.
 ///
 /// List operations that supports paging return only one "page" of results. This
 /// protocol buffer message describes the page that has been returned.
-class PageInfo {
-  /// Maximum number of results returned in one page.
-  ///
-  /// ! The number of results included in the API response.
-  core.int? resultPerPage;
-
-  /// Index of the first result returned in the current page.
-  core.int? startIndex;
-
-  /// Total number of results available on the backend ! The total number of
-  /// results in the result set.
-  core.int? totalResults;
-
-  PageInfo();
-
-  PageInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('resultPerPage')) {
-      resultPerPage = _json['resultPerPage'] as core.int;
-    }
-    if (_json.containsKey('startIndex')) {
-      startIndex = _json['startIndex'] as core.int;
-    }
-    if (_json.containsKey('totalResults')) {
-      totalResults = _json['totalResults'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (resultPerPage != null) 'resultPerPage': resultPerPage!,
-        if (startIndex != null) 'startIndex': startIndex!,
-        if (totalResults != null) 'totalResults': totalResults!,
-      };
-}
+typedef PageInfo = $PageInfo;
 
 /// Definition of a price, i.e. currency and units.
 class Price {
@@ -4673,16 +5854,20 @@ class Price {
   /// Price in 1/million of the currency base unit, represented as a string.
   core.String? priceMicros;
 
-  Price();
+  Price({
+    this.currency,
+    this.priceMicros,
+  });
 
-  Price.fromJson(core.Map _json) {
-    if (_json.containsKey('currency')) {
-      currency = _json['currency'] as core.String;
-    }
-    if (_json.containsKey('priceMicros')) {
-      priceMicros = _json['priceMicros'] as core.String;
-    }
-  }
+  Price.fromJson(core.Map _json)
+      : this(
+          currency: _json.containsKey('currency')
+              ? _json['currency'] as core.String
+              : null,
+          priceMicros: _json.containsKey('priceMicros')
+              ? _json['priceMicros'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (currency != null) 'currency': currency!,
@@ -4760,54 +5945,68 @@ class ProductPurchase {
   /// was granted.
   core.String? regionCode;
 
-  ProductPurchase();
+  ProductPurchase({
+    this.acknowledgementState,
+    this.consumptionState,
+    this.developerPayload,
+    this.kind,
+    this.obfuscatedExternalAccountId,
+    this.obfuscatedExternalProfileId,
+    this.orderId,
+    this.productId,
+    this.purchaseState,
+    this.purchaseTimeMillis,
+    this.purchaseToken,
+    this.purchaseType,
+    this.quantity,
+    this.regionCode,
+  });
 
-  ProductPurchase.fromJson(core.Map _json) {
-    if (_json.containsKey('acknowledgementState')) {
-      acknowledgementState = _json['acknowledgementState'] as core.int;
-    }
-    if (_json.containsKey('consumptionState')) {
-      consumptionState = _json['consumptionState'] as core.int;
-    }
-    if (_json.containsKey('developerPayload')) {
-      developerPayload = _json['developerPayload'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('obfuscatedExternalAccountId')) {
-      obfuscatedExternalAccountId =
-          _json['obfuscatedExternalAccountId'] as core.String;
-    }
-    if (_json.containsKey('obfuscatedExternalProfileId')) {
-      obfuscatedExternalProfileId =
-          _json['obfuscatedExternalProfileId'] as core.String;
-    }
-    if (_json.containsKey('orderId')) {
-      orderId = _json['orderId'] as core.String;
-    }
-    if (_json.containsKey('productId')) {
-      productId = _json['productId'] as core.String;
-    }
-    if (_json.containsKey('purchaseState')) {
-      purchaseState = _json['purchaseState'] as core.int;
-    }
-    if (_json.containsKey('purchaseTimeMillis')) {
-      purchaseTimeMillis = _json['purchaseTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('purchaseToken')) {
-      purchaseToken = _json['purchaseToken'] as core.String;
-    }
-    if (_json.containsKey('purchaseType')) {
-      purchaseType = _json['purchaseType'] as core.int;
-    }
-    if (_json.containsKey('quantity')) {
-      quantity = _json['quantity'] as core.int;
-    }
-    if (_json.containsKey('regionCode')) {
-      regionCode = _json['regionCode'] as core.String;
-    }
-  }
+  ProductPurchase.fromJson(core.Map _json)
+      : this(
+          acknowledgementState: _json.containsKey('acknowledgementState')
+              ? _json['acknowledgementState'] as core.int
+              : null,
+          consumptionState: _json.containsKey('consumptionState')
+              ? _json['consumptionState'] as core.int
+              : null,
+          developerPayload: _json.containsKey('developerPayload')
+              ? _json['developerPayload'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          obfuscatedExternalAccountId:
+              _json.containsKey('obfuscatedExternalAccountId')
+                  ? _json['obfuscatedExternalAccountId'] as core.String
+                  : null,
+          obfuscatedExternalProfileId:
+              _json.containsKey('obfuscatedExternalProfileId')
+                  ? _json['obfuscatedExternalProfileId'] as core.String
+                  : null,
+          orderId: _json.containsKey('orderId')
+              ? _json['orderId'] as core.String
+              : null,
+          productId: _json.containsKey('productId')
+              ? _json['productId'] as core.String
+              : null,
+          purchaseState: _json.containsKey('purchaseState')
+              ? _json['purchaseState'] as core.int
+              : null,
+          purchaseTimeMillis: _json.containsKey('purchaseTimeMillis')
+              ? _json['purchaseTimeMillis'] as core.String
+              : null,
+          purchaseToken: _json.containsKey('purchaseToken')
+              ? _json['purchaseToken'] as core.String
+              : null,
+          purchaseType: _json.containsKey('purchaseType')
+              ? _json['purchaseType'] as core.int
+              : null,
+          quantity: _json.containsKey('quantity')
+              ? _json['quantity'] as core.int
+              : null,
+          regionCode: _json.containsKey('regionCode')
+              ? _json['regionCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (acknowledgementState != null)
@@ -4832,20 +6031,49 @@ class ProductPurchase {
 }
 
 /// Request for the product.purchases.acknowledge API.
-class ProductPurchasesAcknowledgeRequest {
-  /// Payload to attach to the purchase.
-  core.String? developerPayload;
+typedef ProductPurchasesAcknowledgeRequest = $PurchasesAcknowledgeRequest;
 
-  ProductPurchasesAcknowledgeRequest();
+/// Specified details about taxation in a given geographical region.
+class RegionalTaxRateInfo {
+  /// You must tell us if your app contains streaming products to correctly
+  /// charge US state and local sales tax.
+  ///
+  /// Field only supported in United States.
+  core.bool? eligibleForStreamingServiceTaxRate;
 
-  ProductPurchasesAcknowledgeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('developerPayload')) {
-      developerPayload = _json['developerPayload'] as core.String;
-    }
-  }
+  /// Tax tier to specify reduced tax rate.
+  ///
+  /// Developers who sell digital news, magazines, newspapers, books, or
+  /// audiobooks in various regions may be eligible for reduced tax rates.
+  /// [Learn more](https://support.google.com/googleplay/android-developer/answer/10463498).
+  /// Possible string values are:
+  /// - "TAX_TIER_UNSPECIFIED"
+  /// - "TAX_TIER_BOOKS_1"
+  /// - "TAX_TIER_NEWS_1"
+  /// - "TAX_TIER_NEWS_2"
+  core.String? taxTier;
+
+  RegionalTaxRateInfo({
+    this.eligibleForStreamingServiceTaxRate,
+    this.taxTier,
+  });
+
+  RegionalTaxRateInfo.fromJson(core.Map _json)
+      : this(
+          eligibleForStreamingServiceTaxRate:
+              _json.containsKey('eligibleForStreamingServiceTaxRate')
+                  ? _json['eligibleForStreamingServiceTaxRate'] as core.bool
+                  : null,
+          taxTier: _json.containsKey('taxTier')
+              ? _json['taxTier'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (developerPayload != null) 'developerPayload': developerPayload!,
+        if (eligibleForStreamingServiceTaxRate != null)
+          'eligibleForStreamingServiceTaxRate':
+              eligibleForStreamingServiceTaxRate!,
+        if (taxTier != null) 'taxTier': taxTier!,
       };
 }
 
@@ -4860,27 +6088,31 @@ class Review {
   /// Unique identifier for this review.
   core.String? reviewId;
 
-  Review();
+  Review({
+    this.authorName,
+    this.comments,
+    this.reviewId,
+  });
 
-  Review.fromJson(core.Map _json) {
-    if (_json.containsKey('authorName')) {
-      authorName = _json['authorName'] as core.String;
-    }
-    if (_json.containsKey('comments')) {
-      comments = (_json['comments'] as core.List)
-          .map<Comment>((value) =>
-              Comment.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('reviewId')) {
-      reviewId = _json['reviewId'] as core.String;
-    }
-  }
+  Review.fromJson(core.Map _json)
+      : this(
+          authorName: _json.containsKey('authorName')
+              ? _json['authorName'] as core.String
+              : null,
+          comments: _json.containsKey('comments')
+              ? (_json['comments'] as core.List)
+                  .map((value) => Comment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          reviewId: _json.containsKey('reviewId')
+              ? _json['reviewId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (authorName != null) 'authorName': authorName!,
-        if (comments != null)
-          'comments': comments!.map((value) => value.toJson()).toList(),
+        if (comments != null) 'comments': comments!,
         if (reviewId != null) 'reviewId': reviewId!,
       };
 }
@@ -4893,20 +6125,24 @@ class ReviewReplyResult {
   /// The reply text that was applied.
   core.String? replyText;
 
-  ReviewReplyResult();
+  ReviewReplyResult({
+    this.lastEdited,
+    this.replyText,
+  });
 
-  ReviewReplyResult.fromJson(core.Map _json) {
-    if (_json.containsKey('lastEdited')) {
-      lastEdited = Timestamp.fromJson(
-          _json['lastEdited'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('replyText')) {
-      replyText = _json['replyText'] as core.String;
-    }
-  }
+  ReviewReplyResult.fromJson(core.Map _json)
+      : this(
+          lastEdited: _json.containsKey('lastEdited')
+              ? Timestamp.fromJson(
+                  _json['lastEdited'] as core.Map<core.String, core.dynamic>)
+              : null,
+          replyText: _json.containsKey('replyText')
+              ? _json['replyText'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (lastEdited != null) 'lastEdited': lastEdited!.toJson(),
+        if (lastEdited != null) 'lastEdited': lastEdited!,
         if (replyText != null) 'replyText': replyText!,
       };
 }
@@ -4922,31 +6158,34 @@ class ReviewsListResponse {
   /// Pagination token, to handle a number of products that is over one page.
   TokenPagination? tokenPagination;
 
-  ReviewsListResponse();
+  ReviewsListResponse({
+    this.pageInfo,
+    this.reviews,
+    this.tokenPagination,
+  });
 
-  ReviewsListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('pageInfo')) {
-      pageInfo = PageInfo.fromJson(
-          _json['pageInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('reviews')) {
-      reviews = (_json['reviews'] as core.List)
-          .map<Review>((value) =>
-              Review.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('tokenPagination')) {
-      tokenPagination = TokenPagination.fromJson(
-          _json['tokenPagination'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ReviewsListResponse.fromJson(core.Map _json)
+      : this(
+          pageInfo: _json.containsKey('pageInfo')
+              ? PageInfo.fromJson(
+                  _json['pageInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          reviews: _json.containsKey('reviews')
+              ? (_json['reviews'] as core.List)
+                  .map((value) => Review.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          tokenPagination: _json.containsKey('tokenPagination')
+              ? TokenPagination.fromJson(_json['tokenPagination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (pageInfo != null) 'pageInfo': pageInfo!.toJson(),
-        if (reviews != null)
-          'reviews': reviews!.map((value) => value.toJson()).toList(),
-        if (tokenPagination != null)
-          'tokenPagination': tokenPagination!.toJson(),
+        if (pageInfo != null) 'pageInfo': pageInfo!,
+        if (reviews != null) 'reviews': reviews!,
+        if (tokenPagination != null) 'tokenPagination': tokenPagination!,
       };
 }
 
@@ -4958,13 +6197,16 @@ class ReviewsReplyRequest {
   /// tags will be stripped.
   core.String? replyText;
 
-  ReviewsReplyRequest();
+  ReviewsReplyRequest({
+    this.replyText,
+  });
 
-  ReviewsReplyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('replyText')) {
-      replyText = _json['replyText'] as core.String;
-    }
-  }
+  ReviewsReplyRequest.fromJson(core.Map _json)
+      : this(
+          replyText: _json.containsKey('replyText')
+              ? _json['replyText'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (replyText != null) 'replyText': replyText!,
@@ -4976,17 +6218,20 @@ class ReviewsReplyResponse {
   /// The result of replying/updating a reply to review.
   ReviewReplyResult? result;
 
-  ReviewsReplyResponse();
+  ReviewsReplyResponse({
+    this.result,
+  });
 
-  ReviewsReplyResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('result')) {
-      result = ReviewReplyResult.fromJson(
-          _json['result'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ReviewsReplyResponse.fromJson(core.Map _json)
+      : this(
+          result: _json.containsKey('result')
+              ? ReviewReplyResult.fromJson(
+                  _json['result'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (result != null) 'result': result!.toJson(),
+        if (result != null) 'result': result!,
       };
 }
 
@@ -5004,16 +6249,20 @@ class SubscriptionCancelSurveyResult {
   /// Only present when cancelReason is 0.
   core.String? userInputCancelReason;
 
-  SubscriptionCancelSurveyResult();
+  SubscriptionCancelSurveyResult({
+    this.cancelSurveyReason,
+    this.userInputCancelReason,
+  });
 
-  SubscriptionCancelSurveyResult.fromJson(core.Map _json) {
-    if (_json.containsKey('cancelSurveyReason')) {
-      cancelSurveyReason = _json['cancelSurveyReason'] as core.int;
-    }
-    if (_json.containsKey('userInputCancelReason')) {
-      userInputCancelReason = _json['userInputCancelReason'] as core.String;
-    }
-  }
+  SubscriptionCancelSurveyResult.fromJson(core.Map _json)
+      : this(
+          cancelSurveyReason: _json.containsKey('cancelSurveyReason')
+              ? _json['cancelSurveyReason'] as core.int
+              : null,
+          userInputCancelReason: _json.containsKey('userInputCancelReason')
+              ? _json['userInputCancelReason'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cancelSurveyReason != null)
@@ -5039,17 +6288,21 @@ class SubscriptionDeferralInfo {
   /// here, the deferral will not occur.
   core.String? expectedExpiryTimeMillis;
 
-  SubscriptionDeferralInfo();
+  SubscriptionDeferralInfo({
+    this.desiredExpiryTimeMillis,
+    this.expectedExpiryTimeMillis,
+  });
 
-  SubscriptionDeferralInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('desiredExpiryTimeMillis')) {
-      desiredExpiryTimeMillis = _json['desiredExpiryTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('expectedExpiryTimeMillis')) {
-      expectedExpiryTimeMillis =
-          _json['expectedExpiryTimeMillis'] as core.String;
-    }
-  }
+  SubscriptionDeferralInfo.fromJson(core.Map _json)
+      : this(
+          desiredExpiryTimeMillis: _json.containsKey('desiredExpiryTimeMillis')
+              ? _json['desiredExpiryTimeMillis'] as core.String
+              : null,
+          expectedExpiryTimeMillis:
+              _json.containsKey('expectedExpiryTimeMillis')
+                  ? _json['expectedExpiryTimeMillis'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (desiredExpiryTimeMillis != null)
@@ -5080,20 +6333,22 @@ class SubscriptionPriceChange {
   /// subscription is renewed next.
   core.int? state;
 
-  SubscriptionPriceChange();
+  SubscriptionPriceChange({
+    this.newPrice,
+    this.state,
+  });
 
-  SubscriptionPriceChange.fromJson(core.Map _json) {
-    if (_json.containsKey('newPrice')) {
-      newPrice = Price.fromJson(
-          _json['newPrice'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.int;
-    }
-  }
+  SubscriptionPriceChange.fromJson(core.Map _json)
+      : this(
+          newPrice: _json.containsKey('newPrice')
+              ? Price.fromJson(
+                  _json['newPrice'] as core.Map<core.String, core.dynamic>)
+              : null,
+          state: _json.containsKey('state') ? _json['state'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (newPrice != null) 'newPrice': newPrice!.toJson(),
+        if (newPrice != null) 'newPrice': newPrice!,
         if (state != null) 'state': state!,
       };
 }
@@ -5205,6 +6460,9 @@ class SubscriptionPurchase {
 
   /// The order id of the latest recurring order associated with the purchase of
   /// the subscription.
+  ///
+  /// If the subscription was canceled because payment was declined, this will
+  /// be the order id from the payment declined order.
   core.String? orderId;
 
   /// The payment state of the subscription.
@@ -5214,10 +6472,12 @@ class SubscriptionPurchase {
   /// subscriptions.
   core.int? paymentState;
 
-  /// Price of the subscription, not including tax.
+  /// Price of the subscription, For tax exclusive countries, the price doesn't
+  /// include tax.
   ///
-  /// Price is expressed in micro-units, where 1,000,000 micro-units represents
-  /// one unit of the currency. For example, if the subscription price is €1.99,
+  /// For tax inclusive countries, the price includes tax. Price is expressed in
+  /// micro-units, where 1,000,000 micro-units represents one unit of the
+  /// currency. For example, if the subscription price is €1.99,
   /// price_amount_micros is 1990000.
   core.String? priceAmountMicros;
 
@@ -5274,104 +6534,133 @@ class SubscriptionPurchase {
   /// Only present if cancelReason is 0.
   core.String? userCancellationTimeMillis;
 
-  SubscriptionPurchase();
+  SubscriptionPurchase({
+    this.acknowledgementState,
+    this.autoRenewing,
+    this.autoResumeTimeMillis,
+    this.cancelReason,
+    this.cancelSurveyResult,
+    this.countryCode,
+    this.developerPayload,
+    this.emailAddress,
+    this.expiryTimeMillis,
+    this.externalAccountId,
+    this.familyName,
+    this.givenName,
+    this.introductoryPriceInfo,
+    this.kind,
+    this.linkedPurchaseToken,
+    this.obfuscatedExternalAccountId,
+    this.obfuscatedExternalProfileId,
+    this.orderId,
+    this.paymentState,
+    this.priceAmountMicros,
+    this.priceChange,
+    this.priceCurrencyCode,
+    this.profileId,
+    this.profileName,
+    this.promotionCode,
+    this.promotionType,
+    this.purchaseType,
+    this.startTimeMillis,
+    this.userCancellationTimeMillis,
+  });
 
-  SubscriptionPurchase.fromJson(core.Map _json) {
-    if (_json.containsKey('acknowledgementState')) {
-      acknowledgementState = _json['acknowledgementState'] as core.int;
-    }
-    if (_json.containsKey('autoRenewing')) {
-      autoRenewing = _json['autoRenewing'] as core.bool;
-    }
-    if (_json.containsKey('autoResumeTimeMillis')) {
-      autoResumeTimeMillis = _json['autoResumeTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('cancelReason')) {
-      cancelReason = _json['cancelReason'] as core.int;
-    }
-    if (_json.containsKey('cancelSurveyResult')) {
-      cancelSurveyResult = SubscriptionCancelSurveyResult.fromJson(
-          _json['cancelSurveyResult'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('countryCode')) {
-      countryCode = _json['countryCode'] as core.String;
-    }
-    if (_json.containsKey('developerPayload')) {
-      developerPayload = _json['developerPayload'] as core.String;
-    }
-    if (_json.containsKey('emailAddress')) {
-      emailAddress = _json['emailAddress'] as core.String;
-    }
-    if (_json.containsKey('expiryTimeMillis')) {
-      expiryTimeMillis = _json['expiryTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('externalAccountId')) {
-      externalAccountId = _json['externalAccountId'] as core.String;
-    }
-    if (_json.containsKey('familyName')) {
-      familyName = _json['familyName'] as core.String;
-    }
-    if (_json.containsKey('givenName')) {
-      givenName = _json['givenName'] as core.String;
-    }
-    if (_json.containsKey('introductoryPriceInfo')) {
-      introductoryPriceInfo = IntroductoryPriceInfo.fromJson(
-          _json['introductoryPriceInfo']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('linkedPurchaseToken')) {
-      linkedPurchaseToken = _json['linkedPurchaseToken'] as core.String;
-    }
-    if (_json.containsKey('obfuscatedExternalAccountId')) {
-      obfuscatedExternalAccountId =
-          _json['obfuscatedExternalAccountId'] as core.String;
-    }
-    if (_json.containsKey('obfuscatedExternalProfileId')) {
-      obfuscatedExternalProfileId =
-          _json['obfuscatedExternalProfileId'] as core.String;
-    }
-    if (_json.containsKey('orderId')) {
-      orderId = _json['orderId'] as core.String;
-    }
-    if (_json.containsKey('paymentState')) {
-      paymentState = _json['paymentState'] as core.int;
-    }
-    if (_json.containsKey('priceAmountMicros')) {
-      priceAmountMicros = _json['priceAmountMicros'] as core.String;
-    }
-    if (_json.containsKey('priceChange')) {
-      priceChange = SubscriptionPriceChange.fromJson(
-          _json['priceChange'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('priceCurrencyCode')) {
-      priceCurrencyCode = _json['priceCurrencyCode'] as core.String;
-    }
-    if (_json.containsKey('profileId')) {
-      profileId = _json['profileId'] as core.String;
-    }
-    if (_json.containsKey('profileName')) {
-      profileName = _json['profileName'] as core.String;
-    }
-    if (_json.containsKey('promotionCode')) {
-      promotionCode = _json['promotionCode'] as core.String;
-    }
-    if (_json.containsKey('promotionType')) {
-      promotionType = _json['promotionType'] as core.int;
-    }
-    if (_json.containsKey('purchaseType')) {
-      purchaseType = _json['purchaseType'] as core.int;
-    }
-    if (_json.containsKey('startTimeMillis')) {
-      startTimeMillis = _json['startTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('userCancellationTimeMillis')) {
-      userCancellationTimeMillis =
-          _json['userCancellationTimeMillis'] as core.String;
-    }
-  }
+  SubscriptionPurchase.fromJson(core.Map _json)
+      : this(
+          acknowledgementState: _json.containsKey('acknowledgementState')
+              ? _json['acknowledgementState'] as core.int
+              : null,
+          autoRenewing: _json.containsKey('autoRenewing')
+              ? _json['autoRenewing'] as core.bool
+              : null,
+          autoResumeTimeMillis: _json.containsKey('autoResumeTimeMillis')
+              ? _json['autoResumeTimeMillis'] as core.String
+              : null,
+          cancelReason: _json.containsKey('cancelReason')
+              ? _json['cancelReason'] as core.int
+              : null,
+          cancelSurveyResult: _json.containsKey('cancelSurveyResult')
+              ? SubscriptionCancelSurveyResult.fromJson(
+                  _json['cancelSurveyResult']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          countryCode: _json.containsKey('countryCode')
+              ? _json['countryCode'] as core.String
+              : null,
+          developerPayload: _json.containsKey('developerPayload')
+              ? _json['developerPayload'] as core.String
+              : null,
+          emailAddress: _json.containsKey('emailAddress')
+              ? _json['emailAddress'] as core.String
+              : null,
+          expiryTimeMillis: _json.containsKey('expiryTimeMillis')
+              ? _json['expiryTimeMillis'] as core.String
+              : null,
+          externalAccountId: _json.containsKey('externalAccountId')
+              ? _json['externalAccountId'] as core.String
+              : null,
+          familyName: _json.containsKey('familyName')
+              ? _json['familyName'] as core.String
+              : null,
+          givenName: _json.containsKey('givenName')
+              ? _json['givenName'] as core.String
+              : null,
+          introductoryPriceInfo: _json.containsKey('introductoryPriceInfo')
+              ? IntroductoryPriceInfo.fromJson(_json['introductoryPriceInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          linkedPurchaseToken: _json.containsKey('linkedPurchaseToken')
+              ? _json['linkedPurchaseToken'] as core.String
+              : null,
+          obfuscatedExternalAccountId:
+              _json.containsKey('obfuscatedExternalAccountId')
+                  ? _json['obfuscatedExternalAccountId'] as core.String
+                  : null,
+          obfuscatedExternalProfileId:
+              _json.containsKey('obfuscatedExternalProfileId')
+                  ? _json['obfuscatedExternalProfileId'] as core.String
+                  : null,
+          orderId: _json.containsKey('orderId')
+              ? _json['orderId'] as core.String
+              : null,
+          paymentState: _json.containsKey('paymentState')
+              ? _json['paymentState'] as core.int
+              : null,
+          priceAmountMicros: _json.containsKey('priceAmountMicros')
+              ? _json['priceAmountMicros'] as core.String
+              : null,
+          priceChange: _json.containsKey('priceChange')
+              ? SubscriptionPriceChange.fromJson(
+                  _json['priceChange'] as core.Map<core.String, core.dynamic>)
+              : null,
+          priceCurrencyCode: _json.containsKey('priceCurrencyCode')
+              ? _json['priceCurrencyCode'] as core.String
+              : null,
+          profileId: _json.containsKey('profileId')
+              ? _json['profileId'] as core.String
+              : null,
+          profileName: _json.containsKey('profileName')
+              ? _json['profileName'] as core.String
+              : null,
+          promotionCode: _json.containsKey('promotionCode')
+              ? _json['promotionCode'] as core.String
+              : null,
+          promotionType: _json.containsKey('promotionType')
+              ? _json['promotionType'] as core.int
+              : null,
+          purchaseType: _json.containsKey('purchaseType')
+              ? _json['purchaseType'] as core.int
+              : null,
+          startTimeMillis: _json.containsKey('startTimeMillis')
+              ? _json['startTimeMillis'] as core.String
+              : null,
+          userCancellationTimeMillis:
+              _json.containsKey('userCancellationTimeMillis')
+                  ? _json['userCancellationTimeMillis'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (acknowledgementState != null)
@@ -5381,7 +6670,7 @@ class SubscriptionPurchase {
           'autoResumeTimeMillis': autoResumeTimeMillis!,
         if (cancelReason != null) 'cancelReason': cancelReason!,
         if (cancelSurveyResult != null)
-          'cancelSurveyResult': cancelSurveyResult!.toJson(),
+          'cancelSurveyResult': cancelSurveyResult!,
         if (countryCode != null) 'countryCode': countryCode!,
         if (developerPayload != null) 'developerPayload': developerPayload!,
         if (emailAddress != null) 'emailAddress': emailAddress!,
@@ -5390,7 +6679,7 @@ class SubscriptionPurchase {
         if (familyName != null) 'familyName': familyName!,
         if (givenName != null) 'givenName': givenName!,
         if (introductoryPriceInfo != null)
-          'introductoryPriceInfo': introductoryPriceInfo!.toJson(),
+          'introductoryPriceInfo': introductoryPriceInfo!,
         if (kind != null) 'kind': kind!,
         if (linkedPurchaseToken != null)
           'linkedPurchaseToken': linkedPurchaseToken!,
@@ -5401,7 +6690,7 @@ class SubscriptionPurchase {
         if (orderId != null) 'orderId': orderId!,
         if (paymentState != null) 'paymentState': paymentState!,
         if (priceAmountMicros != null) 'priceAmountMicros': priceAmountMicros!,
-        if (priceChange != null) 'priceChange': priceChange!.toJson(),
+        if (priceChange != null) 'priceChange': priceChange!,
         if (priceCurrencyCode != null) 'priceCurrencyCode': priceCurrencyCode!,
         if (profileId != null) 'profileId': profileId!,
         if (profileName != null) 'profileName': profileName!,
@@ -5415,39 +6704,27 @@ class SubscriptionPurchase {
 }
 
 /// Request for the purchases.subscriptions.acknowledge API.
-class SubscriptionPurchasesAcknowledgeRequest {
-  /// Payload to attach to the purchase.
-  core.String? developerPayload;
-
-  SubscriptionPurchasesAcknowledgeRequest();
-
-  SubscriptionPurchasesAcknowledgeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('developerPayload')) {
-      developerPayload = _json['developerPayload'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (developerPayload != null) 'developerPayload': developerPayload!,
-      };
-}
+typedef SubscriptionPurchasesAcknowledgeRequest = $PurchasesAcknowledgeRequest;
 
 /// Request for the purchases.subscriptions.defer API.
 class SubscriptionPurchasesDeferRequest {
   /// The information about the new desired expiry time for the subscription.
   SubscriptionDeferralInfo? deferralInfo;
 
-  SubscriptionPurchasesDeferRequest();
+  SubscriptionPurchasesDeferRequest({
+    this.deferralInfo,
+  });
 
-  SubscriptionPurchasesDeferRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('deferralInfo')) {
-      deferralInfo = SubscriptionDeferralInfo.fromJson(
-          _json['deferralInfo'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SubscriptionPurchasesDeferRequest.fromJson(core.Map _json)
+      : this(
+          deferralInfo: _json.containsKey('deferralInfo')
+              ? SubscriptionDeferralInfo.fromJson(
+                  _json['deferralInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deferralInfo != null) 'deferralInfo': deferralInfo!.toJson(),
+        if (deferralInfo != null) 'deferralInfo': deferralInfo!,
       };
 }
 
@@ -5456,17 +6733,72 @@ class SubscriptionPurchasesDeferResponse {
   /// The new expiry time for the subscription in milliseconds since the Epoch.
   core.String? newExpiryTimeMillis;
 
-  SubscriptionPurchasesDeferResponse();
+  SubscriptionPurchasesDeferResponse({
+    this.newExpiryTimeMillis,
+  });
 
-  SubscriptionPurchasesDeferResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('newExpiryTimeMillis')) {
-      newExpiryTimeMillis = _json['newExpiryTimeMillis'] as core.String;
-    }
-  }
+  SubscriptionPurchasesDeferResponse.fromJson(core.Map _json)
+      : this(
+          newExpiryTimeMillis: _json.containsKey('newExpiryTimeMillis')
+              ? _json['newExpiryTimeMillis'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (newExpiryTimeMillis != null)
           'newExpiryTimeMillis': newExpiryTimeMillis!,
+      };
+}
+
+/// Details about taxation, Google Play policy and legal compliance for
+/// subscription products.
+class SubscriptionTaxAndComplianceSettings {
+  /// Digital content or service classification for products distributed to
+  /// users in the European Economic Area (EEA).
+  ///
+  /// The withdrawal regime under EEA consumer laws depends on this
+  /// classification. Refer to the
+  /// [Help Center article](https://support.google.com/googleplay/android-developer/answer/10463498)
+  /// for more information.
+  /// Possible string values are:
+  /// - "WITHDRAWAL_RIGHT_TYPE_UNSPECIFIED"
+  /// - "WITHDRAWAL_RIGHT_DIGITAL_CONTENT"
+  /// - "WITHDRAWAL_RIGHT_SERVICE"
+  core.String? eeaWithdrawalRightType;
+
+  /// A mapping from region code to tax rate details.
+  ///
+  /// The keys are region codes as defined by Unicode's "CLDR".
+  core.Map<core.String, RegionalTaxRateInfo>? taxRateInfoByRegionCode;
+
+  SubscriptionTaxAndComplianceSettings({
+    this.eeaWithdrawalRightType,
+    this.taxRateInfoByRegionCode,
+  });
+
+  SubscriptionTaxAndComplianceSettings.fromJson(core.Map _json)
+      : this(
+          eeaWithdrawalRightType: _json.containsKey('eeaWithdrawalRightType')
+              ? _json['eeaWithdrawalRightType'] as core.String
+              : null,
+          taxRateInfoByRegionCode: _json.containsKey('taxRateInfoByRegionCode')
+              ? (_json['taxRateInfoByRegionCode']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    RegionalTaxRateInfo.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (eeaWithdrawalRightType != null)
+          'eeaWithdrawalRightType': eeaWithdrawalRightType!,
+        if (taxRateInfoByRegionCode != null)
+          'taxRateInfoByRegionCode': taxRateInfoByRegionCode!,
       };
 }
 
@@ -5475,20 +6807,22 @@ class SystemApksListResponse {
   /// All system APK variants created.
   core.List<Variant>? variants;
 
-  SystemApksListResponse();
+  SystemApksListResponse({
+    this.variants,
+  });
 
-  SystemApksListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('variants')) {
-      variants = (_json['variants'] as core.List)
-          .map<Variant>((value) =>
-              Variant.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SystemApksListResponse.fromJson(core.Map _json)
+      : this(
+          variants: _json.containsKey('variants')
+              ? (_json['variants'] as core.List)
+                  .map((value) => Variant.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (variants != null)
-          'variants': variants!.map((value) => value.toJson()).toList(),
+        if (variants != null) 'variants': variants!,
       };
 }
 
@@ -5499,15 +6833,18 @@ class Testers {
   /// All testing Google Groups, as email addresses.
   core.List<core.String>? googleGroups;
 
-  Testers();
+  Testers({
+    this.googleGroups,
+  });
 
-  Testers.fromJson(core.Map _json) {
-    if (_json.containsKey('googleGroups')) {
-      googleGroups = (_json['googleGroups'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Testers.fromJson(core.Map _json)
+      : this(
+          googleGroups: _json.containsKey('googleGroups')
+              ? (_json['googleGroups'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (googleGroups != null) 'googleGroups': googleGroups!,
@@ -5528,16 +6865,18 @@ class Timestamp {
   /// Represents seconds of UTC time since Unix epoch.
   core.String? seconds;
 
-  Timestamp();
+  Timestamp({
+    this.nanos,
+    this.seconds,
+  });
 
-  Timestamp.fromJson(core.Map _json) {
-    if (_json.containsKey('nanos')) {
-      nanos = _json['nanos'] as core.int;
-    }
-    if (_json.containsKey('seconds')) {
-      seconds = _json['seconds'] as core.String;
-    }
-  }
+  Timestamp.fromJson(core.Map _json)
+      : this(
+          nanos: _json.containsKey('nanos') ? _json['nanos'] as core.int : null,
+          seconds: _json.containsKey('seconds')
+              ? _json['seconds'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nanos != null) 'nanos': nanos!,
@@ -5555,29 +6894,7 @@ class Timestamp {
 /// indicates whether a next/previous page is available and provides a mean of
 /// accessing this page. ListRequest.page_token should be set to either
 /// next_page_token or previous_page_token to access another page.
-class TokenPagination {
-  /// Tokens to pass to the standard list field 'page_token'.
-  ///
-  /// Whenever available, tokens are preferred over manipulating start_index.
-  core.String? nextPageToken;
-  core.String? previousPageToken;
-
-  TokenPagination();
-
-  TokenPagination.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('previousPageToken')) {
-      previousPageToken = _json['previousPageToken'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (previousPageToken != null) 'previousPageToken': previousPageToken!,
-      };
-}
+typedef TokenPagination = $TokenPagination;
 
 /// A track configuration.
 ///
@@ -5591,24 +6908,78 @@ class Track {
   /// Identifier of the track.
   core.String? track;
 
-  Track();
+  Track({
+    this.releases,
+    this.track,
+  });
 
-  Track.fromJson(core.Map _json) {
-    if (_json.containsKey('releases')) {
-      releases = (_json['releases'] as core.List)
-          .map<TrackRelease>((value) => TrackRelease.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('track')) {
-      track = _json['track'] as core.String;
-    }
-  }
+  Track.fromJson(core.Map _json)
+      : this(
+          releases: _json.containsKey('releases')
+              ? (_json['releases'] as core.List)
+                  .map((value) => TrackRelease.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          track:
+              _json.containsKey('track') ? _json['track'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (releases != null)
-          'releases': releases!.map((value) => value.toJson()).toList(),
+        if (releases != null) 'releases': releases!,
         if (track != null) 'track': track!,
+      };
+}
+
+/// Resource for per-track country availability information.
+class TrackCountryAvailability {
+  /// A list of one or more countries where artifacts in this track are
+  /// available.
+  ///
+  /// This list includes all countries that are targeted by the track, even if
+  /// only specific carriers are targeted in that country.
+  core.List<TrackTargetedCountry>? countries;
+
+  /// Whether artifacts in this track are available to "rest of the world"
+  /// countries.
+  core.bool? restOfWorld;
+
+  /// Whether this track's availability is synced with the default production
+  /// track.
+  ///
+  /// See https://support.google.com/googleplay/android-developer/answer/7550024
+  /// for more information on syncing country availability with production. Note
+  /// that if this is true, the returned "countries" and "rest_of_world" fields
+  /// will reflect the values for the default production track.
+  core.bool? syncWithProduction;
+
+  TrackCountryAvailability({
+    this.countries,
+    this.restOfWorld,
+    this.syncWithProduction,
+  });
+
+  TrackCountryAvailability.fromJson(core.Map _json)
+      : this(
+          countries: _json.containsKey('countries')
+              ? (_json['countries'] as core.List)
+                  .map((value) => TrackTargetedCountry.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          restOfWorld: _json.containsKey('restOfWorld')
+              ? _json['restOfWorld'] as core.bool
+              : null,
+          syncWithProduction: _json.containsKey('syncWithProduction')
+              ? _json['syncWithProduction'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (countries != null) 'countries': countries!,
+        if (restOfWorld != null) 'restOfWorld': restOfWorld!,
+        if (syncWithProduction != null)
+          'syncWithProduction': syncWithProduction!,
       };
 }
 
@@ -5651,7 +7022,8 @@ class TrackRelease {
 
   /// Fraction of users who are eligible for a staged release.
   ///
-  /// 0 < fraction < 1. Can only be set when status is "inProgress" or "halted".
+  /// 0 \< fraction \< 1. Can only be set when status is "inProgress" or
+  /// "halted".
   core.double? userFraction;
 
   /// Version codes of all APKs in the release.
@@ -5659,49 +7031,76 @@ class TrackRelease {
   /// Must include version codes to retain from previous releases.
   core.List<core.String>? versionCodes;
 
-  TrackRelease();
+  TrackRelease({
+    this.countryTargeting,
+    this.inAppUpdatePriority,
+    this.name,
+    this.releaseNotes,
+    this.status,
+    this.userFraction,
+    this.versionCodes,
+  });
 
-  TrackRelease.fromJson(core.Map _json) {
-    if (_json.containsKey('countryTargeting')) {
-      countryTargeting = CountryTargeting.fromJson(
-          _json['countryTargeting'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('inAppUpdatePriority')) {
-      inAppUpdatePriority = _json['inAppUpdatePriority'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('releaseNotes')) {
-      releaseNotes = (_json['releaseNotes'] as core.List)
-          .map<LocalizedText>((value) => LocalizedText.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('userFraction')) {
-      userFraction = (_json['userFraction'] as core.num).toDouble();
-    }
-    if (_json.containsKey('versionCodes')) {
-      versionCodes = (_json['versionCodes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  TrackRelease.fromJson(core.Map _json)
+      : this(
+          countryTargeting: _json.containsKey('countryTargeting')
+              ? CountryTargeting.fromJson(_json['countryTargeting']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          inAppUpdatePriority: _json.containsKey('inAppUpdatePriority')
+              ? _json['inAppUpdatePriority'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          releaseNotes: _json.containsKey('releaseNotes')
+              ? (_json['releaseNotes'] as core.List)
+                  .map((value) => LocalizedText.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          userFraction: _json.containsKey('userFraction')
+              ? (_json['userFraction'] as core.num).toDouble()
+              : null,
+          versionCodes: _json.containsKey('versionCodes')
+              ? (_json['versionCodes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (countryTargeting != null)
-          'countryTargeting': countryTargeting!.toJson(),
+        if (countryTargeting != null) 'countryTargeting': countryTargeting!,
         if (inAppUpdatePriority != null)
           'inAppUpdatePriority': inAppUpdatePriority!,
         if (name != null) 'name': name!,
-        if (releaseNotes != null)
-          'releaseNotes': releaseNotes!.map((value) => value.toJson()).toList(),
+        if (releaseNotes != null) 'releaseNotes': releaseNotes!,
         if (status != null) 'status': status!,
         if (userFraction != null) 'userFraction': userFraction!,
         if (versionCodes != null) 'versionCodes': versionCodes!,
+      };
+}
+
+/// Representation of a single country where the contents of a track are
+/// available.
+class TrackTargetedCountry {
+  /// The country to target, as a two-letter CLDR code.
+  core.String? countryCode;
+
+  TrackTargetedCountry({
+    this.countryCode,
+  });
+
+  TrackTargetedCountry.fromJson(core.Map _json)
+      : this(
+          countryCode: _json.containsKey('countryCode')
+              ? _json['countryCode'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (countryCode != null) 'countryCode': countryCode!,
       };
 }
 
@@ -5713,24 +7112,117 @@ class TracksListResponse {
   /// All tracks.
   core.List<Track>? tracks;
 
-  TracksListResponse();
+  TracksListResponse({
+    this.kind,
+    this.tracks,
+  });
 
-  TracksListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('tracks')) {
-      tracks = (_json['tracks'] as core.List)
-          .map<Track>((value) =>
-              Track.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  TracksListResponse.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          tracks: _json.containsKey('tracks')
+              ? (_json['tracks'] as core.List)
+                  .map((value) => Track.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (tracks != null)
-          'tracks': tracks!.map((value) => value.toJson()).toList(),
+        if (tracks != null) 'tracks': tracks!,
+      };
+}
+
+/// A user resource.
+class User {
+  /// The state of the user's access to the Play Console.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "ACCESS_STATE_UNSPECIFIED" : Unknown or unspecified access state.
+  /// - "INVITED" : User is invited but has not yet accepted the invitation.
+  /// - "INVITATION_EXPIRED" : Invitation has expired.
+  /// - "ACCESS_GRANTED" : User has accepted an invitation and has access to the
+  /// Play Console.
+  /// - "ACCESS_EXPIRED" : Account access has expired.
+  core.String? accessState;
+
+  /// Permissions for the user which apply across the developer account.
+  core.List<core.String>? developerAccountPermissions;
+
+  /// The user's email address.
+  ///
+  /// Immutable.
+  core.String? email;
+
+  /// The time at which the user's access expires, if set.
+  core.String? expirationTime;
+
+  /// Per-app permissions for the user.
+  ///
+  /// Output only.
+  core.List<Grant>? grants;
+
+  /// Resource name for this user, following the pattern
+  /// "developers/{developer}/users/{email}".
+  ///
+  /// Required.
+  core.String? name;
+
+  /// Whether there are more permissions for the user that are not represented
+  /// here.
+  ///
+  /// Output only.
+  core.bool? partial;
+
+  User({
+    this.accessState,
+    this.developerAccountPermissions,
+    this.email,
+    this.expirationTime,
+    this.grants,
+    this.name,
+    this.partial,
+  });
+
+  User.fromJson(core.Map _json)
+      : this(
+          accessState: _json.containsKey('accessState')
+              ? _json['accessState'] as core.String
+              : null,
+          developerAccountPermissions:
+              _json.containsKey('developerAccountPermissions')
+                  ? (_json['developerAccountPermissions'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          email:
+              _json.containsKey('email') ? _json['email'] as core.String : null,
+          expirationTime: _json.containsKey('expirationTime')
+              ? _json['expirationTime'] as core.String
+              : null,
+          grants: _json.containsKey('grants')
+              ? (_json['grants'] as core.List)
+                  .map((value) => Grant.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          partial: _json.containsKey('partial')
+              ? _json['partial'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (accessState != null) 'accessState': accessState!,
+        if (developerAccountPermissions != null)
+          'developerAccountPermissions': developerAccountPermissions!,
+        if (email != null) 'email': email!,
+        if (expirationTime != null) 'expirationTime': expirationTime!,
+        if (grants != null) 'grants': grants!,
+        if (name != null) 'name': name!,
+        if (partial != null) 'partial': partial!,
       };
 }
 
@@ -5792,56 +7284,68 @@ class UserComment {
   /// Number of users who have given this review a thumbs up.
   core.int? thumbsUpCount;
 
-  UserComment();
+  UserComment({
+    this.androidOsVersion,
+    this.appVersionCode,
+    this.appVersionName,
+    this.device,
+    this.deviceMetadata,
+    this.lastModified,
+    this.originalText,
+    this.reviewerLanguage,
+    this.starRating,
+    this.text,
+    this.thumbsDownCount,
+    this.thumbsUpCount,
+  });
 
-  UserComment.fromJson(core.Map _json) {
-    if (_json.containsKey('androidOsVersion')) {
-      androidOsVersion = _json['androidOsVersion'] as core.int;
-    }
-    if (_json.containsKey('appVersionCode')) {
-      appVersionCode = _json['appVersionCode'] as core.int;
-    }
-    if (_json.containsKey('appVersionName')) {
-      appVersionName = _json['appVersionName'] as core.String;
-    }
-    if (_json.containsKey('device')) {
-      device = _json['device'] as core.String;
-    }
-    if (_json.containsKey('deviceMetadata')) {
-      deviceMetadata = DeviceMetadata.fromJson(
-          _json['deviceMetadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('lastModified')) {
-      lastModified = Timestamp.fromJson(
-          _json['lastModified'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('originalText')) {
-      originalText = _json['originalText'] as core.String;
-    }
-    if (_json.containsKey('reviewerLanguage')) {
-      reviewerLanguage = _json['reviewerLanguage'] as core.String;
-    }
-    if (_json.containsKey('starRating')) {
-      starRating = _json['starRating'] as core.int;
-    }
-    if (_json.containsKey('text')) {
-      text = _json['text'] as core.String;
-    }
-    if (_json.containsKey('thumbsDownCount')) {
-      thumbsDownCount = _json['thumbsDownCount'] as core.int;
-    }
-    if (_json.containsKey('thumbsUpCount')) {
-      thumbsUpCount = _json['thumbsUpCount'] as core.int;
-    }
-  }
+  UserComment.fromJson(core.Map _json)
+      : this(
+          androidOsVersion: _json.containsKey('androidOsVersion')
+              ? _json['androidOsVersion'] as core.int
+              : null,
+          appVersionCode: _json.containsKey('appVersionCode')
+              ? _json['appVersionCode'] as core.int
+              : null,
+          appVersionName: _json.containsKey('appVersionName')
+              ? _json['appVersionName'] as core.String
+              : null,
+          device: _json.containsKey('device')
+              ? _json['device'] as core.String
+              : null,
+          deviceMetadata: _json.containsKey('deviceMetadata')
+              ? DeviceMetadata.fromJson(_json['deviceMetadata']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          lastModified: _json.containsKey('lastModified')
+              ? Timestamp.fromJson(
+                  _json['lastModified'] as core.Map<core.String, core.dynamic>)
+              : null,
+          originalText: _json.containsKey('originalText')
+              ? _json['originalText'] as core.String
+              : null,
+          reviewerLanguage: _json.containsKey('reviewerLanguage')
+              ? _json['reviewerLanguage'] as core.String
+              : null,
+          starRating: _json.containsKey('starRating')
+              ? _json['starRating'] as core.int
+              : null,
+          text: _json.containsKey('text') ? _json['text'] as core.String : null,
+          thumbsDownCount: _json.containsKey('thumbsDownCount')
+              ? _json['thumbsDownCount'] as core.int
+              : null,
+          thumbsUpCount: _json.containsKey('thumbsUpCount')
+              ? _json['thumbsUpCount'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (androidOsVersion != null) 'androidOsVersion': androidOsVersion!,
         if (appVersionCode != null) 'appVersionCode': appVersionCode!,
         if (appVersionName != null) 'appVersionName': appVersionName!,
         if (device != null) 'device': device!,
-        if (deviceMetadata != null) 'deviceMetadata': deviceMetadata!.toJson(),
-        if (lastModified != null) 'lastModified': lastModified!.toJson(),
+        if (deviceMetadata != null) 'deviceMetadata': deviceMetadata!,
+        if (lastModified != null) 'lastModified': lastModified!,
         if (originalText != null) 'originalText': originalText!,
         if (reviewerLanguage != null) 'reviewerLanguage': reviewerLanguage!,
         if (starRating != null) 'starRating': starRating!,
@@ -5859,16 +7363,18 @@ class UsesPermission {
   /// The name of the permission requested.
   core.String? name;
 
-  UsesPermission();
+  UsesPermission({
+    this.maxSdkVersion,
+    this.name,
+  });
 
-  UsesPermission.fromJson(core.Map _json) {
-    if (_json.containsKey('maxSdkVersion')) {
-      maxSdkVersion = _json['maxSdkVersion'] as core.int;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  UsesPermission.fromJson(core.Map _json)
+      : this(
+          maxSdkVersion: _json.containsKey('maxSdkVersion')
+              ? _json['maxSdkVersion'] as core.int
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (maxSdkVersion != null) 'maxSdkVersion': maxSdkVersion!,
@@ -5888,20 +7394,24 @@ class Variant {
   /// Output only.
   core.int? variantId;
 
-  Variant();
+  Variant({
+    this.deviceSpec,
+    this.variantId,
+  });
 
-  Variant.fromJson(core.Map _json) {
-    if (_json.containsKey('deviceSpec')) {
-      deviceSpec = DeviceSpec.fromJson(
-          _json['deviceSpec'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('variantId')) {
-      variantId = _json['variantId'] as core.int;
-    }
-  }
+  Variant.fromJson(core.Map _json)
+      : this(
+          deviceSpec: _json.containsKey('deviceSpec')
+              ? DeviceSpec.fromJson(
+                  _json['deviceSpec'] as core.Map<core.String, core.dynamic>)
+              : null,
+          variantId: _json.containsKey('variantId')
+              ? _json['variantId'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (deviceSpec != null) 'deviceSpec': deviceSpec!.toJson(),
+        if (deviceSpec != null) 'deviceSpec': deviceSpec!,
         if (variantId != null) 'variantId': variantId!,
       };
 }
@@ -5942,31 +7452,38 @@ class VoidedPurchase {
   /// milliseconds since the epoch (Jan 1, 1970).
   core.String? voidedTimeMillis;
 
-  VoidedPurchase();
+  VoidedPurchase({
+    this.kind,
+    this.orderId,
+    this.purchaseTimeMillis,
+    this.purchaseToken,
+    this.voidedReason,
+    this.voidedSource,
+    this.voidedTimeMillis,
+  });
 
-  VoidedPurchase.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('orderId')) {
-      orderId = _json['orderId'] as core.String;
-    }
-    if (_json.containsKey('purchaseTimeMillis')) {
-      purchaseTimeMillis = _json['purchaseTimeMillis'] as core.String;
-    }
-    if (_json.containsKey('purchaseToken')) {
-      purchaseToken = _json['purchaseToken'] as core.String;
-    }
-    if (_json.containsKey('voidedReason')) {
-      voidedReason = _json['voidedReason'] as core.int;
-    }
-    if (_json.containsKey('voidedSource')) {
-      voidedSource = _json['voidedSource'] as core.int;
-    }
-    if (_json.containsKey('voidedTimeMillis')) {
-      voidedTimeMillis = _json['voidedTimeMillis'] as core.String;
-    }
-  }
+  VoidedPurchase.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          orderId: _json.containsKey('orderId')
+              ? _json['orderId'] as core.String
+              : null,
+          purchaseTimeMillis: _json.containsKey('purchaseTimeMillis')
+              ? _json['purchaseTimeMillis'] as core.String
+              : null,
+          purchaseToken: _json.containsKey('purchaseToken')
+              ? _json['purchaseToken'] as core.String
+              : null,
+          voidedReason: _json.containsKey('voidedReason')
+              ? _json['voidedReason'] as core.int
+              : null,
+          voidedSource: _json.containsKey('voidedSource')
+              ? _json['voidedSource'] as core.int
+              : null,
+          voidedTimeMillis: _json.containsKey('voidedTimeMillis')
+              ? _json['voidedTimeMillis'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -5989,31 +7506,33 @@ class VoidedPurchasesListResponse {
   TokenPagination? tokenPagination;
   core.List<VoidedPurchase>? voidedPurchases;
 
-  VoidedPurchasesListResponse();
+  VoidedPurchasesListResponse({
+    this.pageInfo,
+    this.tokenPagination,
+    this.voidedPurchases,
+  });
 
-  VoidedPurchasesListResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('pageInfo')) {
-      pageInfo = PageInfo.fromJson(
-          _json['pageInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('tokenPagination')) {
-      tokenPagination = TokenPagination.fromJson(
-          _json['tokenPagination'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('voidedPurchases')) {
-      voidedPurchases = (_json['voidedPurchases'] as core.List)
-          .map<VoidedPurchase>((value) => VoidedPurchase.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  VoidedPurchasesListResponse.fromJson(core.Map _json)
+      : this(
+          pageInfo: _json.containsKey('pageInfo')
+              ? PageInfo.fromJson(
+                  _json['pageInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          tokenPagination: _json.containsKey('tokenPagination')
+              ? TokenPagination.fromJson(_json['tokenPagination']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          voidedPurchases: _json.containsKey('voidedPurchases')
+              ? (_json['voidedPurchases'] as core.List)
+                  .map((value) => VoidedPurchase.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (pageInfo != null) 'pageInfo': pageInfo!.toJson(),
-        if (tokenPagination != null)
-          'tokenPagination': tokenPagination!.toJson(),
-        if (voidedPurchases != null)
-          'voidedPurchases':
-              voidedPurchases!.map((value) => value.toJson()).toList(),
+        if (pageInfo != null) 'pageInfo': pageInfo!,
+        if (tokenPagination != null) 'tokenPagination': tokenPagination!,
+        if (voidedPurchases != null) 'voidedPurchases': voidedPurchases!,
       };
 }

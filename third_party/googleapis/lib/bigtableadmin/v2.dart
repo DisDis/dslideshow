@@ -39,6 +39,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -74,11 +76,13 @@ class BigtableAdminApi {
   static const cloudBigtableAdminTableScope =
       'https://www.googleapis.com/auth/cloud-bigtable.admin.table';
 
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
-  /// View your data across Google Cloud Platform services
+  /// View your data across Google Cloud services and see the email address of
+  /// your Google Account
   static const cloudPlatformReadOnlyScope =
       'https://www.googleapis.com/auth/cloud-platform.read-only';
 
@@ -322,6 +326,12 @@ class ProjectsInstancesResource {
 
   /// Create an instance within a project.
   ///
+  /// Note that exactly one of Cluster.serve_nodes and
+  /// Cluster.cluster_config.cluster_autoscaling_config can be set. If
+  /// serve_nodes is set to non-zero, then the cluster is manually scaled. If
+  /// cluster_config.cluster_autoscaling_config is non-empty, then autoscaling
+  /// is enabled.
+  ///
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
@@ -345,7 +355,7 @@ class ProjectsInstancesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -462,7 +472,7 @@ class ProjectsInstancesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -551,7 +561,7 @@ class ProjectsInstancesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -596,7 +606,7 @@ class ProjectsInstancesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -639,7 +649,7 @@ class ProjectsInstancesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -686,7 +696,7 @@ class ProjectsInstancesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -744,7 +754,7 @@ class ProjectsInstancesAppProfilesResource {
     core.bool? ignoreWarnings,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (appProfileId != null) 'appProfileId': [appProfileId],
       if (ignoreWarnings != null) 'ignoreWarnings': ['${ignoreWarnings}'],
@@ -933,7 +943,7 @@ class ProjectsInstancesAppProfilesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (ignoreWarnings != null) 'ignoreWarnings': ['${ignoreWarnings}'],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -962,6 +972,12 @@ class ProjectsInstancesClustersResource {
       : _requester = client;
 
   /// Creates a cluster within an instance.
+  ///
+  /// Note that exactly one of Cluster.serve_nodes and
+  /// Cluster.cluster_config.cluster_autoscaling_config can be set. If
+  /// serve_nodes is set to non-zero, then the cluster is manually scaled. If
+  /// cluster_config.cluster_autoscaling_config is non-empty, then autoscaling
+  /// is enabled.
   ///
   /// [request] - The metadata request object.
   ///
@@ -992,7 +1008,7 @@ class ProjectsInstancesClustersResource {
     core.String? clusterId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (clusterId != null) 'clusterId': [clusterId],
       if ($fields != null) 'fields': [$fields],
@@ -1128,7 +1144,68 @@ class ProjectsInstancesClustersResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Partially updates a cluster within a project.
+  ///
+  /// This method is the preferred way to update a Cluster. To enable and update
+  /// autoscaling, set cluster_config.cluster_autoscaling_config. When
+  /// autoscaling is enabled, serve_nodes is treated as an OUTPUT_ONLY field,
+  /// meaning that updates to it are ignored. Note that an update cannot
+  /// simultaneously set serve_nodes to non-zero and
+  /// cluster_config.cluster_autoscaling_config to non-empty, and also specify
+  /// both in the update_mask. To disable autoscaling, clear
+  /// cluster_config.cluster_autoscaling_config, and explicitly set a serve_node
+  /// count via the update_mask.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The unique name of the cluster. Values are of the form
+  /// `projects/{project}/instances/{instance}/clusters/a-z*`.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/instances/\[^/\]+/clusters/\[^/\]+$`.
+  ///
+  /// [updateMask] - Required. The subset of Cluster fields which should be
+  /// replaced.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> partialUpdateCluster(
+    Cluster request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v2/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Updates a cluster within an instance.
+  ///
+  /// Note that UpdateCluster does not support updating
+  /// cluster_config.cluster_autoscaling_config. In order to update it, you must
+  /// use PartialUpdateCluster.
   ///
   /// [request] - The metadata request object.
   ///
@@ -1154,7 +1231,7 @@ class ProjectsInstancesClustersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1218,7 +1295,7 @@ class ProjectsInstancesClustersBackupsResource {
     core.String? backupId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (backupId != null) 'backupId': [backupId],
       if ($fields != null) 'fields': [$fields],
@@ -1339,7 +1416,7 @@ class ProjectsInstancesClustersBackupsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1371,24 +1448,24 @@ class ProjectsInstancesClustersBackupsResource {
   /// [filter] - A filter expression that filters backups listed in the
   /// response. The expression must specify the field name, a comparison
   /// operator, and the value that you want to use for filtering. The value must
-  /// be a string, a number, or a boolean. The comparison operator must be <, >,
-  /// <=, >=, !=, =, or :. Colon ':' represents a HAS operator which is roughly
-  /// synonymous with equality. Filter rules are case insensitive. The fields
-  /// eligible for filtering are: * `name` * `source_table` * `state` *
+  /// be a string, a number, or a boolean. The comparison operator must be \<,
+  /// \>, \<=, \>=, !=, =, or :. Colon ':' represents a HAS operator which is
+  /// roughly synonymous with equality. Filter rules are case insensitive. The
+  /// fields eligible for filtering are: * `name` * `source_table` * `state` *
   /// `start_time` (and values are of the format YYYY-MM-DDTHH:MM:SSZ) *
   /// `end_time` (and values are of the format YYYY-MM-DDTHH:MM:SSZ) *
   /// `expire_time` (and values are of the format YYYY-MM-DDTHH:MM:SSZ) *
   /// `size_bytes` To filter on multiple expressions, provide each separate
   /// expression within parentheses. By default, each expression is an AND
   /// expression. However, you can include AND, OR, and NOT expressions
-  /// explicitly. Some examples of using filters are: * `name:"exact"` --> The
-  /// backup's name is the string "exact". * `name:howl` --> The backup's name
-  /// contains the string "howl". * `source_table:prod` --> The source_table's
-  /// name contains the string "prod". * `state:CREATING` --> The backup is
-  /// pending creation. * `state:READY` --> The backup is fully created and
+  /// explicitly. Some examples of using filters are: * `name:"exact"` --\> The
+  /// backup's name is the string "exact". * `name:howl` --\> The backup's name
+  /// contains the string "howl". * `source_table:prod` --\> The source_table's
+  /// name contains the string "prod". * `state:CREATING` --\> The backup is
+  /// pending creation. * `state:READY` --\> The backup is fully created and
   /// ready for use. * `(name:howl) AND (start_time < \"2018-03-28T14:50:00Z\")`
-  /// --> The backup name contains the string "howl" and start_time of the
-  /// backup is before 2018-03-28T14:50:00Z. * `size_bytes > 10000000000` -->
+  /// --\> The backup name contains the string "howl" and start_time of the
+  /// backup is before 2018-03-28T14:50:00Z. * `size_bytes > 10000000000` --\>
   /// The backup's size is greater than 10GB
   ///
   /// [orderBy] - An expression for specifying the sort order of the results of
@@ -1484,7 +1561,7 @@ class ProjectsInstancesClustersBackupsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1530,7 +1607,7 @@ class ProjectsInstancesClustersBackupsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1573,7 +1650,7 @@ class ProjectsInstancesClustersBackupsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1627,7 +1704,7 @@ class ProjectsInstancesTablesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1673,7 +1750,7 @@ class ProjectsInstancesTablesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1756,7 +1833,7 @@ class ProjectsInstancesTablesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1803,7 +1880,7 @@ class ProjectsInstancesTablesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1840,6 +1917,8 @@ class ProjectsInstancesTablesResource {
   /// schema.
   /// - "REPLICATION_VIEW" : Only populates `name` and fields related to the
   /// table's replication state.
+  /// - "ENCRYPTION_VIEW" : Only populates `name` and fields related to the
+  /// table's encryption state.
   /// - "FULL" : Populates all fields.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1902,7 +1981,7 @@ class ProjectsInstancesTablesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1947,6 +2026,8 @@ class ProjectsInstancesTablesResource {
   /// schema.
   /// - "REPLICATION_VIEW" : Only populates `name` and fields related to the
   /// table's replication state.
+  /// - "ENCRYPTION_VIEW" : Only populates `name` and fields related to the
+  /// table's encryption state.
   /// - "FULL" : Populates all fields.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -2015,7 +2096,7 @@ class ProjectsInstancesTablesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2033,7 +2114,7 @@ class ProjectsInstancesTablesResource {
 
   /// Create a new table by restoring from a completed backup.
   ///
-  /// The new table must be in the same instance as the instance containing the
+  /// The new table must be in the same project as the instance containing the
   /// backup. The returned table long-running operation can be used to track the
   /// progress of the operation, and to cancel it. The metadata field type is
   /// RestoreTableMetadata. The response type is Table, if successful.
@@ -2043,8 +2124,8 @@ class ProjectsInstancesTablesResource {
   /// Request parameters:
   ///
   /// [parent] - Required. The name of the instance in which to create the
-  /// restored table. This instance must be the parent of the source backup.
-  /// Values are of the form `projects//instances/`.
+  /// restored table. This instance must be in the same project as the source
+  /// backup. Values are of the form `projects//instances/`.
   /// Value must have pattern `^projects/\[^/\]+/instances/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -2062,7 +2143,7 @@ class ProjectsInstancesTablesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2107,7 +2188,7 @@ class ProjectsInstancesTablesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2150,7 +2231,7 @@ class ProjectsInstancesTablesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2216,11 +2297,15 @@ class ProjectsLocationsResource {
   /// [name] - The resource that owns the locations collection, if applicable.
   /// Value must have pattern `^projects/\[^/\]+$`.
   ///
-  /// [filter] - The standard list filter.
+  /// [filter] - A filter to narrow down results to a preferred subset. The
+  /// filtering language accepts strings like "displayName=tokyo", and is
+  /// documented in more detail in \[AIP-160\](https://google.aip.dev/160).
   ///
-  /// [pageSize] - The standard list page size.
+  /// [pageSize] - The maximum number of results to return. If not set, the
+  /// service selects a default.
   ///
-  /// [pageToken] - The standard list page token.
+  /// [pageToken] - A page token received from the `next_page_token` field in
+  /// the response. Send that page token to receive the subsequent page.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -2287,37 +2372,41 @@ class AppProfile {
   /// Use a single-cluster routing policy.
   SingleClusterRouting? singleClusterRouting;
 
-  AppProfile();
+  AppProfile({
+    this.description,
+    this.etag,
+    this.multiClusterRoutingUseAny,
+    this.name,
+    this.singleClusterRouting,
+  });
 
-  AppProfile.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('multiClusterRoutingUseAny')) {
-      multiClusterRoutingUseAny = MultiClusterRoutingUseAny.fromJson(
-          _json['multiClusterRoutingUseAny']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('singleClusterRouting')) {
-      singleClusterRouting = SingleClusterRouting.fromJson(
-          _json['singleClusterRouting'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  AppProfile.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          multiClusterRoutingUseAny:
+              _json.containsKey('multiClusterRoutingUseAny')
+                  ? MultiClusterRoutingUseAny.fromJson(
+                      _json['multiClusterRoutingUseAny']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          singleClusterRouting: _json.containsKey('singleClusterRouting')
+              ? SingleClusterRouting.fromJson(_json['singleClusterRouting']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (etag != null) 'etag': etag!,
         if (multiClusterRoutingUseAny != null)
-          'multiClusterRoutingUseAny': multiClusterRoutingUseAny!.toJson(),
+          'multiClusterRoutingUseAny': multiClusterRoutingUseAny!,
         if (name != null) 'name': name!,
         if (singleClusterRouting != null)
-          'singleClusterRouting': singleClusterRouting!.toJson(),
+          'singleClusterRouting': singleClusterRouting!,
       };
 }
 
@@ -2348,24 +2437,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -2376,42 +2467,75 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
+typedef AuditLogConfig = $AuditLogConfig;
+
+/// Limits for the number of nodes a Cluster can autoscale up/down to.
+class AutoscalingLimits {
+  /// Maximum number of nodes to scale up to.
   ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
+  /// Required.
+  core.int? maxServeNodes;
 
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
+  /// Minimum number of nodes to scale down to.
+  ///
+  /// Required.
+  core.int? minServeNodes;
 
-  AuditLogConfig();
+  AutoscalingLimits({
+    this.maxServeNodes,
+    this.minServeNodes,
+  });
 
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
+  AutoscalingLimits.fromJson(core.Map _json)
+      : this(
+          maxServeNodes: _json.containsKey('maxServeNodes')
+              ? _json['maxServeNodes'] as core.int
+              : null,
+          minServeNodes: _json.containsKey('minServeNodes')
+              ? _json['minServeNodes'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
+        if (maxServeNodes != null) 'maxServeNodes': maxServeNodes!,
+        if (minServeNodes != null) 'minServeNodes': minServeNodes!,
+      };
+}
+
+/// The Autoscaling targets for a Cluster.
+///
+/// These determine the recommended nodes.
+class AutoscalingTargets {
+  /// The cpu utilization that the Autoscaler should be trying to achieve.
+  ///
+  /// This number is on a scale from 0 (no utilization) to 100 (total
+  /// utilization), and is limited between 10 and 80.
+  core.int? cpuUtilizationPercent;
+
+  AutoscalingTargets({
+    this.cpuUtilizationPercent,
+  });
+
+  AutoscalingTargets.fromJson(core.Map _json)
+      : this(
+          cpuUtilizationPercent: _json.containsKey('cpuUtilizationPercent')
+              ? _json['cpuUtilizationPercent'] as core.int
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cpuUtilizationPercent != null)
+          'cpuUtilizationPercent': cpuUtilizationPercent!,
       };
 }
 
 /// A backup of a Cloud Bigtable table.
 class Backup {
+  /// The encryption information for the backup.
+  ///
+  /// Output only.
+  EncryptionInfo? encryptionInfo;
+
   /// `end_time` is the time that the backup was finished.
   ///
   /// The row data in the backup will be no newer than this timestamp.
@@ -2470,33 +2594,45 @@ class Backup {
   /// - "READY" : The backup is complete and ready for use.
   core.String? state;
 
-  Backup();
+  Backup({
+    this.encryptionInfo,
+    this.endTime,
+    this.expireTime,
+    this.name,
+    this.sizeBytes,
+    this.sourceTable,
+    this.startTime,
+    this.state,
+  });
 
-  Backup.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('expireTime')) {
-      expireTime = _json['expireTime'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('sizeBytes')) {
-      sizeBytes = _json['sizeBytes'] as core.String;
-    }
-    if (_json.containsKey('sourceTable')) {
-      sourceTable = _json['sourceTable'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  Backup.fromJson(core.Map _json)
+      : this(
+          encryptionInfo: _json.containsKey('encryptionInfo')
+              ? EncryptionInfo.fromJson(_json['encryptionInfo']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          sizeBytes: _json.containsKey('sizeBytes')
+              ? _json['sizeBytes'] as core.String
+              : null,
+          sourceTable: _json.containsKey('sourceTable')
+              ? _json['sourceTable'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (encryptionInfo != null) 'encryptionInfo': encryptionInfo!,
         if (endTime != null) 'endTime': endTime!,
         if (expireTime != null) 'expireTime': expireTime!,
         if (name != null) 'name': name!,
@@ -2533,22 +2669,28 @@ class BackupInfo {
   /// Output only.
   core.String? startTime;
 
-  BackupInfo();
+  BackupInfo({
+    this.backup,
+    this.endTime,
+    this.sourceTable,
+    this.startTime,
+  });
 
-  BackupInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('backup')) {
-      backup = _json['backup'] as core.String;
-    }
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('sourceTable')) {
-      sourceTable = _json['sourceTable'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  BackupInfo.fromJson(core.Map _json)
+      : this(
+          backup: _json.containsKey('backup')
+              ? _json['backup'] as core.String
+              : null,
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          sourceTable: _json.containsKey('sourceTable')
+              ? _json['sourceTable'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (backup != null) 'backup': backup!,
@@ -2558,19 +2700,20 @@ class BackupInfo {
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -2602,30 +2745,33 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
@@ -2639,13 +2785,16 @@ class CheckConsistencyRequest {
   /// Required.
   core.String? consistencyToken;
 
-  CheckConsistencyRequest();
+  CheckConsistencyRequest({
+    this.consistencyToken,
+  });
 
-  CheckConsistencyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('consistencyToken')) {
-      consistencyToken = _json['consistencyToken'] as core.String;
-    }
-  }
+  CheckConsistencyRequest.fromJson(core.Map _json)
+      : this(
+          consistencyToken: _json.containsKey('consistencyToken')
+              ? _json['consistencyToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consistencyToken != null) 'consistencyToken': consistencyToken!,
@@ -2661,13 +2810,16 @@ class CheckConsistencyResponse {
   /// specified in the request.
   core.bool? consistent;
 
-  CheckConsistencyResponse();
+  CheckConsistencyResponse({
+    this.consistent,
+  });
 
-  CheckConsistencyResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('consistent')) {
-      consistent = _json['consistent'] as core.bool;
-    }
-  }
+  CheckConsistencyResponse.fromJson(core.Map _json)
+      : this(
+          consistent: _json.containsKey('consistent')
+              ? _json['consistent'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consistent != null) 'consistent': consistent!,
@@ -2677,6 +2829,9 @@ class CheckConsistencyResponse {
 /// A resizable group of nodes in a particular cloud location, capable of
 /// serving all Tables in the parent Instance.
 class Cluster {
+  /// Configuration for this cluster.
+  ClusterConfig? clusterConfig;
+
   /// The type of storage used by this cluster to serve its parent instance's
   /// tables, unless explicitly overridden.
   ///
@@ -2686,6 +2841,11 @@ class Cluster {
   /// - "SSD" : Flash (SSD) storage should be used.
   /// - "HDD" : Magnetic drive (HDD) storage should be used.
   core.String? defaultStorageType;
+
+  /// The encryption configuration for CMEK-protected clusters.
+  ///
+  /// Immutable.
+  EncryptionConfig? encryptionConfig;
 
   /// The location where this cluster's nodes and storage reside.
   ///
@@ -2705,8 +2865,6 @@ class Cluster {
   /// The number of nodes allocated to this cluster.
   ///
   /// More nodes enable higher throughput and more consistent performance.
-  ///
-  /// Required.
   core.int? serveNodes;
 
   /// The current state of the cluster.
@@ -2728,29 +2886,45 @@ class Cluster {
   /// exist, but no operations can be performed on the cluster.
   core.String? state;
 
-  Cluster();
+  Cluster({
+    this.clusterConfig,
+    this.defaultStorageType,
+    this.encryptionConfig,
+    this.location,
+    this.name,
+    this.serveNodes,
+    this.state,
+  });
 
-  Cluster.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultStorageType')) {
-      defaultStorageType = _json['defaultStorageType'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('serveNodes')) {
-      serveNodes = _json['serveNodes'] as core.int;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  Cluster.fromJson(core.Map _json)
+      : this(
+          clusterConfig: _json.containsKey('clusterConfig')
+              ? ClusterConfig.fromJson(
+                  _json['clusterConfig'] as core.Map<core.String, core.dynamic>)
+              : null,
+          defaultStorageType: _json.containsKey('defaultStorageType')
+              ? _json['defaultStorageType'] as core.String
+              : null,
+          encryptionConfig: _json.containsKey('encryptionConfig')
+              ? EncryptionConfig.fromJson(_json['encryptionConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          serveNodes: _json.containsKey('serveNodes')
+              ? _json['serveNodes'] as core.int
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterConfig != null) 'clusterConfig': clusterConfig!,
         if (defaultStorageType != null)
           'defaultStorageType': defaultStorageType!,
+        if (encryptionConfig != null) 'encryptionConfig': encryptionConfig!,
         if (location != null) 'location': location!,
         if (name != null) 'name': name!,
         if (serveNodes != null) 'serveNodes': serveNodes!,
@@ -2758,8 +2932,79 @@ class Cluster {
       };
 }
 
+/// Autoscaling config for a cluster.
+class ClusterAutoscalingConfig {
+  /// Autoscaling limits for this cluster.
+  ///
+  /// Required.
+  AutoscalingLimits? autoscalingLimits;
+
+  /// Autoscaling targets for this cluster.
+  ///
+  /// Required.
+  AutoscalingTargets? autoscalingTargets;
+
+  ClusterAutoscalingConfig({
+    this.autoscalingLimits,
+    this.autoscalingTargets,
+  });
+
+  ClusterAutoscalingConfig.fromJson(core.Map _json)
+      : this(
+          autoscalingLimits: _json.containsKey('autoscalingLimits')
+              ? AutoscalingLimits.fromJson(_json['autoscalingLimits']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          autoscalingTargets: _json.containsKey('autoscalingTargets')
+              ? AutoscalingTargets.fromJson(_json['autoscalingTargets']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (autoscalingLimits != null) 'autoscalingLimits': autoscalingLimits!,
+        if (autoscalingTargets != null)
+          'autoscalingTargets': autoscalingTargets!,
+      };
+}
+
+/// Configuration for a cluster.
+class ClusterConfig {
+  /// Autoscaling configuration for this cluster.
+  ClusterAutoscalingConfig? clusterAutoscalingConfig;
+
+  ClusterConfig({
+    this.clusterAutoscalingConfig,
+  });
+
+  ClusterConfig.fromJson(core.Map _json)
+      : this(
+          clusterAutoscalingConfig:
+              _json.containsKey('clusterAutoscalingConfig')
+                  ? ClusterAutoscalingConfig.fromJson(
+                      _json['clusterAutoscalingConfig']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterAutoscalingConfig != null)
+          'clusterAutoscalingConfig': clusterAutoscalingConfig!,
+      };
+}
+
 /// The state of a table's data in a particular cluster.
 class ClusterState {
+  /// The encryption information for the table in this cluster.
+  ///
+  /// If the encryption key protecting this resource is customer managed, then
+  /// its version can be rotated in Cloud Key Management Service (Cloud KMS).
+  /// The primary version of the key and its status will be reflected here when
+  /// changes propagate from Cloud KMS.
+  ///
+  /// Output only.
+  core.List<EncryptionInfo>? encryptionInfo;
+
   /// The state of replication for the table in this cluster.
   ///
   /// Output only.
@@ -2781,15 +3026,26 @@ class ClusterState {
   /// complete, the table will transition to `READY` state.
   core.String? replicationState;
 
-  ClusterState();
+  ClusterState({
+    this.encryptionInfo,
+    this.replicationState,
+  });
 
-  ClusterState.fromJson(core.Map _json) {
-    if (_json.containsKey('replicationState')) {
-      replicationState = _json['replicationState'] as core.String;
-    }
-  }
+  ClusterState.fromJson(core.Map _json)
+      : this(
+          encryptionInfo: _json.containsKey('encryptionInfo')
+              ? (_json['encryptionInfo'] as core.List)
+                  .map((value) => EncryptionInfo.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          replicationState: _json.containsKey('replicationState')
+              ? _json['replicationState'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (encryptionInfo != null) 'encryptionInfo': encryptionInfo!,
         if (replicationState != null) 'replicationState': replicationState!,
       };
 }
@@ -2803,189 +3059,20 @@ class ColumnFamily {
   /// return a cell even if it matches the active GC expression for its family.
   GcRule? gcRule;
 
-  ColumnFamily();
+  ColumnFamily({
+    this.gcRule,
+  });
 
-  ColumnFamily.fromJson(core.Map _json) {
-    if (_json.containsKey('gcRule')) {
-      gcRule = GcRule.fromJson(
-          _json['gcRule'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (gcRule != null) 'gcRule': gcRule!.toJson(),
-      };
-}
-
-/// Metadata type for the operation returned by CreateBackup.
-class CreateBackupMetadata {
-  /// If set, the time at which this operation finished or was cancelled.
-  core.String? endTime;
-
-  /// The name of the backup being created.
-  core.String? name;
-
-  /// The name of the table the backup is created from.
-  core.String? sourceTable;
-
-  /// The time at which this operation started.
-  core.String? startTime;
-
-  CreateBackupMetadata();
-
-  CreateBackupMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('sourceTable')) {
-      sourceTable = _json['sourceTable'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  ColumnFamily.fromJson(core.Map _json)
+      : this(
+          gcRule: _json.containsKey('gcRule')
+              ? GcRule.fromJson(
+                  _json['gcRule'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (name != null) 'name': name!,
-        if (sourceTable != null) 'sourceTable': sourceTable!,
-        if (startTime != null) 'startTime': startTime!,
-      };
-}
-
-/// The metadata for the Operation returned by CreateCluster.
-class CreateClusterMetadata {
-  /// The time at which the operation failed or was completed successfully.
-  core.String? finishTime;
-
-  /// The request that prompted the initiation of this CreateCluster operation.
-  CreateClusterRequest? originalRequest;
-
-  /// The time at which the original request was received.
-  core.String? requestTime;
-
-  /// Keys: the full `name` of each table that existed in the instance when
-  /// CreateCluster was first called, i.e. `projects//instances//tables/`.
-  ///
-  /// Any table added to the instance by a later API call will be created in the
-  /// new cluster by that API call, not this one. Values: information on how
-  /// much of a table's data has been copied to the newly-created cluster so
-  /// far.
-  core.Map<core.String, TableProgress>? tables;
-
-  CreateClusterMetadata();
-
-  CreateClusterMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('finishTime')) {
-      finishTime = _json['finishTime'] as core.String;
-    }
-    if (_json.containsKey('originalRequest')) {
-      originalRequest = CreateClusterRequest.fromJson(
-          _json['originalRequest'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestTime')) {
-      requestTime = _json['requestTime'] as core.String;
-    }
-    if (_json.containsKey('tables')) {
-      tables = (_json['tables'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          TableProgress.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (finishTime != null) 'finishTime': finishTime!,
-        if (originalRequest != null)
-          'originalRequest': originalRequest!.toJson(),
-        if (requestTime != null) 'requestTime': requestTime!,
-        if (tables != null)
-          'tables':
-              tables!.map((key, item) => core.MapEntry(key, item.toJson())),
-      };
-}
-
-/// Request message for BigtableInstanceAdmin.CreateCluster.
-class CreateClusterRequest {
-  /// The cluster to be created.
-  ///
-  /// Fields marked `OutputOnly` must be left blank.
-  ///
-  /// Required.
-  Cluster? cluster;
-
-  /// The ID to be used when referring to the new cluster within its instance,
-  /// e.g., just `mycluster` rather than
-  /// `projects/myproject/instances/myinstance/clusters/mycluster`.
-  ///
-  /// Required.
-  core.String? clusterId;
-
-  /// The unique name of the instance in which to create the new cluster.
-  ///
-  /// Values are of the form `projects/{project}/instances/{instance}`.
-  ///
-  /// Required.
-  core.String? parent;
-
-  CreateClusterRequest();
-
-  CreateClusterRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('cluster')) {
-      cluster = Cluster.fromJson(
-          _json['cluster'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('clusterId')) {
-      clusterId = _json['clusterId'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (cluster != null) 'cluster': cluster!.toJson(),
-        if (clusterId != null) 'clusterId': clusterId!,
-        if (parent != null) 'parent': parent!,
-      };
-}
-
-/// The metadata for the Operation returned by CreateInstance.
-class CreateInstanceMetadata {
-  /// The time at which the operation failed or was completed successfully.
-  core.String? finishTime;
-
-  /// The request that prompted the initiation of this CreateInstance operation.
-  CreateInstanceRequest? originalRequest;
-
-  /// The time at which the original request was received.
-  core.String? requestTime;
-
-  CreateInstanceMetadata();
-
-  CreateInstanceMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('finishTime')) {
-      finishTime = _json['finishTime'] as core.String;
-    }
-    if (_json.containsKey('originalRequest')) {
-      originalRequest = CreateInstanceRequest.fromJson(
-          _json['originalRequest'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestTime')) {
-      requestTime = _json['requestTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (finishTime != null) 'finishTime': finishTime!,
-        if (originalRequest != null)
-          'originalRequest': originalRequest!.toJson(),
-        if (requestTime != null) 'requestTime': requestTime!,
+        if (gcRule != null) 'gcRule': gcRule!,
       };
 }
 
@@ -3022,34 +3109,39 @@ class CreateInstanceRequest {
   /// Required.
   core.String? parent;
 
-  CreateInstanceRequest();
+  CreateInstanceRequest({
+    this.clusters,
+    this.instance,
+    this.instanceId,
+    this.parent,
+  });
 
-  CreateInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('clusters')) {
-      clusters = (_json['clusters'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          Cluster.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('instance')) {
-      instance = Instance.fromJson(
-          _json['instance'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('instanceId')) {
-      instanceId = _json['instanceId'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-  }
+  CreateInstanceRequest.fromJson(core.Map _json)
+      : this(
+          clusters: _json.containsKey('clusters')
+              ? (_json['clusters'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    Cluster.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          instance: _json.containsKey('instance')
+              ? Instance.fromJson(
+                  _json['instance'] as core.Map<core.String, core.dynamic>)
+              : null,
+          instanceId: _json.containsKey('instanceId')
+              ? _json['instanceId'] as core.String
+              : null,
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusters != null)
-          'clusters':
-              clusters!.map((key, item) => core.MapEntry(key, item.toJson())),
-        if (instance != null) 'instance': instance!.toJson(),
+        if (clusters != null) 'clusters': clusters!,
+        if (instance != null) 'instance': instance!,
         if (instanceId != null) 'instanceId': instanceId!,
         if (parent != null) 'parent': parent!,
       };
@@ -3083,29 +3175,32 @@ class CreateTableRequest {
   /// Required.
   core.String? tableId;
 
-  CreateTableRequest();
+  CreateTableRequest({
+    this.initialSplits,
+    this.table,
+    this.tableId,
+  });
 
-  CreateTableRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('initialSplits')) {
-      initialSplits = (_json['initialSplits'] as core.List)
-          .map<Split>((value) =>
-              Split.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('table')) {
-      table =
-          Table.fromJson(_json['table'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('tableId')) {
-      tableId = _json['tableId'] as core.String;
-    }
-  }
+  CreateTableRequest.fromJson(core.Map _json)
+      : this(
+          initialSplits: _json.containsKey('initialSplits')
+              ? (_json['initialSplits'] as core.List)
+                  .map((value) => Split.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          table: _json.containsKey('table')
+              ? Table.fromJson(
+                  _json['table'] as core.Map<core.String, core.dynamic>)
+              : null,
+          tableId: _json.containsKey('tableId')
+              ? _json['tableId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (initialSplits != null)
-          'initialSplits':
-              initialSplits!.map((value) => value.toJson()).toList(),
-        if (table != null) 'table': table!.toJson(),
+        if (initialSplits != null) 'initialSplits': initialSplits!,
+        if (table != null) 'table': table!,
         if (tableId != null) 'tableId': tableId!,
       };
 }
@@ -3129,16 +3224,20 @@ class DropRowRangeRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  DropRowRangeRequest();
+  DropRowRangeRequest({
+    this.deleteAllDataFromTable,
+    this.rowKeyPrefix,
+  });
 
-  DropRowRangeRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('deleteAllDataFromTable')) {
-      deleteAllDataFromTable = _json['deleteAllDataFromTable'] as core.bool;
-    }
-    if (_json.containsKey('rowKeyPrefix')) {
-      rowKeyPrefix = _json['rowKeyPrefix'] as core.String;
-    }
-  }
+  DropRowRangeRequest.fromJson(core.Map _json)
+      : this(
+          deleteAllDataFromTable: _json.containsKey('deleteAllDataFromTable')
+              ? _json['deleteAllDataFromTable'] as core.bool
+              : null,
+          rowKeyPrefix: _json.containsKey('rowKeyPrefix')
+              ? _json['rowKeyPrefix'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deleteAllDataFromTable != null)
@@ -3154,14 +3253,100 @@ class DropRowRangeRequest {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+/// Cloud Key Management Service (Cloud KMS) settings for a CMEK-protected
+/// cluster.
+class EncryptionConfig {
+  /// Describes the Cloud KMS encryption key that will be used to protect the
+  /// destination Bigtable cluster.
+  ///
+  /// The requirements for this key are: 1) The Cloud Bigtable service account
+  /// associated with the project that contains this cluster must be granted the
+  /// `cloudkms.cryptoKeyEncrypterDecrypter` role on the CMEK key. 2) Only
+  /// regional keys can be used and the region of the CMEK key must match the
+  /// region of the cluster. 3) All clusters within an instance must use the
+  /// same CMEK key. Values are of the form
+  /// `projects/{project}/locations/{location}/keyRings/{keyring}/cryptoKeys/{key}`
+  core.String? kmsKeyName;
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  EncryptionConfig({
+    this.kmsKeyName,
+  });
+
+  EncryptionConfig.fromJson(core.Map _json)
+      : this(
+          kmsKeyName: _json.containsKey('kmsKeyName')
+              ? _json['kmsKeyName'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (kmsKeyName != null) 'kmsKeyName': kmsKeyName!,
+      };
+}
+
+/// Encryption information for a given resource.
+///
+/// If this resource is protected with customer managed encryption, the in-use
+/// Cloud Key Management Service (Cloud KMS) key version is specified along with
+/// its status.
+class EncryptionInfo {
+  /// The status of encrypt/decrypt calls on underlying data for this resource.
+  ///
+  /// Regardless of status, the existing data is always encrypted at rest.
+  ///
+  /// Output only.
+  Status? encryptionStatus;
+
+  /// The type of encryption used to protect this resource.
+  ///
+  /// Output only.
+  /// Possible string values are:
+  /// - "ENCRYPTION_TYPE_UNSPECIFIED" : Encryption type was not specified,
+  /// though data at rest remains encrypted.
+  /// - "GOOGLE_DEFAULT_ENCRYPTION" : The data backing this resource is
+  /// encrypted at rest with a key that is fully managed by Google. No key
+  /// version or status will be populated. This is the default state.
+  /// - "CUSTOMER_MANAGED_ENCRYPTION" : The data backing this resource is
+  /// encrypted at rest with a key that is managed by the customer. The in-use
+  /// version of the key and its status are populated for CMEK-protected tables.
+  /// CMEK-protected backups are pinned to the key version that was in use at
+  /// the time the backup was taken. This key version is populated but its
+  /// status is not tracked and is reported as `UNKNOWN`.
+  core.String? encryptionType;
+
+  /// The version of the Cloud KMS key specified in the parent cluster that is
+  /// in use for the data underlying this table.
+  ///
+  /// Output only.
+  core.String? kmsKeyVersion;
+
+  EncryptionInfo({
+    this.encryptionStatus,
+    this.encryptionType,
+    this.kmsKeyVersion,
+  });
+
+  EncryptionInfo.fromJson(core.Map _json)
+      : this(
+          encryptionStatus: _json.containsKey('encryptionStatus')
+              ? Status.fromJson(_json['encryptionStatus']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          encryptionType: _json.containsKey('encryptionType')
+              ? _json['encryptionType'] as core.String
+              : null,
+          kmsKeyVersion: _json.containsKey('kmsKeyVersion')
+              ? _json['kmsKeyVersion'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (encryptionStatus != null) 'encryptionStatus': encryptionStatus!,
+        if (encryptionType != null) 'encryptionType': encryptionType!,
+        if (kmsKeyVersion != null) 'kmsKeyVersion': kmsKeyVersion!,
+      };
 }
 
 /// Represents a textual expression in the Common Expression Language (CEL)
@@ -3170,7 +3355,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -3182,103 +3367,7 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
-
-/// Added to the error payload.
-class FailureTrace {
-  core.List<Frame>? frames;
-
-  FailureTrace();
-
-  FailureTrace.fromJson(core.Map _json) {
-    if (_json.containsKey('frames')) {
-      frames = (_json['frames'] as core.List)
-          .map<Frame>((value) =>
-              Frame.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (frames != null)
-          'frames': frames!.map((value) => value.toJson()).toList(),
-      };
-}
-
-class Frame {
-  core.String? targetName;
-  core.String? workflowGuid;
-  core.String? zoneId;
-
-  Frame();
-
-  Frame.fromJson(core.Map _json) {
-    if (_json.containsKey('targetName')) {
-      targetName = _json['targetName'] as core.String;
-    }
-    if (_json.containsKey('workflowGuid')) {
-      workflowGuid = _json['workflowGuid'] as core.String;
-    }
-    if (_json.containsKey('zoneId')) {
-      zoneId = _json['zoneId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (targetName != null) 'targetName': targetName!,
-        if (workflowGuid != null) 'workflowGuid': workflowGuid!,
-        if (zoneId != null) 'zoneId': zoneId!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Rule for determining which cells to delete during garbage collection.
 class GcRule {
@@ -3297,44 +3386,42 @@ class GcRule {
   /// Delete cells that would be deleted by any nested rule.
   Union? union;
 
-  GcRule();
+  GcRule({
+    this.intersection,
+    this.maxAge,
+    this.maxNumVersions,
+    this.union,
+  });
 
-  GcRule.fromJson(core.Map _json) {
-    if (_json.containsKey('intersection')) {
-      intersection = Intersection.fromJson(
-          _json['intersection'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('maxAge')) {
-      maxAge = _json['maxAge'] as core.String;
-    }
-    if (_json.containsKey('maxNumVersions')) {
-      maxNumVersions = _json['maxNumVersions'] as core.int;
-    }
-    if (_json.containsKey('union')) {
-      union =
-          Union.fromJson(_json['union'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GcRule.fromJson(core.Map _json)
+      : this(
+          intersection: _json.containsKey('intersection')
+              ? Intersection.fromJson(
+                  _json['intersection'] as core.Map<core.String, core.dynamic>)
+              : null,
+          maxAge: _json.containsKey('maxAge')
+              ? _json['maxAge'] as core.String
+              : null,
+          maxNumVersions: _json.containsKey('maxNumVersions')
+              ? _json['maxNumVersions'] as core.int
+              : null,
+          union: _json.containsKey('union')
+              ? Union.fromJson(
+                  _json['union'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (intersection != null) 'intersection': intersection!.toJson(),
+        if (intersection != null) 'intersection': intersection!,
         if (maxAge != null) 'maxAge': maxAge!,
         if (maxNumVersions != null) 'maxNumVersions': maxNumVersions!,
-        if (union != null) 'union': union!.toJson(),
+        if (union != null) 'union': union!,
       };
 }
 
 /// Request message for
 /// google.bigtable.admin.v2.BigtableTableAdmin.GenerateConsistencyToken
-class GenerateConsistencyTokenRequest {
-  GenerateConsistencyTokenRequest();
-
-  GenerateConsistencyTokenRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef GenerateConsistencyTokenRequest = $Empty;
 
 /// Response message for
 /// google.bigtable.admin.v2.BigtableTableAdmin.GenerateConsistencyToken
@@ -3342,13 +3429,16 @@ class GenerateConsistencyTokenResponse {
   /// The generated consistency token.
   core.String? consistencyToken;
 
-  GenerateConsistencyTokenResponse();
+  GenerateConsistencyTokenResponse({
+    this.consistencyToken,
+  });
 
-  GenerateConsistencyTokenResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('consistencyToken')) {
-      consistencyToken = _json['consistencyToken'] as core.String;
-    }
-  }
+  GenerateConsistencyTokenResponse.fromJson(core.Map _json)
+      : this(
+          consistencyToken: _json.containsKey('consistencyToken')
+              ? _json['consistencyToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consistencyToken != null) 'consistencyToken': consistencyToken!,
@@ -3361,52 +3451,38 @@ class GetIamPolicyRequest {
   /// `GetIamPolicy`.
   GetPolicyOptions? options;
 
-  GetIamPolicyRequest();
+  GetIamPolicyRequest({
+    this.options,
+  });
 
-  GetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = GetPolicyOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
 /// Encapsulates settings provided to GetIamPolicy.
-class GetPolicyOptions {
-  /// The policy format version to be returned.
-  ///
-  /// Valid values are 0, 1, and 3. Requests specifying an invalid value will be
-  /// rejected. Requests for policies with any conditional bindings must specify
-  /// version 3. Policies without any conditional bindings may specify any valid
-  /// value or leave the field unset. To learn which resources support
-  /// conditions in their IAM policies, see the
-  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
-  ///
-  /// Optional.
-  core.int? requestedPolicyVersion;
-
-  GetPolicyOptions();
-
-  GetPolicyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedPolicyVersion')) {
-      requestedPolicyVersion = _json['requestedPolicyVersion'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (requestedPolicyVersion != null)
-          'requestedPolicyVersion': requestedPolicyVersion!,
-      };
-}
+typedef GetPolicyOptions = $GetPolicyOptions;
 
 /// A collection of Bigtable Tables and the resources that serve them.
 ///
 /// All tables in an instance are served from all Clusters in the instance.
 class Instance {
+  /// A server-assigned timestamp representing when this Instance was created.
+  ///
+  /// For instances created before this field was added (August 2021), this
+  /// value is `seconds: 0, nanos: 1`.
+  ///
+  /// Output only.
+  core.String? createTime;
+
   /// The descriptive name for this instance as it appears in UIs.
   ///
   /// Can be changed at any time, but should be kept globally unique to avoid
@@ -3460,32 +3536,39 @@ class Instance {
   /// no longer enforces a higher minimum node count than DEVELOPMENT.
   core.String? type;
 
-  Instance();
+  Instance({
+    this.createTime,
+    this.displayName,
+    this.labels,
+    this.name,
+    this.state,
+    this.type,
+  });
 
-  Instance.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Instance.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (createTime != null) 'createTime': createTime!,
         if (displayName != null) 'displayName': displayName!,
         if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
@@ -3499,20 +3582,22 @@ class Intersection {
   /// Only delete cells which would be deleted by every element of `rules`.
   core.List<GcRule>? rules;
 
-  Intersection();
+  Intersection({
+    this.rules,
+  });
 
-  Intersection.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<GcRule>((value) =>
-              GcRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Intersection.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => GcRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -3534,28 +3619,32 @@ class ListAppProfilesResponse {
   /// results.
   core.String? nextPageToken;
 
-  ListAppProfilesResponse();
+  ListAppProfilesResponse({
+    this.appProfiles,
+    this.failedLocations,
+    this.nextPageToken,
+  });
 
-  ListAppProfilesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('appProfiles')) {
-      appProfiles = (_json['appProfiles'] as core.List)
-          .map<AppProfile>((value) =>
-              AppProfile.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('failedLocations')) {
-      failedLocations = (_json['failedLocations'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAppProfilesResponse.fromJson(core.Map _json)
+      : this(
+          appProfiles: _json.containsKey('appProfiles')
+              ? (_json['appProfiles'] as core.List)
+                  .map((value) => AppProfile.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          failedLocations: _json.containsKey('failedLocations')
+              ? (_json['failedLocations'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (appProfiles != null)
-          'appProfiles': appProfiles!.map((value) => value.toJson()).toList(),
+        if (appProfiles != null) 'appProfiles': appProfiles!,
         if (failedLocations != null) 'failedLocations': failedLocations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -3570,23 +3659,26 @@ class ListBackupsResponse {
   /// more of the matching backups.
   core.String? nextPageToken;
 
-  ListBackupsResponse();
+  ListBackupsResponse({
+    this.backups,
+    this.nextPageToken,
+  });
 
-  ListBackupsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('backups')) {
-      backups = (_json['backups'] as core.List)
-          .map<Backup>((value) =>
-              Backup.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListBackupsResponse.fromJson(core.Map _json)
+      : this(
+          backups: _json.containsKey('backups')
+              ? (_json['backups'] as core.List)
+                  .map((value) => Backup.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (backups != null)
-          'backups': backups!.map((value) => value.toJson()).toList(),
+        if (backups != null) 'backups': backups!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3607,28 +3699,32 @@ class ListClustersResponse {
   /// DEPRECATED: This field is unused and ignored.
   core.String? nextPageToken;
 
-  ListClustersResponse();
+  ListClustersResponse({
+    this.clusters,
+    this.failedLocations,
+    this.nextPageToken,
+  });
 
-  ListClustersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('clusters')) {
-      clusters = (_json['clusters'] as core.List)
-          .map<Cluster>((value) =>
-              Cluster.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('failedLocations')) {
-      failedLocations = (_json['failedLocations'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListClustersResponse.fromJson(core.Map _json)
+      : this(
+          clusters: _json.containsKey('clusters')
+              ? (_json['clusters'] as core.List)
+                  .map((value) => Cluster.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          failedLocations: _json.containsKey('failedLocations')
+              ? (_json['failedLocations'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusters != null)
-          'clusters': clusters!.map((value) => value.toJson()).toList(),
+        if (clusters != null) 'clusters': clusters!,
         if (failedLocations != null) 'failedLocations': failedLocations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
@@ -3651,29 +3747,33 @@ class ListInstancesResponse {
   /// DEPRECATED: This field is unused and ignored.
   core.String? nextPageToken;
 
-  ListInstancesResponse();
+  ListInstancesResponse({
+    this.failedLocations,
+    this.instances,
+    this.nextPageToken,
+  });
 
-  ListInstancesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('failedLocations')) {
-      failedLocations = (_json['failedLocations'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('instances')) {
-      instances = (_json['instances'] as core.List)
-          .map<Instance>((value) =>
-              Instance.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListInstancesResponse.fromJson(core.Map _json)
+      : this(
+          failedLocations: _json.containsKey('failedLocations')
+              ? (_json['failedLocations'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          instances: _json.containsKey('instances')
+              ? (_json['instances'] as core.List)
+                  .map((value) => Instance.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (failedLocations != null) 'failedLocations': failedLocations!,
-        if (instances != null)
-          'instances': instances!.map((value) => value.toJson()).toList(),
+        if (instances != null) 'instances': instances!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3686,23 +3786,26 @@ class ListLocationsResponse {
   /// The standard List next-page token.
   core.String? nextPageToken;
 
-  ListLocationsResponse();
+  ListLocationsResponse({
+    this.locations,
+    this.nextPageToken,
+  });
 
-  ListLocationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('locations')) {
-      locations = (_json['locations'] as core.List)
-          .map<Location>((value) =>
-              Location.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListLocationsResponse.fromJson(core.Map _json)
+      : this(
+          locations: _json.containsKey('locations')
+              ? (_json['locations'] as core.List)
+                  .map((value) => Location.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (locations != null)
-          'locations': locations!.map((value) => value.toJson()).toList(),
+        if (locations != null) 'locations': locations!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3715,24 +3818,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -3747,95 +3853,32 @@ class ListTablesResponse {
   /// The tables present in the requested instance.
   core.List<Table>? tables;
 
-  ListTablesResponse();
+  ListTablesResponse({
+    this.nextPageToken,
+    this.tables,
+  });
 
-  ListTablesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('tables')) {
-      tables = (_json['tables'] as core.List)
-          .map<Table>((value) =>
-              Table.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListTablesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          tables: _json.containsKey('tables')
+              ? (_json['tables'] as core.List)
+                  .map((value) => Table.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (tables != null)
-          'tables': tables!.map((value) => value.toJson()).toList(),
+        if (tables != null) 'tables': tables!,
       };
 }
 
 /// A resource that represents Google Cloud Platform location.
-class Location {
-  /// The friendly name for this location, typically a nearby city name.
-  ///
-  /// For example, "Tokyo".
-  core.String? displayName;
-
-  /// Cross-service attributes for the location.
-  ///
-  /// For example {"cloud.googleapis.com/region": "us-east1"}
-  core.Map<core.String, core.String>? labels;
-
-  /// The canonical id for this location.
-  ///
-  /// For example: `"us-east1"`.
-  core.String? locationId;
-
-  /// Service-specific metadata.
-  ///
-  /// For example the available capacity at the given location.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// Resource name for the location, which may vary between implementations.
-  ///
-  /// For example: `"projects/example-project/locations/us-east1"`
-  core.String? name;
-
-  Location();
-
-  Location.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('locationId')) {
-      locationId = _json['locationId'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (displayName != null) 'displayName': displayName!,
-        if (labels != null) 'labels': labels!,
-        if (locationId != null) 'locationId': locationId!,
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-      };
-}
+typedef Location = $Location00;
 
 /// A create, update, or delete of a particular column family.
 class Modification {
@@ -3854,30 +3897,32 @@ class Modification {
   /// column family exists with the given ID.
   ColumnFamily? update;
 
-  Modification();
+  Modification({
+    this.create,
+    this.drop,
+    this.id,
+    this.update,
+  });
 
-  Modification.fromJson(core.Map _json) {
-    if (_json.containsKey('create')) {
-      create = ColumnFamily.fromJson(
-          _json['create'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('drop')) {
-      drop = _json['drop'] as core.bool;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('update')) {
-      update = ColumnFamily.fromJson(
-          _json['update'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Modification.fromJson(core.Map _json)
+      : this(
+          create: _json.containsKey('create')
+              ? ColumnFamily.fromJson(
+                  _json['create'] as core.Map<core.String, core.dynamic>)
+              : null,
+          drop: _json.containsKey('drop') ? _json['drop'] as core.bool : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          update: _json.containsKey('update')
+              ? ColumnFamily.fromJson(
+                  _json['update'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (create != null) 'create': create!.toJson(),
+        if (create != null) 'create': create!,
         if (drop != null) 'drop': drop!,
         if (id != null) 'id': id!,
-        if (update != null) 'update': update!.toJson(),
+        if (update != null) 'update': update!,
       };
 }
 
@@ -3893,21 +3938,22 @@ class ModifyColumnFamiliesRequest {
   /// Required.
   core.List<Modification>? modifications;
 
-  ModifyColumnFamiliesRequest();
+  ModifyColumnFamiliesRequest({
+    this.modifications,
+  });
 
-  ModifyColumnFamiliesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('modifications')) {
-      modifications = (_json['modifications'] as core.List)
-          .map<Modification>((value) => Modification.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ModifyColumnFamiliesRequest.fromJson(core.Map _json)
+      : this(
+          modifications: _json.containsKey('modifications')
+              ? (_json['modifications'] as core.List)
+                  .map((value) => Modification.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (modifications != null)
-          'modifications':
-              modifications!.map((value) => value.toJson()).toList(),
+        if (modifications != null) 'modifications': modifications!,
       };
 }
 
@@ -3918,13 +3964,28 @@ class ModifyColumnFamiliesRequest {
 /// Clusters in a region are considered equidistant. Choosing this option
 /// sacrifices read-your-writes consistency to improve availability.
 class MultiClusterRoutingUseAny {
-  MultiClusterRoutingUseAny();
+  /// The set of clusters to route to.
+  ///
+  /// The order is ignored; clusters will be tried in order of distance. If left
+  /// empty, all clusters are eligible.
+  core.List<core.String>? clusterIds;
 
-  MultiClusterRoutingUseAny.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
+  MultiClusterRoutingUseAny({
+    this.clusterIds,
+  });
 
-  core.Map<core.String, core.dynamic> toJson() => {};
+  MultiClusterRoutingUseAny.fromJson(core.Map _json)
+      : this(
+          clusterIds: _json.containsKey('clusterIds')
+              ? (_json['clusterIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (clusterIds != null) 'clusterIds': clusterIds!,
+      };
 }
 
 /// This resource represents a long-running operation that is the result of a
@@ -3948,7 +4009,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3968,143 +4029,38 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
-      };
-}
-
-/// Encapsulates progress related information for a Cloud Bigtable long running
-/// operation.
-class OperationProgress {
-  /// If set, the time at which this operation failed or was completed
-  /// successfully.
-  core.String? endTime;
-
-  /// Percent completion of the operation.
-  ///
-  /// Values are between 0 and 100 inclusive.
-  core.int? progressPercent;
-
-  /// Time the request was received.
-  core.String? startTime;
-
-  OperationProgress();
-
-  OperationProgress.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('progressPercent')) {
-      progressPercent = _json['progressPercent'] as core.int;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (endTime != null) 'endTime': endTime!,
-        if (progressPercent != null) 'progressPercent': progressPercent!,
-        if (startTime != null) 'startTime': startTime!,
-      };
-}
-
-/// Metadata type for the long-running operation used to track the progress of
-/// optimizations performed on a newly restored table.
-///
-/// This long-running operation is automatically created by the system after the
-/// successful completion of a table restore, and cannot be cancelled.
-class OptimizeRestoredTableMetadata {
-  /// Name of the restored table being optimized.
-  core.String? name;
-
-  /// The progress of the post-restore optimizations.
-  OperationProgress? progress;
-
-  OptimizeRestoredTableMetadata();
-
-  OptimizeRestoredTableMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('progress')) {
-      progress = OperationProgress.fromJson(
-          _json['progress'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-        if (progress != null) 'progress': progress!.toJson(),
-      };
-}
-
-/// Request message for BigtableInstanceAdmin.PartialUpdateInstance.
-class PartialUpdateInstanceRequest {
-  /// The Instance which will (partially) replace the current value.
-  ///
-  /// Required.
-  Instance? instance;
-
-  /// The subset of Instance fields which should be replaced.
-  ///
-  /// Must be explicitly set.
-  ///
-  /// Required.
-  core.String? updateMask;
-
-  PartialUpdateInstanceRequest();
-
-  PartialUpdateInstanceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('instance')) {
-      instance = Instance.fromJson(
-          _json['instance'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (instance != null) 'instance': instance!.toJson(),
-        if (updateMask != null) 'updateMask': updateMask!,
       };
 }
 
@@ -4112,15 +4068,15 @@ class PartialUpdateInstanceRequest {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -4129,25 +4085,30 @@ class PartialUpdateInstanceRequest {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -4189,34 +4150,36 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -4235,81 +4198,24 @@ class RestoreInfo {
   /// - "BACKUP" : A backup was used as the source of the restore.
   core.String? sourceType;
 
-  RestoreInfo();
+  RestoreInfo({
+    this.backupInfo,
+    this.sourceType,
+  });
 
-  RestoreInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('backupInfo')) {
-      backupInfo = BackupInfo.fromJson(
-          _json['backupInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceType')) {
-      sourceType = _json['sourceType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (backupInfo != null) 'backupInfo': backupInfo!.toJson(),
-        if (sourceType != null) 'sourceType': sourceType!,
-      };
-}
-
-/// Metadata type for the long-running operation returned by RestoreTable.
-class RestoreTableMetadata {
-  BackupInfo? backupInfo;
-
-  /// Name of the table being created and restored to.
-  core.String? name;
-
-  /// If exists, the name of the long-running operation that will be used to
-  /// track the post-restore optimization process to optimize the performance of
-  /// the restored table.
-  ///
-  /// The metadata type of the long-running operation is
-  /// OptimizeRestoreTableMetadata. The response type is Empty. This
-  /// long-running operation may be automatically created by the system if
-  /// applicable after the RestoreTable long-running operation completes
-  /// successfully. This operation may not be created if the table is already
-  /// optimized or the restore was not successful.
-  core.String? optimizeTableOperationName;
-
-  /// The progress of the RestoreTable operation.
-  OperationProgress? progress;
-
-  /// The type of the restore source.
-  /// Possible string values are:
-  /// - "RESTORE_SOURCE_TYPE_UNSPECIFIED" : No restore associated.
-  /// - "BACKUP" : A backup was used as the source of the restore.
-  core.String? sourceType;
-
-  RestoreTableMetadata();
-
-  RestoreTableMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('backupInfo')) {
-      backupInfo = BackupInfo.fromJson(
-          _json['backupInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('optimizeTableOperationName')) {
-      optimizeTableOperationName =
-          _json['optimizeTableOperationName'] as core.String;
-    }
-    if (_json.containsKey('progress')) {
-      progress = OperationProgress.fromJson(
-          _json['progress'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceType')) {
-      sourceType = _json['sourceType'] as core.String;
-    }
-  }
+  RestoreInfo.fromJson(core.Map _json)
+      : this(
+          backupInfo: _json.containsKey('backupInfo')
+              ? BackupInfo.fromJson(
+                  _json['backupInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceType: _json.containsKey('sourceType')
+              ? _json['sourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (backupInfo != null) 'backupInfo': backupInfo!.toJson(),
-        if (name != null) 'name': name!,
-        if (optimizeTableOperationName != null)
-          'optimizeTableOperationName': optimizeTableOperationName!,
-        if (progress != null) 'progress': progress!.toJson(),
+        if (backupInfo != null) 'backupInfo': backupInfo!,
         if (sourceType != null) 'sourceType': sourceType!,
       };
 }
@@ -4329,16 +4235,20 @@ class RestoreTableRequest {
   /// Required.
   core.String? tableId;
 
-  RestoreTableRequest();
+  RestoreTableRequest({
+    this.backup,
+    this.tableId,
+  });
 
-  RestoreTableRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('backup')) {
-      backup = _json['backup'] as core.String;
-    }
-    if (_json.containsKey('tableId')) {
-      tableId = _json['tableId'] as core.String;
-    }
-  }
+  RestoreTableRequest.fromJson(core.Map _json)
+      : this(
+          backup: _json.containsKey('backup')
+              ? _json['backup'] as core.String
+              : null,
+          tableId: _json.containsKey('tableId')
+              ? _json['tableId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (backup != null) 'backup': backup!,
@@ -4361,20 +4271,24 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -4394,16 +4308,21 @@ class SingleClusterRouting {
   /// The cluster to which read/write requests should be routed.
   core.String? clusterId;
 
-  SingleClusterRouting();
+  SingleClusterRouting({
+    this.allowTransactionalWrites,
+    this.clusterId,
+  });
 
-  SingleClusterRouting.fromJson(core.Map _json) {
-    if (_json.containsKey('allowTransactionalWrites')) {
-      allowTransactionalWrites = _json['allowTransactionalWrites'] as core.bool;
-    }
-    if (_json.containsKey('clusterId')) {
-      clusterId = _json['clusterId'] as core.String;
-    }
-  }
+  SingleClusterRouting.fromJson(core.Map _json)
+      : this(
+          allowTransactionalWrites:
+              _json.containsKey('allowTransactionalWrites')
+                  ? _json['allowTransactionalWrites'] as core.bool
+                  : null,
+          clusterId: _json.containsKey('clusterId')
+              ? _json['clusterId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowTransactionalWrites != null)
@@ -4423,13 +4342,14 @@ class Split {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  Split();
+  Split({
+    this.key,
+  });
 
-  Split.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-  }
+  Split.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (key != null) 'key': key!,
@@ -4443,52 +4363,7 @@ class Split {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// A collection of user data indexed by row, column, and timestamp.
 ///
@@ -4499,7 +4374,7 @@ class Table {
   /// If it could not be determined whether or not the table has data in a
   /// particular cluster (for example, if its zone is unavailable), then there
   /// will be an entry for the cluster with UNKNOWN `replication_status`. Views:
-  /// `REPLICATION_VIEW`, `FULL`
+  /// `REPLICATION_VIEW`, `ENCRYPTION_VIEW`, `FULL`
   ///
   /// Output only.
   core.Map<core.String, ClusterState>? clusterStates;
@@ -4537,239 +4412,81 @@ class Table {
   /// Output only.
   RestoreInfo? restoreInfo;
 
-  Table();
+  Table({
+    this.clusterStates,
+    this.columnFamilies,
+    this.granularity,
+    this.name,
+    this.restoreInfo,
+  });
 
-  Table.fromJson(core.Map _json) {
-    if (_json.containsKey('clusterStates')) {
-      clusterStates =
-          (_json['clusterStates'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          ClusterState.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('columnFamilies')) {
-      columnFamilies =
-          (_json['columnFamilies'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          ColumnFamily.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-    if (_json.containsKey('granularity')) {
-      granularity = _json['granularity'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('restoreInfo')) {
-      restoreInfo = RestoreInfo.fromJson(
-          _json['restoreInfo'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Table.fromJson(core.Map _json)
+      : this(
+          clusterStates: _json.containsKey('clusterStates')
+              ? (_json['clusterStates'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    ClusterState.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          columnFamilies: _json.containsKey('columnFamilies')
+              ? (_json['columnFamilies'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    ColumnFamily.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          granularity: _json.containsKey('granularity')
+              ? _json['granularity'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          restoreInfo: _json.containsKey('restoreInfo')
+              ? RestoreInfo.fromJson(
+                  _json['restoreInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (clusterStates != null)
-          'clusterStates': clusterStates!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
-        if (columnFamilies != null)
-          'columnFamilies': columnFamilies!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
+        if (clusterStates != null) 'clusterStates': clusterStates!,
+        if (columnFamilies != null) 'columnFamilies': columnFamilies!,
         if (granularity != null) 'granularity': granularity!,
         if (name != null) 'name': name!,
-        if (restoreInfo != null) 'restoreInfo': restoreInfo!.toJson(),
-      };
-}
-
-/// Progress info for copying a table's data to the new cluster.
-class TableProgress {
-  /// Estimate of the number of bytes copied so far for this table.
-  ///
-  /// This will eventually reach 'estimated_size_bytes' unless the table copy is
-  /// CANCELLED.
-  core.String? estimatedCopiedBytes;
-
-  /// Estimate of the size of the table to be copied.
-  core.String? estimatedSizeBytes;
-
-  ///
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED"
-  /// - "PENDING" : The table has not yet begun copying to the new cluster.
-  /// - "COPYING" : The table is actively being copied to the new cluster.
-  /// - "COMPLETED" : The table has been fully copied to the new cluster.
-  /// - "CANCELLED" : The table was deleted before it finished copying to the
-  /// new cluster. Note that tables deleted after completion will stay marked as
-  /// COMPLETED, not CANCELLED.
-  core.String? state;
-
-  TableProgress();
-
-  TableProgress.fromJson(core.Map _json) {
-    if (_json.containsKey('estimatedCopiedBytes')) {
-      estimatedCopiedBytes = _json['estimatedCopiedBytes'] as core.String;
-    }
-    if (_json.containsKey('estimatedSizeBytes')) {
-      estimatedSizeBytes = _json['estimatedSizeBytes'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (estimatedCopiedBytes != null)
-          'estimatedCopiedBytes': estimatedCopiedBytes!,
-        if (estimatedSizeBytes != null)
-          'estimatedSizeBytes': estimatedSizeBytes!,
-        if (state != null) 'state': state!,
+        if (restoreInfo != null) 'restoreInfo': restoreInfo!,
       };
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// A GcRule which deletes cells matching any of the given rules.
 class Union {
   /// Delete cells which would be deleted by any element of `rules`.
   core.List<GcRule>? rules;
 
-  Union();
+  Union({
+    this.rules,
+  });
 
-  Union.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<GcRule>((value) =>
-              GcRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// The metadata for the Operation returned by UpdateAppProfile.
-class UpdateAppProfileMetadata {
-  UpdateAppProfileMetadata();
-
-  UpdateAppProfileMetadata.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// The metadata for the Operation returned by UpdateCluster.
-class UpdateClusterMetadata {
-  /// The time at which the operation failed or was completed successfully.
-  core.String? finishTime;
-
-  /// The request that prompted the initiation of this UpdateCluster operation.
-  Cluster? originalRequest;
-
-  /// The time at which the original request was received.
-  core.String? requestTime;
-
-  UpdateClusterMetadata();
-
-  UpdateClusterMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('finishTime')) {
-      finishTime = _json['finishTime'] as core.String;
-    }
-    if (_json.containsKey('originalRequest')) {
-      originalRequest = Cluster.fromJson(
-          _json['originalRequest'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestTime')) {
-      requestTime = _json['requestTime'] as core.String;
-    }
-  }
+  Union.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => GcRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (finishTime != null) 'finishTime': finishTime!,
-        if (originalRequest != null)
-          'originalRequest': originalRequest!.toJson(),
-        if (requestTime != null) 'requestTime': requestTime!,
-      };
-}
-
-/// The metadata for the Operation returned by UpdateInstance.
-class UpdateInstanceMetadata {
-  /// The time at which the operation failed or was completed successfully.
-  core.String? finishTime;
-
-  /// The request that prompted the initiation of this UpdateInstance operation.
-  PartialUpdateInstanceRequest? originalRequest;
-
-  /// The time at which the original request was received.
-  core.String? requestTime;
-
-  UpdateInstanceMetadata();
-
-  UpdateInstanceMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('finishTime')) {
-      finishTime = _json['finishTime'] as core.String;
-    }
-    if (_json.containsKey('originalRequest')) {
-      originalRequest = PartialUpdateInstanceRequest.fromJson(
-          _json['originalRequest'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestTime')) {
-      requestTime = _json['requestTime'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (finishTime != null) 'finishTime': finishTime!,
-        if (originalRequest != null)
-          'originalRequest': originalRequest!.toJson(),
-        if (requestTime != null) 'requestTime': requestTime!,
+        if (rules != null) 'rules': rules!,
       };
 }

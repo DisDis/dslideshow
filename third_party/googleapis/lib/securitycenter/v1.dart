@@ -23,18 +23,27 @@
 ///
 /// - [FoldersResource]
 ///   - [FoldersAssetsResource]
+///   - [FoldersFindingsResource]
+///   - [FoldersMuteConfigsResource]
 ///   - [FoldersSourcesResource]
 ///     - [FoldersSourcesFindingsResource]
+///       - [FoldersSourcesFindingsExternalSystemsResource]
 /// - [OrganizationsResource]
 ///   - [OrganizationsAssetsResource]
+///   - [OrganizationsFindingsResource]
+///   - [OrganizationsMuteConfigsResource]
 ///   - [OrganizationsNotificationConfigsResource]
 ///   - [OrganizationsOperationsResource]
 ///   - [OrganizationsSourcesResource]
 ///     - [OrganizationsSourcesFindingsResource]
+///       - [OrganizationsSourcesFindingsExternalSystemsResource]
 /// - [ProjectsResource]
 ///   - [ProjectsAssetsResource]
+///   - [ProjectsFindingsResource]
+///   - [ProjectsMuteConfigsResource]
 ///   - [ProjectsSourcesResource]
 ///     - [ProjectsSourcesFindingsResource]
+///       - [ProjectsSourcesFindingsExternalSystemsResource]
 library securitycenter.v1;
 
 import 'dart:async' as async;
@@ -44,6 +53,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -52,7 +63,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// Security Command Center API provides access to temporal views of assets and
 /// findings within an organization.
 class SecurityCommandCenterApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -73,6 +85,9 @@ class FoldersResource {
   final commons.ApiRequester _requester;
 
   FoldersAssetsResource get assets => FoldersAssetsResource(_requester);
+  FoldersFindingsResource get findings => FoldersFindingsResource(_requester);
+  FoldersMuteConfigsResource get muteConfigs =>
+      FoldersMuteConfigsResource(_requester);
   FoldersSourcesResource get sources => FoldersSourcesResource(_requester);
 
   FoldersResource(commons.ApiRequester client) : _requester = client;
@@ -110,7 +125,7 @@ class FoldersAssetsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -278,7 +293,8 @@ class FoldersAssetsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -302,7 +318,7 @@ class FoldersAssetsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -318,6 +334,291 @@ class FoldersAssetsResource {
       queryParams: _queryParams,
     );
     return SecurityMarks.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class FoldersFindingsResource {
+  final commons.ApiRequester _requester;
+
+  FoldersFindingsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Kicks off an LRO to bulk mute findings for a parent based on a filter.
+  ///
+  /// The parent can be either an organization, folder or project. The findings
+  /// matched by the filter will be muted after the LRO is done.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, at which bulk action needs to be applied.
+  /// Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^folders/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> bulkMute(
+    BulkMuteFindingsRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/findings:bulkMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class FoldersMuteConfigsResource {
+  final commons.ApiRequester _requester;
+
+  FoldersMuteConfigsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Creates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Resource name of the new mute configs's parent. Its
+  /// format is "organizations/\[organization_id\]", "folders/\[folder_id\]", or
+  /// "projects/\[project_id\]".
+  /// Value must have pattern `^folders/\[^/\]+$`.
+  ///
+  /// [muteConfigId] - Required. Unique identifier provided by the client within
+  /// the parent scope. It must consist of lower case letters, numbers, and
+  /// hyphen, with the first character a letter, the last a letter or a number,
+  /// and a 63 character maximum.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> create(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String parent, {
+    core.String? muteConfigId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (muteConfigId != null) 'muteConfigId': [muteConfigId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes an existing mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to delete. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^folders/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets a mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to retrieve. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^folders/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists mute configs.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns the collection of mute
+  /// configs. Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^folders/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of configs to return. The service may
+  /// return fewer than this value. If unspecified, at most 10 configs will be
+  /// returned. The maximum value is 1000; values above 1000 will be coerced to
+  /// 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListMuteConfigs`
+  /// call. Provide this to retrieve the subsequent page. When paginating, all
+  /// other parameters provided to `ListMuteConfigs` must match the call that
+  /// provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListMuteConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListMuteConfigsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListMuteConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field will be ignored if provided on config creation. Format
+  /// "organizations/{organization}/muteConfigs/{mute_config}"
+  /// "folders/{folder}/muteConfigs/{mute_config}"
+  /// "projects/{project}/muteConfigs/{mute_config}"
+  /// Value must have pattern `^folders/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated. If empty all mutable
+  /// fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> patch(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 }
@@ -383,6 +684,9 @@ class FoldersSourcesResource {
 class FoldersSourcesFindingsResource {
   final commons.ApiRequester _requester;
 
+  FoldersSourcesFindingsExternalSystemsResource get externalSystems =>
+      FoldersSourcesFindingsExternalSystemsResource(_requester);
+
   FoldersSourcesFindingsResource(commons.ApiRequester client)
       : _requester = client;
 
@@ -422,7 +726,7 @@ class FoldersSourcesFindingsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -494,15 +798,20 @@ class FoldersSourcesFindingsResource {
   /// following field and operator combinations are supported: * name: `=` *
   /// parent: `=`, `:` * resource_name: `=`, `:` * state: `=`, `:` * category:
   /// `=`, `:` * external_uri: `=`, `:` * event_time: `=`, `>`, `<`, `>=`, `<=`
-  /// * severity: `=`, `:` Usage: This should be milliseconds since epoch or an
-  /// RFC3339 string. Examples: `event_time = "2019-06-10T16:07:18-07:00"`
-  /// `event_time = 1560208038000` security_marks.marks: `=`, `:`
-  /// source_properties: `=`, `:`, `>`, `<`, `>=`, `<=` For example,
-  /// `source_properties.size = 100` is a valid filter string. Use a partial
-  /// match on the empty string to filter based on a property existing:
-  /// `source_properties.my_property : ""` Use a negated partial match on the
-  /// empty string to filter based on a property not existing:
-  /// `-source_properties.my_property : ""`
+  /// Usage: This should be milliseconds since epoch or an RFC3339 string.
+  /// Examples: `event_time = "2019-06-10T16:07:18-07:00"` `event_time =
+  /// 1560208038000` * severity: `=`, `:` * workflow_state: `=`, `:` *
+  /// security_marks.marks: `=`, `:` * source_properties: `=`, `:`, `>`, `<`,
+  /// `>=`, `<=` For example, `source_properties.size = 100` is a valid filter
+  /// string. Use a partial match on the empty string to filter based on a
+  /// property existing: `source_properties.my_property : ""` Use a negated
+  /// partial match on the empty string to filter based on a property not
+  /// existing: `-source_properties.my_property : ""` * resource: *
+  /// resource.name: `=`, `:` * resource.parent_name: `=`, `:` *
+  /// resource.parent_display_name: `=`, `:` * resource.project_name: `=`, `:` *
+  /// resource.project_display_name: `=`, `:` * resource.type: `=`, `:` *
+  /// resource.folders.resource_folder: `=`, `:` * resource.display_name: `=`,
+  /// `:`
   ///
   /// [orderBy] - Expression that defines what fields and order to use for
   /// sorting. The string value should follow SQL syntax: comma separated list
@@ -607,7 +916,7 @@ class FoldersSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -618,6 +927,52 @@ class FoldersSourcesFindingsResource {
     final _response = await _requester.request(
       _url,
       'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Finding.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the mute state of a finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The relative resource name of the finding. See:
+  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
+  /// Example:
+  /// "organizations/{organization_id}/sources/{source_id}/finding/{finding_id}",
+  /// "folders/{folder_id}/sources/{source_id}/finding/{finding_id}",
+  /// "projects/{project_id}/sources/{source_id}/finding/{finding_id}".
+  /// Value must have pattern
+  /// `^folders/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Finding].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Finding> setMute(
+    SetMuteRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':setMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
       body: _body,
       queryParams: _queryParams,
     );
@@ -652,7 +1007,7 @@ class FoldersSourcesFindingsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -684,7 +1039,8 @@ class FoldersSourcesFindingsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -708,7 +1064,7 @@ class FoldersSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -728,11 +1084,74 @@ class FoldersSourcesFindingsResource {
   }
 }
 
+class FoldersSourcesFindingsExternalSystemsResource {
+  final commons.ApiRequester _requester;
+
+  FoldersSourcesFindingsExternalSystemsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Updates external system.
+  ///
+  /// This is for a given finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - External System Name e.g. jira, demisto, etc. e.g.:
+  /// organizations/1234/sources/5678/findings/123456/externalSystems/jira
+  /// folders/1234/sources/5678/findings/123456/externalSystems/jira
+  /// projects/1234/sources/5678/findings/123456/externalSystems/jira
+  /// Value must have pattern
+  /// `^folders/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+/externalSystems/\[^/\]+$`.
+  ///
+  /// [updateMask] - The FieldMask to use when updating the external system
+  /// resource. If empty all mutable fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1ExternalSystem].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1ExternalSystem> patch(
+    GoogleCloudSecuritycenterV1ExternalSystem request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1ExternalSystem.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class OrganizationsResource {
   final commons.ApiRequester _requester;
 
   OrganizationsAssetsResource get assets =>
       OrganizationsAssetsResource(_requester);
+  OrganizationsFindingsResource get findings =>
+      OrganizationsFindingsResource(_requester);
+  OrganizationsMuteConfigsResource get muteConfigs =>
+      OrganizationsMuteConfigsResource(_requester);
   OrganizationsNotificationConfigsResource get notificationConfigs =>
       OrganizationsNotificationConfigsResource(_requester);
   OrganizationsOperationsResource get operations =>
@@ -810,7 +1229,7 @@ class OrganizationsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -862,7 +1281,7 @@ class OrganizationsAssetsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1044,7 +1463,7 @@ class OrganizationsAssetsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1077,7 +1496,8 @@ class OrganizationsAssetsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -1101,7 +1521,7 @@ class OrganizationsAssetsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -1117,6 +1537,293 @@ class OrganizationsAssetsResource {
       queryParams: _queryParams,
     );
     return SecurityMarks.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class OrganizationsFindingsResource {
+  final commons.ApiRequester _requester;
+
+  OrganizationsFindingsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Kicks off an LRO to bulk mute findings for a parent based on a filter.
+  ///
+  /// The parent can be either an organization, folder or project. The findings
+  /// matched by the filter will be muted after the LRO is done.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, at which bulk action needs to be applied.
+  /// Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^organizations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> bulkMute(
+    BulkMuteFindingsRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/findings:bulkMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class OrganizationsMuteConfigsResource {
+  final commons.ApiRequester _requester;
+
+  OrganizationsMuteConfigsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Resource name of the new mute configs's parent. Its
+  /// format is "organizations/\[organization_id\]", "folders/\[folder_id\]", or
+  /// "projects/\[project_id\]".
+  /// Value must have pattern `^organizations/\[^/\]+$`.
+  ///
+  /// [muteConfigId] - Required. Unique identifier provided by the client within
+  /// the parent scope. It must consist of lower case letters, numbers, and
+  /// hyphen, with the first character a letter, the last a letter or a number,
+  /// and a 63 character maximum.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> create(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String parent, {
+    core.String? muteConfigId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (muteConfigId != null) 'muteConfigId': [muteConfigId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes an existing mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to delete. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^organizations/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets a mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to retrieve. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^organizations/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists mute configs.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns the collection of mute
+  /// configs. Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^organizations/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of configs to return. The service may
+  /// return fewer than this value. If unspecified, at most 10 configs will be
+  /// returned. The maximum value is 1000; values above 1000 will be coerced to
+  /// 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListMuteConfigs`
+  /// call. Provide this to retrieve the subsequent page. When paginating, all
+  /// other parameters provided to `ListMuteConfigs` must match the call that
+  /// provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListMuteConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListMuteConfigsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListMuteConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field will be ignored if provided on config creation. Format
+  /// "organizations/{organization}/muteConfigs/{mute_config}"
+  /// "folders/{folder}/muteConfigs/{mute_config}"
+  /// "projects/{project}/muteConfigs/{mute_config}"
+  /// Value must have pattern `^organizations/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated. If empty all mutable
+  /// fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> patch(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 }
@@ -1157,7 +1864,7 @@ class OrganizationsNotificationConfigsResource {
     core.String? configId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (configId != null) 'configId': [configId],
       if ($fields != null) 'fields': [$fields],
@@ -1336,7 +2043,7 @@ class OrganizationsNotificationConfigsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1574,7 +2281,7 @@ class OrganizationsSourcesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1652,7 +2359,7 @@ class OrganizationsSourcesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1747,7 +2454,7 @@ class OrganizationsSourcesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1790,7 +2497,7 @@ class OrganizationsSourcesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1832,7 +2539,7 @@ class OrganizationsSourcesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1853,6 +2560,9 @@ class OrganizationsSourcesResource {
 
 class OrganizationsSourcesFindingsResource {
   final commons.ApiRequester _requester;
+
+  OrganizationsSourcesFindingsExternalSystemsResource get externalSystems =>
+      OrganizationsSourcesFindingsExternalSystemsResource(_requester);
 
   OrganizationsSourcesFindingsResource(commons.ApiRequester client)
       : _requester = client;
@@ -1889,7 +2599,7 @@ class OrganizationsSourcesFindingsResource {
     core.String? findingId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (findingId != null) 'findingId': [findingId],
       if ($fields != null) 'fields': [$fields],
@@ -1942,7 +2652,7 @@ class OrganizationsSourcesFindingsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2014,15 +2724,20 @@ class OrganizationsSourcesFindingsResource {
   /// following field and operator combinations are supported: * name: `=` *
   /// parent: `=`, `:` * resource_name: `=`, `:` * state: `=`, `:` * category:
   /// `=`, `:` * external_uri: `=`, `:` * event_time: `=`, `>`, `<`, `>=`, `<=`
-  /// * severity: `=`, `:` Usage: This should be milliseconds since epoch or an
-  /// RFC3339 string. Examples: `event_time = "2019-06-10T16:07:18-07:00"`
-  /// `event_time = 1560208038000` security_marks.marks: `=`, `:`
-  /// source_properties: `=`, `:`, `>`, `<`, `>=`, `<=` For example,
-  /// `source_properties.size = 100` is a valid filter string. Use a partial
-  /// match on the empty string to filter based on a property existing:
-  /// `source_properties.my_property : ""` Use a negated partial match on the
-  /// empty string to filter based on a property not existing:
-  /// `-source_properties.my_property : ""`
+  /// Usage: This should be milliseconds since epoch or an RFC3339 string.
+  /// Examples: `event_time = "2019-06-10T16:07:18-07:00"` `event_time =
+  /// 1560208038000` * severity: `=`, `:` * workflow_state: `=`, `:` *
+  /// security_marks.marks: `=`, `:` * source_properties: `=`, `:`, `>`, `<`,
+  /// `>=`, `<=` For example, `source_properties.size = 100` is a valid filter
+  /// string. Use a partial match on the empty string to filter based on a
+  /// property existing: `source_properties.my_property : ""` Use a negated
+  /// partial match on the empty string to filter based on a property not
+  /// existing: `-source_properties.my_property : ""` * resource: *
+  /// resource.name: `=`, `:` * resource.parent_name: `=`, `:` *
+  /// resource.parent_display_name: `=`, `:` * resource.project_name: `=`, `:` *
+  /// resource.project_display_name: `=`, `:` * resource.type: `=`, `:` *
+  /// resource.folders.resource_folder: `=`, `:` * resource.display_name: `=`,
+  /// `:`
   ///
   /// [orderBy] - Expression that defines what fields and order to use for
   /// sorting. The string value should follow SQL syntax: comma separated list
@@ -2127,7 +2842,7 @@ class OrganizationsSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -2138,6 +2853,52 @@ class OrganizationsSourcesFindingsResource {
     final _response = await _requester.request(
       _url,
       'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Finding.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the mute state of a finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The relative resource name of the finding. See:
+  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
+  /// Example:
+  /// "organizations/{organization_id}/sources/{source_id}/finding/{finding_id}",
+  /// "folders/{folder_id}/sources/{source_id}/finding/{finding_id}",
+  /// "projects/{project_id}/sources/{source_id}/finding/{finding_id}".
+  /// Value must have pattern
+  /// `^organizations/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Finding].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Finding> setMute(
+    SetMuteRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':setMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
       body: _body,
       queryParams: _queryParams,
     );
@@ -2172,7 +2933,7 @@ class OrganizationsSourcesFindingsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2204,7 +2965,8 @@ class OrganizationsSourcesFindingsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -2228,7 +2990,7 @@ class OrganizationsSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -2248,10 +3010,73 @@ class OrganizationsSourcesFindingsResource {
   }
 }
 
+class OrganizationsSourcesFindingsExternalSystemsResource {
+  final commons.ApiRequester _requester;
+
+  OrganizationsSourcesFindingsExternalSystemsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Updates external system.
+  ///
+  /// This is for a given finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - External System Name e.g. jira, demisto, etc. e.g.:
+  /// organizations/1234/sources/5678/findings/123456/externalSystems/jira
+  /// folders/1234/sources/5678/findings/123456/externalSystems/jira
+  /// projects/1234/sources/5678/findings/123456/externalSystems/jira
+  /// Value must have pattern
+  /// `^organizations/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+/externalSystems/\[^/\]+$`.
+  ///
+  /// [updateMask] - The FieldMask to use when updating the external system
+  /// resource. If empty all mutable fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1ExternalSystem].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1ExternalSystem> patch(
+    GoogleCloudSecuritycenterV1ExternalSystem request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1ExternalSystem.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
 class ProjectsResource {
   final commons.ApiRequester _requester;
 
   ProjectsAssetsResource get assets => ProjectsAssetsResource(_requester);
+  ProjectsFindingsResource get findings => ProjectsFindingsResource(_requester);
+  ProjectsMuteConfigsResource get muteConfigs =>
+      ProjectsMuteConfigsResource(_requester);
   ProjectsSourcesResource get sources => ProjectsSourcesResource(_requester);
 
   ProjectsResource(commons.ApiRequester client) : _requester = client;
@@ -2289,7 +3114,7 @@ class ProjectsAssetsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2457,7 +3282,8 @@ class ProjectsAssetsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -2481,7 +3307,7 @@ class ProjectsAssetsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -2497,6 +3323,292 @@ class ProjectsAssetsResource {
       queryParams: _queryParams,
     );
     return SecurityMarks.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsFindingsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsFindingsResource(commons.ApiRequester client) : _requester = client;
+
+  /// Kicks off an LRO to bulk mute findings for a parent based on a filter.
+  ///
+  /// The parent can be either an organization, folder or project. The findings
+  /// matched by the filter will be muted after the LRO is done.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, at which bulk action needs to be applied.
+  /// Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> bulkMute(
+    BulkMuteFindingsRequest request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/findings:bulkMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsMuteConfigsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsMuteConfigsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Creates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. Resource name of the new mute configs's parent. Its
+  /// format is "organizations/\[organization_id\]", "folders/\[folder_id\]", or
+  /// "projects/\[project_id\]".
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [muteConfigId] - Required. Unique identifier provided by the client within
+  /// the parent scope. It must consist of lower case letters, numbers, and
+  /// hyphen, with the first character a letter, the last a letter or a number,
+  /// and a 63 character maximum.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> create(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String parent, {
+    core.String? muteConfigId,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (muteConfigId != null) 'muteConfigId': [muteConfigId],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Deletes an existing mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to delete. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^projects/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> delete(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'DELETE',
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Gets a mute config.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. Name of the mute config to retrieve. Its format is
+  /// organizations/{organization}/muteConfigs/{config_id},
+  /// folders/{folder}/muteConfigs/{config_id}, or
+  /// projects/{project}/muteConfigs/{config_id}
+  /// Value must have pattern `^projects/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Lists mute configs.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The parent, which owns the collection of mute
+  /// configs. Its format is "organizations/\[organization_id\]",
+  /// "folders/\[folder_id\]", "projects/\[project_id\]".
+  /// Value must have pattern `^projects/\[^/\]+$`.
+  ///
+  /// [pageSize] - The maximum number of configs to return. The service may
+  /// return fewer than this value. If unspecified, at most 10 configs will be
+  /// returned. The maximum value is 1000; values above 1000 will be coerced to
+  /// 1000.
+  ///
+  /// [pageToken] - A page token, received from a previous `ListMuteConfigs`
+  /// call. Provide this to retrieve the subsequent page. When paginating, all
+  /// other parameters provided to `ListMuteConfigs` must match the call that
+  /// provided the page token.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [ListMuteConfigsResponse].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<ListMuteConfigsResponse> list(
+    core.String parent, {
+    core.int? pageSize,
+    core.String? pageToken,
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (pageSize != null) 'pageSize': ['${pageSize}'],
+      if (pageToken != null) 'pageToken': [pageToken],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/muteConfigs';
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return ListMuteConfigsResponse.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates a mute config.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - This field will be ignored if provided on config creation. Format
+  /// "organizations/{organization}/muteConfigs/{mute_config}"
+  /// "folders/{folder}/muteConfigs/{mute_config}"
+  /// "projects/{project}/muteConfigs/{mute_config}"
+  /// Value must have pattern `^projects/\[^/\]+/muteConfigs/\[^/\]+$`.
+  ///
+  /// [updateMask] - The list of fields to be updated. If empty all mutable
+  /// fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1MuteConfig].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1MuteConfig> patch(
+    GoogleCloudSecuritycenterV1MuteConfig request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1MuteConfig.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
 }
@@ -2562,6 +3674,9 @@ class ProjectsSourcesResource {
 class ProjectsSourcesFindingsResource {
   final commons.ApiRequester _requester;
 
+  ProjectsSourcesFindingsExternalSystemsResource get externalSystems =>
+      ProjectsSourcesFindingsExternalSystemsResource(_requester);
+
   ProjectsSourcesFindingsResource(commons.ApiRequester client)
       : _requester = client;
 
@@ -2601,7 +3716,7 @@ class ProjectsSourcesFindingsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2673,15 +3788,20 @@ class ProjectsSourcesFindingsResource {
   /// following field and operator combinations are supported: * name: `=` *
   /// parent: `=`, `:` * resource_name: `=`, `:` * state: `=`, `:` * category:
   /// `=`, `:` * external_uri: `=`, `:` * event_time: `=`, `>`, `<`, `>=`, `<=`
-  /// * severity: `=`, `:` Usage: This should be milliseconds since epoch or an
-  /// RFC3339 string. Examples: `event_time = "2019-06-10T16:07:18-07:00"`
-  /// `event_time = 1560208038000` security_marks.marks: `=`, `:`
-  /// source_properties: `=`, `:`, `>`, `<`, `>=`, `<=` For example,
-  /// `source_properties.size = 100` is a valid filter string. Use a partial
-  /// match on the empty string to filter based on a property existing:
-  /// `source_properties.my_property : ""` Use a negated partial match on the
-  /// empty string to filter based on a property not existing:
-  /// `-source_properties.my_property : ""`
+  /// Usage: This should be milliseconds since epoch or an RFC3339 string.
+  /// Examples: `event_time = "2019-06-10T16:07:18-07:00"` `event_time =
+  /// 1560208038000` * severity: `=`, `:` * workflow_state: `=`, `:` *
+  /// security_marks.marks: `=`, `:` * source_properties: `=`, `:`, `>`, `<`,
+  /// `>=`, `<=` For example, `source_properties.size = 100` is a valid filter
+  /// string. Use a partial match on the empty string to filter based on a
+  /// property existing: `source_properties.my_property : ""` Use a negated
+  /// partial match on the empty string to filter based on a property not
+  /// existing: `-source_properties.my_property : ""` * resource: *
+  /// resource.name: `=`, `:` * resource.parent_name: `=`, `:` *
+  /// resource.parent_display_name: `=`, `:` * resource.project_name: `=`, `:` *
+  /// resource.project_display_name: `=`, `:` * resource.type: `=`, `:` *
+  /// resource.folders.resource_folder: `=`, `:` * resource.display_name: `=`,
+  /// `:`
   ///
   /// [orderBy] - Expression that defines what fields and order to use for
   /// sorting. The string value should follow SQL syntax: comma separated list
@@ -2786,7 +3906,7 @@ class ProjectsSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -2797,6 +3917,52 @@ class ProjectsSourcesFindingsResource {
     final _response = await _requester.request(
       _url,
       'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Finding.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Updates the mute state of a finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The relative resource name of the finding. See:
+  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
+  /// Example:
+  /// "organizations/{organization_id}/sources/{source_id}/finding/{finding_id}",
+  /// "folders/{folder_id}/sources/{source_id}/finding/{finding_id}",
+  /// "projects/{project_id}/sources/{source_id}/finding/{finding_id}".
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Finding].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Finding> setMute(
+    SetMuteRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':setMute';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
       body: _body,
       queryParams: _queryParams,
     );
@@ -2831,7 +3997,7 @@ class ProjectsSourcesFindingsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2863,7 +4029,8 @@ class ProjectsSourcesFindingsResource {
   ///
   /// [startTime] - The time at which the updated SecurityMarks take effect. If
   /// not set uses current server time. Updates will be applied to the
-  /// SecurityMarks that are active immediately preceding this time.
+  /// SecurityMarks that are active immediately preceding this time. Must be
+  /// smaller or equal to the server time.
   ///
   /// [updateMask] - The FieldMask to use when updating the security marks
   /// resource. The field mask must not contain duplicate fields. If empty or
@@ -2887,7 +4054,7 @@ class ProjectsSourcesFindingsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (startTime != null) 'startTime': [startTime],
       if (updateMask != null) 'updateMask': [updateMask],
@@ -2907,6 +4074,129 @@ class ProjectsSourcesFindingsResource {
   }
 }
 
+class ProjectsSourcesFindingsExternalSystemsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsSourcesFindingsExternalSystemsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Updates external system.
+  ///
+  /// This is for a given finding.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - External System Name e.g. jira, demisto, etc. e.g.:
+  /// organizations/1234/sources/5678/findings/123456/externalSystems/jira
+  /// folders/1234/sources/5678/findings/123456/externalSystems/jira
+  /// projects/1234/sources/5678/findings/123456/externalSystems/jira
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/sources/\[^/\]+/findings/\[^/\]+/externalSystems/\[^/\]+$`.
+  ///
+  /// [updateMask] - The FieldMask to use when updating the external system
+  /// resource. If empty all mutable fields will be updated.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [GoogleCloudSecuritycenterV1ExternalSystem].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<GoogleCloudSecuritycenterV1ExternalSystem> patch(
+    GoogleCloudSecuritycenterV1ExternalSystem request,
+    core.String name, {
+    core.String? updateMask,
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if (updateMask != null) 'updateMask': [updateMask],
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'PATCH',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return GoogleCloudSecuritycenterV1ExternalSystem.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+/// Represents an access event.
+class Access {
+  /// Caller's IP address, such as "1.1.1.1".
+  core.String? callerIp;
+
+  /// The caller IP's geolocation, which identifies where the call came from.
+  Geolocation? callerIpGeo;
+
+  /// The method that the service account called, e.g. "SetIamPolicy".
+  core.String? methodName;
+
+  /// Associated email, such as "foo@google.com".
+  core.String? principalEmail;
+
+  /// This is the API service that the service account made a call to, e.g.
+  /// "iam.googleapis.com"
+  core.String? serviceName;
+
+  /// What kind of user agent is associated, e.g. operating system shells,
+  /// embedded or stand-alone applications, etc.
+  core.String? userAgentFamily;
+
+  Access({
+    this.callerIp,
+    this.callerIpGeo,
+    this.methodName,
+    this.principalEmail,
+    this.serviceName,
+    this.userAgentFamily,
+  });
+
+  Access.fromJson(core.Map _json)
+      : this(
+          callerIp: _json.containsKey('callerIp')
+              ? _json['callerIp'] as core.String
+              : null,
+          callerIpGeo: _json.containsKey('callerIpGeo')
+              ? Geolocation.fromJson(
+                  _json['callerIpGeo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          methodName: _json.containsKey('methodName')
+              ? _json['methodName'] as core.String
+              : null,
+          principalEmail: _json.containsKey('principalEmail')
+              ? _json['principalEmail'] as core.String
+              : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+          userAgentFamily: _json.containsKey('userAgentFamily')
+              ? _json['userAgentFamily'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (callerIp != null) 'callerIp': callerIp!,
+        if (callerIpGeo != null) 'callerIpGeo': callerIpGeo!,
+        if (methodName != null) 'methodName': methodName!,
+        if (principalEmail != null) 'principalEmail': principalEmail!,
+        if (serviceName != null) 'serviceName': serviceName!,
+        if (userAgentFamily != null) 'userAgentFamily': userAgentFamily!,
+      };
+}
+
 /// Security Command Center representation of a Google Cloud resource.
 ///
 /// The Asset is a Security Command Center resource that captures information
@@ -2914,6 +4204,14 @@ class ProjectsSourcesFindingsResource {
 /// within the context of Security Command Center and don't affect the
 /// referenced Google Cloud resource.
 class Asset {
+  /// The canonical name of the resource.
+  ///
+  /// It's either "organizations/{organization_id}/assets/{asset_id}",
+  /// "folders/{folder_id}/assets/{asset_id}" or
+  /// "projects/{project_number}/assets/{asset_id}", depending on the closest
+  /// CRM ancestor of the resource.
+  core.String? canonicalName;
+
   /// The time at which the asset was created in Security Command Center.
   core.String? createTime;
 
@@ -2938,7 +4236,7 @@ class Asset {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? resourceProperties;
+  core.Map<core.String, core.Object?>? resourceProperties;
 
   /// Security Command Center managed properties.
   ///
@@ -2955,52 +4253,59 @@ class Asset {
   /// The time at which the asset was last updated or added in Cloud SCC.
   core.String? updateTime;
 
-  Asset();
+  Asset({
+    this.canonicalName,
+    this.createTime,
+    this.iamPolicy,
+    this.name,
+    this.resourceProperties,
+    this.securityCenterProperties,
+    this.securityMarks,
+    this.updateTime,
+  });
 
-  Asset.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('iamPolicy')) {
-      iamPolicy = IamPolicy.fromJson(
-          _json['iamPolicy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('resourceProperties')) {
-      resourceProperties =
-          (_json['resourceProperties'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('securityCenterProperties')) {
-      securityCenterProperties = SecurityCenterProperties.fromJson(
-          _json['securityCenterProperties']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('securityMarks')) {
-      securityMarks = SecurityMarks.fromJson(
-          _json['securityMarks'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Asset.fromJson(core.Map _json)
+      : this(
+          canonicalName: _json.containsKey('canonicalName')
+              ? _json['canonicalName'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          iamPolicy: _json.containsKey('iamPolicy')
+              ? IamPolicy.fromJson(
+                  _json['iamPolicy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          resourceProperties: _json.containsKey('resourceProperties')
+              ? _json['resourceProperties']
+                  as core.Map<core.String, core.dynamic>
+              : null,
+          securityCenterProperties:
+              _json.containsKey('securityCenterProperties')
+                  ? SecurityCenterProperties.fromJson(
+                      _json['securityCenterProperties']
+                          as core.Map<core.String, core.dynamic>)
+                  : null,
+          securityMarks: _json.containsKey('securityMarks')
+              ? SecurityMarks.fromJson(
+                  _json['securityMarks'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (canonicalName != null) 'canonicalName': canonicalName!,
         if (createTime != null) 'createTime': createTime!,
-        if (iamPolicy != null) 'iamPolicy': iamPolicy!.toJson(),
+        if (iamPolicy != null) 'iamPolicy': iamPolicy!,
         if (name != null) 'name': name!,
         if (resourceProperties != null)
           'resourceProperties': resourceProperties!,
         if (securityCenterProperties != null)
-          'securityCenterProperties': securityCenterProperties!.toJson(),
-        if (securityMarks != null) 'securityMarks': securityMarks!.toJson(),
+          'securityCenterProperties': securityCenterProperties!,
+        if (securityMarks != null) 'securityMarks': securityMarks!,
         if (updateTime != null) 'updateTime': updateTime!,
       };
 }
@@ -3025,23 +4330,28 @@ class AssetDiscoveryConfig {
   /// The project ids to use for filtering asset discovery.
   core.List<core.String>? projectIds;
 
-  AssetDiscoveryConfig();
+  AssetDiscoveryConfig({
+    this.folderIds,
+    this.inclusionMode,
+    this.projectIds,
+  });
 
-  AssetDiscoveryConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('folderIds')) {
-      folderIds = (_json['folderIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('inclusionMode')) {
-      inclusionMode = _json['inclusionMode'] as core.String;
-    }
-    if (_json.containsKey('projectIds')) {
-      projectIds = (_json['projectIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  AssetDiscoveryConfig.fromJson(core.Map _json)
+      : this(
+          folderIds: _json.containsKey('folderIds')
+              ? (_json['folderIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          inclusionMode: _json.containsKey('inclusionMode')
+              ? _json['inclusionMode'] as core.String
+              : null,
+          projectIds: _json.containsKey('projectIds')
+              ? (_json['projectIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (folderIds != null) 'folderIds': folderIds!,
@@ -3077,24 +4387,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -3105,53 +4417,22 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
+typedef AuditLogConfig = $AuditLogConfig;
 
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
-
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -3183,32 +4464,298 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
+      };
+}
+
+/// Request message for bulk findings update.
+///
+/// Note: 1. If multiple bulk update requests match the same resource, the order
+/// in which they get executed is not defined. 2. Once a bulk operation is
+/// started, there is no way to stop it.
+class BulkMuteFindingsRequest {
+  /// Expression that identifies findings that should be updated.
+  ///
+  /// The expression is a list of zero or more restrictions combined via logical
+  /// operators `AND` and `OR`. Parentheses are supported, and `OR` has higher
+  /// precedence than `AND`. Restrictions have the form ` ` and may have a `-`
+  /// character in front of them to indicate negation. The fields map to those
+  /// defined in the corresponding resource. The supported operators are: * `=`
+  /// for all value types. * `>`, `<`, `>=`, `<=` for integer values. * `:`,
+  /// meaning substring matching, for strings. The supported value types are: *
+  /// string literals in quotes. * integer literals without quotes. * boolean
+  /// literals `true` and `false` without quotes.
+  core.String? filter;
+
+  /// This can be a mute configuration name or any identifier for mute/unmute of
+  /// findings based on the filter.
+  core.String? muteAnnotation;
+
+  BulkMuteFindingsRequest({
+    this.filter,
+    this.muteAnnotation,
+  });
+
+  BulkMuteFindingsRequest.fromJson(core.Map _json)
+      : this(
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          muteAnnotation: _json.containsKey('muteAnnotation')
+              ? _json['muteAnnotation'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (filter != null) 'filter': filter!,
+        if (muteAnnotation != null) 'muteAnnotation': muteAnnotation!,
+      };
+}
+
+/// CVE stands for Common Vulnerabilities and Exposures.
+///
+/// More information: https://cve.mitre.org
+class Cve {
+  /// Describe Common Vulnerability Scoring System specified at
+  /// https://www.first.org/cvss/v3.1/specification-document
+  Cvssv3? cvssv3;
+
+  /// The unique identifier for the vulnerability.
+  ///
+  /// e.g. CVE-2021-34527
+  core.String? id;
+
+  /// Additional information about the CVE.
+  ///
+  /// e.g. https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527
+  core.List<Reference>? references;
+
+  /// Whether upstream fix is available for the CVE.
+  core.bool? upstreamFixAvailable;
+
+  Cve({
+    this.cvssv3,
+    this.id,
+    this.references,
+    this.upstreamFixAvailable,
+  });
+
+  Cve.fromJson(core.Map _json)
+      : this(
+          cvssv3: _json.containsKey('cvssv3')
+              ? Cvssv3.fromJson(
+                  _json['cvssv3'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          references: _json.containsKey('references')
+              ? (_json['references'] as core.List)
+                  .map((value) => Reference.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          upstreamFixAvailable: _json.containsKey('upstreamFixAvailable')
+              ? _json['upstreamFixAvailable'] as core.bool
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (cvssv3 != null) 'cvssv3': cvssv3!,
+        if (id != null) 'id': id!,
+        if (references != null) 'references': references!,
+        if (upstreamFixAvailable != null)
+          'upstreamFixAvailable': upstreamFixAvailable!,
+      };
+}
+
+/// Common Vulnerability Scoring System version 3.
+class Cvssv3 {
+  /// This metric describes the conditions beyond the attacker's control that
+  /// must exist in order to exploit the vulnerability.
+  /// Possible string values are:
+  /// - "ATTACK_COMPLEXITY_UNSPECIFIED" : Invalid value.
+  /// - "ATTACK_COMPLEXITY_LOW" : Specialized access conditions or extenuating
+  /// circumstances do not exist. An attacker can expect repeatable success when
+  /// attacking the vulnerable component.
+  /// - "ATTACK_COMPLEXITY_HIGH" : A successful attack depends on conditions
+  /// beyond the attacker's control. That is, a successful attack cannot be
+  /// accomplished at will, but requires the attacker to invest in some
+  /// measurable amount of effort in preparation or execution against the
+  /// vulnerable component before a successful attack can be expected.
+  core.String? attackComplexity;
+
+  /// Base Metrics Represents the intrinsic characteristics of a vulnerability
+  /// that are constant over time and across user environments.
+  ///
+  /// This metric reflects the context by which vulnerability exploitation is
+  /// possible.
+  /// Possible string values are:
+  /// - "ATTACK_VECTOR_UNSPECIFIED" : Invalid value.
+  /// - "ATTACK_VECTOR_NETWORK" : The vulnerable component is bound to the
+  /// network stack and the set of possible attackers extends beyond the other
+  /// options listed below, up to and including the entire Internet.
+  /// - "ATTACK_VECTOR_ADJACENT" : The vulnerable component is bound to the
+  /// network stack, but the attack is limited at the protocol level to a
+  /// logically adjacent topology.
+  /// - "ATTACK_VECTOR_LOCAL" : The vulnerable component is not bound to the
+  /// network stack and the attacker's path is via read/write/execute
+  /// capabilities.
+  /// - "ATTACK_VECTOR_PHYSICAL" : The attack requires the attacker to
+  /// physically touch or manipulate the vulnerable component.
+  core.String? attackVector;
+
+  /// This metric measures the impact to the availability of the impacted
+  /// component resulting from a successfully exploited vulnerability.
+  /// Possible string values are:
+  /// - "IMPACT_UNSPECIFIED" : Invalid value.
+  /// - "IMPACT_HIGH" : High impact.
+  /// - "IMPACT_LOW" : Low impact.
+  /// - "IMPACT_NONE" : No impact.
+  core.String? availabilityImpact;
+
+  /// The base score is a function of the base metric scores.
+  core.double? baseScore;
+
+  /// This metric measures the impact to the confidentiality of the information
+  /// resources managed by a software component due to a successfully exploited
+  /// vulnerability.
+  /// Possible string values are:
+  /// - "IMPACT_UNSPECIFIED" : Invalid value.
+  /// - "IMPACT_HIGH" : High impact.
+  /// - "IMPACT_LOW" : Low impact.
+  /// - "IMPACT_NONE" : No impact.
+  core.String? confidentialityImpact;
+
+  /// This metric measures the impact to integrity of a successfully exploited
+  /// vulnerability.
+  /// Possible string values are:
+  /// - "IMPACT_UNSPECIFIED" : Invalid value.
+  /// - "IMPACT_HIGH" : High impact.
+  /// - "IMPACT_LOW" : Low impact.
+  /// - "IMPACT_NONE" : No impact.
+  core.String? integrityImpact;
+
+  /// This metric describes the level of privileges an attacker must possess
+  /// before successfully exploiting the vulnerability.
+  /// Possible string values are:
+  /// - "PRIVILEGES_REQUIRED_UNSPECIFIED" : Invalid value.
+  /// - "PRIVILEGES_REQUIRED_NONE" : The attacker is unauthorized prior to
+  /// attack, and therefore does not require any access to settings or files of
+  /// the vulnerable system to carry out an attack.
+  /// - "PRIVILEGES_REQUIRED_LOW" : The attacker requires privileges that
+  /// provide basic user capabilities that could normally affect only settings
+  /// and files owned by a user. Alternatively, an attacker with Low privileges
+  /// has the ability to access only non-sensitive resources.
+  /// - "PRIVILEGES_REQUIRED_HIGH" : The attacker requires privileges that
+  /// provide significant (e.g., administrative) control over the vulnerable
+  /// component allowing access to component-wide settings and files.
+  core.String? privilegesRequired;
+
+  /// The Scope metric captures whether a vulnerability in one vulnerable
+  /// component impacts resources in components beyond its security scope.
+  /// Possible string values are:
+  /// - "SCOPE_UNSPECIFIED" : Invalid value.
+  /// - "SCOPE_UNCHANGED" : An exploited vulnerability can only affect resources
+  /// managed by the same security authority.
+  /// - "SCOPE_CHANGED" : An exploited vulnerability can affect resources beyond
+  /// the security scope managed by the security authority of the vulnerable
+  /// component.
+  core.String? scope;
+
+  /// This metric captures the requirement for a human user, other than the
+  /// attacker, to participate in the successful compromise of the vulnerable
+  /// component.
+  /// Possible string values are:
+  /// - "USER_INTERACTION_UNSPECIFIED" : Invalid value.
+  /// - "USER_INTERACTION_NONE" : The vulnerable system can be exploited without
+  /// interaction from any user.
+  /// - "USER_INTERACTION_REQUIRED" : Successful exploitation of this
+  /// vulnerability requires a user to take some action before the vulnerability
+  /// can be exploited.
+  core.String? userInteraction;
+
+  Cvssv3({
+    this.attackComplexity,
+    this.attackVector,
+    this.availabilityImpact,
+    this.baseScore,
+    this.confidentialityImpact,
+    this.integrityImpact,
+    this.privilegesRequired,
+    this.scope,
+    this.userInteraction,
+  });
+
+  Cvssv3.fromJson(core.Map _json)
+      : this(
+          attackComplexity: _json.containsKey('attackComplexity')
+              ? _json['attackComplexity'] as core.String
+              : null,
+          attackVector: _json.containsKey('attackVector')
+              ? _json['attackVector'] as core.String
+              : null,
+          availabilityImpact: _json.containsKey('availabilityImpact')
+              ? _json['availabilityImpact'] as core.String
+              : null,
+          baseScore: _json.containsKey('baseScore')
+              ? (_json['baseScore'] as core.num).toDouble()
+              : null,
+          confidentialityImpact: _json.containsKey('confidentialityImpact')
+              ? _json['confidentialityImpact'] as core.String
+              : null,
+          integrityImpact: _json.containsKey('integrityImpact')
+              ? _json['integrityImpact'] as core.String
+              : null,
+          privilegesRequired: _json.containsKey('privilegesRequired')
+              ? _json['privilegesRequired'] as core.String
+              : null,
+          scope:
+              _json.containsKey('scope') ? _json['scope'] as core.String : null,
+          userInteraction: _json.containsKey('userInteraction')
+              ? _json['userInteraction'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (attackComplexity != null) 'attackComplexity': attackComplexity!,
+        if (attackVector != null) 'attackVector': attackVector!,
+        if (availabilityImpact != null)
+          'availabilityImpact': availabilityImpact!,
+        if (baseScore != null) 'baseScore': baseScore!,
+        if (confidentialityImpact != null)
+          'confidentialityImpact': confidentialityImpact!,
+        if (integrityImpact != null) 'integrityImpact': integrityImpact!,
+        if (privilegesRequired != null)
+          'privilegesRequired': privilegesRequired!,
+        if (scope != null) 'scope': scope!,
+        if (userInteraction != null) 'userInteraction': userInteraction!,
       };
 }
 
@@ -3219,15 +4766,7 @@ class Binding {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -3235,7 +4774,7 @@ class Empty {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -3247,56 +4786,7 @@ class Empty {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// Security Command Center finding.
 ///
@@ -3306,6 +4796,20 @@ class Expr {
 /// cross-site scripting (XSS) vulnerability in an App Engine application is a
 /// finding.
 class Finding {
+  /// Access details associated to the Finding, such as more information on the
+  /// caller, which method was accessed, from where, etc.
+  Access? access;
+
+  /// The canonical name of the finding.
+  ///
+  /// It's either
+  /// "organizations/{organization_id}/sources/{source_id}/findings/{finding_id}",
+  /// "folders/{folder_id}/sources/{source_id}/findings/{finding_id}" or
+  /// "projects/{project_number}/sources/{source_id}/findings/{finding_id}",
+  /// depending on the closest CRM ancestor of the resource associated with the
+  /// finding.
+  core.String? canonicalName;
+
   /// The additional taxonomy group within findings from a given source.
   ///
   /// This field is immutable after creation time. Example:
@@ -3315,14 +4819,22 @@ class Finding {
   /// The time at which the finding was created in Security Command Center.
   core.String? createTime;
 
-  /// The time at which the event took place, or when an update to the finding
-  /// occurred.
+  /// The time the finding was first detected.
   ///
-  /// For example, if the finding represents an open firewall it would capture
-  /// the time the detector believes the firewall became open. The accuracy is
-  /// determined by the detector. If the finding were to be resolved afterward,
-  /// this time would reflect when the finding was resolved.
+  /// If an existing finding is updated, then this is the time the update
+  /// occurred. For example, if the finding represents an open firewall, this
+  /// property captures the time the detector believes the firewall became open.
+  /// The accuracy is determined by the detector. If the finding is later
+  /// resolved, then this time reflects when the finding was resolved. This must
+  /// not be set to a value greater than the current timestamp.
   core.String? eventTime;
+
+  /// Third party SIEM/SOAR fields within SCC, contains external system
+  /// information and external system finding fields.
+  ///
+  /// Output only.
+  core.Map<core.String, GoogleCloudSecuritycenterV1ExternalSystem>?
+      externalSystems;
 
   /// The URI that, if available, points to a web page outside of Security
   /// Command Center where additional information about the finding can be
@@ -3330,6 +4842,57 @@ class Finding {
   ///
   /// This field is guaranteed to be either empty or a well formed URL.
   core.String? externalUri;
+
+  /// The class of the finding.
+  /// Possible string values are:
+  /// - "FINDING_CLASS_UNSPECIFIED" : Unspecified finding class.
+  /// - "THREAT" : Describes unwanted or malicious activity.
+  /// - "VULNERABILITY" : Describes a potential weakness in software that
+  /// increases risk to Confidentiality & Integrity & Availability.
+  /// - "MISCONFIGURATION" : Describes a potential weakness in cloud
+  /// resource/asset configuration that increases risk.
+  /// - "OBSERVATION" : Describes a security observation that is for
+  /// informational purposes.
+  /// - "SCC_ERROR" : Describes an error that prevents some SCC functionality.
+  core.String? findingClass;
+
+  /// Represents what's commonly known as an Indicator of compromise (IoC) in
+  /// computer forensics.
+  ///
+  /// This is an artifact observed on a network or in an operating system that,
+  /// with high confidence, indicates a computer intrusion. Reference:
+  /// https://en.wikipedia.org/wiki/Indicator_of_compromise
+  Indicator? indicator;
+
+  /// MITRE ATT&CK tactics and techniques related to this finding.
+  ///
+  /// See: https://attack.mitre.org
+  MitreAttack? mitreAttack;
+
+  /// Indicates the mute state of a finding (either unspecified, muted, unmuted
+  /// or undefined).
+  ///
+  /// Unlike other attributes of a finding, a finding provider shouldn't set the
+  /// value of mute.
+  /// Possible string values are:
+  /// - "MUTE_UNSPECIFIED" : Unspecified.
+  /// - "MUTED" : Finding has been muted.
+  /// - "UNMUTED" : Finding has been unmuted.
+  /// - "UNDEFINED" : Finding has never been muted/unmuted.
+  core.String? mute;
+
+  /// First known as mute_annotation.
+  ///
+  /// Records additional information about the mute operation e.g. mute config
+  /// that muted the finding, user who muted the finding, etc. Unlike other
+  /// attributes of a finding, a finding provider shouldn't set the value of
+  /// mute.
+  core.String? muteInitiator;
+
+  /// The most recent time this finding was muted or unmuted.
+  ///
+  /// Output only.
+  core.String? muteUpdateTime;
 
   /// The relative resource name of this finding.
   ///
@@ -3416,7 +4979,7 @@ class Finding {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? sourceProperties;
+  core.Map<core.String, core.Object?>? sourceProperties;
 
   /// The state of the finding.
   /// Possible string values are:
@@ -3427,64 +4990,133 @@ class Finding {
   /// otherwise addressed and is no longer active.
   core.String? state;
 
-  Finding();
+  /// Represents vulnerability specific fields like cve, cvss scores etc.
+  ///
+  /// CVE stands for Common Vulnerabilities and Exposures
+  /// (https://cve.mitre.org/about/)
+  Vulnerability? vulnerability;
 
-  Finding.fromJson(core.Map _json) {
-    if (_json.containsKey('category')) {
-      category = _json['category'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('eventTime')) {
-      eventTime = _json['eventTime'] as core.String;
-    }
-    if (_json.containsKey('externalUri')) {
-      externalUri = _json['externalUri'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('resourceName')) {
-      resourceName = _json['resourceName'] as core.String;
-    }
-    if (_json.containsKey('securityMarks')) {
-      securityMarks = SecurityMarks.fromJson(
-          _json['securityMarks'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-    if (_json.containsKey('sourceProperties')) {
-      sourceProperties =
-          (_json['sourceProperties'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  Finding({
+    this.access,
+    this.canonicalName,
+    this.category,
+    this.createTime,
+    this.eventTime,
+    this.externalSystems,
+    this.externalUri,
+    this.findingClass,
+    this.indicator,
+    this.mitreAttack,
+    this.mute,
+    this.muteInitiator,
+    this.muteUpdateTime,
+    this.name,
+    this.parent,
+    this.resourceName,
+    this.securityMarks,
+    this.severity,
+    this.sourceProperties,
+    this.state,
+    this.vulnerability,
+  });
+
+  Finding.fromJson(core.Map _json)
+      : this(
+          access: _json.containsKey('access')
+              ? Access.fromJson(
+                  _json['access'] as core.Map<core.String, core.dynamic>)
+              : null,
+          canonicalName: _json.containsKey('canonicalName')
+              ? _json['canonicalName'] as core.String
+              : null,
+          category: _json.containsKey('category')
+              ? _json['category'] as core.String
+              : null,
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          eventTime: _json.containsKey('eventTime')
+              ? _json['eventTime'] as core.String
+              : null,
+          externalSystems: _json.containsKey('externalSystems')
+              ? (_json['externalSystems']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    GoogleCloudSecuritycenterV1ExternalSystem.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+          externalUri: _json.containsKey('externalUri')
+              ? _json['externalUri'] as core.String
+              : null,
+          findingClass: _json.containsKey('findingClass')
+              ? _json['findingClass'] as core.String
+              : null,
+          indicator: _json.containsKey('indicator')
+              ? Indicator.fromJson(
+                  _json['indicator'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mitreAttack: _json.containsKey('mitreAttack')
+              ? MitreAttack.fromJson(
+                  _json['mitreAttack'] as core.Map<core.String, core.dynamic>)
+              : null,
+          mute: _json.containsKey('mute') ? _json['mute'] as core.String : null,
+          muteInitiator: _json.containsKey('muteInitiator')
+              ? _json['muteInitiator'] as core.String
+              : null,
+          muteUpdateTime: _json.containsKey('muteUpdateTime')
+              ? _json['muteUpdateTime'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parent: _json.containsKey('parent')
+              ? _json['parent'] as core.String
+              : null,
+          resourceName: _json.containsKey('resourceName')
+              ? _json['resourceName'] as core.String
+              : null,
+          securityMarks: _json.containsKey('securityMarks')
+              ? SecurityMarks.fromJson(
+                  _json['securityMarks'] as core.Map<core.String, core.dynamic>)
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+          sourceProperties: _json.containsKey('sourceProperties')
+              ? _json['sourceProperties'] as core.Map<core.String, core.dynamic>
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+          vulnerability: _json.containsKey('vulnerability')
+              ? Vulnerability.fromJson(
+                  _json['vulnerability'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (access != null) 'access': access!,
+        if (canonicalName != null) 'canonicalName': canonicalName!,
         if (category != null) 'category': category!,
         if (createTime != null) 'createTime': createTime!,
         if (eventTime != null) 'eventTime': eventTime!,
+        if (externalSystems != null) 'externalSystems': externalSystems!,
         if (externalUri != null) 'externalUri': externalUri!,
+        if (findingClass != null) 'findingClass': findingClass!,
+        if (indicator != null) 'indicator': indicator!,
+        if (mitreAttack != null) 'mitreAttack': mitreAttack!,
+        if (mute != null) 'mute': mute!,
+        if (muteInitiator != null) 'muteInitiator': muteInitiator!,
+        if (muteUpdateTime != null) 'muteUpdateTime': muteUpdateTime!,
         if (name != null) 'name': name!,
         if (parent != null) 'parent': parent!,
         if (resourceName != null) 'resourceName': resourceName!,
-        if (securityMarks != null) 'securityMarks': securityMarks!.toJson(),
+        if (securityMarks != null) 'securityMarks': securityMarks!,
         if (severity != null) 'severity': severity!,
         if (sourceProperties != null) 'sourceProperties': sourceProperties!,
         if (state != null) 'state': state!,
+        if (vulnerability != null) 'vulnerability': vulnerability!,
       };
 }
 
@@ -3500,22 +5132,47 @@ class Folder {
   /// The user defined display name for this folder.
   core.String? resourceFolderDisplayName;
 
-  Folder();
+  Folder({
+    this.resourceFolder,
+    this.resourceFolderDisplayName,
+  });
 
-  Folder.fromJson(core.Map _json) {
-    if (_json.containsKey('resourceFolder')) {
-      resourceFolder = _json['resourceFolder'] as core.String;
-    }
-    if (_json.containsKey('resourceFolderDisplayName')) {
-      resourceFolderDisplayName =
-          _json['resourceFolderDisplayName'] as core.String;
-    }
-  }
+  Folder.fromJson(core.Map _json)
+      : this(
+          resourceFolder: _json.containsKey('resourceFolder')
+              ? _json['resourceFolder'] as core.String
+              : null,
+          resourceFolderDisplayName:
+              _json.containsKey('resourceFolderDisplayName')
+                  ? _json['resourceFolderDisplayName'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (resourceFolder != null) 'resourceFolder': resourceFolder!,
         if (resourceFolderDisplayName != null)
           'resourceFolderDisplayName': resourceFolderDisplayName!,
+      };
+}
+
+/// Represents a geographical location for a given access.
+class Geolocation {
+  /// A CLDR.
+  core.String? regionCode;
+
+  Geolocation({
+    this.regionCode,
+  });
+
+  Geolocation.fromJson(core.Map _json)
+      : this(
+          regionCode: _json.containsKey('regionCode')
+              ? _json['regionCode'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (regionCode != null) 'regionCode': regionCode!,
       };
 }
 
@@ -3525,584 +5182,185 @@ class GetIamPolicyRequest {
   /// `GetIamPolicy`.
   GetPolicyOptions? options;
 
-  GetIamPolicyRequest();
+  GetIamPolicyRequest({
+    this.options,
+  });
 
-  GetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = GetPolicyOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
 /// Encapsulates settings provided to GetIamPolicy.
-class GetPolicyOptions {
-  /// The policy format version to be returned.
+typedef GetPolicyOptions = $GetPolicyOptions;
+
+/// Representation of third party SIEM/SOAR fields within SCC.
+class GoogleCloudSecuritycenterV1ExternalSystem {
+  /// References primary/secondary etc assignees in the external system.
+  core.List<core.String>? assignees;
+
+  /// The most recent time when the corresponding finding's ticket/tracker was
+  /// updated in the external system.
+  core.String? externalSystemUpdateTime;
+
+  /// Identifier that's used to track the given finding in the external system.
+  core.String? externalUid;
+
+  /// External System Name e.g. jira, demisto, etc.
   ///
-  /// Valid values are 0, 1, and 3. Requests specifying an invalid value will be
-  /// rejected. Requests for policies with any conditional bindings must specify
-  /// version 3. Policies without any conditional bindings may specify any valid
-  /// value or leave the field unset. To learn which resources support
-  /// conditions in their IAM policies, see the
-  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
-  ///
-  /// Optional.
-  core.int? requestedPolicyVersion;
-
-  GetPolicyOptions();
-
-  GetPolicyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedPolicyVersion')) {
-      requestedPolicyVersion = _json['requestedPolicyVersion'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (requestedPolicyVersion != null)
-          'requestedPolicyVersion': requestedPolicyVersion!,
-      };
-}
-
-/// Cloud SCC's Notification
-class GoogleCloudSecuritycenterV1NotificationMessage {
-  /// If it's a Finding based notification config, this field will be populated.
-  Finding? finding;
-
-  /// Name of the notification config that generated current notification.
-  core.String? notificationConfigName;
-
-  /// The Cloud resource tied to this notification's Finding.
-  GoogleCloudSecuritycenterV1Resource? resource;
-
-  GoogleCloudSecuritycenterV1NotificationMessage();
-
-  GoogleCloudSecuritycenterV1NotificationMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('finding')) {
-      finding = Finding.fromJson(
-          _json['finding'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('notificationConfigName')) {
-      notificationConfigName = _json['notificationConfigName'] as core.String;
-    }
-    if (_json.containsKey('resource')) {
-      resource = GoogleCloudSecuritycenterV1Resource.fromJson(
-          _json['resource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (finding != null) 'finding': finding!.toJson(),
-        if (notificationConfigName != null)
-          'notificationConfigName': notificationConfigName!,
-        if (resource != null) 'resource': resource!.toJson(),
-      };
-}
-
-/// Information related to the Google Cloud resource.
-class GoogleCloudSecuritycenterV1Resource {
-  /// Contains a Folder message for each folder in the assets ancestry.
-  ///
-  /// The first folder is the deepest nested folder, and the last folder is the
-  /// folder directly under the Organization.
-  ///
-  /// Output only.
-  core.List<Folder>? folders;
-
-  /// The full resource name of the resource.
-  ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#full_resource_name
+  /// e.g.: organizations/1234/sources/5678/findings/123456/externalSystems/jira
+  /// folders/1234/sources/5678/findings/123456/externalSystems/jira
+  /// projects/1234/sources/5678/findings/123456/externalSystems/jira
   core.String? name;
 
-  /// The full resource name of resource's parent.
-  core.String? parent;
+  /// Most recent status of the corresponding finding's ticket/tracker in the
+  /// external system.
+  core.String? status;
 
-  /// The human readable name of resource's parent.
-  core.String? parentDisplayName;
+  GoogleCloudSecuritycenterV1ExternalSystem({
+    this.assignees,
+    this.externalSystemUpdateTime,
+    this.externalUid,
+    this.name,
+    this.status,
+  });
 
-  /// The full resource name of project that the resource belongs to.
-  core.String? project;
-
-  /// The human readable name of project that the resource belongs to.
-  core.String? projectDisplayName;
-
-  GoogleCloudSecuritycenterV1Resource();
-
-  GoogleCloudSecuritycenterV1Resource.fromJson(core.Map _json) {
-    if (_json.containsKey('folders')) {
-      folders = (_json['folders'] as core.List)
-          .map<Folder>((value) =>
-              Folder.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('parentDisplayName')) {
-      parentDisplayName = _json['parentDisplayName'] as core.String;
-    }
-    if (_json.containsKey('project')) {
-      project = _json['project'] as core.String;
-    }
-    if (_json.containsKey('projectDisplayName')) {
-      projectDisplayName = _json['projectDisplayName'] as core.String;
-    }
-  }
+  GoogleCloudSecuritycenterV1ExternalSystem.fromJson(core.Map _json)
+      : this(
+          assignees: _json.containsKey('assignees')
+              ? (_json['assignees'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          externalSystemUpdateTime:
+              _json.containsKey('externalSystemUpdateTime')
+                  ? _json['externalSystemUpdateTime'] as core.String
+                  : null,
+          externalUid: _json.containsKey('externalUid')
+              ? _json['externalUid'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (folders != null)
-          'folders': folders!.map((value) => value.toJson()).toList(),
+        if (assignees != null) 'assignees': assignees!,
+        if (externalSystemUpdateTime != null)
+          'externalSystemUpdateTime': externalSystemUpdateTime!,
+        if (externalUid != null) 'externalUid': externalUid!,
         if (name != null) 'name': name!,
-        if (parent != null) 'parent': parent!,
-        if (parentDisplayName != null) 'parentDisplayName': parentDisplayName!,
-        if (project != null) 'project': project!,
-        if (projectDisplayName != null)
-          'projectDisplayName': projectDisplayName!,
+        if (status != null) 'status': status!,
       };
 }
 
-/// Response of asset discovery run
-class GoogleCloudSecuritycenterV1RunAssetDiscoveryResponse {
-  /// The duration between asset discovery run start and end
-  core.String? duration;
-
-  /// The state of an asset discovery run.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Asset discovery run state was unspecified.
-  /// - "COMPLETED" : Asset discovery run completed successfully.
-  /// - "SUPERSEDED" : Asset discovery run was cancelled with tasks still
-  /// pending, as another run for the same organization was started with a
-  /// higher priority.
-  /// - "TERMINATED" : Asset discovery run was killed and terminated.
-  core.String? state;
-
-  GoogleCloudSecuritycenterV1RunAssetDiscoveryResponse();
-
-  GoogleCloudSecuritycenterV1RunAssetDiscoveryResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (duration != null) 'duration': duration!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// Response of asset discovery run
-class GoogleCloudSecuritycenterV1beta1RunAssetDiscoveryResponse {
-  /// The duration between asset discovery run start and end
-  core.String? duration;
-
-  /// The state of an asset discovery run.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Asset discovery run state was unspecified.
-  /// - "COMPLETED" : Asset discovery run completed successfully.
-  /// - "SUPERSEDED" : Asset discovery run was cancelled with tasks still
-  /// pending, as another run for the same organization was started with a
-  /// higher priority.
-  /// - "TERMINATED" : Asset discovery run was killed and terminated.
-  core.String? state;
-
-  GoogleCloudSecuritycenterV1beta1RunAssetDiscoveryResponse();
-
-  GoogleCloudSecuritycenterV1beta1RunAssetDiscoveryResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (duration != null) 'duration': duration!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// Security Command Center finding.
-///
-/// A finding is a record of assessment data (security, risk, health or privacy)
-/// ingested into Security Command Center for presentation, notification,
-/// analysis, policy testing, and enforcement. For example, an XSS vulnerability
-/// in an App Engine application is a finding.
-class GoogleCloudSecuritycenterV1p1beta1Finding {
-  /// The additional taxonomy group within findings from a given source.
+/// A mute config is a Cloud SCC resource that contains the configuration to
+/// mute create/update events of findings.
+class GoogleCloudSecuritycenterV1MuteConfig {
+  /// The time at which the mute config was created.
   ///
-  /// This field is immutable after creation time. Example:
-  /// "XSS_FLASH_INJECTION"
-  core.String? category;
-
-  /// The time at which the finding was created in Security Command Center.
+  /// This field is set by the server and will be ignored if provided on config
+  /// creation.
+  ///
+  /// Output only.
   core.String? createTime;
 
-  /// The time at which the event took place, or when an update to the finding
-  /// occurred.
-  ///
-  /// For example, if the finding represents an open firewall it would capture
-  /// the time the detector believes the firewall became open. The accuracy is
-  /// determined by the detector. If the finding were to be resolved afterward,
-  /// this time would reflect when the finding was resolved.
-  core.String? eventTime;
+  /// A description of the mute config.
+  core.String? description;
 
-  /// The URI that, if available, points to a web page outside of Security
-  /// Command Center where additional information about the finding can be
-  /// found.
-  ///
-  /// This field is guaranteed to be either empty or a well formed URL.
-  core.String? externalUri;
+  /// The human readable name to be displayed for the mute config.
+  core.String? displayName;
 
-  /// The relative resource name of this finding.
+  /// An expression that defines the filter to apply across create/update events
+  /// of findings.
   ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
-  /// Example:
-  /// "organizations/{organization_id}/sources/{source_id}/findings/{finding_id}"
-  core.String? name;
+  /// While creating a filter string, be mindful of the scope in which the mute
+  /// configuration is being created. E.g., If a filter contains project = X but
+  /// is created under the project = Y scope, it might not match any findings.
+  /// The following field and operator combinations are supported: * severity:
+  /// `=`, `:` * category: `=`, `:` * resource.name: `=`, `:` *
+  /// resource.project_name: `=`, `:` * resource.project_display_name: `=`, `:`
+  /// * resource.folders.resource_folder: `=`, `:` * resource.parent_name: `=`,
+  /// `:` * resource.parent_display_name: `=`, `:` * resource.type: `=`, `:` *
+  /// finding_class: `=`, `:` * indicator.ip_addresses: `=`, `:` *
+  /// indicator.domains: `=`, `:`
+  ///
+  /// Required.
+  core.String? filter;
 
-  /// The relative resource name of the source the finding belongs to.
+  /// Email address of the user who last edited the mute config.
   ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
-  /// This field is immutable after creation time. For example:
-  /// "organizations/{organization_id}/sources/{source_id}"
-  core.String? parent;
-
-  /// For findings on Google Cloud resources, the full resource name of the
-  /// Google Cloud resource this finding is for.
-  ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#full_resource_name
-  /// When the finding is for a non-Google Cloud resource, the resourceName can
-  /// be a customer or partner defined string. This field is immutable after
-  /// creation time.
-  core.String? resourceName;
-
-  /// User specified security marks.
-  ///
-  /// These marks are entirely managed by the user and come from the
-  /// SecurityMarks resource that belongs to the finding.
+  /// This field is set by the server and will be ignored if provided on config
+  /// creation or update.
   ///
   /// Output only.
-  GoogleCloudSecuritycenterV1p1beta1SecurityMarks? securityMarks;
+  core.String? mostRecentEditor;
 
-  /// The severity of the finding.
+  /// This field will be ignored if provided on config creation.
   ///
-  /// This field is managed by the source that writes the finding.
-  /// Possible string values are:
-  /// - "SEVERITY_UNSPECIFIED" : No severity specified. The default value.
-  /// - "CRITICAL" : Critical severity.
-  /// - "HIGH" : High severity.
-  /// - "MEDIUM" : Medium severity.
-  /// - "LOW" : Low severity.
-  core.String? severity;
+  /// Format "organizations/{organization}/muteConfigs/{mute_config}"
+  /// "folders/{folder}/muteConfigs/{mute_config}"
+  /// "projects/{project}/muteConfigs/{mute_config}"
+  core.String? name;
 
-  /// Source specific properties.
+  /// The most recent time at which the mute config was updated.
   ///
-  /// These properties are managed by the source that writes the finding. The
-  /// key names in the source_properties map must be between 1 and 255
-  /// characters, and must start with a letter and contain alphanumeric
-  /// characters or underscores only.
+  /// This field is set by the server and will be ignored if provided on config
+  /// creation or update.
   ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? sourceProperties;
+  /// Output only.
+  core.String? updateTime;
 
-  /// The state of the finding.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Unspecified state.
-  /// - "ACTIVE" : The finding requires attention and has not been addressed
-  /// yet.
-  /// - "INACTIVE" : The finding has been fixed, triaged as a non-issue or
-  /// otherwise addressed and is no longer active.
-  core.String? state;
+  GoogleCloudSecuritycenterV1MuteConfig({
+    this.createTime,
+    this.description,
+    this.displayName,
+    this.filter,
+    this.mostRecentEditor,
+    this.name,
+    this.updateTime,
+  });
 
-  GoogleCloudSecuritycenterV1p1beta1Finding();
-
-  GoogleCloudSecuritycenterV1p1beta1Finding.fromJson(core.Map _json) {
-    if (_json.containsKey('category')) {
-      category = _json['category'] as core.String;
-    }
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('eventTime')) {
-      eventTime = _json['eventTime'] as core.String;
-    }
-    if (_json.containsKey('externalUri')) {
-      externalUri = _json['externalUri'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('resourceName')) {
-      resourceName = _json['resourceName'] as core.String;
-    }
-    if (_json.containsKey('securityMarks')) {
-      securityMarks = GoogleCloudSecuritycenterV1p1beta1SecurityMarks.fromJson(
-          _json['securityMarks'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-    if (_json.containsKey('sourceProperties')) {
-      sourceProperties =
-          (_json['sourceProperties'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  GoogleCloudSecuritycenterV1MuteConfig.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          mostRecentEditor: _json.containsKey('mostRecentEditor')
+              ? _json['mostRecentEditor'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (category != null) 'category': category!,
         if (createTime != null) 'createTime': createTime!,
-        if (eventTime != null) 'eventTime': eventTime!,
-        if (externalUri != null) 'externalUri': externalUri!,
+        if (description != null) 'description': description!,
+        if (displayName != null) 'displayName': displayName!,
+        if (filter != null) 'filter': filter!,
+        if (mostRecentEditor != null) 'mostRecentEditor': mostRecentEditor!,
         if (name != null) 'name': name!,
-        if (parent != null) 'parent': parent!,
-        if (resourceName != null) 'resourceName': resourceName!,
-        if (securityMarks != null) 'securityMarks': securityMarks!.toJson(),
-        if (severity != null) 'severity': severity!,
-        if (sourceProperties != null) 'sourceProperties': sourceProperties!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// Message that contains the resource name and display name of a folder
-/// resource.
-class GoogleCloudSecuritycenterV1p1beta1Folder {
-  /// Full resource name of this folder.
-  ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#full_resource_name
-  core.String? resourceFolder;
-
-  /// The user defined display name for this folder.
-  core.String? resourceFolderDisplayName;
-
-  GoogleCloudSecuritycenterV1p1beta1Folder();
-
-  GoogleCloudSecuritycenterV1p1beta1Folder.fromJson(core.Map _json) {
-    if (_json.containsKey('resourceFolder')) {
-      resourceFolder = _json['resourceFolder'] as core.String;
-    }
-    if (_json.containsKey('resourceFolderDisplayName')) {
-      resourceFolderDisplayName =
-          _json['resourceFolderDisplayName'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (resourceFolder != null) 'resourceFolder': resourceFolder!,
-        if (resourceFolderDisplayName != null)
-          'resourceFolderDisplayName': resourceFolderDisplayName!,
-      };
-}
-
-/// Security Command Center's Notification
-class GoogleCloudSecuritycenterV1p1beta1NotificationMessage {
-  /// If it's a Finding based notification config, this field will be populated.
-  GoogleCloudSecuritycenterV1p1beta1Finding? finding;
-
-  /// Name of the notification config that generated current notification.
-  core.String? notificationConfigName;
-
-  /// The Cloud resource tied to the notification.
-  GoogleCloudSecuritycenterV1p1beta1Resource? resource;
-
-  GoogleCloudSecuritycenterV1p1beta1NotificationMessage();
-
-  GoogleCloudSecuritycenterV1p1beta1NotificationMessage.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('finding')) {
-      finding = GoogleCloudSecuritycenterV1p1beta1Finding.fromJson(
-          _json['finding'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('notificationConfigName')) {
-      notificationConfigName = _json['notificationConfigName'] as core.String;
-    }
-    if (_json.containsKey('resource')) {
-      resource = GoogleCloudSecuritycenterV1p1beta1Resource.fromJson(
-          _json['resource'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (finding != null) 'finding': finding!.toJson(),
-        if (notificationConfigName != null)
-          'notificationConfigName': notificationConfigName!,
-        if (resource != null) 'resource': resource!.toJson(),
-      };
-}
-
-/// Information related to the Google Cloud resource.
-class GoogleCloudSecuritycenterV1p1beta1Resource {
-  /// Contains a Folder message for each folder in the assets ancestry.
-  ///
-  /// The first folder is the deepest nested folder, and the last folder is the
-  /// folder directly under the Organization.
-  ///
-  /// Output only.
-  core.List<GoogleCloudSecuritycenterV1p1beta1Folder>? folders;
-
-  /// The full resource name of the resource.
-  ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#full_resource_name
-  core.String? name;
-
-  /// The full resource name of resource's parent.
-  core.String? parent;
-
-  /// The human readable name of resource's parent.
-  core.String? parentDisplayName;
-
-  /// The full resource name of project that the resource belongs to.
-  core.String? project;
-
-  /// The human readable name of project that the resource belongs to.
-  core.String? projectDisplayName;
-
-  GoogleCloudSecuritycenterV1p1beta1Resource();
-
-  GoogleCloudSecuritycenterV1p1beta1Resource.fromJson(core.Map _json) {
-    if (_json.containsKey('folders')) {
-      folders = (_json['folders'] as core.List)
-          .map<GoogleCloudSecuritycenterV1p1beta1Folder>((value) =>
-              GoogleCloudSecuritycenterV1p1beta1Folder.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parent')) {
-      parent = _json['parent'] as core.String;
-    }
-    if (_json.containsKey('parentDisplayName')) {
-      parentDisplayName = _json['parentDisplayName'] as core.String;
-    }
-    if (_json.containsKey('project')) {
-      project = _json['project'] as core.String;
-    }
-    if (_json.containsKey('projectDisplayName')) {
-      projectDisplayName = _json['projectDisplayName'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (folders != null)
-          'folders': folders!.map((value) => value.toJson()).toList(),
-        if (name != null) 'name': name!,
-        if (parent != null) 'parent': parent!,
-        if (parentDisplayName != null) 'parentDisplayName': parentDisplayName!,
-        if (project != null) 'project': project!,
-        if (projectDisplayName != null)
-          'projectDisplayName': projectDisplayName!,
-      };
-}
-
-/// Response of asset discovery run
-class GoogleCloudSecuritycenterV1p1beta1RunAssetDiscoveryResponse {
-  /// The duration between asset discovery run start and end
-  core.String? duration;
-
-  /// The state of an asset discovery run.
-  /// Possible string values are:
-  /// - "STATE_UNSPECIFIED" : Asset discovery run state was unspecified.
-  /// - "COMPLETED" : Asset discovery run completed successfully.
-  /// - "SUPERSEDED" : Asset discovery run was cancelled with tasks still
-  /// pending, as another run for the same organization was started with a
-  /// higher priority.
-  /// - "TERMINATED" : Asset discovery run was killed and terminated.
-  core.String? state;
-
-  GoogleCloudSecuritycenterV1p1beta1RunAssetDiscoveryResponse();
-
-  GoogleCloudSecuritycenterV1p1beta1RunAssetDiscoveryResponse.fromJson(
-      core.Map _json) {
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (duration != null) 'duration': duration!,
-        if (state != null) 'state': state!,
-      };
-}
-
-/// User specified security marks that are attached to the parent Security
-/// Command Center resource.
-///
-/// Security marks are scoped within a Security Command Center organization --
-/// they can be modified and viewed by all users who have proper permissions on
-/// the organization.
-class GoogleCloudSecuritycenterV1p1beta1SecurityMarks {
-  /// Mutable user specified security marks belonging to the parent resource.
-  ///
-  /// Constraints are as follows: * Keys and values are treated as case
-  /// insensitive * Keys must be between 1 - 256 characters (inclusive) * Keys
-  /// must be letters, numbers, underscores, or dashes * Values have leading and
-  /// trailing whitespace trimmed, remaining characters must be between 1 - 4096
-  /// characters (inclusive)
-  core.Map<core.String, core.String>? marks;
-
-  /// The relative resource name of the SecurityMarks.
-  ///
-  /// See:
-  /// https://cloud.google.com/apis/design/resource_names#relative_resource_name
-  /// Examples:
-  /// "organizations/{organization_id}/assets/{asset_id}/securityMarks"
-  /// "organizations/{organization_id}/sources/{source_id}/findings/{finding_id}/securityMarks".
-  core.String? name;
-
-  GoogleCloudSecuritycenterV1p1beta1SecurityMarks();
-
-  GoogleCloudSecuritycenterV1p1beta1SecurityMarks.fromJson(core.Map _json) {
-    if (_json.containsKey('marks')) {
-      marks = (_json['marks'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (marks != null) 'marks': marks!,
-        if (name != null) 'name': name!,
+        if (updateTime != null) 'updateTime': updateTime!,
       };
 }
 
@@ -4201,28 +5459,36 @@ class GroupAssetsRequest {
   /// to the API's version of NOW.
   core.String? readTime;
 
-  GroupAssetsRequest();
+  GroupAssetsRequest({
+    this.compareDuration,
+    this.filter,
+    this.groupBy,
+    this.pageSize,
+    this.pageToken,
+    this.readTime,
+  });
 
-  GroupAssetsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('compareDuration')) {
-      compareDuration = _json['compareDuration'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('groupBy')) {
-      groupBy = _json['groupBy'] as core.String;
-    }
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-  }
+  GroupAssetsRequest.fromJson(core.Map _json)
+      : this(
+          compareDuration: _json.containsKey('compareDuration')
+              ? _json['compareDuration'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          groupBy: _json.containsKey('groupBy')
+              ? _json['groupBy'] as core.String
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (compareDuration != null) 'compareDuration': compareDuration!,
@@ -4253,30 +5519,34 @@ class GroupAssetsResponse {
   /// The total number of results matching the query.
   core.int? totalSize;
 
-  GroupAssetsResponse();
+  GroupAssetsResponse({
+    this.groupByResults,
+    this.nextPageToken,
+    this.readTime,
+    this.totalSize,
+  });
 
-  GroupAssetsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('groupByResults')) {
-      groupByResults = (_json['groupByResults'] as core.List)
-          .map<GroupResult>((value) => GroupResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('totalSize')) {
-      totalSize = _json['totalSize'] as core.int;
-    }
-  }
+  GroupAssetsResponse.fromJson(core.Map _json)
+      : this(
+          groupByResults: _json.containsKey('groupByResults')
+              ? (_json['groupByResults'] as core.List)
+                  .map((value) => GroupResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          totalSize: _json.containsKey('totalSize')
+              ? _json['totalSize'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (groupByResults != null)
-          'groupByResults':
-              groupByResults!.map((value) => value.toJson()).toList(),
+        if (groupByResults != null) 'groupByResults': groupByResults!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (readTime != null) 'readTime': readTime!,
         if (totalSize != null) 'totalSize': totalSize!,
@@ -4324,15 +5594,18 @@ class GroupFindingsRequest {
   /// following field and operator combinations are supported: * name: `=` *
   /// parent: `=`, `:` * resource_name: `=`, `:` * state: `=`, `:` * category:
   /// `=`, `:` * external_uri: `=`, `:` * event_time: `=`, `>`, `<`, `>=`, `<=`
-  /// * severity: `=`, `:` Usage: This should be milliseconds since epoch or an
-  /// RFC3339 string. Examples: `event_time = "2019-06-10T16:07:18-07:00"`
-  /// `event_time = 1560208038000` * security_marks.marks: `=`, `:` *
-  /// source_properties: `=`, `:`, `>`, `<`, `>=`, `<=` For example,
-  /// `source_properties.size = 100` is a valid filter string. Use a partial
-  /// match on the empty string to filter based on a property existing:
-  /// `source_properties.my_property : ""` Use a negated partial match on the
-  /// empty string to filter based on a property not existing:
-  /// `-source_properties.my_property : ""`
+  /// Usage: This should be milliseconds since epoch or an RFC3339 string.
+  /// Examples: `event_time = "2019-06-10T16:07:18-07:00"` `event_time =
+  /// 1560208038000` * severity: `=`, `:` * workflow_state: `=`, `:` *
+  /// security_marks.marks: `=`, `:` * source_properties: `=`, `:`, `>`, `<`,
+  /// `>=`, `<=` For example, `source_properties.size = 100` is a valid filter
+  /// string. Use a partial match on the empty string to filter based on a
+  /// property existing: `source_properties.my_property : ""` Use a negated
+  /// partial match on the empty string to filter based on a property not
+  /// existing: `-source_properties.my_property : ""` * resource: *
+  /// resource.name: `=`, `:` * resource.parent_name: `=`, `:` *
+  /// resource.parent_display_name: `=`, `:` * resource.project_name: `=`, `:` *
+  /// resource.project_display_name: `=`, `:` * resource.type: `=`, `:`
   core.String? filter;
 
   /// Expression that defines what assets fields to use for grouping (including
@@ -4363,28 +5636,36 @@ class GroupFindingsRequest {
   /// to the API's version of NOW.
   core.String? readTime;
 
-  GroupFindingsRequest();
+  GroupFindingsRequest({
+    this.compareDuration,
+    this.filter,
+    this.groupBy,
+    this.pageSize,
+    this.pageToken,
+    this.readTime,
+  });
 
-  GroupFindingsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('compareDuration')) {
-      compareDuration = _json['compareDuration'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('groupBy')) {
-      groupBy = _json['groupBy'] as core.String;
-    }
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-  }
+  GroupFindingsRequest.fromJson(core.Map _json)
+      : this(
+          compareDuration: _json.containsKey('compareDuration')
+              ? _json['compareDuration'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          groupBy: _json.containsKey('groupBy')
+              ? _json['groupBy'] as core.String
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (compareDuration != null) 'compareDuration': compareDuration!,
@@ -4415,30 +5696,34 @@ class GroupFindingsResponse {
   /// The total number of results matching the query.
   core.int? totalSize;
 
-  GroupFindingsResponse();
+  GroupFindingsResponse({
+    this.groupByResults,
+    this.nextPageToken,
+    this.readTime,
+    this.totalSize,
+  });
 
-  GroupFindingsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('groupByResults')) {
-      groupByResults = (_json['groupByResults'] as core.List)
-          .map<GroupResult>((value) => GroupResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('totalSize')) {
-      totalSize = _json['totalSize'] as core.int;
-    }
-  }
+  GroupFindingsResponse.fromJson(core.Map _json)
+      : this(
+          groupByResults: _json.containsKey('groupByResults')
+              ? (_json['groupByResults'] as core.List)
+                  .map((value) => GroupResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          totalSize: _json.containsKey('totalSize')
+              ? _json['totalSize'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (groupByResults != null)
-          'groupByResults':
-              groupByResults!.map((value) => value.toJson()).toList(),
+        if (groupByResults != null) 'groupByResults': groupByResults!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (readTime != null) 'readTime': readTime!,
         if (totalSize != null) 'totalSize': totalSize!,
@@ -4454,24 +5739,21 @@ class GroupResult {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? properties;
+  core.Map<core.String, core.Object?>? properties;
 
-  GroupResult();
+  GroupResult({
+    this.count,
+    this.properties,
+  });
 
-  GroupResult.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.String;
-    }
-    if (_json.containsKey('properties')) {
-      properties =
-          (_json['properties'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GroupResult.fromJson(core.Map _json)
+      : this(
+          count:
+              _json.containsKey('count') ? _json['count'] as core.String : null,
+          properties: _json.containsKey('properties')
+              ? _json['properties'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
@@ -4491,16 +5773,57 @@ class IamPolicy {
   /// details.
   core.String? policyBlob;
 
-  IamPolicy();
+  IamPolicy({
+    this.policyBlob,
+  });
 
-  IamPolicy.fromJson(core.Map _json) {
-    if (_json.containsKey('policyBlob')) {
-      policyBlob = _json['policyBlob'] as core.String;
-    }
-  }
+  IamPolicy.fromJson(core.Map _json)
+      : this(
+          policyBlob: _json.containsKey('policyBlob')
+              ? _json['policyBlob'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (policyBlob != null) 'policyBlob': policyBlob!,
+      };
+}
+
+/// Represents what's commonly known as an Indicator of compromise (IoC) in
+/// computer forensics.
+///
+/// This is an artifact observed on a network or in an operating system that,
+/// with high confidence, indicates a computer intrusion. Reference:
+/// https://en.wikipedia.org/wiki/Indicator_of_compromise
+class Indicator {
+  /// List of domains associated to the Finding.
+  core.List<core.String>? domains;
+
+  /// List of ip addresses associated to the Finding.
+  core.List<core.String>? ipAddresses;
+
+  Indicator({
+    this.domains,
+    this.ipAddresses,
+  });
+
+  Indicator.fromJson(core.Map _json)
+      : this(
+          domains: _json.containsKey('domains')
+              ? (_json['domains'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          ipAddresses: _json.containsKey('ipAddresses')
+              ? (_json['ipAddresses'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (domains != null) 'domains': domains!,
+        if (ipAddresses != null) 'ipAddresses': ipAddresses!,
       };
 }
 
@@ -4519,30 +5842,34 @@ class ListAssetsResponse {
   /// The total number of assets matching the query.
   core.int? totalSize;
 
-  ListAssetsResponse();
+  ListAssetsResponse({
+    this.listAssetsResults,
+    this.nextPageToken,
+    this.readTime,
+    this.totalSize,
+  });
 
-  ListAssetsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('listAssetsResults')) {
-      listAssetsResults = (_json['listAssetsResults'] as core.List)
-          .map<ListAssetsResult>((value) => ListAssetsResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('totalSize')) {
-      totalSize = _json['totalSize'] as core.int;
-    }
-  }
+  ListAssetsResponse.fromJson(core.Map _json)
+      : this(
+          listAssetsResults: _json.containsKey('listAssetsResults')
+              ? (_json['listAssetsResults'] as core.List)
+                  .map((value) => ListAssetsResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          totalSize: _json.containsKey('totalSize')
+              ? _json['totalSize'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (listAssetsResults != null)
-          'listAssetsResults':
-              listAssetsResults!.map((value) => value.toJson()).toList(),
+        if (listAssetsResults != null) 'listAssetsResults': listAssetsResults!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (readTime != null) 'readTime': readTime!,
         if (totalSize != null) 'totalSize': totalSize!,
@@ -4563,20 +5890,24 @@ class ListAssetsResult {
   /// - "ACTIVE" : Asset was present at both point(s) in time.
   core.String? stateChange;
 
-  ListAssetsResult();
+  ListAssetsResult({
+    this.asset,
+    this.stateChange,
+  });
 
-  ListAssetsResult.fromJson(core.Map _json) {
-    if (_json.containsKey('asset')) {
-      asset =
-          Asset.fromJson(_json['asset'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('stateChange')) {
-      stateChange = _json['stateChange'] as core.String;
-    }
-  }
+  ListAssetsResult.fromJson(core.Map _json)
+      : this(
+          asset: _json.containsKey('asset')
+              ? Asset.fromJson(
+                  _json['asset'] as core.Map<core.String, core.dynamic>)
+              : null,
+          stateChange: _json.containsKey('stateChange')
+              ? _json['stateChange'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (asset != null) 'asset': asset!.toJson(),
+        if (asset != null) 'asset': asset!,
         if (stateChange != null) 'stateChange': stateChange!,
       };
 }
@@ -4596,30 +5927,35 @@ class ListFindingsResponse {
   /// The total number of findings matching the query.
   core.int? totalSize;
 
-  ListFindingsResponse();
+  ListFindingsResponse({
+    this.listFindingsResults,
+    this.nextPageToken,
+    this.readTime,
+    this.totalSize,
+  });
 
-  ListFindingsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('listFindingsResults')) {
-      listFindingsResults = (_json['listFindingsResults'] as core.List)
-          .map<ListFindingsResult>((value) => ListFindingsResult.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('readTime')) {
-      readTime = _json['readTime'] as core.String;
-    }
-    if (_json.containsKey('totalSize')) {
-      totalSize = _json['totalSize'] as core.int;
-    }
-  }
+  ListFindingsResponse.fromJson(core.Map _json)
+      : this(
+          listFindingsResults: _json.containsKey('listFindingsResults')
+              ? (_json['listFindingsResults'] as core.List)
+                  .map((value) => ListFindingsResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          readTime: _json.containsKey('readTime')
+              ? _json['readTime'] as core.String
+              : null,
+          totalSize: _json.containsKey('totalSize')
+              ? _json['totalSize'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (listFindingsResults != null)
-          'listFindingsResults':
-              listFindingsResults!.map((value) => value.toJson()).toList(),
+          'listFindingsResults': listFindingsResults!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (readTime != null) 'readTime': readTime!,
         if (totalSize != null) 'totalSize': totalSize!,
@@ -4649,26 +5985,66 @@ class ListFindingsResult {
   /// specified, but it did at timestamp - compare_duration.
   core.String? stateChange;
 
-  ListFindingsResult();
+  ListFindingsResult({
+    this.finding,
+    this.resource,
+    this.stateChange,
+  });
 
-  ListFindingsResult.fromJson(core.Map _json) {
-    if (_json.containsKey('finding')) {
-      finding = Finding.fromJson(
-          _json['finding'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resource')) {
-      resource = Resource.fromJson(
-          _json['resource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('stateChange')) {
-      stateChange = _json['stateChange'] as core.String;
-    }
-  }
+  ListFindingsResult.fromJson(core.Map _json)
+      : this(
+          finding: _json.containsKey('finding')
+              ? Finding.fromJson(
+                  _json['finding'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resource: _json.containsKey('resource')
+              ? Resource.fromJson(
+                  _json['resource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          stateChange: _json.containsKey('stateChange')
+              ? _json['stateChange'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (finding != null) 'finding': finding!.toJson(),
-        if (resource != null) 'resource': resource!.toJson(),
+        if (finding != null) 'finding': finding!,
+        if (resource != null) 'resource': resource!,
         if (stateChange != null) 'stateChange': stateChange!,
+      };
+}
+
+/// Response message for listing mute configs.
+class ListMuteConfigsResponse {
+  /// The mute configs from the specified parent.
+  core.List<GoogleCloudSecuritycenterV1MuteConfig>? muteConfigs;
+
+  /// A token, which can be sent as `page_token` to retrieve the next page.
+  ///
+  /// If this field is omitted, there are no subsequent pages.
+  core.String? nextPageToken;
+
+  ListMuteConfigsResponse({
+    this.muteConfigs,
+    this.nextPageToken,
+  });
+
+  ListMuteConfigsResponse.fromJson(core.Map _json)
+      : this(
+          muteConfigs: _json.containsKey('muteConfigs')
+              ? (_json['muteConfigs'] as core.List)
+                  .map((value) =>
+                      GoogleCloudSecuritycenterV1MuteConfig.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (muteConfigs != null) 'muteConfigs': muteConfigs!,
+        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
 
@@ -4681,25 +6057,28 @@ class ListNotificationConfigsResponse {
   /// Notification configs belonging to the requested parent.
   core.List<NotificationConfig>? notificationConfigs;
 
-  ListNotificationConfigsResponse();
+  ListNotificationConfigsResponse({
+    this.nextPageToken,
+    this.notificationConfigs,
+  });
 
-  ListNotificationConfigsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('notificationConfigs')) {
-      notificationConfigs = (_json['notificationConfigs'] as core.List)
-          .map<NotificationConfig>((value) => NotificationConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListNotificationConfigsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          notificationConfigs: _json.containsKey('notificationConfigs')
+              ? (_json['notificationConfigs'] as core.List)
+                  .map((value) => NotificationConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (notificationConfigs != null)
-          'notificationConfigs':
-              notificationConfigs!.map((value) => value.toJson()).toList(),
+          'notificationConfigs': notificationConfigs!,
       };
 }
 
@@ -4711,24 +6090,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -4741,24 +6123,115 @@ class ListSourcesResponse {
   /// Sources belonging to the requested parent.
   core.List<Source>? sources;
 
-  ListSourcesResponse();
+  ListSourcesResponse({
+    this.nextPageToken,
+    this.sources,
+  });
 
-  ListSourcesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('sources')) {
-      sources = (_json['sources'] as core.List)
-          .map<Source>((value) =>
-              Source.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListSourcesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          sources: _json.containsKey('sources')
+              ? (_json['sources'] as core.List)
+                  .map((value) => Source.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (sources != null)
-          'sources': sources!.map((value) => value.toJson()).toList(),
+        if (sources != null) 'sources': sources!,
+      };
+}
+
+/// MITRE ATT&CK tactics and techniques related to this finding.
+///
+/// See: https://attack.mitre.org
+class MitreAttack {
+  /// Additional MITRE ATT&CK tactics related to this finding, if any.
+  core.List<core.String>? additionalTactics;
+
+  /// Additional MITRE ATT&CK techniques related to this finding, if any, along
+  /// with any of their respective parent techniques.
+  core.List<core.String>? additionalTechniques;
+
+  /// The MITRE ATT&CK tactic most closely represented by this finding, if any.
+  /// Possible string values are:
+  /// - "TACTIC_UNSPECIFIED" : Unspecified value.
+  /// - "RECONNAISSANCE" : TA0043
+  /// - "RESOURCE_DEVELOPMENT" : TA0042
+  /// - "INITIAL_ACCESS" : TA0001
+  /// - "EXECUTION" : TA0002
+  /// - "PERSISTENCE" : TA0003
+  /// - "PRIVILEGE_ESCALATION" : TA0004
+  /// - "DEFENSE_EVASION" : TA0005
+  /// - "CREDENTIAL_ACCESS" : TA0006
+  /// - "DISCOVERY" : TA0007
+  /// - "LATERAL_MOVEMENT" : TA0008
+  /// - "COLLECTION" : TA0009
+  /// - "COMMAND_AND_CONTROL" : TA0011
+  /// - "EXFILTRATION" : TA0010
+  /// - "IMPACT" : TA0040
+  core.String? primaryTactic;
+
+  /// The MITRE ATT&CK technique most closely represented by this finding, if
+  /// any.
+  ///
+  /// primary_techniques is a repeated field because there are multiple levels
+  /// of MITRE ATT&CK techniques. If the technique most closely represented by
+  /// this finding is a sub-technique (e.g. SCANNING_IP_BLOCKS), both the
+  /// sub-technique and its parent technique(s) will be listed (e.g.
+  /// SCANNING_IP_BLOCKS, ACTIVE_SCANNING).
+  core.List<core.String>? primaryTechniques;
+
+  /// The MITRE ATT&CK version referenced by the above fields.
+  ///
+  /// E.g. "8".
+  core.String? version;
+
+  MitreAttack({
+    this.additionalTactics,
+    this.additionalTechniques,
+    this.primaryTactic,
+    this.primaryTechniques,
+    this.version,
+  });
+
+  MitreAttack.fromJson(core.Map _json)
+      : this(
+          additionalTactics: _json.containsKey('additionalTactics')
+              ? (_json['additionalTactics'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          additionalTechniques: _json.containsKey('additionalTechniques')
+              ? (_json['additionalTechniques'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          primaryTactic: _json.containsKey('primaryTactic')
+              ? _json['primaryTactic'] as core.String
+              : null,
+          primaryTechniques: _json.containsKey('primaryTechniques')
+              ? (_json['primaryTechniques'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (additionalTactics != null) 'additionalTactics': additionalTactics!,
+        if (additionalTechniques != null)
+          'additionalTechniques': additionalTechniques!,
+        if (primaryTactic != null) 'primaryTactic': primaryTactic!,
+        if (primaryTechniques != null) 'primaryTechniques': primaryTechniques!,
+        if (version != null) 'version': version!,
       };
 }
 
@@ -4793,34 +6266,38 @@ class NotificationConfig {
   /// The config for triggering streaming-based notifications.
   StreamingConfig? streamingConfig;
 
-  NotificationConfig();
+  NotificationConfig({
+    this.description,
+    this.name,
+    this.pubsubTopic,
+    this.serviceAccount,
+    this.streamingConfig,
+  });
 
-  NotificationConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('pubsubTopic')) {
-      pubsubTopic = _json['pubsubTopic'] as core.String;
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = _json['serviceAccount'] as core.String;
-    }
-    if (_json.containsKey('streamingConfig')) {
-      streamingConfig = StreamingConfig.fromJson(
-          _json['streamingConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  NotificationConfig.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          pubsubTopic: _json.containsKey('pubsubTopic')
+              ? _json['pubsubTopic'] as core.String
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? _json['serviceAccount'] as core.String
+              : null,
+          streamingConfig: _json.containsKey('streamingConfig')
+              ? StreamingConfig.fromJson(_json['streamingConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (name != null) 'name': name!,
         if (pubsubTopic != null) 'pubsubTopic': pubsubTopic!,
         if (serviceAccount != null) 'serviceAccount': serviceAccount!,
-        if (streamingConfig != null)
-          'streamingConfig': streamingConfig!.toJson(),
+        if (streamingConfig != null) 'streamingConfig': streamingConfig!,
       };
 }
 
@@ -4845,7 +6322,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -4865,42 +6342,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -4927,24 +6397,27 @@ class OrganizationSettings {
   /// Example: "organizations/{organization_id}/organizationSettings".
   core.String? name;
 
-  OrganizationSettings();
+  OrganizationSettings({
+    this.assetDiscoveryConfig,
+    this.enableAssetDiscovery,
+    this.name,
+  });
 
-  OrganizationSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('assetDiscoveryConfig')) {
-      assetDiscoveryConfig = AssetDiscoveryConfig.fromJson(
-          _json['assetDiscoveryConfig'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('enableAssetDiscovery')) {
-      enableAssetDiscovery = _json['enableAssetDiscovery'] as core.bool;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  OrganizationSettings.fromJson(core.Map _json)
+      : this(
+          assetDiscoveryConfig: _json.containsKey('assetDiscoveryConfig')
+              ? AssetDiscoveryConfig.fromJson(_json['assetDiscoveryConfig']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          enableAssetDiscovery: _json.containsKey('enableAssetDiscovery')
+              ? _json['enableAssetDiscovery'] as core.bool
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (assetDiscoveryConfig != null)
-          'assetDiscoveryConfig': assetDiscoveryConfig!.toJson(),
+          'assetDiscoveryConfig': assetDiscoveryConfig!,
         if (enableAssetDiscovery != null)
           'enableAssetDiscovery': enableAssetDiscovery!,
         if (name != null) 'name': name!,
@@ -4955,15 +6428,15 @@ class OrganizationSettings {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -4972,25 +6445,30 @@ class OrganizationSettings {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -5032,44 +6510,75 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
 }
 
+/// Additional Links
+class Reference {
+  /// Source of the reference e.g. NVD
+  core.String? source;
+
+  /// Uri for the mentioned source e.g.
+  /// https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-34527.
+  core.String? uri;
+
+  Reference({
+    this.source,
+    this.uri,
+  });
+
+  Reference.fromJson(core.Map _json)
+      : this(
+          source: _json.containsKey('source')
+              ? _json['source'] as core.String
+              : null,
+          uri: _json.containsKey('uri') ? _json['uri'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (source != null) 'source': source!,
+        if (uri != null) 'uri': uri!,
+      };
+}
+
 /// Information related to the Google Cloud resource that is associated with
 /// this finding.
-///
-/// LINT.IfChange
 class Resource {
+  /// The human readable name of the resource.
+  core.String? displayName;
+
   /// Contains a Folder message for each folder in the assets ancestry.
   ///
   /// The first folder is the deepest nested folder, and the last folder is the
@@ -5094,54 +6603,62 @@ class Resource {
   /// The full resource name of project that the resource belongs to.
   core.String? projectName;
 
-  Resource();
+  /// The full resource type of the resource.
+  core.String? type;
 
-  Resource.fromJson(core.Map _json) {
-    if (_json.containsKey('folders')) {
-      folders = (_json['folders'] as core.List)
-          .map<Folder>((value) =>
-              Folder.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('parentDisplayName')) {
-      parentDisplayName = _json['parentDisplayName'] as core.String;
-    }
-    if (_json.containsKey('parentName')) {
-      parentName = _json['parentName'] as core.String;
-    }
-    if (_json.containsKey('projectDisplayName')) {
-      projectDisplayName = _json['projectDisplayName'] as core.String;
-    }
-    if (_json.containsKey('projectName')) {
-      projectName = _json['projectName'] as core.String;
-    }
-  }
+  Resource({
+    this.displayName,
+    this.folders,
+    this.name,
+    this.parentDisplayName,
+    this.parentName,
+    this.projectDisplayName,
+    this.projectName,
+    this.type,
+  });
+
+  Resource.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          folders: _json.containsKey('folders')
+              ? (_json['folders'] as core.List)
+                  .map((value) => Folder.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          parentDisplayName: _json.containsKey('parentDisplayName')
+              ? _json['parentDisplayName'] as core.String
+              : null,
+          parentName: _json.containsKey('parentName')
+              ? _json['parentName'] as core.String
+              : null,
+          projectDisplayName: _json.containsKey('projectDisplayName')
+              ? _json['projectDisplayName'] as core.String
+              : null,
+          projectName: _json.containsKey('projectName')
+              ? _json['projectName'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (folders != null)
-          'folders': folders!.map((value) => value.toJson()).toList(),
+        if (displayName != null) 'displayName': displayName!,
+        if (folders != null) 'folders': folders!,
         if (name != null) 'name': name!,
         if (parentDisplayName != null) 'parentDisplayName': parentDisplayName!,
         if (parentName != null) 'parentName': parentName!,
         if (projectDisplayName != null)
           'projectDisplayName': projectDisplayName!,
         if (projectName != null) 'projectName': projectName!,
+        if (type != null) 'type': type!,
       };
 }
 
 /// Request message for running asset discovery for an organization.
-class RunAssetDiscoveryRequest {
-  RunAssetDiscoveryRequest();
-
-  RunAssetDiscoveryRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef RunAssetDiscoveryRequest = $Empty;
 
 /// Security Command Center managed properties.
 ///
@@ -5191,48 +6708,58 @@ class SecurityCenterProperties {
   /// of the resource and is immutable after create time.
   core.String? resourceType;
 
-  SecurityCenterProperties();
+  SecurityCenterProperties({
+    this.folders,
+    this.resourceDisplayName,
+    this.resourceName,
+    this.resourceOwners,
+    this.resourceParent,
+    this.resourceParentDisplayName,
+    this.resourceProject,
+    this.resourceProjectDisplayName,
+    this.resourceType,
+  });
 
-  SecurityCenterProperties.fromJson(core.Map _json) {
-    if (_json.containsKey('folders')) {
-      folders = (_json['folders'] as core.List)
-          .map<Folder>((value) =>
-              Folder.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('resourceDisplayName')) {
-      resourceDisplayName = _json['resourceDisplayName'] as core.String;
-    }
-    if (_json.containsKey('resourceName')) {
-      resourceName = _json['resourceName'] as core.String;
-    }
-    if (_json.containsKey('resourceOwners')) {
-      resourceOwners = (_json['resourceOwners'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('resourceParent')) {
-      resourceParent = _json['resourceParent'] as core.String;
-    }
-    if (_json.containsKey('resourceParentDisplayName')) {
-      resourceParentDisplayName =
-          _json['resourceParentDisplayName'] as core.String;
-    }
-    if (_json.containsKey('resourceProject')) {
-      resourceProject = _json['resourceProject'] as core.String;
-    }
-    if (_json.containsKey('resourceProjectDisplayName')) {
-      resourceProjectDisplayName =
-          _json['resourceProjectDisplayName'] as core.String;
-    }
-    if (_json.containsKey('resourceType')) {
-      resourceType = _json['resourceType'] as core.String;
-    }
-  }
+  SecurityCenterProperties.fromJson(core.Map _json)
+      : this(
+          folders: _json.containsKey('folders')
+              ? (_json['folders'] as core.List)
+                  .map((value) => Folder.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          resourceDisplayName: _json.containsKey('resourceDisplayName')
+              ? _json['resourceDisplayName'] as core.String
+              : null,
+          resourceName: _json.containsKey('resourceName')
+              ? _json['resourceName'] as core.String
+              : null,
+          resourceOwners: _json.containsKey('resourceOwners')
+              ? (_json['resourceOwners'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          resourceParent: _json.containsKey('resourceParent')
+              ? _json['resourceParent'] as core.String
+              : null,
+          resourceParentDisplayName:
+              _json.containsKey('resourceParentDisplayName')
+                  ? _json['resourceParentDisplayName'] as core.String
+                  : null,
+          resourceProject: _json.containsKey('resourceProject')
+              ? _json['resourceProject'] as core.String
+              : null,
+          resourceProjectDisplayName:
+              _json.containsKey('resourceProjectDisplayName')
+                  ? _json['resourceProjectDisplayName'] as core.String
+                  : null,
+          resourceType: _json.containsKey('resourceType')
+              ? _json['resourceType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (folders != null)
-          'folders': folders!.map((value) => value.toJson()).toList(),
+        if (folders != null) 'folders': folders!,
         if (resourceDisplayName != null)
           'resourceDisplayName': resourceDisplayName!,
         if (resourceName != null) 'resourceName': resourceName!,
@@ -5254,6 +6781,17 @@ class SecurityCenterProperties {
 /// they can be modified and viewed by all users who have proper permissions on
 /// the organization.
 class SecurityMarks {
+  /// The canonical name of the marks.
+  ///
+  /// Examples:
+  /// "organizations/{organization_id}/assets/{asset_id}/securityMarks"
+  /// "folders/{folder_id}/assets/{asset_id}/securityMarks"
+  /// "projects/{project_number}/assets/{asset_id}/securityMarks"
+  /// "organizations/{organization_id}/sources/{source_id}/findings/{finding_id}/securityMarks"
+  /// "folders/{folder_id}/sources/{source_id}/findings/{finding_id}/securityMarks"
+  /// "projects/{project_number}/sources/{source_id}/findings/{finding_id}/securityMarks"
+  core.String? canonicalName;
+
   /// Mutable user specified security marks belonging to the parent resource.
   ///
   /// Constraints are as follows: * Keys and values are treated as case
@@ -5272,23 +6810,30 @@ class SecurityMarks {
   /// "organizations/{organization_id}/sources/{source_id}/findings/{finding_id}/securityMarks".
   core.String? name;
 
-  SecurityMarks();
+  SecurityMarks({
+    this.canonicalName,
+    this.marks,
+    this.name,
+  });
 
-  SecurityMarks.fromJson(core.Map _json) {
-    if (_json.containsKey('marks')) {
-      marks = (_json['marks'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  SecurityMarks.fromJson(core.Map _json)
+      : this(
+          canonicalName: _json.containsKey('canonicalName')
+              ? _json['canonicalName'] as core.String
+              : null,
+          marks: _json.containsKey('marks')
+              ? (_json['marks'] as core.Map<core.String, core.dynamic>).map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (canonicalName != null) 'canonicalName': canonicalName!,
         if (marks != null) 'marks': marks!,
         if (name != null) 'name': name!,
       };
@@ -5312,16 +6857,19 @@ class SetFindingStateRequest {
   /// otherwise addressed and is no longer active.
   core.String? state;
 
-  SetFindingStateRequest();
+  SetFindingStateRequest({
+    this.startTime,
+    this.state,
+  });
 
-  SetFindingStateRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  SetFindingStateRequest.fromJson(core.Map _json)
+      : this(
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (startTime != null) 'startTime': startTime!,
@@ -5344,21 +6892,51 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
+      };
+}
+
+/// Request message for updating a finding's mute status.
+class SetMuteRequest {
+  /// The desired state of the Mute.
+  ///
+  /// Required.
+  /// Possible string values are:
+  /// - "MUTE_UNSPECIFIED" : Unspecified.
+  /// - "MUTED" : Finding has been muted.
+  /// - "UNMUTED" : Finding has been unmuted.
+  /// - "UNDEFINED" : Finding has never been muted/unmuted.
+  core.String? mute;
+
+  SetMuteRequest({
+    this.mute,
+  });
+
+  SetMuteRequest.fromJson(core.Map _json)
+      : this(
+          mute: _json.containsKey('mute') ? _json['mute'] as core.String : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (mute != null) 'mute': mute!,
       };
 }
 
@@ -5368,6 +6946,14 @@ class SetIamPolicyRequest {
 /// source is like a container of findings that come from the same scanner,
 /// logger, monitor, and other tools.
 class Source {
+  /// The canonical name of the finding.
+  ///
+  /// It's either "organizations/{organization_id}/sources/{source_id}",
+  /// "folders/{folder_id}/sources/{source_id}" or
+  /// "projects/{project_number}/sources/{source_id}", depending on the closest
+  /// CRM ancestor of the resource associated with the finding.
+  core.String? canonicalName;
+
   /// The description of the source (max of 1024 characters).
   ///
   /// Example: "Web Security Scanner is a web security scanner for common
@@ -5391,21 +6977,29 @@ class Source {
   /// Example: "organizations/{organization_id}/sources/{source_id}"
   core.String? name;
 
-  Source();
+  Source({
+    this.canonicalName,
+    this.description,
+    this.displayName,
+    this.name,
+  });
 
-  Source.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  Source.fromJson(core.Map _json)
+      : this(
+          canonicalName: _json.containsKey('canonicalName')
+              ? _json['canonicalName'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (canonicalName != null) 'canonicalName': canonicalName!,
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
         if (name != null) 'name': name!,
@@ -5419,52 +7013,7 @@ class Source {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// The config for streaming-based notifications, which send each event as soon
 /// as it is detected.
@@ -5483,13 +7032,16 @@ class StreamingConfig {
   /// literals `true` and `false` without quotes.
   core.String? filter;
 
-  StreamingConfig();
+  StreamingConfig({
+    this.filter,
+  });
 
-  StreamingConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-  }
+  StreamingConfig.fromJson(core.Map _json)
+      : this(
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (filter != null) 'filter': filter!,
@@ -5497,46 +7049,30 @@ class StreamingConfig {
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
-  TestIamPermissionsResponse();
+/// Refers to common vulnerability fields e.g. cve, cvss, cwe etc.
+class Vulnerability {
+  /// CVE stands for Common Vulnerabilities and Exposures
+  /// (https://cve.mitre.org/about/)
+  Cve? cve;
 
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  Vulnerability({
+    this.cve,
+  });
+
+  Vulnerability.fromJson(core.Map _json)
+      : this(
+          cve: _json.containsKey('cve')
+              ? Cve.fromJson(
+                  _json['cve'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
+        if (cve != null) 'cve': cve!,
       };
 }

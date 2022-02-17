@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,15 +20,15 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/clouddebugger/v2.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/clouddebugger/v2.dart' as api;
 
 import '../test_shared.dart';
 
 core.int buildCounterAliasContext = 0;
 api.AliasContext buildAliasContext() {
-  var o = api.AliasContext();
+  final o = api.AliasContext();
   buildCounterAliasContext++;
   if (buildCounterAliasContext < 3) {
     o.kind = 'foo';
@@ -54,27 +53,23 @@ void checkAliasContext(api.AliasContext o) {
   buildCounterAliasContext--;
 }
 
-core.List<api.Variable> buildUnnamed1429() {
-  var o = <api.Variable>[];
-  o.add(buildVariable());
-  o.add(buildVariable());
-  return o;
-}
+core.List<api.Variable> buildUnnamed0() => [
+      buildVariable(),
+      buildVariable(),
+    ];
 
-void checkUnnamed1429(core.List<api.Variable> o) {
+void checkUnnamed0(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0] as api.Variable);
-  checkVariable(o[1] as api.Variable);
+  checkVariable(o[0]);
+  checkVariable(o[1]);
 }
 
-core.List<core.String> buildUnnamed1430() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed1() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1430(core.List<core.String> o) {
+void checkUnnamed1(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -86,14 +81,12 @@ void checkUnnamed1430(core.List<core.String> o) {
   );
 }
 
-core.Map<core.String, core.String> buildUnnamed1431() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed2() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1431(core.Map<core.String, core.String> o) {
+void checkUnnamed2(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -105,55 +98,51 @@ void checkUnnamed1431(core.Map<core.String, core.String> o) {
   );
 }
 
-core.List<api.StackFrame> buildUnnamed1432() {
-  var o = <api.StackFrame>[];
-  o.add(buildStackFrame());
-  o.add(buildStackFrame());
-  return o;
-}
+core.List<api.StackFrame> buildUnnamed3() => [
+      buildStackFrame(),
+      buildStackFrame(),
+    ];
 
-void checkUnnamed1432(core.List<api.StackFrame> o) {
+void checkUnnamed3(core.List<api.StackFrame> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkStackFrame(o[0] as api.StackFrame);
-  checkStackFrame(o[1] as api.StackFrame);
+  checkStackFrame(o[0]);
+  checkStackFrame(o[1]);
 }
 
-core.List<api.Variable> buildUnnamed1433() {
-  var o = <api.Variable>[];
-  o.add(buildVariable());
-  o.add(buildVariable());
-  return o;
-}
+core.List<api.Variable> buildUnnamed4() => [
+      buildVariable(),
+      buildVariable(),
+    ];
 
-void checkUnnamed1433(core.List<api.Variable> o) {
+void checkUnnamed4(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0] as api.Variable);
-  checkVariable(o[1] as api.Variable);
+  checkVariable(o[0]);
+  checkVariable(o[1]);
 }
 
 core.int buildCounterBreakpoint = 0;
 api.Breakpoint buildBreakpoint() {
-  var o = api.Breakpoint();
+  final o = api.Breakpoint();
   buildCounterBreakpoint++;
   if (buildCounterBreakpoint < 3) {
     o.action = 'foo';
     o.canaryExpireTime = 'foo';
     o.condition = 'foo';
     o.createTime = 'foo';
-    o.evaluatedExpressions = buildUnnamed1429();
-    o.expressions = buildUnnamed1430();
+    o.evaluatedExpressions = buildUnnamed0();
+    o.expressions = buildUnnamed1();
     o.finalTime = 'foo';
     o.id = 'foo';
     o.isFinalState = true;
-    o.labels = buildUnnamed1431();
+    o.labels = buildUnnamed2();
     o.location = buildSourceLocation();
     o.logLevel = 'foo';
     o.logMessageFormat = 'foo';
-    o.stackFrames = buildUnnamed1432();
+    o.stackFrames = buildUnnamed3();
     o.state = 'foo';
     o.status = buildStatusMessage();
     o.userEmail = 'foo';
-    o.variableTable = buildUnnamed1433();
+    o.variableTable = buildUnnamed4();
   }
   buildCounterBreakpoint--;
   return o;
@@ -178,8 +167,8 @@ void checkBreakpoint(api.Breakpoint o) {
       o.createTime!,
       unittest.equals('foo'),
     );
-    checkUnnamed1429(o.evaluatedExpressions!);
-    checkUnnamed1430(o.expressions!);
+    checkUnnamed0(o.evaluatedExpressions!);
+    checkUnnamed1(o.expressions!);
     unittest.expect(
       o.finalTime!,
       unittest.equals('foo'),
@@ -189,8 +178,8 @@ void checkBreakpoint(api.Breakpoint o) {
       unittest.equals('foo'),
     );
     unittest.expect(o.isFinalState!, unittest.isTrue);
-    checkUnnamed1431(o.labels!);
-    checkSourceLocation(o.location! as api.SourceLocation);
+    checkUnnamed2(o.labels!);
+    checkSourceLocation(o.location!);
     unittest.expect(
       o.logLevel!,
       unittest.equals('foo'),
@@ -199,24 +188,24 @@ void checkBreakpoint(api.Breakpoint o) {
       o.logMessageFormat!,
       unittest.equals('foo'),
     );
-    checkUnnamed1432(o.stackFrames!);
+    checkUnnamed3(o.stackFrames!);
     unittest.expect(
       o.state!,
       unittest.equals('foo'),
     );
-    checkStatusMessage(o.status! as api.StatusMessage);
+    checkStatusMessage(o.status!);
     unittest.expect(
       o.userEmail!,
       unittest.equals('foo'),
     );
-    checkUnnamed1433(o.variableTable!);
+    checkUnnamed4(o.variableTable!);
   }
   buildCounterBreakpoint--;
 }
 
 core.int buildCounterCloudRepoSourceContext = 0;
 api.CloudRepoSourceContext buildCloudRepoSourceContext() {
-  var o = api.CloudRepoSourceContext();
+  final o = api.CloudRepoSourceContext();
   buildCounterCloudRepoSourceContext++;
   if (buildCounterCloudRepoSourceContext < 3) {
     o.aliasContext = buildAliasContext();
@@ -231,12 +220,12 @@ api.CloudRepoSourceContext buildCloudRepoSourceContext() {
 void checkCloudRepoSourceContext(api.CloudRepoSourceContext o) {
   buildCounterCloudRepoSourceContext++;
   if (buildCounterCloudRepoSourceContext < 3) {
-    checkAliasContext(o.aliasContext! as api.AliasContext);
+    checkAliasContext(o.aliasContext!);
     unittest.expect(
       o.aliasName!,
       unittest.equals('foo'),
     );
-    checkRepoId(o.repoId! as api.RepoId);
+    checkRepoId(o.repoId!);
     unittest.expect(
       o.revisionId!,
       unittest.equals('foo'),
@@ -247,7 +236,7 @@ void checkCloudRepoSourceContext(api.CloudRepoSourceContext o) {
 
 core.int buildCounterCloudWorkspaceId = 0;
 api.CloudWorkspaceId buildCloudWorkspaceId() {
-  var o = api.CloudWorkspaceId();
+  final o = api.CloudWorkspaceId();
   buildCounterCloudWorkspaceId++;
   if (buildCounterCloudWorkspaceId < 3) {
     o.name = 'foo';
@@ -264,14 +253,14 @@ void checkCloudWorkspaceId(api.CloudWorkspaceId o) {
       o.name!,
       unittest.equals('foo'),
     );
-    checkRepoId(o.repoId! as api.RepoId);
+    checkRepoId(o.repoId!);
   }
   buildCounterCloudWorkspaceId--;
 }
 
 core.int buildCounterCloudWorkspaceSourceContext = 0;
 api.CloudWorkspaceSourceContext buildCloudWorkspaceSourceContext() {
-  var o = api.CloudWorkspaceSourceContext();
+  final o = api.CloudWorkspaceSourceContext();
   buildCounterCloudWorkspaceSourceContext++;
   if (buildCounterCloudWorkspaceSourceContext < 3) {
     o.snapshotId = 'foo';
@@ -288,32 +277,28 @@ void checkCloudWorkspaceSourceContext(api.CloudWorkspaceSourceContext o) {
       o.snapshotId!,
       unittest.equals('foo'),
     );
-    checkCloudWorkspaceId(o.workspaceId! as api.CloudWorkspaceId);
+    checkCloudWorkspaceId(o.workspaceId!);
   }
   buildCounterCloudWorkspaceSourceContext--;
 }
 
-core.List<api.ExtendedSourceContext> buildUnnamed1434() {
-  var o = <api.ExtendedSourceContext>[];
-  o.add(buildExtendedSourceContext());
-  o.add(buildExtendedSourceContext());
-  return o;
-}
+core.List<api.ExtendedSourceContext> buildUnnamed5() => [
+      buildExtendedSourceContext(),
+      buildExtendedSourceContext(),
+    ];
 
-void checkUnnamed1434(core.List<api.ExtendedSourceContext> o) {
+void checkUnnamed5(core.List<api.ExtendedSourceContext> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkExtendedSourceContext(o[0] as api.ExtendedSourceContext);
-  checkExtendedSourceContext(o[1] as api.ExtendedSourceContext);
+  checkExtendedSourceContext(o[0]);
+  checkExtendedSourceContext(o[1]);
 }
 
-core.Map<core.String, core.String> buildUnnamed1435() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed6() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1435(core.Map<core.String, core.String> o) {
+void checkUnnamed6(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -325,34 +310,32 @@ void checkUnnamed1435(core.Map<core.String, core.String> o) {
   );
 }
 
-core.List<api.SourceContext> buildUnnamed1436() {
-  var o = <api.SourceContext>[];
-  o.add(buildSourceContext());
-  o.add(buildSourceContext());
-  return o;
-}
+core.List<api.SourceContext> buildUnnamed7() => [
+      buildSourceContext(),
+      buildSourceContext(),
+    ];
 
-void checkUnnamed1436(core.List<api.SourceContext> o) {
+void checkUnnamed7(core.List<api.SourceContext> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSourceContext(o[0] as api.SourceContext);
-  checkSourceContext(o[1] as api.SourceContext);
+  checkSourceContext(o[0]);
+  checkSourceContext(o[1]);
 }
 
 core.int buildCounterDebuggee = 0;
 api.Debuggee buildDebuggee() {
-  var o = api.Debuggee();
+  final o = api.Debuggee();
   buildCounterDebuggee++;
   if (buildCounterDebuggee < 3) {
     o.agentVersion = 'foo';
     o.canaryMode = 'foo';
     o.description = 'foo';
-    o.extSourceContexts = buildUnnamed1434();
+    o.extSourceContexts = buildUnnamed5();
     o.id = 'foo';
     o.isDisabled = true;
     o.isInactive = true;
-    o.labels = buildUnnamed1435();
+    o.labels = buildUnnamed6();
     o.project = 'foo';
-    o.sourceContexts = buildUnnamed1436();
+    o.sourceContexts = buildUnnamed7();
     o.status = buildStatusMessage();
     o.uniquifier = 'foo';
   }
@@ -375,20 +358,20 @@ void checkDebuggee(api.Debuggee o) {
       o.description!,
       unittest.equals('foo'),
     );
-    checkUnnamed1434(o.extSourceContexts!);
+    checkUnnamed5(o.extSourceContexts!);
     unittest.expect(
       o.id!,
       unittest.equals('foo'),
     );
     unittest.expect(o.isDisabled!, unittest.isTrue);
     unittest.expect(o.isInactive!, unittest.isTrue);
-    checkUnnamed1435(o.labels!);
+    checkUnnamed6(o.labels!);
     unittest.expect(
       o.project!,
       unittest.equals('foo'),
     );
-    checkUnnamed1436(o.sourceContexts!);
-    checkStatusMessage(o.status! as api.StatusMessage);
+    checkUnnamed7(o.sourceContexts!);
+    checkStatusMessage(o.status!);
     unittest.expect(
       o.uniquifier!,
       unittest.equals('foo'),
@@ -399,7 +382,7 @@ void checkDebuggee(api.Debuggee o) {
 
 core.int buildCounterEmpty = 0;
 api.Empty buildEmpty() {
-  var o = api.Empty();
+  final o = api.Empty();
   buildCounterEmpty++;
   if (buildCounterEmpty < 3) {}
   buildCounterEmpty--;
@@ -412,14 +395,12 @@ void checkEmpty(api.Empty o) {
   buildCounterEmpty--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1437() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed8() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1437(core.Map<core.String, core.String> o) {
+void checkUnnamed8(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -433,11 +414,11 @@ void checkUnnamed1437(core.Map<core.String, core.String> o) {
 
 core.int buildCounterExtendedSourceContext = 0;
 api.ExtendedSourceContext buildExtendedSourceContext() {
-  var o = api.ExtendedSourceContext();
+  final o = api.ExtendedSourceContext();
   buildCounterExtendedSourceContext++;
   if (buildCounterExtendedSourceContext < 3) {
     o.context = buildSourceContext();
-    o.labels = buildUnnamed1437();
+    o.labels = buildUnnamed8();
   }
   buildCounterExtendedSourceContext--;
   return o;
@@ -446,20 +427,18 @@ api.ExtendedSourceContext buildExtendedSourceContext() {
 void checkExtendedSourceContext(api.ExtendedSourceContext o) {
   buildCounterExtendedSourceContext++;
   if (buildCounterExtendedSourceContext < 3) {
-    checkSourceContext(o.context! as api.SourceContext);
-    checkUnnamed1437(o.labels!);
+    checkSourceContext(o.context!);
+    checkUnnamed8(o.labels!);
   }
   buildCounterExtendedSourceContext--;
 }
 
-core.List<core.String> buildUnnamed1438() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed9() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1438(core.List<core.String> o) {
+void checkUnnamed9(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -473,11 +452,11 @@ void checkUnnamed1438(core.List<core.String> o) {
 
 core.int buildCounterFormatMessage = 0;
 api.FormatMessage buildFormatMessage() {
-  var o = api.FormatMessage();
+  final o = api.FormatMessage();
   buildCounterFormatMessage++;
   if (buildCounterFormatMessage < 3) {
     o.format = 'foo';
-    o.parameters = buildUnnamed1438();
+    o.parameters = buildUnnamed9();
   }
   buildCounterFormatMessage--;
   return o;
@@ -490,14 +469,14 @@ void checkFormatMessage(api.FormatMessage o) {
       o.format!,
       unittest.equals('foo'),
     );
-    checkUnnamed1438(o.parameters!);
+    checkUnnamed9(o.parameters!);
   }
   buildCounterFormatMessage--;
 }
 
 core.int buildCounterGerritSourceContext = 0;
 api.GerritSourceContext buildGerritSourceContext() {
-  var o = api.GerritSourceContext();
+  final o = api.GerritSourceContext();
   buildCounterGerritSourceContext++;
   if (buildCounterGerritSourceContext < 3) {
     o.aliasContext = buildAliasContext();
@@ -513,7 +492,7 @@ api.GerritSourceContext buildGerritSourceContext() {
 void checkGerritSourceContext(api.GerritSourceContext o) {
   buildCounterGerritSourceContext++;
   if (buildCounterGerritSourceContext < 3) {
-    checkAliasContext(o.aliasContext! as api.AliasContext);
+    checkAliasContext(o.aliasContext!);
     unittest.expect(
       o.aliasName!,
       unittest.equals('foo'),
@@ -536,7 +515,7 @@ void checkGerritSourceContext(api.GerritSourceContext o) {
 
 core.int buildCounterGetBreakpointResponse = 0;
 api.GetBreakpointResponse buildGetBreakpointResponse() {
-  var o = api.GetBreakpointResponse();
+  final o = api.GetBreakpointResponse();
   buildCounterGetBreakpointResponse++;
   if (buildCounterGetBreakpointResponse < 3) {
     o.breakpoint = buildBreakpoint();
@@ -548,14 +527,14 @@ api.GetBreakpointResponse buildGetBreakpointResponse() {
 void checkGetBreakpointResponse(api.GetBreakpointResponse o) {
   buildCounterGetBreakpointResponse++;
   if (buildCounterGetBreakpointResponse < 3) {
-    checkBreakpoint(o.breakpoint! as api.Breakpoint);
+    checkBreakpoint(o.breakpoint!);
   }
   buildCounterGetBreakpointResponse--;
 }
 
 core.int buildCounterGitSourceContext = 0;
 api.GitSourceContext buildGitSourceContext() {
-  var o = api.GitSourceContext();
+  final o = api.GitSourceContext();
   buildCounterGitSourceContext++;
   if (buildCounterGitSourceContext < 3) {
     o.revisionId = 'foo';
@@ -580,25 +559,23 @@ void checkGitSourceContext(api.GitSourceContext o) {
   buildCounterGitSourceContext--;
 }
 
-core.List<api.Breakpoint> buildUnnamed1439() {
-  var o = <api.Breakpoint>[];
-  o.add(buildBreakpoint());
-  o.add(buildBreakpoint());
-  return o;
-}
+core.List<api.Breakpoint> buildUnnamed10() => [
+      buildBreakpoint(),
+      buildBreakpoint(),
+    ];
 
-void checkUnnamed1439(core.List<api.Breakpoint> o) {
+void checkUnnamed10(core.List<api.Breakpoint> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBreakpoint(o[0] as api.Breakpoint);
-  checkBreakpoint(o[1] as api.Breakpoint);
+  checkBreakpoint(o[0]);
+  checkBreakpoint(o[1]);
 }
 
 core.int buildCounterListActiveBreakpointsResponse = 0;
 api.ListActiveBreakpointsResponse buildListActiveBreakpointsResponse() {
-  var o = api.ListActiveBreakpointsResponse();
+  final o = api.ListActiveBreakpointsResponse();
   buildCounterListActiveBreakpointsResponse++;
   if (buildCounterListActiveBreakpointsResponse < 3) {
-    o.breakpoints = buildUnnamed1439();
+    o.breakpoints = buildUnnamed10();
     o.nextWaitToken = 'foo';
     o.waitExpired = true;
   }
@@ -609,7 +586,7 @@ api.ListActiveBreakpointsResponse buildListActiveBreakpointsResponse() {
 void checkListActiveBreakpointsResponse(api.ListActiveBreakpointsResponse o) {
   buildCounterListActiveBreakpointsResponse++;
   if (buildCounterListActiveBreakpointsResponse < 3) {
-    checkUnnamed1439(o.breakpoints!);
+    checkUnnamed10(o.breakpoints!);
     unittest.expect(
       o.nextWaitToken!,
       unittest.equals('foo'),
@@ -619,25 +596,23 @@ void checkListActiveBreakpointsResponse(api.ListActiveBreakpointsResponse o) {
   buildCounterListActiveBreakpointsResponse--;
 }
 
-core.List<api.Breakpoint> buildUnnamed1440() {
-  var o = <api.Breakpoint>[];
-  o.add(buildBreakpoint());
-  o.add(buildBreakpoint());
-  return o;
-}
+core.List<api.Breakpoint> buildUnnamed11() => [
+      buildBreakpoint(),
+      buildBreakpoint(),
+    ];
 
-void checkUnnamed1440(core.List<api.Breakpoint> o) {
+void checkUnnamed11(core.List<api.Breakpoint> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkBreakpoint(o[0] as api.Breakpoint);
-  checkBreakpoint(o[1] as api.Breakpoint);
+  checkBreakpoint(o[0]);
+  checkBreakpoint(o[1]);
 }
 
 core.int buildCounterListBreakpointsResponse = 0;
 api.ListBreakpointsResponse buildListBreakpointsResponse() {
-  var o = api.ListBreakpointsResponse();
+  final o = api.ListBreakpointsResponse();
   buildCounterListBreakpointsResponse++;
   if (buildCounterListBreakpointsResponse < 3) {
-    o.breakpoints = buildUnnamed1440();
+    o.breakpoints = buildUnnamed11();
     o.nextWaitToken = 'foo';
   }
   buildCounterListBreakpointsResponse--;
@@ -647,7 +622,7 @@ api.ListBreakpointsResponse buildListBreakpointsResponse() {
 void checkListBreakpointsResponse(api.ListBreakpointsResponse o) {
   buildCounterListBreakpointsResponse++;
   if (buildCounterListBreakpointsResponse < 3) {
-    checkUnnamed1440(o.breakpoints!);
+    checkUnnamed11(o.breakpoints!);
     unittest.expect(
       o.nextWaitToken!,
       unittest.equals('foo'),
@@ -656,25 +631,23 @@ void checkListBreakpointsResponse(api.ListBreakpointsResponse o) {
   buildCounterListBreakpointsResponse--;
 }
 
-core.List<api.Debuggee> buildUnnamed1441() {
-  var o = <api.Debuggee>[];
-  o.add(buildDebuggee());
-  o.add(buildDebuggee());
-  return o;
-}
+core.List<api.Debuggee> buildUnnamed12() => [
+      buildDebuggee(),
+      buildDebuggee(),
+    ];
 
-void checkUnnamed1441(core.List<api.Debuggee> o) {
+void checkUnnamed12(core.List<api.Debuggee> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkDebuggee(o[0] as api.Debuggee);
-  checkDebuggee(o[1] as api.Debuggee);
+  checkDebuggee(o[0]);
+  checkDebuggee(o[1]);
 }
 
 core.int buildCounterListDebuggeesResponse = 0;
 api.ListDebuggeesResponse buildListDebuggeesResponse() {
-  var o = api.ListDebuggeesResponse();
+  final o = api.ListDebuggeesResponse();
   buildCounterListDebuggeesResponse++;
   if (buildCounterListDebuggeesResponse < 3) {
-    o.debuggees = buildUnnamed1441();
+    o.debuggees = buildUnnamed12();
   }
   buildCounterListDebuggeesResponse--;
   return o;
@@ -683,14 +656,14 @@ api.ListDebuggeesResponse buildListDebuggeesResponse() {
 void checkListDebuggeesResponse(api.ListDebuggeesResponse o) {
   buildCounterListDebuggeesResponse++;
   if (buildCounterListDebuggeesResponse < 3) {
-    checkUnnamed1441(o.debuggees!);
+    checkUnnamed12(o.debuggees!);
   }
   buildCounterListDebuggeesResponse--;
 }
 
 core.int buildCounterProjectRepoId = 0;
 api.ProjectRepoId buildProjectRepoId() {
-  var o = api.ProjectRepoId();
+  final o = api.ProjectRepoId();
   buildCounterProjectRepoId++;
   if (buildCounterProjectRepoId < 3) {
     o.projectId = 'foo';
@@ -717,7 +690,7 @@ void checkProjectRepoId(api.ProjectRepoId o) {
 
 core.int buildCounterRegisterDebuggeeRequest = 0;
 api.RegisterDebuggeeRequest buildRegisterDebuggeeRequest() {
-  var o = api.RegisterDebuggeeRequest();
+  final o = api.RegisterDebuggeeRequest();
   buildCounterRegisterDebuggeeRequest++;
   if (buildCounterRegisterDebuggeeRequest < 3) {
     o.debuggee = buildDebuggee();
@@ -729,14 +702,14 @@ api.RegisterDebuggeeRequest buildRegisterDebuggeeRequest() {
 void checkRegisterDebuggeeRequest(api.RegisterDebuggeeRequest o) {
   buildCounterRegisterDebuggeeRequest++;
   if (buildCounterRegisterDebuggeeRequest < 3) {
-    checkDebuggee(o.debuggee! as api.Debuggee);
+    checkDebuggee(o.debuggee!);
   }
   buildCounterRegisterDebuggeeRequest--;
 }
 
 core.int buildCounterRegisterDebuggeeResponse = 0;
 api.RegisterDebuggeeResponse buildRegisterDebuggeeResponse() {
-  var o = api.RegisterDebuggeeResponse();
+  final o = api.RegisterDebuggeeResponse();
   buildCounterRegisterDebuggeeResponse++;
   if (buildCounterRegisterDebuggeeResponse < 3) {
     o.agentId = 'foo';
@@ -753,14 +726,14 @@ void checkRegisterDebuggeeResponse(api.RegisterDebuggeeResponse o) {
       o.agentId!,
       unittest.equals('foo'),
     );
-    checkDebuggee(o.debuggee! as api.Debuggee);
+    checkDebuggee(o.debuggee!);
   }
   buildCounterRegisterDebuggeeResponse--;
 }
 
 core.int buildCounterRepoId = 0;
 api.RepoId buildRepoId() {
-  var o = api.RepoId();
+  final o = api.RepoId();
   buildCounterRepoId++;
   if (buildCounterRepoId < 3) {
     o.projectRepoId = buildProjectRepoId();
@@ -773,7 +746,7 @@ api.RepoId buildRepoId() {
 void checkRepoId(api.RepoId o) {
   buildCounterRepoId++;
   if (buildCounterRepoId < 3) {
-    checkProjectRepoId(o.projectRepoId! as api.ProjectRepoId);
+    checkProjectRepoId(o.projectRepoId!);
     unittest.expect(
       o.uid!,
       unittest.equals('foo'),
@@ -784,7 +757,7 @@ void checkRepoId(api.RepoId o) {
 
 core.int buildCounterSetBreakpointResponse = 0;
 api.SetBreakpointResponse buildSetBreakpointResponse() {
-  var o = api.SetBreakpointResponse();
+  final o = api.SetBreakpointResponse();
   buildCounterSetBreakpointResponse++;
   if (buildCounterSetBreakpointResponse < 3) {
     o.breakpoint = buildBreakpoint();
@@ -796,14 +769,14 @@ api.SetBreakpointResponse buildSetBreakpointResponse() {
 void checkSetBreakpointResponse(api.SetBreakpointResponse o) {
   buildCounterSetBreakpointResponse++;
   if (buildCounterSetBreakpointResponse < 3) {
-    checkBreakpoint(o.breakpoint! as api.Breakpoint);
+    checkBreakpoint(o.breakpoint!);
   }
   buildCounterSetBreakpointResponse--;
 }
 
 core.int buildCounterSourceContext = 0;
 api.SourceContext buildSourceContext() {
-  var o = api.SourceContext();
+  final o = api.SourceContext();
   buildCounterSourceContext++;
   if (buildCounterSourceContext < 3) {
     o.cloudRepo = buildCloudRepoSourceContext();
@@ -818,18 +791,17 @@ api.SourceContext buildSourceContext() {
 void checkSourceContext(api.SourceContext o) {
   buildCounterSourceContext++;
   if (buildCounterSourceContext < 3) {
-    checkCloudRepoSourceContext(o.cloudRepo! as api.CloudRepoSourceContext);
-    checkCloudWorkspaceSourceContext(
-        o.cloudWorkspace! as api.CloudWorkspaceSourceContext);
-    checkGerritSourceContext(o.gerrit! as api.GerritSourceContext);
-    checkGitSourceContext(o.git! as api.GitSourceContext);
+    checkCloudRepoSourceContext(o.cloudRepo!);
+    checkCloudWorkspaceSourceContext(o.cloudWorkspace!);
+    checkGerritSourceContext(o.gerrit!);
+    checkGitSourceContext(o.git!);
   }
   buildCounterSourceContext--;
 }
 
 core.int buildCounterSourceLocation = 0;
 api.SourceLocation buildSourceLocation() {
-  var o = api.SourceLocation();
+  final o = api.SourceLocation();
   buildCounterSourceLocation++;
   if (buildCounterSourceLocation < 3) {
     o.column = 42;
@@ -859,40 +831,36 @@ void checkSourceLocation(api.SourceLocation o) {
   buildCounterSourceLocation--;
 }
 
-core.List<api.Variable> buildUnnamed1442() {
-  var o = <api.Variable>[];
-  o.add(buildVariable());
-  o.add(buildVariable());
-  return o;
-}
+core.List<api.Variable> buildUnnamed13() => [
+      buildVariable(),
+      buildVariable(),
+    ];
 
-void checkUnnamed1442(core.List<api.Variable> o) {
+void checkUnnamed13(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0] as api.Variable);
-  checkVariable(o[1] as api.Variable);
+  checkVariable(o[0]);
+  checkVariable(o[1]);
 }
 
-core.List<api.Variable> buildUnnamed1443() {
-  var o = <api.Variable>[];
-  o.add(buildVariable());
-  o.add(buildVariable());
-  return o;
-}
+core.List<api.Variable> buildUnnamed14() => [
+      buildVariable(),
+      buildVariable(),
+    ];
 
-void checkUnnamed1443(core.List<api.Variable> o) {
+void checkUnnamed14(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0] as api.Variable);
-  checkVariable(o[1] as api.Variable);
+  checkVariable(o[0]);
+  checkVariable(o[1]);
 }
 
 core.int buildCounterStackFrame = 0;
 api.StackFrame buildStackFrame() {
-  var o = api.StackFrame();
+  final o = api.StackFrame();
   buildCounterStackFrame++;
   if (buildCounterStackFrame < 3) {
-    o.arguments = buildUnnamed1442();
+    o.arguments = buildUnnamed13();
     o.function = 'foo';
-    o.locals = buildUnnamed1443();
+    o.locals = buildUnnamed14();
     o.location = buildSourceLocation();
   }
   buildCounterStackFrame--;
@@ -902,20 +870,20 @@ api.StackFrame buildStackFrame() {
 void checkStackFrame(api.StackFrame o) {
   buildCounterStackFrame++;
   if (buildCounterStackFrame < 3) {
-    checkUnnamed1442(o.arguments!);
+    checkUnnamed13(o.arguments!);
     unittest.expect(
       o.function!,
       unittest.equals('foo'),
     );
-    checkUnnamed1443(o.locals!);
-    checkSourceLocation(o.location! as api.SourceLocation);
+    checkUnnamed14(o.locals!);
+    checkSourceLocation(o.location!);
   }
   buildCounterStackFrame--;
 }
 
 core.int buildCounterStatusMessage = 0;
 api.StatusMessage buildStatusMessage() {
-  var o = api.StatusMessage();
+  final o = api.StatusMessage();
   buildCounterStatusMessage++;
   if (buildCounterStatusMessage < 3) {
     o.description = buildFormatMessage();
@@ -929,7 +897,7 @@ api.StatusMessage buildStatusMessage() {
 void checkStatusMessage(api.StatusMessage o) {
   buildCounterStatusMessage++;
   if (buildCounterStatusMessage < 3) {
-    checkFormatMessage(o.description! as api.FormatMessage);
+    checkFormatMessage(o.description!);
     unittest.expect(o.isError!, unittest.isTrue);
     unittest.expect(
       o.refersTo!,
@@ -941,7 +909,7 @@ void checkStatusMessage(api.StatusMessage o) {
 
 core.int buildCounterUpdateActiveBreakpointRequest = 0;
 api.UpdateActiveBreakpointRequest buildUpdateActiveBreakpointRequest() {
-  var o = api.UpdateActiveBreakpointRequest();
+  final o = api.UpdateActiveBreakpointRequest();
   buildCounterUpdateActiveBreakpointRequest++;
   if (buildCounterUpdateActiveBreakpointRequest < 3) {
     o.breakpoint = buildBreakpoint();
@@ -953,14 +921,14 @@ api.UpdateActiveBreakpointRequest buildUpdateActiveBreakpointRequest() {
 void checkUpdateActiveBreakpointRequest(api.UpdateActiveBreakpointRequest o) {
   buildCounterUpdateActiveBreakpointRequest++;
   if (buildCounterUpdateActiveBreakpointRequest < 3) {
-    checkBreakpoint(o.breakpoint! as api.Breakpoint);
+    checkBreakpoint(o.breakpoint!);
   }
   buildCounterUpdateActiveBreakpointRequest--;
 }
 
 core.int buildCounterUpdateActiveBreakpointResponse = 0;
 api.UpdateActiveBreakpointResponse buildUpdateActiveBreakpointResponse() {
-  var o = api.UpdateActiveBreakpointResponse();
+  final o = api.UpdateActiveBreakpointResponse();
   buildCounterUpdateActiveBreakpointResponse++;
   if (buildCounterUpdateActiveBreakpointResponse < 3) {}
   buildCounterUpdateActiveBreakpointResponse--;
@@ -973,25 +941,23 @@ void checkUpdateActiveBreakpointResponse(api.UpdateActiveBreakpointResponse o) {
   buildCounterUpdateActiveBreakpointResponse--;
 }
 
-core.List<api.Variable> buildUnnamed1444() {
-  var o = <api.Variable>[];
-  o.add(buildVariable());
-  o.add(buildVariable());
-  return o;
-}
+core.List<api.Variable> buildUnnamed15() => [
+      buildVariable(),
+      buildVariable(),
+    ];
 
-void checkUnnamed1444(core.List<api.Variable> o) {
+void checkUnnamed15(core.List<api.Variable> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkVariable(o[0] as api.Variable);
-  checkVariable(o[1] as api.Variable);
+  checkVariable(o[0]);
+  checkVariable(o[1]);
 }
 
 core.int buildCounterVariable = 0;
 api.Variable buildVariable() {
-  var o = api.Variable();
+  final o = api.Variable();
   buildCounterVariable++;
   if (buildCounterVariable < 3) {
-    o.members = buildUnnamed1444();
+    o.members = buildUnnamed15();
     o.name = 'foo';
     o.status = buildStatusMessage();
     o.type = 'foo';
@@ -1005,12 +971,12 @@ api.Variable buildVariable() {
 void checkVariable(api.Variable o) {
   buildCounterVariable++;
   if (buildCounterVariable < 3) {
-    checkUnnamed1444(o.members!);
+    checkUnnamed15(o.members!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
     );
-    checkStatusMessage(o.status! as api.StatusMessage);
+    checkStatusMessage(o.status!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -1030,311 +996,309 @@ void checkVariable(api.Variable o) {
 void main() {
   unittest.group('obj-schema-AliasContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAliasContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AliasContext.fromJson(
+      final o = buildAliasContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AliasContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAliasContext(od as api.AliasContext);
+      checkAliasContext(od);
     });
   });
 
   unittest.group('obj-schema-Breakpoint', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildBreakpoint();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildBreakpoint();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Breakpoint.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkBreakpoint(od as api.Breakpoint);
+      checkBreakpoint(od);
     });
   });
 
   unittest.group('obj-schema-CloudRepoSourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCloudRepoSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CloudRepoSourceContext.fromJson(
+      final o = buildCloudRepoSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CloudRepoSourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCloudRepoSourceContext(od as api.CloudRepoSourceContext);
+      checkCloudRepoSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-CloudWorkspaceId', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCloudWorkspaceId();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CloudWorkspaceId.fromJson(
+      final o = buildCloudWorkspaceId();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CloudWorkspaceId.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCloudWorkspaceId(od as api.CloudWorkspaceId);
+      checkCloudWorkspaceId(od);
     });
   });
 
   unittest.group('obj-schema-CloudWorkspaceSourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCloudWorkspaceSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CloudWorkspaceSourceContext.fromJson(
+      final o = buildCloudWorkspaceSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CloudWorkspaceSourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCloudWorkspaceSourceContext(od as api.CloudWorkspaceSourceContext);
+      checkCloudWorkspaceSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-Debuggee', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildDebuggee();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildDebuggee();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Debuggee.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkDebuggee(od as api.Debuggee);
+      checkDebuggee(od);
     });
   });
 
   unittest.group('obj-schema-Empty', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEmpty();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEmpty(od as api.Empty);
+      final o = buildEmpty();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Empty.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEmpty(od);
     });
   });
 
   unittest.group('obj-schema-ExtendedSourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildExtendedSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ExtendedSourceContext.fromJson(
+      final o = buildExtendedSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ExtendedSourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkExtendedSourceContext(od as api.ExtendedSourceContext);
+      checkExtendedSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-FormatMessage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFormatMessage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FormatMessage.fromJson(
+      final o = buildFormatMessage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FormatMessage.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFormatMessage(od as api.FormatMessage);
+      checkFormatMessage(od);
     });
   });
 
   unittest.group('obj-schema-GerritSourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGerritSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GerritSourceContext.fromJson(
+      final o = buildGerritSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GerritSourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGerritSourceContext(od as api.GerritSourceContext);
+      checkGerritSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-GetBreakpointResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGetBreakpointResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GetBreakpointResponse.fromJson(
+      final o = buildGetBreakpointResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GetBreakpointResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGetBreakpointResponse(od as api.GetBreakpointResponse);
+      checkGetBreakpointResponse(od);
     });
   });
 
   unittest.group('obj-schema-GitSourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGitSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GitSourceContext.fromJson(
+      final o = buildGitSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GitSourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGitSourceContext(od as api.GitSourceContext);
+      checkGitSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-ListActiveBreakpointsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListActiveBreakpointsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListActiveBreakpointsResponse.fromJson(
+      final o = buildListActiveBreakpointsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListActiveBreakpointsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListActiveBreakpointsResponse(
-          od as api.ListActiveBreakpointsResponse);
+      checkListActiveBreakpointsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListBreakpointsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListBreakpointsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListBreakpointsResponse.fromJson(
+      final o = buildListBreakpointsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListBreakpointsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListBreakpointsResponse(od as api.ListBreakpointsResponse);
+      checkListBreakpointsResponse(od);
     });
   });
 
   unittest.group('obj-schema-ListDebuggeesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildListDebuggeesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ListDebuggeesResponse.fromJson(
+      final o = buildListDebuggeesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ListDebuggeesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkListDebuggeesResponse(od as api.ListDebuggeesResponse);
+      checkListDebuggeesResponse(od);
     });
   });
 
   unittest.group('obj-schema-ProjectRepoId', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildProjectRepoId();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ProjectRepoId.fromJson(
+      final o = buildProjectRepoId();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ProjectRepoId.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkProjectRepoId(od as api.ProjectRepoId);
+      checkProjectRepoId(od);
     });
   });
 
   unittest.group('obj-schema-RegisterDebuggeeRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRegisterDebuggeeRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RegisterDebuggeeRequest.fromJson(
+      final o = buildRegisterDebuggeeRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RegisterDebuggeeRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRegisterDebuggeeRequest(od as api.RegisterDebuggeeRequest);
+      checkRegisterDebuggeeRequest(od);
     });
   });
 
   unittest.group('obj-schema-RegisterDebuggeeResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRegisterDebuggeeResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.RegisterDebuggeeResponse.fromJson(
+      final o = buildRegisterDebuggeeResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.RegisterDebuggeeResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkRegisterDebuggeeResponse(od as api.RegisterDebuggeeResponse);
+      checkRegisterDebuggeeResponse(od);
     });
   });
 
   unittest.group('obj-schema-RepoId', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildRepoId();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildRepoId();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.RepoId.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkRepoId(od as api.RepoId);
+      checkRepoId(od);
     });
   });
 
   unittest.group('obj-schema-SetBreakpointResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetBreakpointResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SetBreakpointResponse.fromJson(
+      final o = buildSetBreakpointResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SetBreakpointResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSetBreakpointResponse(od as api.SetBreakpointResponse);
+      checkSetBreakpointResponse(od);
     });
   });
 
   unittest.group('obj-schema-SourceContext', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSourceContext();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SourceContext.fromJson(
+      final o = buildSourceContext();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SourceContext.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSourceContext(od as api.SourceContext);
+      checkSourceContext(od);
     });
   });
 
   unittest.group('obj-schema-SourceLocation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSourceLocation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.SourceLocation.fromJson(
+      final o = buildSourceLocation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.SourceLocation.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkSourceLocation(od as api.SourceLocation);
+      checkSourceLocation(od);
     });
   });
 
   unittest.group('obj-schema-StackFrame', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStackFrame();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildStackFrame();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.StackFrame.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkStackFrame(od as api.StackFrame);
+      checkStackFrame(od);
     });
   });
 
   unittest.group('obj-schema-StatusMessage', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildStatusMessage();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.StatusMessage.fromJson(
+      final o = buildStatusMessage();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.StatusMessage.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkStatusMessage(od as api.StatusMessage);
+      checkStatusMessage(od);
     });
   });
 
   unittest.group('obj-schema-UpdateActiveBreakpointRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpdateActiveBreakpointRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpdateActiveBreakpointRequest.fromJson(
+      final o = buildUpdateActiveBreakpointRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateActiveBreakpointRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpdateActiveBreakpointRequest(
-          od as api.UpdateActiveBreakpointRequest);
+      checkUpdateActiveBreakpointRequest(od);
     });
   });
 
   unittest.group('obj-schema-UpdateActiveBreakpointResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildUpdateActiveBreakpointResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.UpdateActiveBreakpointResponse.fromJson(
+      final o = buildUpdateActiveBreakpointResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.UpdateActiveBreakpointResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkUpdateActiveBreakpointResponse(
-          od as api.UpdateActiveBreakpointResponse);
+      checkUpdateActiveBreakpointResponse(od);
     });
   });
 
   unittest.group('obj-schema-Variable', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildVariable();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildVariable();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Variable.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkVariable(od as api.Variable);
+      checkVariable(od);
     });
   });
 
   unittest.group('resource-ControllerDebuggeesResource', () {
     unittest.test('method--register', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).controller.debuggees;
-      var arg_request = buildRegisterDebuggeeRequest();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).controller.debuggees;
+      final arg_request = buildRegisterDebuggeeRequest();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.RegisterDebuggeeRequest.fromJson(
+        final obj = api.RegisterDebuggeeRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkRegisterDebuggeeRequest(obj as api.RegisterDebuggeeRequest);
+        checkRegisterDebuggeeRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 32),
-          unittest.equals("v2/controller/debuggees/register"),
+          unittest.equals('v2/controller/debuggees/register'),
         );
         pathOffset += 32;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1342,14 +1306,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildRegisterDebuggeeResponse());
+        final resp = convert.json.encode(buildRegisterDebuggeeResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.register(arg_request, $fields: arg_$fields);
@@ -1359,26 +1323,26 @@ void main() {
 
   unittest.group('resource-ControllerDebuggeesBreakpointsResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
-      var arg_debuggeeId = 'foo';
-      var arg_agentId = 'foo';
-      var arg_successOnTimeout = true;
-      var arg_waitToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
+      final arg_debuggeeId = 'foo';
+      final arg_agentId = 'foo';
+      final arg_successOnTimeout = true;
+      final arg_waitToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("v2/controller/debuggees/"),
+          unittest.equals('v2/controller/debuggees/'),
         );
         pathOffset += 24;
         index = path.indexOf('/breakpoints', pathOffset);
@@ -1392,19 +1356,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/breakpoints"),
+          unittest.equals('/breakpoints'),
         );
         pathOffset += 12;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1412,26 +1376,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["agentId"]!.first,
+          queryMap['agentId']!.first,
           unittest.equals(arg_agentId),
         );
         unittest.expect(
-          queryMap["successOnTimeout"]!.first,
-          unittest.equals("$arg_successOnTimeout"),
+          queryMap['successOnTimeout']!.first,
+          unittest.equals('$arg_successOnTimeout'),
         );
         unittest.expect(
-          queryMap["waitToken"]!.first,
+          queryMap['waitToken']!.first,
           unittest.equals(arg_waitToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListActiveBreakpointsResponse());
+        final resp = convert.json.encode(buildListActiveBreakpointsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_debuggeeId,
@@ -1444,30 +1408,29 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
-      var arg_request = buildUpdateActiveBreakpointRequest();
-      var arg_debuggeeId = 'foo';
-      var arg_id = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).controller.debuggees.breakpoints;
+      final arg_request = buildUpdateActiveBreakpointRequest();
+      final arg_debuggeeId = 'foo';
+      final arg_id = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.UpdateActiveBreakpointRequest.fromJson(
+        final obj = api.UpdateActiveBreakpointRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkUpdateActiveBreakpointRequest(
-            obj as api.UpdateActiveBreakpointRequest);
+        checkUpdateActiveBreakpointRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 24),
-          unittest.equals("v2/controller/debuggees/"),
+          unittest.equals('v2/controller/debuggees/'),
         );
         pathOffset += 24;
         index = path.indexOf('/breakpoints/', pathOffset);
@@ -1481,7 +1444,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 13),
-          unittest.equals("/breakpoints/"),
+          unittest.equals('/breakpoints/'),
         );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -1491,15 +1454,15 @@ void main() {
           unittest.equals('$arg_id'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1507,14 +1470,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildUpdateActiveBreakpointResponse());
+        final resp = convert.json.encode(buildUpdateActiveBreakpointResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_debuggeeId, arg_id,
@@ -1526,37 +1489,37 @@ void main() {
 
   unittest.group('resource-DebuggerDebuggeesResource', () {
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).debugger.debuggees;
-      var arg_clientVersion = 'foo';
-      var arg_includeInactive = true;
-      var arg_project = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).debugger.debuggees;
+      final arg_clientVersion = 'foo';
+      final arg_includeInactive = true;
+      final arg_project = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("v2/debugger/debuggees"),
+          unittest.equals('v2/debugger/debuggees'),
         );
         pathOffset += 21;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1564,26 +1527,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["clientVersion"]!.first,
+          queryMap['clientVersion']!.first,
           unittest.equals(arg_clientVersion),
         );
         unittest.expect(
-          queryMap["includeInactive"]!.first,
-          unittest.equals("$arg_includeInactive"),
+          queryMap['includeInactive']!.first,
+          unittest.equals('$arg_includeInactive'),
         );
         unittest.expect(
-          queryMap["project"]!.first,
+          queryMap['project']!.first,
           unittest.equals(arg_project),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListDebuggeesResponse());
+        final resp = convert.json.encode(buildListDebuggeesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -1597,25 +1560,25 @@ void main() {
 
   unittest.group('resource-DebuggerDebuggeesBreakpointsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = 'foo';
-      var arg_breakpointId = 'foo';
-      var arg_clientVersion = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      final arg_debuggeeId = 'foo';
+      final arg_breakpointId = 'foo';
+      final arg_clientVersion = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("v2/debugger/debuggees/"),
+          unittest.equals('v2/debugger/debuggees/'),
         );
         pathOffset += 22;
         index = path.indexOf('/breakpoints/', pathOffset);
@@ -1629,7 +1592,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 13),
-          unittest.equals("/breakpoints/"),
+          unittest.equals('/breakpoints/'),
         );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -1639,15 +1602,15 @@ void main() {
           unittest.equals('$arg_breakpointId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1655,18 +1618,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["clientVersion"]!.first,
+          queryMap['clientVersion']!.first,
           unittest.equals(arg_clientVersion),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEmpty());
+        final resp = convert.json.encode(buildEmpty());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.delete(arg_debuggeeId, arg_breakpointId,
@@ -1675,25 +1638,25 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = 'foo';
-      var arg_breakpointId = 'foo';
-      var arg_clientVersion = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      final arg_debuggeeId = 'foo';
+      final arg_breakpointId = 'foo';
+      final arg_clientVersion = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("v2/debugger/debuggees/"),
+          unittest.equals('v2/debugger/debuggees/'),
         );
         pathOffset += 22;
         index = path.indexOf('/breakpoints/', pathOffset);
@@ -1707,7 +1670,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 13),
-          unittest.equals("/breakpoints/"),
+          unittest.equals('/breakpoints/'),
         );
         pathOffset += 13;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -1717,15 +1680,15 @@ void main() {
           unittest.equals('$arg_breakpointId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1733,18 +1696,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["clientVersion"]!.first,
+          queryMap['clientVersion']!.first,
           unittest.equals(arg_clientVersion),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGetBreakpointResponse());
+        final resp = convert.json.encode(buildGetBreakpointResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_debuggeeId, arg_breakpointId,
@@ -1753,29 +1716,29 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_debuggeeId = 'foo';
-      var arg_action_value = 'foo';
-      var arg_clientVersion = 'foo';
-      var arg_includeAllUsers = true;
-      var arg_includeInactive = true;
-      var arg_stripResults = true;
-      var arg_waitToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      final arg_debuggeeId = 'foo';
+      final arg_action_value = 'foo';
+      final arg_clientVersion = 'foo';
+      final arg_includeAllUsers = true;
+      final arg_includeInactive = true;
+      final arg_stripResults = true;
+      final arg_waitToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("v2/debugger/debuggees/"),
+          unittest.equals('v2/debugger/debuggees/'),
         );
         pathOffset += 22;
         index = path.indexOf('/breakpoints', pathOffset);
@@ -1789,19 +1752,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("/breakpoints"),
+          unittest.equals('/breakpoints'),
         );
         pathOffset += 12;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1809,38 +1772,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["action.value"]!.first,
+          queryMap['action.value']!.first,
           unittest.equals(arg_action_value),
         );
         unittest.expect(
-          queryMap["clientVersion"]!.first,
+          queryMap['clientVersion']!.first,
           unittest.equals(arg_clientVersion),
         );
         unittest.expect(
-          queryMap["includeAllUsers"]!.first,
-          unittest.equals("$arg_includeAllUsers"),
+          queryMap['includeAllUsers']!.first,
+          unittest.equals('$arg_includeAllUsers'),
         );
         unittest.expect(
-          queryMap["includeInactive"]!.first,
-          unittest.equals("$arg_includeInactive"),
+          queryMap['includeInactive']!.first,
+          unittest.equals('$arg_includeInactive'),
         );
         unittest.expect(
-          queryMap["stripResults"]!.first,
-          unittest.equals("$arg_stripResults"),
+          queryMap['stripResults']!.first,
+          unittest.equals('$arg_stripResults'),
         );
         unittest.expect(
-          queryMap["waitToken"]!.first,
+          queryMap['waitToken']!.first,
           unittest.equals(arg_waitToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildListBreakpointsResponse());
+        final resp = convert.json.encode(buildListBreakpointsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_debuggeeId,
@@ -1855,30 +1818,30 @@ void main() {
     });
 
     unittest.test('method--set', () async {
-      var mock = HttpServerMock();
-      var res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
-      var arg_request = buildBreakpoint();
-      var arg_debuggeeId = 'foo';
-      var arg_canaryOption = 'foo';
-      var arg_clientVersion = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CloudDebuggerApi(mock).debugger.debuggees.breakpoints;
+      final arg_request = buildBreakpoint();
+      final arg_debuggeeId = 'foo';
+      final arg_canaryOption = 'foo';
+      final arg_clientVersion = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.Breakpoint.fromJson(
+        final obj = api.Breakpoint.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkBreakpoint(obj as api.Breakpoint);
+        checkBreakpoint(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("v2/debugger/debuggees/"),
+          unittest.equals('v2/debugger/debuggees/'),
         );
         pathOffset += 22;
         index = path.indexOf('/breakpoints/set', pathOffset);
@@ -1892,19 +1855,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/breakpoints/set"),
+          unittest.equals('/breakpoints/set'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1912,22 +1875,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["canaryOption"]!.first,
+          queryMap['canaryOption']!.first,
           unittest.equals(arg_canaryOption),
         );
         unittest.expect(
-          queryMap["clientVersion"]!.first,
+          queryMap['clientVersion']!.first,
           unittest.equals(arg_clientVersion),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSetBreakpointResponse());
+        final resp = convert.json.encode(buildSetBreakpointResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.set(arg_request, arg_debuggeeId,

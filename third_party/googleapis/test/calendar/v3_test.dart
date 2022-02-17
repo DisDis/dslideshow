@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,32 +20,30 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/calendar/v3.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/calendar/v3.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<api.AclRule> buildUnnamed1979() {
-  var o = <api.AclRule>[];
-  o.add(buildAclRule());
-  o.add(buildAclRule());
-  return o;
-}
+core.List<api.AclRule> buildUnnamed0() => [
+      buildAclRule(),
+      buildAclRule(),
+    ];
 
-void checkUnnamed1979(core.List<api.AclRule> o) {
+void checkUnnamed0(core.List<api.AclRule> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkAclRule(o[0] as api.AclRule);
-  checkAclRule(o[1] as api.AclRule);
+  checkAclRule(o[0]);
+  checkAclRule(o[1]);
 }
 
 core.int buildCounterAcl = 0;
 api.Acl buildAcl() {
-  var o = api.Acl();
+  final o = api.Acl();
   buildCounterAcl++;
   if (buildCounterAcl < 3) {
     o.etag = 'foo';
-    o.items = buildUnnamed1979();
+    o.items = buildUnnamed0();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.nextSyncToken = 'foo';
@@ -62,7 +59,7 @@ void checkAcl(api.Acl o) {
       o.etag!,
       unittest.equals('foo'),
     );
-    checkUnnamed1979(o.items!);
+    checkUnnamed0(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -81,7 +78,7 @@ void checkAcl(api.Acl o) {
 
 core.int buildCounterAclRuleScope = 0;
 api.AclRuleScope buildAclRuleScope() {
-  var o = api.AclRuleScope();
+  final o = api.AclRuleScope();
   buildCounterAclRuleScope++;
   if (buildCounterAclRuleScope < 3) {
     o.type = 'foo';
@@ -108,7 +105,7 @@ void checkAclRuleScope(api.AclRuleScope o) {
 
 core.int buildCounterAclRule = 0;
 api.AclRule buildAclRule() {
-  var o = api.AclRule();
+  final o = api.AclRule();
   buildCounterAclRule++;
   if (buildCounterAclRule < 3) {
     o.etag = 'foo';
@@ -140,14 +137,14 @@ void checkAclRule(api.AclRule o) {
       o.role!,
       unittest.equals('foo'),
     );
-    checkAclRuleScope(o.scope! as api.AclRuleScope);
+    checkAclRuleScope(o.scope!);
   }
   buildCounterAclRule--;
 }
 
 core.int buildCounterCalendar = 0;
 api.Calendar buildCalendar() {
-  var o = api.Calendar();
+  final o = api.Calendar();
   buildCounterCalendar++;
   if (buildCounterCalendar < 3) {
     o.conferenceProperties = buildConferenceProperties();
@@ -166,8 +163,7 @@ api.Calendar buildCalendar() {
 void checkCalendar(api.Calendar o) {
   buildCounterCalendar++;
   if (buildCounterCalendar < 3) {
-    checkConferenceProperties(
-        o.conferenceProperties! as api.ConferenceProperties);
+    checkConferenceProperties(o.conferenceProperties!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
@@ -200,26 +196,24 @@ void checkCalendar(api.Calendar o) {
   buildCounterCalendar--;
 }
 
-core.List<api.CalendarListEntry> buildUnnamed1980() {
-  var o = <api.CalendarListEntry>[];
-  o.add(buildCalendarListEntry());
-  o.add(buildCalendarListEntry());
-  return o;
-}
+core.List<api.CalendarListEntry> buildUnnamed1() => [
+      buildCalendarListEntry(),
+      buildCalendarListEntry(),
+    ];
 
-void checkUnnamed1980(core.List<api.CalendarListEntry> o) {
+void checkUnnamed1(core.List<api.CalendarListEntry> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCalendarListEntry(o[0] as api.CalendarListEntry);
-  checkCalendarListEntry(o[1] as api.CalendarListEntry);
+  checkCalendarListEntry(o[0]);
+  checkCalendarListEntry(o[1]);
 }
 
 core.int buildCounterCalendarList = 0;
 api.CalendarList buildCalendarList() {
-  var o = api.CalendarList();
+  final o = api.CalendarList();
   buildCounterCalendarList++;
   if (buildCounterCalendarList < 3) {
     o.etag = 'foo';
-    o.items = buildUnnamed1980();
+    o.items = buildUnnamed1();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.nextSyncToken = 'foo';
@@ -235,7 +229,7 @@ void checkCalendarList(api.CalendarList o) {
       o.etag!,
       unittest.equals('foo'),
     );
-    checkUnnamed1980(o.items!);
+    checkUnnamed1(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -252,39 +246,35 @@ void checkCalendarList(api.CalendarList o) {
   buildCounterCalendarList--;
 }
 
-core.List<api.EventReminder> buildUnnamed1981() {
-  var o = <api.EventReminder>[];
-  o.add(buildEventReminder());
-  o.add(buildEventReminder());
-  return o;
-}
+core.List<api.EventReminder> buildUnnamed2() => [
+      buildEventReminder(),
+      buildEventReminder(),
+    ];
 
-void checkUnnamed1981(core.List<api.EventReminder> o) {
+void checkUnnamed2(core.List<api.EventReminder> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEventReminder(o[0] as api.EventReminder);
-  checkEventReminder(o[1] as api.EventReminder);
+  checkEventReminder(o[0]);
+  checkEventReminder(o[1]);
 }
 
-core.List<api.CalendarNotification> buildUnnamed1982() {
-  var o = <api.CalendarNotification>[];
-  o.add(buildCalendarNotification());
-  o.add(buildCalendarNotification());
-  return o;
-}
+core.List<api.CalendarNotification> buildUnnamed3() => [
+      buildCalendarNotification(),
+      buildCalendarNotification(),
+    ];
 
-void checkUnnamed1982(core.List<api.CalendarNotification> o) {
+void checkUnnamed3(core.List<api.CalendarNotification> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkCalendarNotification(o[0] as api.CalendarNotification);
-  checkCalendarNotification(o[1] as api.CalendarNotification);
+  checkCalendarNotification(o[0]);
+  checkCalendarNotification(o[1]);
 }
 
 core.int buildCounterCalendarListEntryNotificationSettings = 0;
 api.CalendarListEntryNotificationSettings
     buildCalendarListEntryNotificationSettings() {
-  var o = api.CalendarListEntryNotificationSettings();
+  final o = api.CalendarListEntryNotificationSettings();
   buildCounterCalendarListEntryNotificationSettings++;
   if (buildCounterCalendarListEntryNotificationSettings < 3) {
-    o.notifications = buildUnnamed1982();
+    o.notifications = buildUnnamed3();
   }
   buildCounterCalendarListEntryNotificationSettings--;
   return o;
@@ -294,21 +284,21 @@ void checkCalendarListEntryNotificationSettings(
     api.CalendarListEntryNotificationSettings o) {
   buildCounterCalendarListEntryNotificationSettings++;
   if (buildCounterCalendarListEntryNotificationSettings < 3) {
-    checkUnnamed1982(o.notifications!);
+    checkUnnamed3(o.notifications!);
   }
   buildCounterCalendarListEntryNotificationSettings--;
 }
 
 core.int buildCounterCalendarListEntry = 0;
 api.CalendarListEntry buildCalendarListEntry() {
-  var o = api.CalendarListEntry();
+  final o = api.CalendarListEntry();
   buildCounterCalendarListEntry++;
   if (buildCounterCalendarListEntry < 3) {
     o.accessRole = 'foo';
     o.backgroundColor = 'foo';
     o.colorId = 'foo';
     o.conferenceProperties = buildConferenceProperties();
-    o.defaultReminders = buildUnnamed1981();
+    o.defaultReminders = buildUnnamed2();
     o.deleted = true;
     o.description = 'foo';
     o.etag = 'foo';
@@ -343,9 +333,8 @@ void checkCalendarListEntry(api.CalendarListEntry o) {
       o.colorId!,
       unittest.equals('foo'),
     );
-    checkConferenceProperties(
-        o.conferenceProperties! as api.ConferenceProperties);
-    checkUnnamed1981(o.defaultReminders!);
+    checkConferenceProperties(o.conferenceProperties!);
+    checkUnnamed2(o.defaultReminders!);
     unittest.expect(o.deleted!, unittest.isTrue);
     unittest.expect(
       o.description!,
@@ -372,8 +361,7 @@ void checkCalendarListEntry(api.CalendarListEntry o) {
       o.location!,
       unittest.equals('foo'),
     );
-    checkCalendarListEntryNotificationSettings(
-        o.notificationSettings! as api.CalendarListEntryNotificationSettings);
+    checkCalendarListEntryNotificationSettings(o.notificationSettings!);
     unittest.expect(o.primary!, unittest.isTrue);
     unittest.expect(o.selected!, unittest.isTrue);
     unittest.expect(
@@ -394,7 +382,7 @@ void checkCalendarListEntry(api.CalendarListEntry o) {
 
 core.int buildCounterCalendarNotification = 0;
 api.CalendarNotification buildCalendarNotification() {
-  var o = api.CalendarNotification();
+  final o = api.CalendarNotification();
   buildCounterCalendarNotification++;
   if (buildCounterCalendarNotification < 3) {
     o.method = 'foo';
@@ -419,14 +407,12 @@ void checkCalendarNotification(api.CalendarNotification o) {
   buildCounterCalendarNotification--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1983() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed4() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1983(core.Map<core.String, core.String> o) {
+void checkUnnamed4(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -440,14 +426,14 @@ void checkUnnamed1983(core.Map<core.String, core.String> o) {
 
 core.int buildCounterChannel = 0;
 api.Channel buildChannel() {
-  var o = api.Channel();
+  final o = api.Channel();
   buildCounterChannel++;
   if (buildCounterChannel < 3) {
     o.address = 'foo';
     o.expiration = 'foo';
     o.id = 'foo';
     o.kind = 'foo';
-    o.params = buildUnnamed1983();
+    o.params = buildUnnamed4();
     o.payload = true;
     o.resourceId = 'foo';
     o.resourceUri = 'foo';
@@ -477,7 +463,7 @@ void checkChannel(api.Channel o) {
       o.kind!,
       unittest.equals('foo'),
     );
-    checkUnnamed1983(o.params!);
+    checkUnnamed4(o.params!);
     unittest.expect(o.payload!, unittest.isTrue);
     unittest.expect(
       o.resourceId!,
@@ -501,7 +487,7 @@ void checkChannel(api.Channel o) {
 
 core.int buildCounterColorDefinition = 0;
 api.ColorDefinition buildColorDefinition() {
-  var o = api.ColorDefinition();
+  final o = api.ColorDefinition();
   buildCounterColorDefinition++;
   if (buildCounterColorDefinition < 3) {
     o.background = 'foo';
@@ -526,41 +512,37 @@ void checkColorDefinition(api.ColorDefinition o) {
   buildCounterColorDefinition--;
 }
 
-core.Map<core.String, api.ColorDefinition> buildUnnamed1984() {
-  var o = <core.String, api.ColorDefinition>{};
-  o['x'] = buildColorDefinition();
-  o['y'] = buildColorDefinition();
-  return o;
-}
+core.Map<core.String, api.ColorDefinition> buildUnnamed5() => {
+      'x': buildColorDefinition(),
+      'y': buildColorDefinition(),
+    };
 
-void checkUnnamed1984(core.Map<core.String, api.ColorDefinition> o) {
+void checkUnnamed5(core.Map<core.String, api.ColorDefinition> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkColorDefinition(o['x']! as api.ColorDefinition);
-  checkColorDefinition(o['y']! as api.ColorDefinition);
+  checkColorDefinition(o['x']!);
+  checkColorDefinition(o['y']!);
 }
 
-core.Map<core.String, api.ColorDefinition> buildUnnamed1985() {
-  var o = <core.String, api.ColorDefinition>{};
-  o['x'] = buildColorDefinition();
-  o['y'] = buildColorDefinition();
-  return o;
-}
+core.Map<core.String, api.ColorDefinition> buildUnnamed6() => {
+      'x': buildColorDefinition(),
+      'y': buildColorDefinition(),
+    };
 
-void checkUnnamed1985(core.Map<core.String, api.ColorDefinition> o) {
+void checkUnnamed6(core.Map<core.String, api.ColorDefinition> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkColorDefinition(o['x']! as api.ColorDefinition);
-  checkColorDefinition(o['y']! as api.ColorDefinition);
+  checkColorDefinition(o['x']!);
+  checkColorDefinition(o['y']!);
 }
 
 core.int buildCounterColors = 0;
 api.Colors buildColors() {
-  var o = api.Colors();
+  final o = api.Colors();
   buildCounterColors++;
   if (buildCounterColors < 3) {
-    o.calendar = buildUnnamed1984();
-    o.event = buildUnnamed1985();
+    o.calendar = buildUnnamed5();
+    o.event = buildUnnamed6();
     o.kind = 'foo';
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterColors--;
   return o;
@@ -569,42 +551,40 @@ api.Colors buildColors() {
 void checkColors(api.Colors o) {
   buildCounterColors++;
   if (buildCounterColors < 3) {
-    checkUnnamed1984(o.calendar!);
-    checkUnnamed1985(o.event!);
+    checkUnnamed5(o.calendar!);
+    checkUnnamed6(o.event!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
     );
     unittest.expect(
       o.updated!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterColors--;
 }
 
-core.List<api.EntryPoint> buildUnnamed1986() {
-  var o = <api.EntryPoint>[];
-  o.add(buildEntryPoint());
-  o.add(buildEntryPoint());
-  return o;
-}
+core.List<api.EntryPoint> buildUnnamed7() => [
+      buildEntryPoint(),
+      buildEntryPoint(),
+    ];
 
-void checkUnnamed1986(core.List<api.EntryPoint> o) {
+void checkUnnamed7(core.List<api.EntryPoint> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEntryPoint(o[0] as api.EntryPoint);
-  checkEntryPoint(o[1] as api.EntryPoint);
+  checkEntryPoint(o[0]);
+  checkEntryPoint(o[1]);
 }
 
 core.int buildCounterConferenceData = 0;
 api.ConferenceData buildConferenceData() {
-  var o = api.ConferenceData();
+  final o = api.ConferenceData();
   buildCounterConferenceData++;
   if (buildCounterConferenceData < 3) {
     o.conferenceId = 'foo';
     o.conferenceSolution = buildConferenceSolution();
     o.createRequest = buildCreateConferenceRequest();
-    o.entryPoints = buildUnnamed1986();
+    o.entryPoints = buildUnnamed7();
     o.notes = 'foo';
     o.parameters = buildConferenceParameters();
     o.signature = 'foo';
@@ -620,15 +600,14 @@ void checkConferenceData(api.ConferenceData o) {
       o.conferenceId!,
       unittest.equals('foo'),
     );
-    checkConferenceSolution(o.conferenceSolution! as api.ConferenceSolution);
-    checkCreateConferenceRequest(
-        o.createRequest! as api.CreateConferenceRequest);
-    checkUnnamed1986(o.entryPoints!);
+    checkConferenceSolution(o.conferenceSolution!);
+    checkCreateConferenceRequest(o.createRequest!);
+    checkUnnamed7(o.entryPoints!);
     unittest.expect(
       o.notes!,
       unittest.equals('foo'),
     );
-    checkConferenceParameters(o.parameters! as api.ConferenceParameters);
+    checkConferenceParameters(o.parameters!);
     unittest.expect(
       o.signature!,
       unittest.equals('foo'),
@@ -639,7 +618,7 @@ void checkConferenceData(api.ConferenceData o) {
 
 core.int buildCounterConferenceParameters = 0;
 api.ConferenceParameters buildConferenceParameters() {
-  var o = api.ConferenceParameters();
+  final o = api.ConferenceParameters();
   buildCounterConferenceParameters++;
   if (buildCounterConferenceParameters < 3) {
     o.addOnParameters = buildConferenceParametersAddOnParameters();
@@ -651,20 +630,17 @@ api.ConferenceParameters buildConferenceParameters() {
 void checkConferenceParameters(api.ConferenceParameters o) {
   buildCounterConferenceParameters++;
   if (buildCounterConferenceParameters < 3) {
-    checkConferenceParametersAddOnParameters(
-        o.addOnParameters! as api.ConferenceParametersAddOnParameters);
+    checkConferenceParametersAddOnParameters(o.addOnParameters!);
   }
   buildCounterConferenceParameters--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1987() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed8() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1987(core.Map<core.String, core.String> o) {
+void checkUnnamed8(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -679,10 +655,10 @@ void checkUnnamed1987(core.Map<core.String, core.String> o) {
 core.int buildCounterConferenceParametersAddOnParameters = 0;
 api.ConferenceParametersAddOnParameters
     buildConferenceParametersAddOnParameters() {
-  var o = api.ConferenceParametersAddOnParameters();
+  final o = api.ConferenceParametersAddOnParameters();
   buildCounterConferenceParametersAddOnParameters++;
   if (buildCounterConferenceParametersAddOnParameters < 3) {
-    o.parameters = buildUnnamed1987();
+    o.parameters = buildUnnamed8();
   }
   buildCounterConferenceParametersAddOnParameters--;
   return o;
@@ -692,19 +668,17 @@ void checkConferenceParametersAddOnParameters(
     api.ConferenceParametersAddOnParameters o) {
   buildCounterConferenceParametersAddOnParameters++;
   if (buildCounterConferenceParametersAddOnParameters < 3) {
-    checkUnnamed1987(o.parameters!);
+    checkUnnamed8(o.parameters!);
   }
   buildCounterConferenceParametersAddOnParameters--;
 }
 
-core.List<core.String> buildUnnamed1988() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed9() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1988(core.List<core.String> o) {
+void checkUnnamed9(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -718,10 +692,10 @@ void checkUnnamed1988(core.List<core.String> o) {
 
 core.int buildCounterConferenceProperties = 0;
 api.ConferenceProperties buildConferenceProperties() {
-  var o = api.ConferenceProperties();
+  final o = api.ConferenceProperties();
   buildCounterConferenceProperties++;
   if (buildCounterConferenceProperties < 3) {
-    o.allowedConferenceSolutionTypes = buildUnnamed1988();
+    o.allowedConferenceSolutionTypes = buildUnnamed9();
   }
   buildCounterConferenceProperties--;
   return o;
@@ -730,14 +704,14 @@ api.ConferenceProperties buildConferenceProperties() {
 void checkConferenceProperties(api.ConferenceProperties o) {
   buildCounterConferenceProperties++;
   if (buildCounterConferenceProperties < 3) {
-    checkUnnamed1988(o.allowedConferenceSolutionTypes!);
+    checkUnnamed9(o.allowedConferenceSolutionTypes!);
   }
   buildCounterConferenceProperties--;
 }
 
 core.int buildCounterConferenceRequestStatus = 0;
 api.ConferenceRequestStatus buildConferenceRequestStatus() {
-  var o = api.ConferenceRequestStatus();
+  final o = api.ConferenceRequestStatus();
   buildCounterConferenceRequestStatus++;
   if (buildCounterConferenceRequestStatus < 3) {
     o.statusCode = 'foo';
@@ -759,7 +733,7 @@ void checkConferenceRequestStatus(api.ConferenceRequestStatus o) {
 
 core.int buildCounterConferenceSolution = 0;
 api.ConferenceSolution buildConferenceSolution() {
-  var o = api.ConferenceSolution();
+  final o = api.ConferenceSolution();
   buildCounterConferenceSolution++;
   if (buildCounterConferenceSolution < 3) {
     o.iconUri = 'foo';
@@ -777,7 +751,7 @@ void checkConferenceSolution(api.ConferenceSolution o) {
       o.iconUri!,
       unittest.equals('foo'),
     );
-    checkConferenceSolutionKey(o.key! as api.ConferenceSolutionKey);
+    checkConferenceSolutionKey(o.key!);
     unittest.expect(
       o.name!,
       unittest.equals('foo'),
@@ -788,7 +762,7 @@ void checkConferenceSolution(api.ConferenceSolution o) {
 
 core.int buildCounterConferenceSolutionKey = 0;
 api.ConferenceSolutionKey buildConferenceSolutionKey() {
-  var o = api.ConferenceSolutionKey();
+  final o = api.ConferenceSolutionKey();
   buildCounterConferenceSolutionKey++;
   if (buildCounterConferenceSolutionKey < 3) {
     o.type = 'foo';
@@ -810,7 +784,7 @@ void checkConferenceSolutionKey(api.ConferenceSolutionKey o) {
 
 core.int buildCounterCreateConferenceRequest = 0;
 api.CreateConferenceRequest buildCreateConferenceRequest() {
-  var o = api.CreateConferenceRequest();
+  final o = api.CreateConferenceRequest();
   buildCounterCreateConferenceRequest++;
   if (buildCounterCreateConferenceRequest < 3) {
     o.conferenceSolutionKey = buildConferenceSolutionKey();
@@ -824,25 +798,22 @@ api.CreateConferenceRequest buildCreateConferenceRequest() {
 void checkCreateConferenceRequest(api.CreateConferenceRequest o) {
   buildCounterCreateConferenceRequest++;
   if (buildCounterCreateConferenceRequest < 3) {
-    checkConferenceSolutionKey(
-        o.conferenceSolutionKey! as api.ConferenceSolutionKey);
+    checkConferenceSolutionKey(o.conferenceSolutionKey!);
     unittest.expect(
       o.requestId!,
       unittest.equals('foo'),
     );
-    checkConferenceRequestStatus(o.status! as api.ConferenceRequestStatus);
+    checkConferenceRequestStatus(o.status!);
   }
   buildCounterCreateConferenceRequest--;
 }
 
-core.List<core.String> buildUnnamed1989() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed10() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1989(core.List<core.String> o) {
+void checkUnnamed10(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -856,11 +827,11 @@ void checkUnnamed1989(core.List<core.String> o) {
 
 core.int buildCounterEntryPoint = 0;
 api.EntryPoint buildEntryPoint() {
-  var o = api.EntryPoint();
+  final o = api.EntryPoint();
   buildCounterEntryPoint++;
   if (buildCounterEntryPoint < 3) {
     o.accessCode = 'foo';
-    o.entryPointFeatures = buildUnnamed1989();
+    o.entryPointFeatures = buildUnnamed10();
     o.entryPointType = 'foo';
     o.label = 'foo';
     o.meetingCode = 'foo';
@@ -881,7 +852,7 @@ void checkEntryPoint(api.EntryPoint o) {
       o.accessCode!,
       unittest.equals('foo'),
     );
-    checkUnnamed1989(o.entryPointFeatures!);
+    checkUnnamed10(o.entryPointFeatures!);
     unittest.expect(
       o.entryPointType!,
       unittest.equals('foo'),
@@ -920,7 +891,7 @@ void checkEntryPoint(api.EntryPoint o) {
 
 core.int buildCounterError = 0;
 api.Error buildError() {
-  var o = api.Error();
+  final o = api.Error();
   buildCounterError++;
   if (buildCounterError < 3) {
     o.domain = 'foo';
@@ -945,35 +916,31 @@ void checkError(api.Error o) {
   buildCounterError--;
 }
 
-core.List<api.EventAttachment> buildUnnamed1990() {
-  var o = <api.EventAttachment>[];
-  o.add(buildEventAttachment());
-  o.add(buildEventAttachment());
-  return o;
-}
+core.List<api.EventAttachment> buildUnnamed11() => [
+      buildEventAttachment(),
+      buildEventAttachment(),
+    ];
 
-void checkUnnamed1990(core.List<api.EventAttachment> o) {
+void checkUnnamed11(core.List<api.EventAttachment> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEventAttachment(o[0] as api.EventAttachment);
-  checkEventAttachment(o[1] as api.EventAttachment);
+  checkEventAttachment(o[0]);
+  checkEventAttachment(o[1]);
 }
 
-core.List<api.EventAttendee> buildUnnamed1991() {
-  var o = <api.EventAttendee>[];
-  o.add(buildEventAttendee());
-  o.add(buildEventAttendee());
-  return o;
-}
+core.List<api.EventAttendee> buildUnnamed12() => [
+      buildEventAttendee(),
+      buildEventAttendee(),
+    ];
 
-void checkUnnamed1991(core.List<api.EventAttendee> o) {
+void checkUnnamed12(core.List<api.EventAttendee> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEventAttendee(o[0] as api.EventAttendee);
-  checkEventAttendee(o[1] as api.EventAttendee);
+  checkEventAttendee(o[0]);
+  checkEventAttendee(o[1]);
 }
 
 core.int buildCounterEventCreator = 0;
 api.EventCreator buildEventCreator() {
-  var o = api.EventCreator();
+  final o = api.EventCreator();
   buildCounterEventCreator++;
   if (buildCounterEventCreator < 3) {
     o.displayName = 'foo';
@@ -1005,14 +972,12 @@ void checkEventCreator(api.EventCreator o) {
   buildCounterEventCreator--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1992() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed13() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1992(core.Map<core.String, core.String> o) {
+void checkUnnamed13(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1024,14 +989,12 @@ void checkUnnamed1992(core.Map<core.String, core.String> o) {
   );
 }
 
-core.Map<core.String, core.String> buildUnnamed1993() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed14() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1993(core.Map<core.String, core.String> o) {
+void checkUnnamed14(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1045,11 +1008,11 @@ void checkUnnamed1993(core.Map<core.String, core.String> o) {
 
 core.int buildCounterEventExtendedProperties = 0;
 api.EventExtendedProperties buildEventExtendedProperties() {
-  var o = api.EventExtendedProperties();
+  final o = api.EventExtendedProperties();
   buildCounterEventExtendedProperties++;
   if (buildCounterEventExtendedProperties < 3) {
-    o.private = buildUnnamed1992();
-    o.shared = buildUnnamed1993();
+    o.private = buildUnnamed13();
+    o.shared = buildUnnamed14();
   }
   buildCounterEventExtendedProperties--;
   return o;
@@ -1058,20 +1021,18 @@ api.EventExtendedProperties buildEventExtendedProperties() {
 void checkEventExtendedProperties(api.EventExtendedProperties o) {
   buildCounterEventExtendedProperties++;
   if (buildCounterEventExtendedProperties < 3) {
-    checkUnnamed1992(o.private!);
-    checkUnnamed1993(o.shared!);
+    checkUnnamed13(o.private!);
+    checkUnnamed14(o.shared!);
   }
   buildCounterEventExtendedProperties--;
 }
 
-core.Map<core.String, core.String> buildUnnamed1994() {
-  var o = <core.String, core.String>{};
-  o['x'] = 'foo';
-  o['y'] = 'foo';
-  return o;
-}
+core.Map<core.String, core.String> buildUnnamed15() => {
+      'x': 'foo',
+      'y': 'foo',
+    };
 
-void checkUnnamed1994(core.Map<core.String, core.String> o) {
+void checkUnnamed15(core.Map<core.String, core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o['x']!,
@@ -1085,14 +1046,14 @@ void checkUnnamed1994(core.Map<core.String, core.String> o) {
 
 core.int buildCounterEventGadget = 0;
 api.EventGadget buildEventGadget() {
-  var o = api.EventGadget();
+  final o = api.EventGadget();
   buildCounterEventGadget++;
   if (buildCounterEventGadget < 3) {
     o.display = 'foo';
     o.height = 42;
     o.iconLink = 'foo';
     o.link = 'foo';
-    o.preferences = buildUnnamed1994();
+    o.preferences = buildUnnamed15();
     o.title = 'foo';
     o.type = 'foo';
     o.width = 42;
@@ -1120,7 +1081,7 @@ void checkEventGadget(api.EventGadget o) {
       o.link!,
       unittest.equals('foo'),
     );
-    checkUnnamed1994(o.preferences!);
+    checkUnnamed15(o.preferences!);
     unittest.expect(
       o.title!,
       unittest.equals('foo'),
@@ -1139,7 +1100,7 @@ void checkEventGadget(api.EventGadget o) {
 
 core.int buildCounterEventOrganizer = 0;
 api.EventOrganizer buildEventOrganizer() {
-  var o = api.EventOrganizer();
+  final o = api.EventOrganizer();
   buildCounterEventOrganizer++;
   if (buildCounterEventOrganizer < 3) {
     o.displayName = 'foo';
@@ -1171,14 +1132,12 @@ void checkEventOrganizer(api.EventOrganizer o) {
   buildCounterEventOrganizer--;
 }
 
-core.List<core.String> buildUnnamed1995() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed16() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed1995(core.List<core.String> o) {
+void checkUnnamed16(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1190,25 +1149,23 @@ void checkUnnamed1995(core.List<core.String> o) {
   );
 }
 
-core.List<api.EventReminder> buildUnnamed1996() {
-  var o = <api.EventReminder>[];
-  o.add(buildEventReminder());
-  o.add(buildEventReminder());
-  return o;
-}
+core.List<api.EventReminder> buildUnnamed17() => [
+      buildEventReminder(),
+      buildEventReminder(),
+    ];
 
-void checkUnnamed1996(core.List<api.EventReminder> o) {
+void checkUnnamed17(core.List<api.EventReminder> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEventReminder(o[0] as api.EventReminder);
-  checkEventReminder(o[1] as api.EventReminder);
+  checkEventReminder(o[0]);
+  checkEventReminder(o[1]);
 }
 
 core.int buildCounterEventReminders = 0;
 api.EventReminders buildEventReminders() {
-  var o = api.EventReminders();
+  final o = api.EventReminders();
   buildCounterEventReminders++;
   if (buildCounterEventReminders < 3) {
-    o.overrides = buildUnnamed1996();
+    o.overrides = buildUnnamed17();
     o.useDefault = true;
   }
   buildCounterEventReminders--;
@@ -1218,7 +1175,7 @@ api.EventReminders buildEventReminders() {
 void checkEventReminders(api.EventReminders o) {
   buildCounterEventReminders++;
   if (buildCounterEventReminders < 3) {
-    checkUnnamed1996(o.overrides!);
+    checkUnnamed17(o.overrides!);
     unittest.expect(o.useDefault!, unittest.isTrue);
   }
   buildCounterEventReminders--;
@@ -1226,7 +1183,7 @@ void checkEventReminders(api.EventReminders o) {
 
 core.int buildCounterEventSource = 0;
 api.EventSource buildEventSource() {
-  var o = api.EventSource();
+  final o = api.EventSource();
   buildCounterEventSource++;
   if (buildCounterEventSource < 3) {
     o.title = 'foo';
@@ -1253,16 +1210,16 @@ void checkEventSource(api.EventSource o) {
 
 core.int buildCounterEvent = 0;
 api.Event buildEvent() {
-  var o = api.Event();
+  final o = api.Event();
   buildCounterEvent++;
   if (buildCounterEvent < 3) {
     o.anyoneCanAddSelf = true;
-    o.attachments = buildUnnamed1990();
-    o.attendees = buildUnnamed1991();
+    o.attachments = buildUnnamed11();
+    o.attendees = buildUnnamed12();
     o.attendeesOmitted = true;
     o.colorId = 'foo';
     o.conferenceData = buildConferenceData();
-    o.created = core.DateTime.parse("2002-02-27T14:01:02");
+    o.created = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.creator = buildEventCreator();
     o.description = 'foo';
     o.end = buildEventDateTime();
@@ -1284,7 +1241,7 @@ api.Event buildEvent() {
     o.organizer = buildEventOrganizer();
     o.originalStartTime = buildEventDateTime();
     o.privateCopy = true;
-    o.recurrence = buildUnnamed1995();
+    o.recurrence = buildUnnamed16();
     o.recurringEventId = 'foo';
     o.reminders = buildEventReminders();
     o.sequence = 42;
@@ -1293,7 +1250,7 @@ api.Event buildEvent() {
     o.status = 'foo';
     o.summary = 'foo';
     o.transparency = 'foo';
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.visibility = 'foo';
   }
   buildCounterEvent--;
@@ -1304,24 +1261,24 @@ void checkEvent(api.Event o) {
   buildCounterEvent++;
   if (buildCounterEvent < 3) {
     unittest.expect(o.anyoneCanAddSelf!, unittest.isTrue);
-    checkUnnamed1990(o.attachments!);
-    checkUnnamed1991(o.attendees!);
+    checkUnnamed11(o.attachments!);
+    checkUnnamed12(o.attendees!);
     unittest.expect(o.attendeesOmitted!, unittest.isTrue);
     unittest.expect(
       o.colorId!,
       unittest.equals('foo'),
     );
-    checkConferenceData(o.conferenceData! as api.ConferenceData);
+    checkConferenceData(o.conferenceData!);
     unittest.expect(
       o.created!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
-    checkEventCreator(o.creator! as api.EventCreator);
+    checkEventCreator(o.creator!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
     );
-    checkEventDateTime(o.end! as api.EventDateTime);
+    checkEventDateTime(o.end!);
     unittest.expect(o.endTimeUnspecified!, unittest.isTrue);
     unittest.expect(
       o.etag!,
@@ -1331,9 +1288,8 @@ void checkEvent(api.Event o) {
       o.eventType!,
       unittest.equals('foo'),
     );
-    checkEventExtendedProperties(
-        o.extendedProperties! as api.EventExtendedProperties);
-    checkEventGadget(o.gadget! as api.EventGadget);
+    checkEventExtendedProperties(o.extendedProperties!);
+    checkEventGadget(o.gadget!);
     unittest.expect(o.guestsCanInviteOthers!, unittest.isTrue);
     unittest.expect(o.guestsCanModify!, unittest.isTrue);
     unittest.expect(o.guestsCanSeeOtherGuests!, unittest.isTrue);
@@ -1362,21 +1318,21 @@ void checkEvent(api.Event o) {
       unittest.equals('foo'),
     );
     unittest.expect(o.locked!, unittest.isTrue);
-    checkEventOrganizer(o.organizer! as api.EventOrganizer);
-    checkEventDateTime(o.originalStartTime! as api.EventDateTime);
+    checkEventOrganizer(o.organizer!);
+    checkEventDateTime(o.originalStartTime!);
     unittest.expect(o.privateCopy!, unittest.isTrue);
-    checkUnnamed1995(o.recurrence!);
+    checkUnnamed16(o.recurrence!);
     unittest.expect(
       o.recurringEventId!,
       unittest.equals('foo'),
     );
-    checkEventReminders(o.reminders! as api.EventReminders);
+    checkEventReminders(o.reminders!);
     unittest.expect(
       o.sequence!,
       unittest.equals(42),
     );
-    checkEventSource(o.source! as api.EventSource);
-    checkEventDateTime(o.start! as api.EventDateTime);
+    checkEventSource(o.source!);
+    checkEventDateTime(o.start!);
     unittest.expect(
       o.status!,
       unittest.equals('foo'),
@@ -1391,7 +1347,7 @@ void checkEvent(api.Event o) {
     );
     unittest.expect(
       o.updated!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.visibility!,
@@ -1403,7 +1359,7 @@ void checkEvent(api.Event o) {
 
 core.int buildCounterEventAttachment = 0;
 api.EventAttachment buildEventAttachment() {
-  var o = api.EventAttachment();
+  final o = api.EventAttachment();
   buildCounterEventAttachment++;
   if (buildCounterEventAttachment < 3) {
     o.fileId = 'foo';
@@ -1445,7 +1401,7 @@ void checkEventAttachment(api.EventAttachment o) {
 
 core.int buildCounterEventAttendee = 0;
 api.EventAttendee buildEventAttendee() {
-  var o = api.EventAttendee();
+  final o = api.EventAttendee();
   buildCounterEventAttendee++;
   if (buildCounterEventAttendee < 3) {
     o.additionalGuests = 42;
@@ -1500,11 +1456,11 @@ void checkEventAttendee(api.EventAttendee o) {
 
 core.int buildCounterEventDateTime = 0;
 api.EventDateTime buildEventDateTime() {
-  var o = api.EventDateTime();
+  final o = api.EventDateTime();
   buildCounterEventDateTime++;
   if (buildCounterEventDateTime < 3) {
     o.date = core.DateTime.parse('2002-02-27T14:01:02Z');
-    o.dateTime = core.DateTime.parse("2002-02-27T14:01:02");
+    o.dateTime = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.timeZone = 'foo';
   }
   buildCounterEventDateTime--;
@@ -1516,11 +1472,11 @@ void checkEventDateTime(api.EventDateTime o) {
   if (buildCounterEventDateTime < 3) {
     unittest.expect(
       o.date!,
-      unittest.equals(core.DateTime.parse("2002-02-27T00:00:00")),
+      unittest.equals(core.DateTime.parse('2002-02-27T00:00:00')),
     );
     unittest.expect(
       o.dateTime!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.timeZone!,
@@ -1532,7 +1488,7 @@ void checkEventDateTime(api.EventDateTime o) {
 
 core.int buildCounterEventReminder = 0;
 api.EventReminder buildEventReminder() {
-  var o = api.EventReminder();
+  final o = api.EventReminder();
   buildCounterEventReminder++;
   if (buildCounterEventReminder < 3) {
     o.method = 'foo';
@@ -1557,48 +1513,44 @@ void checkEventReminder(api.EventReminder o) {
   buildCounterEventReminder--;
 }
 
-core.List<api.EventReminder> buildUnnamed1997() {
-  var o = <api.EventReminder>[];
-  o.add(buildEventReminder());
-  o.add(buildEventReminder());
-  return o;
-}
+core.List<api.EventReminder> buildUnnamed18() => [
+      buildEventReminder(),
+      buildEventReminder(),
+    ];
 
-void checkUnnamed1997(core.List<api.EventReminder> o) {
+void checkUnnamed18(core.List<api.EventReminder> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEventReminder(o[0] as api.EventReminder);
-  checkEventReminder(o[1] as api.EventReminder);
+  checkEventReminder(o[0]);
+  checkEventReminder(o[1]);
 }
 
-core.List<api.Event> buildUnnamed1998() {
-  var o = <api.Event>[];
-  o.add(buildEvent());
-  o.add(buildEvent());
-  return o;
-}
+core.List<api.Event> buildUnnamed19() => [
+      buildEvent(),
+      buildEvent(),
+    ];
 
-void checkUnnamed1998(core.List<api.Event> o) {
+void checkUnnamed19(core.List<api.Event> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkEvent(o[0] as api.Event);
-  checkEvent(o[1] as api.Event);
+  checkEvent(o[0]);
+  checkEvent(o[1]);
 }
 
 core.int buildCounterEvents = 0;
 api.Events buildEvents() {
-  var o = api.Events();
+  final o = api.Events();
   buildCounterEvents++;
   if (buildCounterEvents < 3) {
     o.accessRole = 'foo';
-    o.defaultReminders = buildUnnamed1997();
+    o.defaultReminders = buildUnnamed18();
     o.description = 'foo';
     o.etag = 'foo';
-    o.items = buildUnnamed1998();
+    o.items = buildUnnamed19();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.nextSyncToken = 'foo';
     o.summary = 'foo';
     o.timeZone = 'foo';
-    o.updated = core.DateTime.parse("2002-02-27T14:01:02");
+    o.updated = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterEvents--;
   return o;
@@ -1611,7 +1563,7 @@ void checkEvents(api.Events o) {
       o.accessRole!,
       unittest.equals('foo'),
     );
-    checkUnnamed1997(o.defaultReminders!);
+    checkUnnamed18(o.defaultReminders!);
     unittest.expect(
       o.description!,
       unittest.equals('foo'),
@@ -1620,7 +1572,7 @@ void checkEvents(api.Events o) {
       o.etag!,
       unittest.equals('foo'),
     );
-    checkUnnamed1998(o.items!);
+    checkUnnamed19(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -1643,45 +1595,41 @@ void checkEvents(api.Events o) {
     );
     unittest.expect(
       o.updated!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterEvents--;
 }
 
-core.List<api.TimePeriod> buildUnnamed1999() {
-  var o = <api.TimePeriod>[];
-  o.add(buildTimePeriod());
-  o.add(buildTimePeriod());
-  return o;
-}
+core.List<api.TimePeriod> buildUnnamed20() => [
+      buildTimePeriod(),
+      buildTimePeriod(),
+    ];
 
-void checkUnnamed1999(core.List<api.TimePeriod> o) {
+void checkUnnamed20(core.List<api.TimePeriod> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkTimePeriod(o[0] as api.TimePeriod);
-  checkTimePeriod(o[1] as api.TimePeriod);
+  checkTimePeriod(o[0]);
+  checkTimePeriod(o[1]);
 }
 
-core.List<api.Error> buildUnnamed2000() {
-  var o = <api.Error>[];
-  o.add(buildError());
-  o.add(buildError());
-  return o;
-}
+core.List<api.Error> buildUnnamed21() => [
+      buildError(),
+      buildError(),
+    ];
 
-void checkUnnamed2000(core.List<api.Error> o) {
+void checkUnnamed21(core.List<api.Error> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkError(o[0] as api.Error);
-  checkError(o[1] as api.Error);
+  checkError(o[0]);
+  checkError(o[1]);
 }
 
 core.int buildCounterFreeBusyCalendar = 0;
 api.FreeBusyCalendar buildFreeBusyCalendar() {
-  var o = api.FreeBusyCalendar();
+  final o = api.FreeBusyCalendar();
   buildCounterFreeBusyCalendar++;
   if (buildCounterFreeBusyCalendar < 3) {
-    o.busy = buildUnnamed1999();
-    o.errors = buildUnnamed2000();
+    o.busy = buildUnnamed20();
+    o.errors = buildUnnamed21();
   }
   buildCounterFreeBusyCalendar--;
   return o;
@@ -1690,20 +1638,18 @@ api.FreeBusyCalendar buildFreeBusyCalendar() {
 void checkFreeBusyCalendar(api.FreeBusyCalendar o) {
   buildCounterFreeBusyCalendar++;
   if (buildCounterFreeBusyCalendar < 3) {
-    checkUnnamed1999(o.busy!);
-    checkUnnamed2000(o.errors!);
+    checkUnnamed20(o.busy!);
+    checkUnnamed21(o.errors!);
   }
   buildCounterFreeBusyCalendar--;
 }
 
-core.List<core.String> buildUnnamed2001() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed22() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2001(core.List<core.String> o) {
+void checkUnnamed22(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -1715,26 +1661,24 @@ void checkUnnamed2001(core.List<core.String> o) {
   );
 }
 
-core.List<api.Error> buildUnnamed2002() {
-  var o = <api.Error>[];
-  o.add(buildError());
-  o.add(buildError());
-  return o;
-}
+core.List<api.Error> buildUnnamed23() => [
+      buildError(),
+      buildError(),
+    ];
 
-void checkUnnamed2002(core.List<api.Error> o) {
+void checkUnnamed23(core.List<api.Error> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkError(o[0] as api.Error);
-  checkError(o[1] as api.Error);
+  checkError(o[0]);
+  checkError(o[1]);
 }
 
 core.int buildCounterFreeBusyGroup = 0;
 api.FreeBusyGroup buildFreeBusyGroup() {
-  var o = api.FreeBusyGroup();
+  final o = api.FreeBusyGroup();
   buildCounterFreeBusyGroup++;
   if (buildCounterFreeBusyGroup < 3) {
-    o.calendars = buildUnnamed2001();
-    o.errors = buildUnnamed2002();
+    o.calendars = buildUnnamed22();
+    o.errors = buildUnnamed23();
   }
   buildCounterFreeBusyGroup--;
   return o;
@@ -1743,35 +1687,33 @@ api.FreeBusyGroup buildFreeBusyGroup() {
 void checkFreeBusyGroup(api.FreeBusyGroup o) {
   buildCounterFreeBusyGroup++;
   if (buildCounterFreeBusyGroup < 3) {
-    checkUnnamed2001(o.calendars!);
-    checkUnnamed2002(o.errors!);
+    checkUnnamed22(o.calendars!);
+    checkUnnamed23(o.errors!);
   }
   buildCounterFreeBusyGroup--;
 }
 
-core.List<api.FreeBusyRequestItem> buildUnnamed2003() {
-  var o = <api.FreeBusyRequestItem>[];
-  o.add(buildFreeBusyRequestItem());
-  o.add(buildFreeBusyRequestItem());
-  return o;
-}
+core.List<api.FreeBusyRequestItem> buildUnnamed24() => [
+      buildFreeBusyRequestItem(),
+      buildFreeBusyRequestItem(),
+    ];
 
-void checkUnnamed2003(core.List<api.FreeBusyRequestItem> o) {
+void checkUnnamed24(core.List<api.FreeBusyRequestItem> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFreeBusyRequestItem(o[0] as api.FreeBusyRequestItem);
-  checkFreeBusyRequestItem(o[1] as api.FreeBusyRequestItem);
+  checkFreeBusyRequestItem(o[0]);
+  checkFreeBusyRequestItem(o[1]);
 }
 
 core.int buildCounterFreeBusyRequest = 0;
 api.FreeBusyRequest buildFreeBusyRequest() {
-  var o = api.FreeBusyRequest();
+  final o = api.FreeBusyRequest();
   buildCounterFreeBusyRequest++;
   if (buildCounterFreeBusyRequest < 3) {
     o.calendarExpansionMax = 42;
     o.groupExpansionMax = 42;
-    o.items = buildUnnamed2003();
-    o.timeMax = core.DateTime.parse("2002-02-27T14:01:02");
-    o.timeMin = core.DateTime.parse("2002-02-27T14:01:02");
+    o.items = buildUnnamed24();
+    o.timeMax = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.timeMin = core.DateTime.parse('2002-02-27T14:01:02Z');
     o.timeZone = 'foo';
   }
   buildCounterFreeBusyRequest--;
@@ -1789,14 +1731,14 @@ void checkFreeBusyRequest(api.FreeBusyRequest o) {
       o.groupExpansionMax!,
       unittest.equals(42),
     );
-    checkUnnamed2003(o.items!);
+    checkUnnamed24(o.items!);
     unittest.expect(
       o.timeMax!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.timeMin!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.timeZone!,
@@ -1808,7 +1750,7 @@ void checkFreeBusyRequest(api.FreeBusyRequest o) {
 
 core.int buildCounterFreeBusyRequestItem = 0;
 api.FreeBusyRequestItem buildFreeBusyRequestItem() {
-  var o = api.FreeBusyRequestItem();
+  final o = api.FreeBusyRequestItem();
   buildCounterFreeBusyRequestItem++;
   if (buildCounterFreeBusyRequestItem < 3) {
     o.id = 'foo';
@@ -1828,42 +1770,38 @@ void checkFreeBusyRequestItem(api.FreeBusyRequestItem o) {
   buildCounterFreeBusyRequestItem--;
 }
 
-core.Map<core.String, api.FreeBusyCalendar> buildUnnamed2004() {
-  var o = <core.String, api.FreeBusyCalendar>{};
-  o['x'] = buildFreeBusyCalendar();
-  o['y'] = buildFreeBusyCalendar();
-  return o;
-}
+core.Map<core.String, api.FreeBusyCalendar> buildUnnamed25() => {
+      'x': buildFreeBusyCalendar(),
+      'y': buildFreeBusyCalendar(),
+    };
 
-void checkUnnamed2004(core.Map<core.String, api.FreeBusyCalendar> o) {
+void checkUnnamed25(core.Map<core.String, api.FreeBusyCalendar> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFreeBusyCalendar(o['x']! as api.FreeBusyCalendar);
-  checkFreeBusyCalendar(o['y']! as api.FreeBusyCalendar);
+  checkFreeBusyCalendar(o['x']!);
+  checkFreeBusyCalendar(o['y']!);
 }
 
-core.Map<core.String, api.FreeBusyGroup> buildUnnamed2005() {
-  var o = <core.String, api.FreeBusyGroup>{};
-  o['x'] = buildFreeBusyGroup();
-  o['y'] = buildFreeBusyGroup();
-  return o;
-}
+core.Map<core.String, api.FreeBusyGroup> buildUnnamed26() => {
+      'x': buildFreeBusyGroup(),
+      'y': buildFreeBusyGroup(),
+    };
 
-void checkUnnamed2005(core.Map<core.String, api.FreeBusyGroup> o) {
+void checkUnnamed26(core.Map<core.String, api.FreeBusyGroup> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkFreeBusyGroup(o['x']! as api.FreeBusyGroup);
-  checkFreeBusyGroup(o['y']! as api.FreeBusyGroup);
+  checkFreeBusyGroup(o['x']!);
+  checkFreeBusyGroup(o['y']!);
 }
 
 core.int buildCounterFreeBusyResponse = 0;
 api.FreeBusyResponse buildFreeBusyResponse() {
-  var o = api.FreeBusyResponse();
+  final o = api.FreeBusyResponse();
   buildCounterFreeBusyResponse++;
   if (buildCounterFreeBusyResponse < 3) {
-    o.calendars = buildUnnamed2004();
-    o.groups = buildUnnamed2005();
+    o.calendars = buildUnnamed25();
+    o.groups = buildUnnamed26();
     o.kind = 'foo';
-    o.timeMax = core.DateTime.parse("2002-02-27T14:01:02");
-    o.timeMin = core.DateTime.parse("2002-02-27T14:01:02");
+    o.timeMax = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.timeMin = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterFreeBusyResponse--;
   return o;
@@ -1872,19 +1810,19 @@ api.FreeBusyResponse buildFreeBusyResponse() {
 void checkFreeBusyResponse(api.FreeBusyResponse o) {
   buildCounterFreeBusyResponse++;
   if (buildCounterFreeBusyResponse < 3) {
-    checkUnnamed2004(o.calendars!);
-    checkUnnamed2005(o.groups!);
+    checkUnnamed25(o.calendars!);
+    checkUnnamed26(o.groups!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
     );
     unittest.expect(
       o.timeMax!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.timeMin!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterFreeBusyResponse--;
@@ -1892,7 +1830,7 @@ void checkFreeBusyResponse(api.FreeBusyResponse o) {
 
 core.int buildCounterSetting = 0;
 api.Setting buildSetting() {
-  var o = api.Setting();
+  final o = api.Setting();
   buildCounterSetting++;
   if (buildCounterSetting < 3) {
     o.etag = 'foo';
@@ -1927,26 +1865,24 @@ void checkSetting(api.Setting o) {
   buildCounterSetting--;
 }
 
-core.List<api.Setting> buildUnnamed2006() {
-  var o = <api.Setting>[];
-  o.add(buildSetting());
-  o.add(buildSetting());
-  return o;
-}
+core.List<api.Setting> buildUnnamed27() => [
+      buildSetting(),
+      buildSetting(),
+    ];
 
-void checkUnnamed2006(core.List<api.Setting> o) {
+void checkUnnamed27(core.List<api.Setting> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkSetting(o[0] as api.Setting);
-  checkSetting(o[1] as api.Setting);
+  checkSetting(o[0]);
+  checkSetting(o[1]);
 }
 
 core.int buildCounterSettings = 0;
 api.Settings buildSettings() {
-  var o = api.Settings();
+  final o = api.Settings();
   buildCounterSettings++;
   if (buildCounterSettings < 3) {
     o.etag = 'foo';
-    o.items = buildUnnamed2006();
+    o.items = buildUnnamed27();
     o.kind = 'foo';
     o.nextPageToken = 'foo';
     o.nextSyncToken = 'foo';
@@ -1962,7 +1898,7 @@ void checkSettings(api.Settings o) {
       o.etag!,
       unittest.equals('foo'),
     );
-    checkUnnamed2006(o.items!);
+    checkUnnamed27(o.items!);
     unittest.expect(
       o.kind!,
       unittest.equals('foo'),
@@ -1981,11 +1917,11 @@ void checkSettings(api.Settings o) {
 
 core.int buildCounterTimePeriod = 0;
 api.TimePeriod buildTimePeriod() {
-  var o = api.TimePeriod();
+  final o = api.TimePeriod();
   buildCounterTimePeriod++;
   if (buildCounterTimePeriod < 3) {
-    o.end = core.DateTime.parse("2002-02-27T14:01:02");
-    o.start = core.DateTime.parse("2002-02-27T14:01:02");
+    o.end = core.DateTime.parse('2002-02-27T14:01:02Z');
+    o.start = core.DateTime.parse('2002-02-27T14:01:02Z');
   }
   buildCounterTimePeriod--;
   return o;
@@ -1996,24 +1932,22 @@ void checkTimePeriod(api.TimePeriod o) {
   if (buildCounterTimePeriod < 3) {
     unittest.expect(
       o.end!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
     unittest.expect(
       o.start!,
-      unittest.equals(core.DateTime.parse("2002-02-27T14:01:02")),
+      unittest.equals(core.DateTime.parse('2002-02-27T14:01:02Z')),
     );
   }
   buildCounterTimePeriod--;
 }
 
-core.List<core.String> buildUnnamed2007() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed28() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2007(core.List<core.String> o) {
+void checkUnnamed28(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2025,14 +1959,12 @@ void checkUnnamed2007(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed2008() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed29() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2008(core.List<core.String> o) {
+void checkUnnamed29(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2044,14 +1976,12 @@ void checkUnnamed2008(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed2009() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed30() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2009(core.List<core.String> o) {
+void checkUnnamed30(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2063,14 +1993,12 @@ void checkUnnamed2009(core.List<core.String> o) {
   );
 }
 
-core.List<core.String> buildUnnamed2010() {
-  var o = <core.String>[];
-  o.add('foo');
-  o.add('foo');
-  return o;
-}
+core.List<core.String> buildUnnamed31() => [
+      'foo',
+      'foo',
+    ];
 
-void checkUnnamed2010(core.List<core.String> o) {
+void checkUnnamed31(core.List<core.String> o) {
   unittest.expect(o, unittest.hasLength(2));
   unittest.expect(
     o[0],
@@ -2085,438 +2013,438 @@ void checkUnnamed2010(core.List<core.String> o) {
 void main() {
   unittest.group('obj-schema-Acl', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAcl();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Acl.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAcl(od as api.Acl);
+      final o = buildAcl();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.Acl.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkAcl(od);
     });
   });
 
   unittest.group('obj-schema-AclRuleScope', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAclRuleScope();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.AclRuleScope.fromJson(
+      final o = buildAclRuleScope();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.AclRuleScope.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkAclRuleScope(od as api.AclRuleScope);
+      checkAclRuleScope(od);
     });
   });
 
   unittest.group('obj-schema-AclRule', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildAclRule();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildAclRule();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.AclRule.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkAclRule(od as api.AclRule);
+      checkAclRule(od);
     });
   });
 
   unittest.group('obj-schema-Calendar', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCalendar();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildCalendar();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Calendar.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkCalendar(od as api.Calendar);
+      checkCalendar(od);
     });
   });
 
   unittest.group('obj-schema-CalendarList', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCalendarList();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CalendarList.fromJson(
+      final o = buildCalendarList();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CalendarList.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCalendarList(od as api.CalendarList);
+      checkCalendarList(od);
     });
   });
 
   unittest.group('obj-schema-CalendarListEntryNotificationSettings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCalendarListEntryNotificationSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CalendarListEntryNotificationSettings.fromJson(
+      final o = buildCalendarListEntryNotificationSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CalendarListEntryNotificationSettings.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCalendarListEntryNotificationSettings(
-          od as api.CalendarListEntryNotificationSettings);
+      checkCalendarListEntryNotificationSettings(od);
     });
   });
 
   unittest.group('obj-schema-CalendarListEntry', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCalendarListEntry();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CalendarListEntry.fromJson(
+      final o = buildCalendarListEntry();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CalendarListEntry.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCalendarListEntry(od as api.CalendarListEntry);
+      checkCalendarListEntry(od);
     });
   });
 
   unittest.group('obj-schema-CalendarNotification', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCalendarNotification();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CalendarNotification.fromJson(
+      final o = buildCalendarNotification();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CalendarNotification.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCalendarNotification(od as api.CalendarNotification);
+      checkCalendarNotification(od);
     });
   });
 
   unittest.group('obj-schema-Channel', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildChannel();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildChannel();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Channel.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkChannel(od as api.Channel);
+      checkChannel(od);
     });
   });
 
   unittest.group('obj-schema-ColorDefinition', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildColorDefinition();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ColorDefinition.fromJson(
+      final o = buildColorDefinition();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ColorDefinition.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkColorDefinition(od as api.ColorDefinition);
+      checkColorDefinition(od);
     });
   });
 
   unittest.group('obj-schema-Colors', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildColors();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildColors();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Colors.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkColors(od as api.Colors);
+      checkColors(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceData', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceData();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceData.fromJson(
+      final o = buildConferenceData();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceData.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceData(od as api.ConferenceData);
+      checkConferenceData(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceParameters', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceParameters();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceParameters.fromJson(
+      final o = buildConferenceParameters();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceParameters.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceParameters(od as api.ConferenceParameters);
+      checkConferenceParameters(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceParametersAddOnParameters', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceParametersAddOnParameters();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceParametersAddOnParameters.fromJson(
+      final o = buildConferenceParametersAddOnParameters();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceParametersAddOnParameters.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceParametersAddOnParameters(
-          od as api.ConferenceParametersAddOnParameters);
+      checkConferenceParametersAddOnParameters(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceProperties', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceProperties();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceProperties.fromJson(
+      final o = buildConferenceProperties();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceProperties.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceProperties(od as api.ConferenceProperties);
+      checkConferenceProperties(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceRequestStatus', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceRequestStatus();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceRequestStatus.fromJson(
+      final o = buildConferenceRequestStatus();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceRequestStatus.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceRequestStatus(od as api.ConferenceRequestStatus);
+      checkConferenceRequestStatus(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceSolution', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceSolution();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceSolution.fromJson(
+      final o = buildConferenceSolution();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceSolution.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceSolution(od as api.ConferenceSolution);
+      checkConferenceSolution(od);
     });
   });
 
   unittest.group('obj-schema-ConferenceSolutionKey', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildConferenceSolutionKey();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.ConferenceSolutionKey.fromJson(
+      final o = buildConferenceSolutionKey();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.ConferenceSolutionKey.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkConferenceSolutionKey(od as api.ConferenceSolutionKey);
+      checkConferenceSolutionKey(od);
     });
   });
 
   unittest.group('obj-schema-CreateConferenceRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildCreateConferenceRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.CreateConferenceRequest.fromJson(
+      final o = buildCreateConferenceRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.CreateConferenceRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkCreateConferenceRequest(od as api.CreateConferenceRequest);
+      checkCreateConferenceRequest(od);
     });
   });
 
   unittest.group('obj-schema-EntryPoint', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEntryPoint();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildEntryPoint();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.EntryPoint.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEntryPoint(od as api.EntryPoint);
+      checkEntryPoint(od);
     });
   });
 
   unittest.group('obj-schema-Error', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildError();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Error.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkError(od as api.Error);
+      final o = buildError();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Error.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkError(od);
     });
   });
 
   unittest.group('obj-schema-EventCreator', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventCreator();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventCreator.fromJson(
+      final o = buildEventCreator();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventCreator.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventCreator(od as api.EventCreator);
+      checkEventCreator(od);
     });
   });
 
   unittest.group('obj-schema-EventExtendedProperties', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventExtendedProperties();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventExtendedProperties.fromJson(
+      final o = buildEventExtendedProperties();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventExtendedProperties.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventExtendedProperties(od as api.EventExtendedProperties);
+      checkEventExtendedProperties(od);
     });
   });
 
   unittest.group('obj-schema-EventGadget', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventGadget();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventGadget.fromJson(
+      final o = buildEventGadget();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventGadget.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventGadget(od as api.EventGadget);
+      checkEventGadget(od);
     });
   });
 
   unittest.group('obj-schema-EventOrganizer', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventOrganizer();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventOrganizer.fromJson(
+      final o = buildEventOrganizer();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventOrganizer.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventOrganizer(od as api.EventOrganizer);
+      checkEventOrganizer(od);
     });
   });
 
   unittest.group('obj-schema-EventReminders', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventReminders();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventReminders.fromJson(
+      final o = buildEventReminders();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventReminders.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventReminders(od as api.EventReminders);
+      checkEventReminders(od);
     });
   });
 
   unittest.group('obj-schema-EventSource', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventSource();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventSource.fromJson(
+      final o = buildEventSource();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventSource.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventSource(od as api.EventSource);
+      checkEventSource(od);
     });
   });
 
   unittest.group('obj-schema-Event', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEvent();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.Event.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEvent(od as api.Event);
+      final o = buildEvent();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
+          api.Event.fromJson(oJson as core.Map<core.String, core.dynamic>);
+      checkEvent(od);
     });
   });
 
   unittest.group('obj-schema-EventAttachment', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventAttachment();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventAttachment.fromJson(
+      final o = buildEventAttachment();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventAttachment.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventAttachment(od as api.EventAttachment);
+      checkEventAttachment(od);
     });
   });
 
   unittest.group('obj-schema-EventAttendee', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventAttendee();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventAttendee.fromJson(
+      final o = buildEventAttendee();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventAttendee.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventAttendee(od as api.EventAttendee);
+      checkEventAttendee(od);
     });
   });
 
   unittest.group('obj-schema-EventDateTime', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventDateTime();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventDateTime.fromJson(
+      final o = buildEventDateTime();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventDateTime.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventDateTime(od as api.EventDateTime);
+      checkEventDateTime(od);
     });
   });
 
   unittest.group('obj-schema-EventReminder', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEventReminder();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.EventReminder.fromJson(
+      final o = buildEventReminder();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.EventReminder.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkEventReminder(od as api.EventReminder);
+      checkEventReminder(od);
     });
   });
 
   unittest.group('obj-schema-Events', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildEvents();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildEvents();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Events.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkEvents(od as api.Events);
+      checkEvents(od);
     });
   });
 
   unittest.group('obj-schema-FreeBusyCalendar', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFreeBusyCalendar();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FreeBusyCalendar.fromJson(
+      final o = buildFreeBusyCalendar();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FreeBusyCalendar.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFreeBusyCalendar(od as api.FreeBusyCalendar);
+      checkFreeBusyCalendar(od);
     });
   });
 
   unittest.group('obj-schema-FreeBusyGroup', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFreeBusyGroup();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FreeBusyGroup.fromJson(
+      final o = buildFreeBusyGroup();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FreeBusyGroup.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFreeBusyGroup(od as api.FreeBusyGroup);
+      checkFreeBusyGroup(od);
     });
   });
 
   unittest.group('obj-schema-FreeBusyRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFreeBusyRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FreeBusyRequest.fromJson(
+      final o = buildFreeBusyRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FreeBusyRequest.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFreeBusyRequest(od as api.FreeBusyRequest);
+      checkFreeBusyRequest(od);
     });
   });
 
   unittest.group('obj-schema-FreeBusyRequestItem', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFreeBusyRequestItem();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FreeBusyRequestItem.fromJson(
+      final o = buildFreeBusyRequestItem();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FreeBusyRequestItem.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFreeBusyRequestItem(od as api.FreeBusyRequestItem);
+      checkFreeBusyRequestItem(od);
     });
   });
 
   unittest.group('obj-schema-FreeBusyResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildFreeBusyResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.FreeBusyResponse.fromJson(
+      final o = buildFreeBusyResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.FreeBusyResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkFreeBusyResponse(od as api.FreeBusyResponse);
+      checkFreeBusyResponse(od);
     });
   });
 
   unittest.group('obj-schema-Setting', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSetting();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildSetting();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Setting.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkSetting(od as api.Setting);
+      checkSetting(od);
     });
   });
 
   unittest.group('obj-schema-Settings', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildSettings();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildSettings();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.Settings.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkSettings(od as api.Settings);
+      checkSettings(od);
     });
   });
 
   unittest.group('obj-schema-TimePeriod', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildTimePeriod();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildTimePeriod();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.TimePeriod.fromJson(oJson as core.Map<core.String, core.dynamic>);
-      checkTimePeriod(od as api.TimePeriod);
+      checkTimePeriod(od);
     });
   });
 
   unittest.group('resource-AclResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_calendarId = 'foo';
-      var arg_ruleId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_calendarId = 'foo';
+      final arg_ruleId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl/', pathOffset);
@@ -2530,7 +2458,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/acl/"),
+          unittest.equals('/acl/'),
         );
         pathOffset += 5;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -2540,15 +2468,15 @@ void main() {
           unittest.equals('$arg_ruleId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2556,43 +2484,43 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_calendarId, arg_ruleId, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_calendarId = 'foo';
-      var arg_ruleId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_calendarId = 'foo';
+      final arg_ruleId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl/', pathOffset);
@@ -2606,7 +2534,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/acl/"),
+          unittest.equals('/acl/'),
         );
         pathOffset += 5;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -2616,15 +2544,15 @@ void main() {
           unittest.equals('$arg_ruleId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2632,14 +2560,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAclRule());
+        final resp = convert.json.encode(buildAclRule());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -2648,34 +2576,34 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_request = buildAclRule();
-      var arg_calendarId = 'foo';
-      var arg_sendNotifications = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_request = buildAclRule();
+      final arg_calendarId = 'foo';
+      final arg_sendNotifications = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.AclRule.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkAclRule(obj as api.AclRule);
+        checkAclRule(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl', pathOffset);
@@ -2689,19 +2617,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 4),
-          unittest.equals("/acl"),
+          unittest.equals('/acl'),
         );
         pathOffset += 4;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2709,18 +2637,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAclRule());
+        final resp = convert.json.encode(buildAclRule());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_calendarId,
@@ -2729,32 +2657,32 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_calendarId = 'foo';
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_showDeleted = true;
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_calendarId = 'foo';
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_showDeleted = true;
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl', pathOffset);
@@ -2768,19 +2696,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 4),
-          unittest.equals("/acl"),
+          unittest.equals('/acl'),
         );
         pathOffset += 4;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2788,30 +2716,30 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAcl());
+        final resp = convert.json.encode(buildAcl());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_calendarId,
@@ -2824,35 +2752,35 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_request = buildAclRule();
-      var arg_calendarId = 'foo';
-      var arg_ruleId = 'foo';
-      var arg_sendNotifications = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_request = buildAclRule();
+      final arg_calendarId = 'foo';
+      final arg_ruleId = 'foo';
+      final arg_sendNotifications = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.AclRule.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkAclRule(obj as api.AclRule);
+        checkAclRule(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl/', pathOffset);
@@ -2866,7 +2794,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/acl/"),
+          unittest.equals('/acl/'),
         );
         pathOffset += 5;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -2876,15 +2804,15 @@ void main() {
           unittest.equals('$arg_ruleId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2892,18 +2820,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAclRule());
+        final resp = convert.json.encode(buildAclRule());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_calendarId, arg_ruleId,
@@ -2912,35 +2840,35 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_request = buildAclRule();
-      var arg_calendarId = 'foo';
-      var arg_ruleId = 'foo';
-      var arg_sendNotifications = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_request = buildAclRule();
+      final arg_calendarId = 'foo';
+      final arg_ruleId = 'foo';
+      final arg_sendNotifications = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.AclRule.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkAclRule(obj as api.AclRule);
+        checkAclRule(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl/', pathOffset);
@@ -2954,7 +2882,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/acl/"),
+          unittest.equals('/acl/'),
         );
         pathOffset += 5;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -2964,15 +2892,15 @@ void main() {
           unittest.equals('$arg_ruleId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -2980,18 +2908,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildAclRule());
+        final resp = convert.json.encode(buildAclRule());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_calendarId, arg_ruleId,
@@ -3000,37 +2928,37 @@ void main() {
     });
 
     unittest.test('method--watch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).acl;
-      var arg_request = buildChannel();
-      var arg_calendarId = 'foo';
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_showDeleted = true;
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).acl;
+      final arg_request = buildChannel();
+      final arg_calendarId = 'foo';
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_showDeleted = true;
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/acl/watch', pathOffset);
@@ -3044,19 +2972,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/acl/watch"),
+          unittest.equals('/acl/watch'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3064,30 +2992,30 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannel());
+        final resp = convert.json.encode(buildChannel());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.watch(arg_request, arg_calendarId,
@@ -3102,28 +3030,28 @@ void main() {
 
   unittest.group('resource-CalendarListResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("users/me/calendarList/"),
+          unittest.equals('users/me/calendarList/'),
         );
         pathOffset += 22;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3133,15 +3061,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3149,42 +3077,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_calendarId, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("users/me/calendarList/"),
+          unittest.equals('users/me/calendarList/'),
         );
         pathOffset += 22;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3194,15 +3122,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3210,14 +3138,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendarListEntry());
+        final resp = convert.json.encode(buildCalendarListEntry());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_calendarId, $fields: arg_$fields);
@@ -3225,45 +3153,45 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_request = buildCalendarListEntry();
-      var arg_colorRgbFormat = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_request = buildCalendarListEntry();
+      final arg_colorRgbFormat = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CalendarListEntry.fromJson(
+        final obj = api.CalendarListEntry.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCalendarListEntry(obj as api.CalendarListEntry);
+        checkCalendarListEntry(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("users/me/calendarList"),
+          unittest.equals('users/me/calendarList'),
         );
         pathOffset += 21;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3271,18 +3199,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["colorRgbFormat"]!.first,
-          unittest.equals("$arg_colorRgbFormat"),
+          queryMap['colorRgbFormat']!.first,
+          unittest.equals('$arg_colorRgbFormat'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendarListEntry());
+        final resp = convert.json.encode(buildCalendarListEntry());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request,
@@ -3291,45 +3219,45 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_maxResults = 42;
-      var arg_minAccessRole = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_showDeleted = true;
-      var arg_showHidden = true;
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_maxResults = 42;
+      final arg_minAccessRole = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_showDeleted = true;
+      final arg_showHidden = true;
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 21),
-          unittest.equals("users/me/calendarList"),
+          unittest.equals('users/me/calendarList'),
         );
         pathOffset += 21;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3337,38 +3265,38 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["minAccessRole"]!.first,
+          queryMap['minAccessRole']!.first,
           unittest.equals(arg_minAccessRole),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["showHidden"]!.first,
-          unittest.equals("$arg_showHidden"),
+          queryMap['showHidden']!.first,
+          unittest.equals('$arg_showHidden'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendarList());
+        final resp = convert.json.encode(buildCalendarList());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -3383,34 +3311,34 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_request = buildCalendarListEntry();
-      var arg_calendarId = 'foo';
-      var arg_colorRgbFormat = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_request = buildCalendarListEntry();
+      final arg_calendarId = 'foo';
+      final arg_colorRgbFormat = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CalendarListEntry.fromJson(
+        final obj = api.CalendarListEntry.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCalendarListEntry(obj as api.CalendarListEntry);
+        checkCalendarListEntry(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("users/me/calendarList/"),
+          unittest.equals('users/me/calendarList/'),
         );
         pathOffset += 22;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3420,15 +3348,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3436,18 +3364,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["colorRgbFormat"]!.first,
-          unittest.equals("$arg_colorRgbFormat"),
+          queryMap['colorRgbFormat']!.first,
+          unittest.equals('$arg_colorRgbFormat'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendarListEntry());
+        final resp = convert.json.encode(buildCalendarListEntry());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_calendarId,
@@ -3456,34 +3384,34 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_request = buildCalendarListEntry();
-      var arg_calendarId = 'foo';
-      var arg_colorRgbFormat = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_request = buildCalendarListEntry();
+      final arg_calendarId = 'foo';
+      final arg_colorRgbFormat = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.CalendarListEntry.fromJson(
+        final obj = api.CalendarListEntry.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkCalendarListEntry(obj as api.CalendarListEntry);
+        checkCalendarListEntry(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 22),
-          unittest.equals("users/me/calendarList/"),
+          unittest.equals('users/me/calendarList/'),
         );
         pathOffset += 22;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3493,15 +3421,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3509,18 +3437,18 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["colorRgbFormat"]!.first,
-          unittest.equals("$arg_colorRgbFormat"),
+          queryMap['colorRgbFormat']!.first,
+          unittest.equals('$arg_colorRgbFormat'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendarListEntry());
+        final resp = convert.json.encode(buildCalendarListEntry());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(arg_request, arg_calendarId,
@@ -3529,50 +3457,50 @@ void main() {
     });
 
     unittest.test('method--watch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendarList;
-      var arg_request = buildChannel();
-      var arg_maxResults = 42;
-      var arg_minAccessRole = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_showDeleted = true;
-      var arg_showHidden = true;
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendarList;
+      final arg_request = buildChannel();
+      final arg_maxResults = 42;
+      final arg_minAccessRole = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_showDeleted = true;
+      final arg_showHidden = true;
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 27),
-          unittest.equals("users/me/calendarList/watch"),
+          unittest.equals('users/me/calendarList/watch'),
         );
         pathOffset += 27;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3580,38 +3508,38 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["minAccessRole"]!.first,
+          queryMap['minAccessRole']!.first,
           unittest.equals(arg_minAccessRole),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["showHidden"]!.first,
-          unittest.equals("$arg_showHidden"),
+          queryMap['showHidden']!.first,
+          unittest.equals('$arg_showHidden'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannel());
+        final resp = convert.json.encode(buildChannel());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.watch(arg_request,
@@ -3628,28 +3556,28 @@ void main() {
 
   unittest.group('resource-CalendarsResource', () {
     unittest.test('method--clear', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/clear', pathOffset);
@@ -3663,19 +3591,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("/clear"),
+          unittest.equals('/clear'),
         );
         pathOffset += 6;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3683,42 +3611,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.clear(arg_calendarId, $fields: arg_$fields);
     });
 
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3728,15 +3656,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3744,42 +3672,42 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_calendarId, $fields: arg_$fields);
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3789,15 +3717,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3805,14 +3733,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendar());
+        final resp = convert.json.encode(buildCalendar());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_calendarId, $fields: arg_$fields);
@@ -3820,44 +3748,44 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_request = buildCalendar();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_request = buildCalendar();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Calendar.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCalendar(obj as api.Calendar);
+        checkCalendar(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 9),
-          unittest.equals("calendars"),
+          unittest.equals('calendars'),
         );
         pathOffset += 9;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3865,14 +3793,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendar());
+        final resp = convert.json.encode(buildCalendar());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, $fields: arg_$fields);
@@ -3880,33 +3808,33 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_request = buildCalendar();
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_request = buildCalendar();
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Calendar.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCalendar(obj as api.Calendar);
+        checkCalendar(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3916,15 +3844,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -3932,14 +3860,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendar());
+        final resp = convert.json.encode(buildCalendar());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -3948,33 +3876,33 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).calendars;
-      var arg_request = buildCalendar();
-      var arg_calendarId = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).calendars;
+      final arg_request = buildCalendar();
+      final arg_calendarId = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Calendar.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkCalendar(obj as api.Calendar);
+        checkCalendar(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -3984,15 +3912,15 @@ void main() {
           unittest.equals('$arg_calendarId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4000,14 +3928,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildCalendar());
+        final resp = convert.json.encode(buildCalendar());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response =
@@ -4018,44 +3946,44 @@ void main() {
 
   unittest.group('resource-ChannelsResource', () {
     unittest.test('method--stop', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).channels;
-      var arg_request = buildChannel();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).channels;
+      final arg_request = buildChannel();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 13),
-          unittest.equals("channels/stop"),
+          unittest.equals('channels/stop'),
         );
         pathOffset += 13;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4063,14 +3991,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.stop(arg_request, $fields: arg_$fields);
@@ -4079,39 +4007,39 @@ void main() {
 
   unittest.group('resource-ColorsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).colors;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).colors;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 6),
-          unittest.equals("colors"),
+          unittest.equals('colors'),
         );
         pathOffset += 6;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4119,14 +4047,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildColors());
+        final resp = convert.json.encode(buildColors());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get($fields: arg_$fields);
@@ -4136,31 +4064,31 @@ void main() {
 
   unittest.group('resource-EventsResource', () {
     unittest.test('method--delete', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -4174,7 +4102,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4184,15 +4112,15 @@ void main() {
           unittest.equals('$arg_eventId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4200,22 +4128,22 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = '';
+        final resp = '';
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       await res.delete(arg_calendarId, arg_eventId,
@@ -4225,32 +4153,32 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_maxAttendees = 42;
-      var arg_timeZone = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_maxAttendees = 42;
+      final arg_timeZone = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -4264,7 +4192,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4274,15 +4202,15 @@ void main() {
           unittest.equals('$arg_eventId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4290,26 +4218,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          queryMap["timeZone"]!.first,
+          queryMap['timeZone']!.first,
           unittest.equals(arg_timeZone),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_calendarId, arg_eventId,
@@ -4321,35 +4249,35 @@ void main() {
     });
 
     unittest.test('method--import', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_request = buildEvent();
-      var arg_calendarId = 'foo';
-      var arg_conferenceDataVersion = 42;
-      var arg_supportsAttachments = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_request = buildEvent();
+      final arg_calendarId = 'foo';
+      final arg_conferenceDataVersion = 42;
+      final arg_supportsAttachments = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Event.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkEvent(obj as api.Event);
+        checkEvent(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/import', pathOffset);
@@ -4363,19 +4291,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 14),
-          unittest.equals("/events/import"),
+          unittest.equals('/events/import'),
         );
         pathOffset += 14;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4383,22 +4311,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["conferenceDataVersion"]!.first),
+          core.int.parse(queryMap['conferenceDataVersion']!.first),
           unittest.equals(arg_conferenceDataVersion),
         );
         unittest.expect(
-          queryMap["supportsAttachments"]!.first,
-          unittest.equals("$arg_supportsAttachments"),
+          queryMap['supportsAttachments']!.first,
+          unittest.equals('$arg_supportsAttachments'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.import(arg_request, arg_calendarId,
@@ -4409,38 +4337,38 @@ void main() {
     });
 
     unittest.test('method--insert', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_request = buildEvent();
-      var arg_calendarId = 'foo';
-      var arg_conferenceDataVersion = 42;
-      var arg_maxAttendees = 42;
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_supportsAttachments = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_request = buildEvent();
+      final arg_calendarId = 'foo';
+      final arg_conferenceDataVersion = 42;
+      final arg_maxAttendees = 42;
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_supportsAttachments = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Event.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkEvent(obj as api.Event);
+        checkEvent(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events', pathOffset);
@@ -4454,19 +4382,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/events"),
+          unittest.equals('/events'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4474,34 +4402,34 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["conferenceDataVersion"]!.first),
+          core.int.parse(queryMap['conferenceDataVersion']!.first),
           unittest.equals(arg_conferenceDataVersion),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["supportsAttachments"]!.first,
-          unittest.equals("$arg_supportsAttachments"),
+          queryMap['supportsAttachments']!.first,
+          unittest.equals('$arg_supportsAttachments'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.insert(arg_request, arg_calendarId,
@@ -4515,38 +4443,38 @@ void main() {
     });
 
     unittest.test('method--instances', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_maxAttendees = 42;
-      var arg_maxResults = 42;
-      var arg_originalStart = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_showDeleted = true;
-      var arg_timeMax = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeMin = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeZone = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_maxAttendees = 42;
+      final arg_maxResults = 42;
+      final arg_originalStart = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_showDeleted = true;
+      final arg_timeMax = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeMin = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeZone = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -4560,7 +4488,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         index = path.indexOf('/instances', pathOffset);
@@ -4574,19 +4502,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("/instances"),
+          unittest.equals('/instances'),
         );
         pathOffset += 10;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4594,50 +4522,50 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["originalStart"]!.first,
+          queryMap['originalStart']!.first,
           unittest.equals(arg_originalStart),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMax"]!.first),
+          core.DateTime.parse(queryMap['timeMax']!.first),
           unittest.equals(arg_timeMax),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMin"]!.first),
+          core.DateTime.parse(queryMap['timeMin']!.first),
           unittest.equals(arg_timeMin),
         );
         unittest.expect(
-          queryMap["timeZone"]!.first,
+          queryMap['timeZone']!.first,
           unittest.equals(arg_timeZone),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvents());
+        final resp = convert.json.encode(buildEvents());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.instances(arg_calendarId, arg_eventId,
@@ -4655,45 +4583,45 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_iCalUID = 'foo';
-      var arg_maxAttendees = 42;
-      var arg_maxResults = 42;
-      var arg_orderBy = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_privateExtendedProperty = buildUnnamed2007();
-      var arg_q = 'foo';
-      var arg_sharedExtendedProperty = buildUnnamed2008();
-      var arg_showDeleted = true;
-      var arg_showHiddenInvitations = true;
-      var arg_singleEvents = true;
-      var arg_syncToken = 'foo';
-      var arg_timeMax = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeMin = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeZone = 'foo';
-      var arg_updatedMin = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_iCalUID = 'foo';
+      final arg_maxAttendees = 42;
+      final arg_maxResults = 42;
+      final arg_orderBy = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_privateExtendedProperty = buildUnnamed28();
+      final arg_q = 'foo';
+      final arg_sharedExtendedProperty = buildUnnamed29();
+      final arg_showDeleted = true;
+      final arg_showHiddenInvitations = true;
+      final arg_singleEvents = true;
+      final arg_syncToken = 'foo';
+      final arg_timeMax = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeMin = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeZone = 'foo';
+      final arg_updatedMin = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events', pathOffset);
@@ -4707,19 +4635,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 7),
-          unittest.equals("/events"),
+          unittest.equals('/events'),
         );
         pathOffset += 7;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4727,82 +4655,82 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          queryMap["iCalUID"]!.first,
+          queryMap['iCalUID']!.first,
           unittest.equals(arg_iCalUID),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["privateExtendedProperty"]!,
+          queryMap['privateExtendedProperty']!,
           unittest.equals(arg_privateExtendedProperty),
         );
         unittest.expect(
-          queryMap["q"]!.first,
+          queryMap['q']!.first,
           unittest.equals(arg_q),
         );
         unittest.expect(
-          queryMap["sharedExtendedProperty"]!,
+          queryMap['sharedExtendedProperty']!,
           unittest.equals(arg_sharedExtendedProperty),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["showHiddenInvitations"]!.first,
-          unittest.equals("$arg_showHiddenInvitations"),
+          queryMap['showHiddenInvitations']!.first,
+          unittest.equals('$arg_showHiddenInvitations'),
         );
         unittest.expect(
-          queryMap["singleEvents"]!.first,
-          unittest.equals("$arg_singleEvents"),
+          queryMap['singleEvents']!.first,
+          unittest.equals('$arg_singleEvents'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMax"]!.first),
+          core.DateTime.parse(queryMap['timeMax']!.first),
           unittest.equals(arg_timeMax),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMin"]!.first),
+          core.DateTime.parse(queryMap['timeMin']!.first),
           unittest.equals(arg_timeMin),
         );
         unittest.expect(
-          queryMap["timeZone"]!.first,
+          queryMap['timeZone']!.first,
           unittest.equals(arg_timeZone),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["updatedMin"]!.first),
+          core.DateTime.parse(queryMap['updatedMin']!.first),
           unittest.equals(arg_updatedMin),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvents());
+        final resp = convert.json.encode(buildEvents());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(arg_calendarId,
@@ -4828,32 +4756,32 @@ void main() {
     });
 
     unittest.test('method--move', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_destination = 'foo';
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_destination = 'foo';
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -4867,7 +4795,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         index = path.indexOf('/move', pathOffset);
@@ -4881,19 +4809,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 5),
-          unittest.equals("/move"),
+          unittest.equals('/move'),
         );
         pathOffset += 5;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -4901,26 +4829,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["destination"]!.first,
+          queryMap['destination']!.first,
           unittest.equals(arg_destination),
         );
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.move(
@@ -4932,40 +4860,40 @@ void main() {
     });
 
     unittest.test('method--patch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_request = buildEvent();
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_conferenceDataVersion = 42;
-      var arg_maxAttendees = 42;
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_supportsAttachments = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_request = buildEvent();
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_conferenceDataVersion = 42;
+      final arg_maxAttendees = 42;
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_supportsAttachments = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Event.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkEvent(obj as api.Event);
+        checkEvent(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -4979,7 +4907,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -4989,15 +4917,15 @@ void main() {
           unittest.equals('$arg_eventId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5005,38 +4933,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          core.int.parse(queryMap["conferenceDataVersion"]!.first),
+          core.int.parse(queryMap['conferenceDataVersion']!.first),
           unittest.equals(arg_conferenceDataVersion),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["supportsAttachments"]!.first,
-          unittest.equals("$arg_supportsAttachments"),
+          queryMap['supportsAttachments']!.first,
+          unittest.equals('$arg_supportsAttachments'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.patch(arg_request, arg_calendarId, arg_eventId,
@@ -5051,31 +4979,31 @@ void main() {
     });
 
     unittest.test('method--quickAdd', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_calendarId = 'foo';
-      var arg_text = 'foo';
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_calendarId = 'foo';
+      final arg_text = 'foo';
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/quickAdd', pathOffset);
@@ -5089,19 +5017,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 16),
-          unittest.equals("/events/quickAdd"),
+          unittest.equals('/events/quickAdd'),
         );
         pathOffset += 16;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5109,26 +5037,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["text"]!.first,
+          queryMap['text']!.first,
           unittest.equals(arg_text),
         );
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.quickAdd(arg_calendarId, arg_text,
@@ -5139,40 +5067,40 @@ void main() {
     });
 
     unittest.test('method--update', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_request = buildEvent();
-      var arg_calendarId = 'foo';
-      var arg_eventId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_conferenceDataVersion = 42;
-      var arg_maxAttendees = 42;
-      var arg_sendNotifications = true;
-      var arg_sendUpdates = 'foo';
-      var arg_supportsAttachments = true;
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_request = buildEvent();
+      final arg_calendarId = 'foo';
+      final arg_eventId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_conferenceDataVersion = 42;
+      final arg_maxAttendees = 42;
+      final arg_sendNotifications = true;
+      final arg_sendUpdates = 'foo';
+      final arg_supportsAttachments = true;
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Event.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkEvent(obj as api.Event);
+        checkEvent(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/', pathOffset);
@@ -5186,7 +5114,7 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("/events/"),
+          unittest.equals('/events/'),
         );
         pathOffset += 8;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5196,15 +5124,15 @@ void main() {
           unittest.equals('$arg_eventId'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5212,38 +5140,38 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          core.int.parse(queryMap["conferenceDataVersion"]!.first),
+          core.int.parse(queryMap['conferenceDataVersion']!.first),
           unittest.equals(arg_conferenceDataVersion),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          queryMap["sendNotifications"]!.first,
-          unittest.equals("$arg_sendNotifications"),
+          queryMap['sendNotifications']!.first,
+          unittest.equals('$arg_sendNotifications'),
         );
         unittest.expect(
-          queryMap["sendUpdates"]!.first,
+          queryMap['sendUpdates']!.first,
           unittest.equals(arg_sendUpdates),
         );
         unittest.expect(
-          queryMap["supportsAttachments"]!.first,
-          unittest.equals("$arg_supportsAttachments"),
+          queryMap['supportsAttachments']!.first,
+          unittest.equals('$arg_supportsAttachments'),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildEvent());
+        final resp = convert.json.encode(buildEvent());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.update(
@@ -5259,50 +5187,50 @@ void main() {
     });
 
     unittest.test('method--watch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).events;
-      var arg_request = buildChannel();
-      var arg_calendarId = 'foo';
-      var arg_alwaysIncludeEmail = true;
-      var arg_iCalUID = 'foo';
-      var arg_maxAttendees = 42;
-      var arg_maxResults = 42;
-      var arg_orderBy = 'foo';
-      var arg_pageToken = 'foo';
-      var arg_privateExtendedProperty = buildUnnamed2009();
-      var arg_q = 'foo';
-      var arg_sharedExtendedProperty = buildUnnamed2010();
-      var arg_showDeleted = true;
-      var arg_showHiddenInvitations = true;
-      var arg_singleEvents = true;
-      var arg_syncToken = 'foo';
-      var arg_timeMax = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeMin = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_timeZone = 'foo';
-      var arg_updatedMin = core.DateTime.parse("2002-02-27T14:01:02");
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).events;
+      final arg_request = buildChannel();
+      final arg_calendarId = 'foo';
+      final arg_alwaysIncludeEmail = true;
+      final arg_iCalUID = 'foo';
+      final arg_maxAttendees = 42;
+      final arg_maxResults = 42;
+      final arg_orderBy = 'foo';
+      final arg_pageToken = 'foo';
+      final arg_privateExtendedProperty = buildUnnamed30();
+      final arg_q = 'foo';
+      final arg_sharedExtendedProperty = buildUnnamed31();
+      final arg_showDeleted = true;
+      final arg_showHiddenInvitations = true;
+      final arg_singleEvents = true;
+      final arg_syncToken = 'foo';
+      final arg_timeMax = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeMin = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_timeZone = 'foo';
+      final arg_updatedMin = core.DateTime.parse('2002-02-27T14:01:02Z');
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 10),
-          unittest.equals("calendars/"),
+          unittest.equals('calendars/'),
         );
         pathOffset += 10;
         index = path.indexOf('/events/watch', pathOffset);
@@ -5316,19 +5244,19 @@ void main() {
         );
         unittest.expect(
           path.substring(pathOffset, pathOffset + 13),
-          unittest.equals("/events/watch"),
+          unittest.equals('/events/watch'),
         );
         pathOffset += 13;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5336,82 +5264,82 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["alwaysIncludeEmail"]!.first,
-          unittest.equals("$arg_alwaysIncludeEmail"),
+          queryMap['alwaysIncludeEmail']!.first,
+          unittest.equals('$arg_alwaysIncludeEmail'),
         );
         unittest.expect(
-          queryMap["iCalUID"]!.first,
+          queryMap['iCalUID']!.first,
           unittest.equals(arg_iCalUID),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxAttendees"]!.first),
+          core.int.parse(queryMap['maxAttendees']!.first),
           unittest.equals(arg_maxAttendees),
         );
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["orderBy"]!.first,
+          queryMap['orderBy']!.first,
           unittest.equals(arg_orderBy),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["privateExtendedProperty"]!,
+          queryMap['privateExtendedProperty']!,
           unittest.equals(arg_privateExtendedProperty),
         );
         unittest.expect(
-          queryMap["q"]!.first,
+          queryMap['q']!.first,
           unittest.equals(arg_q),
         );
         unittest.expect(
-          queryMap["sharedExtendedProperty"]!,
+          queryMap['sharedExtendedProperty']!,
           unittest.equals(arg_sharedExtendedProperty),
         );
         unittest.expect(
-          queryMap["showDeleted"]!.first,
-          unittest.equals("$arg_showDeleted"),
+          queryMap['showDeleted']!.first,
+          unittest.equals('$arg_showDeleted'),
         );
         unittest.expect(
-          queryMap["showHiddenInvitations"]!.first,
-          unittest.equals("$arg_showHiddenInvitations"),
+          queryMap['showHiddenInvitations']!.first,
+          unittest.equals('$arg_showHiddenInvitations'),
         );
         unittest.expect(
-          queryMap["singleEvents"]!.first,
-          unittest.equals("$arg_singleEvents"),
+          queryMap['singleEvents']!.first,
+          unittest.equals('$arg_singleEvents'),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMax"]!.first),
+          core.DateTime.parse(queryMap['timeMax']!.first),
           unittest.equals(arg_timeMax),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["timeMin"]!.first),
+          core.DateTime.parse(queryMap['timeMin']!.first),
           unittest.equals(arg_timeMin),
         );
         unittest.expect(
-          queryMap["timeZone"]!.first,
+          queryMap['timeZone']!.first,
           unittest.equals(arg_timeZone),
         );
         unittest.expect(
-          core.DateTime.parse(queryMap["updatedMin"]!.first),
+          core.DateTime.parse(queryMap['updatedMin']!.first),
           unittest.equals(arg_updatedMin),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannel());
+        final resp = convert.json.encode(buildChannel());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.watch(arg_request, arg_calendarId,
@@ -5439,44 +5367,44 @@ void main() {
 
   unittest.group('resource-FreebusyResource', () {
     unittest.test('method--query', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).freebusy;
-      var arg_request = buildFreeBusyRequest();
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).freebusy;
+      final arg_request = buildFreeBusyRequest();
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj = api.FreeBusyRequest.fromJson(
+        final obj = api.FreeBusyRequest.fromJson(
             json as core.Map<core.String, core.dynamic>);
-        checkFreeBusyRequest(obj as api.FreeBusyRequest);
+        checkFreeBusyRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 8),
-          unittest.equals("freeBusy"),
+          unittest.equals('freeBusy'),
         );
         pathOffset += 8;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5484,14 +5412,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildFreeBusyResponse());
+        final resp = convert.json.encode(buildFreeBusyResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.query(arg_request, $fields: arg_$fields);
@@ -5501,28 +5429,28 @@ void main() {
 
   unittest.group('resource-SettingsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).settings;
-      var arg_setting = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).settings;
+      final arg_setting = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 18),
-          unittest.equals("users/me/settings/"),
+          unittest.equals('users/me/settings/'),
         );
         pathOffset += 18;
         subPart = core.Uri.decodeQueryComponent(path.substring(pathOffset));
@@ -5532,15 +5460,15 @@ void main() {
           unittest.equals('$arg_setting'),
         );
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5548,14 +5476,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSetting());
+        final resp = convert.json.encode(buildSetting());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_setting, $fields: arg_$fields);
@@ -5563,42 +5491,42 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).settings;
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).settings;
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 17),
-          unittest.equals("users/me/settings"),
+          unittest.equals('users/me/settings'),
         );
         pathOffset += 17;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5606,26 +5534,26 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildSettings());
+        final resp = convert.json.encode(buildSettings());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.list(
@@ -5637,47 +5565,47 @@ void main() {
     });
 
     unittest.test('method--watch', () async {
-      var mock = HttpServerMock();
-      var res = api.CalendarApi(mock).settings;
-      var arg_request = buildChannel();
-      var arg_maxResults = 42;
-      var arg_pageToken = 'foo';
-      var arg_syncToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.CalendarApi(mock).settings;
+      final arg_request = buildChannel();
+      final arg_maxResults = 42;
+      final arg_pageToken = 'foo';
+      final arg_syncToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.Channel.fromJson(json as core.Map<core.String, core.dynamic>);
-        checkChannel(obj as api.Channel);
+        checkChannel(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 12),
-          unittest.equals("calendar/v3/"),
+          unittest.equals('calendar/v3/'),
         );
         pathOffset += 12;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 23),
-          unittest.equals("users/me/settings/watch"),
+          unittest.equals('users/me/settings/watch'),
         );
         pathOffset += 23;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -5685,26 +5613,26 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["maxResults"]!.first),
+          core.int.parse(queryMap['maxResults']!.first),
           unittest.equals(arg_maxResults),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["syncToken"]!.first,
+          queryMap['syncToken']!.first,
           unittest.equals(arg_syncToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildChannel());
+        final resp = convert.json.encode(buildChannel());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.watch(arg_request,

@@ -68,7 +68,7 @@ class CustomersResource {
 
   CustomersResource(commons.ApiRequester client) : _requester = client;
 
-  /// Get a customer account.
+  /// Gets a customer account.
   ///
   /// Use this operation to see a customer account already in your reseller
   /// management, or to see the minimal account information for an existing
@@ -78,10 +78,12 @@ class CustomersResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -112,7 +114,7 @@ class CustomersResource {
     return Customer.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Order a new customer's account.
+  /// Orders a new customer's account.
   ///
   /// Before ordering a new customer account, establish whether the customer
   /// account already exists using the
@@ -158,7 +160,7 @@ class CustomersResource {
     core.String? customerAuthToken,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (customerAuthToken != null) 'customerAuthToken': [customerAuthToken],
       if ($fields != null) 'fields': [$fields],
@@ -175,18 +177,23 @@ class CustomersResource {
     return Customer.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a customer account's settings.
+  /// Updates a customer account's settings.
   ///
-  /// This method supports patch semantics.
+  /// This method supports patch semantics. You cannot update `customerType` via
+  /// the Reseller API, but a `"team"` customer can verify their domain and
+  /// become `customerType = "domain"`. For more information, see
+  /// [Verify your domain to unlock Essentials features](https://support.google.com/a/answer/9122284).
   ///
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -203,7 +210,7 @@ class CustomersResource {
     core.String customerId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -220,19 +227,23 @@ class CustomersResource {
     return Customer.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a customer account's settings.
+  /// Updates a customer account's settings.
   ///
-  /// For more information, see \[update a customer's
+  /// You cannot update `customerType` via the Reseller API, but a `"team"`
+  /// customer can verify their domain and become `customerType = "domain"`. For
+  /// more information, see \[update a customer's
   /// settings\](/admin-sdk/reseller/v1/how-tos/manage_customers#update_customer).
   ///
   /// [request] - The metadata request object.
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -249,7 +260,7 @@ class CustomersResource {
     core.String customerId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -394,10 +405,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -439,7 +452,7 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a subscription plan.
+  /// Updates a subscription plan.
   ///
   /// Use this method to update a plan for a 30-day trial or a flexible plan
   /// subscription to an annual commitment plan with monthly or yearly payments.
@@ -451,10 +464,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -478,7 +493,7 @@ class SubscriptionsResource {
     core.String subscriptionId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -499,7 +514,7 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a user license's renewal settings.
+  /// Updates a user license's renewal settings.
   ///
   /// This is applicable for accounts with annual commitment plans only. For
   /// more information, see the description in \[manage
@@ -509,10 +524,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -536,7 +553,7 @@ class SubscriptionsResource {
     core.String subscriptionId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -557,7 +574,7 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Update a subscription's user license settings.
+  /// Updates a subscription's user license settings.
   ///
   /// For more information about updating an annual commitment plan or a
   /// flexible plan subscription’s licenses, see \[Manage
@@ -567,10 +584,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -594,7 +613,7 @@ class SubscriptionsResource {
     core.String subscriptionId, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -615,14 +634,16 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Cancel, suspend, or transfer a subscription to direct.
+  /// Cancels, suspends, or transfers a subscription to direct.
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -674,7 +695,7 @@ class SubscriptionsResource {
     );
   }
 
-  /// Get a specific subscription.
+  /// Gets a specific subscription.
   ///
   /// The `subscriptionId` can be found using the \[Retrieve all reseller
   /// subscriptions\](/admin-sdk/reseller/v1/how-tos/manage_subscriptions#get_all_subscriptions)
@@ -684,10 +705,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -728,7 +751,7 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Create or transfer a subscription.
+  /// Creates or transfer a subscription.
   ///
   /// Create a subscription for a customer's account that you ordered using the
   /// \[Order a new customer
@@ -748,10 +771,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [customerAuthToken] - The `customerAuthToken` query string is required
   /// when creating a resold account that transfers a direct customer's
@@ -776,7 +801,7 @@ class SubscriptionsResource {
     core.String? customerAuthToken,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (customerAuthToken != null) 'customerAuthToken': [customerAuthToken],
       if ($fields != null) 'fields': [$fields],
@@ -796,7 +821,7 @@ class SubscriptionsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// List of subscriptions managed by the reseller.
+  /// Lists of subscriptions managed by the reseller.
   ///
   /// The list can be all subscriptions, all of a customer's subscriptions, or
   /// all of a customer's transferable subscriptions. Optionally, this method
@@ -813,10 +838,12 @@ class SubscriptionsResource {
   /// complete the subscription transfer. For more information, see the
   /// administrator help center.
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [customerNamePrefix] - When retrieving all of your subscriptions and
   /// filtering for specific customers, you can enter a prefix for a customer
@@ -881,10 +908,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -941,10 +970,12 @@ class SubscriptionsResource {
   ///
   /// Request parameters:
   ///
-  /// [customerId] - Either the customer's primary domain name or the customer's
-  /// unique identifier. If using the domain name, we do not recommend using a
-  /// `customerId` as a key for persistent data. If the domain name for a
-  /// `customerId` is changed, the Google system automatically updates.
+  /// [customerId] - This can be either the customer's primary domain name or
+  /// the customer's unique identifier. If the domain name for a customer
+  /// changes, the old domain name cannot be used to access the customer, but
+  /// the customer's unique identifier (as returned by the API) can always be
+  /// used. We recommend storing the unique identifier in your systems where
+  /// applicable.
   ///
   /// [subscriptionId] - This is a required property. The `subscriptionId` is
   /// the subscription identifier and is unique for each customer. Since a
@@ -1033,40 +1064,50 @@ class Address {
   /// An example of a `region` value is `CA` for the state of California.
   core.String? region;
 
-  Address();
+  Address({
+    this.addressLine1,
+    this.addressLine2,
+    this.addressLine3,
+    this.contactName,
+    this.countryCode,
+    this.kind,
+    this.locality,
+    this.organizationName,
+    this.postalCode,
+    this.region,
+  });
 
-  Address.fromJson(core.Map _json) {
-    if (_json.containsKey('addressLine1')) {
-      addressLine1 = _json['addressLine1'] as core.String;
-    }
-    if (_json.containsKey('addressLine2')) {
-      addressLine2 = _json['addressLine2'] as core.String;
-    }
-    if (_json.containsKey('addressLine3')) {
-      addressLine3 = _json['addressLine3'] as core.String;
-    }
-    if (_json.containsKey('contactName')) {
-      contactName = _json['contactName'] as core.String;
-    }
-    if (_json.containsKey('countryCode')) {
-      countryCode = _json['countryCode'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('locality')) {
-      locality = _json['locality'] as core.String;
-    }
-    if (_json.containsKey('organizationName')) {
-      organizationName = _json['organizationName'] as core.String;
-    }
-    if (_json.containsKey('postalCode')) {
-      postalCode = _json['postalCode'] as core.String;
-    }
-    if (_json.containsKey('region')) {
-      region = _json['region'] as core.String;
-    }
-  }
+  Address.fromJson(core.Map _json)
+      : this(
+          addressLine1: _json.containsKey('addressLine1')
+              ? _json['addressLine1'] as core.String
+              : null,
+          addressLine2: _json.containsKey('addressLine2')
+              ? _json['addressLine2'] as core.String
+              : null,
+          addressLine3: _json.containsKey('addressLine3')
+              ? _json['addressLine3'] as core.String
+              : null,
+          contactName: _json.containsKey('contactName')
+              ? _json['contactName'] as core.String
+              : null,
+          countryCode: _json.containsKey('countryCode')
+              ? _json['countryCode'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          locality: _json.containsKey('locality')
+              ? _json['locality'] as core.String
+              : null,
+          organizationName: _json.containsKey('organizationName')
+              ? _json['organizationName'] as core.String
+              : null,
+          postalCode: _json.containsKey('postalCode')
+              ? _json['postalCode'] as core.String
+              : null,
+          region: _json.containsKey('region')
+              ? _json['region'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (addressLine1 != null) 'addressLine1': addressLine1!,
@@ -1125,33 +1166,38 @@ class ChangePlanRequest {
   /// The seats property is the number of user seat licenses.
   Seats? seats;
 
-  ChangePlanRequest();
+  ChangePlanRequest({
+    this.dealCode,
+    this.kind,
+    this.planName,
+    this.purchaseOrderId,
+    this.seats,
+  });
 
-  ChangePlanRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dealCode')) {
-      dealCode = _json['dealCode'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('planName')) {
-      planName = _json['planName'] as core.String;
-    }
-    if (_json.containsKey('purchaseOrderId')) {
-      purchaseOrderId = _json['purchaseOrderId'] as core.String;
-    }
-    if (_json.containsKey('seats')) {
-      seats =
-          Seats.fromJson(_json['seats'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ChangePlanRequest.fromJson(core.Map _json)
+      : this(
+          dealCode: _json.containsKey('dealCode')
+              ? _json['dealCode'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          planName: _json.containsKey('planName')
+              ? _json['planName'] as core.String
+              : null,
+          purchaseOrderId: _json.containsKey('purchaseOrderId')
+              ? _json['purchaseOrderId'] as core.String
+              : null,
+          seats: _json.containsKey('seats')
+              ? Seats.fromJson(
+                  _json['seats'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dealCode != null) 'dealCode': dealCode!,
         if (kind != null) 'kind': kind!,
         if (planName != null) 'planName': planName!,
         if (purchaseOrderId != null) 'purchaseOrderId': purchaseOrderId!,
-        if (seats != null) 'seats': seats!.toJson(),
+        if (seats != null) 'seats': seats!,
       };
 }
 
@@ -1164,8 +1210,9 @@ class Customer {
   /// secondary contact used if something happens to the customer's service such
   /// as service outage or a security issue.
   ///
-  /// This property is required when creating a new customer and should not use
-  /// the same domain as `customerDomain`.
+  /// This property is required when creating a new "domain" customer and should
+  /// not use the same domain as `customerDomain`. The `alternateEmail` field is
+  /// not necessary to create a "team" customer.
   core.String? alternateEmail;
 
   /// The customer's primary domain name string.
@@ -1183,6 +1230,18 @@ class Customer {
   /// In a request, this property can be either the primary domain or the unique
   /// identifier generated by Google.
   core.String? customerId;
+
+  /// Identifies the type of the customer.
+  ///
+  /// Acceptable values include: * `domain`: Implies a domain-verified customer
+  /// (default). * `team`: Implies an email-verified customer. For more
+  /// information, see
+  /// [managed teams](https://support.google.com/a/users/answer/9939479).
+  /// Possible string values are:
+  /// - "customerTypeUnspecified" : Customer type not known
+  /// - "domain" : Domained or domain-owning customers
+  /// - "team" : Domainless or email-verified customers
+  core.String? customerType;
 
   /// Identifies the resource as a customer.
   ///
@@ -1202,6 +1261,9 @@ class Customer {
   /// Each field has a limit of 255 charcters.
   Address? postalAddress;
 
+  /// The first admin details of the customer, present in case of TEAM customer.
+  PrimaryAdmin? primaryAdmin;
+
   /// URL to customer's Admin console dashboard.
   ///
   /// The read-only URL is generated by the API service. This is used if your
@@ -1209,35 +1271,52 @@ class Customer {
   /// console.
   core.String? resourceUiUrl;
 
-  Customer();
+  Customer({
+    this.alternateEmail,
+    this.customerDomain,
+    this.customerDomainVerified,
+    this.customerId,
+    this.customerType,
+    this.kind,
+    this.phoneNumber,
+    this.postalAddress,
+    this.primaryAdmin,
+    this.resourceUiUrl,
+  });
 
-  Customer.fromJson(core.Map _json) {
-    if (_json.containsKey('alternateEmail')) {
-      alternateEmail = _json['alternateEmail'] as core.String;
-    }
-    if (_json.containsKey('customerDomain')) {
-      customerDomain = _json['customerDomain'] as core.String;
-    }
-    if (_json.containsKey('customerDomainVerified')) {
-      customerDomainVerified = _json['customerDomainVerified'] as core.bool;
-    }
-    if (_json.containsKey('customerId')) {
-      customerId = _json['customerId'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('phoneNumber')) {
-      phoneNumber = _json['phoneNumber'] as core.String;
-    }
-    if (_json.containsKey('postalAddress')) {
-      postalAddress = Address.fromJson(
-          _json['postalAddress'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resourceUiUrl')) {
-      resourceUiUrl = _json['resourceUiUrl'] as core.String;
-    }
-  }
+  Customer.fromJson(core.Map _json)
+      : this(
+          alternateEmail: _json.containsKey('alternateEmail')
+              ? _json['alternateEmail'] as core.String
+              : null,
+          customerDomain: _json.containsKey('customerDomain')
+              ? _json['customerDomain'] as core.String
+              : null,
+          customerDomainVerified: _json.containsKey('customerDomainVerified')
+              ? _json['customerDomainVerified'] as core.bool
+              : null,
+          customerId: _json.containsKey('customerId')
+              ? _json['customerId'] as core.String
+              : null,
+          customerType: _json.containsKey('customerType')
+              ? _json['customerType'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          phoneNumber: _json.containsKey('phoneNumber')
+              ? _json['phoneNumber'] as core.String
+              : null,
+          postalAddress: _json.containsKey('postalAddress')
+              ? Address.fromJson(
+                  _json['postalAddress'] as core.Map<core.String, core.dynamic>)
+              : null,
+          primaryAdmin: _json.containsKey('primaryAdmin')
+              ? PrimaryAdmin.fromJson(
+                  _json['primaryAdmin'] as core.Map<core.String, core.dynamic>)
+              : null,
+          resourceUiUrl: _json.containsKey('resourceUiUrl')
+              ? _json['resourceUiUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (alternateEmail != null) 'alternateEmail': alternateEmail!,
@@ -1245,10 +1324,38 @@ class Customer {
         if (customerDomainVerified != null)
           'customerDomainVerified': customerDomainVerified!,
         if (customerId != null) 'customerId': customerId!,
+        if (customerType != null) 'customerType': customerType!,
         if (kind != null) 'kind': kind!,
         if (phoneNumber != null) 'phoneNumber': phoneNumber!,
-        if (postalAddress != null) 'postalAddress': postalAddress!.toJson(),
+        if (postalAddress != null) 'postalAddress': postalAddress!,
+        if (primaryAdmin != null) 'primaryAdmin': primaryAdmin!,
         if (resourceUiUrl != null) 'resourceUiUrl': resourceUiUrl!,
+      };
+}
+
+/// JSON template for primary admin in case of TEAM customers
+class PrimaryAdmin {
+  /// The business email of the primary administrator of the customer.
+  ///
+  /// The email verification link is sent to this email address at the time of
+  /// customer creation. Primary administrators have access to the customer's
+  /// Admin Console, including the ability to invite and evict users and manage
+  /// the administrative needs of the customer.
+  core.String? primaryEmail;
+
+  PrimaryAdmin({
+    this.primaryEmail,
+  });
+
+  PrimaryAdmin.fromJson(core.Map _json)
+      : this(
+          primaryEmail: _json.containsKey('primaryEmail')
+              ? _json['primaryEmail'] as core.String
+              : null,
+        );
+
+  core.Map<core.String, core.dynamic> toJson() => {
+        if (primaryEmail != null) 'primaryEmail': primaryEmail!,
       };
 }
 
@@ -1266,16 +1373,18 @@ class RenewalSettings {
   /// property.
   core.String? renewalType;
 
-  RenewalSettings();
+  RenewalSettings({
+    this.kind,
+    this.renewalType,
+  });
 
-  RenewalSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('renewalType')) {
-      renewalType = _json['renewalType'] as core.String;
-    }
-  }
+  RenewalSettings.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          renewalType: _json.containsKey('renewalType')
+              ? _json['renewalType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -1291,19 +1400,23 @@ class ResellernotifyGetwatchdetailsResponse {
   /// Topic name of the PubSub
   core.String? topicName;
 
-  ResellernotifyGetwatchdetailsResponse();
+  ResellernotifyGetwatchdetailsResponse({
+    this.serviceAccountEmailAddresses,
+    this.topicName,
+  });
 
-  ResellernotifyGetwatchdetailsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('serviceAccountEmailAddresses')) {
-      serviceAccountEmailAddresses =
-          (_json['serviceAccountEmailAddresses'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('topicName')) {
-      topicName = _json['topicName'] as core.String;
-    }
-  }
+  ResellernotifyGetwatchdetailsResponse.fromJson(core.Map _json)
+      : this(
+          serviceAccountEmailAddresses:
+              _json.containsKey('serviceAccountEmailAddresses')
+                  ? (_json['serviceAccountEmailAddresses'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          topicName: _json.containsKey('topicName')
+              ? _json['topicName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (serviceAccountEmailAddresses != null)
@@ -1317,13 +1430,16 @@ class ResellernotifyResource {
   /// Topic name of the PubSub
   core.String? topicName;
 
-  ResellernotifyResource();
+  ResellernotifyResource({
+    this.topicName,
+  });
 
-  ResellernotifyResource.fromJson(core.Map _json) {
-    if (_json.containsKey('topicName')) {
-      topicName = _json['topicName'] as core.String;
-    }
-  }
+  ResellernotifyResource.fromJson(core.Map _json)
+      : this(
+          topicName: _json.containsKey('topicName')
+              ? _json['topicName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (topicName != null) 'topicName': topicName!,
@@ -1362,26 +1478,30 @@ class Seats {
   /// subscription. The reseller can add more licenses, but once set, the
   /// `numberOfSeats` cannot be reduced until renewal. The reseller is invoiced
   /// based on the `numberOfSeats` value regardless of how many of these user
-  /// licenses are assigned. *Note: *G Suite subscriptions automatically assign
-  /// a license to every user.
+  /// licenses are assigned. *Note: *Google Workspace subscriptions
+  /// automatically assign a license to every user.
   core.int? numberOfSeats;
 
-  Seats();
+  Seats({
+    this.kind,
+    this.licensedNumberOfSeats,
+    this.maximumNumberOfSeats,
+    this.numberOfSeats,
+  });
 
-  Seats.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('licensedNumberOfSeats')) {
-      licensedNumberOfSeats = _json['licensedNumberOfSeats'] as core.int;
-    }
-    if (_json.containsKey('maximumNumberOfSeats')) {
-      maximumNumberOfSeats = _json['maximumNumberOfSeats'] as core.int;
-    }
-    if (_json.containsKey('numberOfSeats')) {
-      numberOfSeats = _json['numberOfSeats'] as core.int;
-    }
-  }
+  Seats.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          licensedNumberOfSeats: _json.containsKey('licensedNumberOfSeats')
+              ? _json['licensedNumberOfSeats'] as core.int
+              : null,
+          maximumNumberOfSeats: _json.containsKey('maximumNumberOfSeats')
+              ? _json['maximumNumberOfSeats'] as core.int
+              : null,
+          numberOfSeats: _json.containsKey('numberOfSeats')
+              ? _json['numberOfSeats'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -1410,16 +1530,20 @@ class SubscriptionPlanCommitmentInterval {
   /// See an example Epoch converter.
   core.String? startTime;
 
-  SubscriptionPlanCommitmentInterval();
+  SubscriptionPlanCommitmentInterval({
+    this.endTime,
+    this.startTime,
+  });
 
-  SubscriptionPlanCommitmentInterval.fromJson(core.Map _json) {
-    if (_json.containsKey('endTime')) {
-      endTime = _json['endTime'] as core.String;
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-  }
+  SubscriptionPlanCommitmentInterval.fromJson(core.Map _json)
+      : this(
+          endTime: _json.containsKey('endTime')
+              ? _json['endTime'] as core.String
+              : null,
+          startTime: _json.containsKey('startTime')
+              ? _json['startTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTime != null) 'endTime': endTime!,
@@ -1462,24 +1586,30 @@ class SubscriptionPlan {
   /// exclusive to the Cloud Identity SKU and does not incur any billing.
   core.String? planName;
 
-  SubscriptionPlan();
+  SubscriptionPlan({
+    this.commitmentInterval,
+    this.isCommitmentPlan,
+    this.planName,
+  });
 
-  SubscriptionPlan.fromJson(core.Map _json) {
-    if (_json.containsKey('commitmentInterval')) {
-      commitmentInterval = SubscriptionPlanCommitmentInterval.fromJson(
-          _json['commitmentInterval'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('isCommitmentPlan')) {
-      isCommitmentPlan = _json['isCommitmentPlan'] as core.bool;
-    }
-    if (_json.containsKey('planName')) {
-      planName = _json['planName'] as core.String;
-    }
-  }
+  SubscriptionPlan.fromJson(core.Map _json)
+      : this(
+          commitmentInterval: _json.containsKey('commitmentInterval')
+              ? SubscriptionPlanCommitmentInterval.fromJson(
+                  _json['commitmentInterval']
+                      as core.Map<core.String, core.dynamic>)
+              : null,
+          isCommitmentPlan: _json.containsKey('isCommitmentPlan')
+              ? _json['isCommitmentPlan'] as core.bool
+              : null,
+          planName: _json.containsKey('planName')
+              ? _json['planName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commitmentInterval != null)
-          'commitmentInterval': commitmentInterval!.toJson(),
+          'commitmentInterval': commitmentInterval!,
         if (isCommitmentPlan != null) 'isCommitmentPlan': isCommitmentPlan!,
         if (planName != null) 'planName': planName!,
       };
@@ -1490,6 +1620,13 @@ class SubscriptionPlan {
 /// For more information, see retrieve transferable subscriptions for a
 /// customer.
 class SubscriptionTransferInfo {
+  /// The `skuId` of the current resold subscription.
+  ///
+  /// This is populated only when the customer has a subscription with a legacy
+  /// SKU and the subscription resource is populated with the `skuId` of the SKU
+  /// recommended for the transfer.
+  core.String? currentLegacySkuId;
+
   /// When inserting a subscription, this is the minimum number of seats listed
   /// in the transfer order for this product.
   ///
@@ -1502,19 +1639,30 @@ class SubscriptionTransferInfo {
   /// The time is in milliseconds using UNIX Epoch format.
   core.String? transferabilityExpirationTime;
 
-  SubscriptionTransferInfo();
+  SubscriptionTransferInfo({
+    this.currentLegacySkuId,
+    this.minimumTransferableSeats,
+    this.transferabilityExpirationTime,
+  });
 
-  SubscriptionTransferInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('minimumTransferableSeats')) {
-      minimumTransferableSeats = _json['minimumTransferableSeats'] as core.int;
-    }
-    if (_json.containsKey('transferabilityExpirationTime')) {
-      transferabilityExpirationTime =
-          _json['transferabilityExpirationTime'] as core.String;
-    }
-  }
+  SubscriptionTransferInfo.fromJson(core.Map _json)
+      : this(
+          currentLegacySkuId: _json.containsKey('currentLegacySkuId')
+              ? _json['currentLegacySkuId'] as core.String
+              : null,
+          minimumTransferableSeats:
+              _json.containsKey('minimumTransferableSeats')
+                  ? _json['minimumTransferableSeats'] as core.int
+                  : null,
+          transferabilityExpirationTime:
+              _json.containsKey('transferabilityExpirationTime')
+                  ? _json['transferabilityExpirationTime'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (currentLegacySkuId != null)
+          'currentLegacySkuId': currentLegacySkuId!,
         if (minimumTransferableSeats != null)
           'minimumTransferableSeats': minimumTransferableSeats!,
         if (transferabilityExpirationTime != null)
@@ -1539,16 +1687,20 @@ class SubscriptionTrialSettings {
   /// Epoch converter.
   core.String? trialEndTime;
 
-  SubscriptionTrialSettings();
+  SubscriptionTrialSettings({
+    this.isInTrial,
+    this.trialEndTime,
+  });
 
-  SubscriptionTrialSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('isInTrial')) {
-      isInTrial = _json['isInTrial'] as core.bool;
-    }
-    if (_json.containsKey('trialEndTime')) {
-      trialEndTime = _json['trialEndTime'] as core.String;
-    }
-  }
+  SubscriptionTrialSettings.fromJson(core.Map _json)
+      : this(
+          isInTrial: _json.containsKey('isInTrial')
+              ? _json['isInTrial'] as core.bool
+              : null,
+          trialEndTime: _json.containsKey('trialEndTime')
+              ? _json['trialEndTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (isInTrial != null) 'isInTrial': isInTrial!,
@@ -1677,71 +1829,88 @@ class Subscription {
   /// For more information, see the API concepts.
   SubscriptionTrialSettings? trialSettings;
 
-  Subscription();
+  Subscription({
+    this.billingMethod,
+    this.creationTime,
+    this.customerDomain,
+    this.customerId,
+    this.dealCode,
+    this.kind,
+    this.plan,
+    this.purchaseOrderId,
+    this.renewalSettings,
+    this.resourceUiUrl,
+    this.seats,
+    this.skuId,
+    this.skuName,
+    this.status,
+    this.subscriptionId,
+    this.suspensionReasons,
+    this.transferInfo,
+    this.trialSettings,
+  });
 
-  Subscription.fromJson(core.Map _json) {
-    if (_json.containsKey('billingMethod')) {
-      billingMethod = _json['billingMethod'] as core.String;
-    }
-    if (_json.containsKey('creationTime')) {
-      creationTime = _json['creationTime'] as core.String;
-    }
-    if (_json.containsKey('customerDomain')) {
-      customerDomain = _json['customerDomain'] as core.String;
-    }
-    if (_json.containsKey('customerId')) {
-      customerId = _json['customerId'] as core.String;
-    }
-    if (_json.containsKey('dealCode')) {
-      dealCode = _json['dealCode'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('plan')) {
-      plan = SubscriptionPlan.fromJson(
-          _json['plan'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('purchaseOrderId')) {
-      purchaseOrderId = _json['purchaseOrderId'] as core.String;
-    }
-    if (_json.containsKey('renewalSettings')) {
-      renewalSettings = RenewalSettings.fromJson(
-          _json['renewalSettings'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('resourceUiUrl')) {
-      resourceUiUrl = _json['resourceUiUrl'] as core.String;
-    }
-    if (_json.containsKey('seats')) {
-      seats =
-          Seats.fromJson(_json['seats'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('skuId')) {
-      skuId = _json['skuId'] as core.String;
-    }
-    if (_json.containsKey('skuName')) {
-      skuName = _json['skuName'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('subscriptionId')) {
-      subscriptionId = _json['subscriptionId'] as core.String;
-    }
-    if (_json.containsKey('suspensionReasons')) {
-      suspensionReasons = (_json['suspensionReasons'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('transferInfo')) {
-      transferInfo = SubscriptionTransferInfo.fromJson(
-          _json['transferInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('trialSettings')) {
-      trialSettings = SubscriptionTrialSettings.fromJson(
-          _json['trialSettings'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Subscription.fromJson(core.Map _json)
+      : this(
+          billingMethod: _json.containsKey('billingMethod')
+              ? _json['billingMethod'] as core.String
+              : null,
+          creationTime: _json.containsKey('creationTime')
+              ? _json['creationTime'] as core.String
+              : null,
+          customerDomain: _json.containsKey('customerDomain')
+              ? _json['customerDomain'] as core.String
+              : null,
+          customerId: _json.containsKey('customerId')
+              ? _json['customerId'] as core.String
+              : null,
+          dealCode: _json.containsKey('dealCode')
+              ? _json['dealCode'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          plan: _json.containsKey('plan')
+              ? SubscriptionPlan.fromJson(
+                  _json['plan'] as core.Map<core.String, core.dynamic>)
+              : null,
+          purchaseOrderId: _json.containsKey('purchaseOrderId')
+              ? _json['purchaseOrderId'] as core.String
+              : null,
+          renewalSettings: _json.containsKey('renewalSettings')
+              ? RenewalSettings.fromJson(_json['renewalSettings']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          resourceUiUrl: _json.containsKey('resourceUiUrl')
+              ? _json['resourceUiUrl'] as core.String
+              : null,
+          seats: _json.containsKey('seats')
+              ? Seats.fromJson(
+                  _json['seats'] as core.Map<core.String, core.dynamic>)
+              : null,
+          skuId:
+              _json.containsKey('skuId') ? _json['skuId'] as core.String : null,
+          skuName: _json.containsKey('skuName')
+              ? _json['skuName'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          subscriptionId: _json.containsKey('subscriptionId')
+              ? _json['subscriptionId'] as core.String
+              : null,
+          suspensionReasons: _json.containsKey('suspensionReasons')
+              ? (_json['suspensionReasons'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          transferInfo: _json.containsKey('transferInfo')
+              ? SubscriptionTransferInfo.fromJson(
+                  _json['transferInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          trialSettings: _json.containsKey('trialSettings')
+              ? SubscriptionTrialSettings.fromJson(
+                  _json['trialSettings'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (billingMethod != null) 'billingMethod': billingMethod!,
@@ -1750,19 +1919,18 @@ class Subscription {
         if (customerId != null) 'customerId': customerId!,
         if (dealCode != null) 'dealCode': dealCode!,
         if (kind != null) 'kind': kind!,
-        if (plan != null) 'plan': plan!.toJson(),
+        if (plan != null) 'plan': plan!,
         if (purchaseOrderId != null) 'purchaseOrderId': purchaseOrderId!,
-        if (renewalSettings != null)
-          'renewalSettings': renewalSettings!.toJson(),
+        if (renewalSettings != null) 'renewalSettings': renewalSettings!,
         if (resourceUiUrl != null) 'resourceUiUrl': resourceUiUrl!,
-        if (seats != null) 'seats': seats!.toJson(),
+        if (seats != null) 'seats': seats!,
         if (skuId != null) 'skuId': skuId!,
         if (skuName != null) 'skuName': skuName!,
         if (status != null) 'status': status!,
         if (subscriptionId != null) 'subscriptionId': subscriptionId!,
         if (suspensionReasons != null) 'suspensionReasons': suspensionReasons!,
-        if (transferInfo != null) 'transferInfo': transferInfo!.toJson(),
-        if (trialSettings != null) 'trialSettings': trialSettings!.toJson(),
+        if (transferInfo != null) 'transferInfo': transferInfo!,
+        if (trialSettings != null) 'trialSettings': trialSettings!,
       };
 }
 
@@ -1787,28 +1955,29 @@ class Subscriptions {
   /// The subscriptions in this page of results.
   core.List<Subscription>? subscriptions;
 
-  Subscriptions();
+  Subscriptions({
+    this.kind,
+    this.nextPageToken,
+    this.subscriptions,
+  });
 
-  Subscriptions.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('subscriptions')) {
-      subscriptions = (_json['subscriptions'] as core.List)
-          .map<Subscription>((value) => Subscription.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Subscriptions.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          subscriptions: _json.containsKey('subscriptions')
+              ? (_json['subscriptions'] as core.List)
+                  .map((value) => Subscription.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (subscriptions != null)
-          'subscriptions':
-              subscriptions!.map((value) => value.toJson()).toList(),
+        if (subscriptions != null) 'subscriptions': subscriptions!,
       };
 }

@@ -20,7 +20,6 @@
 ///
 /// Create an instance of [BigQueryReservationApi] to access these resources:
 ///
-/// - [OperationsResource]
 /// - [ProjectsResource]
 ///   - [ProjectsLocationsResource]
 ///     - [ProjectsLocationsCapacityCommitmentsResource]
@@ -35,6 +34,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -42,16 +43,17 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// A service to modify your BigQuery flat-rate reservations.
 class BigQueryReservationApi {
-  /// View and manage your data in Google BigQuery
+  /// View and manage your data in Google BigQuery and see the email address for
+  /// your Google Account
   static const bigqueryScope = 'https://www.googleapis.com/auth/bigquery';
 
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
   final commons.ApiRequester _requester;
 
-  OperationsResource get operations => OperationsResource(_requester);
   ProjectsResource get projects => ProjectsResource(_requester);
 
   BigQueryReservationApi(http.Client client,
@@ -59,108 +61,6 @@ class BigQueryReservationApi {
       core.String servicePath = ''})
       : _requester =
             commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
-}
-
-class OperationsResource {
-  final commons.ApiRequester _requester;
-
-  OperationsResource(commons.ApiRequester client) : _requester = client;
-
-  /// Deletes a long-running operation.
-  ///
-  /// This method indicates that the client is no longer interested in the
-  /// operation result. It does not cancel the operation. If the server doesn't
-  /// support this method, it returns `google.rpc.Code.UNIMPLEMENTED`.
-  ///
-  /// Request parameters:
-  ///
-  /// [name] - The name of the operation resource to be deleted.
-  /// Value must have pattern `^operations/.*$`.
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [Empty].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<Empty> delete(
-    core.String name, {
-    core.String? $fields,
-  }) async {
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    final _url = 'v1/' + core.Uri.encodeFull('$name');
-
-    final _response = await _requester.request(
-      _url,
-      'DELETE',
-      queryParams: _queryParams,
-    );
-    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
-  }
-
-  /// Lists operations that match the specified filter in the request.
-  ///
-  /// If the server doesn't support this method, it returns `UNIMPLEMENTED`.
-  /// NOTE: the `name` binding allows API services to override the binding to
-  /// use different resource name schemes, such as `users / * /operations`. To
-  /// override the binding, API services can add a binding such as
-  /// `"/v1/{name=users / * }/operations"` to their service configuration. For
-  /// backwards compatibility, the default name includes the operations
-  /// collection id, however overriding users must ensure the name binding is
-  /// the parent resource, without the operations collection id.
-  ///
-  /// Request parameters:
-  ///
-  /// [name] - The name of the operation's parent resource.
-  /// Value must have pattern `^operations$`.
-  ///
-  /// [filter] - The standard list filter.
-  ///
-  /// [pageSize] - The standard list page size.
-  ///
-  /// [pageToken] - The standard list page token.
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [ListOperationsResponse].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<ListOperationsResponse> list(
-    core.String name, {
-    core.String? filter,
-    core.int? pageSize,
-    core.String? pageToken,
-    core.String? $fields,
-  }) async {
-    final _queryParams = <core.String, core.List<core.String>>{
-      if (filter != null) 'filter': [filter],
-      if (pageSize != null) 'pageSize': ['${pageSize}'],
-      if (pageToken != null) 'pageToken': [pageToken],
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    final _url = 'v1/' + core.Uri.encodeFull('$name');
-
-    final _response = await _requester.request(
-      _url,
-      'GET',
-      queryParams: _queryParams,
-    );
-    return ListOperationsResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
-  }
 }
 
 class ProjectsResource {
@@ -230,7 +130,7 @@ class ProjectsLocationsResource {
   /// on the organization will be returned (organization doesn't have
   /// ancestors). Comparing to ListAssignments, there are some behavior
   /// differences: 1. permission on the assignee will be verified in this API.
-  /// 2. Hierarchy lookup (project->folder->organization) happens in this API.
+  /// 2. Hierarchy lookup (project-\>folder-\>organization) happens in this API.
   /// 3. Parent here is `projects / * /locations / * `, instead of `projects / *
   /// /locations / * reservations / * `.
   ///
@@ -285,7 +185,8 @@ class ProjectsLocationsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Looks up assignments for a specified resource for a particular region.
+  /// Deprecated: Looks up assignments for a specified resource for a particular
+  /// region.
   ///
   /// If the request is about a project: 1. Assignments created on the project
   /// will be returned if they exist. 2. Otherwise assignments created on the
@@ -295,7 +196,7 @@ class ProjectsLocationsResource {
   /// on the organization will be returned (organization doesn't have
   /// ancestors). Comparing to ListAssignments, there are some behavior
   /// differences: 1. permission on the assignee will be verified in this API.
-  /// 2. Hierarchy lookup (project->folder->organization) happens in this API.
+  /// 2. Hierarchy lookup (project-\>folder-\>organization) happens in this API.
   /// 3. Parent here is `projects / * /locations / * `, instead of `projects / *
   /// /locations / * reservations / * `. **Note** "-" cannot be used for
   /// projects nor locations.
@@ -385,7 +286,7 @@ class ProjectsLocationsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -420,6 +321,13 @@ class ProjectsLocationsCapacityCommitmentsResource {
   /// `projects/myproject/locations/US`
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
+  /// [capacityCommitmentId] - The optional capacity commitment ID. Capacity
+  /// commitment name will be generated automatically if this field is empty.
+  /// This field must only contain lower case alphanumeric characters or dashes.
+  /// The first and last character cannot be a dash. Max length is 64
+  /// characters. NOTE: this ID won't be kept if the capacity commitment is
+  /// split or merged.
+  ///
   /// [enforceSingleAdminProjectPerOrg] - If true, fail the request if another
   /// project in the organization has a capacity commitment.
   ///
@@ -436,11 +344,14 @@ class ProjectsLocationsCapacityCommitmentsResource {
   async.Future<CapacityCommitment> create(
     CapacityCommitment request,
     core.String parent, {
+    core.String? capacityCommitmentId,
     core.bool? enforceSingleAdminProjectPerOrg,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (capacityCommitmentId != null)
+        'capacityCommitmentId': [capacityCommitmentId],
       if (enforceSingleAdminProjectPerOrg != null)
         'enforceSingleAdminProjectPerOrg': [
           '${enforceSingleAdminProjectPerOrg}'
@@ -473,6 +384,10 @@ class ProjectsLocationsCapacityCommitmentsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/capacityCommitments/\[^/\]+$`.
   ///
+  /// [force] - Can be used to force delete commitments even if assignments
+  /// exist. Deleting commitments with assignments may cause queries to fail if
+  /// they no longer have access to slots.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -485,9 +400,11 @@ class ProjectsLocationsCapacityCommitmentsResource {
   /// this method will complete with the same error.
   async.Future<Empty> delete(
     core.String name, {
+    core.bool? force,
     core.String? $fields,
   }) async {
     final _queryParams = <core.String, core.List<core.String>>{
+      if (force != null) 'force': ['${force}'],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -616,7 +533,7 @@ class ProjectsLocationsCapacityCommitmentsResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -646,7 +563,10 @@ class ProjectsLocationsCapacityCommitmentsResource {
   /// Request parameters:
   ///
   /// [name] - Output only. The resource name of the capacity commitment, e.g.,
-  /// `projects/myproject/locations/US/capacityCommitments/123`
+  /// `projects/myproject/locations/US/capacityCommitments/123` For the
+  /// commitment id, it must only contain lower case alphanumeric characters or
+  /// dashes.It must start with a letter and must not end with a dash. Its
+  /// maximum length is 64 characters.
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/capacityCommitments/\[^/\]+$`.
   ///
@@ -668,7 +588,7 @@ class ProjectsLocationsCapacityCommitmentsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -718,7 +638,7 @@ class ProjectsLocationsCapacityCommitmentsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -755,8 +675,9 @@ class ProjectsLocationsReservationsResource {
   /// `projects/myproject/locations/US`
   /// Value must have pattern `^projects/\[^/\]+/locations/\[^/\]+$`.
   ///
-  /// [reservationId] - The reservation ID. This field must only contain lower
-  /// case alphanumeric characters or dash. Max length is 64 characters.
+  /// [reservationId] - The reservation ID. It must only contain lower case
+  /// alphanumeric characters or dashes.It must start with a letter and must not
+  /// end with a dash. Its maximum length is 64 characters.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -774,7 +695,7 @@ class ProjectsLocationsReservationsResource {
     core.String? reservationId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (reservationId != null) 'reservationId': [reservationId],
       if ($fields != null) 'fields': [$fields],
@@ -923,7 +844,10 @@ class ProjectsLocationsReservationsResource {
   /// Request parameters:
   ///
   /// [name] - The resource name of the reservation, e.g., `projects / *
-  /// /locations / * /reservations/team1-prod`.
+  /// /locations / * /reservations/team1-prod`. For the reservation id, it must
+  /// only contain lower case alphanumeric characters or dashes.It must start
+  /// with a letter and must not end with a dash. Its maximum length is 64
+  /// characters.
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
   ///
@@ -945,7 +869,7 @@ class ProjectsLocationsReservationsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1002,6 +926,11 @@ class ProjectsLocationsReservationsAssignmentsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/reservations/\[^/\]+$`.
   ///
+  /// [assignmentId] - The optional assignment ID. Assignment name will be
+  /// generated automatically if this field is empty. This field must only
+  /// contain lower case alphanumeric characters or dashes. Max length is 64
+  /// characters.
+  ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
   ///
@@ -1015,10 +944,12 @@ class ProjectsLocationsReservationsAssignmentsResource {
   async.Future<Assignment> create(
     Assignment request,
     core.String parent, {
+    core.String? assignmentId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
+      if (assignmentId != null) 'assignmentId': [assignmentId],
       if ($fields != null) 'fields': [$fields],
     };
 
@@ -1168,7 +1099,7 @@ class ProjectsLocationsReservationsAssignmentsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1186,7 +1117,7 @@ class ProjectsLocationsReservationsAssignmentsResource {
   }
 }
 
-/// A Assignment allows a project to submit jobs of a certain type using slots
+/// An assignment allows a project to submit jobs of a certain type using slots
 /// from the specified reservation.
 class Assignment {
   /// The resource which will use the reservation.
@@ -1210,6 +1141,8 @@ class Assignment {
   ///
   /// E.g.:
   /// `projects/myproject/locations/US/reservations/team1-prod/assignments/123`.
+  /// For the assignment id, it must only contain lower case alphanumeric
+  /// characters or dashes and the max length is 64 characters.
   ///
   /// Output only.
   core.String? name;
@@ -1224,22 +1157,25 @@ class Assignment {
   /// - "ACTIVE" : Assignment is ready.
   core.String? state;
 
-  Assignment();
+  Assignment({
+    this.assignee,
+    this.jobType,
+    this.name,
+    this.state,
+  });
 
-  Assignment.fromJson(core.Map _json) {
-    if (_json.containsKey('assignee')) {
-      assignee = _json['assignee'] as core.String;
-    }
-    if (_json.containsKey('jobType')) {
-      jobType = _json['jobType'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  Assignment.fromJson(core.Map _json)
+      : this(
+          assignee: _json.containsKey('assignee')
+              ? _json['assignee'] as core.String
+              : null,
+          jobType: _json.containsKey('jobType')
+              ? _json['jobType'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (assignee != null) 'assignee': assignee!,
@@ -1265,19 +1201,20 @@ class BiReservation {
   /// Output only.
   core.String? updateTime;
 
-  BiReservation();
+  BiReservation({
+    this.name,
+    this.size,
+    this.updateTime,
+  });
 
-  BiReservation.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('size')) {
-      size = _json['size'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  BiReservation.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          size: _json.containsKey('size') ? _json['size'] as core.String : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -1313,8 +1250,20 @@ class CapacityCommitment {
   /// Output only.
   Status? failureStatus;
 
+  /// Applicable only for commitments located within one of the BigQuery
+  /// multi-regions (US or EU).
+  ///
+  /// If set to true, this commitment is placed in the organization's secondary
+  /// region which is designated for disaster recovery purposes. If false, this
+  /// commitment is placed in the organization's default region.
+  core.bool? multiRegionAuxiliary;
+
   /// The resource name of the capacity commitment, e.g.,
-  /// `projects/myproject/locations/US/capacityCommitments/123`
+  /// `projects/myproject/locations/US/capacityCommitments/123` For the
+  /// commitment id, it must only contain lower case alphanumeric characters or
+  /// dashes.It must start with a letter and must not end with a dash.
+  ///
+  /// Its maximum length is 64 characters.
   ///
   /// Output only.
   core.String? name;
@@ -1370,73 +1319,63 @@ class CapacityCommitment {
   /// Possible string values are:
   /// - "STATE_UNSPECIFIED" : Invalid state value.
   /// - "PENDING" : Capacity commitment is pending provisioning. Pending
-  /// capacity commitment does not contribute to the parent's slot_capacity.
+  /// capacity commitment does not contribute to the project's slot_capacity.
   /// - "ACTIVE" : Once slots are provisioned, capacity commitment becomes
-  /// active. slot_count is added to the parent's slot_capacity.
+  /// active. slot_count is added to the project's slot_capacity.
   /// - "FAILED" : Capacity commitment is failed to be activated by the backend.
   core.String? state;
 
-  CapacityCommitment();
+  CapacityCommitment({
+    this.commitmentEndTime,
+    this.commitmentStartTime,
+    this.failureStatus,
+    this.multiRegionAuxiliary,
+    this.name,
+    this.plan,
+    this.renewalPlan,
+    this.slotCount,
+    this.state,
+  });
 
-  CapacityCommitment.fromJson(core.Map _json) {
-    if (_json.containsKey('commitmentEndTime')) {
-      commitmentEndTime = _json['commitmentEndTime'] as core.String;
-    }
-    if (_json.containsKey('commitmentStartTime')) {
-      commitmentStartTime = _json['commitmentStartTime'] as core.String;
-    }
-    if (_json.containsKey('failureStatus')) {
-      failureStatus = Status.fromJson(
-          _json['failureStatus'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('plan')) {
-      plan = _json['plan'] as core.String;
-    }
-    if (_json.containsKey('renewalPlan')) {
-      renewalPlan = _json['renewalPlan'] as core.String;
-    }
-    if (_json.containsKey('slotCount')) {
-      slotCount = _json['slotCount'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  CapacityCommitment.fromJson(core.Map _json)
+      : this(
+          commitmentEndTime: _json.containsKey('commitmentEndTime')
+              ? _json['commitmentEndTime'] as core.String
+              : null,
+          commitmentStartTime: _json.containsKey('commitmentStartTime')
+              ? _json['commitmentStartTime'] as core.String
+              : null,
+          failureStatus: _json.containsKey('failureStatus')
+              ? Status.fromJson(
+                  _json['failureStatus'] as core.Map<core.String, core.dynamic>)
+              : null,
+          multiRegionAuxiliary: _json.containsKey('multiRegionAuxiliary')
+              ? _json['multiRegionAuxiliary'] as core.bool
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          plan: _json.containsKey('plan') ? _json['plan'] as core.String : null,
+          renewalPlan: _json.containsKey('renewalPlan')
+              ? _json['renewalPlan'] as core.String
+              : null,
+          slotCount: _json.containsKey('slotCount')
+              ? _json['slotCount'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (commitmentEndTime != null) 'commitmentEndTime': commitmentEndTime!,
         if (commitmentStartTime != null)
           'commitmentStartTime': commitmentStartTime!,
-        if (failureStatus != null) 'failureStatus': failureStatus!.toJson(),
+        if (failureStatus != null) 'failureStatus': failureStatus!,
+        if (multiRegionAuxiliary != null)
+          'multiRegionAuxiliary': multiRegionAuxiliary!,
         if (name != null) 'name': name!,
         if (plan != null) 'plan': plan!,
         if (renewalPlan != null) 'renewalPlan': renewalPlan!,
         if (slotCount != null) 'slotCount': slotCount!,
         if (state != null) 'state': state!,
-      };
-}
-
-/// The metadata for operation returned from ReservationService.CreateSlotPool.
-class CreateSlotPoolMetadata {
-  /// Resource name of the slot pool that is being created.
-  ///
-  /// E.g.,
-  /// projects/myproject/locations/us-central1/reservations/foo/slotPools/123
-  core.String? slotPool;
-
-  CreateSlotPoolMetadata();
-
-  CreateSlotPoolMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('slotPool')) {
-      slotPool = _json['slotPool'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (slotPool != null) 'slotPool': slotPool!,
       };
 }
 
@@ -1447,15 +1386,7 @@ class CreateSlotPoolMetadata {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// The response for ReservationService.ListAssignments.
 class ListAssignmentsResponse {
@@ -1466,23 +1397,26 @@ class ListAssignmentsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListAssignmentsResponse();
+  ListAssignmentsResponse({
+    this.assignments,
+    this.nextPageToken,
+  });
 
-  ListAssignmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('assignments')) {
-      assignments = (_json['assignments'] as core.List)
-          .map<Assignment>((value) =>
-              Assignment.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListAssignmentsResponse.fromJson(core.Map _json)
+      : this(
+          assignments: _json.containsKey('assignments')
+              ? (_json['assignments'] as core.List)
+                  .map((value) => Assignment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (assignments != null)
-          'assignments': assignments!.map((value) => value.toJson()).toList(),
+        if (assignments != null) 'assignments': assignments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1496,54 +1430,28 @@ class ListCapacityCommitmentsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  ListCapacityCommitmentsResponse();
+  ListCapacityCommitmentsResponse({
+    this.capacityCommitments,
+    this.nextPageToken,
+  });
 
-  ListCapacityCommitmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('capacityCommitments')) {
-      capacityCommitments = (_json['capacityCommitments'] as core.List)
-          .map<CapacityCommitment>((value) => CapacityCommitment.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListCapacityCommitmentsResponse.fromJson(core.Map _json)
+      : this(
+          capacityCommitments: _json.containsKey('capacityCommitments')
+              ? (_json['capacityCommitments'] as core.List)
+                  .map((value) => CapacityCommitment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (capacityCommitments != null)
-          'capacityCommitments':
-              capacityCommitments!.map((value) => value.toJson()).toList(),
+          'capacityCommitments': capacityCommitments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-      };
-}
-
-/// The response message for Operations.ListOperations.
-class ListOperationsResponse {
-  /// The standard List next-page token.
-  core.String? nextPageToken;
-
-  /// A list of operations that matches the specified filter in the request.
-  core.List<Operation>? operations;
-
-  ListOperationsResponse();
-
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
       };
 }
 
@@ -1556,24 +1464,27 @@ class ListReservationsResponse {
   /// List of reservations visible to the user.
   core.List<Reservation>? reservations;
 
-  ListReservationsResponse();
+  ListReservationsResponse({
+    this.nextPageToken,
+    this.reservations,
+  });
 
-  ListReservationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('reservations')) {
-      reservations = (_json['reservations'] as core.List)
-          .map<Reservation>((value) => Reservation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListReservationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          reservations: _json.containsKey('reservations')
+              ? (_json['reservations'] as core.List)
+                  .map((value) => Reservation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (reservations != null)
-          'reservations': reservations!.map((value) => value.toJson()).toList(),
+        if (reservations != null) 'reservations': reservations!,
       };
 }
 
@@ -1587,15 +1498,18 @@ class MergeCapacityCommitmentsRequest {
   /// projects/myproject/locations/US/capacityCommitments/abc
   core.List<core.String>? capacityCommitmentIds;
 
-  MergeCapacityCommitmentsRequest();
+  MergeCapacityCommitmentsRequest({
+    this.capacityCommitmentIds,
+  });
 
-  MergeCapacityCommitmentsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('capacityCommitmentIds')) {
-      capacityCommitmentIds = (_json['capacityCommitmentIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  MergeCapacityCommitmentsRequest.fromJson(core.Map _json)
+      : this(
+          capacityCommitmentIds: _json.containsKey('capacityCommitmentIds')
+              ? (_json['capacityCommitmentIds'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (capacityCommitmentIds != null)
@@ -1614,99 +1528,19 @@ class MoveAssignmentRequest {
   /// `projects/myotherproject/locations/US/reservations/team2-prod`
   core.String? destinationId;
 
-  MoveAssignmentRequest();
+  MoveAssignmentRequest({
+    this.destinationId,
+  });
 
-  MoveAssignmentRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('destinationId')) {
-      destinationId = _json['destinationId'] as core.String;
-    }
-  }
+  MoveAssignmentRequest.fromJson(core.Map _json)
+      : this(
+          destinationId: _json.containsKey('destinationId')
+              ? _json['destinationId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (destinationId != null) 'destinationId': destinationId!,
-      };
-}
-
-/// This resource represents a long-running operation that is the result of a
-/// network API call.
-class Operation {
-  /// If the value is `false`, it means the operation is still in progress.
-  ///
-  /// If `true`, the operation is completed, and either `error` or `response` is
-  /// available.
-  core.bool? done;
-
-  /// The error result of the operation in case of failure or cancellation.
-  Status? error;
-
-  /// Service-specific metadata associated with the operation.
-  ///
-  /// It typically contains progress information and common metadata such as
-  /// create time. Some services might not provide such metadata. Any method
-  /// that returns a long-running operation should document the metadata type,
-  /// if any.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
-
-  /// The server-assigned name, which is only unique within the same service
-  /// that originally returns it.
-  ///
-  /// If you use the default HTTP mapping, the `name` should be a resource name
-  /// ending with `operations/{unique_id}`.
-  core.String? name;
-
-  /// The normal response of the operation in case of success.
-  ///
-  /// If the original method returns no data on success, such as `Delete`, the
-  /// response is `google.protobuf.Empty`. If the original method is standard
-  /// `Get`/`Create`/`Update`, the response should be the resource. For other
-  /// methods, the response should have the type `XxxResponse`, where `Xxx` is
-  /// the original method name. For example, if the original method name is
-  /// `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
-
-  Operation();
-
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
-        if (metadata != null) 'metadata': metadata!,
-        if (name != null) 'name': name!,
-        if (response != null) 'response': response!,
       };
 }
 
@@ -1717,15 +1551,27 @@ class Reservation {
   /// Output only.
   core.String? creationTime;
 
-  /// If false, any query using this reservation will use idle slots from other
-  /// reservations within the same admin project.
+  /// If false, any query or pipeline job using this reservation will use idle
+  /// slots from other reservations within the same admin project.
   ///
-  /// If true, a query using this reservation will execute with the slot
-  /// capacity specified above at most.
+  /// If true, a query or pipeline job using this reservation will execute with
+  /// the slot capacity specified in the slot_capacity field at most.
   core.bool? ignoreIdleSlots;
+
+  /// Applicable only for reservations located within one of the BigQuery
+  /// multi-regions (US or EU).
+  ///
+  /// If set to true, this reservation is placed in the organization's secondary
+  /// region which is designated for disaster recovery purposes. If false, this
+  /// reservation is placed in the organization's default region.
+  core.bool? multiRegionAuxiliary;
 
   /// The resource name of the reservation, e.g., `projects / * /locations / *
   /// /reservations/team1-prod`.
+  ///
+  /// For the reservation id, it must only contain lower case alphanumeric
+  /// characters or dashes.It must start with a letter and must not end with a
+  /// dash. Its maximum length is 64 characters.
   core.String? name;
 
   /// Minimum slots available to this reservation.
@@ -1733,10 +1579,12 @@ class Reservation {
   /// A slot is a unit of computational power in BigQuery, and serves as the
   /// unit of parallelism. Queries using this reservation might use more slots
   /// during runtime if ignore_idle_slots is set to false. If the new
-  /// reservation's slot capacity exceed the parent's slot capacity or if total
-  /// slot capacity of the new reservation and its siblings exceeds the parent's
-  /// slot capacity, the request will fail with
-  /// `google.rpc.Code.RESOURCE_EXHAUSTED`.
+  /// reservation's slot capacity exceed the project's slot capacity or if total
+  /// slot capacity of the new reservation and its siblings exceeds the
+  /// project's slot capacity, the request will fail with
+  /// `google.rpc.Code.RESOURCE_EXHAUSTED`. NOTE: for reservations in US or EU
+  /// multi-regions slot capacity constraints are checked separately for default
+  /// and auxiliary regions. See multi_region_auxiliary flag for more details.
   core.String? slotCapacity;
 
   /// Last update time of the reservation.
@@ -1744,29 +1592,40 @@ class Reservation {
   /// Output only.
   core.String? updateTime;
 
-  Reservation();
+  Reservation({
+    this.creationTime,
+    this.ignoreIdleSlots,
+    this.multiRegionAuxiliary,
+    this.name,
+    this.slotCapacity,
+    this.updateTime,
+  });
 
-  Reservation.fromJson(core.Map _json) {
-    if (_json.containsKey('creationTime')) {
-      creationTime = _json['creationTime'] as core.String;
-    }
-    if (_json.containsKey('ignoreIdleSlots')) {
-      ignoreIdleSlots = _json['ignoreIdleSlots'] as core.bool;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('slotCapacity')) {
-      slotCapacity = _json['slotCapacity'] as core.String;
-    }
-    if (_json.containsKey('updateTime')) {
-      updateTime = _json['updateTime'] as core.String;
-    }
-  }
+  Reservation.fromJson(core.Map _json)
+      : this(
+          creationTime: _json.containsKey('creationTime')
+              ? _json['creationTime'] as core.String
+              : null,
+          ignoreIdleSlots: _json.containsKey('ignoreIdleSlots')
+              ? _json['ignoreIdleSlots'] as core.bool
+              : null,
+          multiRegionAuxiliary: _json.containsKey('multiRegionAuxiliary')
+              ? _json['multiRegionAuxiliary'] as core.bool
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          slotCapacity: _json.containsKey('slotCapacity')
+              ? _json['slotCapacity'] as core.String
+              : null,
+          updateTime: _json.containsKey('updateTime')
+              ? _json['updateTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (creationTime != null) 'creationTime': creationTime!,
         if (ignoreIdleSlots != null) 'ignoreIdleSlots': ignoreIdleSlots!,
+        if (multiRegionAuxiliary != null)
+          'multiRegionAuxiliary': multiRegionAuxiliary!,
         if (name != null) 'name': name!,
         if (slotCapacity != null) 'slotCapacity': slotCapacity!,
         if (updateTime != null) 'updateTime': updateTime!,
@@ -1782,23 +1641,26 @@ class SearchAllAssignmentsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  SearchAllAssignmentsResponse();
+  SearchAllAssignmentsResponse({
+    this.assignments,
+    this.nextPageToken,
+  });
 
-  SearchAllAssignmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('assignments')) {
-      assignments = (_json['assignments'] as core.List)
-          .map<Assignment>((value) =>
-              Assignment.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchAllAssignmentsResponse.fromJson(core.Map _json)
+      : this(
+          assignments: _json.containsKey('assignments')
+              ? (_json['assignments'] as core.List)
+                  .map((value) => Assignment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (assignments != null)
-          'assignments': assignments!.map((value) => value.toJson()).toList(),
+        if (assignments != null) 'assignments': assignments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1812,23 +1674,26 @@ class SearchAssignmentsResponse {
   /// results in the list.
   core.String? nextPageToken;
 
-  SearchAssignmentsResponse();
+  SearchAssignmentsResponse({
+    this.assignments,
+    this.nextPageToken,
+  });
 
-  SearchAssignmentsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('assignments')) {
-      assignments = (_json['assignments'] as core.List)
-          .map<Assignment>((value) =>
-              Assignment.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  SearchAssignmentsResponse.fromJson(core.Map _json)
+      : this(
+          assignments: _json.containsKey('assignments')
+              ? (_json['assignments'] as core.List)
+                  .map((value) => Assignment.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (assignments != null)
-          'assignments': assignments!.map((value) => value.toJson()).toList(),
+        if (assignments != null) 'assignments': assignments!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1838,13 +1703,16 @@ class SplitCapacityCommitmentRequest {
   /// Number of slots in the capacity commitment after the split.
   core.String? slotCount;
 
-  SplitCapacityCommitmentRequest();
+  SplitCapacityCommitmentRequest({
+    this.slotCount,
+  });
 
-  SplitCapacityCommitmentRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('slotCount')) {
-      slotCount = _json['slotCount'] as core.String;
-    }
-  }
+  SplitCapacityCommitmentRequest.fromJson(core.Map _json)
+      : this(
+          slotCount: _json.containsKey('slotCount')
+              ? _json['slotCount'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (slotCount != null) 'slotCount': slotCount!,
@@ -1859,22 +1727,26 @@ class SplitCapacityCommitmentResponse {
   /// Second capacity commitment, result of a split.
   CapacityCommitment? second;
 
-  SplitCapacityCommitmentResponse();
+  SplitCapacityCommitmentResponse({
+    this.first,
+    this.second,
+  });
 
-  SplitCapacityCommitmentResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('first')) {
-      first = CapacityCommitment.fromJson(
-          _json['first'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('second')) {
-      second = CapacityCommitment.fromJson(
-          _json['second'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  SplitCapacityCommitmentResponse.fromJson(core.Map _json)
+      : this(
+          first: _json.containsKey('first')
+              ? CapacityCommitment.fromJson(
+                  _json['first'] as core.Map<core.String, core.dynamic>)
+              : null,
+          second: _json.containsKey('second')
+              ? CapacityCommitment.fromJson(
+                  _json['second'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (first != null) 'first': first!.toJson(),
-        if (second != null) 'second': second!.toJson(),
+        if (first != null) 'first': first!,
+        if (second != null) 'second': second!,
       };
 }
 
@@ -1885,49 +1757,4 @@ class SplitCapacityCommitmentResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;

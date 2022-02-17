@@ -23,6 +23,11 @@
 /// Create an instance of [IamApi] to access these resources:
 ///
 /// - [IamPoliciesResource]
+/// - [LocationsResource]
+///   - [LocationsWorkforcePoolsResource]
+///     - [LocationsWorkforcePoolsOperationsResource]
+///     - [LocationsWorkforcePoolsProvidersResource]
+///       - [LocationsWorkforcePoolsProvidersOperationsResource]
 /// - [OrganizationsResource]
 ///   - [OrganizationsRolesResource]
 /// - [PermissionsResource]
@@ -31,6 +36,8 @@
 ///     - [ProjectsLocationsWorkloadIdentityPoolsResource]
 ///       - [ProjectsLocationsWorkloadIdentityPoolsOperationsResource]
 ///       - [ProjectsLocationsWorkloadIdentityPoolsProvidersResource]
+///         - [ProjectsLocationsWorkloadIdentityPoolsProvidersKeysResource]
+/// - [ProjectsLocationsWorkloadIdentityPoolsProvidersKeysOperationsResource]
 /// - [ProjectsLocationsWorkloadIdentityPoolsProvidersOperationsResource]
 ///   - [ProjectsRolesResource]
 ///   - [ProjectsServiceAccountsResource]
@@ -45,6 +52,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -54,13 +63,15 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// including the creation of service accounts, which you can use to
 /// authenticate to Google and make API calls.
 class IamApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
   final commons.ApiRequester _requester;
 
   IamPoliciesResource get iamPolicies => IamPoliciesResource(_requester);
+  LocationsResource get locations => LocationsResource(_requester);
   OrganizationsResource get organizations => OrganizationsResource(_requester);
   PermissionsResource get permissions => PermissionsResource(_requester);
   ProjectsResource get projects => ProjectsResource(_requester);
@@ -103,7 +114,7 @@ class IamPoliciesResource {
     LintPolicyRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -144,7 +155,7 @@ class IamPoliciesResource {
     QueryAuditableServicesRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -159,6 +170,130 @@ class IamPoliciesResource {
     );
     return QueryAuditableServicesResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class LocationsResource {
+  final commons.ApiRequester _requester;
+
+  LocationsWorkforcePoolsResource get workforcePools =>
+      LocationsWorkforcePoolsResource(_requester);
+
+  LocationsResource(commons.ApiRequester client) : _requester = client;
+}
+
+class LocationsWorkforcePoolsResource {
+  final commons.ApiRequester _requester;
+
+  LocationsWorkforcePoolsOperationsResource get operations =>
+      LocationsWorkforcePoolsOperationsResource(_requester);
+  LocationsWorkforcePoolsProvidersResource get providers =>
+      LocationsWorkforcePoolsProvidersResource(_requester);
+
+  LocationsWorkforcePoolsResource(commons.ApiRequester client)
+      : _requester = client;
+}
+
+class LocationsWorkforcePoolsOperationsResource {
+  final commons.ApiRequester _requester;
+
+  LocationsWorkforcePoolsOperationsResource(commons.ApiRequester client)
+      : _requester = client;
+
+  /// Gets the latest state of a long-running operation.
+  ///
+  /// Clients can use this method to poll the operation result at intervals as
+  /// recommended by the API service.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource.
+  /// Value must have pattern
+  /// `^locations/\[^/\]+/workforcePools/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class LocationsWorkforcePoolsProvidersResource {
+  final commons.ApiRequester _requester;
+
+  LocationsWorkforcePoolsProvidersOperationsResource get operations =>
+      LocationsWorkforcePoolsProvidersOperationsResource(_requester);
+
+  LocationsWorkforcePoolsProvidersResource(commons.ApiRequester client)
+      : _requester = client;
+}
+
+class LocationsWorkforcePoolsProvidersOperationsResource {
+  final commons.ApiRequester _requester;
+
+  LocationsWorkforcePoolsProvidersOperationsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Gets the latest state of a long-running operation.
+  ///
+  /// Clients can use this method to poll the operation result at intervals as
+  /// recommended by the API service.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource.
+  /// Value must have pattern
+  /// `^locations/\[^/\]+/workforcePools/\[^/\]+/providers/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 }
 
@@ -184,17 +319,20 @@ class OrganizationsRolesResource {
   ///
   /// [parent] - The `parent` parameter's value depends on the target resource
   /// for the request, namely
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles) or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `parent` value format is described below: *
-  /// \[`projects.roles.create()`\](/iam/reference/rest/v1/projects.roles/create):
-  /// `projects/{PROJECT_ID}`. This method creates project-level \[custom
-  /// roles\](/iam/docs/understanding-custom-roles). Example request URL:
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `parent` value format is described below: *
+  /// \[`projects.roles.create()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/create):
+  /// `projects/{PROJECT_ID}`. This method creates project-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles` *
-  /// \[`organizations.roles.create()`\](/iam/reference/rest/v1/organizations.roles/create):
+  /// \[`organizations.roles.create()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/create):
   /// `organizations/{ORGANIZATION_ID}`. This method creates organization-level
-  /// \[custom roles\](/iam/docs/understanding-custom-roles). Example request
-  /// URL: `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
+  /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
   /// Value must have pattern `^organizations/\[^/\]+$`.
@@ -214,7 +352,7 @@ class OrganizationsRolesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -233,30 +371,33 @@ class OrganizationsRolesResource {
   /// Deletes a custom Role.
   ///
   /// When you delete a custom role, the following changes occur immediately: *
-  /// You cannot bind a member to the custom role in an IAM Policy. * Existing
-  /// bindings to the custom role are not changed, but they have no effect. * By
-  /// default, the response from ListRoles does not include the custom role. You
-  /// have 7 days to undelete the custom role. After 7 days, the following
-  /// changes occur: * The custom role is permanently deleted and cannot be
-  /// recovered. * If an IAM policy contains a binding to the custom role, the
-  /// binding is permanently removed.
+  /// You cannot bind a principal to the custom role in an IAM Policy. *
+  /// Existing bindings to the custom role are not changed, but they have no
+  /// effect. * By default, the response from ListRoles does not include the
+  /// custom role. You have 7 days to undelete the custom role. After 7 days,
+  /// the following changes occur: * The custom role is permanently deleted and
+  /// cannot be recovered. * If an IAM policy contains a binding to the custom
+  /// role, the binding is permanently removed.
   ///
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.delete()`\](/iam/reference/rest/v1/projects.roles/delete):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.delete()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/delete):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method deletes only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.delete()`\](/iam/reference/rest/v1/organizations.roles/delete):
+  /// \[`organizations.roles.delete()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/delete):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// deletes only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// deletes only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -299,24 +440,28 @@ class OrganizationsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`roles.get()`\](/iam/reference/rest/v1/roles/get): `roles/{ROLE_NAME}`.
-  /// This method returns results from all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
-  /// \[`projects.roles.get()`\](/iam/reference/rest/v1/projects.roles/get):
+  /// the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/roles/get):
+  /// `roles/{ROLE_NAME}`. This method returns results from all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL:
+  /// `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
+  /// \[`projects.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/get):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method returns only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.get()`\](/iam/reference/rest/v1/organizations.roles/get):
+  /// \[`organizations.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/get):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// returns only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// returns only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -356,21 +501,26 @@ class OrganizationsRolesResource {
   /// Request parameters:
   ///
   /// [parent] - The `parent` parameter's value depends on the target resource
-  /// for the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `parent` value format is described below: *
-  /// \[`roles.list()`\](/iam/reference/rest/v1/roles/list): An empty string.
-  /// This method doesn't require a resource; it simply returns all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles` *
-  /// \[`projects.roles.list()`\](/iam/reference/rest/v1/projects.roles/list):
-  /// `projects/{PROJECT_ID}`. This method lists all project-level \[custom
-  /// roles\](/iam/docs/understanding-custom-roles). Example request URL:
+  /// for the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `parent` value format is described below: *
+  /// \[`roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/roles/list):
+  /// An empty string. This method doesn't require a resource; it simply returns
+  /// all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL: `https://iam.googleapis.com/v1/roles` *
+  /// \[`projects.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/list):
+  /// `projects/{PROJECT_ID}`. This method lists all project-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles` *
-  /// \[`organizations.roles.list()`\](/iam/reference/rest/v1/organizations.roles/list):
+  /// \[`organizations.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/list):
   /// `organizations/{ORGANIZATION_ID}`. This method lists all
-  /// organization-level \[custom roles\](/iam/docs/understanding-custom-roles).
+  /// organization-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
   /// Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
@@ -438,19 +588,22 @@ class OrganizationsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.patch()`\](/iam/reference/rest/v1/projects.roles/patch):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.patch()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/patch):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method updates only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.patch()`\](/iam/reference/rest/v1/organizations.roles/patch):
+  /// \[`organizations.roles.patch()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/patch):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// updates only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// updates only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -474,7 +627,7 @@ class OrganizationsRolesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -498,19 +651,22 @@ class OrganizationsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.undelete()`\](/iam/reference/rest/v1/projects.roles/undelete):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.undelete()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/undelete):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method undeletes only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.undelete()`\](/iam/reference/rest/v1/organizations.roles/undelete):
+  /// \[`organizations.roles.undelete()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/undelete):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// undeletes only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// undeletes only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -531,7 +687,7 @@ class OrganizationsRolesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -555,7 +711,7 @@ class PermissionsResource {
 
   /// Lists every permission that you can test on a resource.
   ///
-  /// A permission is testable if you can check whether a member has that
+  /// A permission is testable if you can check whether a principal has that
   /// permission on the resource.
   ///
   /// [request] - The metadata request object.
@@ -576,7 +732,7 @@ class PermissionsResource {
     QueryTestablePermissionsRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -659,7 +815,7 @@ class ProjectsLocationsWorkloadIdentityPoolsResource {
     core.String? workloadIdentityPoolId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (workloadIdentityPoolId != null)
         'workloadIdentityPoolId': [workloadIdentityPoolId],
@@ -824,7 +980,7 @@ class ProjectsLocationsWorkloadIdentityPoolsResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/locations/\[^/\]+/workloadIdentityPools/\[^/\]+$`.
   ///
-  /// [updateMask] - Required. The list of fields update.
+  /// [updateMask] - Required. The list of fields to update.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
   /// response.
@@ -842,7 +998,7 @@ class ProjectsLocationsWorkloadIdentityPoolsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -885,7 +1041,7 @@ class ProjectsLocationsWorkloadIdentityPoolsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -952,6 +1108,8 @@ class ProjectsLocationsWorkloadIdentityPoolsOperationsResource {
 class ProjectsLocationsWorkloadIdentityPoolsProvidersResource {
   final commons.ApiRequester _requester;
 
+  ProjectsLocationsWorkloadIdentityPoolsProvidersKeysResource get keys =>
+      ProjectsLocationsWorkloadIdentityPoolsProvidersKeysResource(_requester);
   ProjectsLocationsWorkloadIdentityPoolsProvidersOperationsResource
       get operations =>
           ProjectsLocationsWorkloadIdentityPoolsProvidersOperationsResource(
@@ -995,7 +1153,7 @@ class ProjectsLocationsWorkloadIdentityPoolsProvidersResource {
     core.String? workloadIdentityPoolProviderId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (workloadIdentityPoolProviderId != null)
         'workloadIdentityPoolProviderId': [workloadIdentityPoolProviderId],
@@ -1176,7 +1334,7 @@ class ProjectsLocationsWorkloadIdentityPoolsProvidersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1219,7 +1377,7 @@ class ProjectsLocationsWorkloadIdentityPoolsProvidersResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1230,6 +1388,66 @@ class ProjectsLocationsWorkloadIdentityPoolsProvidersResource {
       _url,
       'POST',
       body: _body,
+      queryParams: _queryParams,
+    );
+    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+}
+
+class ProjectsLocationsWorkloadIdentityPoolsProvidersKeysResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsWorkloadIdentityPoolsProvidersKeysOperationsResource
+      get operations =>
+          ProjectsLocationsWorkloadIdentityPoolsProvidersKeysOperationsResource(
+              _requester);
+
+  ProjectsLocationsWorkloadIdentityPoolsProvidersKeysResource(
+      commons.ApiRequester client)
+      : _requester = client;
+}
+
+class ProjectsLocationsWorkloadIdentityPoolsProvidersKeysOperationsResource {
+  final commons.ApiRequester _requester;
+
+  ProjectsLocationsWorkloadIdentityPoolsProvidersKeysOperationsResource(
+      commons.ApiRequester client)
+      : _requester = client;
+
+  /// Gets the latest state of a long-running operation.
+  ///
+  /// Clients can use this method to poll the operation result at intervals as
+  /// recommended by the API service.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - The name of the operation resource.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/locations/\[^/\]+/workloadIdentityPools/\[^/\]+/providers/\[^/\]+/keys/\[^/\]+/operations/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Operation].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Operation> get(
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name');
+
+    final _response = await _requester.request(
+      _url,
+      'GET',
       queryParams: _queryParams,
     );
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
@@ -1296,17 +1514,20 @@ class ProjectsRolesResource {
   ///
   /// [parent] - The `parent` parameter's value depends on the target resource
   /// for the request, namely
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles) or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `parent` value format is described below: *
-  /// \[`projects.roles.create()`\](/iam/reference/rest/v1/projects.roles/create):
-  /// `projects/{PROJECT_ID}`. This method creates project-level \[custom
-  /// roles\](/iam/docs/understanding-custom-roles). Example request URL:
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `parent` value format is described below: *
+  /// \[`projects.roles.create()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/create):
+  /// `projects/{PROJECT_ID}`. This method creates project-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles` *
-  /// \[`organizations.roles.create()`\](/iam/reference/rest/v1/organizations.roles/create):
+  /// \[`organizations.roles.create()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/create):
   /// `organizations/{ORGANIZATION_ID}`. This method creates organization-level
-  /// \[custom roles\](/iam/docs/understanding-custom-roles). Example request
-  /// URL: `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
+  /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
   /// Value must have pattern `^projects/\[^/\]+$`.
@@ -1326,7 +1547,7 @@ class ProjectsRolesResource {
     core.String parent, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1345,30 +1566,33 @@ class ProjectsRolesResource {
   /// Deletes a custom Role.
   ///
   /// When you delete a custom role, the following changes occur immediately: *
-  /// You cannot bind a member to the custom role in an IAM Policy. * Existing
-  /// bindings to the custom role are not changed, but they have no effect. * By
-  /// default, the response from ListRoles does not include the custom role. You
-  /// have 7 days to undelete the custom role. After 7 days, the following
-  /// changes occur: * The custom role is permanently deleted and cannot be
-  /// recovered. * If an IAM policy contains a binding to the custom role, the
-  /// binding is permanently removed.
+  /// You cannot bind a principal to the custom role in an IAM Policy. *
+  /// Existing bindings to the custom role are not changed, but they have no
+  /// effect. * By default, the response from ListRoles does not include the
+  /// custom role. You have 7 days to undelete the custom role. After 7 days,
+  /// the following changes occur: * The custom role is permanently deleted and
+  /// cannot be recovered. * If an IAM policy contains a binding to the custom
+  /// role, the binding is permanently removed.
   ///
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.delete()`\](/iam/reference/rest/v1/projects.roles/delete):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.delete()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/delete):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method deletes only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.delete()`\](/iam/reference/rest/v1/organizations.roles/delete):
+  /// \[`organizations.roles.delete()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/delete):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// deletes only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// deletes only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -1411,24 +1635,28 @@ class ProjectsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`roles.get()`\](/iam/reference/rest/v1/roles/get): `roles/{ROLE_NAME}`.
-  /// This method returns results from all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
-  /// \[`projects.roles.get()`\](/iam/reference/rest/v1/projects.roles/get):
+  /// the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/roles/get):
+  /// `roles/{ROLE_NAME}`. This method returns results from all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL:
+  /// `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
+  /// \[`projects.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/get):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method returns only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.get()`\](/iam/reference/rest/v1/organizations.roles/get):
+  /// \[`organizations.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/get):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// returns only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// returns only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -1468,21 +1696,26 @@ class ProjectsRolesResource {
   /// Request parameters:
   ///
   /// [parent] - The `parent` parameter's value depends on the target resource
-  /// for the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `parent` value format is described below: *
-  /// \[`roles.list()`\](/iam/reference/rest/v1/roles/list): An empty string.
-  /// This method doesn't require a resource; it simply returns all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles` *
-  /// \[`projects.roles.list()`\](/iam/reference/rest/v1/projects.roles/list):
-  /// `projects/{PROJECT_ID}`. This method lists all project-level \[custom
-  /// roles\](/iam/docs/understanding-custom-roles). Example request URL:
+  /// for the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `parent` value format is described below: *
+  /// \[`roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/roles/list):
+  /// An empty string. This method doesn't require a resource; it simply returns
+  /// all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL: `https://iam.googleapis.com/v1/roles` *
+  /// \[`projects.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/list):
+  /// `projects/{PROJECT_ID}`. This method lists all project-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles` *
-  /// \[`organizations.roles.list()`\](/iam/reference/rest/v1/organizations.roles/list):
+  /// \[`organizations.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/list):
   /// `organizations/{ORGANIZATION_ID}`. This method lists all
-  /// organization-level \[custom roles\](/iam/docs/understanding-custom-roles).
+  /// organization-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
   /// Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
@@ -1550,19 +1783,22 @@ class ProjectsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.patch()`\](/iam/reference/rest/v1/projects.roles/patch):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.patch()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/patch):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method updates only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.patch()`\](/iam/reference/rest/v1/organizations.roles/patch):
+  /// \[`organizations.roles.patch()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/patch):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// updates only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// updates only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -1586,7 +1822,7 @@ class ProjectsRolesResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -1610,19 +1846,22 @@ class ProjectsRolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`projects`\](/iam/reference/rest/v1/projects.roles)
-  /// or \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`projects.roles.undelete()`\](/iam/reference/rest/v1/projects.roles/undelete):
+  /// the request, namely
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles)
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`projects.roles.undelete()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/undelete):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method undeletes only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.undelete()`\](/iam/reference/rest/v1/organizations.roles/undelete):
+  /// \[`organizations.roles.undelete()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/undelete):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// undeletes only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// undeletes only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -1643,7 +1882,7 @@ class ProjectsRolesResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1694,7 +1933,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1801,7 +2040,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1850,7 +2089,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1908,7 +2147,7 @@ class ProjectsServiceAccountsResource {
 
   /// Gets the IAM policy that is attached to a ServiceAccount.
   ///
-  /// This IAM policy specifies which members have access to the service
+  /// This IAM policy specifies which principals have access to the service
   /// account. This method does not tell you whether the service account has
   /// been granted any roles on other resources. To check whether a service
   /// account has role grants on a resource, use the `getIamPolicy` method for
@@ -1924,12 +2163,16 @@ class ProjectsServiceAccountsResource {
   /// this field.
   /// Value must have pattern `^projects/\[^/\]+/serviceAccounts/\[^/\]+$`.
   ///
-  /// [options_requestedPolicyVersion] - Optional. The policy format version to
-  /// be returned. Valid values are 0, 1, and 3. Requests specifying an invalid
-  /// value will be rejected. Requests for policies with any conditional
-  /// bindings must specify version 3. Policies without any conditional bindings
-  /// may specify any valid value or leave the field unset. To learn which
-  /// resources support conditions in their IAM policies, see the
+  /// [options_requestedPolicyVersion] - Optional. The maximum policy version
+  /// that will be used to format the policy. Valid values are 0, 1, and 3.
+  /// Requests specifying an invalid value will be rejected. Requests for
+  /// policies with any conditional role bindings must specify version 3.
+  /// Policies with no conditional role bindings may specify any valid value or
+  /// leave the field unset. The policy in the response might use the policy
+  /// version that you specified, or it might use a lower policy version. For
+  /// example, if you specify version 3, but the policy has no conditional role
+  /// bindings, the response uses version 1. To learn which resources support
+  /// conditions in their IAM policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -2047,7 +2290,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2067,14 +2310,17 @@ class ProjectsServiceAccountsResource {
   /// Sets the IAM policy that is attached to a ServiceAccount.
   ///
   /// Use this method to grant or revoke access to the service account. For
-  /// example, you could grant a member the ability to impersonate the service
-  /// account. This method does not enable the service account to access other
-  /// resources. To grant roles to a service account on a resource, follow these
-  /// steps: 1. Call the resource's `getIamPolicy` method to get its current IAM
-  /// policy. 2. Edit the policy so that it binds the service account to an IAM
-  /// role for the resource. 3. Call the resource's `setIamPolicy` method to
-  /// update its IAM policy. For detailed instructions, see
-  /// [Granting roles to a service account for specific resources](https://cloud.google.com/iam/help/service-accounts/granting-access-to-service-accounts).
+  /// example, you could grant a principal the ability to impersonate the
+  /// service account. This method does not enable the service account to access
+  /// other resources. To grant roles to a service account on a resource, follow
+  /// these steps: 1. Call the resource's `getIamPolicy` method to get its
+  /// current IAM policy. 2. Edit the policy so that it binds the service
+  /// account to an IAM role for the resource. 3. Call the resource's
+  /// `setIamPolicy` method to update its IAM policy. For detailed instructions,
+  /// see
+  /// [Manage access to project, folders, and organizations](https://cloud.google.com/iam/help/service-accounts/granting-access-to-service-accounts)
+  /// or
+  /// [Manage access to other resources](https://cloud.google.com/iam/help/access/manage-other-resources).
   ///
   /// [request] - The metadata request object.
   ///
@@ -2100,7 +2346,7 @@ class ProjectsServiceAccountsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2116,7 +2362,7 @@ class ProjectsServiceAccountsResource {
     return Policy.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// **Note:** This method is deprecated and will stop working on July 1, 2021.
+  /// **Note:** This method is deprecated.
   ///
   /// Use the
   /// \[`signBlob`\](https://cloud.google.com/iam/help/rest-credentials/v1/projects.serviceAccounts/signBlob)
@@ -2154,7 +2400,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2171,7 +2417,7 @@ class ProjectsServiceAccountsResource {
         _response as core.Map<core.String, core.dynamic>);
   }
 
-  /// **Note:** This method is deprecated and will stop working on July 1, 2021.
+  /// **Note:** This method is deprecated.
   ///
   /// Use the
   /// \[`signJwt`\](https://cloud.google.com/iam/help/rest-credentials/v1/projects.serviceAccounts/signJwt)
@@ -2209,7 +2455,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2253,7 +2499,7 @@ class ProjectsServiceAccountsResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2303,7 +2549,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2323,7 +2569,7 @@ class ProjectsServiceAccountsResource {
   /// **Note:** We are in the process of deprecating this method.
   ///
   /// Use PatchServiceAccount instead. Updates a ServiceAccount. You can update
-  /// only the `display_name` and `description` fields.
+  /// only the `display_name` field.
   ///
   /// [request] - The metadata request object.
   ///
@@ -2358,7 +2604,7 @@ class ProjectsServiceAccountsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2410,7 +2656,7 @@ class ProjectsServiceAccountsKeysResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2471,6 +2717,101 @@ class ProjectsServiceAccountsKeysResource {
     return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
+  /// Disable a ServiceAccountKey.
+  ///
+  /// A disabled service account key can be enabled through
+  /// EnableServiceAccountKey.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the service account key in the
+  /// following format:
+  /// `projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT}/keys/{key}`. Using `-` as
+  /// a wildcard for the `PROJECT_ID` will infer the project from the account.
+  /// The `ACCOUNT` value can be the `email` address or the `unique_id` of the
+  /// service account.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/serviceAccounts/\[^/\]+/keys/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> disable(
+    DisableServiceAccountKeyRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':disable';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
+  /// Enable a ServiceAccountKey.
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [name] - Required. The resource name of the service account key in the
+  /// following format:
+  /// `projects/{PROJECT_ID}/serviceAccounts/{ACCOUNT}/keys/{key}`. Using `-` as
+  /// a wildcard for the `PROJECT_ID` will infer the project from the account.
+  /// The `ACCOUNT` value can be the `email` address or the `unique_id` of the
+  /// service account.
+  /// Value must have pattern
+  /// `^projects/\[^/\]+/serviceAccounts/\[^/\]+/keys/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [Empty].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<Empty> enable(
+    EnableServiceAccountKeyRequest request,
+    core.String name, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$name') + ':enable';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return Empty.fromJson(_response as core.Map<core.String, core.dynamic>);
+  }
+
   /// Gets a ServiceAccountKey.
   ///
   /// Request parameters:
@@ -2484,10 +2825,10 @@ class ProjectsServiceAccountsKeysResource {
   /// Value must have pattern
   /// `^projects/\[^/\]+/serviceAccounts/\[^/\]+/keys/\[^/\]+$`.
   ///
-  /// [publicKeyType] - The output format of the public key requested. X509_PEM
-  /// is the default output format.
+  /// [publicKeyType] - Optional. The output format of the public key. The
+  /// default is `TYPE_NONE`, which means that the public key is not returned.
   /// Possible string values are:
-  /// - "TYPE_NONE" : Unspecified. Returns nothing here.
+  /// - "TYPE_NONE" : Do not return the public key.
   /// - "TYPE_X509_PEM_FILE" : X509 PEM format.
   /// - "TYPE_RAW_PUBLIC_KEY" : Raw public key.
   ///
@@ -2596,7 +2937,7 @@ class ProjectsServiceAccountsKeysResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2624,24 +2965,28 @@ class RolesResource {
   /// Request parameters:
   ///
   /// [name] - The `name` parameter's value depends on the target resource for
-  /// the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `name` value format is described below: *
-  /// \[`roles.get()`\](/iam/reference/rest/v1/roles/get): `roles/{ROLE_NAME}`.
-  /// This method returns results from all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
-  /// \[`projects.roles.get()`\](/iam/reference/rest/v1/projects.roles/get):
+  /// the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `name` value format is described below: *
+  /// \[`roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/roles/get):
+  /// `roles/{ROLE_NAME}`. This method returns results from all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL:
+  /// `https://iam.googleapis.com/v1/roles/{ROLE_NAME}` *
+  /// \[`projects.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/get):
   /// `projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`. This method returns only
-  /// \[custom roles\](/iam/docs/understanding-custom-roles) that have been
-  /// created at the project level. Example request URL:
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the project level. Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles/{CUSTOM_ROLE_ID}`
   /// *
-  /// \[`organizations.roles.get()`\](/iam/reference/rest/v1/organizations.roles/get):
+  /// \[`organizations.roles.get()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/get):
   /// `organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`. This method
-  /// returns only \[custom roles\](/iam/docs/understanding-custom-roles) that
-  /// have been created at the organization level. Example request URL:
+  /// returns only
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles)
+  /// that have been created at the organization level. Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles/{CUSTOM_ROLE_ID}`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
   /// ID or organization ID.
@@ -2687,21 +3032,26 @@ class RolesResource {
   /// ListRolesResponse.
   ///
   /// [parent] - The `parent` parameter's value depends on the target resource
-  /// for the request, namely \[`roles`\](/iam/reference/rest/v1/roles),
-  /// \[`projects`\](/iam/reference/rest/v1/projects.roles), or
-  /// \[`organizations`\](/iam/reference/rest/v1/organizations.roles). Each
-  /// resource type's `parent` value format is described below: *
-  /// \[`roles.list()`\](/iam/reference/rest/v1/roles/list): An empty string.
-  /// This method doesn't require a resource; it simply returns all \[predefined
-  /// roles\](/iam/docs/understanding-roles#predefined_roles) in Cloud IAM.
-  /// Example request URL: `https://iam.googleapis.com/v1/roles` *
-  /// \[`projects.roles.list()`\](/iam/reference/rest/v1/projects.roles/list):
-  /// `projects/{PROJECT_ID}`. This method lists all project-level \[custom
-  /// roles\](/iam/docs/understanding-custom-roles). Example request URL:
+  /// for the request, namely
+  /// \[`roles`\](https://cloud.google.com/iam/reference/rest/v1/roles),
+  /// \[`projects`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles),
+  /// or
+  /// \[`organizations`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles).
+  /// Each resource type's `parent` value format is described below: *
+  /// \[`roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/roles/list):
+  /// An empty string. This method doesn't require a resource; it simply returns
+  /// all
+  /// [predefined roles](https://cloud.google.com/iam/docs/understanding-roles#predefined_roles)
+  /// in Cloud IAM. Example request URL: `https://iam.googleapis.com/v1/roles` *
+  /// \[`projects.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/projects.roles/list):
+  /// `projects/{PROJECT_ID}`. This method lists all project-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
+  /// Example request URL:
   /// `https://iam.googleapis.com/v1/projects/{PROJECT_ID}/roles` *
-  /// \[`organizations.roles.list()`\](/iam/reference/rest/v1/organizations.roles/list):
+  /// \[`organizations.roles.list()`\](https://cloud.google.com/iam/reference/rest/v1/organizations.roles/list):
   /// `organizations/{ORGANIZATION_ID}`. This method lists all
-  /// organization-level \[custom roles\](/iam/docs/understanding-custom-roles).
+  /// organization-level
+  /// [custom roles](https://cloud.google.com/iam/docs/understanding-custom-roles).
   /// Example request URL:
   /// `https://iam.googleapis.com/v1/organizations/{ORGANIZATION_ID}/roles`
   /// Note: Wildcard (*) values are invalid; you must specify a complete project
@@ -2779,7 +3129,7 @@ class RolesResource {
     QueryGrantableRolesRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -2795,29 +3145,6 @@ class RolesResource {
     return QueryGrantableRolesResponse.fromJson(
         _response as core.Map<core.String, core.dynamic>);
   }
-}
-
-/// Audit log information specific to Cloud IAM admin APIs.
-///
-/// This message is serialized as an `Any` type in the `ServiceData` message of
-/// an `AuditLog` message.
-class AdminAuditData {
-  /// The permission_delta when when creating or updating a Role.
-  PermissionDelta? permissionDelta;
-
-  AdminAuditData();
-
-  AdminAuditData.fromJson(core.Map _json) {
-    if (_json.containsKey('permissionDelta')) {
-      permissionDelta = PermissionDelta.fromJson(
-          _json['permissionDelta'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissionDelta != null)
-          'permissionDelta': permissionDelta!.toJson(),
-      };
 }
 
 /// Specifies the audit configuration for a service.
@@ -2847,47 +3174,27 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
-      };
-}
-
-/// Audit log information specific to Cloud IAM.
-///
-/// This message is serialized as an `Any` type in the `ServiceData` message of
-/// an `AuditLog` message.
-class AuditData {
-  /// Policy delta between the original policy and the newly set policy.
-  PolicyDelta? policyDelta;
-
-  AuditData();
-
-  AuditData.fromJson(core.Map _json) {
-    if (_json.containsKey('policyDelta')) {
-      policyDelta = PolicyDelta.fromJson(
-          _json['policyDelta'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (policyDelta != null) 'policyDelta': policyDelta!.toJson(),
       };
 }
 
@@ -2897,39 +3204,7 @@ class AuditData {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
-
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
+typedef AuditLogConfig = $AuditLogConfig;
 
 /// Contains information about an auditable service.
 class AuditableService {
@@ -2938,13 +3213,14 @@ class AuditableService {
   /// For example, the service name for Cloud IAM is 'iam.googleapis.com'.
   core.String? name;
 
-  AuditableService();
+  AuditableService({
+    this.name,
+  });
 
-  AuditableService.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  AuditableService.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
@@ -2958,32 +3234,36 @@ class Aws {
   /// Required.
   core.String? accountId;
 
-  Aws();
+  Aws({
+    this.accountId,
+  });
 
-  Aws.fromJson(core.Map _json) {
-    if (_json.containsKey('accountId')) {
-      accountId = _json['accountId'] as core.String;
-    }
-  }
+  Aws.fromJson(core.Map _json)
+      : this(
+          accountId: _json.containsKey('accountId')
+              ? _json['accountId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountId != null) 'accountId': accountId!,
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -3015,84 +3295,34 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
-        if (role != null) 'role': role!,
-      };
-}
-
-/// One delta entry for Binding.
-///
-/// Each individual change (only one member in each entry) to a binding will be
-/// a separate entry.
-class BindingDelta {
-  /// The action that was performed on a Binding.
-  ///
-  /// Required
-  /// Possible string values are:
-  /// - "ACTION_UNSPECIFIED" : Unspecified.
-  /// - "ADD" : Addition of a Binding.
-  /// - "REMOVE" : Removal of a Binding.
-  core.String? action;
-
-  /// The condition that is associated with this binding.
-  Expr? condition;
-
-  /// A single identity requesting access for a Cloud Platform resource.
-  ///
-  /// Follows the same format of Binding.members. Required
-  core.String? member;
-
-  /// Role that is assigned to `members`.
-  ///
-  /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`. Required
-  core.String? role;
-
-  BindingDelta();
-
-  BindingDelta.fromJson(core.Map _json) {
-    if (_json.containsKey('action')) {
-      action = _json['action'] as core.String;
-    }
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('member')) {
-      member = _json['member'] as core.String;
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (action != null) 'action': action!,
-        if (condition != null) 'condition': condition!.toJson(),
-        if (member != null) 'member': member!,
         if (role != null) 'role': role!,
       };
 }
@@ -3109,20 +3339,24 @@ class CreateRoleRequest {
   /// 64 characters.
   core.String? roleId;
 
-  CreateRoleRequest();
+  CreateRoleRequest({
+    this.role,
+    this.roleId,
+  });
 
-  CreateRoleRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('role')) {
-      role =
-          Role.fromJson(_json['role'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('roleId')) {
-      roleId = _json['roleId'] as core.String;
-    }
-  }
+  CreateRoleRequest.fromJson(core.Map _json)
+      : this(
+          role: _json.containsKey('role')
+              ? Role.fromJson(
+                  _json['role'] as core.Map<core.String, core.dynamic>)
+              : null,
+          roleId: _json.containsKey('roleId')
+              ? _json['roleId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (role != null) 'role': role!.toJson(),
+        if (role != null) 'role': role!,
         if (roleId != null) 'roleId': roleId!,
       };
 }
@@ -3152,16 +3386,20 @@ class CreateServiceAccountKeyRequest {
   /// - "TYPE_GOOGLE_CREDENTIALS_FILE" : Google Credentials File format.
   core.String? privateKeyType;
 
-  CreateServiceAccountKeyRequest();
+  CreateServiceAccountKeyRequest({
+    this.keyAlgorithm,
+    this.privateKeyType,
+  });
 
-  CreateServiceAccountKeyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('keyAlgorithm')) {
-      keyAlgorithm = _json['keyAlgorithm'] as core.String;
-    }
-    if (_json.containsKey('privateKeyType')) {
-      privateKeyType = _json['privateKeyType'] as core.String;
-    }
-  }
+  CreateServiceAccountKeyRequest.fromJson(core.Map _json)
+      : this(
+          keyAlgorithm: _json.containsKey('keyAlgorithm')
+              ? _json['keyAlgorithm'] as core.String
+              : null,
+          privateKeyType: _json.containsKey('privateKeyType')
+              ? _json['privateKeyType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (keyAlgorithm != null) 'keyAlgorithm': keyAlgorithm!,
@@ -3186,34 +3424,33 @@ class CreateServiceAccountRequest {
   /// and `description`.
   ServiceAccount? serviceAccount;
 
-  CreateServiceAccountRequest();
+  CreateServiceAccountRequest({
+    this.accountId,
+    this.serviceAccount,
+  });
 
-  CreateServiceAccountRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('accountId')) {
-      accountId = _json['accountId'] as core.String;
-    }
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = ServiceAccount.fromJson(
-          _json['serviceAccount'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  CreateServiceAccountRequest.fromJson(core.Map _json)
+      : this(
+          accountId: _json.containsKey('accountId')
+              ? _json['accountId'] as core.String
+              : null,
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? ServiceAccount.fromJson(_json['serviceAccount']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountId != null) 'accountId': accountId!,
-        if (serviceAccount != null) 'serviceAccount': serviceAccount!.toJson(),
+        if (serviceAccount != null) 'serviceAccount': serviceAccount!,
       };
 }
 
+/// The service account key disable request.
+typedef DisableServiceAccountKeyRequest = $Empty;
+
 /// The service account disable request.
-class DisableServiceAccountRequest {
-  DisableServiceAccountRequest();
-
-  DisableServiceAccountRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef DisableServiceAccountRequest = $Empty;
 
 /// A generic empty message that you can re-use to avoid defining duplicated
 /// empty messages in your APIs.
@@ -3222,26 +3459,13 @@ class DisableServiceAccountRequest {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
+typedef Empty = $Empty;
 
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+/// The service account key enable request.
+typedef EnableServiceAccountKeyRequest = $Empty;
 
 /// The service account enable request.
-class EnableServiceAccountRequest {
-  EnableServiceAccountRequest();
-
-  EnableServiceAccountRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef EnableServiceAccountRequest = $Empty;
 
 /// Represents a textual expression in the Common Expression Language (CEL)
 /// syntax.
@@ -3249,7 +3473,7 @@ class EnableServiceAccountRequest {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -3261,56 +3485,7 @@ class EnableServiceAccountRequest {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// The request to lint a Cloud IAM policy object.
 class LintPolicyRequest {
@@ -3327,20 +3502,24 @@ class LintPolicyRequest {
   /// object.
   core.String? fullResourceName;
 
-  LintPolicyRequest();
+  LintPolicyRequest({
+    this.condition,
+    this.fullResourceName,
+  });
 
-  LintPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('fullResourceName')) {
-      fullResourceName = _json['fullResourceName'] as core.String;
-    }
-  }
+  LintPolicyRequest.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          fullResourceName: _json.containsKey('fullResourceName')
+              ? _json['fullResourceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (fullResourceName != null) 'fullResourceName': fullResourceName!,
       };
 }
@@ -3353,20 +3532,22 @@ class LintPolicyResponse {
   /// List of lint results sorted by `severity` in descending order.
   core.List<LintResult>? lintResults;
 
-  LintPolicyResponse();
+  LintPolicyResponse({
+    this.lintResults,
+  });
 
-  LintPolicyResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('lintResults')) {
-      lintResults = (_json['lintResults'] as core.List)
-          .map<LintResult>((value) =>
-              LintResult.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  LintPolicyResponse.fromJson(core.Map _json)
+      : this(
+          lintResults: _json.containsKey('lintResults')
+              ? (_json['lintResults'] as core.List)
+                  .map((value) => LintResult.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (lintResults != null)
-          'lintResults': lintResults!.map((value) => value.toJson()).toList(),
+        if (lintResults != null) 'lintResults': lintResults!,
       };
 }
 
@@ -3425,28 +3606,35 @@ class LintResult {
   /// "lintValidationUnits/ConditionComplexityCheck".
   core.String? validationUnitName;
 
-  LintResult();
+  LintResult({
+    this.debugMessage,
+    this.fieldName,
+    this.level,
+    this.locationOffset,
+    this.severity,
+    this.validationUnitName,
+  });
 
-  LintResult.fromJson(core.Map _json) {
-    if (_json.containsKey('debugMessage')) {
-      debugMessage = _json['debugMessage'] as core.String;
-    }
-    if (_json.containsKey('fieldName')) {
-      fieldName = _json['fieldName'] as core.String;
-    }
-    if (_json.containsKey('level')) {
-      level = _json['level'] as core.String;
-    }
-    if (_json.containsKey('locationOffset')) {
-      locationOffset = _json['locationOffset'] as core.int;
-    }
-    if (_json.containsKey('severity')) {
-      severity = _json['severity'] as core.String;
-    }
-    if (_json.containsKey('validationUnitName')) {
-      validationUnitName = _json['validationUnitName'] as core.String;
-    }
-  }
+  LintResult.fromJson(core.Map _json)
+      : this(
+          debugMessage: _json.containsKey('debugMessage')
+              ? _json['debugMessage'] as core.String
+              : null,
+          fieldName: _json.containsKey('fieldName')
+              ? _json['fieldName'] as core.String
+              : null,
+          level:
+              _json.containsKey('level') ? _json['level'] as core.String : null,
+          locationOffset: _json.containsKey('locationOffset')
+              ? _json['locationOffset'] as core.int
+              : null,
+          severity: _json.containsKey('severity')
+              ? _json['severity'] as core.String
+              : null,
+          validationUnitName: _json.containsKey('validationUnitName')
+              ? _json['validationUnitName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (debugMessage != null) 'debugMessage': debugMessage!,
@@ -3468,24 +3656,27 @@ class ListRolesResponse {
   /// The Roles defined on this resource.
   core.List<Role>? roles;
 
-  ListRolesResponse();
+  ListRolesResponse({
+    this.nextPageToken,
+    this.roles,
+  });
 
-  ListRolesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<Role>((value) =>
-              Role.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListRolesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => Role.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (roles != null)
-          'roles': roles!.map((value) => value.toJson()).toList(),
+        if (roles != null) 'roles': roles!,
       };
 }
 
@@ -3494,19 +3685,22 @@ class ListServiceAccountKeysResponse {
   /// The public keys for the service account.
   core.List<ServiceAccountKey>? keys;
 
-  ListServiceAccountKeysResponse();
+  ListServiceAccountKeysResponse({
+    this.keys,
+  });
 
-  ListServiceAccountKeysResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('keys')) {
-      keys = (_json['keys'] as core.List)
-          .map<ServiceAccountKey>((value) => ServiceAccountKey.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListServiceAccountKeysResponse.fromJson(core.Map _json)
+      : this(
+          keys: _json.containsKey('keys')
+              ? (_json['keys'] as core.List)
+                  .map((value) => ServiceAccountKey.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (keys != null) 'keys': keys!.map((value) => value.toJson()).toList(),
+        if (keys != null) 'keys': keys!,
       };
 }
 
@@ -3519,23 +3713,26 @@ class ListServiceAccountsResponse {
   /// ListServiceAccountsRequest.page_token to this value.
   core.String? nextPageToken;
 
-  ListServiceAccountsResponse();
+  ListServiceAccountsResponse({
+    this.accounts,
+    this.nextPageToken,
+  });
 
-  ListServiceAccountsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('accounts')) {
-      accounts = (_json['accounts'] as core.List)
-          .map<ServiceAccount>((value) => ServiceAccount.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListServiceAccountsResponse.fromJson(core.Map _json)
+      : this(
+          accounts: _json.containsKey('accounts')
+              ? (_json['accounts'] as core.List)
+                  .map((value) => ServiceAccount.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (accounts != null)
-          'accounts': accounts!.map((value) => value.toJson()).toList(),
+        if (accounts != null) 'accounts': accounts!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -3550,28 +3747,29 @@ class ListWorkloadIdentityPoolProvidersResponse {
   /// A list of providers.
   core.List<WorkloadIdentityPoolProvider>? workloadIdentityPoolProviders;
 
-  ListWorkloadIdentityPoolProvidersResponse();
+  ListWorkloadIdentityPoolProvidersResponse({
+    this.nextPageToken,
+    this.workloadIdentityPoolProviders,
+  });
 
-  ListWorkloadIdentityPoolProvidersResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('workloadIdentityPoolProviders')) {
-      workloadIdentityPoolProviders =
-          (_json['workloadIdentityPoolProviders'] as core.List)
-              .map<WorkloadIdentityPoolProvider>((value) =>
-                  WorkloadIdentityPoolProvider.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-  }
+  ListWorkloadIdentityPoolProvidersResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          workloadIdentityPoolProviders:
+              _json.containsKey('workloadIdentityPoolProviders')
+                  ? (_json['workloadIdentityPoolProviders'] as core.List)
+                      .map((value) => WorkloadIdentityPoolProvider.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (workloadIdentityPoolProviders != null)
-          'workloadIdentityPoolProviders': workloadIdentityPoolProviders!
-              .map((value) => value.toJson())
-              .toList(),
+          'workloadIdentityPoolProviders': workloadIdentityPoolProviders!,
       };
 }
 
@@ -3585,25 +3783,28 @@ class ListWorkloadIdentityPoolsResponse {
   /// A list of pools.
   core.List<WorkloadIdentityPool>? workloadIdentityPools;
 
-  ListWorkloadIdentityPoolsResponse();
+  ListWorkloadIdentityPoolsResponse({
+    this.nextPageToken,
+    this.workloadIdentityPools,
+  });
 
-  ListWorkloadIdentityPoolsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('workloadIdentityPools')) {
-      workloadIdentityPools = (_json['workloadIdentityPools'] as core.List)
-          .map<WorkloadIdentityPool>((value) => WorkloadIdentityPool.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListWorkloadIdentityPoolsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          workloadIdentityPools: _json.containsKey('workloadIdentityPools')
+              ? (_json['workloadIdentityPools'] as core.List)
+                  .map((value) => WorkloadIdentityPool.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
         if (workloadIdentityPools != null)
-          'workloadIdentityPools':
-              workloadIdentityPools!.map((value) => value.toJson()).toList(),
+          'workloadIdentityPools': workloadIdentityPools!,
       };
 }
 
@@ -3624,21 +3825,27 @@ class Oidc {
 
   /// The OIDC issuer URL.
   ///
+  /// Must be an HTTPS endpoint.
+  ///
   /// Required.
   core.String? issuerUri;
 
-  Oidc();
+  Oidc({
+    this.allowedAudiences,
+    this.issuerUri,
+  });
 
-  Oidc.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedAudiences')) {
-      allowedAudiences = (_json['allowedAudiences'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('issuerUri')) {
-      issuerUri = _json['issuerUri'] as core.String;
-    }
-  }
+  Oidc.fromJson(core.Map _json)
+      : this(
+          allowedAudiences: _json.containsKey('allowedAudiences')
+              ? (_json['allowedAudiences'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          issuerUri: _json.containsKey('issuerUri')
+              ? _json['issuerUri'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowedAudiences != null) 'allowedAudiences': allowedAudiences!,
@@ -3667,7 +3874,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -3687,42 +3894,35 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
@@ -3739,20 +3939,24 @@ class PatchServiceAccountRequest {
   ServiceAccount? serviceAccount;
   core.String? updateMask;
 
-  PatchServiceAccountRequest();
+  PatchServiceAccountRequest({
+    this.serviceAccount,
+    this.updateMask,
+  });
 
-  PatchServiceAccountRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('serviceAccount')) {
-      serviceAccount = ServiceAccount.fromJson(
-          _json['serviceAccount'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  PatchServiceAccountRequest.fromJson(core.Map _json)
+      : this(
+          serviceAccount: _json.containsKey('serviceAccount')
+              ? ServiceAccount.fromJson(_json['serviceAccount']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (serviceAccount != null) 'serviceAccount': serviceAccount!.toJson(),
+        if (serviceAccount != null) 'serviceAccount': serviceAccount!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -3764,7 +3968,8 @@ class Permission {
 
   /// The current custom role support level.
   /// Possible string values are:
-  /// - "SUPPORTED" : Permission is fully supported for custom role use.
+  /// - "SUPPORTED" : Default state. Permission is fully supported for custom
+  /// role use.
   /// - "TESTING" : Permission is being tested to check custom role
   /// compatibility.
   /// - "NOT_SUPPORTED" : Permission is not supported for custom role use.
@@ -3796,34 +4001,40 @@ class Permission {
   /// The title of this Permission.
   core.String? title;
 
-  Permission();
+  Permission({
+    this.apiDisabled,
+    this.customRolesSupportLevel,
+    this.description,
+    this.name,
+    this.onlyInPredefinedRoles,
+    this.primaryPermission,
+    this.stage,
+    this.title,
+  });
 
-  Permission.fromJson(core.Map _json) {
-    if (_json.containsKey('apiDisabled')) {
-      apiDisabled = _json['apiDisabled'] as core.bool;
-    }
-    if (_json.containsKey('customRolesSupportLevel')) {
-      customRolesSupportLevel = _json['customRolesSupportLevel'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('onlyInPredefinedRoles')) {
-      onlyInPredefinedRoles = _json['onlyInPredefinedRoles'] as core.bool;
-    }
-    if (_json.containsKey('primaryPermission')) {
-      primaryPermission = _json['primaryPermission'] as core.String;
-    }
-    if (_json.containsKey('stage')) {
-      stage = _json['stage'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Permission.fromJson(core.Map _json)
+      : this(
+          apiDisabled: _json.containsKey('apiDisabled')
+              ? _json['apiDisabled'] as core.bool
+              : null,
+          customRolesSupportLevel: _json.containsKey('customRolesSupportLevel')
+              ? _json['customRolesSupportLevel'] as core.String
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          onlyInPredefinedRoles: _json.containsKey('onlyInPredefinedRoles')
+              ? _json['onlyInPredefinedRoles'] as core.bool
+              : null,
+          primaryPermission: _json.containsKey('primaryPermission')
+              ? _json['primaryPermission'] as core.String
+              : null,
+          stage:
+              _json.containsKey('stage') ? _json['stage'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (apiDisabled != null) 'apiDisabled': apiDisabled!,
@@ -3839,50 +4050,19 @@ class Permission {
       };
 }
 
-/// A PermissionDelta message to record the added_permissions and
-/// removed_permissions inside a role.
-class PermissionDelta {
-  /// Added permissions.
-  core.List<core.String>? addedPermissions;
-
-  /// Removed permissions.
-  core.List<core.String>? removedPermissions;
-
-  PermissionDelta();
-
-  PermissionDelta.fromJson(core.Map _json) {
-    if (_json.containsKey('addedPermissions')) {
-      addedPermissions = (_json['addedPermissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('removedPermissions')) {
-      removedPermissions = (_json['removedPermissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (addedPermissions != null) 'addedPermissions': addedPermissions!,
-        if (removedPermissions != null)
-          'removedPermissions': removedPermissions!,
-      };
-}
-
 /// An Identity and Access Management (IAM) policy, which specifies access
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -3891,25 +4071,30 @@ class PermissionDelta {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -3951,59 +4136,38 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
-      };
-}
-
-/// The difference delta between two policies.
-class PolicyDelta {
-  /// The delta for Bindings between two policies.
-  core.List<BindingDelta>? bindingDeltas;
-
-  PolicyDelta();
-
-  PolicyDelta.fromJson(core.Map _json) {
-    if (_json.containsKey('bindingDeltas')) {
-      bindingDeltas = (_json['bindingDeltas'] as core.List)
-          .map<BindingDelta>((value) => BindingDelta.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (bindingDeltas != null)
-          'bindingDeltas':
-              bindingDeltas!.map((value) => value.toJson()).toList(),
       };
 }
 
@@ -4018,13 +4182,16 @@ class QueryAuditableServicesRequest {
   /// Required.
   core.String? fullResourceName;
 
-  QueryAuditableServicesRequest();
+  QueryAuditableServicesRequest({
+    this.fullResourceName,
+  });
 
-  QueryAuditableServicesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('fullResourceName')) {
-      fullResourceName = _json['fullResourceName'] as core.String;
-    }
-  }
+  QueryAuditableServicesRequest.fromJson(core.Map _json)
+      : this(
+          fullResourceName: _json.containsKey('fullResourceName')
+              ? _json['fullResourceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fullResourceName != null) 'fullResourceName': fullResourceName!,
@@ -4036,20 +4203,22 @@ class QueryAuditableServicesResponse {
   /// The auditable services for a resource.
   core.List<AuditableService>? services;
 
-  QueryAuditableServicesResponse();
+  QueryAuditableServicesResponse({
+    this.services,
+  });
 
-  QueryAuditableServicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('services')) {
-      services = (_json['services'] as core.List)
-          .map<AuditableService>((value) => AuditableService.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  QueryAuditableServicesResponse.fromJson(core.Map _json)
+      : this(
+          services: _json.containsKey('services')
+              ? (_json['services'] as core.List)
+                  .map((value) => AuditableService.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (services != null)
-          'services': services!.map((value) => value.toJson()).toList(),
+        if (services != null) 'services': services!,
       };
 }
 
@@ -4080,22 +4249,26 @@ class QueryGrantableRolesRequest {
   /// - "FULL" : Returns all fields.
   core.String? view;
 
-  QueryGrantableRolesRequest();
+  QueryGrantableRolesRequest({
+    this.fullResourceName,
+    this.pageSize,
+    this.pageToken,
+    this.view,
+  });
 
-  QueryGrantableRolesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('fullResourceName')) {
-      fullResourceName = _json['fullResourceName'] as core.String;
-    }
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-    if (_json.containsKey('view')) {
-      view = _json['view'] as core.String;
-    }
-  }
+  QueryGrantableRolesRequest.fromJson(core.Map _json)
+      : this(
+          fullResourceName: _json.containsKey('fullResourceName')
+              ? _json['fullResourceName'] as core.String
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+          view: _json.containsKey('view') ? _json['view'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fullResourceName != null) 'fullResourceName': fullResourceName!,
@@ -4114,24 +4287,27 @@ class QueryGrantableRolesResponse {
   /// The list of matching roles.
   core.List<Role>? roles;
 
-  QueryGrantableRolesResponse();
+  QueryGrantableRolesResponse({
+    this.nextPageToken,
+    this.roles,
+  });
 
-  QueryGrantableRolesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('roles')) {
-      roles = (_json['roles'] as core.List)
-          .map<Role>((value) =>
-              Role.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  QueryGrantableRolesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          roles: _json.containsKey('roles')
+              ? (_json['roles'] as core.List)
+                  .map((value) => Role.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (roles != null)
-          'roles': roles!.map((value) => value.toJson()).toList(),
+        if (roles != null) 'roles': roles!,
       };
 }
 
@@ -4155,19 +4331,24 @@ class QueryTestablePermissionsRequest {
   /// QueryTestablePermissionsRequest.
   core.String? pageToken;
 
-  QueryTestablePermissionsRequest();
+  QueryTestablePermissionsRequest({
+    this.fullResourceName,
+    this.pageSize,
+    this.pageToken,
+  });
 
-  QueryTestablePermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('fullResourceName')) {
-      fullResourceName = _json['fullResourceName'] as core.String;
-    }
-    if (_json.containsKey('pageSize')) {
-      pageSize = _json['pageSize'] as core.int;
-    }
-    if (_json.containsKey('pageToken')) {
-      pageToken = _json['pageToken'] as core.String;
-    }
-  }
+  QueryTestablePermissionsRequest.fromJson(core.Map _json)
+      : this(
+          fullResourceName: _json.containsKey('fullResourceName')
+              ? _json['fullResourceName'] as core.String
+              : null,
+          pageSize: _json.containsKey('pageSize')
+              ? _json['pageSize'] as core.int
+              : null,
+          pageToken: _json.containsKey('pageToken')
+              ? _json['pageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fullResourceName != null) 'fullResourceName': fullResourceName!,
@@ -4185,24 +4366,27 @@ class QueryTestablePermissionsResponse {
   /// The Permissions testable on the requested resource.
   core.List<Permission>? permissions;
 
-  QueryTestablePermissionsResponse();
+  QueryTestablePermissionsResponse({
+    this.nextPageToken,
+    this.permissions,
+  });
 
-  QueryTestablePermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<Permission>((value) =>
-              Permission.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  QueryTestablePermissionsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          permissions: _json.containsKey('permissions')
+              ? (_json['permissions'] as core.List)
+                  .map((value) => Permission.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (permissions != null)
-          'permissions': permissions!.map((value) => value.toJson()).toList(),
+        if (permissions != null) 'permissions': permissions!,
       };
 }
 
@@ -4251,7 +4435,7 @@ class Role {
   /// - "GA" : The user has indicated this role is generally available.
   /// - "DEPRECATED" : The user has indicated this role is being deprecated.
   /// - "DISABLED" : This role is disabled and will not contribute permissions
-  /// to any members it is granted to in policies.
+  /// to any principals it is granted to in policies.
   /// - "EAP" : The user has indicated this role is currently in an EAP phase.
   core.String? stage;
 
@@ -4262,33 +4446,36 @@ class Role {
   /// Optional.
   core.String? title;
 
-  Role();
+  Role({
+    this.deleted,
+    this.description,
+    this.etag,
+    this.includedPermissions,
+    this.name,
+    this.stage,
+    this.title,
+  });
 
-  Role.fromJson(core.Map _json) {
-    if (_json.containsKey('deleted')) {
-      deleted = _json['deleted'] as core.bool;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('includedPermissions')) {
-      includedPermissions = (_json['includedPermissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('stage')) {
-      stage = _json['stage'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Role.fromJson(core.Map _json)
+      : this(
+          deleted: _json.containsKey('deleted')
+              ? _json['deleted'] as core.bool
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          includedPermissions: _json.containsKey('includedPermissions')
+              ? (_json['includedPermissions'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          stage:
+              _json.containsKey('stage') ? _json['stage'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (deleted != null) 'deleted': deleted!,
@@ -4383,37 +4570,43 @@ class ServiceAccount {
   /// Output only.
   core.String? uniqueId;
 
-  ServiceAccount();
+  ServiceAccount({
+    this.description,
+    this.disabled,
+    this.displayName,
+    this.email,
+    this.etag,
+    this.name,
+    this.oauth2ClientId,
+    this.projectId,
+    this.uniqueId,
+  });
 
-  ServiceAccount.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('email')) {
-      email = _json['email'] as core.String;
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('oauth2ClientId')) {
-      oauth2ClientId = _json['oauth2ClientId'] as core.String;
-    }
-    if (_json.containsKey('projectId')) {
-      projectId = _json['projectId'] as core.String;
-    }
-    if (_json.containsKey('uniqueId')) {
-      uniqueId = _json['uniqueId'] as core.String;
-    }
-  }
+  ServiceAccount.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          email:
+              _json.containsKey('email') ? _json['email'] as core.String : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          oauth2ClientId: _json.containsKey('oauth2ClientId')
+              ? _json['oauth2ClientId'] as core.String
+              : null,
+          projectId: _json.containsKey('projectId')
+              ? _json['projectId'] as core.String
+              : null,
+          uniqueId: _json.containsKey('uniqueId')
+              ? _json['uniqueId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -4446,6 +4639,9 @@ class ServiceAccount {
 /// used for signing. Public keys for all service accounts are also published at
 /// the OAuth2 Service Account API.
 class ServiceAccountKey {
+  /// The key status.
+  core.bool? disabled;
+
   /// Specifies the algorithm (and possibly key size) for the key.
   /// Possible string values are:
   /// - "KEY_ALG_UNSPECIFIED" : An unspecified key algorithm.
@@ -4525,39 +4721,53 @@ class ServiceAccountKey {
   /// verification for a few hours after this time.
   core.String? validBeforeTime;
 
-  ServiceAccountKey();
+  ServiceAccountKey({
+    this.disabled,
+    this.keyAlgorithm,
+    this.keyOrigin,
+    this.keyType,
+    this.name,
+    this.privateKeyData,
+    this.privateKeyType,
+    this.publicKeyData,
+    this.validAfterTime,
+    this.validBeforeTime,
+  });
 
-  ServiceAccountKey.fromJson(core.Map _json) {
-    if (_json.containsKey('keyAlgorithm')) {
-      keyAlgorithm = _json['keyAlgorithm'] as core.String;
-    }
-    if (_json.containsKey('keyOrigin')) {
-      keyOrigin = _json['keyOrigin'] as core.String;
-    }
-    if (_json.containsKey('keyType')) {
-      keyType = _json['keyType'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('privateKeyData')) {
-      privateKeyData = _json['privateKeyData'] as core.String;
-    }
-    if (_json.containsKey('privateKeyType')) {
-      privateKeyType = _json['privateKeyType'] as core.String;
-    }
-    if (_json.containsKey('publicKeyData')) {
-      publicKeyData = _json['publicKeyData'] as core.String;
-    }
-    if (_json.containsKey('validAfterTime')) {
-      validAfterTime = _json['validAfterTime'] as core.String;
-    }
-    if (_json.containsKey('validBeforeTime')) {
-      validBeforeTime = _json['validBeforeTime'] as core.String;
-    }
-  }
+  ServiceAccountKey.fromJson(core.Map _json)
+      : this(
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          keyAlgorithm: _json.containsKey('keyAlgorithm')
+              ? _json['keyAlgorithm'] as core.String
+              : null,
+          keyOrigin: _json.containsKey('keyOrigin')
+              ? _json['keyOrigin'] as core.String
+              : null,
+          keyType: _json.containsKey('keyType')
+              ? _json['keyType'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          privateKeyData: _json.containsKey('privateKeyData')
+              ? _json['privateKeyData'] as core.String
+              : null,
+          privateKeyType: _json.containsKey('privateKeyType')
+              ? _json['privateKeyType'] as core.String
+              : null,
+          publicKeyData: _json.containsKey('publicKeyData')
+              ? _json['publicKeyData'] as core.String
+              : null,
+          validAfterTime: _json.containsKey('validAfterTime')
+              ? _json['validAfterTime'] as core.String
+              : null,
+          validBeforeTime: _json.containsKey('validBeforeTime')
+              ? _json['validBeforeTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
+        if (disabled != null) 'disabled': disabled!,
         if (keyAlgorithm != null) 'keyAlgorithm': keyAlgorithm!,
         if (keyOrigin != null) 'keyOrigin': keyOrigin!,
         if (keyType != null) 'keyType': keyType!,
@@ -4585,20 +4795,24 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
@@ -4623,13 +4837,16 @@ class SignBlobRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  SignBlobRequest();
+  SignBlobRequest({
+    this.bytesToSign,
+  });
 
-  SignBlobRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('bytesToSign')) {
-      bytesToSign = _json['bytesToSign'] as core.String;
-    }
-  }
+  SignBlobRequest.fromJson(core.Map _json)
+      : this(
+          bytesToSign: _json.containsKey('bytesToSign')
+              ? _json['bytesToSign'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (bytesToSign != null) 'bytesToSign': bytesToSign!,
@@ -4662,16 +4879,19 @@ class SignBlobResponse {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  SignBlobResponse();
+  SignBlobResponse({
+    this.keyId,
+    this.signature,
+  });
 
-  SignBlobResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('keyId')) {
-      keyId = _json['keyId'] as core.String;
-    }
-    if (_json.containsKey('signature')) {
-      signature = _json['signature'] as core.String;
-    }
-  }
+  SignBlobResponse.fromJson(core.Map _json)
+      : this(
+          keyId:
+              _json.containsKey('keyId') ? _json['keyId'] as core.String : null,
+          signature: _json.containsKey('signature')
+              ? _json['signature'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (keyId != null) 'keyId': keyId!,
@@ -4690,21 +4910,24 @@ class SignJwtRequest {
   /// The JWT payload to sign. Must be a serialized JSON object that contains a
   /// JWT Claims Set. For example: `{"sub": "user@example.com", "iat": 313435}`
   /// If the JWT Claims Set contains an expiration time (`exp`) claim, it must
-  /// be an integer timestamp that is not in the past and no more than 1 hour in
-  /// the future. If the JWT Claims Set does not contain an expiration time
+  /// be an integer timestamp that is not in the past and no more than 12 hours
+  /// in the future. If the JWT Claims Set does not contain an expiration time
   /// (`exp`) claim, this claim is added automatically, with a timestamp that is
   /// 1 hour in the future.
   ///
   /// Required. Deprecated.
   core.String? payload;
 
-  SignJwtRequest();
+  SignJwtRequest({
+    this.payload,
+  });
 
-  SignJwtRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('payload')) {
-      payload = _json['payload'] as core.String;
-    }
-  }
+  SignJwtRequest.fromJson(core.Map _json)
+      : this(
+          payload: _json.containsKey('payload')
+              ? _json['payload'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (payload != null) 'payload': payload!,
@@ -4731,16 +4954,19 @@ class SignJwtResponse {
   /// Deprecated.
   core.String? signedJwt;
 
-  SignJwtResponse();
+  SignJwtResponse({
+    this.keyId,
+    this.signedJwt,
+  });
 
-  SignJwtResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('keyId')) {
-      keyId = _json['keyId'] as core.String;
-    }
-    if (_json.containsKey('signedJwt')) {
-      signedJwt = _json['signedJwt'] as core.String;
-    }
-  }
+  SignJwtResponse.fromJson(core.Map _json)
+      : this(
+          keyId:
+              _json.containsKey('keyId') ? _json['keyId'] as core.String : null,
+          signedJwt: _json.containsKey('signedJwt')
+              ? _json['signedJwt'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (keyId != null) 'keyId': keyId!,
@@ -4755,97 +4981,13 @@ class SignJwtResponse {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
+typedef Status = $Status;
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// The request to undelete an existing role.
 class UndeleteRoleRequest {
@@ -4858,13 +5000,14 @@ class UndeleteRoleRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  UndeleteRoleRequest();
+  UndeleteRoleRequest({
+    this.etag,
+  });
 
-  UndeleteRoleRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-  }
+  UndeleteRoleRequest.fromJson(core.Map _json)
+      : this(
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (etag != null) 'etag': etag!,
@@ -4872,56 +5015,34 @@ class UndeleteRoleRequest {
 }
 
 /// The service account undelete request.
-class UndeleteServiceAccountRequest {
-  UndeleteServiceAccountRequest();
-
-  UndeleteServiceAccountRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef UndeleteServiceAccountRequest = $Empty;
 
 class UndeleteServiceAccountResponse {
   /// Metadata for the restored service account.
   ServiceAccount? restoredAccount;
 
-  UndeleteServiceAccountResponse();
+  UndeleteServiceAccountResponse({
+    this.restoredAccount,
+  });
 
-  UndeleteServiceAccountResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('restoredAccount')) {
-      restoredAccount = ServiceAccount.fromJson(
-          _json['restoredAccount'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  UndeleteServiceAccountResponse.fromJson(core.Map _json)
+      : this(
+          restoredAccount: _json.containsKey('restoredAccount')
+              ? ServiceAccount.fromJson(_json['restoredAccount']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (restoredAccount != null)
-          'restoredAccount': restoredAccount!.toJson(),
+        if (restoredAccount != null) 'restoredAccount': restoredAccount!,
       };
 }
 
 /// Request message for UndeleteWorkloadIdentityPoolProvider.
-class UndeleteWorkloadIdentityPoolProviderRequest {
-  UndeleteWorkloadIdentityPoolProviderRequest();
-
-  UndeleteWorkloadIdentityPoolProviderRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef UndeleteWorkloadIdentityPoolProviderRequest = $Empty;
 
 /// Request message for UndeleteWorkloadIdentityPool.
-class UndeleteWorkloadIdentityPoolRequest {
-  UndeleteWorkloadIdentityPoolRequest();
-
-  UndeleteWorkloadIdentityPoolRequest.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef UndeleteWorkloadIdentityPoolRequest = $Empty;
 
 /// The service account key upload request.
 class UploadServiceAccountKeyRequest {
@@ -4939,13 +5060,16 @@ class UploadServiceAccountKeyRequest {
         convert.base64.encode(_bytes).replaceAll('/', '_').replaceAll('+', '-');
   }
 
-  UploadServiceAccountKeyRequest();
+  UploadServiceAccountKeyRequest({
+    this.publicKeyData,
+  });
 
-  UploadServiceAccountKeyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('publicKeyData')) {
-      publicKeyData = _json['publicKeyData'] as core.String;
-    }
-  }
+  UploadServiceAccountKeyRequest.fromJson(core.Map _json)
+      : this(
+          publicKeyData: _json.containsKey('publicKeyData')
+              ? _json['publicKeyData'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (publicKeyData != null) 'publicKeyData': publicKeyData!,
@@ -4994,25 +5118,29 @@ class WorkloadIdentityPool {
   /// again.
   core.String? state;
 
-  WorkloadIdentityPool();
+  WorkloadIdentityPool({
+    this.description,
+    this.disabled,
+    this.displayName,
+    this.name,
+    this.state,
+  });
 
-  WorkloadIdentityPool.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  WorkloadIdentityPool.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -5049,10 +5177,10 @@ class WorkloadIdentityPoolProvider {
   /// to. The following keys are supported: * `google.subject`: The principal
   /// IAM is authenticating. You can reference this value in IAM bindings. This
   /// is also the subject that appears in Cloud Logging logs. Cannot exceed 127
-  /// characters. * `google.groups`: Groups the external identity belongs to.
-  /// You can grant groups access to resources using an IAM `principalSet`
-  /// binding; access applies to all members of the group. You can also provide
-  /// custom attributes by specifying `attribute.{custom_attribute}`, where
+  /// bytes. * `google.groups`: Groups the external identity belongs to. You can
+  /// grant groups access to resources using an IAM `principalSet` binding;
+  /// access applies to all members of the group. You can also provide custom
+  /// attributes by specifying `attribute.{custom_attribute}`, where
   /// `{custom_attribute}` is the name of the custom attribute to be mapped. You
   /// can define a maximum of 50 custom attributes. The maximum length of a
   /// mapped attribute key is 100 characters, and the key may only contain the
@@ -5126,56 +5254,65 @@ class WorkloadIdentityPoolProvider {
   /// deleted.
   core.String? state;
 
-  WorkloadIdentityPoolProvider();
+  WorkloadIdentityPoolProvider({
+    this.attributeCondition,
+    this.attributeMapping,
+    this.aws,
+    this.description,
+    this.disabled,
+    this.displayName,
+    this.name,
+    this.oidc,
+    this.state,
+  });
 
-  WorkloadIdentityPoolProvider.fromJson(core.Map _json) {
-    if (_json.containsKey('attributeCondition')) {
-      attributeCondition = _json['attributeCondition'] as core.String;
-    }
-    if (_json.containsKey('attributeMapping')) {
-      attributeMapping =
-          (_json['attributeMapping'] as core.Map<core.String, core.dynamic>)
-              .map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('aws')) {
-      aws = Aws.fromJson(_json['aws'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('disabled')) {
-      disabled = _json['disabled'] as core.bool;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('oidc')) {
-      oidc =
-          Oidc.fromJson(_json['oidc'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  WorkloadIdentityPoolProvider.fromJson(core.Map _json)
+      : this(
+          attributeCondition: _json.containsKey('attributeCondition')
+              ? _json['attributeCondition'] as core.String
+              : null,
+          attributeMapping: _json.containsKey('attributeMapping')
+              ? (_json['attributeMapping']
+                      as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    item as core.String,
+                  ),
+                )
+              : null,
+          aws: _json.containsKey('aws')
+              ? Aws.fromJson(
+                  _json['aws'] as core.Map<core.String, core.dynamic>)
+              : null,
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          disabled: _json.containsKey('disabled')
+              ? _json['disabled'] as core.bool
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          oidc: _json.containsKey('oidc')
+              ? Oidc.fromJson(
+                  _json['oidc'] as core.Map<core.String, core.dynamic>)
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (attributeCondition != null)
           'attributeCondition': attributeCondition!,
         if (attributeMapping != null) 'attributeMapping': attributeMapping!,
-        if (aws != null) 'aws': aws!.toJson(),
+        if (aws != null) 'aws': aws!,
         if (description != null) 'description': description!,
         if (disabled != null) 'disabled': disabled!,
         if (displayName != null) 'displayName': displayName!,
         if (name != null) 'name': name!,
-        if (oidc != null) 'oidc': oidc!.toJson(),
+        if (oidc != null) 'oidc': oidc!,
         if (state != null) 'state': state!,
       };
 }

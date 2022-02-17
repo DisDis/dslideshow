@@ -63,17 +63,17 @@ class CseResource {
   /// Request parameters:
   ///
   /// [c2coff] - Enables or disables
-  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/xml_results#chineseSearch).
+  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/json_api_reference#chineseSearch).
   /// The default value for this parameter is 0 (zero), meaning that the feature
   /// is enabled. Supported values are: * `1`: Disabled * `0`: Enabled (default)
   ///
   /// [cr] - Restricts search results to documents originating in a particular
   /// country. You may use
-  /// [Boolean operators](https://developers.google.com/custom-search/docs/xml_results_appendices#booleanOperators)
+  /// [Boolean operators](https://developers.google.com/custom-search/docs/json_api_reference#booleanOperators)
   /// in the cr parameter's value. Google Search determines the country of a
   /// document by analyzing: * the top-level domain (TLD) of the document's URL
   /// * the geographic location of the Web server's IP address See the
-  /// [Country Parameter Values](https://developers.google.com/custom-search/docs/xml_results_appendices#countryCollections)
+  /// [Country Parameter Values](https://developers.google.com/custom-search/docs/json_api_reference#countryCollections)
   /// page for a list of valid values for this parameter.
   ///
   /// [cx] - The Programmable Search Engine ID to use for this request.
@@ -96,7 +96,7 @@ class CseResource {
   /// [Help Center](https://support.google.com/webmasters/answer/35287).
   ///
   /// [filter] - Controls turning on or off the duplicate content filter. * See
-  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/xml_results#automaticFiltering)
+  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/json_api_reference#automaticFiltering)
   /// for more information about Google's search results filters. Note that host
   /// crowding filtering applies only to multi-site searches. * By default,
   /// Google applies filtering to all search results to improve the quality of
@@ -106,7 +106,7 @@ class CseResource {
   /// [gl] - Geolocation of end user. * The `gl` parameter value is a two-letter
   /// country code. The `gl` parameter boosts search results whose country of
   /// origin matches the parameter value. See the
-  /// [Country Codes](https://developers.google.com/custom-search/docs/xml_results_appendices#countryCodes)
+  /// [Country Codes](https://developers.google.com/custom-search/docs/json_api_reference#countryCodes)
   /// page for a list of valid values. * Specifying a `gl` parameter value
   /// should lead to more relevant results. This is particularly true for
   /// international customers and, even more specifically, for customers in
@@ -123,11 +123,11 @@ class CseResource {
   /// [hl] - Sets the user interface language. * Explicitly setting this
   /// parameter improves the performance and the quality of your search results.
   /// * See the
-  /// [Interface Languages](https://developers.google.com/custom-search/docs/xml_results#wsInterfaceLanguages)
+  /// [Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#wsInterfaceLanguages)
   /// section of
-  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/xml_results#wsInternationalizing)
-  /// for more information, and (Supported Interface
-  /// Languages)\[https://developers.google.com/custom-search/docs/xml_results_appendices#interfaceLanguages\]
+  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/json_api_reference#wsInternationalizing)
+  /// for more information, and
+  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#interfaceLanguages)
   /// for a list of supported languages.
   ///
   /// [hq] - Appends the specified query terms to the query, as if they were
@@ -369,17 +369,17 @@ class CseSiterestrictResource {
   /// Request parameters:
   ///
   /// [c2coff] - Enables or disables
-  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/xml_results#chineseSearch).
+  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/json_api_reference#chineseSearch).
   /// The default value for this parameter is 0 (zero), meaning that the feature
   /// is enabled. Supported values are: * `1`: Disabled * `0`: Enabled (default)
   ///
   /// [cr] - Restricts search results to documents originating in a particular
   /// country. You may use
-  /// [Boolean operators](https://developers.google.com/custom-search/docs/xml_results_appendices#booleanOperators)
+  /// [Boolean operators](https://developers.google.com/custom-search/docs/json_api_reference#booleanOperators)
   /// in the cr parameter's value. Google Search determines the country of a
   /// document by analyzing: * the top-level domain (TLD) of the document's URL
   /// * the geographic location of the Web server's IP address See the
-  /// [Country Parameter Values](https://developers.google.com/custom-search/docs/xml_results_appendices#countryCollections)
+  /// [Country Parameter Values](https://developers.google.com/custom-search/docs/json_api_reference#countryCollections)
   /// page for a list of valid values for this parameter.
   ///
   /// [cx] - The Programmable Search Engine ID to use for this request.
@@ -402,7 +402,7 @@ class CseSiterestrictResource {
   /// [Help Center](https://support.google.com/webmasters/answer/35287).
   ///
   /// [filter] - Controls turning on or off the duplicate content filter. * See
-  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/xml_results#automaticFiltering)
+  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/json_api_reference#automaticFiltering)
   /// for more information about Google's search results filters. Note that host
   /// crowding filtering applies only to multi-site searches. * By default,
   /// Google applies filtering to all search results to improve the quality of
@@ -412,7 +412,7 @@ class CseSiterestrictResource {
   /// [gl] - Geolocation of end user. * The `gl` parameter value is a two-letter
   /// country code. The `gl` parameter boosts search results whose country of
   /// origin matches the parameter value. See the
-  /// [Country Codes](https://developers.google.com/custom-search/docs/xml_results_appendices#countryCodes)
+  /// [Country Codes](https://developers.google.com/custom-search/docs/json_api_reference#countryCodes)
   /// page for a list of valid values. * Specifying a `gl` parameter value
   /// should lead to more relevant results. This is particularly true for
   /// international customers and, even more specifically, for customers in
@@ -429,11 +429,11 @@ class CseSiterestrictResource {
   /// [hl] - Sets the user interface language. * Explicitly setting this
   /// parameter improves the performance and the quality of your search results.
   /// * See the
-  /// [Interface Languages](https://developers.google.com/custom-search/docs/xml_results#wsInterfaceLanguages)
+  /// [Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#wsInterfaceLanguages)
   /// section of
-  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/xml_results#wsInternationalizing)
-  /// for more information, and (Supported Interface
-  /// Languages)\[https://developers.google.com/custom-search/docs/xml_results_appendices#interfaceLanguages\]
+  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/json_api_reference#wsInternationalizing)
+  /// for more information, and
+  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#interfaceLanguages)
   /// for a list of supported languages.
   ///
   /// [hq] - Appends the specified query terms to the query, as if they were
@@ -676,22 +676,23 @@ class PromotionBodyLines {
   /// The URL of the block object's link, if it has one.
   core.String? url;
 
-  PromotionBodyLines();
+  PromotionBodyLines({
+    this.htmlTitle,
+    this.link,
+    this.title,
+    this.url,
+  });
 
-  PromotionBodyLines.fromJson(core.Map _json) {
-    if (_json.containsKey('htmlTitle')) {
-      htmlTitle = _json['htmlTitle'] as core.String;
-    }
-    if (_json.containsKey('link')) {
-      link = _json['link'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('url')) {
-      url = _json['url'] as core.String;
-    }
-  }
+  PromotionBodyLines.fromJson(core.Map _json)
+      : this(
+          htmlTitle: _json.containsKey('htmlTitle')
+              ? _json['htmlTitle'] as core.String
+              : null,
+          link: _json.containsKey('link') ? _json['link'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          url: _json.containsKey('url') ? _json['url'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (htmlTitle != null) 'htmlTitle': htmlTitle!,
@@ -712,19 +713,21 @@ class PromotionImage {
   /// Image width in pixels.
   core.int? width;
 
-  PromotionImage();
+  PromotionImage({
+    this.height,
+    this.source,
+    this.width,
+  });
 
-  PromotionImage.fromJson(core.Map _json) {
-    if (_json.containsKey('height')) {
-      height = _json['height'] as core.int;
-    }
-    if (_json.containsKey('source')) {
-      source = _json['source'] as core.String;
-    }
-    if (_json.containsKey('width')) {
-      width = _json['width'] as core.int;
-    }
-  }
+  PromotionImage.fromJson(core.Map _json)
+      : this(
+          height:
+              _json.containsKey('height') ? _json['height'] as core.int : null,
+          source: _json.containsKey('source')
+              ? _json['source'] as core.String
+              : null,
+          width: _json.containsKey('width') ? _json['width'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (height != null) 'height': height!,
@@ -736,10 +739,6 @@ class PromotionImage {
 /// Promotion result.
 class Promotion {
   /// An array of block objects for this promotion.
-  ///
-  /// See
-  /// [Google WebSearch Protocol reference](https://developers.google.com/custom-search/docs/xml_results)
-  /// for more information.
   core.List<PromotionBodyLines>? bodyLines;
 
   /// An abridged version of this search's result URL, e.g. www.example.com.
@@ -757,39 +756,43 @@ class Promotion {
   /// The title of the promotion.
   core.String? title;
 
-  Promotion();
+  Promotion({
+    this.bodyLines,
+    this.displayLink,
+    this.htmlTitle,
+    this.image,
+    this.link,
+    this.title,
+  });
 
-  Promotion.fromJson(core.Map _json) {
-    if (_json.containsKey('bodyLines')) {
-      bodyLines = (_json['bodyLines'] as core.List)
-          .map<PromotionBodyLines>((value) => PromotionBodyLines.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('displayLink')) {
-      displayLink = _json['displayLink'] as core.String;
-    }
-    if (_json.containsKey('htmlTitle')) {
-      htmlTitle = _json['htmlTitle'] as core.String;
-    }
-    if (_json.containsKey('image')) {
-      image = PromotionImage.fromJson(
-          _json['image'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('link')) {
-      link = _json['link'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Promotion.fromJson(core.Map _json)
+      : this(
+          bodyLines: _json.containsKey('bodyLines')
+              ? (_json['bodyLines'] as core.List)
+                  .map((value) => PromotionBodyLines.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          displayLink: _json.containsKey('displayLink')
+              ? _json['displayLink'] as core.String
+              : null,
+          htmlTitle: _json.containsKey('htmlTitle')
+              ? _json['htmlTitle'] as core.String
+              : null,
+          image: _json.containsKey('image')
+              ? PromotionImage.fromJson(
+                  _json['image'] as core.Map<core.String, core.dynamic>)
+              : null,
+          link: _json.containsKey('link') ? _json['link'] as core.String : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (bodyLines != null)
-          'bodyLines': bodyLines!.map((value) => value.toJson()).toList(),
+        if (bodyLines != null) 'bodyLines': bodyLines!,
         if (displayLink != null) 'displayLink': displayLink!,
         if (htmlTitle != null) 'htmlTitle': htmlTitle!,
-        if (image != null) 'image': image!.toJson(),
+        if (image != null) 'image': image!,
         if (link != null) 'link': link!,
         if (title != null) 'title': title!,
       };
@@ -818,31 +821,37 @@ class ResultImage {
   /// The width of the image, in pixels.
   core.int? width;
 
-  ResultImage();
+  ResultImage({
+    this.byteSize,
+    this.contextLink,
+    this.height,
+    this.thumbnailHeight,
+    this.thumbnailLink,
+    this.thumbnailWidth,
+    this.width,
+  });
 
-  ResultImage.fromJson(core.Map _json) {
-    if (_json.containsKey('byteSize')) {
-      byteSize = _json['byteSize'] as core.int;
-    }
-    if (_json.containsKey('contextLink')) {
-      contextLink = _json['contextLink'] as core.String;
-    }
-    if (_json.containsKey('height')) {
-      height = _json['height'] as core.int;
-    }
-    if (_json.containsKey('thumbnailHeight')) {
-      thumbnailHeight = _json['thumbnailHeight'] as core.int;
-    }
-    if (_json.containsKey('thumbnailLink')) {
-      thumbnailLink = _json['thumbnailLink'] as core.String;
-    }
-    if (_json.containsKey('thumbnailWidth')) {
-      thumbnailWidth = _json['thumbnailWidth'] as core.int;
-    }
-    if (_json.containsKey('width')) {
-      width = _json['width'] as core.int;
-    }
-  }
+  ResultImage.fromJson(core.Map _json)
+      : this(
+          byteSize: _json.containsKey('byteSize')
+              ? _json['byteSize'] as core.int
+              : null,
+          contextLink: _json.containsKey('contextLink')
+              ? _json['contextLink'] as core.String
+              : null,
+          height:
+              _json.containsKey('height') ? _json['height'] as core.int : null,
+          thumbnailHeight: _json.containsKey('thumbnailHeight')
+              ? _json['thumbnailHeight'] as core.int
+              : null,
+          thumbnailLink: _json.containsKey('thumbnailLink')
+              ? _json['thumbnailLink'] as core.String
+              : null,
+          thumbnailWidth: _json.containsKey('thumbnailWidth')
+              ? _json['thumbnailWidth'] as core.int
+              : null,
+          width: _json.containsKey('width') ? _json['width'] as core.int : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (byteSize != null) 'byteSize': byteSize!,
@@ -870,19 +879,22 @@ class ResultLabels {
   /// Don't display this in your user interface; instead, use displayName.
   core.String? name;
 
-  ResultLabels();
+  ResultLabels({
+    this.displayName,
+    this.labelWithOp,
+    this.name,
+  });
 
-  ResultLabels.fromJson(core.Map _json) {
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('label_with_op')) {
-      labelWithOp = _json['label_with_op'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  ResultLabels.fromJson(core.Map _json)
+      : this(
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labelWithOp: _json.containsKey('label_with_op')
+              ? _json['label_with_op'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (displayName != null) 'displayName': displayName!,
@@ -922,8 +934,7 @@ class Result {
   /// For this API, it is `customsearch#result.`
   core.String? kind;
 
-  /// Encapsulates all information about
-  /// [refinement labels](https://developers.google.com/custom-search/docs/xml_results).
+  /// Encapsulates all information about refinement labels.
   core.List<ResultLabels>? labels;
 
   /// The full URL to which the search result is pointing, e.g.
@@ -939,7 +950,7 @@ class Result {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? pagemap;
+  core.Map<core.String, core.Object?>? pagemap;
 
   /// The snippet of the search result, in plain text.
   core.String? snippet;
@@ -947,64 +958,69 @@ class Result {
   /// The title of the search result, in plain text.
   core.String? title;
 
-  Result();
+  Result({
+    this.cacheId,
+    this.displayLink,
+    this.fileFormat,
+    this.formattedUrl,
+    this.htmlFormattedUrl,
+    this.htmlSnippet,
+    this.htmlTitle,
+    this.image,
+    this.kind,
+    this.labels,
+    this.link,
+    this.mime,
+    this.pagemap,
+    this.snippet,
+    this.title,
+  });
 
-  Result.fromJson(core.Map _json) {
-    if (_json.containsKey('cacheId')) {
-      cacheId = _json['cacheId'] as core.String;
-    }
-    if (_json.containsKey('displayLink')) {
-      displayLink = _json['displayLink'] as core.String;
-    }
-    if (_json.containsKey('fileFormat')) {
-      fileFormat = _json['fileFormat'] as core.String;
-    }
-    if (_json.containsKey('formattedUrl')) {
-      formattedUrl = _json['formattedUrl'] as core.String;
-    }
-    if (_json.containsKey('htmlFormattedUrl')) {
-      htmlFormattedUrl = _json['htmlFormattedUrl'] as core.String;
-    }
-    if (_json.containsKey('htmlSnippet')) {
-      htmlSnippet = _json['htmlSnippet'] as core.String;
-    }
-    if (_json.containsKey('htmlTitle')) {
-      htmlTitle = _json['htmlTitle'] as core.String;
-    }
-    if (_json.containsKey('image')) {
-      image = ResultImage.fromJson(
-          _json['image'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.List)
-          .map<ResultLabels>((value) => ResultLabels.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('link')) {
-      link = _json['link'] as core.String;
-    }
-    if (_json.containsKey('mime')) {
-      mime = _json['mime'] as core.String;
-    }
-    if (_json.containsKey('pagemap')) {
-      pagemap = (_json['pagemap'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('snippet')) {
-      snippet = _json['snippet'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  Result.fromJson(core.Map _json)
+      : this(
+          cacheId: _json.containsKey('cacheId')
+              ? _json['cacheId'] as core.String
+              : null,
+          displayLink: _json.containsKey('displayLink')
+              ? _json['displayLink'] as core.String
+              : null,
+          fileFormat: _json.containsKey('fileFormat')
+              ? _json['fileFormat'] as core.String
+              : null,
+          formattedUrl: _json.containsKey('formattedUrl')
+              ? _json['formattedUrl'] as core.String
+              : null,
+          htmlFormattedUrl: _json.containsKey('htmlFormattedUrl')
+              ? _json['htmlFormattedUrl'] as core.String
+              : null,
+          htmlSnippet: _json.containsKey('htmlSnippet')
+              ? _json['htmlSnippet'] as core.String
+              : null,
+          htmlTitle: _json.containsKey('htmlTitle')
+              ? _json['htmlTitle'] as core.String
+              : null,
+          image: _json.containsKey('image')
+              ? ResultImage.fromJson(
+                  _json['image'] as core.Map<core.String, core.dynamic>)
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.List)
+                  .map((value) => ResultLabels.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          link: _json.containsKey('link') ? _json['link'] as core.String : null,
+          mime: _json.containsKey('mime') ? _json['mime'] as core.String : null,
+          pagemap: _json.containsKey('pagemap')
+              ? _json['pagemap'] as core.Map<core.String, core.dynamic>
+              : null,
+          snippet: _json.containsKey('snippet')
+              ? _json['snippet'] as core.String
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cacheId != null) 'cacheId': cacheId!,
@@ -1014,10 +1030,9 @@ class Result {
         if (htmlFormattedUrl != null) 'htmlFormattedUrl': htmlFormattedUrl!,
         if (htmlSnippet != null) 'htmlSnippet': htmlSnippet!,
         if (htmlTitle != null) 'htmlTitle': htmlTitle!,
-        if (image != null) 'image': image!.toJson(),
+        if (image != null) 'image': image!,
         if (kind != null) 'kind': kind!,
-        if (labels != null)
-          'labels': labels!.map((value) => value.toJson()).toList(),
+        if (labels != null) 'labels': labels!,
         if (link != null) 'link': link!,
         if (mime != null) 'mime': mime!,
         if (pagemap != null) 'pagemap': pagemap!,
@@ -1034,12 +1049,12 @@ class SearchQueriesNextPage {
   /// Restricts search results to documents originating in a particular country.
   ///
   /// You may use
-  /// [Boolean operators](https://developers.google.com/custom-search/docs/xml_results#booleanOperators)
+  /// [Boolean operators](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// in the `cr` parameter's value. Google WebSearch determines the country of
   /// a document by analyzing the following: * The top-level domain (TLD) of the
   /// document's URL. * The geographic location of the web server's IP address.
   /// See \[Country (cr) Parameter
-  /// Values\](https://developers.google.com/custom-search/docs/xml_results#countryCollections)
+  /// Values\](https://developers.google.com/custom-search/docs/json_api_reference#countryCollections)
   /// for a list of valid values for this parameter.
   core.String? cr;
 
@@ -1060,7 +1075,7 @@ class SearchQueriesNextPage {
   core.String? dateRestrict;
 
   /// Enables or disables the
-  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/xml_results#chineseSearch)
+  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/json_api_reference#chineseSearch)
   /// feature.
   ///
   /// Supported values are: * `0`: enabled (default) * `1`: disabled
@@ -1089,7 +1104,7 @@ class SearchQueriesNextPage {
   /// Activates or deactivates the automatic filtering of Google search results.
   ///
   /// See
-  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/xml_results#automaticFiltering)
+  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/json_api_reference#automaticFiltering)
   /// for more information about Google's search results filters. Valid values
   /// for this parameter are: * `0`: Disabled * `1`: Enabled (default) **Note**:
   /// By default, Google applies filtering to all search results to improve the
@@ -1099,7 +1114,7 @@ class SearchQueriesNextPage {
   /// Boosts search results whose country of origin matches the parameter value.
   ///
   /// See
-  /// [Country Codes](https://developers.google.com/custom-search/docs/xml_results#countryCodes)
+  /// [Country Codes](https://developers.google.com/custom-search/docs/json_api_reference#countryCodes)
   /// for a list of valid values. Specifying a `gl` parameter value in WebSearch
   /// requests should improve the relevance of results. This is particularly
   /// true for international customers and, even more specifically, for
@@ -1120,11 +1135,11 @@ class SearchQueriesNextPage {
   ///
   /// Explicitly setting this parameter improves the performance and the quality
   /// of your search results. See the
-  /// [Interface Languages](https://developers.google.com/custom-search/docs/xml_results#wsInterfaceLanguages)
+  /// [Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#wsInterfaceLanguages)
   /// section of
-  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/xml_results#wsInternationalizing)
+  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/json_api_reference#wsInternationalizing)
   /// for more information, and
-  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/xml_results_appendices#interfaceLanguages)
+  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#interfaceLanguages)
   /// for a list of supported languages.
   core.String? hl;
 
@@ -1176,7 +1191,7 @@ class SearchQueriesNextPage {
   /// search terms.
   ///
   /// You can also use the
-  /// [Boolean OR](https://developers.google.com/custom-search/docs/xml_results#BooleanOrqt)
+  /// [Boolean OR](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// query term for this type of query.
   core.String? orTerms;
 
@@ -1196,7 +1211,7 @@ class SearchQueriesNextPage {
   core.String? rights;
 
   /// Specifies the
-  /// [SafeSearch level](https://developers.google.com/custom-search/docs/xml_results#safeSearchLevels)
+  /// [SafeSearch level](https://developers.google.com/custom-search/docs/json_api_reference#safeSearchLevels)
   /// used for filtering out adult results.
   ///
   /// This is a custom property not defined in the OpenSearch spec. Valid
@@ -1244,118 +1259,139 @@ class SearchQueriesNextPage {
   /// May not be accurate.
   core.String? totalResults;
 
-  SearchQueriesNextPage();
+  SearchQueriesNextPage({
+    this.count,
+    this.cr,
+    this.cx,
+    this.dateRestrict,
+    this.disableCnTwTranslation,
+    this.exactTerms,
+    this.excludeTerms,
+    this.fileType,
+    this.filter,
+    this.gl,
+    this.googleHost,
+    this.highRange,
+    this.hl,
+    this.hq,
+    this.imgColorType,
+    this.imgDominantColor,
+    this.imgSize,
+    this.imgType,
+    this.inputEncoding,
+    this.language,
+    this.linkSite,
+    this.lowRange,
+    this.orTerms,
+    this.outputEncoding,
+    this.relatedSite,
+    this.rights,
+    this.safe,
+    this.searchTerms,
+    this.searchType,
+    this.siteSearch,
+    this.siteSearchFilter,
+    this.sort,
+    this.startIndex,
+    this.startPage,
+    this.title,
+    this.totalResults,
+  });
 
-  SearchQueriesNextPage.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.int;
-    }
-    if (_json.containsKey('cr')) {
-      cr = _json['cr'] as core.String;
-    }
-    if (_json.containsKey('cx')) {
-      cx = _json['cx'] as core.String;
-    }
-    if (_json.containsKey('dateRestrict')) {
-      dateRestrict = _json['dateRestrict'] as core.String;
-    }
-    if (_json.containsKey('disableCnTwTranslation')) {
-      disableCnTwTranslation = _json['disableCnTwTranslation'] as core.String;
-    }
-    if (_json.containsKey('exactTerms')) {
-      exactTerms = _json['exactTerms'] as core.String;
-    }
-    if (_json.containsKey('excludeTerms')) {
-      excludeTerms = _json['excludeTerms'] as core.String;
-    }
-    if (_json.containsKey('fileType')) {
-      fileType = _json['fileType'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('gl')) {
-      gl = _json['gl'] as core.String;
-    }
-    if (_json.containsKey('googleHost')) {
-      googleHost = _json['googleHost'] as core.String;
-    }
-    if (_json.containsKey('highRange')) {
-      highRange = _json['highRange'] as core.String;
-    }
-    if (_json.containsKey('hl')) {
-      hl = _json['hl'] as core.String;
-    }
-    if (_json.containsKey('hq')) {
-      hq = _json['hq'] as core.String;
-    }
-    if (_json.containsKey('imgColorType')) {
-      imgColorType = _json['imgColorType'] as core.String;
-    }
-    if (_json.containsKey('imgDominantColor')) {
-      imgDominantColor = _json['imgDominantColor'] as core.String;
-    }
-    if (_json.containsKey('imgSize')) {
-      imgSize = _json['imgSize'] as core.String;
-    }
-    if (_json.containsKey('imgType')) {
-      imgType = _json['imgType'] as core.String;
-    }
-    if (_json.containsKey('inputEncoding')) {
-      inputEncoding = _json['inputEncoding'] as core.String;
-    }
-    if (_json.containsKey('language')) {
-      language = _json['language'] as core.String;
-    }
-    if (_json.containsKey('linkSite')) {
-      linkSite = _json['linkSite'] as core.String;
-    }
-    if (_json.containsKey('lowRange')) {
-      lowRange = _json['lowRange'] as core.String;
-    }
-    if (_json.containsKey('orTerms')) {
-      orTerms = _json['orTerms'] as core.String;
-    }
-    if (_json.containsKey('outputEncoding')) {
-      outputEncoding = _json['outputEncoding'] as core.String;
-    }
-    if (_json.containsKey('relatedSite')) {
-      relatedSite = _json['relatedSite'] as core.String;
-    }
-    if (_json.containsKey('rights')) {
-      rights = _json['rights'] as core.String;
-    }
-    if (_json.containsKey('safe')) {
-      safe = _json['safe'] as core.String;
-    }
-    if (_json.containsKey('searchTerms')) {
-      searchTerms = _json['searchTerms'] as core.String;
-    }
-    if (_json.containsKey('searchType')) {
-      searchType = _json['searchType'] as core.String;
-    }
-    if (_json.containsKey('siteSearch')) {
-      siteSearch = _json['siteSearch'] as core.String;
-    }
-    if (_json.containsKey('siteSearchFilter')) {
-      siteSearchFilter = _json['siteSearchFilter'] as core.String;
-    }
-    if (_json.containsKey('sort')) {
-      sort = _json['sort'] as core.String;
-    }
-    if (_json.containsKey('startIndex')) {
-      startIndex = _json['startIndex'] as core.int;
-    }
-    if (_json.containsKey('startPage')) {
-      startPage = _json['startPage'] as core.int;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('totalResults')) {
-      totalResults = _json['totalResults'] as core.String;
-    }
-  }
+  SearchQueriesNextPage.fromJson(core.Map _json)
+      : this(
+          count: _json.containsKey('count') ? _json['count'] as core.int : null,
+          cr: _json.containsKey('cr') ? _json['cr'] as core.String : null,
+          cx: _json.containsKey('cx') ? _json['cx'] as core.String : null,
+          dateRestrict: _json.containsKey('dateRestrict')
+              ? _json['dateRestrict'] as core.String
+              : null,
+          disableCnTwTranslation: _json.containsKey('disableCnTwTranslation')
+              ? _json['disableCnTwTranslation'] as core.String
+              : null,
+          exactTerms: _json.containsKey('exactTerms')
+              ? _json['exactTerms'] as core.String
+              : null,
+          excludeTerms: _json.containsKey('excludeTerms')
+              ? _json['excludeTerms'] as core.String
+              : null,
+          fileType: _json.containsKey('fileType')
+              ? _json['fileType'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          gl: _json.containsKey('gl') ? _json['gl'] as core.String : null,
+          googleHost: _json.containsKey('googleHost')
+              ? _json['googleHost'] as core.String
+              : null,
+          highRange: _json.containsKey('highRange')
+              ? _json['highRange'] as core.String
+              : null,
+          hl: _json.containsKey('hl') ? _json['hl'] as core.String : null,
+          hq: _json.containsKey('hq') ? _json['hq'] as core.String : null,
+          imgColorType: _json.containsKey('imgColorType')
+              ? _json['imgColorType'] as core.String
+              : null,
+          imgDominantColor: _json.containsKey('imgDominantColor')
+              ? _json['imgDominantColor'] as core.String
+              : null,
+          imgSize: _json.containsKey('imgSize')
+              ? _json['imgSize'] as core.String
+              : null,
+          imgType: _json.containsKey('imgType')
+              ? _json['imgType'] as core.String
+              : null,
+          inputEncoding: _json.containsKey('inputEncoding')
+              ? _json['inputEncoding'] as core.String
+              : null,
+          language: _json.containsKey('language')
+              ? _json['language'] as core.String
+              : null,
+          linkSite: _json.containsKey('linkSite')
+              ? _json['linkSite'] as core.String
+              : null,
+          lowRange: _json.containsKey('lowRange')
+              ? _json['lowRange'] as core.String
+              : null,
+          orTerms: _json.containsKey('orTerms')
+              ? _json['orTerms'] as core.String
+              : null,
+          outputEncoding: _json.containsKey('outputEncoding')
+              ? _json['outputEncoding'] as core.String
+              : null,
+          relatedSite: _json.containsKey('relatedSite')
+              ? _json['relatedSite'] as core.String
+              : null,
+          rights: _json.containsKey('rights')
+              ? _json['rights'] as core.String
+              : null,
+          safe: _json.containsKey('safe') ? _json['safe'] as core.String : null,
+          searchTerms: _json.containsKey('searchTerms')
+              ? _json['searchTerms'] as core.String
+              : null,
+          searchType: _json.containsKey('searchType')
+              ? _json['searchType'] as core.String
+              : null,
+          siteSearch: _json.containsKey('siteSearch')
+              ? _json['siteSearch'] as core.String
+              : null,
+          siteSearchFilter: _json.containsKey('siteSearchFilter')
+              ? _json['siteSearchFilter'] as core.String
+              : null,
+          sort: _json.containsKey('sort') ? _json['sort'] as core.String : null,
+          startIndex: _json.containsKey('startIndex')
+              ? _json['startIndex'] as core.int
+              : null,
+          startPage: _json.containsKey('startPage')
+              ? _json['startPage'] as core.int
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          totalResults: _json.containsKey('totalResults')
+              ? _json['totalResults'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
@@ -1406,12 +1442,12 @@ class SearchQueriesPreviousPage {
   /// Restricts search results to documents originating in a particular country.
   ///
   /// You may use
-  /// [Boolean operators](https://developers.google.com/custom-search/docs/xml_results#booleanOperators)
+  /// [Boolean operators](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// in the `cr` parameter's value. Google WebSearch determines the country of
   /// a document by analyzing the following: * The top-level domain (TLD) of the
   /// document's URL. * The geographic location of the web server's IP address.
   /// See \[Country (cr) Parameter
-  /// Values\](https://developers.google.com/custom-search/docs/xml_results#countryCollections)
+  /// Values\](https://developers.google.com/custom-search/docs/json_api_reference#countryCollections)
   /// for a list of valid values for this parameter.
   core.String? cr;
 
@@ -1432,7 +1468,7 @@ class SearchQueriesPreviousPage {
   core.String? dateRestrict;
 
   /// Enables or disables the
-  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/xml_results#chineseSearch)
+  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/json_api_reference#chineseSearch)
   /// feature.
   ///
   /// Supported values are: * `0`: enabled (default) * `1`: disabled
@@ -1461,7 +1497,7 @@ class SearchQueriesPreviousPage {
   /// Activates or deactivates the automatic filtering of Google search results.
   ///
   /// See
-  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/xml_results#automaticFiltering)
+  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/json_api_reference#automaticFiltering)
   /// for more information about Google's search results filters. Valid values
   /// for this parameter are: * `0`: Disabled * `1`: Enabled (default) **Note**:
   /// By default, Google applies filtering to all search results to improve the
@@ -1471,7 +1507,7 @@ class SearchQueriesPreviousPage {
   /// Boosts search results whose country of origin matches the parameter value.
   ///
   /// See
-  /// [Country Codes](https://developers.google.com/custom-search/docs/xml_results#countryCodes)
+  /// [Country Codes](https://developers.google.com/custom-search/docs/json_api_reference#countryCodes)
   /// for a list of valid values. Specifying a `gl` parameter value in WebSearch
   /// requests should improve the relevance of results. This is particularly
   /// true for international customers and, even more specifically, for
@@ -1492,11 +1528,11 @@ class SearchQueriesPreviousPage {
   ///
   /// Explicitly setting this parameter improves the performance and the quality
   /// of your search results. See the
-  /// [Interface Languages](https://developers.google.com/custom-search/docs/xml_results#wsInterfaceLanguages)
+  /// [Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#wsInterfaceLanguages)
   /// section of
-  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/xml_results#wsInternationalizing)
+  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/json_api_reference#wsInternationalizing)
   /// for more information, and
-  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/xml_results_appendices#interfaceLanguages)
+  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#interfaceLanguages)
   /// for a list of supported languages.
   core.String? hl;
 
@@ -1548,7 +1584,7 @@ class SearchQueriesPreviousPage {
   /// search terms.
   ///
   /// You can also use the
-  /// [Boolean OR](https://developers.google.com/custom-search/docs/xml_results#BooleanOrqt)
+  /// [Boolean OR](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// query term for this type of query.
   core.String? orTerms;
 
@@ -1568,7 +1604,7 @@ class SearchQueriesPreviousPage {
   core.String? rights;
 
   /// Specifies the
-  /// [SafeSearch level](https://developers.google.com/custom-search/docs/xml_results#safeSearchLevels)
+  /// [SafeSearch level](https://developers.google.com/custom-search/docs/json_api_reference#safeSearchLevels)
   /// used for filtering out adult results.
   ///
   /// This is a custom property not defined in the OpenSearch spec. Valid
@@ -1616,118 +1652,139 @@ class SearchQueriesPreviousPage {
   /// May not be accurate.
   core.String? totalResults;
 
-  SearchQueriesPreviousPage();
+  SearchQueriesPreviousPage({
+    this.count,
+    this.cr,
+    this.cx,
+    this.dateRestrict,
+    this.disableCnTwTranslation,
+    this.exactTerms,
+    this.excludeTerms,
+    this.fileType,
+    this.filter,
+    this.gl,
+    this.googleHost,
+    this.highRange,
+    this.hl,
+    this.hq,
+    this.imgColorType,
+    this.imgDominantColor,
+    this.imgSize,
+    this.imgType,
+    this.inputEncoding,
+    this.language,
+    this.linkSite,
+    this.lowRange,
+    this.orTerms,
+    this.outputEncoding,
+    this.relatedSite,
+    this.rights,
+    this.safe,
+    this.searchTerms,
+    this.searchType,
+    this.siteSearch,
+    this.siteSearchFilter,
+    this.sort,
+    this.startIndex,
+    this.startPage,
+    this.title,
+    this.totalResults,
+  });
 
-  SearchQueriesPreviousPage.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.int;
-    }
-    if (_json.containsKey('cr')) {
-      cr = _json['cr'] as core.String;
-    }
-    if (_json.containsKey('cx')) {
-      cx = _json['cx'] as core.String;
-    }
-    if (_json.containsKey('dateRestrict')) {
-      dateRestrict = _json['dateRestrict'] as core.String;
-    }
-    if (_json.containsKey('disableCnTwTranslation')) {
-      disableCnTwTranslation = _json['disableCnTwTranslation'] as core.String;
-    }
-    if (_json.containsKey('exactTerms')) {
-      exactTerms = _json['exactTerms'] as core.String;
-    }
-    if (_json.containsKey('excludeTerms')) {
-      excludeTerms = _json['excludeTerms'] as core.String;
-    }
-    if (_json.containsKey('fileType')) {
-      fileType = _json['fileType'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('gl')) {
-      gl = _json['gl'] as core.String;
-    }
-    if (_json.containsKey('googleHost')) {
-      googleHost = _json['googleHost'] as core.String;
-    }
-    if (_json.containsKey('highRange')) {
-      highRange = _json['highRange'] as core.String;
-    }
-    if (_json.containsKey('hl')) {
-      hl = _json['hl'] as core.String;
-    }
-    if (_json.containsKey('hq')) {
-      hq = _json['hq'] as core.String;
-    }
-    if (_json.containsKey('imgColorType')) {
-      imgColorType = _json['imgColorType'] as core.String;
-    }
-    if (_json.containsKey('imgDominantColor')) {
-      imgDominantColor = _json['imgDominantColor'] as core.String;
-    }
-    if (_json.containsKey('imgSize')) {
-      imgSize = _json['imgSize'] as core.String;
-    }
-    if (_json.containsKey('imgType')) {
-      imgType = _json['imgType'] as core.String;
-    }
-    if (_json.containsKey('inputEncoding')) {
-      inputEncoding = _json['inputEncoding'] as core.String;
-    }
-    if (_json.containsKey('language')) {
-      language = _json['language'] as core.String;
-    }
-    if (_json.containsKey('linkSite')) {
-      linkSite = _json['linkSite'] as core.String;
-    }
-    if (_json.containsKey('lowRange')) {
-      lowRange = _json['lowRange'] as core.String;
-    }
-    if (_json.containsKey('orTerms')) {
-      orTerms = _json['orTerms'] as core.String;
-    }
-    if (_json.containsKey('outputEncoding')) {
-      outputEncoding = _json['outputEncoding'] as core.String;
-    }
-    if (_json.containsKey('relatedSite')) {
-      relatedSite = _json['relatedSite'] as core.String;
-    }
-    if (_json.containsKey('rights')) {
-      rights = _json['rights'] as core.String;
-    }
-    if (_json.containsKey('safe')) {
-      safe = _json['safe'] as core.String;
-    }
-    if (_json.containsKey('searchTerms')) {
-      searchTerms = _json['searchTerms'] as core.String;
-    }
-    if (_json.containsKey('searchType')) {
-      searchType = _json['searchType'] as core.String;
-    }
-    if (_json.containsKey('siteSearch')) {
-      siteSearch = _json['siteSearch'] as core.String;
-    }
-    if (_json.containsKey('siteSearchFilter')) {
-      siteSearchFilter = _json['siteSearchFilter'] as core.String;
-    }
-    if (_json.containsKey('sort')) {
-      sort = _json['sort'] as core.String;
-    }
-    if (_json.containsKey('startIndex')) {
-      startIndex = _json['startIndex'] as core.int;
-    }
-    if (_json.containsKey('startPage')) {
-      startPage = _json['startPage'] as core.int;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('totalResults')) {
-      totalResults = _json['totalResults'] as core.String;
-    }
-  }
+  SearchQueriesPreviousPage.fromJson(core.Map _json)
+      : this(
+          count: _json.containsKey('count') ? _json['count'] as core.int : null,
+          cr: _json.containsKey('cr') ? _json['cr'] as core.String : null,
+          cx: _json.containsKey('cx') ? _json['cx'] as core.String : null,
+          dateRestrict: _json.containsKey('dateRestrict')
+              ? _json['dateRestrict'] as core.String
+              : null,
+          disableCnTwTranslation: _json.containsKey('disableCnTwTranslation')
+              ? _json['disableCnTwTranslation'] as core.String
+              : null,
+          exactTerms: _json.containsKey('exactTerms')
+              ? _json['exactTerms'] as core.String
+              : null,
+          excludeTerms: _json.containsKey('excludeTerms')
+              ? _json['excludeTerms'] as core.String
+              : null,
+          fileType: _json.containsKey('fileType')
+              ? _json['fileType'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          gl: _json.containsKey('gl') ? _json['gl'] as core.String : null,
+          googleHost: _json.containsKey('googleHost')
+              ? _json['googleHost'] as core.String
+              : null,
+          highRange: _json.containsKey('highRange')
+              ? _json['highRange'] as core.String
+              : null,
+          hl: _json.containsKey('hl') ? _json['hl'] as core.String : null,
+          hq: _json.containsKey('hq') ? _json['hq'] as core.String : null,
+          imgColorType: _json.containsKey('imgColorType')
+              ? _json['imgColorType'] as core.String
+              : null,
+          imgDominantColor: _json.containsKey('imgDominantColor')
+              ? _json['imgDominantColor'] as core.String
+              : null,
+          imgSize: _json.containsKey('imgSize')
+              ? _json['imgSize'] as core.String
+              : null,
+          imgType: _json.containsKey('imgType')
+              ? _json['imgType'] as core.String
+              : null,
+          inputEncoding: _json.containsKey('inputEncoding')
+              ? _json['inputEncoding'] as core.String
+              : null,
+          language: _json.containsKey('language')
+              ? _json['language'] as core.String
+              : null,
+          linkSite: _json.containsKey('linkSite')
+              ? _json['linkSite'] as core.String
+              : null,
+          lowRange: _json.containsKey('lowRange')
+              ? _json['lowRange'] as core.String
+              : null,
+          orTerms: _json.containsKey('orTerms')
+              ? _json['orTerms'] as core.String
+              : null,
+          outputEncoding: _json.containsKey('outputEncoding')
+              ? _json['outputEncoding'] as core.String
+              : null,
+          relatedSite: _json.containsKey('relatedSite')
+              ? _json['relatedSite'] as core.String
+              : null,
+          rights: _json.containsKey('rights')
+              ? _json['rights'] as core.String
+              : null,
+          safe: _json.containsKey('safe') ? _json['safe'] as core.String : null,
+          searchTerms: _json.containsKey('searchTerms')
+              ? _json['searchTerms'] as core.String
+              : null,
+          searchType: _json.containsKey('searchType')
+              ? _json['searchType'] as core.String
+              : null,
+          siteSearch: _json.containsKey('siteSearch')
+              ? _json['siteSearch'] as core.String
+              : null,
+          siteSearchFilter: _json.containsKey('siteSearchFilter')
+              ? _json['siteSearchFilter'] as core.String
+              : null,
+          sort: _json.containsKey('sort') ? _json['sort'] as core.String : null,
+          startIndex: _json.containsKey('startIndex')
+              ? _json['startIndex'] as core.int
+              : null,
+          startPage: _json.containsKey('startPage')
+              ? _json['startPage'] as core.int
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          totalResults: _json.containsKey('totalResults')
+              ? _json['totalResults'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
@@ -1778,12 +1835,12 @@ class SearchQueriesRequest {
   /// Restricts search results to documents originating in a particular country.
   ///
   /// You may use
-  /// [Boolean operators](https://developers.google.com/custom-search/docs/xml_results#booleanOperators)
+  /// [Boolean operators](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// in the `cr` parameter's value. Google WebSearch determines the country of
   /// a document by analyzing the following: * The top-level domain (TLD) of the
   /// document's URL. * The geographic location of the web server's IP address.
   /// See \[Country (cr) Parameter
-  /// Values\](https://developers.google.com/custom-search/docs/xml_results#countryCollections)
+  /// Values\](https://developers.google.com/custom-search/docs/json_api_reference#countryCollections)
   /// for a list of valid values for this parameter.
   core.String? cr;
 
@@ -1804,7 +1861,7 @@ class SearchQueriesRequest {
   core.String? dateRestrict;
 
   /// Enables or disables the
-  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/xml_results#chineseSearch)
+  /// [Simplified and Traditional Chinese Search](https://developers.google.com/custom-search/docs/json_api_reference#chineseSearch)
   /// feature.
   ///
   /// Supported values are: * `0`: enabled (default) * `1`: disabled
@@ -1833,7 +1890,7 @@ class SearchQueriesRequest {
   /// Activates or deactivates the automatic filtering of Google search results.
   ///
   /// See
-  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/xml_results#automaticFiltering)
+  /// [Automatic Filtering](https://developers.google.com/custom-search/docs/json_api_reference#automaticFiltering)
   /// for more information about Google's search results filters. Valid values
   /// for this parameter are: * `0`: Disabled * `1`: Enabled (default) **Note**:
   /// By default, Google applies filtering to all search results to improve the
@@ -1843,7 +1900,7 @@ class SearchQueriesRequest {
   /// Boosts search results whose country of origin matches the parameter value.
   ///
   /// See
-  /// [Country Codes](https://developers.google.com/custom-search/docs/xml_results#countryCodes)
+  /// [Country Codes](https://developers.google.com/custom-search/docs/json_api_reference#countryCodes)
   /// for a list of valid values. Specifying a `gl` parameter value in WebSearch
   /// requests should improve the relevance of results. This is particularly
   /// true for international customers and, even more specifically, for
@@ -1864,11 +1921,11 @@ class SearchQueriesRequest {
   ///
   /// Explicitly setting this parameter improves the performance and the quality
   /// of your search results. See the
-  /// [Interface Languages](https://developers.google.com/custom-search/docs/xml_results#wsInterfaceLanguages)
+  /// [Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#wsInterfaceLanguages)
   /// section of
-  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/xml_results#wsInternationalizing)
+  /// [Internationalizing Queries and Results Presentation](https://developers.google.com/custom-search/docs/json_api_reference#wsInternationalizing)
   /// for more information, and
-  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/xml_results_appendices#interfaceLanguages)
+  /// [Supported Interface Languages](https://developers.google.com/custom-search/docs/json_api_reference#interfaceLanguages)
   /// for a list of supported languages.
   core.String? hl;
 
@@ -1920,7 +1977,7 @@ class SearchQueriesRequest {
   /// search terms.
   ///
   /// You can also use the
-  /// [Boolean OR](https://developers.google.com/custom-search/docs/xml_results#BooleanOrqt)
+  /// [Boolean OR](https://developers.google.com/custom-search/docs/json_api_reference#BooleanOrSearch)
   /// query term for this type of query.
   core.String? orTerms;
 
@@ -1940,7 +1997,7 @@ class SearchQueriesRequest {
   core.String? rights;
 
   /// Specifies the
-  /// [SafeSearch level](https://developers.google.com/custom-search/docs/xml_results#safeSearchLevels)
+  /// [SafeSearch level](https://developers.google.com/custom-search/docs/json_api_reference#safeSearchLevels)
   /// used for filtering out adult results.
   ///
   /// This is a custom property not defined in the OpenSearch spec. Valid
@@ -1988,118 +2045,139 @@ class SearchQueriesRequest {
   /// May not be accurate.
   core.String? totalResults;
 
-  SearchQueriesRequest();
+  SearchQueriesRequest({
+    this.count,
+    this.cr,
+    this.cx,
+    this.dateRestrict,
+    this.disableCnTwTranslation,
+    this.exactTerms,
+    this.excludeTerms,
+    this.fileType,
+    this.filter,
+    this.gl,
+    this.googleHost,
+    this.highRange,
+    this.hl,
+    this.hq,
+    this.imgColorType,
+    this.imgDominantColor,
+    this.imgSize,
+    this.imgType,
+    this.inputEncoding,
+    this.language,
+    this.linkSite,
+    this.lowRange,
+    this.orTerms,
+    this.outputEncoding,
+    this.relatedSite,
+    this.rights,
+    this.safe,
+    this.searchTerms,
+    this.searchType,
+    this.siteSearch,
+    this.siteSearchFilter,
+    this.sort,
+    this.startIndex,
+    this.startPage,
+    this.title,
+    this.totalResults,
+  });
 
-  SearchQueriesRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('count')) {
-      count = _json['count'] as core.int;
-    }
-    if (_json.containsKey('cr')) {
-      cr = _json['cr'] as core.String;
-    }
-    if (_json.containsKey('cx')) {
-      cx = _json['cx'] as core.String;
-    }
-    if (_json.containsKey('dateRestrict')) {
-      dateRestrict = _json['dateRestrict'] as core.String;
-    }
-    if (_json.containsKey('disableCnTwTranslation')) {
-      disableCnTwTranslation = _json['disableCnTwTranslation'] as core.String;
-    }
-    if (_json.containsKey('exactTerms')) {
-      exactTerms = _json['exactTerms'] as core.String;
-    }
-    if (_json.containsKey('excludeTerms')) {
-      excludeTerms = _json['excludeTerms'] as core.String;
-    }
-    if (_json.containsKey('fileType')) {
-      fileType = _json['fileType'] as core.String;
-    }
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('gl')) {
-      gl = _json['gl'] as core.String;
-    }
-    if (_json.containsKey('googleHost')) {
-      googleHost = _json['googleHost'] as core.String;
-    }
-    if (_json.containsKey('highRange')) {
-      highRange = _json['highRange'] as core.String;
-    }
-    if (_json.containsKey('hl')) {
-      hl = _json['hl'] as core.String;
-    }
-    if (_json.containsKey('hq')) {
-      hq = _json['hq'] as core.String;
-    }
-    if (_json.containsKey('imgColorType')) {
-      imgColorType = _json['imgColorType'] as core.String;
-    }
-    if (_json.containsKey('imgDominantColor')) {
-      imgDominantColor = _json['imgDominantColor'] as core.String;
-    }
-    if (_json.containsKey('imgSize')) {
-      imgSize = _json['imgSize'] as core.String;
-    }
-    if (_json.containsKey('imgType')) {
-      imgType = _json['imgType'] as core.String;
-    }
-    if (_json.containsKey('inputEncoding')) {
-      inputEncoding = _json['inputEncoding'] as core.String;
-    }
-    if (_json.containsKey('language')) {
-      language = _json['language'] as core.String;
-    }
-    if (_json.containsKey('linkSite')) {
-      linkSite = _json['linkSite'] as core.String;
-    }
-    if (_json.containsKey('lowRange')) {
-      lowRange = _json['lowRange'] as core.String;
-    }
-    if (_json.containsKey('orTerms')) {
-      orTerms = _json['orTerms'] as core.String;
-    }
-    if (_json.containsKey('outputEncoding')) {
-      outputEncoding = _json['outputEncoding'] as core.String;
-    }
-    if (_json.containsKey('relatedSite')) {
-      relatedSite = _json['relatedSite'] as core.String;
-    }
-    if (_json.containsKey('rights')) {
-      rights = _json['rights'] as core.String;
-    }
-    if (_json.containsKey('safe')) {
-      safe = _json['safe'] as core.String;
-    }
-    if (_json.containsKey('searchTerms')) {
-      searchTerms = _json['searchTerms'] as core.String;
-    }
-    if (_json.containsKey('searchType')) {
-      searchType = _json['searchType'] as core.String;
-    }
-    if (_json.containsKey('siteSearch')) {
-      siteSearch = _json['siteSearch'] as core.String;
-    }
-    if (_json.containsKey('siteSearchFilter')) {
-      siteSearchFilter = _json['siteSearchFilter'] as core.String;
-    }
-    if (_json.containsKey('sort')) {
-      sort = _json['sort'] as core.String;
-    }
-    if (_json.containsKey('startIndex')) {
-      startIndex = _json['startIndex'] as core.int;
-    }
-    if (_json.containsKey('startPage')) {
-      startPage = _json['startPage'] as core.int;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('totalResults')) {
-      totalResults = _json['totalResults'] as core.String;
-    }
-  }
+  SearchQueriesRequest.fromJson(core.Map _json)
+      : this(
+          count: _json.containsKey('count') ? _json['count'] as core.int : null,
+          cr: _json.containsKey('cr') ? _json['cr'] as core.String : null,
+          cx: _json.containsKey('cx') ? _json['cx'] as core.String : null,
+          dateRestrict: _json.containsKey('dateRestrict')
+              ? _json['dateRestrict'] as core.String
+              : null,
+          disableCnTwTranslation: _json.containsKey('disableCnTwTranslation')
+              ? _json['disableCnTwTranslation'] as core.String
+              : null,
+          exactTerms: _json.containsKey('exactTerms')
+              ? _json['exactTerms'] as core.String
+              : null,
+          excludeTerms: _json.containsKey('excludeTerms')
+              ? _json['excludeTerms'] as core.String
+              : null,
+          fileType: _json.containsKey('fileType')
+              ? _json['fileType'] as core.String
+              : null,
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          gl: _json.containsKey('gl') ? _json['gl'] as core.String : null,
+          googleHost: _json.containsKey('googleHost')
+              ? _json['googleHost'] as core.String
+              : null,
+          highRange: _json.containsKey('highRange')
+              ? _json['highRange'] as core.String
+              : null,
+          hl: _json.containsKey('hl') ? _json['hl'] as core.String : null,
+          hq: _json.containsKey('hq') ? _json['hq'] as core.String : null,
+          imgColorType: _json.containsKey('imgColorType')
+              ? _json['imgColorType'] as core.String
+              : null,
+          imgDominantColor: _json.containsKey('imgDominantColor')
+              ? _json['imgDominantColor'] as core.String
+              : null,
+          imgSize: _json.containsKey('imgSize')
+              ? _json['imgSize'] as core.String
+              : null,
+          imgType: _json.containsKey('imgType')
+              ? _json['imgType'] as core.String
+              : null,
+          inputEncoding: _json.containsKey('inputEncoding')
+              ? _json['inputEncoding'] as core.String
+              : null,
+          language: _json.containsKey('language')
+              ? _json['language'] as core.String
+              : null,
+          linkSite: _json.containsKey('linkSite')
+              ? _json['linkSite'] as core.String
+              : null,
+          lowRange: _json.containsKey('lowRange')
+              ? _json['lowRange'] as core.String
+              : null,
+          orTerms: _json.containsKey('orTerms')
+              ? _json['orTerms'] as core.String
+              : null,
+          outputEncoding: _json.containsKey('outputEncoding')
+              ? _json['outputEncoding'] as core.String
+              : null,
+          relatedSite: _json.containsKey('relatedSite')
+              ? _json['relatedSite'] as core.String
+              : null,
+          rights: _json.containsKey('rights')
+              ? _json['rights'] as core.String
+              : null,
+          safe: _json.containsKey('safe') ? _json['safe'] as core.String : null,
+          searchTerms: _json.containsKey('searchTerms')
+              ? _json['searchTerms'] as core.String
+              : null,
+          searchType: _json.containsKey('searchType')
+              ? _json['searchType'] as core.String
+              : null,
+          siteSearch: _json.containsKey('siteSearch')
+              ? _json['siteSearch'] as core.String
+              : null,
+          siteSearchFilter: _json.containsKey('siteSearchFilter')
+              ? _json['siteSearchFilter'] as core.String
+              : null,
+          sort: _json.containsKey('sort') ? _json['sort'] as core.String : null,
+          startIndex: _json.containsKey('startIndex')
+              ? _json['startIndex'] as core.int
+              : null,
+          startPage: _json.containsKey('startPage')
+              ? _json['startPage'] as core.int
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          totalResults: _json.containsKey('totalResults')
+              ? _json['totalResults'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (count != null) 'count': count!,
@@ -2153,37 +2231,38 @@ class SearchQueries {
   /// Metadata representing the current request.
   core.List<SearchQueriesRequest>? request;
 
-  SearchQueries();
+  SearchQueries({
+    this.nextPage,
+    this.previousPage,
+    this.request,
+  });
 
-  SearchQueries.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPage')) {
-      nextPage = (_json['nextPage'] as core.List)
-          .map<SearchQueriesNextPage>((value) => SearchQueriesNextPage.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('previousPage')) {
-      previousPage = (_json['previousPage'] as core.List)
-          .map<SearchQueriesPreviousPage>((value) =>
-              SearchQueriesPreviousPage.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('request')) {
-      request = (_json['request'] as core.List)
-          .map<SearchQueriesRequest>((value) => SearchQueriesRequest.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SearchQueries.fromJson(core.Map _json)
+      : this(
+          nextPage: _json.containsKey('nextPage')
+              ? (_json['nextPage'] as core.List)
+                  .map((value) => SearchQueriesNextPage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          previousPage: _json.containsKey('previousPage')
+              ? (_json['previousPage'] as core.List)
+                  .map((value) => SearchQueriesPreviousPage.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          request: _json.containsKey('request')
+              ? (_json['request'] as core.List)
+                  .map((value) => SearchQueriesRequest.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (nextPage != null)
-          'nextPage': nextPage!.map((value) => value.toJson()).toList(),
-        if (previousPage != null)
-          'previousPage': previousPage!.map((value) => value.toJson()).toList(),
-        if (request != null)
-          'request': request!.map((value) => value.toJson()).toList(),
+        if (nextPage != null) 'nextPage': nextPage!,
+        if (previousPage != null) 'previousPage': previousPage!,
+        if (request != null) 'request': request!,
       };
 }
 
@@ -2202,22 +2281,28 @@ class SearchSearchInformation {
   /// The total number of search results returned by the query.
   core.String? totalResults;
 
-  SearchSearchInformation();
+  SearchSearchInformation({
+    this.formattedSearchTime,
+    this.formattedTotalResults,
+    this.searchTime,
+    this.totalResults,
+  });
 
-  SearchSearchInformation.fromJson(core.Map _json) {
-    if (_json.containsKey('formattedSearchTime')) {
-      formattedSearchTime = _json['formattedSearchTime'] as core.String;
-    }
-    if (_json.containsKey('formattedTotalResults')) {
-      formattedTotalResults = _json['formattedTotalResults'] as core.String;
-    }
-    if (_json.containsKey('searchTime')) {
-      searchTime = (_json['searchTime'] as core.num).toDouble();
-    }
-    if (_json.containsKey('totalResults')) {
-      totalResults = _json['totalResults'] as core.String;
-    }
-  }
+  SearchSearchInformation.fromJson(core.Map _json)
+      : this(
+          formattedSearchTime: _json.containsKey('formattedSearchTime')
+              ? _json['formattedSearchTime'] as core.String
+              : null,
+          formattedTotalResults: _json.containsKey('formattedTotalResults')
+              ? _json['formattedTotalResults'] as core.String
+              : null,
+          searchTime: _json.containsKey('searchTime')
+              ? (_json['searchTime'] as core.num).toDouble()
+              : null,
+          totalResults: _json.containsKey('totalResults')
+              ? _json['totalResults'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (formattedSearchTime != null)
@@ -2237,16 +2322,20 @@ class SearchSpelling {
   /// The corrected query, formatted in HTML.
   core.String? htmlCorrectedQuery;
 
-  SearchSpelling();
+  SearchSpelling({
+    this.correctedQuery,
+    this.htmlCorrectedQuery,
+  });
 
-  SearchSpelling.fromJson(core.Map _json) {
-    if (_json.containsKey('correctedQuery')) {
-      correctedQuery = _json['correctedQuery'] as core.String;
-    }
-    if (_json.containsKey('htmlCorrectedQuery')) {
-      htmlCorrectedQuery = _json['htmlCorrectedQuery'] as core.String;
-    }
-  }
+  SearchSpelling.fromJson(core.Map _json)
+      : this(
+          correctedQuery: _json.containsKey('correctedQuery')
+              ? _json['correctedQuery'] as core.String
+              : null,
+          htmlCorrectedQuery: _json.containsKey('htmlCorrectedQuery')
+              ? _json['htmlCorrectedQuery'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (correctedQuery != null) 'correctedQuery': correctedQuery!,
@@ -2266,16 +2355,18 @@ class SearchUrl {
   /// API.
   core.String? type;
 
-  SearchUrl();
+  SearchUrl({
+    this.template,
+    this.type,
+  });
 
-  SearchUrl.fromJson(core.Map _json) {
-    if (_json.containsKey('template')) {
-      template = _json['template'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  SearchUrl.fromJson(core.Map _json)
+      : this(
+          template: _json.containsKey('template')
+              ? _json['template'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (template != null) 'template': template!,
@@ -2294,7 +2385,7 @@ class Search {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? context;
+  core.Map<core.String, core.Object?>? context;
 
   /// The current set of custom search results.
   core.List<Result>? items;
@@ -2323,61 +2414,61 @@ class Search {
   /// OpenSearch template and URL.
   SearchUrl? url;
 
-  Search();
+  Search({
+    this.context,
+    this.items,
+    this.kind,
+    this.promotions,
+    this.queries,
+    this.searchInformation,
+    this.spelling,
+    this.url,
+  });
 
-  Search.fromJson(core.Map _json) {
-    if (_json.containsKey('context')) {
-      context = (_json['context'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('items')) {
-      items = (_json['items'] as core.List)
-          .map<Result>((value) =>
-              Result.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('promotions')) {
-      promotions = (_json['promotions'] as core.List)
-          .map<Promotion>((value) =>
-              Promotion.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('queries')) {
-      queries = SearchQueries.fromJson(
-          _json['queries'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('searchInformation')) {
-      searchInformation = SearchSearchInformation.fromJson(
-          _json['searchInformation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('spelling')) {
-      spelling = SearchSpelling.fromJson(
-          _json['spelling'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('url')) {
-      url = SearchUrl.fromJson(
-          _json['url'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Search.fromJson(core.Map _json)
+      : this(
+          context: _json.containsKey('context')
+              ? _json['context'] as core.Map<core.String, core.dynamic>
+              : null,
+          items: _json.containsKey('items')
+              ? (_json['items'] as core.List)
+                  .map((value) => Result.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          promotions: _json.containsKey('promotions')
+              ? (_json['promotions'] as core.List)
+                  .map((value) => Promotion.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          queries: _json.containsKey('queries')
+              ? SearchQueries.fromJson(
+                  _json['queries'] as core.Map<core.String, core.dynamic>)
+              : null,
+          searchInformation: _json.containsKey('searchInformation')
+              ? SearchSearchInformation.fromJson(_json['searchInformation']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          spelling: _json.containsKey('spelling')
+              ? SearchSpelling.fromJson(
+                  _json['spelling'] as core.Map<core.String, core.dynamic>)
+              : null,
+          url: _json.containsKey('url')
+              ? SearchUrl.fromJson(
+                  _json['url'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (context != null) 'context': context!,
-        if (items != null)
-          'items': items!.map((value) => value.toJson()).toList(),
+        if (items != null) 'items': items!,
         if (kind != null) 'kind': kind!,
-        if (promotions != null)
-          'promotions': promotions!.map((value) => value.toJson()).toList(),
-        if (queries != null) 'queries': queries!.toJson(),
-        if (searchInformation != null)
-          'searchInformation': searchInformation!.toJson(),
-        if (spelling != null) 'spelling': spelling!.toJson(),
-        if (url != null) 'url': url!.toJson(),
+        if (promotions != null) 'promotions': promotions!,
+        if (queries != null) 'queries': queries!,
+        if (searchInformation != null) 'searchInformation': searchInformation!,
+        if (spelling != null) 'spelling': spelling!,
+        if (url != null) 'url': url!,
       };
 }

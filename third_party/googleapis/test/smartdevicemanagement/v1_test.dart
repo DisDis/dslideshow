@@ -1,4 +1,3 @@
-// ignore_for_file: avoid_returning_null
 // ignore_for_file: camel_case_types
 // ignore_for_file: cascade_invocations
 // ignore_for_file: comment_references
@@ -6,10 +5,10 @@
 // ignore_for_file: library_names
 // ignore_for_file: lines_longer_than_80_chars
 // ignore_for_file: non_constant_identifier_names
+// ignore_for_file: prefer_const_declarations
 // ignore_for_file: prefer_expression_function_bodies
 // ignore_for_file: prefer_final_locals
 // ignore_for_file: prefer_interpolation_to_compose_strings
-// ignore_for_file: prefer_single_quotes
 // ignore_for_file: unnecessary_brace_in_string_interps
 // ignore_for_file: unnecessary_cast
 // ignore_for_file: unnecessary_lambdas
@@ -21,44 +20,37 @@ import 'dart:async' as async;
 import 'dart:convert' as convert;
 import 'dart:core' as core;
 
+import 'package:googleapis/smartdevicemanagement/v1.dart' as api;
 import 'package:http/http.dart' as http;
 import 'package:test/test.dart' as unittest;
-import 'package:googleapis/smartdevicemanagement/v1.dart' as api;
 
 import '../test_shared.dart';
 
-core.List<api.GoogleHomeEnterpriseSdmV1ParentRelation> buildUnnamed2418() {
-  var o = <api.GoogleHomeEnterpriseSdmV1ParentRelation>[];
-  o.add(buildGoogleHomeEnterpriseSdmV1ParentRelation());
-  o.add(buildGoogleHomeEnterpriseSdmV1ParentRelation());
-  return o;
-}
+core.List<api.GoogleHomeEnterpriseSdmV1ParentRelation> buildUnnamed0() => [
+      buildGoogleHomeEnterpriseSdmV1ParentRelation(),
+      buildGoogleHomeEnterpriseSdmV1ParentRelation(),
+    ];
 
-void checkUnnamed2418(
-    core.List<api.GoogleHomeEnterpriseSdmV1ParentRelation> o) {
+void checkUnnamed0(core.List<api.GoogleHomeEnterpriseSdmV1ParentRelation> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleHomeEnterpriseSdmV1ParentRelation(
-      o[0] as api.GoogleHomeEnterpriseSdmV1ParentRelation);
-  checkGoogleHomeEnterpriseSdmV1ParentRelation(
-      o[1] as api.GoogleHomeEnterpriseSdmV1ParentRelation);
+  checkGoogleHomeEnterpriseSdmV1ParentRelation(o[0]);
+  checkGoogleHomeEnterpriseSdmV1ParentRelation(o[1]);
 }
 
-core.Map<core.String, core.Object> buildUnnamed2419() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed1() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2419(core.Map<core.String, core.Object> o) {
+void checkUnnamed1(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted1 = (o['x']!) as core.Map;
   unittest.expect(casted1, unittest.hasLength(3));
@@ -92,12 +84,12 @@ void checkUnnamed2419(core.Map<core.String, core.Object> o) {
 
 core.int buildCounterGoogleHomeEnterpriseSdmV1Device = 0;
 api.GoogleHomeEnterpriseSdmV1Device buildGoogleHomeEnterpriseSdmV1Device() {
-  var o = api.GoogleHomeEnterpriseSdmV1Device();
+  final o = api.GoogleHomeEnterpriseSdmV1Device();
   buildCounterGoogleHomeEnterpriseSdmV1Device++;
   if (buildCounterGoogleHomeEnterpriseSdmV1Device < 3) {
     o.name = 'foo';
-    o.parentRelations = buildUnnamed2418();
-    o.traits = buildUnnamed2419();
+    o.parentRelations = buildUnnamed0();
+    o.traits = buildUnnamed1();
     o.type = 'foo';
   }
   buildCounterGoogleHomeEnterpriseSdmV1Device--;
@@ -112,8 +104,8 @@ void checkGoogleHomeEnterpriseSdmV1Device(
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed2418(o.parentRelations!);
-    checkUnnamed2419(o.traits!);
+    checkUnnamed0(o.parentRelations!);
+    checkUnnamed1(o.traits!);
     unittest.expect(
       o.type!,
       unittest.equals('foo'),
@@ -122,22 +114,20 @@ void checkGoogleHomeEnterpriseSdmV1Device(
   buildCounterGoogleHomeEnterpriseSdmV1Device--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed2420() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed2() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2420(core.Map<core.String, core.Object> o) {
+void checkUnnamed2(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted3 = (o['x']!) as core.Map;
   unittest.expect(casted3, unittest.hasLength(3));
@@ -172,11 +162,11 @@ void checkUnnamed2420(core.Map<core.String, core.Object> o) {
 core.int buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest = 0;
 api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest
     buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest() {
-  var o = api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
+  final o = api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest < 3) {
     o.command = 'foo';
-    o.params = buildUnnamed2420();
+    o.params = buildUnnamed2();
   }
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest--;
   return o;
@@ -190,27 +180,25 @@ void checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest(
       o.command!,
       unittest.equals('foo'),
     );
-    checkUnnamed2420(o.params!);
+    checkUnnamed2(o.params!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed2421() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed3() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2421(core.Map<core.String, core.Object> o) {
+void checkUnnamed3(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted5 = (o['x']!) as core.Map;
   unittest.expect(casted5, unittest.hasLength(3));
@@ -245,10 +233,10 @@ void checkUnnamed2421(core.Map<core.String, core.Object> o) {
 core.int buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse = 0;
 api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse
     buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse() {
-  var o = api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse();
+  final o = api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse();
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse < 3) {
-    o.results = buildUnnamed2421();
+    o.results = buildUnnamed3();
   }
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse--;
   return o;
@@ -258,33 +246,29 @@ void checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse(
     api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse o) {
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse < 3) {
-    checkUnnamed2421(o.results!);
+    checkUnnamed3(o.results!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse--;
 }
 
-core.List<api.GoogleHomeEnterpriseSdmV1Device> buildUnnamed2422() {
-  var o = <api.GoogleHomeEnterpriseSdmV1Device>[];
-  o.add(buildGoogleHomeEnterpriseSdmV1Device());
-  o.add(buildGoogleHomeEnterpriseSdmV1Device());
-  return o;
-}
+core.List<api.GoogleHomeEnterpriseSdmV1Device> buildUnnamed4() => [
+      buildGoogleHomeEnterpriseSdmV1Device(),
+      buildGoogleHomeEnterpriseSdmV1Device(),
+    ];
 
-void checkUnnamed2422(core.List<api.GoogleHomeEnterpriseSdmV1Device> o) {
+void checkUnnamed4(core.List<api.GoogleHomeEnterpriseSdmV1Device> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleHomeEnterpriseSdmV1Device(
-      o[0] as api.GoogleHomeEnterpriseSdmV1Device);
-  checkGoogleHomeEnterpriseSdmV1Device(
-      o[1] as api.GoogleHomeEnterpriseSdmV1Device);
+  checkGoogleHomeEnterpriseSdmV1Device(o[0]);
+  checkGoogleHomeEnterpriseSdmV1Device(o[1]);
 }
 
 core.int buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse = 0;
 api.GoogleHomeEnterpriseSdmV1ListDevicesResponse
     buildGoogleHomeEnterpriseSdmV1ListDevicesResponse() {
-  var o = api.GoogleHomeEnterpriseSdmV1ListDevicesResponse();
+  final o = api.GoogleHomeEnterpriseSdmV1ListDevicesResponse();
   buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse < 3) {
-    o.devices = buildUnnamed2422();
+    o.devices = buildUnnamed4();
     o.nextPageToken = 'foo';
   }
   buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse--;
@@ -295,7 +279,7 @@ void checkGoogleHomeEnterpriseSdmV1ListDevicesResponse(
     api.GoogleHomeEnterpriseSdmV1ListDevicesResponse o) {
   buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse < 3) {
-    checkUnnamed2422(o.devices!);
+    checkUnnamed4(o.devices!);
     unittest.expect(
       o.nextPageToken!,
       unittest.equals('foo'),
@@ -304,27 +288,25 @@ void checkGoogleHomeEnterpriseSdmV1ListDevicesResponse(
   buildCounterGoogleHomeEnterpriseSdmV1ListDevicesResponse--;
 }
 
-core.List<api.GoogleHomeEnterpriseSdmV1Room> buildUnnamed2423() {
-  var o = <api.GoogleHomeEnterpriseSdmV1Room>[];
-  o.add(buildGoogleHomeEnterpriseSdmV1Room());
-  o.add(buildGoogleHomeEnterpriseSdmV1Room());
-  return o;
-}
+core.List<api.GoogleHomeEnterpriseSdmV1Room> buildUnnamed5() => [
+      buildGoogleHomeEnterpriseSdmV1Room(),
+      buildGoogleHomeEnterpriseSdmV1Room(),
+    ];
 
-void checkUnnamed2423(core.List<api.GoogleHomeEnterpriseSdmV1Room> o) {
+void checkUnnamed5(core.List<api.GoogleHomeEnterpriseSdmV1Room> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleHomeEnterpriseSdmV1Room(o[0] as api.GoogleHomeEnterpriseSdmV1Room);
-  checkGoogleHomeEnterpriseSdmV1Room(o[1] as api.GoogleHomeEnterpriseSdmV1Room);
+  checkGoogleHomeEnterpriseSdmV1Room(o[0]);
+  checkGoogleHomeEnterpriseSdmV1Room(o[1]);
 }
 
 core.int buildCounterGoogleHomeEnterpriseSdmV1ListRoomsResponse = 0;
 api.GoogleHomeEnterpriseSdmV1ListRoomsResponse
     buildGoogleHomeEnterpriseSdmV1ListRoomsResponse() {
-  var o = api.GoogleHomeEnterpriseSdmV1ListRoomsResponse();
+  final o = api.GoogleHomeEnterpriseSdmV1ListRoomsResponse();
   buildCounterGoogleHomeEnterpriseSdmV1ListRoomsResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ListRoomsResponse < 3) {
     o.nextPageToken = 'foo';
-    o.rooms = buildUnnamed2423();
+    o.rooms = buildUnnamed5();
   }
   buildCounterGoogleHomeEnterpriseSdmV1ListRoomsResponse--;
   return o;
@@ -338,34 +320,30 @@ void checkGoogleHomeEnterpriseSdmV1ListRoomsResponse(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed2423(o.rooms!);
+    checkUnnamed5(o.rooms!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1ListRoomsResponse--;
 }
 
-core.List<api.GoogleHomeEnterpriseSdmV1Structure> buildUnnamed2424() {
-  var o = <api.GoogleHomeEnterpriseSdmV1Structure>[];
-  o.add(buildGoogleHomeEnterpriseSdmV1Structure());
-  o.add(buildGoogleHomeEnterpriseSdmV1Structure());
-  return o;
-}
+core.List<api.GoogleHomeEnterpriseSdmV1Structure> buildUnnamed6() => [
+      buildGoogleHomeEnterpriseSdmV1Structure(),
+      buildGoogleHomeEnterpriseSdmV1Structure(),
+    ];
 
-void checkUnnamed2424(core.List<api.GoogleHomeEnterpriseSdmV1Structure> o) {
+void checkUnnamed6(core.List<api.GoogleHomeEnterpriseSdmV1Structure> o) {
   unittest.expect(o, unittest.hasLength(2));
-  checkGoogleHomeEnterpriseSdmV1Structure(
-      o[0] as api.GoogleHomeEnterpriseSdmV1Structure);
-  checkGoogleHomeEnterpriseSdmV1Structure(
-      o[1] as api.GoogleHomeEnterpriseSdmV1Structure);
+  checkGoogleHomeEnterpriseSdmV1Structure(o[0]);
+  checkGoogleHomeEnterpriseSdmV1Structure(o[1]);
 }
 
 core.int buildCounterGoogleHomeEnterpriseSdmV1ListStructuresResponse = 0;
 api.GoogleHomeEnterpriseSdmV1ListStructuresResponse
     buildGoogleHomeEnterpriseSdmV1ListStructuresResponse() {
-  var o = api.GoogleHomeEnterpriseSdmV1ListStructuresResponse();
+  final o = api.GoogleHomeEnterpriseSdmV1ListStructuresResponse();
   buildCounterGoogleHomeEnterpriseSdmV1ListStructuresResponse++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ListStructuresResponse < 3) {
     o.nextPageToken = 'foo';
-    o.structures = buildUnnamed2424();
+    o.structures = buildUnnamed6();
   }
   buildCounterGoogleHomeEnterpriseSdmV1ListStructuresResponse--;
   return o;
@@ -379,7 +357,7 @@ void checkGoogleHomeEnterpriseSdmV1ListStructuresResponse(
       o.nextPageToken!,
       unittest.equals('foo'),
     );
-    checkUnnamed2424(o.structures!);
+    checkUnnamed6(o.structures!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1ListStructuresResponse--;
 }
@@ -387,7 +365,7 @@ void checkGoogleHomeEnterpriseSdmV1ListStructuresResponse(
 core.int buildCounterGoogleHomeEnterpriseSdmV1ParentRelation = 0;
 api.GoogleHomeEnterpriseSdmV1ParentRelation
     buildGoogleHomeEnterpriseSdmV1ParentRelation() {
-  var o = api.GoogleHomeEnterpriseSdmV1ParentRelation();
+  final o = api.GoogleHomeEnterpriseSdmV1ParentRelation();
   buildCounterGoogleHomeEnterpriseSdmV1ParentRelation++;
   if (buildCounterGoogleHomeEnterpriseSdmV1ParentRelation < 3) {
     o.displayName = 'foo';
@@ -413,22 +391,20 @@ void checkGoogleHomeEnterpriseSdmV1ParentRelation(
   buildCounterGoogleHomeEnterpriseSdmV1ParentRelation--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed2425() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed7() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2425(core.Map<core.String, core.Object> o) {
+void checkUnnamed7(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted7 = (o['x']!) as core.Map;
   unittest.expect(casted7, unittest.hasLength(3));
@@ -462,11 +438,11 @@ void checkUnnamed2425(core.Map<core.String, core.Object> o) {
 
 core.int buildCounterGoogleHomeEnterpriseSdmV1Room = 0;
 api.GoogleHomeEnterpriseSdmV1Room buildGoogleHomeEnterpriseSdmV1Room() {
-  var o = api.GoogleHomeEnterpriseSdmV1Room();
+  final o = api.GoogleHomeEnterpriseSdmV1Room();
   buildCounterGoogleHomeEnterpriseSdmV1Room++;
   if (buildCounterGoogleHomeEnterpriseSdmV1Room < 3) {
     o.name = 'foo';
-    o.traits = buildUnnamed2425();
+    o.traits = buildUnnamed7();
   }
   buildCounterGoogleHomeEnterpriseSdmV1Room--;
   return o;
@@ -479,27 +455,25 @@ void checkGoogleHomeEnterpriseSdmV1Room(api.GoogleHomeEnterpriseSdmV1Room o) {
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed2425(o.traits!);
+    checkUnnamed7(o.traits!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1Room--;
 }
 
-core.Map<core.String, core.Object> buildUnnamed2426() {
-  var o = <core.String, core.Object>{};
-  o['x'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  o['y'] = {
-    'list': [1, 2, 3],
-    'bool': true,
-    'string': 'foo'
-  };
-  return o;
-}
+core.Map<core.String, core.Object?> buildUnnamed8() => {
+      'x': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+      'y': {
+        'list': [1, 2, 3],
+        'bool': true,
+        'string': 'foo'
+      },
+    };
 
-void checkUnnamed2426(core.Map<core.String, core.Object> o) {
+void checkUnnamed8(core.Map<core.String, core.Object?> o) {
   unittest.expect(o, unittest.hasLength(2));
   var casted9 = (o['x']!) as core.Map;
   unittest.expect(casted9, unittest.hasLength(3));
@@ -534,11 +508,11 @@ void checkUnnamed2426(core.Map<core.String, core.Object> o) {
 core.int buildCounterGoogleHomeEnterpriseSdmV1Structure = 0;
 api.GoogleHomeEnterpriseSdmV1Structure
     buildGoogleHomeEnterpriseSdmV1Structure() {
-  var o = api.GoogleHomeEnterpriseSdmV1Structure();
+  final o = api.GoogleHomeEnterpriseSdmV1Structure();
   buildCounterGoogleHomeEnterpriseSdmV1Structure++;
   if (buildCounterGoogleHomeEnterpriseSdmV1Structure < 3) {
     o.name = 'foo';
-    o.traits = buildUnnamed2426();
+    o.traits = buildUnnamed8();
   }
   buildCounterGoogleHomeEnterpriseSdmV1Structure--;
   return o;
@@ -552,7 +526,7 @@ void checkGoogleHomeEnterpriseSdmV1Structure(
       o.name!,
       unittest.equals('foo'),
     );
-    checkUnnamed2426(o.traits!);
+    checkUnnamed8(o.traits!);
   }
   buildCounterGoogleHomeEnterpriseSdmV1Structure--;
 }
@@ -560,148 +534,138 @@ void checkGoogleHomeEnterpriseSdmV1Structure(
 void main() {
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1Device', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1Device();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1Device.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1Device();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1Device.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1Device(
-          od as api.GoogleHomeEnterpriseSdmV1Device);
+      checkGoogleHomeEnterpriseSdmV1Device(od);
     });
   });
 
   unittest.group(
       'obj-schema-GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest.fromJson(
               oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest(
-          od as api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest);
+      checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest(od);
     });
   });
 
   unittest.group(
       'obj-schema-GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od =
+      final o = buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od =
           api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse.fromJson(
               oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse(
-          od as api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse);
+      checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1ListDevicesResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ListDevicesResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1ListDevicesResponse.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1ListDevicesResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1ListDevicesResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ListDevicesResponse(
-          od as api.GoogleHomeEnterpriseSdmV1ListDevicesResponse);
+      checkGoogleHomeEnterpriseSdmV1ListDevicesResponse(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1ListRoomsResponse', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ListRoomsResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1ListRoomsResponse.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1ListRoomsResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1ListRoomsResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ListRoomsResponse(
-          od as api.GoogleHomeEnterpriseSdmV1ListRoomsResponse);
+      checkGoogleHomeEnterpriseSdmV1ListRoomsResponse(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1ListStructuresResponse',
       () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ListStructuresResponse();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1ListStructuresResponse.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1ListStructuresResponse();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1ListStructuresResponse.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ListStructuresResponse(
-          od as api.GoogleHomeEnterpriseSdmV1ListStructuresResponse);
+      checkGoogleHomeEnterpriseSdmV1ListStructuresResponse(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1ParentRelation', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1ParentRelation();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1ParentRelation();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1ParentRelation.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1ParentRelation(
-          od as api.GoogleHomeEnterpriseSdmV1ParentRelation);
+      checkGoogleHomeEnterpriseSdmV1ParentRelation(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1Room', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1Room();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1Room.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1Room();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1Room.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1Room(
-          od as api.GoogleHomeEnterpriseSdmV1Room);
+      checkGoogleHomeEnterpriseSdmV1Room(od);
     });
   });
 
   unittest.group('obj-schema-GoogleHomeEnterpriseSdmV1Structure', () {
     unittest.test('to-json--from-json', () async {
-      var o = buildGoogleHomeEnterpriseSdmV1Structure();
-      var oJson = convert.jsonDecode(convert.jsonEncode(o));
-      var od = api.GoogleHomeEnterpriseSdmV1Structure.fromJson(
+      final o = buildGoogleHomeEnterpriseSdmV1Structure();
+      final oJson = convert.jsonDecode(convert.jsonEncode(o));
+      final od = api.GoogleHomeEnterpriseSdmV1Structure.fromJson(
           oJson as core.Map<core.String, core.dynamic>);
-      checkGoogleHomeEnterpriseSdmV1Structure(
-          od as api.GoogleHomeEnterpriseSdmV1Structure);
+      checkGoogleHomeEnterpriseSdmV1Structure(od);
     });
   });
 
   unittest.group('resource-EnterprisesDevicesResource', () {
     unittest.test('method--executeCommand', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.devices;
-      var arg_request =
+      final mock = HttpServerMock();
+      final res = api.SmartDeviceManagementApi(mock).enterprises.devices;
+      final arg_request =
           buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest();
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var obj =
+        final obj =
             api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest.fromJson(
                 json as core.Map<core.String, core.dynamic>);
-        checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest(
-            obj as api.GoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest);
+        checkGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandRequest(obj);
 
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -709,14 +673,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(
+        final resp = convert.json.encode(
             buildGoogleHomeEnterpriseSdmV1ExecuteDeviceCommandResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -727,36 +691,36 @@ void main() {
     });
 
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.devices;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.SmartDeviceManagementApi(mock).enterprises.devices;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -764,14 +728,15 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGoogleHomeEnterpriseSdmV1Device());
+        final resp =
+            convert.json.encode(buildGoogleHomeEnterpriseSdmV1Device());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -780,39 +745,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.devices;
-      var arg_parent = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.SmartDeviceManagementApi(mock).enterprises.devices;
+      final arg_parent = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -820,26 +785,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json
+        final resp = convert.json
             .encode(buildGoogleHomeEnterpriseSdmV1ListDevicesResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -855,36 +820,36 @@ void main() {
 
   unittest.group('resource-EnterprisesStructuresResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.structures;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.SmartDeviceManagementApi(mock).enterprises.structures;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -892,14 +857,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp =
+        final resp =
             convert.json.encode(buildGoogleHomeEnterpriseSdmV1Structure());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -909,39 +874,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.structures;
-      var arg_parent = 'foo';
-      var arg_filter = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res = api.SmartDeviceManagementApi(mock).enterprises.structures;
+      final arg_parent = 'foo';
+      final arg_filter = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -949,26 +914,26 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["filter"]!.first,
+          queryMap['filter']!.first,
           unittest.equals(arg_filter),
         );
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json
+        final resp = convert.json
             .encode(buildGoogleHomeEnterpriseSdmV1ListStructuresResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
@@ -984,36 +949,37 @@ void main() {
 
   unittest.group('resource-EnterprisesStructuresRoomsResource', () {
     unittest.test('method--get', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.structures.rooms;
-      var arg_name = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.SmartDeviceManagementApi(mock).enterprises.structures.rooms;
+      final arg_name = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1021,14 +987,14 @@ void main() {
           }
         }
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json.encode(buildGoogleHomeEnterpriseSdmV1Room());
+        final resp = convert.json.encode(buildGoogleHomeEnterpriseSdmV1Room());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);
       final response = await res.get(arg_name, $fields: arg_$fields);
@@ -1037,38 +1003,39 @@ void main() {
     });
 
     unittest.test('method--list', () async {
-      var mock = HttpServerMock();
-      var res = api.SmartDeviceManagementApi(mock).enterprises.structures.rooms;
-      var arg_parent = 'foo';
-      var arg_pageSize = 42;
-      var arg_pageToken = 'foo';
-      var arg_$fields = 'foo';
+      final mock = HttpServerMock();
+      final res =
+          api.SmartDeviceManagementApi(mock).enterprises.structures.rooms;
+      final arg_parent = 'foo';
+      final arg_pageSize = 42;
+      final arg_pageToken = 'foo';
+      final arg_$fields = 'foo';
       mock.register(unittest.expectAsync2((http.BaseRequest req, json) {
-        var path = (req.url).path;
+        final path = (req.url).path;
         var pathOffset = 0;
         core.int index;
         core.String subPart;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 1),
-          unittest.equals("/"),
+          unittest.equals('/'),
         );
         pathOffset += 1;
         unittest.expect(
           path.substring(pathOffset, pathOffset + 3),
-          unittest.equals("v1/"),
+          unittest.equals('v1/'),
         );
         pathOffset += 3;
         // NOTE: We cannot test reserved expansions due to the inability to reverse the operation;
 
-        var query = (req.url).query;
+        final query = (req.url).query;
         var queryOffset = 0;
-        var queryMap = <core.String, core.List<core.String>>{};
+        final queryMap = <core.String, core.List<core.String>>{};
         void addQueryParam(core.String n, core.String v) =>
             queryMap.putIfAbsent(n, () => []).add(v);
 
         if (query.isNotEmpty) {
           for (var part in query.split('&')) {
-            var keyValue = part.split('=');
+            final keyValue = part.split('=');
             addQueryParam(
               core.Uri.decodeQueryComponent(keyValue[0]),
               core.Uri.decodeQueryComponent(keyValue[1]),
@@ -1076,22 +1043,22 @@ void main() {
           }
         }
         unittest.expect(
-          core.int.parse(queryMap["pageSize"]!.first),
+          core.int.parse(queryMap['pageSize']!.first),
           unittest.equals(arg_pageSize),
         );
         unittest.expect(
-          queryMap["pageToken"]!.first,
+          queryMap['pageToken']!.first,
           unittest.equals(arg_pageToken),
         );
         unittest.expect(
-          queryMap["fields"]!.first,
+          queryMap['fields']!.first,
           unittest.equals(arg_$fields),
         );
 
-        var h = {
+        final h = {
           'content-type': 'application/json; charset=utf-8',
         };
-        var resp = convert.json
+        final resp = convert.json
             .encode(buildGoogleHomeEnterpriseSdmV1ListRoomsResponse());
         return async.Future.value(stringResponse(200, h, resp));
       }), true);

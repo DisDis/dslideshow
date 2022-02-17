@@ -32,6 +32,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -39,12 +41,22 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// You can use OS Login to manage access to your VM instances using IAM roles.
 class CloudOSLoginApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
+  /// View your data across Google Cloud services and see the email address of
+  /// your Google Account
+  static const cloudPlatformReadOnlyScope =
+      'https://www.googleapis.com/auth/cloud-platform.read-only';
+
   /// View and manage your Google Compute Engine resources
   static const computeScope = 'https://www.googleapis.com/auth/compute';
+
+  /// View your Google Compute Engine resources
+  static const computeReadonlyScope =
+      'https://www.googleapis.com/auth/compute.readonly';
 
   final commons.ApiRequester _requester;
 
@@ -141,7 +153,7 @@ class UsersResource {
     core.String? projectId,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (projectId != null) 'projectId': [projectId],
       if ($fields != null) 'fields': [$fields],
@@ -208,6 +220,47 @@ class UsersSshPublicKeysResource {
   final commons.ApiRequester _requester;
 
   UsersSshPublicKeysResource(commons.ApiRequester client) : _requester = client;
+
+  /// Create an SSH public key
+  ///
+  /// [request] - The metadata request object.
+  ///
+  /// Request parameters:
+  ///
+  /// [parent] - Required. The unique ID for the user in format `users/{user}`.
+  /// Value must have pattern `^users/\[^/\]+$`.
+  ///
+  /// [$fields] - Selector specifying which fields to include in a partial
+  /// response.
+  ///
+  /// Completes with a [SshPublicKey].
+  ///
+  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
+  /// error.
+  ///
+  /// If the used [http.Client] completes with an error when making a REST call,
+  /// this method will complete with the same error.
+  async.Future<SshPublicKey> create(
+    SshPublicKey request,
+    core.String parent, {
+    core.String? $fields,
+  }) async {
+    final _body = convert.json.encode(request);
+    final _queryParams = <core.String, core.List<core.String>>{
+      if ($fields != null) 'fields': [$fields],
+    };
+
+    final _url = 'v1/' + core.Uri.encodeFull('$parent') + '/sshPublicKeys';
+
+    final _response = await _requester.request(
+      _url,
+      'POST',
+      body: _body,
+      queryParams: _queryParams,
+    );
+    return SshPublicKey.fromJson(
+        _response as core.Map<core.String, core.dynamic>);
+  }
 
   /// Deletes an SSH public key.
   ///
@@ -316,7 +369,7 @@ class UsersSshPublicKeysResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -342,15 +395,7 @@ class UsersSshPublicKeysResource {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// A response message for importing an SSH public key.
 class ImportSshPublicKeyResponse {
@@ -360,21 +405,25 @@ class ImportSshPublicKeyResponse {
   /// The login profile information for the user.
   LoginProfile? loginProfile;
 
-  ImportSshPublicKeyResponse();
+  ImportSshPublicKeyResponse({
+    this.details,
+    this.loginProfile,
+  });
 
-  ImportSshPublicKeyResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('details')) {
-      details = _json['details'] as core.String;
-    }
-    if (_json.containsKey('loginProfile')) {
-      loginProfile = LoginProfile.fromJson(
-          _json['loginProfile'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ImportSshPublicKeyResponse.fromJson(core.Map _json)
+      : this(
+          details: _json.containsKey('details')
+              ? _json['details'] as core.String
+              : null,
+          loginProfile: _json.containsKey('loginProfile')
+              ? LoginProfile.fromJson(
+                  _json['loginProfile'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (details != null) 'details': details!,
-        if (loginProfile != null) 'loginProfile': loginProfile!.toJson(),
+        if (loginProfile != null) 'loginProfile': loginProfile!,
       };
 }
 
@@ -392,37 +441,37 @@ class LoginProfile {
   /// A map from SSH public key fingerprint to the associated key object.
   core.Map<core.String, SshPublicKey>? sshPublicKeys;
 
-  LoginProfile();
+  LoginProfile({
+    this.name,
+    this.posixAccounts,
+    this.sshPublicKeys,
+  });
 
-  LoginProfile.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('posixAccounts')) {
-      posixAccounts = (_json['posixAccounts'] as core.List)
-          .map<PosixAccount>((value) => PosixAccount.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('sshPublicKeys')) {
-      sshPublicKeys =
-          (_json['sshPublicKeys'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          SshPublicKey.fromJson(item as core.Map<core.String, core.dynamic>),
-        ),
-      );
-    }
-  }
+  LoginProfile.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          posixAccounts: _json.containsKey('posixAccounts')
+              ? (_json['posixAccounts'] as core.List)
+                  .map((value) => PosixAccount.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          sshPublicKeys: _json.containsKey('sshPublicKeys')
+              ? (_json['sshPublicKeys'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    SshPublicKey.fromJson(
+                        item as core.Map<core.String, core.dynamic>),
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (posixAccounts != null)
-          'posixAccounts':
-              posixAccounts!.map((value) => value.toJson()).toList(),
-        if (sshPublicKeys != null)
-          'sshPublicKeys': sshPublicKeys!
-              .map((key, item) => core.MapEntry(key, item.toJson())),
+        if (posixAccounts != null) 'posixAccounts': posixAccounts!,
+        if (sshPublicKeys != null) 'sshPublicKeys': sshPublicKeys!,
       };
 }
 
@@ -472,43 +521,48 @@ class PosixAccount {
   /// The username of the POSIX account.
   core.String? username;
 
-  PosixAccount();
+  PosixAccount({
+    this.accountId,
+    this.gecos,
+    this.gid,
+    this.homeDirectory,
+    this.name,
+    this.operatingSystemType,
+    this.primary,
+    this.shell,
+    this.systemId,
+    this.uid,
+    this.username,
+  });
 
-  PosixAccount.fromJson(core.Map _json) {
-    if (_json.containsKey('accountId')) {
-      accountId = _json['accountId'] as core.String;
-    }
-    if (_json.containsKey('gecos')) {
-      gecos = _json['gecos'] as core.String;
-    }
-    if (_json.containsKey('gid')) {
-      gid = _json['gid'] as core.String;
-    }
-    if (_json.containsKey('homeDirectory')) {
-      homeDirectory = _json['homeDirectory'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('operatingSystemType')) {
-      operatingSystemType = _json['operatingSystemType'] as core.String;
-    }
-    if (_json.containsKey('primary')) {
-      primary = _json['primary'] as core.bool;
-    }
-    if (_json.containsKey('shell')) {
-      shell = _json['shell'] as core.String;
-    }
-    if (_json.containsKey('systemId')) {
-      systemId = _json['systemId'] as core.String;
-    }
-    if (_json.containsKey('uid')) {
-      uid = _json['uid'] as core.String;
-    }
-    if (_json.containsKey('username')) {
-      username = _json['username'] as core.String;
-    }
-  }
+  PosixAccount.fromJson(core.Map _json)
+      : this(
+          accountId: _json.containsKey('accountId')
+              ? _json['accountId'] as core.String
+              : null,
+          gecos:
+              _json.containsKey('gecos') ? _json['gecos'] as core.String : null,
+          gid: _json.containsKey('gid') ? _json['gid'] as core.String : null,
+          homeDirectory: _json.containsKey('homeDirectory')
+              ? _json['homeDirectory'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          operatingSystemType: _json.containsKey('operatingSystemType')
+              ? _json['operatingSystemType'] as core.String
+              : null,
+          primary: _json.containsKey('primary')
+              ? _json['primary'] as core.bool
+              : null,
+          shell:
+              _json.containsKey('shell') ? _json['shell'] as core.String : null,
+          systemId: _json.containsKey('systemId')
+              ? _json['systemId'] as core.String
+              : null,
+          uid: _json.containsKey('uid') ? _json['uid'] as core.String : null,
+          username: _json.containsKey('username')
+              ? _json['username'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (accountId != null) 'accountId': accountId!,
@@ -544,22 +598,24 @@ class SshPublicKey {
   /// Output only.
   core.String? name;
 
-  SshPublicKey();
+  SshPublicKey({
+    this.expirationTimeUsec,
+    this.fingerprint,
+    this.key,
+    this.name,
+  });
 
-  SshPublicKey.fromJson(core.Map _json) {
-    if (_json.containsKey('expirationTimeUsec')) {
-      expirationTimeUsec = _json['expirationTimeUsec'] as core.String;
-    }
-    if (_json.containsKey('fingerprint')) {
-      fingerprint = _json['fingerprint'] as core.String;
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  SshPublicKey.fromJson(core.Map _json)
+      : this(
+          expirationTimeUsec: _json.containsKey('expirationTimeUsec')
+              ? _json['expirationTimeUsec'] as core.String
+              : null,
+          fingerprint: _json.containsKey('fingerprint')
+              ? _json['fingerprint'] as core.String
+              : null,
+          key: _json.containsKey('key') ? _json['key'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (expirationTimeUsec != null)

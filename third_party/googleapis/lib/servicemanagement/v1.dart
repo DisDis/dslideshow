@@ -36,6 +36,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http_1;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -45,11 +47,13 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 /// on Google Cloud Platform so that they can be discovered and used by service
 /// consumers.
 class ServiceManagementApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
-  /// View your data across Google Cloud Platform services
+  /// View your data across Google Cloud services and see the email address of
+  /// your Google Account
   static const cloudPlatformReadOnlyScope =
       'https://www.googleapis.com/auth/cloud-platform.read-only';
 
@@ -214,7 +218,7 @@ class ServicesResource {
     ManagedService request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -271,50 +275,6 @@ class ServicesResource {
     return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
   }
 
-  /// Enables a service for a project, so it can be used for the project.
-  ///
-  /// See [Cloud Auth Guide](https://cloud.google.com/docs/authentication) for
-  /// more information. Operation
-  ///
-  /// [request] - The metadata request object.
-  ///
-  /// Request parameters:
-  ///
-  /// [serviceName] - Required. Name of the service to enable. Specifying an
-  /// unknown service name will cause the request to fail.
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [Operation].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http_1.Client] completes with an error when making a REST
-  /// call, this method will complete with the same error.
-  async.Future<Operation> enable(
-    EnableServiceRequest request,
-    core.String serviceName, {
-    core.String? $fields,
-  }) async {
-    final _body = convert.json.encode(request.toJson());
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    final _url =
-        'v1/services/' + commons.escapeVariable('$serviceName') + ':enable';
-
-    final _response = await _requester.request(
-      _url,
-      'POST',
-      body: _body,
-      queryParams: _queryParams,
-    );
-    return Operation.fromJson(_response as core.Map<core.String, core.dynamic>);
-  }
-
   /// Generates and returns a report (errors, warnings and changes from existing
   /// configurations) associated with GenerateConfigReportRequest.new_value If
   /// GenerateConfigReportRequest.old_value is specified,
@@ -344,7 +304,7 @@ class ServicesResource {
     GenerateConfigReportRequest request, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -483,7 +443,7 @@ class ServicesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -503,9 +463,7 @@ class ServicesResource {
   ///
   /// Returns all public services. For authenticated users, also returns all
   /// services the calling user has "servicemanagement.services.get" permission
-  /// for. **BETA:** If the caller specifies the `consumer_id`, it returns only
-  /// the services enabled on the consumer. The `consumer_id` must have the
-  /// format of "project:{PROJECT-ID}".
+  /// for.
   ///
   /// Request parameters:
   ///
@@ -586,7 +544,7 @@ class ServicesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -633,7 +591,7 @@ class ServicesResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -728,7 +686,7 @@ class ServicesConfigsResource {
     core.String serviceName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -882,7 +840,7 @@ class ServicesConfigsResource {
     core.String serviceName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -935,7 +893,7 @@ class ServicesConsumersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -980,7 +938,7 @@ class ServicesConsumersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1027,7 +985,7 @@ class ServicesConsumersResource {
     core.String resource, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1085,7 +1043,7 @@ class ServicesRolloutsResource {
     core.String serviceName, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -1209,13 +1167,16 @@ class Advice {
   /// be taken to mitigate any implied risks.
   core.String? description;
 
-  Advice();
+  Advice({
+    this.description,
+  });
 
-  Advice.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-  }
+  Advice.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
@@ -1275,51 +1236,55 @@ class Api {
   /// interfaces.
   core.String? version;
 
-  Api();
+  Api({
+    this.methods,
+    this.mixins,
+    this.name,
+    this.options,
+    this.sourceContext,
+    this.syntax,
+    this.version,
+  });
 
-  Api.fromJson(core.Map _json) {
-    if (_json.containsKey('methods')) {
-      methods = (_json['methods'] as core.List)
-          .map<Method>((value) =>
-              Method.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('mixins')) {
-      mixins = (_json['mixins'] as core.List)
-          .map<Mixin>((value) =>
-              Mixin.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('sourceContext')) {
-      sourceContext = SourceContext.fromJson(
-          _json['sourceContext'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('syntax')) {
-      syntax = _json['syntax'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
+  Api.fromJson(core.Map _json)
+      : this(
+          methods: _json.containsKey('methods')
+              ? (_json['methods'] as core.List)
+                  .map((value) => Method.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          mixins: _json.containsKey('mixins')
+              ? (_json['mixins'] as core.List)
+                  .map((value) => Mixin.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          sourceContext: _json.containsKey('sourceContext')
+              ? SourceContext.fromJson(
+                  _json['sourceContext'] as core.Map<core.String, core.dynamic>)
+              : null,
+          syntax: _json.containsKey('syntax')
+              ? _json['syntax'] as core.String
+              : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (methods != null)
-          'methods': methods!.map((value) => value.toJson()).toList(),
-        if (mixins != null)
-          'mixins': mixins!.map((value) => value.toJson()).toList(),
+        if (methods != null) 'methods': methods!,
+        if (mixins != null) 'mixins': mixins!,
         if (name != null) 'name': name!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
-        if (sourceContext != null) 'sourceContext': sourceContext!.toJson(),
+        if (options != null) 'options': options!,
+        if (sourceContext != null) 'sourceContext': sourceContext!,
         if (syntax != null) 'syntax': syntax!,
         if (version != null) 'version': version!,
       };
@@ -1352,24 +1317,26 @@ class AuditConfig {
   /// `allServices` is a special value that covers all services.
   core.String? service;
 
-  AuditConfig();
+  AuditConfig({
+    this.auditLogConfigs,
+    this.service,
+  });
 
-  AuditConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('auditLogConfigs')) {
-      auditLogConfigs = (_json['auditLogConfigs'] as core.List)
-          .map<AuditLogConfig>((value) => AuditLogConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('service')) {
-      service = _json['service'] as core.String;
-    }
-  }
+  AuditConfig.fromJson(core.Map _json)
+      : this(
+          auditLogConfigs: _json.containsKey('auditLogConfigs')
+              ? (_json['auditLogConfigs'] as core.List)
+                  .map((value) => AuditLogConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          service: _json.containsKey('service')
+              ? _json['service'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditLogConfigs != null)
-          'auditLogConfigs':
-              auditLogConfigs!.map((value) => value.toJson()).toList(),
+        if (auditLogConfigs != null) 'auditLogConfigs': auditLogConfigs!,
         if (service != null) 'service': service!,
       };
 }
@@ -1380,39 +1347,7 @@ class AuditConfig {
 /// "exempted_members": \[ "user:jose@example.com" \] }, { "log_type":
 /// "DATA_WRITE" } \] } This enables 'DATA_READ' and 'DATA_WRITE' logging, while
 /// exempting jose@example.com from DATA_READ logging.
-class AuditLogConfig {
-  /// Specifies the identities that do not cause logging for this type of
-  /// permission.
-  ///
-  /// Follows the same format of Binding.members.
-  core.List<core.String>? exemptedMembers;
-
-  /// The log type that this config enables.
-  /// Possible string values are:
-  /// - "LOG_TYPE_UNSPECIFIED" : Default case. Should never be this.
-  /// - "ADMIN_READ" : Admin reads. Example: CloudIAM getIamPolicy
-  /// - "DATA_WRITE" : Data writes. Example: CloudSQL Users create
-  /// - "DATA_READ" : Data reads. Example: CloudSQL Users list
-  core.String? logType;
-
-  AuditLogConfig();
-
-  AuditLogConfig.fromJson(core.Map _json) {
-    if (_json.containsKey('exemptedMembers')) {
-      exemptedMembers = (_json['exemptedMembers'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('logType')) {
-      logType = _json['logType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exemptedMembers != null) 'exemptedMembers': exemptedMembers!,
-        if (logType != null) 'logType': logType!,
-      };
-}
+typedef AuditLogConfig = $AuditLogConfig;
 
 /// Configuration for an authentication provider, including support for \[JSON
 /// Web Token
@@ -1475,31 +1410,37 @@ class AuthProvider {
   /// access_token
   core.List<JwtLocation>? jwtLocations;
 
-  AuthProvider();
+  AuthProvider({
+    this.audiences,
+    this.authorizationUrl,
+    this.id,
+    this.issuer,
+    this.jwksUri,
+    this.jwtLocations,
+  });
 
-  AuthProvider.fromJson(core.Map _json) {
-    if (_json.containsKey('audiences')) {
-      audiences = _json['audiences'] as core.String;
-    }
-    if (_json.containsKey('authorizationUrl')) {
-      authorizationUrl = _json['authorizationUrl'] as core.String;
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('issuer')) {
-      issuer = _json['issuer'] as core.String;
-    }
-    if (_json.containsKey('jwksUri')) {
-      jwksUri = _json['jwksUri'] as core.String;
-    }
-    if (_json.containsKey('jwtLocations')) {
-      jwtLocations = (_json['jwtLocations'] as core.List)
-          .map<JwtLocation>((value) => JwtLocation.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  AuthProvider.fromJson(core.Map _json)
+      : this(
+          audiences: _json.containsKey('audiences')
+              ? _json['audiences'] as core.String
+              : null,
+          authorizationUrl: _json.containsKey('authorizationUrl')
+              ? _json['authorizationUrl'] as core.String
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          issuer: _json.containsKey('issuer')
+              ? _json['issuer'] as core.String
+              : null,
+          jwksUri: _json.containsKey('jwksUri')
+              ? _json['jwksUri'] as core.String
+              : null,
+          jwtLocations: _json.containsKey('jwtLocations')
+              ? (_json['jwtLocations'] as core.List)
+                  .map((value) => JwtLocation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (audiences != null) 'audiences': audiences!,
@@ -1507,59 +1448,23 @@ class AuthProvider {
         if (id != null) 'id': id!,
         if (issuer != null) 'issuer': issuer!,
         if (jwksUri != null) 'jwksUri': jwksUri!,
-        if (jwtLocations != null)
-          'jwtLocations': jwtLocations!.map((value) => value.toJson()).toList(),
+        if (jwtLocations != null) 'jwtLocations': jwtLocations!,
       };
 }
 
 /// User-defined authentication requirements, including support for \[JSON Web
 /// Token
 /// (JWT)\](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
-class AuthRequirement {
-  /// NOTE: This will be deprecated soon, once AuthProvider.audiences is
-  /// implemented and accepted in all the runtime components.
-  ///
-  /// The list of JWT
-  /// [audiences](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32#section-4.1.3).
-  /// that are allowed to access. A JWT containing any of these audiences will
-  /// be accepted. When this setting is absent, only JWTs with audience
-  /// "https://Service_name/API_name" will be accepted. For example, if no
-  /// audiences are in the setting, LibraryService API will only accept JWTs
-  /// with the following audience
-  /// "https://library-example.googleapis.com/google.example.library.v1.LibraryService".
-  /// Example: audiences: bookstore_android.apps.googleusercontent.com,
-  /// bookstore_web.apps.googleusercontent.com
-  core.String? audiences;
+typedef AuthRequirement = $AuthRequirement;
 
-  /// id from authentication provider.
-  ///
-  /// Example: provider_id: bookstore_auth
-  core.String? providerId;
-
-  AuthRequirement();
-
-  AuthRequirement.fromJson(core.Map _json) {
-    if (_json.containsKey('audiences')) {
-      audiences = _json['audiences'] as core.String;
-    }
-    if (_json.containsKey('providerId')) {
-      providerId = _json['providerId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (audiences != null) 'audiences': audiences!,
-        if (providerId != null) 'providerId': providerId!,
-      };
-}
-
-/// `Authentication` defines the authentication configuration for an API.
+/// `Authentication` defines the authentication configuration for API methods
+/// provided by an API service.
 ///
-/// Example for an API targeted for external use: name: calendar.googleapis.com
-/// authentication: providers: - id: google_calendar_auth jwks_uri:
-/// https://www.googleapis.com/oauth2/v1/certs issuer:
-/// https://securetoken.google.com rules: - selector: "*" requirements:
-/// provider_id: google_calendar_auth
+/// Example: name: calendar.googleapis.com authentication: providers: - id:
+/// google_calendar_auth jwks_uri: https://www.googleapis.com/oauth2/v1/certs
+/// issuer: https://securetoken.google.com rules: - selector: "*" requirements:
+/// provider_id: google_calendar_auth - selector: google.calendar.Delegate
+/// oauth: canonical_scopes: https://www.googleapis.com/auth/calendar.read
 class Authentication {
   /// Defines a set of authentication providers that a service supports.
   core.List<AuthProvider>? providers;
@@ -1569,28 +1474,30 @@ class Authentication {
   /// **NOTE:** All service configuration rules follow "last one wins" order.
   core.List<AuthenticationRule>? rules;
 
-  Authentication();
+  Authentication({
+    this.providers,
+    this.rules,
+  });
 
-  Authentication.fromJson(core.Map _json) {
-    if (_json.containsKey('providers')) {
-      providers = (_json['providers'] as core.List)
-          .map<AuthProvider>((value) => AuthProvider.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<AuthenticationRule>((value) => AuthenticationRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Authentication.fromJson(core.Map _json)
+      : this(
+          providers: _json.containsKey('providers')
+              ? (_json['providers'] as core.List)
+                  .map((value) => AuthProvider.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => AuthenticationRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (providers != null)
-          'providers': providers!.map((value) => value.toJson()).toList(),
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (providers != null) 'providers': providers!,
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -1618,33 +1525,38 @@ class AuthenticationRule {
   /// Refer to selector for syntax details.
   core.String? selector;
 
-  AuthenticationRule();
+  AuthenticationRule({
+    this.allowWithoutCredential,
+    this.oauth,
+    this.requirements,
+    this.selector,
+  });
 
-  AuthenticationRule.fromJson(core.Map _json) {
-    if (_json.containsKey('allowWithoutCredential')) {
-      allowWithoutCredential = _json['allowWithoutCredential'] as core.bool;
-    }
-    if (_json.containsKey('oauth')) {
-      oauth = OAuthRequirements.fromJson(
-          _json['oauth'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requirements')) {
-      requirements = (_json['requirements'] as core.List)
-          .map<AuthRequirement>((value) => AuthRequirement.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  AuthenticationRule.fromJson(core.Map _json)
+      : this(
+          allowWithoutCredential: _json.containsKey('allowWithoutCredential')
+              ? _json['allowWithoutCredential'] as core.bool
+              : null,
+          oauth: _json.containsKey('oauth')
+              ? OAuthRequirements.fromJson(
+                  _json['oauth'] as core.Map<core.String, core.dynamic>)
+              : null,
+          requirements: _json.containsKey('requirements')
+              ? (_json['requirements'] as core.List)
+                  .map((value) => AuthRequirement.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowWithoutCredential != null)
           'allowWithoutCredential': allowWithoutCredential!,
-        if (oauth != null) 'oauth': oauth!.toJson(),
-        if (requirements != null)
-          'requirements': requirements!.map((value) => value.toJson()).toList(),
+        if (oauth != null) 'oauth': oauth!,
+        if (requirements != null) 'requirements': requirements!,
         if (selector != null) 'selector': selector!,
       };
 }
@@ -1656,20 +1568,22 @@ class Backend {
   /// **NOTE:** All service configuration rules follow "last one wins" order.
   core.List<BackendRule>? rules;
 
-  Backend();
+  Backend({
+    this.rules,
+  });
 
-  Backend.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<BackendRule>((value) => BackendRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Backend.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => BackendRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -1704,11 +1618,6 @@ class BackendRule {
   /// This ID token will be added in the HTTP "authorization" header, and sent
   /// to the backend.
   core.String? jwtAudience;
-
-  /// Minimum deadline in seconds needed for this method.
-  ///
-  /// Calls having deadline value lower than this will be rejected.
-  core.double? minDeadline;
 
   /// The number of seconds to wait for the completion of a long running
   /// operation.
@@ -1761,44 +1670,50 @@ class BackendRule {
   /// Refer to selector for syntax details.
   core.String? selector;
 
-  BackendRule();
+  BackendRule({
+    this.address,
+    this.deadline,
+    this.disableAuth,
+    this.jwtAudience,
+    this.operationDeadline,
+    this.pathTranslation,
+    this.protocol,
+    this.selector,
+  });
 
-  BackendRule.fromJson(core.Map _json) {
-    if (_json.containsKey('address')) {
-      address = _json['address'] as core.String;
-    }
-    if (_json.containsKey('deadline')) {
-      deadline = (_json['deadline'] as core.num).toDouble();
-    }
-    if (_json.containsKey('disableAuth')) {
-      disableAuth = _json['disableAuth'] as core.bool;
-    }
-    if (_json.containsKey('jwtAudience')) {
-      jwtAudience = _json['jwtAudience'] as core.String;
-    }
-    if (_json.containsKey('minDeadline')) {
-      minDeadline = (_json['minDeadline'] as core.num).toDouble();
-    }
-    if (_json.containsKey('operationDeadline')) {
-      operationDeadline = (_json['operationDeadline'] as core.num).toDouble();
-    }
-    if (_json.containsKey('pathTranslation')) {
-      pathTranslation = _json['pathTranslation'] as core.String;
-    }
-    if (_json.containsKey('protocol')) {
-      protocol = _json['protocol'] as core.String;
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  BackendRule.fromJson(core.Map _json)
+      : this(
+          address: _json.containsKey('address')
+              ? _json['address'] as core.String
+              : null,
+          deadline: _json.containsKey('deadline')
+              ? (_json['deadline'] as core.num).toDouble()
+              : null,
+          disableAuth: _json.containsKey('disableAuth')
+              ? _json['disableAuth'] as core.bool
+              : null,
+          jwtAudience: _json.containsKey('jwtAudience')
+              ? _json['jwtAudience'] as core.String
+              : null,
+          operationDeadline: _json.containsKey('operationDeadline')
+              ? (_json['operationDeadline'] as core.num).toDouble()
+              : null,
+          pathTranslation: _json.containsKey('pathTranslation')
+              ? _json['pathTranslation'] as core.String
+              : null,
+          protocol: _json.containsKey('protocol')
+              ? _json['protocol'] as core.String
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (address != null) 'address': address!,
         if (deadline != null) 'deadline': deadline!,
         if (disableAuth != null) 'disableAuth': disableAuth!,
         if (jwtAudience != null) 'jwtAudience': jwtAudience!,
-        if (minDeadline != null) 'minDeadline': minDeadline!,
         if (operationDeadline != null) 'operationDeadline': operationDeadline!,
         if (pathTranslation != null) 'pathTranslation': pathTranslation!,
         if (protocol != null) 'protocol': protocol!,
@@ -1831,21 +1746,23 @@ class Billing {
   /// one consumer destination.
   core.List<BillingDestination>? consumerDestinations;
 
-  Billing();
+  Billing({
+    this.consumerDestinations,
+  });
 
-  Billing.fromJson(core.Map _json) {
-    if (_json.containsKey('consumerDestinations')) {
-      consumerDestinations = (_json['consumerDestinations'] as core.List)
-          .map<BillingDestination>((value) => BillingDestination.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Billing.fromJson(core.Map _json)
+      : this(
+          consumerDestinations: _json.containsKey('consumerDestinations')
+              ? (_json['consumerDestinations'] as core.List)
+                  .map((value) => BillingDestination.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consumerDestinations != null)
-          'consumerDestinations':
-              consumerDestinations!.map((value) => value.toJson()).toList(),
+          'consumerDestinations': consumerDestinations!,
       };
 }
 
@@ -1862,18 +1779,22 @@ class BillingDestination {
   /// The type must be defined in Service.monitored_resources section.
   core.String? monitoredResource;
 
-  BillingDestination();
+  BillingDestination({
+    this.metrics,
+    this.monitoredResource,
+  });
 
-  BillingDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('metrics')) {
-      metrics = (_json['metrics'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('monitoredResource')) {
-      monitoredResource = _json['monitoredResource'] as core.String;
-    }
-  }
+  BillingDestination.fromJson(core.Map _json)
+      : this(
+          metrics: _json.containsKey('metrics')
+              ? (_json['metrics'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          monitoredResource: _json.containsKey('monitoredResource')
+              ? _json['monitoredResource'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (metrics != null) 'metrics': metrics!,
@@ -1881,19 +1802,20 @@ class BillingDestination {
       };
 }
 
-/// Associates `members` with a `role`.
+/// Associates `members`, or principals, with a `role`.
 class Binding {
   /// The condition that is associated with this binding.
   ///
   /// If the condition evaluates to `true`, then this binding applies to the
   /// current request. If the condition evaluates to `false`, then this binding
   /// does not apply to the current request. However, a different role binding
-  /// might grant the same role to one or more of the members in this binding.
-  /// To learn which resources support conditions in their IAM policies, see the
+  /// might grant the same role to one or more of the principals in this
+  /// binding. To learn which resources support conditions in their IAM
+  /// policies, see the
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   Expr? condition;
 
-  /// Specifies the identities requesting access for a Cloud Platform resource.
+  /// Specifies the principals requesting access for a Cloud Platform resource.
   ///
   /// `members` can have the following values: * `allUsers`: A special
   /// identifier that represents anyone who is on the internet; with or without
@@ -1925,30 +1847,33 @@ class Binding {
   /// `example.com`.
   core.List<core.String>? members;
 
-  /// Role that is assigned to `members`.
+  /// Role that is assigned to the list of `members`, or principals.
   ///
   /// For example, `roles/viewer`, `roles/editor`, or `roles/owner`.
   core.String? role;
 
-  Binding();
+  Binding({
+    this.condition,
+    this.members,
+    this.role,
+  });
 
-  Binding.fromJson(core.Map _json) {
-    if (_json.containsKey('condition')) {
-      condition = Expr.fromJson(
-          _json['condition'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('members')) {
-      members = (_json['members'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('role')) {
-      role = _json['role'] as core.String;
-    }
-  }
+  Binding.fromJson(core.Map _json)
+      : this(
+          condition: _json.containsKey('condition')
+              ? Expr.fromJson(
+                  _json['condition'] as core.Map<core.String, core.dynamic>)
+              : null,
+          members: _json.containsKey('members')
+              ? (_json['members'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          role: _json.containsKey('role') ? _json['role'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (condition != null) 'condition': condition!.toJson(),
+        if (condition != null) 'condition': condition!,
         if (members != null) 'members': members!,
         if (role != null) 'role': role!,
       };
@@ -1967,21 +1892,22 @@ class ChangeReport {
   /// visibility.rules\[selector='LibraryService.CreateBook'\].restriction
   core.List<ConfigChange>? configChanges;
 
-  ChangeReport();
+  ChangeReport({
+    this.configChanges,
+  });
 
-  ChangeReport.fromJson(core.Map _json) {
-    if (_json.containsKey('configChanges')) {
-      configChanges = (_json['configChanges'] as core.List)
-          .map<ConfigChange>((value) => ConfigChange.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ChangeReport.fromJson(core.Map _json)
+      : this(
+          configChanges: _json.containsKey('configChanges')
+              ? (_json['configChanges'] as core.List)
+                  .map((value) => ConfigChange.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (configChanges != null)
-          'configChanges':
-              configChanges!.map((value) => value.toJson()).toList(),
+        if (configChanges != null) 'configChanges': configChanges!,
       };
 }
 
@@ -2032,32 +1958,38 @@ class ConfigChange {
   /// This field will not be populated if ChangeType == ADDED.
   core.String? oldValue;
 
-  ConfigChange();
+  ConfigChange({
+    this.advices,
+    this.changeType,
+    this.element,
+    this.newValue,
+    this.oldValue,
+  });
 
-  ConfigChange.fromJson(core.Map _json) {
-    if (_json.containsKey('advices')) {
-      advices = (_json['advices'] as core.List)
-          .map<Advice>((value) =>
-              Advice.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('changeType')) {
-      changeType = _json['changeType'] as core.String;
-    }
-    if (_json.containsKey('element')) {
-      element = _json['element'] as core.String;
-    }
-    if (_json.containsKey('newValue')) {
-      newValue = _json['newValue'] as core.String;
-    }
-    if (_json.containsKey('oldValue')) {
-      oldValue = _json['oldValue'] as core.String;
-    }
-  }
+  ConfigChange.fromJson(core.Map _json)
+      : this(
+          advices: _json.containsKey('advices')
+              ? (_json['advices'] as core.List)
+                  .map((value) => Advice.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          changeType: _json.containsKey('changeType')
+              ? _json['changeType'] as core.String
+              : null,
+          element: _json.containsKey('element')
+              ? _json['element'] as core.String
+              : null,
+          newValue: _json.containsKey('newValue')
+              ? _json['newValue'] as core.String
+              : null,
+          oldValue: _json.containsKey('oldValue')
+              ? _json['oldValue'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (advices != null)
-          'advices': advices!.map((value) => value.toJson()).toList(),
+        if (advices != null) 'advices': advices!,
         if (changeType != null) 'changeType': changeType!,
         if (element != null) 'element': element!,
         if (newValue != null) 'newValue': newValue!,
@@ -2098,45 +2030,29 @@ class ConfigFile {
   /// least one file of type FILE_DESCRIPTOR_SET_PROTO is included.
   core.String? fileType;
 
-  ConfigFile();
+  ConfigFile({
+    this.fileContents,
+    this.filePath,
+    this.fileType,
+  });
 
-  ConfigFile.fromJson(core.Map _json) {
-    if (_json.containsKey('fileContents')) {
-      fileContents = _json['fileContents'] as core.String;
-    }
-    if (_json.containsKey('filePath')) {
-      filePath = _json['filePath'] as core.String;
-    }
-    if (_json.containsKey('fileType')) {
-      fileType = _json['fileType'] as core.String;
-    }
-  }
+  ConfigFile.fromJson(core.Map _json)
+      : this(
+          fileContents: _json.containsKey('fileContents')
+              ? _json['fileContents'] as core.String
+              : null,
+          filePath: _json.containsKey('filePath')
+              ? _json['filePath'] as core.String
+              : null,
+          fileType: _json.containsKey('fileType')
+              ? _json['fileType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fileContents != null) 'fileContents': fileContents!,
         if (filePath != null) 'filePath': filePath!,
         if (fileType != null) 'fileType': fileType!,
-      };
-}
-
-/// Represents a service configuration with its name and id.
-class ConfigRef {
-  /// Resource name of a service config.
-  ///
-  /// It must have the following format: "services/{service
-  /// name}/configs/{config id}".
-  core.String? name;
-
-  ConfigRef();
-
-  ConfigRef.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
       };
 }
 
@@ -2153,23 +2069,24 @@ class ConfigSource {
   /// If empty, the server may choose to generate one instead.
   core.String? id;
 
-  ConfigSource();
+  ConfigSource({
+    this.files,
+    this.id,
+  });
 
-  ConfigSource.fromJson(core.Map _json) {
-    if (_json.containsKey('files')) {
-      files = (_json['files'] as core.List)
-          .map<ConfigFile>((value) =>
-              ConfigFile.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-  }
+  ConfigSource.fromJson(core.Map _json)
+      : this(
+          files: _json.containsKey('files')
+              ? (_json['files'] as core.List)
+                  .map((value) => ConfigFile.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (files != null)
-          'files': files!.map((value) => value.toJson()).toList(),
+        if (files != null) 'files': files!,
         if (id != null) 'id': id!,
       };
 }
@@ -2195,20 +2112,22 @@ class Context {
   /// **NOTE:** All service configuration rules follow "last one wins" order.
   core.List<ContextRule>? rules;
 
-  Context();
+  Context({
+    this.rules,
+  });
 
-  Context.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<ContextRule>((value) => ContextRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Context.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => ContextRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -2234,35 +2153,42 @@ class ContextRule {
   /// Refer to selector for syntax details.
   core.String? selector;
 
-  ContextRule();
+  ContextRule({
+    this.allowedRequestExtensions,
+    this.allowedResponseExtensions,
+    this.provided,
+    this.requested,
+    this.selector,
+  });
 
-  ContextRule.fromJson(core.Map _json) {
-    if (_json.containsKey('allowedRequestExtensions')) {
-      allowedRequestExtensions =
-          (_json['allowedRequestExtensions'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('allowedResponseExtensions')) {
-      allowedResponseExtensions =
-          (_json['allowedResponseExtensions'] as core.List)
-              .map<core.String>((value) => value as core.String)
-              .toList();
-    }
-    if (_json.containsKey('provided')) {
-      provided = (_json['provided'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('requested')) {
-      requested = (_json['requested'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  ContextRule.fromJson(core.Map _json)
+      : this(
+          allowedRequestExtensions:
+              _json.containsKey('allowedRequestExtensions')
+                  ? (_json['allowedRequestExtensions'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          allowedResponseExtensions:
+              _json.containsKey('allowedResponseExtensions')
+                  ? (_json['allowedResponseExtensions'] as core.List)
+                      .map((value) => value as core.String)
+                      .toList()
+                  : null,
+          provided: _json.containsKey('provided')
+              ? (_json['provided'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          requested: _json.containsKey('requested')
+              ? (_json['requested'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (allowedRequestExtensions != null)
@@ -2277,22 +2203,32 @@ class ContextRule {
 
 /// Selects and configures the service controller used by the service.
 ///
-/// The service controller handles features like abuse, quota, billing, logging,
-/// monitoring, etc.
+/// The service controller handles two things: - **What is allowed:** for each
+/// API request, Chemist checks the project status, activation status, abuse
+/// status, billing status, service status, location restrictions, VPC Service
+/// Controls, SuperQuota, and other policies. - **What has happened:** for each
+/// API response, Chemist reports the telemetry data to analytics, auditing,
+/// billing, eventing, logging, monitoring, sawmill, and tracing. Chemist also
+/// accepts telemetry data not associated with API traffic, such as billing
+/// metrics. Example: control: environment: servicecontrol.googleapis.com
 class Control {
-  /// The service control environment to use.
+  /// The service controller environment to use.
   ///
   /// If empty, no control plane feature (like quota and billing) will be
-  /// enabled.
+  /// enabled. The recommended value for most services is
+  /// servicecontrol.googleapis.com
   core.String? environment;
 
-  Control();
+  Control({
+    this.environment,
+  });
 
-  Control.fromJson(core.Map _json) {
-    if (_json.containsKey('environment')) {
-      environment = _json['environment'] as core.String;
-    }
-  }
+  Control.fromJson(core.Map _json)
+      : this(
+          environment: _json.containsKey('environment')
+              ? _json['environment'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (environment != null) 'environment': environment!,
@@ -2313,25 +2249,28 @@ class CustomError {
   /// The list of custom error detail types, e.g. 'google.foo.v1.CustomError'.
   core.List<core.String>? types;
 
-  CustomError();
+  CustomError({
+    this.rules,
+    this.types,
+  });
 
-  CustomError.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<CustomErrorRule>((value) => CustomErrorRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('types')) {
-      types = (_json['types'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  CustomError.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => CustomErrorRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          types: _json.containsKey('types')
+              ? (_json['types'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
         if (types != null) 'types': types!,
       };
 }
@@ -2349,16 +2288,20 @@ class CustomErrorRule {
   /// Refer to selector for syntax details.
   core.String? selector;
 
-  CustomErrorRule();
+  CustomErrorRule({
+    this.isErrorType,
+    this.selector,
+  });
 
-  CustomErrorRule.fromJson(core.Map _json) {
-    if (_json.containsKey('isErrorType')) {
-      isErrorType = _json['isErrorType'] as core.bool;
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  CustomErrorRule.fromJson(core.Map _json)
+      : this(
+          isErrorType: _json.containsKey('isErrorType')
+              ? _json['isErrorType'] as core.bool
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (isErrorType != null) 'isErrorType': isErrorType!,
@@ -2374,16 +2317,16 @@ class CustomHttpPattern {
   /// The path matched by this custom verb.
   core.String? path;
 
-  CustomHttpPattern();
+  CustomHttpPattern({
+    this.kind,
+    this.path,
+  });
 
-  CustomHttpPattern.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('path')) {
-      path = _json['path'] as core.String;
-    }
-  }
+  CustomHttpPattern.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          path: _json.containsKey('path') ? _json['path'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -2395,15 +2338,7 @@ class CustomHttpPattern {
 ///
 /// This strategy is a placeholder only used by the system generated rollout to
 /// delete a service.
-class DeleteServiceStrategy {
-  DeleteServiceStrategy();
-
-  DeleteServiceStrategy.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef DeleteServiceStrategy = $Empty;
 
 /// Represents a diagnostic message (error or warning)
 class Diagnostic {
@@ -2419,19 +2354,22 @@ class Diagnostic {
   /// Message describing the error or warning.
   core.String? message;
 
-  Diagnostic();
+  Diagnostic({
+    this.kind,
+    this.location,
+    this.message,
+  });
 
-  Diagnostic.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
+  Diagnostic.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          location: _json.containsKey('location')
+              ? _json['location'] as core.String
+              : null,
+          message: _json.containsKey('message')
+              ? _json['message'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
@@ -2440,27 +2378,16 @@ class Diagnostic {
       };
 }
 
-/// Operation payload for DisableService method.
-class DisableServiceResponse {
-  DisableServiceResponse();
-
-  DisableServiceResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
 /// `Documentation` provides the information for describing a service.
 ///
-/// Example: documentation: summary: > The Google Calendar API gives access to
+/// Example: documentation: summary: \> The Google Calendar API gives access to
 /// most calendar features. pages: - name: Overview content: (== include
 /// google/foo/overview.md ==) - name: Tutorial content: (== include
 /// google/foo/tutorial.md ==) subpages; - name: Java content: (== include
 /// google/foo/tutorial_java.md ==) rules: - selector:
-/// google.calendar.Calendar.Get description: > ... - selector:
-/// google.calendar.Calendar.Put description: > ... Documentation is provided in
-/// markdown syntax. In addition to standard markdown features, definition
+/// google.calendar.Calendar.Get description: \> ... - selector:
+/// google.calendar.Calendar.Put description: \> ... Documentation is provided
+/// in markdown syntax. In addition to standard markdown features, definition
 /// lists, tables and fenced code blocks are supported. Section headers can be
 /// provided and are interpreted relative to the section nesting of the context
 /// where a documentation fragment is embedded. Documentation from the IDL is
@@ -2508,197 +2435,79 @@ class Documentation {
   /// that show a base that other urls are relative to.
   core.String? serviceRootUrl;
 
-  /// A short summary of what the service does.
+  /// A short description of what the service does.
   ///
-  /// Can only be provided by plain text.
+  /// The summary must be plain text. It becomes the overview of the service
+  /// displayed in Google Cloud Console. NOTE: This field is equivalent to the
+  /// standard field `description`.
   core.String? summary;
 
-  Documentation();
+  Documentation({
+    this.documentationRootUrl,
+    this.overview,
+    this.pages,
+    this.rules,
+    this.serviceRootUrl,
+    this.summary,
+  });
 
-  Documentation.fromJson(core.Map _json) {
-    if (_json.containsKey('documentationRootUrl')) {
-      documentationRootUrl = _json['documentationRootUrl'] as core.String;
-    }
-    if (_json.containsKey('overview')) {
-      overview = _json['overview'] as core.String;
-    }
-    if (_json.containsKey('pages')) {
-      pages = (_json['pages'] as core.List)
-          .map<Page>((value) =>
-              Page.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<DocumentationRule>((value) => DocumentationRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('serviceRootUrl')) {
-      serviceRootUrl = _json['serviceRootUrl'] as core.String;
-    }
-    if (_json.containsKey('summary')) {
-      summary = _json['summary'] as core.String;
-    }
-  }
+  Documentation.fromJson(core.Map _json)
+      : this(
+          documentationRootUrl: _json.containsKey('documentationRootUrl')
+              ? _json['documentationRootUrl'] as core.String
+              : null,
+          overview: _json.containsKey('overview')
+              ? _json['overview'] as core.String
+              : null,
+          pages: _json.containsKey('pages')
+              ? (_json['pages'] as core.List)
+                  .map((value) => Page.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => DocumentationRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          serviceRootUrl: _json.containsKey('serviceRootUrl')
+              ? _json['serviceRootUrl'] as core.String
+              : null,
+          summary: _json.containsKey('summary')
+              ? _json['summary'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (documentationRootUrl != null)
           'documentationRootUrl': documentationRootUrl!,
         if (overview != null) 'overview': overview!,
-        if (pages != null)
-          'pages': pages!.map((value) => value.toJson()).toList(),
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (pages != null) 'pages': pages!,
+        if (rules != null) 'rules': rules!,
         if (serviceRootUrl != null) 'serviceRootUrl': serviceRootUrl!,
         if (summary != null) 'summary': summary!,
       };
 }
 
 /// A documentation rule provides information about individual API elements.
-class DocumentationRule {
-  /// Deprecation description of the selected element(s).
-  ///
-  /// It can be provided if an element is marked as `deprecated`.
-  core.String? deprecationDescription;
+typedef DocumentationRule = $DocumentationRule;
 
-  /// Description of the selected API(s).
-  core.String? description;
-
-  /// The selector is a comma-separated list of patterns.
-  ///
-  /// Each pattern is a qualified name of the element which may end in "*",
-  /// indicating a wildcard. Wildcards are only allowed at the end and for a
-  /// whole component of the qualified name, i.e. "foo.*" is ok, but not
-  /// "foo.b*" or "foo.*.bar". A wildcard will match one or more components. To
-  /// specify a default for all applicable elements, the whole pattern "*" is
-  /// used.
-  core.String? selector;
-
-  DocumentationRule();
-
-  DocumentationRule.fromJson(core.Map _json) {
-    if (_json.containsKey('deprecationDescription')) {
-      deprecationDescription = _json['deprecationDescription'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (deprecationDescription != null)
-          'deprecationDescription': deprecationDescription!,
-        if (description != null) 'description': description!,
-        if (selector != null) 'selector': selector!,
-      };
-}
-
-/// Request message for EnableService method.
-class EnableServiceRequest {
-  /// The identity of consumer resource which service enablement will be applied
-  /// to.
-  ///
-  /// The Google Service Management implementation accepts the following forms:
-  /// - "project:" Note: this is made compatible with
-  /// google.api.servicecontrol.v1.Operation.consumer_id.
-  ///
-  /// Required.
-  core.String? consumerId;
-
-  EnableServiceRequest();
-
-  EnableServiceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('consumerId')) {
-      consumerId = _json['consumerId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (consumerId != null) 'consumerId': consumerId!,
-      };
-}
-
-/// Operation payload for EnableService method.
-class EnableServiceResponse {
-  EnableServiceResponse();
-
-  EnableServiceResponse.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
-
-/// `Endpoint` describes a network endpoint of a service that serves a set of
+/// `Endpoint` describes a network address of a service that serves a set of
 /// APIs.
 ///
 /// It is commonly known as a service endpoint. A service may expose any number
 /// of service endpoints, and all service endpoints share the same service
-/// definition, such as quota limits and monitoring metrics. Example service
-/// configuration: name: library-example.googleapis.com endpoints: # Below entry
-/// makes 'google.example.library.v1.Library' # API be served from endpoint
-/// address library-example.googleapis.com. # It also allows HTTP OPTIONS calls
-/// to be passed to the backend, for # it to decide whether the subsequent
-/// cross-origin request is # allowed to proceed. - name:
-/// library-example.googleapis.com allow_cors: true
-class Endpoint {
-  /// DEPRECATED: This field is no longer supported.
-  ///
-  /// Instead of using aliases, please specify multiple google.api.Endpoint for
-  /// each of the intended aliases. Additional names that this endpoint will be
-  /// hosted on.
-  core.List<core.String>? aliases;
-
-  /// Allowing
-  /// [CORS](https://en.wikipedia.org/wiki/Cross-origin_resource_sharing), aka
-  /// cross-domain traffic, would allow the backends served from this endpoint
-  /// to receive and respond to HTTP OPTIONS requests.
-  ///
-  /// The response will be used by the browser to determine whether the
-  /// subsequent cross-origin request is allowed to proceed.
-  core.bool? allowCors;
-
-  /// The canonical name of this endpoint.
-  core.String? name;
-
-  /// The specification of an Internet routable address of API frontend that
-  /// will handle requests to this
-  /// [API Endpoint](https://cloud.google.com/apis/design/glossary).
-  ///
-  /// It should be either a valid IPv4 address or a fully-qualified domain name.
-  /// For example, "8.8.8.8" or "myservice.appspot.com".
-  core.String? target;
-
-  Endpoint();
-
-  Endpoint.fromJson(core.Map _json) {
-    if (_json.containsKey('aliases')) {
-      aliases = (_json['aliases'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('allowCors')) {
-      allowCors = _json['allowCors'] as core.bool;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('target')) {
-      target = _json['target'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (aliases != null) 'aliases': aliases!,
-        if (allowCors != null) 'allowCors': allowCors!,
-        if (name != null) 'name': name!,
-        if (target != null) 'target': target!,
-      };
-}
+/// definition, such as quota limits and monitoring metrics. Example: type:
+/// google.api.Service name: library-example.googleapis.com endpoints: #
+/// Declares network address `https://library-example.googleapis.com` # for
+/// service `library-example.googleapis.com`. The `https` scheme # is implicit
+/// for all service endpoints. Other schemes may be # supported in the future. -
+/// name: library-example.googleapis.com allow_cors: false - name:
+/// content-staging-library-example.googleapis.com # Allows HTTP OPTIONS calls
+/// to be passed to the API frontend, for it # to decide whether the subsequent
+/// cross-origin request is allowed # to proceed. allow_cors: true
+typedef Endpoint = $Endpoint;
 
 /// Enum type definition.
 class Enum {
@@ -2720,40 +2529,43 @@ class Enum {
   /// - "SYNTAX_PROTO3" : Syntax `proto3`.
   core.String? syntax;
 
-  Enum();
+  Enum({
+    this.enumvalue,
+    this.name,
+    this.options,
+    this.sourceContext,
+    this.syntax,
+  });
 
-  Enum.fromJson(core.Map _json) {
-    if (_json.containsKey('enumvalue')) {
-      enumvalue = (_json['enumvalue'] as core.List)
-          .map<EnumValue>((value) =>
-              EnumValue.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('sourceContext')) {
-      sourceContext = SourceContext.fromJson(
-          _json['sourceContext'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('syntax')) {
-      syntax = _json['syntax'] as core.String;
-    }
-  }
+  Enum.fromJson(core.Map _json)
+      : this(
+          enumvalue: _json.containsKey('enumvalue')
+              ? (_json['enumvalue'] as core.List)
+                  .map((value) => EnumValue.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          sourceContext: _json.containsKey('sourceContext')
+              ? SourceContext.fromJson(
+                  _json['sourceContext'] as core.Map<core.String, core.dynamic>)
+              : null,
+          syntax: _json.containsKey('syntax')
+              ? _json['syntax'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (enumvalue != null)
-          'enumvalue': enumvalue!.map((value) => value.toJson()).toList(),
+        if (enumvalue != null) 'enumvalue': enumvalue!,
         if (name != null) 'name': name!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
-        if (sourceContext != null) 'sourceContext': sourceContext!.toJson(),
+        if (options != null) 'options': options!,
+        if (sourceContext != null) 'sourceContext': sourceContext!,
         if (syntax != null) 'syntax': syntax!,
       };
 }
@@ -2769,28 +2581,29 @@ class EnumValue {
   /// Protocol buffer options.
   core.List<Option>? options;
 
-  EnumValue();
+  EnumValue({
+    this.name,
+    this.number,
+    this.options,
+  });
 
-  EnumValue.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('number')) {
-      number = _json['number'] as core.int;
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  EnumValue.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          number:
+              _json.containsKey('number') ? _json['number'] as core.int : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
         if (number != null) 'number': number!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
+        if (options != null) 'options': options!,
       };
 }
 
@@ -2800,7 +2613,7 @@ class EnumValue {
 /// CEL is a C-like expression language. The syntax and semantics of CEL are
 /// documented at https://github.com/google/cel-spec. Example (Comparison):
 /// title: "Summary size limit" description: "Determines if a summary is less
-/// than 100 chars" expression: "document.summary.size() < 100" Example
+/// than 100 chars" expression: "document.summary.size() \< 100" Example
 /// (Equality): title: "Requestor is owner" description: "Determines if
 /// requestor is the document owner" expression: "document.owner ==
 /// request.auth.claims.email" Example (Logic): title: "Public documents"
@@ -2812,56 +2625,7 @@ class EnumValue {
 /// functions that may be referenced within an expression are determined by the
 /// service that evaluates it. See the service documentation for additional
 /// information.
-class Expr {
-  /// Description of the expression.
-  ///
-  /// This is a longer text which describes the expression, e.g. when hovered
-  /// over it in a UI.
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// Textual representation of an expression in Common Expression Language
-  /// syntax.
-  core.String? expression;
-
-  /// String indicating the location of the expression for error reporting, e.g.
-  /// a file name and a position in the file.
-  ///
-  /// Optional.
-  core.String? location;
-
-  /// Title for the expression, i.e. a short string describing its purpose.
-  ///
-  /// This can be used e.g. in UIs which allow to enter the expression.
-  ///
-  /// Optional.
-  core.String? title;
-
-  Expr();
-
-  Expr.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('expression')) {
-      expression = _json['expression'] as core.String;
-    }
-    if (_json.containsKey('location')) {
-      location = _json['location'] as core.String;
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (expression != null) 'expression': expression!,
-        if (location != null) 'location': location!,
-        if (title != null) 'title': title!,
-      };
-}
+typedef Expr = $Expr;
 
 /// A single field of a message type.
 class Field {
@@ -2927,43 +2691,49 @@ class Field {
   /// Example: `"type.googleapis.com/google.protobuf.Timestamp"`.
   core.String? typeUrl;
 
-  Field();
+  Field({
+    this.cardinality,
+    this.defaultValue,
+    this.jsonName,
+    this.kind,
+    this.name,
+    this.number,
+    this.oneofIndex,
+    this.options,
+    this.packed,
+    this.typeUrl,
+  });
 
-  Field.fromJson(core.Map _json) {
-    if (_json.containsKey('cardinality')) {
-      cardinality = _json['cardinality'] as core.String;
-    }
-    if (_json.containsKey('defaultValue')) {
-      defaultValue = _json['defaultValue'] as core.String;
-    }
-    if (_json.containsKey('jsonName')) {
-      jsonName = _json['jsonName'] as core.String;
-    }
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('number')) {
-      number = _json['number'] as core.int;
-    }
-    if (_json.containsKey('oneofIndex')) {
-      oneofIndex = _json['oneofIndex'] as core.int;
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('packed')) {
-      packed = _json['packed'] as core.bool;
-    }
-    if (_json.containsKey('typeUrl')) {
-      typeUrl = _json['typeUrl'] as core.String;
-    }
-  }
+  Field.fromJson(core.Map _json)
+      : this(
+          cardinality: _json.containsKey('cardinality')
+              ? _json['cardinality'] as core.String
+              : null,
+          defaultValue: _json.containsKey('defaultValue')
+              ? _json['defaultValue'] as core.String
+              : null,
+          jsonName: _json.containsKey('jsonName')
+              ? _json['jsonName'] as core.String
+              : null,
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          number:
+              _json.containsKey('number') ? _json['number'] as core.int : null,
+          oneofIndex: _json.containsKey('oneofIndex')
+              ? _json['oneofIndex'] as core.int
+              : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          packed:
+              _json.containsKey('packed') ? _json['packed'] as core.bool : null,
+          typeUrl: _json.containsKey('typeUrl')
+              ? _json['typeUrl'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cardinality != null) 'cardinality': cardinality!,
@@ -2973,37 +2743,9 @@ class Field {
         if (name != null) 'name': name!,
         if (number != null) 'number': number!,
         if (oneofIndex != null) 'oneofIndex': oneofIndex!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
+        if (options != null) 'options': options!,
         if (packed != null) 'packed': packed!,
         if (typeUrl != null) 'typeUrl': typeUrl!,
-      };
-}
-
-/// Encapsulation of flow-specific error details for debugging.
-///
-/// Used as a details field on an error Status, not intended for external use.
-class FlowErrorDetails {
-  /// The type of exception (as a class name).
-  core.String? exceptionType;
-
-  /// The step that failed.
-  core.String? flowStepId;
-
-  FlowErrorDetails();
-
-  FlowErrorDetails.fromJson(core.Map _json) {
-    if (_json.containsKey('exceptionType')) {
-      exceptionType = _json['exceptionType'] as core.String;
-    }
-    if (_json.containsKey('flowStepId')) {
-      flowStepId = _json['flowStepId'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (exceptionType != null) 'exceptionType': exceptionType!,
-        if (flowStepId != null) 'flowStepId': flowStepId!,
       };
 }
 
@@ -3019,7 +2761,7 @@ class GenerateConfigReportRequest {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? newConfig;
+  core.Map<core.String, core.Object?>? newConfig;
 
   /// Service configuration against which the comparison will be done.
   ///
@@ -3031,30 +2773,22 @@ class GenerateConfigReportRequest {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? oldConfig;
+  core.Map<core.String, core.Object?>? oldConfig;
 
-  GenerateConfigReportRequest();
+  GenerateConfigReportRequest({
+    this.newConfig,
+    this.oldConfig,
+  });
 
-  GenerateConfigReportRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('newConfig')) {
-      newConfig =
-          (_json['newConfig'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('oldConfig')) {
-      oldConfig =
-          (_json['oldConfig'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  GenerateConfigReportRequest.fromJson(core.Map _json)
+      : this(
+          newConfig: _json.containsKey('newConfig')
+              ? _json['newConfig'] as core.Map<core.String, core.dynamic>
+              : null,
+          oldConfig: _json.containsKey('oldConfig')
+              ? _json['oldConfig'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (newConfig != null) 'newConfig': newConfig!,
@@ -3078,35 +2812,36 @@ class GenerateConfigReportResponse {
   /// Name of the service this report belongs to.
   core.String? serviceName;
 
-  GenerateConfigReportResponse();
+  GenerateConfigReportResponse({
+    this.changeReports,
+    this.diagnostics,
+    this.id,
+    this.serviceName,
+  });
 
-  GenerateConfigReportResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('changeReports')) {
-      changeReports = (_json['changeReports'] as core.List)
-          .map<ChangeReport>((value) => ChangeReport.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('diagnostics')) {
-      diagnostics = (_json['diagnostics'] as core.List)
-          .map<Diagnostic>((value) =>
-              Diagnostic.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-  }
+  GenerateConfigReportResponse.fromJson(core.Map _json)
+      : this(
+          changeReports: _json.containsKey('changeReports')
+              ? (_json['changeReports'] as core.List)
+                  .map((value) => ChangeReport.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          diagnostics: _json.containsKey('diagnostics')
+              ? (_json['diagnostics'] as core.List)
+                  .map((value) => Diagnostic.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (changeReports != null)
-          'changeReports':
-              changeReports!.map((value) => value.toJson()).toList(),
-        if (diagnostics != null)
-          'diagnostics': diagnostics!.map((value) => value.toJson()).toList(),
+        if (changeReports != null) 'changeReports': changeReports!,
+        if (diagnostics != null) 'diagnostics': diagnostics!,
         if (id != null) 'id': id!,
         if (serviceName != null) 'serviceName': serviceName!,
       };
@@ -3118,47 +2853,25 @@ class GetIamPolicyRequest {
   /// `GetIamPolicy`.
   GetPolicyOptions? options;
 
-  GetIamPolicyRequest();
+  GetIamPolicyRequest({
+    this.options,
+  });
 
-  GetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('options')) {
-      options = GetPolicyOptions.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  GetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          options: _json.containsKey('options')
+              ? GetPolicyOptions.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
       };
 }
 
 /// Encapsulates settings provided to GetIamPolicy.
-class GetPolicyOptions {
-  /// The policy format version to be returned.
-  ///
-  /// Valid values are 0, 1, and 3. Requests specifying an invalid value will be
-  /// rejected. Requests for policies with any conditional bindings must specify
-  /// version 3. Policies without any conditional bindings may specify any valid
-  /// value or leave the field unset. To learn which resources support
-  /// conditions in their IAM policies, see the
-  /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
-  ///
-  /// Optional.
-  core.int? requestedPolicyVersion;
-
-  GetPolicyOptions();
-
-  GetPolicyOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('requestedPolicyVersion')) {
-      requestedPolicyVersion = _json['requestedPolicyVersion'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (requestedPolicyVersion != null)
-          'requestedPolicyVersion': requestedPolicyVersion!,
-      };
-}
+typedef GetPolicyOptions = $GetPolicyOptions;
 
 /// Defines the HTTP configuration for an API service.
 ///
@@ -3178,26 +2891,29 @@ class Http {
   /// **NOTE:** All service configuration rules follow "last one wins" order.
   core.List<HttpRule>? rules;
 
-  Http();
+  Http({
+    this.fullyDecodeReservedExpansion,
+    this.rules,
+  });
 
-  Http.fromJson(core.Map _json) {
-    if (_json.containsKey('fullyDecodeReservedExpansion')) {
-      fullyDecodeReservedExpansion =
-          _json['fullyDecodeReservedExpansion'] as core.bool;
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<HttpRule>((value) =>
-              HttpRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Http.fromJson(core.Map _json)
+      : this(
+          fullyDecodeReservedExpansion:
+              _json.containsKey('fullyDecodeReservedExpansion')
+                  ? _json['fullyDecodeReservedExpansion'] as core.bool
+                  : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => HttpRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fullyDecodeReservedExpansion != null)
           'fullyDecodeReservedExpansion': fullyDecodeReservedExpansion!,
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -3402,51 +3118,53 @@ class HttpRule {
   /// Refer to selector for syntax details.
   core.String? selector;
 
-  HttpRule();
+  HttpRule({
+    this.additionalBindings,
+    this.body,
+    this.custom,
+    this.delete,
+    this.get,
+    this.patch,
+    this.post,
+    this.put,
+    this.responseBody,
+    this.selector,
+  });
 
-  HttpRule.fromJson(core.Map _json) {
-    if (_json.containsKey('additionalBindings')) {
-      additionalBindings = (_json['additionalBindings'] as core.List)
-          .map<HttpRule>((value) =>
-              HttpRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('body')) {
-      body = _json['body'] as core.String;
-    }
-    if (_json.containsKey('custom')) {
-      custom = CustomHttpPattern.fromJson(
-          _json['custom'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('delete')) {
-      delete = _json['delete'] as core.String;
-    }
-    if (_json.containsKey('get')) {
-      get = _json['get'] as core.String;
-    }
-    if (_json.containsKey('patch')) {
-      patch = _json['patch'] as core.String;
-    }
-    if (_json.containsKey('post')) {
-      post = _json['post'] as core.String;
-    }
-    if (_json.containsKey('put')) {
-      put = _json['put'] as core.String;
-    }
-    if (_json.containsKey('responseBody')) {
-      responseBody = _json['responseBody'] as core.String;
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  HttpRule.fromJson(core.Map _json)
+      : this(
+          additionalBindings: _json.containsKey('additionalBindings')
+              ? (_json['additionalBindings'] as core.List)
+                  .map((value) => HttpRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          body: _json.containsKey('body') ? _json['body'] as core.String : null,
+          custom: _json.containsKey('custom')
+              ? CustomHttpPattern.fromJson(
+                  _json['custom'] as core.Map<core.String, core.dynamic>)
+              : null,
+          delete: _json.containsKey('delete')
+              ? _json['delete'] as core.String
+              : null,
+          get: _json.containsKey('get') ? _json['get'] as core.String : null,
+          patch:
+              _json.containsKey('patch') ? _json['patch'] as core.String : null,
+          post: _json.containsKey('post') ? _json['post'] as core.String : null,
+          put: _json.containsKey('put') ? _json['put'] as core.String : null,
+          responseBody: _json.containsKey('responseBody')
+              ? _json['responseBody'] as core.String
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (additionalBindings != null)
-          'additionalBindings':
-              additionalBindings!.map((value) => value.toJson()).toList(),
+          'additionalBindings': additionalBindings!,
         if (body != null) 'body': body!,
-        if (custom != null) 'custom': custom!.toJson(),
+        if (custom != null) 'custom': custom!,
         if (delete != null) 'delete': delete!,
         if (get != null) 'get': get!,
         if (patch != null) 'patch': patch!,
@@ -3458,79 +3176,10 @@ class HttpRule {
 }
 
 /// Specifies a location to extract JWT from an API request.
-class JwtLocation {
-  /// Specifies HTTP header name to extract JWT token.
-  core.String? header;
-
-  /// Specifies URL query parameter name to extract JWT token.
-  core.String? query;
-
-  /// The value prefix.
-  ///
-  /// The value format is "value_prefix{token}" Only applies to "in" header
-  /// type. Must be empty for "in" query type. If not empty, the header value
-  /// has to match (case sensitive) this prefix. If not matched, JWT will not be
-  /// extracted. If matched, JWT will be extracted after the prefix is removed.
-  /// For example, for "Authorization: Bearer {JWT}", value_prefix="Bearer "
-  /// with a space at the end.
-  core.String? valuePrefix;
-
-  JwtLocation();
-
-  JwtLocation.fromJson(core.Map _json) {
-    if (_json.containsKey('header')) {
-      header = _json['header'] as core.String;
-    }
-    if (_json.containsKey('query')) {
-      query = _json['query'] as core.String;
-    }
-    if (_json.containsKey('valuePrefix')) {
-      valuePrefix = _json['valuePrefix'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (header != null) 'header': header!,
-        if (query != null) 'query': query!,
-        if (valuePrefix != null) 'valuePrefix': valuePrefix!,
-      };
-}
+typedef JwtLocation = $JwtLocation;
 
 /// A description of a label.
-class LabelDescriptor {
-  /// A human-readable description for the label.
-  core.String? description;
-
-  /// The label key.
-  core.String? key;
-
-  /// The type of data that can be assigned to the label.
-  /// Possible string values are:
-  /// - "STRING" : A variable-length string. This is the default.
-  /// - "BOOL" : Boolean; true or false.
-  /// - "INT64" : A 64-bit signed integer.
-  core.String? valueType;
-
-  LabelDescriptor();
-
-  LabelDescriptor.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('key')) {
-      key = _json['key'] as core.String;
-    }
-    if (_json.containsKey('valueType')) {
-      valueType = _json['valueType'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (key != null) 'key': key!,
-        if (valueType != null) 'valueType': valueType!,
-      };
-}
+typedef LabelDescriptor = $LabelDescriptor;
 
 /// The response message for Operations.ListOperations.
 class ListOperationsResponse {
@@ -3540,24 +3189,27 @@ class ListOperationsResponse {
   /// A list of operations that matches the specified filter in the request.
   core.List<Operation>? operations;
 
-  ListOperationsResponse();
+  ListOperationsResponse({
+    this.nextPageToken,
+    this.operations,
+  });
 
-  ListOperationsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('operations')) {
-      operations = (_json['operations'] as core.List)
-          .map<Operation>((value) =>
-              Operation.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListOperationsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          operations: _json.containsKey('operations')
+              ? (_json['operations'] as core.List)
+                  .map((value) => Operation.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (operations != null)
-          'operations': operations!.map((value) => value.toJson()).toList(),
+        if (operations != null) 'operations': operations!,
       };
 }
 
@@ -3569,25 +3221,27 @@ class ListServiceConfigsResponse {
   /// The list of service configuration resources.
   core.List<Service>? serviceConfigs;
 
-  ListServiceConfigsResponse();
+  ListServiceConfigsResponse({
+    this.nextPageToken,
+    this.serviceConfigs,
+  });
 
-  ListServiceConfigsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('serviceConfigs')) {
-      serviceConfigs = (_json['serviceConfigs'] as core.List)
-          .map<Service>((value) =>
-              Service.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListServiceConfigsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          serviceConfigs: _json.containsKey('serviceConfigs')
+              ? (_json['serviceConfigs'] as core.List)
+                  .map((value) => Service.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (serviceConfigs != null)
-          'serviceConfigs':
-              serviceConfigs!.map((value) => value.toJson()).toList(),
+        if (serviceConfigs != null) 'serviceConfigs': serviceConfigs!,
       };
 }
 
@@ -3599,24 +3253,27 @@ class ListServiceRolloutsResponse {
   /// The list of rollout resources.
   core.List<Rollout>? rollouts;
 
-  ListServiceRolloutsResponse();
+  ListServiceRolloutsResponse({
+    this.nextPageToken,
+    this.rollouts,
+  });
 
-  ListServiceRolloutsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('rollouts')) {
-      rollouts = (_json['rollouts'] as core.List)
-          .map<Rollout>((value) =>
-              Rollout.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListServiceRolloutsResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          rollouts: _json.containsKey('rollouts')
+              ? (_json['rollouts'] as core.List)
+                  .map((value) => Rollout.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (rollouts != null)
-          'rollouts': rollouts!.map((value) => value.toJson()).toList(),
+        if (rollouts != null) 'rollouts': rollouts!,
       };
 }
 
@@ -3628,24 +3285,27 @@ class ListServicesResponse {
   /// The returned services will only have the name field set.
   core.List<ManagedService>? services;
 
-  ListServicesResponse();
+  ListServicesResponse({
+    this.nextPageToken,
+    this.services,
+  });
 
-  ListServicesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('services')) {
-      services = (_json['services'] as core.List)
-          .map<ManagedService>((value) => ManagedService.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListServicesResponse.fromJson(core.Map _json)
+      : this(
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          services: _json.containsKey('services')
+              ? (_json['services'] as core.List)
+                  .map((value) => ManagedService.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (services != null)
-          'services': services!.map((value) => value.toJson()).toList(),
+        if (services != null) 'services': services!,
       };
 }
 
@@ -3680,31 +3340,34 @@ class LogDescriptor {
   /// \[/_-.\].
   core.String? name;
 
-  LogDescriptor();
+  LogDescriptor({
+    this.description,
+    this.displayName,
+    this.labels,
+    this.name,
+  });
 
-  LogDescriptor.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.List)
-          .map<LabelDescriptor>((value) => LabelDescriptor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  LogDescriptor.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.List)
+                  .map((value) => LabelDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (labels != null)
-          'labels': labels!.map((value) => value.toJson()).toList(),
+        if (labels != null) 'labels': labels!,
         if (name != null) 'name': name!,
       };
 }
@@ -3737,30 +3400,32 @@ class Logging {
   /// producer destination.
   core.List<LoggingDestination>? producerDestinations;
 
-  Logging();
+  Logging({
+    this.consumerDestinations,
+    this.producerDestinations,
+  });
 
-  Logging.fromJson(core.Map _json) {
-    if (_json.containsKey('consumerDestinations')) {
-      consumerDestinations = (_json['consumerDestinations'] as core.List)
-          .map<LoggingDestination>((value) => LoggingDestination.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('producerDestinations')) {
-      producerDestinations = (_json['producerDestinations'] as core.List)
-          .map<LoggingDestination>((value) => LoggingDestination.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Logging.fromJson(core.Map _json)
+      : this(
+          consumerDestinations: _json.containsKey('consumerDestinations')
+              ? (_json['consumerDestinations'] as core.List)
+                  .map((value) => LoggingDestination.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          producerDestinations: _json.containsKey('producerDestinations')
+              ? (_json['producerDestinations'] as core.List)
+                  .map((value) => LoggingDestination.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consumerDestinations != null)
-          'consumerDestinations':
-              consumerDestinations!.map((value) => value.toJson()).toList(),
+          'consumerDestinations': consumerDestinations!,
         if (producerDestinations != null)
-          'producerDestinations':
-              producerDestinations!.map((value) => value.toJson()).toList(),
+          'producerDestinations': producerDestinations!,
       };
 }
 
@@ -3779,18 +3444,22 @@ class LoggingDestination {
   /// The type must be defined in the Service.monitored_resources section.
   core.String? monitoredResource;
 
-  LoggingDestination();
+  LoggingDestination({
+    this.logs,
+    this.monitoredResource,
+  });
 
-  LoggingDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('logs')) {
-      logs = (_json['logs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('monitoredResource')) {
-      monitoredResource = _json['monitoredResource'] as core.String;
-    }
-  }
+  LoggingDestination.fromJson(core.Map _json)
+      : this(
+          logs: _json.containsKey('logs')
+              ? (_json['logs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          monitoredResource: _json.containsKey('monitoredResource')
+              ? _json['monitoredResource'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (logs != null) 'logs': logs!,
@@ -3810,16 +3479,20 @@ class ManagedService {
   /// requirements.
   core.String? serviceName;
 
-  ManagedService();
+  ManagedService({
+    this.producerProjectId,
+    this.serviceName,
+  });
 
-  ManagedService.fromJson(core.Map _json) {
-    if (_json.containsKey('producerProjectId')) {
-      producerProjectId = _json['producerProjectId'] as core.String;
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-  }
+  ManagedService.fromJson(core.Map _json)
+      : this(
+          producerProjectId: _json.containsKey('producerProjectId')
+              ? _json['producerProjectId'] as core.String
+              : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (producerProjectId != null) 'producerProjectId': producerProjectId!,
@@ -3853,39 +3526,45 @@ class Method {
   /// - "SYNTAX_PROTO3" : Syntax `proto3`.
   core.String? syntax;
 
-  Method();
+  Method({
+    this.name,
+    this.options,
+    this.requestStreaming,
+    this.requestTypeUrl,
+    this.responseStreaming,
+    this.responseTypeUrl,
+    this.syntax,
+  });
 
-  Method.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('requestStreaming')) {
-      requestStreaming = _json['requestStreaming'] as core.bool;
-    }
-    if (_json.containsKey('requestTypeUrl')) {
-      requestTypeUrl = _json['requestTypeUrl'] as core.String;
-    }
-    if (_json.containsKey('responseStreaming')) {
-      responseStreaming = _json['responseStreaming'] as core.bool;
-    }
-    if (_json.containsKey('responseTypeUrl')) {
-      responseTypeUrl = _json['responseTypeUrl'] as core.String;
-    }
-    if (_json.containsKey('syntax')) {
-      syntax = _json['syntax'] as core.String;
-    }
-  }
+  Method.fromJson(core.Map _json)
+      : this(
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          requestStreaming: _json.containsKey('requestStreaming')
+              ? _json['requestStreaming'] as core.bool
+              : null,
+          requestTypeUrl: _json.containsKey('requestTypeUrl')
+              ? _json['requestTypeUrl'] as core.String
+              : null,
+          responseStreaming: _json.containsKey('responseStreaming')
+              ? _json['responseStreaming'] as core.bool
+              : null,
+          responseTypeUrl: _json.containsKey('responseTypeUrl')
+              ? _json['responseTypeUrl'] as core.String
+              : null,
+          syntax: _json.containsKey('syntax')
+              ? _json['syntax'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (name != null) 'name': name!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
+        if (options != null) 'options': options!,
         if (requestStreaming != null) 'requestStreaming': requestStreaming!,
         if (requestTypeUrl != null) 'requestTypeUrl': requestTypeUrl!,
         if (responseStreaming != null) 'responseStreaming': responseStreaming!,
@@ -3936,7 +3615,7 @@ class MetricDescriptor {
   /// are cleared for widespread use. By Alpha, all significant design issues
   /// are resolved and we are in the process of verifying functionality. Alpha
   /// customers need to apply for access, agree to applicable terms, and have
-  /// their projects allowlisted. Alpha releases don’t have to be feature
+  /// their projects allowlisted. Alpha releases don't have to be feature
   /// complete, no SLAs are provided, and there are no technical support
   /// obligations, but they will be far enough along that customers can actually
   /// use them in test environments or for limited-use tests -- just like they
@@ -3949,7 +3628,7 @@ class MetricDescriptor {
   /// - "GA" : GA features are open to all developers and are considered stable
   /// and fully qualified for production use.
   /// - "DEPRECATED" : Deprecated features are scheduled to be shut down and
-  /// removed. For more information, see the “Deprecation Policy” section of our
+  /// removed. For more information, see the "Deprecation Policy" section of our
   /// [Terms of Service](https://cloud.google.com/terms/) and the
   /// [Google Cloud Platform Subject to the Deprecation Policy](https://cloud.google.com/terms/deprecation)
   /// documentation.
@@ -4064,57 +3743,63 @@ class MetricDescriptor {
   /// - "MONEY" : The value is money.
   core.String? valueType;
 
-  MetricDescriptor();
+  MetricDescriptor({
+    this.description,
+    this.displayName,
+    this.labels,
+    this.launchStage,
+    this.metadata,
+    this.metricKind,
+    this.monitoredResourceTypes,
+    this.name,
+    this.type,
+    this.unit,
+    this.valueType,
+  });
 
-  MetricDescriptor.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.List)
-          .map<LabelDescriptor>((value) => LabelDescriptor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('launchStage')) {
-      launchStage = _json['launchStage'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = MetricDescriptorMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metricKind')) {
-      metricKind = _json['metricKind'] as core.String;
-    }
-    if (_json.containsKey('monitoredResourceTypes')) {
-      monitoredResourceTypes = (_json['monitoredResourceTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('unit')) {
-      unit = _json['unit'] as core.String;
-    }
-    if (_json.containsKey('valueType')) {
-      valueType = _json['valueType'] as core.String;
-    }
-  }
+  MetricDescriptor.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.List)
+                  .map((value) => LabelDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          launchStage: _json.containsKey('launchStage')
+              ? _json['launchStage'] as core.String
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? MetricDescriptorMetadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metricKind: _json.containsKey('metricKind')
+              ? _json['metricKind'] as core.String
+              : null,
+          monitoredResourceTypes: _json.containsKey('monitoredResourceTypes')
+              ? (_json['monitoredResourceTypes'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          unit: _json.containsKey('unit') ? _json['unit'] as core.String : null,
+          valueType: _json.containsKey('valueType')
+              ? _json['valueType'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (labels != null)
-          'labels': labels!.map((value) => value.toJson()).toList(),
+        if (labels != null) 'labels': labels!,
         if (launchStage != null) 'launchStage': launchStage!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
         if (metricKind != null) 'metricKind': metricKind!,
         if (monitoredResourceTypes != null)
           'monitoredResourceTypes': monitoredResourceTypes!,
@@ -4151,7 +3836,7 @@ class MetricDescriptorMetadata {
   /// are cleared for widespread use. By Alpha, all significant design issues
   /// are resolved and we are in the process of verifying functionality. Alpha
   /// customers need to apply for access, agree to applicable terms, and have
-  /// their projects allowlisted. Alpha releases don’t have to be feature
+  /// their projects allowlisted. Alpha releases don't have to be feature
   /// complete, no SLAs are provided, and there are no technical support
   /// obligations, but they will be far enough along that customers can actually
   /// use them in test environments or for limited-use tests -- just like they
@@ -4164,7 +3849,7 @@ class MetricDescriptorMetadata {
   /// - "GA" : GA features are open to all developers and are considered stable
   /// and fully qualified for production use.
   /// - "DEPRECATED" : Deprecated features are scheduled to be shut down and
-  /// removed. For more information, see the “Deprecation Policy” section of our
+  /// removed. For more information, see the "Deprecation Policy" section of our
   /// [Terms of Service](https://cloud.google.com/terms/) and the
   /// [Google Cloud Platform Subject to the Deprecation Policy](https://cloud.google.com/terms/deprecation)
   /// documentation.
@@ -4177,19 +3862,24 @@ class MetricDescriptorMetadata {
   /// with a higher granularity have a smaller sampling period.
   core.String? samplePeriod;
 
-  MetricDescriptorMetadata();
+  MetricDescriptorMetadata({
+    this.ingestDelay,
+    this.launchStage,
+    this.samplePeriod,
+  });
 
-  MetricDescriptorMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('ingestDelay')) {
-      ingestDelay = _json['ingestDelay'] as core.String;
-    }
-    if (_json.containsKey('launchStage')) {
-      launchStage = _json['launchStage'] as core.String;
-    }
-    if (_json.containsKey('samplePeriod')) {
-      samplePeriod = _json['samplePeriod'] as core.String;
-    }
-  }
+  MetricDescriptorMetadata.fromJson(core.Map _json)
+      : this(
+          ingestDelay: _json.containsKey('ingestDelay')
+              ? _json['ingestDelay'] as core.String
+              : null,
+          launchStage: _json.containsKey('launchStage')
+              ? _json['launchStage'] as core.String
+              : null,
+          samplePeriod: _json.containsKey('samplePeriod')
+              ? _json['samplePeriod'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (ingestDelay != null) 'ingestDelay': ingestDelay!,
@@ -4202,42 +3892,7 @@ class MetricDescriptorMetadata {
 ///
 /// Binding a method to a metric causes that metric's configured quota behaviors
 /// to apply to the method call.
-class MetricRule {
-  /// Metrics to update when the selected methods are called, and the associated
-  /// cost applied to each metric.
-  ///
-  /// The key of the map is the metric name, and the values are the amount
-  /// increased for the metric against which the quota limits are defined. The
-  /// value must not be negative.
-  core.Map<core.String, core.String>? metricCosts;
-
-  /// Selects the methods to which this rule applies.
-  ///
-  /// Refer to selector for syntax details.
-  core.String? selector;
-
-  MetricRule();
-
-  MetricRule.fromJson(core.Map _json) {
-    if (_json.containsKey('metricCosts')) {
-      metricCosts =
-          (_json['metricCosts'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (metricCosts != null) 'metricCosts': metricCosts!,
-        if (selector != null) 'selector': selector!,
-      };
-}
+typedef MetricRule = $MetricRule;
 
 /// Declares an API Interface to be included in this interface.
 ///
@@ -4271,29 +3926,7 @@ class MetricRule {
 /// HTTP annotation: service Storage { // Get the underlying ACL object. rpc
 /// GetAcl(GetAclRequest) returns (Acl) { option (google.api.http).get =
 /// "/v2/acls/{resource=**}:getAcl"; } ... }
-class Mixin {
-  /// The fully qualified name of the interface which is included.
-  core.String? name;
-
-  /// If non-empty specifies a path under which inherited HTTP paths are rooted.
-  core.String? root;
-
-  Mixin();
-
-  Mixin.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('root')) {
-      root = _json['root'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-        if (root != null) 'root': root!,
-      };
-}
+typedef Mixin = $Mixin;
 
 /// An object that describes the schema of a MonitoredResource object using a
 /// type name and a set of labels.
@@ -4347,7 +3980,7 @@ class MonitoredResourceDescriptor {
   /// are cleared for widespread use. By Alpha, all significant design issues
   /// are resolved and we are in the process of verifying functionality. Alpha
   /// customers need to apply for access, agree to applicable terms, and have
-  /// their projects allowlisted. Alpha releases don’t have to be feature
+  /// their projects allowlisted. Alpha releases don't have to be feature
   /// complete, no SLAs are provided, and there are no technical support
   /// obligations, but they will be far enough along that customers can actually
   /// use them in test environments or for limited-use tests -- just like they
@@ -4360,7 +3993,7 @@ class MonitoredResourceDescriptor {
   /// - "GA" : GA features are open to all developers and are considered stable
   /// and fully qualified for production use.
   /// - "DEPRECATED" : Deprecated features are scheduled to be shut down and
-  /// removed. For more information, see the “Deprecation Policy” section of our
+  /// removed. For more information, see the "Deprecation Policy" section of our
   /// [Terms of Service](https://cloud.google.com/terms/) and the
   /// [Google Cloud Platform Subject to the Deprecation Policy](https://cloud.google.com/terms/deprecation)
   /// documentation.
@@ -4380,42 +4013,48 @@ class MonitoredResourceDescriptor {
   /// The monitored resource type.
   ///
   /// For example, the type `"cloudsql_database"` represents databases in Google
-  /// Cloud SQL.
+  /// Cloud SQL. For a list of types, see
+  /// [Monitoring resource types](https://cloud.google.com/monitoring/api/resources)
+  /// and
+  /// [Logging resource types](https://cloud.google.com/logging/docs/api/v2/resource-list).
   ///
   /// Required.
   core.String? type;
 
-  MonitoredResourceDescriptor();
+  MonitoredResourceDescriptor({
+    this.description,
+    this.displayName,
+    this.labels,
+    this.launchStage,
+    this.name,
+    this.type,
+  });
 
-  MonitoredResourceDescriptor.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('labels')) {
-      labels = (_json['labels'] as core.List)
-          .map<LabelDescriptor>((value) => LabelDescriptor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('launchStage')) {
-      launchStage = _json['launchStage'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  MonitoredResourceDescriptor.fromJson(core.Map _json)
+      : this(
+          description: _json.containsKey('description')
+              ? _json['description'] as core.String
+              : null,
+          displayName: _json.containsKey('displayName')
+              ? _json['displayName'] as core.String
+              : null,
+          labels: _json.containsKey('labels')
+              ? (_json['labels'] as core.List)
+                  .map((value) => LabelDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          launchStage: _json.containsKey('launchStage')
+              ? _json['launchStage'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (description != null) 'description': description!,
         if (displayName != null) 'displayName': displayName!,
-        if (labels != null)
-          'labels': labels!.map((value) => value.toJson()).toList(),
+        if (labels != null) 'labels': labels!,
         if (launchStage != null) 'launchStage': launchStage!,
         if (name != null) 'name': name!,
         if (type != null) 'type': type!,
@@ -4466,64 +4105,38 @@ class Monitoring {
   /// in the Monitoring configuration.
   core.List<MonitoringDestination>? producerDestinations;
 
-  Monitoring();
+  Monitoring({
+    this.consumerDestinations,
+    this.producerDestinations,
+  });
 
-  Monitoring.fromJson(core.Map _json) {
-    if (_json.containsKey('consumerDestinations')) {
-      consumerDestinations = (_json['consumerDestinations'] as core.List)
-          .map<MonitoringDestination>((value) => MonitoringDestination.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('producerDestinations')) {
-      producerDestinations = (_json['producerDestinations'] as core.List)
-          .map<MonitoringDestination>((value) => MonitoringDestination.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Monitoring.fromJson(core.Map _json)
+      : this(
+          consumerDestinations: _json.containsKey('consumerDestinations')
+              ? (_json['consumerDestinations'] as core.List)
+                  .map((value) => MonitoringDestination.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          producerDestinations: _json.containsKey('producerDestinations')
+              ? (_json['producerDestinations'] as core.List)
+                  .map((value) => MonitoringDestination.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (consumerDestinations != null)
-          'consumerDestinations':
-              consumerDestinations!.map((value) => value.toJson()).toList(),
+          'consumerDestinations': consumerDestinations!,
         if (producerDestinations != null)
-          'producerDestinations':
-              producerDestinations!.map((value) => value.toJson()).toList(),
+          'producerDestinations': producerDestinations!,
       };
 }
 
 /// Configuration of a specific monitoring destination (the producer project or
 /// the consumer project).
-class MonitoringDestination {
-  /// Types of the metrics to report to this monitoring destination.
-  ///
-  /// Each type must be defined in Service.metrics section.
-  core.List<core.String>? metrics;
-
-  /// The monitored resource type.
-  ///
-  /// The type must be defined in Service.monitored_resources section.
-  core.String? monitoredResource;
-
-  MonitoringDestination();
-
-  MonitoringDestination.fromJson(core.Map _json) {
-    if (_json.containsKey('metrics')) {
-      metrics = (_json['metrics'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('monitoredResource')) {
-      monitoredResource = _json['monitoredResource'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (metrics != null) 'metrics': metrics!,
-        if (monitoredResource != null) 'monitoredResource': monitoredResource!,
-      };
-}
+typedef MonitoringDestination = $MonitoringDestination;
 
 /// OAuth scopes are a way to define data and permissions on data.
 ///
@@ -4540,26 +4153,7 @@ class MonitoringDestination {
 /// is enough for a request to be accepted and passed to the backend, a request
 /// can still fail due to the backend requiring additional scopes or
 /// permissions.
-class OAuthRequirements {
-  /// The list of publicly documented OAuth scopes that are allowed access.
-  ///
-  /// An OAuth token containing any of these scopes will be accepted. Example:
-  /// canonical_scopes: https://www.googleapis.com/auth/calendar,
-  /// https://www.googleapis.com/auth/calendar.read
-  core.String? canonicalScopes;
-
-  OAuthRequirements();
-
-  OAuthRequirements.fromJson(core.Map _json) {
-    if (_json.containsKey('canonicalScopes')) {
-      canonicalScopes = _json['canonicalScopes'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (canonicalScopes != null) 'canonicalScopes': canonicalScopes!,
-      };
-}
+typedef OAuthRequirements = $OAuthRequirements;
 
 /// This resource represents a long-running operation that is the result of a
 /// network API call.
@@ -4582,7 +4176,7 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? metadata;
+  core.Map<core.String, core.Object?>? metadata;
 
   /// The server-assigned name, which is only unique within the same service
   /// that originally returns it.
@@ -4602,139 +4196,44 @@ class Operation {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? response;
+  core.Map<core.String, core.Object?>? response;
 
-  Operation();
+  Operation({
+    this.done,
+    this.error,
+    this.metadata,
+    this.name,
+    this.response,
+  });
 
-  Operation.fromJson(core.Map _json) {
-    if (_json.containsKey('done')) {
-      done = _json['done'] as core.bool;
-    }
-    if (_json.containsKey('error')) {
-      error = Status.fromJson(
-          _json['error'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = (_json['metadata'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('response')) {
-      response = (_json['response'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
+  Operation.fromJson(core.Map _json)
+      : this(
+          done: _json.containsKey('done') ? _json['done'] as core.bool : null,
+          error: _json.containsKey('error')
+              ? Status.fromJson(
+                  _json['error'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? _json['metadata'] as core.Map<core.String, core.dynamic>
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          response: _json.containsKey('response')
+              ? _json['response'] as core.Map<core.String, core.dynamic>
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (done != null) 'done': done!,
-        if (error != null) 'error': error!.toJson(),
+        if (error != null) 'error': error!,
         if (metadata != null) 'metadata': metadata!,
         if (name != null) 'name': name!,
         if (response != null) 'response': response!,
       };
 }
 
-/// The metadata associated with a long running operation resource.
-class OperationMetadata {
-  /// Percentage of completion of this operation, ranging from 0 to 100.
-  core.int? progressPercentage;
-
-  /// The full name of the resources that this operation is directly associated
-  /// with.
-  core.List<core.String>? resourceNames;
-
-  /// The start time of the operation.
-  core.String? startTime;
-
-  /// Detailed status information for each step.
-  ///
-  /// The order is undetermined.
-  core.List<Step>? steps;
-
-  OperationMetadata();
-
-  OperationMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('progressPercentage')) {
-      progressPercentage = _json['progressPercentage'] as core.int;
-    }
-    if (_json.containsKey('resourceNames')) {
-      resourceNames = (_json['resourceNames'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('startTime')) {
-      startTime = _json['startTime'] as core.String;
-    }
-    if (_json.containsKey('steps')) {
-      steps = (_json['steps'] as core.List)
-          .map<Step>((value) =>
-              Step.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (progressPercentage != null)
-          'progressPercentage': progressPercentage!,
-        if (resourceNames != null) 'resourceNames': resourceNames!,
-        if (startTime != null) 'startTime': startTime!,
-        if (steps != null)
-          'steps': steps!.map((value) => value.toJson()).toList(),
-      };
-}
-
 /// A protocol buffer option, which can be attached to a message, field,
 /// enumeration, etc.
-class Option {
-  /// The option's name.
-  ///
-  /// For protobuf built-in options (options defined in descriptor.proto), this
-  /// is the short name. For example, `"map_entry"`. For custom options, it
-  /// should be the fully-qualified name. For example, `"google.api.http"`.
-  core.String? name;
-
-  /// The option's value packed in an Any message.
-  ///
-  /// If the value is a primitive, the corresponding wrapper type defined in
-  /// google/protobuf/wrappers.proto should be used. If the value is an enum, it
-  /// should be stored as an int32 value using the google.protobuf.Int32Value
-  /// type.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.Map<core.String, core.Object>? value;
-
-  Option();
-
-  Option.fromJson(core.Map _json) {
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = (_json['value'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.Object,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (name != null) 'name': name!,
-        if (value != null) 'value': value!,
-      };
-}
+typedef Option = $Option;
 
 /// Represents a documentation page.
 ///
@@ -4743,7 +4242,8 @@ class Page {
   /// The Markdown content of the page.
   ///
   /// You can use (== include {path} ==) to include content from a Markdown
-  /// file.
+  /// file. The content can be used to produce the documentation page such as
+  /// HTML format page.
   core.String? content;
 
   /// The name of the page.
@@ -4763,28 +4263,30 @@ class Page {
   /// docset.
   core.List<Page>? subpages;
 
-  Page();
+  Page({
+    this.content,
+    this.name,
+    this.subpages,
+  });
 
-  Page.fromJson(core.Map _json) {
-    if (_json.containsKey('content')) {
-      content = _json['content'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('subpages')) {
-      subpages = (_json['subpages'] as core.List)
-          .map<Page>((value) =>
-              Page.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Page.fromJson(core.Map _json)
+      : this(
+          content: _json.containsKey('content')
+              ? _json['content'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          subpages: _json.containsKey('subpages')
+              ? (_json['subpages'] as core.List)
+                  .map((value) => Page.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (content != null) 'content': content!,
         if (name != null) 'name': name!,
-        if (subpages != null)
-          'subpages': subpages!.map((value) => value.toJson()).toList(),
+        if (subpages != null) 'subpages': subpages!,
       };
 }
 
@@ -4792,15 +4294,15 @@ class Page {
 /// controls for Google Cloud resources.
 ///
 /// A `Policy` is a collection of `bindings`. A `binding` binds one or more
-/// `members` to a single `role`. Members can be user accounts, service
-/// accounts, Google groups, and domains (such as G Suite). A `role` is a named
-/// list of permissions; each `role` can be an IAM predefined role or a
-/// user-created custom role. For some types of Google Cloud resources, a
-/// `binding` can also specify a `condition`, which is a logical expression that
-/// allows access to a resource only if the expression evaluates to `true`. A
-/// condition can add constraints based on attributes of the request, the
-/// resource, or both. To learn which resources support conditions in their IAM
-/// policies, see the
+/// `members`, or principals, to a single `role`. Principals can be user
+/// accounts, service accounts, Google groups, and domains (such as G Suite). A
+/// `role` is a named list of permissions; each `role` can be an IAM predefined
+/// role or a user-created custom role. For some types of Google Cloud
+/// resources, a `binding` can also specify a `condition`, which is a logical
+/// expression that allows access to a resource only if the expression evaluates
+/// to `true`. A condition can add constraints based on attributes of the
+/// request, the resource, or both. To learn which resources support conditions
+/// in their IAM policies, see the
 /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
 /// **JSON example:** { "bindings": \[ { "role":
 /// "roles/resourcemanager.organizationAdmin", "members": \[
@@ -4809,25 +4311,30 @@ class Page {
 /// "roles/resourcemanager.organizationViewer", "members": \[
 /// "user:eve@example.com" \], "condition": { "title": "expirable access",
 /// "description": "Does not grant access after Sep 2020", "expression":
-/// "request.time < timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
+/// "request.time \< timestamp('2020-10-01T00:00:00.000Z')", } } \], "etag":
 /// "BwWWja0YfJA=", "version": 3 } **YAML example:** bindings: - members: -
 /// user:mike@example.com - group:admins@example.com - domain:google.com -
 /// serviceAccount:my-project-id@appspot.gserviceaccount.com role:
 /// roles/resourcemanager.organizationAdmin - members: - user:eve@example.com
 /// role: roles/resourcemanager.organizationViewer condition: title: expirable
 /// access description: Does not grant access after Sep 2020 expression:
-/// request.time < timestamp('2020-10-01T00:00:00.000Z') - etag: BwWWja0YfJA= -
+/// request.time \< timestamp('2020-10-01T00:00:00.000Z') etag: BwWWja0YfJA=
 /// version: 3 For a description of IAM and its features, see the
 /// [IAM documentation](https://cloud.google.com/iam/docs/).
 class Policy {
   /// Specifies cloud audit logging configuration for this policy.
   core.List<AuditConfig>? auditConfigs;
 
-  /// Associates a list of `members` to a `role`.
+  /// Associates a list of `members`, or principals, with a `role`.
   ///
   /// Optionally, may specify a `condition` that determines how and when the
   /// `bindings` are applied. Each of the `bindings` must contain at least one
-  /// member.
+  /// principal. The `bindings` in a `Policy` can refer to up to 1,500
+  /// principals; up to 250 of these principals can be Google groups. Each
+  /// occurrence of a principal counts towards these limits. For example, if the
+  /// `bindings` grant 50 different roles to `user:alice@example.com`, and not
+  /// to any other principal, then you can add another 1,450 principals to the
+  /// `bindings` in the `Policy`.
   core.List<Binding>? bindings;
 
   /// `etag` is used for optimistic concurrency control as a way to help prevent
@@ -4869,34 +4376,36 @@ class Policy {
   /// [IAM documentation](https://cloud.google.com/iam/help/conditions/resource-policies).
   core.int? version;
 
-  Policy();
+  Policy({
+    this.auditConfigs,
+    this.bindings,
+    this.etag,
+    this.version,
+  });
 
-  Policy.fromJson(core.Map _json) {
-    if (_json.containsKey('auditConfigs')) {
-      auditConfigs = (_json['auditConfigs'] as core.List)
-          .map<AuditConfig>((value) => AuditConfig.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('bindings')) {
-      bindings = (_json['bindings'] as core.List)
-          .map<Binding>((value) =>
-              Binding.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('etag')) {
-      etag = _json['etag'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.int;
-    }
-  }
+  Policy.fromJson(core.Map _json)
+      : this(
+          auditConfigs: _json.containsKey('auditConfigs')
+              ? (_json['auditConfigs'] as core.List)
+                  .map((value) => AuditConfig.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          bindings: _json.containsKey('bindings')
+              ? (_json['bindings'] as core.List)
+                  .map((value) => Binding.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          etag: _json.containsKey('etag') ? _json['etag'] as core.String : null,
+          version: _json.containsKey('version')
+              ? _json['version'] as core.int
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (auditConfigs != null)
-          'auditConfigs': auditConfigs!.map((value) => value.toJson()).toList(),
-        if (bindings != null)
-          'bindings': bindings!.map((value) => value.toJson()).toList(),
+        if (auditConfigs != null) 'auditConfigs': auditConfigs!,
+        if (bindings != null) 'bindings': bindings!,
         if (etag != null) 'etag': etag!,
         if (version != null) 'version': version!,
       };
@@ -4934,28 +4443,30 @@ class Quota {
   /// one or more metrics.
   core.List<MetricRule>? metricRules;
 
-  Quota();
+  Quota({
+    this.limits,
+    this.metricRules,
+  });
 
-  Quota.fromJson(core.Map _json) {
-    if (_json.containsKey('limits')) {
-      limits = (_json['limits'] as core.List)
-          .map<QuotaLimit>((value) =>
-              QuotaLimit.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('metricRules')) {
-      metricRules = (_json['metricRules'] as core.List)
-          .map<MetricRule>((value) =>
-              MetricRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Quota.fromJson(core.Map _json)
+      : this(
+          limits: _json.containsKey('limits')
+              ? (_json['limits'] as core.List)
+                  .map((value) => QuotaLimit.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          metricRules: _json.containsKey('metricRules')
+              ? (_json['metricRules'] as core.List)
+                  .map((value) => MetricRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (limits != null)
-          'limits': limits!.map((value) => value.toJson()).toList(),
-        if (metricRules != null)
-          'metricRules': metricRules!.map((value) => value.toJson()).toList(),
+        if (limits != null) 'limits': limits!,
+        if (metricRules != null) 'metricRules': metricRules!,
       };
 }
 
@@ -4964,178 +4475,7 @@ class Quota {
 ///
 /// There can be at most one limit for a duration and limit type combination
 /// defined within a `QuotaGroup`.
-class QuotaLimit {
-  /// Default number of tokens that can be consumed during the specified
-  /// duration.
-  ///
-  /// This is the number of tokens assigned when a client application developer
-  /// activates the service for his/her project. Specifying a value of 0 will
-  /// block all requests. This can be used if you are provisioning quota to
-  /// selected consumers and blocking others. Similarly, a value of -1 will
-  /// indicate an unlimited quota. No other negative values are allowed. Used by
-  /// group-based quotas only.
-  core.String? defaultLimit;
-
-  /// User-visible, extended description for this quota limit.
-  ///
-  /// Should be used only when more context is needed to understand this limit
-  /// than provided by the limit's display name (see: `display_name`).
-  ///
-  /// Optional.
-  core.String? description;
-
-  /// User-visible display name for this limit.
-  ///
-  /// Optional. If not set, the UI will provide a default display name based on
-  /// the quota configuration. This field can be used to override the default
-  /// display name generated from the configuration.
-  core.String? displayName;
-
-  /// Duration of this limit in textual notation.
-  ///
-  /// Must be "100s" or "1d". Used by group-based quotas only.
-  core.String? duration;
-
-  /// Free tier value displayed in the Developers Console for this limit.
-  ///
-  /// The free tier is the number of tokens that will be subtracted from the
-  /// billed amount when billing is enabled. This field can only be set on a
-  /// limit with duration "1d", in a billable group; it is invalid on any other
-  /// limit. If this field is not set, it defaults to 0, indicating that there
-  /// is no free tier for this service. Used by group-based quotas only.
-  core.String? freeTier;
-
-  /// Maximum number of tokens that can be consumed during the specified
-  /// duration.
-  ///
-  /// Client application developers can override the default limit up to this
-  /// maximum. If specified, this value cannot be set to a value less than the
-  /// default limit. If not specified, it is set to the default limit. To allow
-  /// clients to apply overrides with no upper bound, set this to -1, indicating
-  /// unlimited maximum quota. Used by group-based quotas only.
-  core.String? maxLimit;
-
-  /// The name of the metric this quota limit applies to.
-  ///
-  /// The quota limits with the same metric will be checked together during
-  /// runtime. The metric must be defined within the service config.
-  core.String? metric;
-
-  /// Name of the quota limit.
-  ///
-  /// The name must be provided, and it must be unique within the service. The
-  /// name can only include alphanumeric characters as well as '-'. The maximum
-  /// length of the limit name is 64 characters.
-  core.String? name;
-
-  /// Specify the unit of the quota limit.
-  ///
-  /// It uses the same syntax as Metric.unit. The supported unit kinds are
-  /// determined by the quota backend system. Here are some examples: *
-  /// "1/min/{project}" for quota per minute per project. Note: the order of
-  /// unit components is insignificant. The "1" at the beginning is required to
-  /// follow the metric unit syntax.
-  core.String? unit;
-
-  /// Tiered limit values.
-  ///
-  /// You must specify this as a key:value pair, with an integer value that is
-  /// the maximum number of requests allowed for the specified unit. Currently
-  /// only STANDARD is supported.
-  core.Map<core.String, core.String>? values;
-
-  QuotaLimit();
-
-  QuotaLimit.fromJson(core.Map _json) {
-    if (_json.containsKey('defaultLimit')) {
-      defaultLimit = _json['defaultLimit'] as core.String;
-    }
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('displayName')) {
-      displayName = _json['displayName'] as core.String;
-    }
-    if (_json.containsKey('duration')) {
-      duration = _json['duration'] as core.String;
-    }
-    if (_json.containsKey('freeTier')) {
-      freeTier = _json['freeTier'] as core.String;
-    }
-    if (_json.containsKey('maxLimit')) {
-      maxLimit = _json['maxLimit'] as core.String;
-    }
-    if (_json.containsKey('metric')) {
-      metric = _json['metric'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('unit')) {
-      unit = _json['unit'] as core.String;
-    }
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          item as core.String,
-        ),
-      );
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (defaultLimit != null) 'defaultLimit': defaultLimit!,
-        if (description != null) 'description': description!,
-        if (displayName != null) 'displayName': displayName!,
-        if (duration != null) 'duration': duration!,
-        if (freeTier != null) 'freeTier': freeTier!,
-        if (maxLimit != null) 'maxLimit': maxLimit!,
-        if (metric != null) 'metric': metric!,
-        if (name != null) 'name': name!,
-        if (unit != null) 'unit': unit!,
-        if (values != null) 'values': values!,
-      };
-}
-
-/// Defines a proto annotation that describes a string field that refers to an
-/// API resource.
-class ResourceReference {
-  /// The resource type of a child collection that the annotated field
-  /// references.
-  ///
-  /// This is useful for annotating the `parent` field that doesn't have a fixed
-  /// resource type. Example: message ListLogEntriesRequest { string parent = 1
-  /// \[(google.api.resource_reference) = { child_type:
-  /// "logging.googleapis.com/LogEntry" }; }
-  core.String? childType;
-
-  /// The resource type that the annotated field references.
-  ///
-  /// Example: message Subscription { string topic = 2
-  /// \[(google.api.resource_reference) = { type: "pubsub.googleapis.com/Topic"
-  /// }\]; } Occasionally, a field may reference an arbitrary resource. In this
-  /// case, APIs use the special value * in their resource reference. Example:
-  /// message GetIamPolicyRequest { string resource = 2
-  /// \[(google.api.resource_reference) = { type: "*" }\]; }
-  core.String? type;
-
-  ResourceReference();
-
-  ResourceReference.fromJson(core.Map _json) {
-    if (_json.containsKey('childType')) {
-      childType = _json['childType'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (childType != null) 'childType': childType!,
-        if (type != null) 'type': type!,
-      };
-}
+typedef QuotaLimit = $QuotaLimit;
 
 /// A rollout resource that defines how service configuration versions are
 /// pushed to control plane systems.
@@ -5195,58 +4535,69 @@ class Rollout {
   /// percentage.
   TrafficPercentStrategy? trafficPercentStrategy;
 
-  Rollout();
+  Rollout({
+    this.createTime,
+    this.createdBy,
+    this.deleteServiceStrategy,
+    this.rolloutId,
+    this.serviceName,
+    this.status,
+    this.trafficPercentStrategy,
+  });
 
-  Rollout.fromJson(core.Map _json) {
-    if (_json.containsKey('createTime')) {
-      createTime = _json['createTime'] as core.String;
-    }
-    if (_json.containsKey('createdBy')) {
-      createdBy = _json['createdBy'] as core.String;
-    }
-    if (_json.containsKey('deleteServiceStrategy')) {
-      deleteServiceStrategy = DeleteServiceStrategy.fromJson(
-          _json['deleteServiceStrategy']
-              as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('rolloutId')) {
-      rolloutId = _json['rolloutId'] as core.String;
-    }
-    if (_json.containsKey('serviceName')) {
-      serviceName = _json['serviceName'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-    if (_json.containsKey('trafficPercentStrategy')) {
-      trafficPercentStrategy = TrafficPercentStrategy.fromJson(
-          _json['trafficPercentStrategy']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Rollout.fromJson(core.Map _json)
+      : this(
+          createTime: _json.containsKey('createTime')
+              ? _json['createTime'] as core.String
+              : null,
+          createdBy: _json.containsKey('createdBy')
+              ? _json['createdBy'] as core.String
+              : null,
+          deleteServiceStrategy: _json.containsKey('deleteServiceStrategy')
+              ? DeleteServiceStrategy.fromJson(_json['deleteServiceStrategy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          rolloutId: _json.containsKey('rolloutId')
+              ? _json['rolloutId'] as core.String
+              : null,
+          serviceName: _json.containsKey('serviceName')
+              ? _json['serviceName'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? _json['status'] as core.String
+              : null,
+          trafficPercentStrategy: _json.containsKey('trafficPercentStrategy')
+              ? TrafficPercentStrategy.fromJson(_json['trafficPercentStrategy']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (createTime != null) 'createTime': createTime!,
         if (createdBy != null) 'createdBy': createdBy!,
         if (deleteServiceStrategy != null)
-          'deleteServiceStrategy': deleteServiceStrategy!.toJson(),
+          'deleteServiceStrategy': deleteServiceStrategy!,
         if (rolloutId != null) 'rolloutId': rolloutId!,
         if (serviceName != null) 'serviceName': serviceName!,
         if (status != null) 'status': status!,
         if (trafficPercentStrategy != null)
-          'trafficPercentStrategy': trafficPercentStrategy!.toJson(),
+          'trafficPercentStrategy': trafficPercentStrategy!,
       };
 }
 
-/// `Service` is the root object of Google service configuration schema.
+/// `Service` is the root object of Google API service configuration (service
+/// config).
 ///
-/// It describes basic information about a service, such as the name and the
-/// title, and delegates other aspects to sub-sections. Each sub-section is
-/// either a proto message or a repeated proto message that configures a
-/// specific aspect, such as auth. See each proto message definition for
-/// details. Example: type: google.api.Service name: calendar.googleapis.com
-/// title: Google Calendar API apis: - name: google.calendar.v3.Calendar
-/// authentication: providers: - id: google_calendar_auth jwks_uri:
+/// It describes the basic information about a logical service, such as the
+/// service name and the user-facing title, and delegates other aspects to
+/// sub-sections. Each sub-section is either a proto message or a repeated proto
+/// message that configures a specific aspect, such as auth. For more
+/// information, see each proto message definition. Example: type:
+/// google.api.Service name: calendar.googleapis.com title: Google Calendar API
+/// apis: - name: google.calendar.v3.Calendar visibility: rules: - selector:
+/// "google.calendar.v3.*" restriction: PREVIEW backend: rules: - selector:
+/// "google.calendar.v3.*" address: calendar.example.com authentication:
+/// providers: - id: google_calendar_auth jwks_uri:
 /// https://www.googleapis.com/oauth2/v1/certs issuer:
 /// https://securetoken.google.com rules: - selector: "*" requirements:
 /// provider_id: google_calendar_auth
@@ -5268,9 +4619,10 @@ class Service {
   /// Billing configuration.
   Billing? billing;
 
-  /// The service config compiler always sets this field to `3`.
+  /// Obsolete.
   ///
-  /// Deprecated.
+  /// Do not use. This field has no semantic meaning. The service config
+  /// compiler always sets this field to `3`.
   core.int? configVersion;
 
   /// Context configuration.
@@ -5295,7 +4647,8 @@ class Service {
   ///
   /// Enums referenced directly or indirectly by the `apis` are automatically
   /// included. Enums which are not referenced but shall be included should be
-  /// listed here by name. Example: enums: - name: google.someapi.v1.SomeEnum
+  /// listed here by name by the configuration author. Example: enums: - name:
+  /// google.someapi.v1.SomeEnum
   core.List<Enum>? enums;
 
   /// HTTP configuration.
@@ -5356,7 +4709,8 @@ class Service {
   /// define system APIs in ESF.
   core.List<Type>? systemTypes;
 
-  /// The product title for this service.
+  /// The product title for this service, it is the name displayed in Google
+  /// Cloud Console.
   core.String? title;
 
   /// A list of all proto message types included in this API service.
@@ -5364,173 +4718,190 @@ class Service {
   /// Types referenced directly or indirectly by the `apis` are automatically
   /// included. Messages which are not referenced but shall be included, such as
   /// types used by the `google.protobuf.Any` type, should be listed here by
-  /// name. Example: types: - name: google.protobuf.Int32
+  /// name by the configuration author. Example: types: - name:
+  /// google.protobuf.Int32
   core.List<Type>? types;
 
   /// Configuration controlling usage of this service.
   Usage? usage;
 
-  Service();
+  Service({
+    this.apis,
+    this.authentication,
+    this.backend,
+    this.billing,
+    this.configVersion,
+    this.context,
+    this.control,
+    this.customError,
+    this.documentation,
+    this.endpoints,
+    this.enums,
+    this.http,
+    this.id,
+    this.logging,
+    this.logs,
+    this.metrics,
+    this.monitoredResources,
+    this.monitoring,
+    this.name,
+    this.producerProjectId,
+    this.quota,
+    this.sourceInfo,
+    this.systemParameters,
+    this.systemTypes,
+    this.title,
+    this.types,
+    this.usage,
+  });
 
-  Service.fromJson(core.Map _json) {
-    if (_json.containsKey('apis')) {
-      apis = (_json['apis'] as core.List)
-          .map<Api>((value) =>
-              Api.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('authentication')) {
-      authentication = Authentication.fromJson(
-          _json['authentication'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('backend')) {
-      backend = Backend.fromJson(
-          _json['backend'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('billing')) {
-      billing = Billing.fromJson(
-          _json['billing'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('configVersion')) {
-      configVersion = _json['configVersion'] as core.int;
-    }
-    if (_json.containsKey('context')) {
-      context = Context.fromJson(
-          _json['context'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('control')) {
-      control = Control.fromJson(
-          _json['control'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('customError')) {
-      customError = CustomError.fromJson(
-          _json['customError'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('documentation')) {
-      documentation = Documentation.fromJson(
-          _json['documentation'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('endpoints')) {
-      endpoints = (_json['endpoints'] as core.List)
-          .map<Endpoint>((value) =>
-              Endpoint.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('enums')) {
-      enums = (_json['enums'] as core.List)
-          .map<Enum>((value) =>
-              Enum.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('http')) {
-      http =
-          Http.fromJson(_json['http'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('id')) {
-      id = _json['id'] as core.String;
-    }
-    if (_json.containsKey('logging')) {
-      logging = Logging.fromJson(
-          _json['logging'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('logs')) {
-      logs = (_json['logs'] as core.List)
-          .map<LogDescriptor>((value) => LogDescriptor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('metrics')) {
-      metrics = (_json['metrics'] as core.List)
-          .map<MetricDescriptor>((value) => MetricDescriptor.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('monitoredResources')) {
-      monitoredResources = (_json['monitoredResources'] as core.List)
-          .map<MonitoredResourceDescriptor>((value) =>
-              MonitoredResourceDescriptor.fromJson(
-                  value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('monitoring')) {
-      monitoring = Monitoring.fromJson(
-          _json['monitoring'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('producerProjectId')) {
-      producerProjectId = _json['producerProjectId'] as core.String;
-    }
-    if (_json.containsKey('quota')) {
-      quota =
-          Quota.fromJson(_json['quota'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('sourceInfo')) {
-      sourceInfo = SourceInfo.fromJson(
-          _json['sourceInfo'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('systemParameters')) {
-      systemParameters = SystemParameters.fromJson(
-          _json['systemParameters'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('systemTypes')) {
-      systemTypes = (_json['systemTypes'] as core.List)
-          .map<Type>((value) =>
-              Type.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-    if (_json.containsKey('types')) {
-      types = (_json['types'] as core.List)
-          .map<Type>((value) =>
-              Type.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('usage')) {
-      usage =
-          Usage.fromJson(_json['usage'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Service.fromJson(core.Map _json)
+      : this(
+          apis: _json.containsKey('apis')
+              ? (_json['apis'] as core.List)
+                  .map((value) => Api.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          authentication: _json.containsKey('authentication')
+              ? Authentication.fromJson(_json['authentication']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          backend: _json.containsKey('backend')
+              ? Backend.fromJson(
+                  _json['backend'] as core.Map<core.String, core.dynamic>)
+              : null,
+          billing: _json.containsKey('billing')
+              ? Billing.fromJson(
+                  _json['billing'] as core.Map<core.String, core.dynamic>)
+              : null,
+          configVersion: _json.containsKey('configVersion')
+              ? _json['configVersion'] as core.int
+              : null,
+          context: _json.containsKey('context')
+              ? Context.fromJson(
+                  _json['context'] as core.Map<core.String, core.dynamic>)
+              : null,
+          control: _json.containsKey('control')
+              ? Control.fromJson(
+                  _json['control'] as core.Map<core.String, core.dynamic>)
+              : null,
+          customError: _json.containsKey('customError')
+              ? CustomError.fromJson(
+                  _json['customError'] as core.Map<core.String, core.dynamic>)
+              : null,
+          documentation: _json.containsKey('documentation')
+              ? Documentation.fromJson(
+                  _json['documentation'] as core.Map<core.String, core.dynamic>)
+              : null,
+          endpoints: _json.containsKey('endpoints')
+              ? (_json['endpoints'] as core.List)
+                  .map((value) => Endpoint.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          enums: _json.containsKey('enums')
+              ? (_json['enums'] as core.List)
+                  .map((value) => Enum.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          http: _json.containsKey('http')
+              ? Http.fromJson(
+                  _json['http'] as core.Map<core.String, core.dynamic>)
+              : null,
+          id: _json.containsKey('id') ? _json['id'] as core.String : null,
+          logging: _json.containsKey('logging')
+              ? Logging.fromJson(
+                  _json['logging'] as core.Map<core.String, core.dynamic>)
+              : null,
+          logs: _json.containsKey('logs')
+              ? (_json['logs'] as core.List)
+                  .map((value) => LogDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          metrics: _json.containsKey('metrics')
+              ? (_json['metrics'] as core.List)
+                  .map((value) => MetricDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          monitoredResources: _json.containsKey('monitoredResources')
+              ? (_json['monitoredResources'] as core.List)
+                  .map((value) => MonitoredResourceDescriptor.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          monitoring: _json.containsKey('monitoring')
+              ? Monitoring.fromJson(
+                  _json['monitoring'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          producerProjectId: _json.containsKey('producerProjectId')
+              ? _json['producerProjectId'] as core.String
+              : null,
+          quota: _json.containsKey('quota')
+              ? Quota.fromJson(
+                  _json['quota'] as core.Map<core.String, core.dynamic>)
+              : null,
+          sourceInfo: _json.containsKey('sourceInfo')
+              ? SourceInfo.fromJson(
+                  _json['sourceInfo'] as core.Map<core.String, core.dynamic>)
+              : null,
+          systemParameters: _json.containsKey('systemParameters')
+              ? SystemParameters.fromJson(_json['systemParameters']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          systemTypes: _json.containsKey('systemTypes')
+              ? (_json['systemTypes'] as core.List)
+                  .map((value) => Type.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+          types: _json.containsKey('types')
+              ? (_json['types'] as core.List)
+                  .map((value) => Type.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          usage: _json.containsKey('usage')
+              ? Usage.fromJson(
+                  _json['usage'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (apis != null) 'apis': apis!.map((value) => value.toJson()).toList(),
-        if (authentication != null) 'authentication': authentication!.toJson(),
-        if (backend != null) 'backend': backend!.toJson(),
-        if (billing != null) 'billing': billing!.toJson(),
+        if (apis != null) 'apis': apis!,
+        if (authentication != null) 'authentication': authentication!,
+        if (backend != null) 'backend': backend!,
+        if (billing != null) 'billing': billing!,
         if (configVersion != null) 'configVersion': configVersion!,
-        if (context != null) 'context': context!.toJson(),
-        if (control != null) 'control': control!.toJson(),
-        if (customError != null) 'customError': customError!.toJson(),
-        if (documentation != null) 'documentation': documentation!.toJson(),
-        if (endpoints != null)
-          'endpoints': endpoints!.map((value) => value.toJson()).toList(),
-        if (enums != null)
-          'enums': enums!.map((value) => value.toJson()).toList(),
-        if (http != null) 'http': http!.toJson(),
+        if (context != null) 'context': context!,
+        if (control != null) 'control': control!,
+        if (customError != null) 'customError': customError!,
+        if (documentation != null) 'documentation': documentation!,
+        if (endpoints != null) 'endpoints': endpoints!,
+        if (enums != null) 'enums': enums!,
+        if (http != null) 'http': http!,
         if (id != null) 'id': id!,
-        if (logging != null) 'logging': logging!.toJson(),
-        if (logs != null) 'logs': logs!.map((value) => value.toJson()).toList(),
-        if (metrics != null)
-          'metrics': metrics!.map((value) => value.toJson()).toList(),
+        if (logging != null) 'logging': logging!,
+        if (logs != null) 'logs': logs!,
+        if (metrics != null) 'metrics': metrics!,
         if (monitoredResources != null)
-          'monitoredResources':
-              monitoredResources!.map((value) => value.toJson()).toList(),
-        if (monitoring != null) 'monitoring': monitoring!.toJson(),
+          'monitoredResources': monitoredResources!,
+        if (monitoring != null) 'monitoring': monitoring!,
         if (name != null) 'name': name!,
         if (producerProjectId != null) 'producerProjectId': producerProjectId!,
-        if (quota != null) 'quota': quota!.toJson(),
-        if (sourceInfo != null) 'sourceInfo': sourceInfo!.toJson(),
-        if (systemParameters != null)
-          'systemParameters': systemParameters!.toJson(),
-        if (systemTypes != null)
-          'systemTypes': systemTypes!.map((value) => value.toJson()).toList(),
+        if (quota != null) 'quota': quota!,
+        if (sourceInfo != null) 'sourceInfo': sourceInfo!,
+        if (systemParameters != null) 'systemParameters': systemParameters!,
+        if (systemTypes != null) 'systemTypes': systemTypes!,
         if (title != null) 'title': title!,
-        if (types != null)
-          'types': types!.map((value) => value.toJson()).toList(),
-        if (usage != null) 'usage': usage!.toJson(),
+        if (types != null) 'types': types!,
+        if (usage != null) 'usage': usage!,
       };
 }
 
@@ -5549,45 +4920,31 @@ class SetIamPolicyRequest {
   /// following default mask is used: `paths: "bindings, etag"`
   core.String? updateMask;
 
-  SetIamPolicyRequest();
+  SetIamPolicyRequest({
+    this.policy,
+    this.updateMask,
+  });
 
-  SetIamPolicyRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('policy')) {
-      policy = Policy.fromJson(
-          _json['policy'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('updateMask')) {
-      updateMask = _json['updateMask'] as core.String;
-    }
-  }
+  SetIamPolicyRequest.fromJson(core.Map _json)
+      : this(
+          policy: _json.containsKey('policy')
+              ? Policy.fromJson(
+                  _json['policy'] as core.Map<core.String, core.dynamic>)
+              : null,
+          updateMask: _json.containsKey('updateMask')
+              ? _json['updateMask'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (policy != null) 'policy': policy!.toJson(),
+        if (policy != null) 'policy': policy!,
         if (updateMask != null) 'updateMask': updateMask!,
       };
 }
 
 /// `SourceContext` represents information about the source of a protobuf
 /// element, like the file in which it is defined.
-class SourceContext {
-  /// The path-qualified name of the .proto file that contained the associated
-  /// protobuf element.
-  ///
-  /// For example: `"google/protobuf/source_context.proto"`.
-  core.String? fileName;
-
-  SourceContext();
-
-  SourceContext.fromJson(core.Map _json) {
-    if (_json.containsKey('fileName')) {
-      fileName = _json['fileName'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (fileName != null) 'fileName': fileName!,
-      };
-}
+typedef SourceContext = $SourceContext;
 
 /// Source information used to create a Service Config
 class SourceInfo {
@@ -5595,23 +4952,20 @@ class SourceInfo {
   ///
   /// The values for Object must be JSON objects. It can consist of `num`,
   /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? sourceFiles;
+  core.List<core.Map<core.String, core.Object?>>? sourceFiles;
 
-  SourceInfo();
+  SourceInfo({
+    this.sourceFiles,
+  });
 
-  SourceInfo.fromJson(core.Map _json) {
-    if (_json.containsKey('sourceFiles')) {
-      sourceFiles = (_json['sourceFiles'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-  }
+  SourceInfo.fromJson(core.Map _json)
+      : this(
+          sourceFiles: _json.containsKey('sourceFiles')
+              ? (_json['sourceFiles'] as core.List)
+                  .map((value) => value as core.Map<core.String, core.dynamic>)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (sourceFiles != null) 'sourceFiles': sourceFiles!,
@@ -5625,85 +4979,7 @@ class SourceInfo {
 /// contains three pieces of data: error code, error message, and error details.
 /// You can find out more about this error model and how to work with it in the
 /// [API Design Guide](https://cloud.google.com/apis/design/errors).
-class Status {
-  /// The status code, which should be an enum value of google.rpc.Code.
-  core.int? code;
-
-  /// A list of messages that carry the error details.
-  ///
-  /// There is a common set of message types for APIs to use.
-  ///
-  /// The values for Object must be JSON objects. It can consist of `num`,
-  /// `String`, `bool` and `null` as well as `Map` and `List` values.
-  core.List<core.Map<core.String, core.Object>>? details;
-
-  /// A developer-facing error message, which should be in English.
-  ///
-  /// Any user-facing error message should be localized and sent in the
-  /// google.rpc.Status.details field, or localized by the client.
-  core.String? message;
-
-  Status();
-
-  Status.fromJson(core.Map _json) {
-    if (_json.containsKey('code')) {
-      code = _json['code'] as core.int;
-    }
-    if (_json.containsKey('details')) {
-      details = (_json['details'] as core.List)
-          .map<core.Map<core.String, core.Object>>(
-              (value) => (value as core.Map<core.String, core.dynamic>).map(
-                    (key, item) => core.MapEntry(
-                      key,
-                      item as core.Object,
-                    ),
-                  ))
-          .toList();
-    }
-    if (_json.containsKey('message')) {
-      message = _json['message'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (code != null) 'code': code!,
-        if (details != null) 'details': details!,
-        if (message != null) 'message': message!,
-      };
-}
-
-/// Represents the status of one operation step.
-class Step {
-  /// The short description of the step.
-  core.String? description;
-
-  /// The status code.
-  /// Possible string values are:
-  /// - "STATUS_UNSPECIFIED" : Unspecifed code.
-  /// - "DONE" : The operation or step has completed without errors.
-  /// - "NOT_STARTED" : The operation or step has not started yet.
-  /// - "IN_PROGRESS" : The operation or step is in progress.
-  /// - "FAILED" : The operation or step has completed with errors. If the
-  /// operation is rollbackable, the rollback completed with errors too.
-  /// - "CANCELLED" : The operation or step has completed with cancellation.
-  core.String? status;
-
-  Step();
-
-  Step.fromJson(core.Map _json) {
-    if (_json.containsKey('description')) {
-      description = _json['description'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = _json['status'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (description != null) 'description': description!,
-        if (status != null) 'status': status!,
-      };
-}
+typedef Status = $Status;
 
 /// Request message for SubmitConfigSource method.
 class SubmitConfigSourceRequest {
@@ -5719,40 +4995,25 @@ class SubmitConfigSourceRequest {
   /// Optional.
   core.bool? validateOnly;
 
-  SubmitConfigSourceRequest();
+  SubmitConfigSourceRequest({
+    this.configSource,
+    this.validateOnly,
+  });
 
-  SubmitConfigSourceRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('configSource')) {
-      configSource = ConfigSource.fromJson(
-          _json['configSource'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('validateOnly')) {
-      validateOnly = _json['validateOnly'] as core.bool;
-    }
-  }
+  SubmitConfigSourceRequest.fromJson(core.Map _json)
+      : this(
+          configSource: _json.containsKey('configSource')
+              ? ConfigSource.fromJson(
+                  _json['configSource'] as core.Map<core.String, core.dynamic>)
+              : null,
+          validateOnly: _json.containsKey('validateOnly')
+              ? _json['validateOnly'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (configSource != null) 'configSource': configSource!.toJson(),
+        if (configSource != null) 'configSource': configSource!,
         if (validateOnly != null) 'validateOnly': validateOnly!,
-      };
-}
-
-/// Response message for SubmitConfigSource method.
-class SubmitConfigSourceResponse {
-  /// The generated service configuration.
-  Service? serviceConfig;
-
-  SubmitConfigSourceResponse();
-
-  SubmitConfigSourceResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('serviceConfig')) {
-      serviceConfig = Service.fromJson(
-          _json['serviceConfig'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (serviceConfig != null) 'serviceConfig': serviceConfig!.toJson(),
       };
 }
 
@@ -5776,19 +5037,22 @@ class SystemParameter {
   /// It is case sensitive.
   core.String? urlQueryParameter;
 
-  SystemParameter();
+  SystemParameter({
+    this.httpHeader,
+    this.name,
+    this.urlQueryParameter,
+  });
 
-  SystemParameter.fromJson(core.Map _json) {
-    if (_json.containsKey('httpHeader')) {
-      httpHeader = _json['httpHeader'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('urlQueryParameter')) {
-      urlQueryParameter = _json['urlQueryParameter'] as core.String;
-    }
-  }
+  SystemParameter.fromJson(core.Map _json)
+      : this(
+          httpHeader: _json.containsKey('httpHeader')
+              ? _json['httpHeader'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          urlQueryParameter: _json.containsKey('urlQueryParameter')
+              ? _json['urlQueryParameter'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (httpHeader != null) 'httpHeader': httpHeader!,
@@ -5814,23 +5078,26 @@ class SystemParameterRule {
   /// details.
   core.String? selector;
 
-  SystemParameterRule();
+  SystemParameterRule({
+    this.parameters,
+    this.selector,
+  });
 
-  SystemParameterRule.fromJson(core.Map _json) {
-    if (_json.containsKey('parameters')) {
-      parameters = (_json['parameters'] as core.List)
-          .map<SystemParameter>((value) => SystemParameter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-  }
+  SystemParameterRule.fromJson(core.Map _json)
+      : this(
+          parameters: _json.containsKey('parameters')
+              ? (_json['parameters'] as core.List)
+                  .map((value) => SystemParameter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          selector: _json.containsKey('selector')
+              ? _json['selector'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (parameters != null)
-          'parameters': parameters!.map((value) => value.toJson()).toList(),
+        if (parameters != null) 'parameters': parameters!,
         if (selector != null) 'selector': selector!,
       };
 }
@@ -5856,67 +5123,30 @@ class SystemParameters {
   /// "last one wins" order.
   core.List<SystemParameterRule>? rules;
 
-  SystemParameters();
+  SystemParameters({
+    this.rules,
+  });
 
-  SystemParameters.fromJson(core.Map _json) {
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<SystemParameterRule>((value) => SystemParameterRule.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  SystemParameters.fromJson(core.Map _json)
+      : this(
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => SystemParameterRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
 /// Request message for `TestIamPermissions` method.
-class TestIamPermissionsRequest {
-  /// The set of permissions to check for the `resource`.
-  ///
-  /// Permissions with wildcards (such as '*' or 'storage.*') are not allowed.
-  /// For more information see
-  /// [IAM Overview](https://cloud.google.com/iam/docs/overview#permissions).
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsRequest();
-
-  TestIamPermissionsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsRequest = $TestIamPermissionsRequest00;
 
 /// Response message for `TestIamPermissions` method.
-class TestIamPermissionsResponse {
-  /// A subset of `TestPermissionsRequest.permissions` that the caller is
-  /// allowed.
-  core.List<core.String>? permissions;
-
-  TestIamPermissionsResponse();
-
-  TestIamPermissionsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('permissions')) {
-      permissions = (_json['permissions'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (permissions != null) 'permissions': permissions!,
-      };
-}
+typedef TestIamPermissionsResponse = $PermissionsResponse;
 
 /// Strategy that specifies how clients of Google Service Controller want to
 /// send traffic to use different config versions.
@@ -5936,19 +5166,22 @@ class TrafficPercentStrategy {
   /// must be greater than 0.0 and the sum must equal to 100.0.
   core.Map<core.String, core.double>? percentages;
 
-  TrafficPercentStrategy();
+  TrafficPercentStrategy({
+    this.percentages,
+  });
 
-  TrafficPercentStrategy.fromJson(core.Map _json) {
-    if (_json.containsKey('percentages')) {
-      percentages =
-          (_json['percentages'] as core.Map<core.String, core.dynamic>).map(
-        (key, item) => core.MapEntry(
-          key,
-          (item as core.num).toDouble(),
-        ),
-      );
-    }
-  }
+  TrafficPercentStrategy.fromJson(core.Map _json)
+      : this(
+          percentages: _json.containsKey('percentages')
+              ? (_json['percentages'] as core.Map<core.String, core.dynamic>)
+                  .map(
+                  (key, item) => core.MapEntry(
+                    key,
+                    (item as core.num).toDouble(),
+                  ),
+                )
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (percentages != null) 'percentages': percentages!,
@@ -5978,66 +5211,51 @@ class Type {
   /// - "SYNTAX_PROTO3" : Syntax `proto3`.
   core.String? syntax;
 
-  Type();
+  Type({
+    this.fields,
+    this.name,
+    this.oneofs,
+    this.options,
+    this.sourceContext,
+    this.syntax,
+  });
 
-  Type.fromJson(core.Map _json) {
-    if (_json.containsKey('fields')) {
-      fields = (_json['fields'] as core.List)
-          .map<Field>((value) =>
-              Field.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('oneofs')) {
-      oneofs = (_json['oneofs'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('options')) {
-      options = (_json['options'] as core.List)
-          .map<Option>((value) =>
-              Option.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('sourceContext')) {
-      sourceContext = SourceContext.fromJson(
-          _json['sourceContext'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('syntax')) {
-      syntax = _json['syntax'] as core.String;
-    }
-  }
+  Type.fromJson(core.Map _json)
+      : this(
+          fields: _json.containsKey('fields')
+              ? (_json['fields'] as core.List)
+                  .map((value) => Field.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          oneofs: _json.containsKey('oneofs')
+              ? (_json['oneofs'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          options: _json.containsKey('options')
+              ? (_json['options'] as core.List)
+                  .map((value) => Option.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          sourceContext: _json.containsKey('sourceContext')
+              ? SourceContext.fromJson(
+                  _json['sourceContext'] as core.Map<core.String, core.dynamic>)
+              : null,
+          syntax: _json.containsKey('syntax')
+              ? _json['syntax'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fields != null)
-          'fields': fields!.map((value) => value.toJson()).toList(),
+        if (fields != null) 'fields': fields!,
         if (name != null) 'name': name!,
         if (oneofs != null) 'oneofs': oneofs!,
-        if (options != null)
-          'options': options!.map((value) => value.toJson()).toList(),
-        if (sourceContext != null) 'sourceContext': sourceContext!.toJson(),
+        if (options != null) 'options': options!,
+        if (sourceContext != null) 'sourceContext': sourceContext!,
         if (syntax != null) 'syntax': syntax!,
-      };
-}
-
-/// Response message for UndeleteService method.
-class UndeleteServiceResponse {
-  /// Revived service resource.
-  ManagedService? service;
-
-  UndeleteServiceResponse();
-
-  UndeleteServiceResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('service')) {
-      service = ManagedService.fromJson(
-          _json['service'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (service != null) 'service': service!.toJson(),
       };
 }
 
@@ -6069,32 +5287,36 @@ class Usage {
   /// **NOTE:** All service configuration rules follow "last one wins" order.
   core.List<UsageRule>? rules;
 
-  Usage();
+  Usage({
+    this.producerNotificationChannel,
+    this.requirements,
+    this.rules,
+  });
 
-  Usage.fromJson(core.Map _json) {
-    if (_json.containsKey('producerNotificationChannel')) {
-      producerNotificationChannel =
-          _json['producerNotificationChannel'] as core.String;
-    }
-    if (_json.containsKey('requirements')) {
-      requirements = (_json['requirements'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<UsageRule>((value) =>
-              UsageRule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  Usage.fromJson(core.Map _json)
+      : this(
+          producerNotificationChannel:
+              _json.containsKey('producerNotificationChannel')
+                  ? _json['producerNotificationChannel'] as core.String
+                  : null,
+          requirements: _json.containsKey('requirements')
+              ? (_json['requirements'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => UsageRule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (producerNotificationChannel != null)
           'producerNotificationChannel': producerNotificationChannel!,
         if (requirements != null) 'requirements': requirements!,
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -6111,43 +5333,4 @@ class Usage {
 /// unregistered calls. usage: rules: - selector:
 /// "google.example.library.v1.LibraryService.CreateBook"
 /// allow_unregistered_calls: true
-class UsageRule {
-  /// If true, the selected method allows unregistered calls, e.g. calls that
-  /// don't identify any user or application.
-  core.bool? allowUnregisteredCalls;
-
-  /// Selects the methods to which this rule applies.
-  ///
-  /// Use '*' to indicate all methods in all APIs. Refer to selector for syntax
-  /// details.
-  core.String? selector;
-
-  /// If true, the selected method should skip service control and the control
-  /// plane features, such as quota and billing, will not be available.
-  ///
-  /// This flag is used by Google Cloud Endpoints to bypass checks for internal
-  /// methods, such as service health check methods.
-  core.bool? skipServiceControl;
-
-  UsageRule();
-
-  UsageRule.fromJson(core.Map _json) {
-    if (_json.containsKey('allowUnregisteredCalls')) {
-      allowUnregisteredCalls = _json['allowUnregisteredCalls'] as core.bool;
-    }
-    if (_json.containsKey('selector')) {
-      selector = _json['selector'] as core.String;
-    }
-    if (_json.containsKey('skipServiceControl')) {
-      skipServiceControl = _json['skipServiceControl'] as core.bool;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (allowUnregisteredCalls != null)
-          'allowUnregisteredCalls': allowUnregisteredCalls!,
-        if (selector != null) 'selector': selector!,
-        if (skipServiceControl != null)
-          'skipServiceControl': skipServiceControl!,
-      };
-}
+typedef UsageRule = $UsageRule;

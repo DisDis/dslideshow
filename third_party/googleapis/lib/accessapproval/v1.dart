@@ -16,7 +16,8 @@
 ///
 /// An API for controlling access to data by Google personnel.
 ///
-/// For more information, see <https://cloud.google.com/access-approval/docs>
+/// For more information, see
+/// <https://cloud.google.com/cloud-provider-access-management/access-approval/docs>
 ///
 /// Create an instance of [AccessApprovalApi] to access these resources:
 ///
@@ -35,6 +36,8 @@ import 'dart:core' as core;
 import 'package:_discoveryapis_commons/_discoveryapis_commons.dart' as commons;
 import 'package:http/http.dart' as http;
 
+// ignore: deprecated_member_use_from_same_package
+import '../shared.dart';
 import '../src/user_agent.dart';
 
 export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
@@ -42,7 +45,8 @@ export 'package:_discoveryapis_commons/_discoveryapis_commons.dart'
 
 /// An API for controlling access to data by Google personnel.
 class AccessApprovalApi {
-  /// View and manage your data across Google Cloud Platform services
+  /// See, edit, configure, and delete your Google Cloud data and see the email
+  /// address for your Google Account.
   static const cloudPlatformScope =
       'https://www.googleapis.com/auth/cloud-platform';
 
@@ -112,7 +116,8 @@ class FoldersResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the AccessApprovalSettings to retrieve.
+  /// [name] - The name of the AccessApprovalSettings to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/accessApprovalSettings"
   /// Value must have pattern `^folders/\[^/\]+/accessApprovalSettings$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -183,7 +188,7 @@ class FoldersResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -235,7 +240,7 @@ class FoldersApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -282,7 +287,7 @@ class FoldersApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -305,7 +310,8 @@ class FoldersApprovalRequestsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the approval request to retrieve.
+  /// [name] - The name of the approval request to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/approvalRequests/{approval_request}"
   /// Value must have pattern `^folders/\[^/\]+/approvalRequests/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -353,7 +359,7 @@ class FoldersApprovalRequestsResource {
   /// one of the following values: * \[not set\]: Requests that are pending or
   /// have active approvals. * ALL: All requests. * PENDING: Only pending
   /// requests. * ACTIVE: Only active (i.e. currently approved) requests. *
-  /// DISMISSED: Only requests that have been dismissed, or requests that . are
+  /// DISMISSED: Only requests that have been dismissed, or requests that are
   /// not approved and past expiration. * EXPIRED: Only requests that have been
   /// approved, and the approval has expired. * HISTORY: Active, dismissed and
   /// expired requests.
@@ -451,7 +457,8 @@ class OrganizationsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the AccessApprovalSettings to retrieve.
+  /// [name] - The name of the AccessApprovalSettings to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/accessApprovalSettings"
   /// Value must have pattern `^organizations/\[^/\]+/accessApprovalSettings$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -522,7 +529,7 @@ class OrganizationsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -575,7 +582,7 @@ class OrganizationsApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -623,7 +630,7 @@ class OrganizationsApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -646,7 +653,8 @@ class OrganizationsApprovalRequestsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the approval request to retrieve.
+  /// [name] - The name of the approval request to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/approvalRequests/{approval_request}"
   /// Value must have pattern
   /// `^organizations/\[^/\]+/approvalRequests/\[^/\]+$`.
   ///
@@ -695,7 +703,7 @@ class OrganizationsApprovalRequestsResource {
   /// one of the following values: * \[not set\]: Requests that are pending or
   /// have active approvals. * ALL: All requests. * PENDING: Only pending
   /// requests. * ACTIVE: Only active (i.e. currently approved) requests. *
-  /// DISMISSED: Only requests that have been dismissed, or requests that . are
+  /// DISMISSED: Only requests that have been dismissed, or requests that are
   /// not approved and past expiration. * EXPIRED: Only requests that have been
   /// approved, and the approval has expired. * HISTORY: Active, dismissed and
   /// expired requests.
@@ -793,7 +801,8 @@ class ProjectsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the AccessApprovalSettings to retrieve.
+  /// [name] - The name of the AccessApprovalSettings to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/accessApprovalSettings"
   /// Value must have pattern `^projects/\[^/\]+/accessApprovalSettings$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -864,7 +873,7 @@ class ProjectsResource {
     core.String? updateMask,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (updateMask != null) 'updateMask': [updateMask],
       if ($fields != null) 'fields': [$fields],
@@ -916,7 +925,7 @@ class ProjectsApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -963,7 +972,7 @@ class ProjectsApprovalRequestsResource {
     core.String name, {
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if ($fields != null) 'fields': [$fields],
     };
@@ -986,7 +995,8 @@ class ProjectsApprovalRequestsResource {
   ///
   /// Request parameters:
   ///
-  /// [name] - Name of the approval request to retrieve.
+  /// [name] - The name of the approval request to retrieve. Format:
+  /// "{projects|folders|organizations}/{id}/approvalRequests/{approval_request}"
   /// Value must have pattern `^projects/\[^/\]+/approvalRequests/\[^/\]+$`.
   ///
   /// [$fields] - Selector specifying which fields to include in a partial
@@ -1034,7 +1044,7 @@ class ProjectsApprovalRequestsResource {
   /// one of the following values: * \[not set\]: Requests that are pending or
   /// have active approvals. * ALL: All requests. * PENDING: Only pending
   /// requests. * ACTIVE: Only active (i.e. currently approved) requests. *
-  /// DISMISSED: Only requests that have been dismissed, or requests that . are
+  /// DISMISSED: Only requests that have been dismissed, or requests that are
   /// not approved and past expiration. * EXPIRED: Only requests that have been
   /// approved, and the approval has expired. * HISTORY: Active, dismissed and
   /// expired requests.
@@ -1081,8 +1091,8 @@ class ProjectsApprovalRequestsResource {
 
 /// Settings on a Project/Folder/Organization related to Access Approval.
 class AccessApprovalSettings {
-  /// This field is read only (not settable via
-  /// UpdateAccessAccessApprovalSettings method).
+  /// This field is read only (not settable via UpdateAccessApprovalSettings
+  /// method).
   ///
   /// If the field is true, that indicates that at least one service is enrolled
   /// for Access Approval in one or more ancestors of the Project or Folder
@@ -1120,33 +1130,35 @@ class AccessApprovalSettings {
   /// addresses are allowed.
   core.List<core.String>? notificationEmails;
 
-  AccessApprovalSettings();
+  AccessApprovalSettings({
+    this.enrolledAncestor,
+    this.enrolledServices,
+    this.name,
+    this.notificationEmails,
+  });
 
-  AccessApprovalSettings.fromJson(core.Map _json) {
-    if (_json.containsKey('enrolledAncestor')) {
-      enrolledAncestor = _json['enrolledAncestor'] as core.bool;
-    }
-    if (_json.containsKey('enrolledServices')) {
-      enrolledServices = (_json['enrolledServices'] as core.List)
-          .map<EnrolledService>((value) => EnrolledService.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('notificationEmails')) {
-      notificationEmails = (_json['notificationEmails'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  AccessApprovalSettings.fromJson(core.Map _json)
+      : this(
+          enrolledAncestor: _json.containsKey('enrolledAncestor')
+              ? _json['enrolledAncestor'] as core.bool
+              : null,
+          enrolledServices: _json.containsKey('enrolledServices')
+              ? (_json['enrolledServices'] as core.List)
+                  .map((value) => EnrolledService.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          notificationEmails: _json.containsKey('notificationEmails')
+              ? (_json['notificationEmails'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (enrolledAncestor != null) 'enrolledAncestor': enrolledAncestor!,
-        if (enrolledServices != null)
-          'enrolledServices':
-              enrolledServices!.map((value) => value.toJson()).toList(),
+        if (enrolledServices != null) 'enrolledServices': enrolledServices!,
         if (name != null) 'name': name!,
         if (notificationEmails != null)
           'notificationEmails': notificationEmails!,
@@ -1173,17 +1185,21 @@ class AccessLocations {
   /// * SAM: South America * ANT: Antarctica * ANY: Any location
   core.String? principalPhysicalLocationCountry;
 
-  AccessLocations();
+  AccessLocations({
+    this.principalOfficeCountry,
+    this.principalPhysicalLocationCountry,
+  });
 
-  AccessLocations.fromJson(core.Map _json) {
-    if (_json.containsKey('principalOfficeCountry')) {
-      principalOfficeCountry = _json['principalOfficeCountry'] as core.String;
-    }
-    if (_json.containsKey('principalPhysicalLocationCountry')) {
-      principalPhysicalLocationCountry =
-          _json['principalPhysicalLocationCountry'] as core.String;
-    }
-  }
+  AccessLocations.fromJson(core.Map _json)
+      : this(
+          principalOfficeCountry: _json.containsKey('principalOfficeCountry')
+              ? _json['principalOfficeCountry'] as core.String
+              : null,
+          principalPhysicalLocationCountry:
+              _json.containsKey('principalPhysicalLocationCountry')
+                  ? _json['principalPhysicalLocationCountry'] as core.String
+                  : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (principalOfficeCountry != null)
@@ -1216,16 +1232,18 @@ class AccessReason {
   /// fraud, abuse, or compliance purposes.
   core.String? type;
 
-  AccessReason();
+  AccessReason({
+    this.detail,
+    this.type,
+  });
 
-  AccessReason.fromJson(core.Map _json) {
-    if (_json.containsKey('detail')) {
-      detail = _json['detail'] as core.String;
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  AccessReason.fromJson(core.Map _json)
+      : this(
+          detail: _json.containsKey('detail')
+              ? _json['detail'] as core.String
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (detail != null) 'detail': detail!,
@@ -1275,59 +1293,67 @@ class ApprovalRequest {
   /// Properties related to the resource represented by requested_resource_name.
   ResourceProperties? requestedResourceProperties;
 
-  ApprovalRequest();
+  ApprovalRequest({
+    this.approve,
+    this.dismiss,
+    this.name,
+    this.requestTime,
+    this.requestedExpiration,
+    this.requestedLocations,
+    this.requestedReason,
+    this.requestedResourceName,
+    this.requestedResourceProperties,
+  });
 
-  ApprovalRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('approve')) {
-      approve = ApproveDecision.fromJson(
-          _json['approve'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('dismiss')) {
-      dismiss = DismissDecision.fromJson(
-          _json['dismiss'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('requestTime')) {
-      requestTime = _json['requestTime'] as core.String;
-    }
-    if (_json.containsKey('requestedExpiration')) {
-      requestedExpiration = _json['requestedExpiration'] as core.String;
-    }
-    if (_json.containsKey('requestedLocations')) {
-      requestedLocations = AccessLocations.fromJson(
-          _json['requestedLocations'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestedReason')) {
-      requestedReason = AccessReason.fromJson(
-          _json['requestedReason'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('requestedResourceName')) {
-      requestedResourceName = _json['requestedResourceName'] as core.String;
-    }
-    if (_json.containsKey('requestedResourceProperties')) {
-      requestedResourceProperties = ResourceProperties.fromJson(
-          _json['requestedResourceProperties']
-              as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ApprovalRequest.fromJson(core.Map _json)
+      : this(
+          approve: _json.containsKey('approve')
+              ? ApproveDecision.fromJson(
+                  _json['approve'] as core.Map<core.String, core.dynamic>)
+              : null,
+          dismiss: _json.containsKey('dismiss')
+              ? DismissDecision.fromJson(
+                  _json['dismiss'] as core.Map<core.String, core.dynamic>)
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          requestTime: _json.containsKey('requestTime')
+              ? _json['requestTime'] as core.String
+              : null,
+          requestedExpiration: _json.containsKey('requestedExpiration')
+              ? _json['requestedExpiration'] as core.String
+              : null,
+          requestedLocations: _json.containsKey('requestedLocations')
+              ? AccessLocations.fromJson(_json['requestedLocations']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          requestedReason: _json.containsKey('requestedReason')
+              ? AccessReason.fromJson(_json['requestedReason']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          requestedResourceName: _json.containsKey('requestedResourceName')
+              ? _json['requestedResourceName'] as core.String
+              : null,
+          requestedResourceProperties: _json
+                  .containsKey('requestedResourceProperties')
+              ? ResourceProperties.fromJson(_json['requestedResourceProperties']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (approve != null) 'approve': approve!.toJson(),
-        if (dismiss != null) 'dismiss': dismiss!.toJson(),
+        if (approve != null) 'approve': approve!,
+        if (dismiss != null) 'dismiss': dismiss!,
         if (name != null) 'name': name!,
         if (requestTime != null) 'requestTime': requestTime!,
         if (requestedExpiration != null)
           'requestedExpiration': requestedExpiration!,
         if (requestedLocations != null)
-          'requestedLocations': requestedLocations!.toJson(),
-        if (requestedReason != null)
-          'requestedReason': requestedReason!.toJson(),
+          'requestedLocations': requestedLocations!,
+        if (requestedReason != null) 'requestedReason': requestedReason!,
         if (requestedResourceName != null)
           'requestedResourceName': requestedResourceName!,
         if (requestedResourceProperties != null)
-          'requestedResourceProperties': requestedResourceProperties!.toJson(),
+          'requestedResourceProperties': requestedResourceProperties!,
       };
 }
 
@@ -1336,13 +1362,16 @@ class ApproveApprovalRequestMessage {
   /// The expiration time of this approval.
   core.String? expireTime;
 
-  ApproveApprovalRequestMessage();
+  ApproveApprovalRequestMessage({
+    this.expireTime,
+  });
 
-  ApproveApprovalRequestMessage.fromJson(core.Map _json) {
-    if (_json.containsKey('expireTime')) {
-      expireTime = _json['expireTime'] as core.String;
-    }
-  }
+  ApproveApprovalRequestMessage.fromJson(core.Map _json)
+      : this(
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (expireTime != null) 'expireTime': expireTime!,
@@ -1357,16 +1386,20 @@ class ApproveDecision {
   /// The time at which the approval expires.
   core.String? expireTime;
 
-  ApproveDecision();
+  ApproveDecision({
+    this.approveTime,
+    this.expireTime,
+  });
 
-  ApproveDecision.fromJson(core.Map _json) {
-    if (_json.containsKey('approveTime')) {
-      approveTime = _json['approveTime'] as core.String;
-    }
-    if (_json.containsKey('expireTime')) {
-      expireTime = _json['expireTime'] as core.String;
-    }
-  }
+  ApproveDecision.fromJson(core.Map _json)
+      : this(
+          approveTime: _json.containsKey('approveTime')
+              ? _json['approveTime'] as core.String
+              : null,
+          expireTime: _json.containsKey('expireTime')
+              ? _json['expireTime'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (approveTime != null) 'approveTime': approveTime!,
@@ -1375,15 +1408,7 @@ class ApproveDecision {
 }
 
 /// Request to dismiss an approval request.
-class DismissApprovalRequestMessage {
-  DismissApprovalRequestMessage();
-
-  DismissApprovalRequestMessage.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef DismissApprovalRequestMessage = $Empty;
 
 /// A decision that has been made to dismiss an approval request.
 class DismissDecision {
@@ -1395,16 +1420,20 @@ class DismissDecision {
   /// by the approvers before the exiration time).
   core.bool? implicit;
 
-  DismissDecision();
+  DismissDecision({
+    this.dismissTime,
+    this.implicit,
+  });
 
-  DismissDecision.fromJson(core.Map _json) {
-    if (_json.containsKey('dismissTime')) {
-      dismissTime = _json['dismissTime'] as core.String;
-    }
-    if (_json.containsKey('implicit')) {
-      implicit = _json['implicit'] as core.bool;
-    }
-  }
+  DismissDecision.fromJson(core.Map _json)
+      : this(
+          dismissTime: _json.containsKey('dismissTime')
+              ? _json['dismissTime'] as core.String
+              : null,
+          implicit: _json.containsKey('implicit')
+              ? _json['implicit'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dismissTime != null) 'dismissTime': dismissTime!,
@@ -1419,33 +1448,32 @@ class DismissDecision {
 /// method. For instance: service Foo { rpc Bar(google.protobuf.Empty) returns
 /// (google.protobuf.Empty); } The JSON representation for `Empty` is empty JSON
 /// object `{}`.
-class Empty {
-  Empty();
-
-  Empty.fromJson(
-      // ignore: avoid_unused_constructor_parameters
-      core.Map _json);
-
-  core.Map<core.String, core.dynamic> toJson() => {};
-}
+typedef Empty = $Empty;
 
 /// Represents the enrollment of a cloud resource into a specific service.
 class EnrolledService {
   /// The product for which Access Approval will be enrolled.
   ///
-  /// Allowed values are listed below (case-sensitive): * all * App Engine *
-  /// BigQuery * Cloud Bigtable * Cloud Key Management Service * Compute Engine
-  /// * Cloud Dataflow * Cloud Identity and Access Management * Cloud Pub/Sub *
-  /// Cloud Storage * Persistent Disk Note: These values are supported as input
-  /// for legacy purposes, but will not be returned from the API. * all *
+  /// Allowed values are listed below (case-sensitive): * all * GA * App Engine
+  /// * BigQuery * Cloud Bigtable * Cloud Key Management Service * Compute
+  /// Engine * Cloud Dataflow * Cloud DLP * Cloud EKM * Cloud HSM * Cloud
+  /// Identity and Access Management * Cloud Logging * Cloud Pub/Sub * Cloud
+  /// Spanner * Cloud SQL * Cloud Storage * Google Kubernetes Engine *
+  /// Organization Policy Serivice * Persistent Disk * Resource Manager *
+  /// Speaker ID Note: These values are supported as input for legacy purposes,
+  /// but will not be returned from the API. * all * ga-only *
   /// appengine.googleapis.com * bigquery.googleapis.com *
-  /// bigtable.googleapis.com * cloudkms.googleapis.com * compute.googleapis.com
-  /// * dataflow.googleapis.com * iam.googleapis.com * pubsub.googleapis.com *
-  /// storage.googleapis.com Calls to UpdateAccessApprovalSettings using 'all'
-  /// or any of the XXX.googleapis.com will be translated to the associated
-  /// product name ('all', 'App Engine', etc.). Note: 'all' will enroll the
-  /// resource in all products supported at both 'GA' and 'Preview' levels. More
-  /// information about levels of support is available at
+  /// bigtable.googleapis.com * container.googleapis.com *
+  /// cloudkms.googleapis.com * cloudresourcemanager.googleapis.com *
+  /// cloudsql.googleapis.com * compute.googleapis.com * dataflow.googleapis.com
+  /// * dlp.googleapis.com * iam.googleapis.com * logging.googleapis.com *
+  /// orgpolicy.googleapis.com * pubsub.googleapis.com * spanner.googleapis.com
+  /// * speakerid.googleapis.com * storage.googleapis.com Calls to
+  /// UpdateAccessApprovalSettings using 'all' or any of the XXX.googleapis.com
+  /// will be translated to the associated product name ('all', 'App Engine',
+  /// etc.). Note: 'all' will enroll the resource in all products supported at
+  /// both 'GA' and 'Preview' levels. More information about levels of support
+  /// is available at
   /// https://cloud.google.com/access-approval/docs/supported-services
   core.String? cloudProduct;
 
@@ -1456,16 +1484,20 @@ class EnrolledService {
   /// - "BLOCK_ALL" : Service is enrolled in Access Approval for all requests
   core.String? enrollmentLevel;
 
-  EnrolledService();
+  EnrolledService({
+    this.cloudProduct,
+    this.enrollmentLevel,
+  });
 
-  EnrolledService.fromJson(core.Map _json) {
-    if (_json.containsKey('cloudProduct')) {
-      cloudProduct = _json['cloudProduct'] as core.String;
-    }
-    if (_json.containsKey('enrollmentLevel')) {
-      enrollmentLevel = _json['enrollmentLevel'] as core.String;
-    }
-  }
+  EnrolledService.fromJson(core.Map _json)
+      : this(
+          cloudProduct: _json.containsKey('cloudProduct')
+              ? _json['cloudProduct'] as core.String
+              : null,
+          enrollmentLevel: _json.containsKey('enrollmentLevel')
+              ? _json['enrollmentLevel'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (cloudProduct != null) 'cloudProduct': cloudProduct!,
@@ -1481,24 +1513,26 @@ class ListApprovalRequestsResponse {
   /// Token to retrieve the next page of results, or empty if there are no more.
   core.String? nextPageToken;
 
-  ListApprovalRequestsResponse();
+  ListApprovalRequestsResponse({
+    this.approvalRequests,
+    this.nextPageToken,
+  });
 
-  ListApprovalRequestsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('approvalRequests')) {
-      approvalRequests = (_json['approvalRequests'] as core.List)
-          .map<ApprovalRequest>((value) => ApprovalRequest.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-  }
+  ListApprovalRequestsResponse.fromJson(core.Map _json)
+      : this(
+          approvalRequests: _json.containsKey('approvalRequests')
+              ? (_json['approvalRequests'] as core.List)
+                  .map((value) => ApprovalRequest.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (approvalRequests != null)
-          'approvalRequests':
-              approvalRequests!.map((value) => value.toJson()).toList(),
+        if (approvalRequests != null) 'approvalRequests': approvalRequests!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
       };
 }
@@ -1509,13 +1543,16 @@ class ResourceProperties {
   /// requested.
   core.bool? excludesDescendants;
 
-  ResourceProperties();
+  ResourceProperties({
+    this.excludesDescendants,
+  });
 
-  ResourceProperties.fromJson(core.Map _json) {
-    if (_json.containsKey('excludesDescendants')) {
-      excludesDescendants = _json['excludesDescendants'] as core.bool;
-    }
-  }
+  ResourceProperties.fromJson(core.Map _json)
+      : this(
+          excludesDescendants: _json.containsKey('excludesDescendants')
+              ? _json['excludesDescendants'] as core.bool
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (excludesDescendants != null)

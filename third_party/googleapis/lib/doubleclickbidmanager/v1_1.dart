@@ -21,10 +21,8 @@
 ///
 /// Create an instance of [DoubleClickBidManagerApi] to access these resources:
 ///
-/// - [LineitemsResource]
 /// - [QueriesResource]
 /// - [ReportsResource]
-/// - [SdfResource]
 library doubleclickbidmanager.v1_1;
 
 import 'dart:async' as async;
@@ -48,100 +46,14 @@ class DoubleClickBidManagerApi {
 
   final commons.ApiRequester _requester;
 
-  LineitemsResource get lineitems => LineitemsResource(_requester);
   QueriesResource get queries => QueriesResource(_requester);
   ReportsResource get reports => ReportsResource(_requester);
-  SdfResource get sdf => SdfResource(_requester);
 
   DoubleClickBidManagerApi(http.Client client,
       {core.String rootUrl = 'https://doubleclickbidmanager.googleapis.com/',
       core.String servicePath = 'doubleclickbidmanager/v1.1/'})
       : _requester =
             commons.ApiRequester(client, rootUrl, servicePath, requestHeaders);
-}
-
-class LineitemsResource {
-  final commons.ApiRequester _requester;
-
-  LineitemsResource(commons.ApiRequester client) : _requester = client;
-
-  /// Retrieves line items in CSV format.
-  ///
-  /// YouTube & partners line items are not supported.
-  ///
-  /// [request] - The metadata request object.
-  ///
-  /// Request parameters:
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [DownloadLineItemsResponse].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<DownloadLineItemsResponse> downloadlineitems(
-    DownloadLineItemsRequest request, {
-    core.String? $fields,
-  }) async {
-    final _body = convert.json.encode(request.toJson());
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    const _url = 'lineitems/downloadlineitems';
-
-    final _response = await _requester.request(
-      _url,
-      'POST',
-      body: _body,
-      queryParams: _queryParams,
-    );
-    return DownloadLineItemsResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
-  }
-
-  /// Uploads line items in CSV format.
-  ///
-  /// YouTube & partners line items are not supported.
-  ///
-  /// [request] - The metadata request object.
-  ///
-  /// Request parameters:
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [UploadLineItemsResponse].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<UploadLineItemsResponse> uploadlineitems(
-    UploadLineItemsRequest request, {
-    core.String? $fields,
-  }) async {
-    final _body = convert.json.encode(request.toJson());
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    const _url = 'lineitems/uploadlineitems';
-
-    final _response = await _requester.request(
-      _url,
-      'POST',
-      body: _body,
-      queryParams: _queryParams,
-    );
-    return UploadLineItemsResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
-  }
 }
 
 class QueriesResource {
@@ -173,7 +85,7 @@ class QueriesResource {
     core.bool? asynchronous,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (asynchronous != null) 'asynchronous': ['${asynchronous}'],
       if ($fields != null) 'fields': [$fields],
@@ -321,7 +233,7 @@ class QueriesResource {
     core.bool? asynchronous,
     core.String? $fields,
   }) async {
-    final _body = convert.json.encode(request.toJson());
+    final _body = convert.json.encode(request);
     final _queryParams = <core.String, core.List<core.String>>{
       if (asynchronous != null) 'asynchronous': ['${asynchronous}'],
       if ($fields != null) 'fields': [$fields],
@@ -389,49 +301,6 @@ class ReportsResource {
   }
 }
 
-class SdfResource {
-  final commons.ApiRequester _requester;
-
-  SdfResource(commons.ApiRequester client) : _requester = client;
-
-  /// Retrieves entities in SDF format.
-  ///
-  /// [request] - The metadata request object.
-  ///
-  /// Request parameters:
-  ///
-  /// [$fields] - Selector specifying which fields to include in a partial
-  /// response.
-  ///
-  /// Completes with a [DownloadResponse].
-  ///
-  /// Completes with a [commons.ApiRequestError] if the API endpoint returned an
-  /// error.
-  ///
-  /// If the used [http.Client] completes with an error when making a REST call,
-  /// this method will complete with the same error.
-  async.Future<DownloadResponse> download(
-    DownloadRequest request, {
-    core.String? $fields,
-  }) async {
-    final _body = convert.json.encode(request.toJson());
-    final _queryParams = <core.String, core.List<core.String>>{
-      if ($fields != null) 'fields': [$fields],
-    };
-
-    const _url = 'sdf/download';
-
-    final _response = await _requester.request(
-      _url,
-      'POST',
-      body: _body,
-      queryParams: _queryParams,
-    );
-    return DownloadResponse.fromJson(
-        _response as core.Map<core.String, core.dynamic>);
-  }
-}
-
 /// A channel grouping defines a set of rules that can be used to categorize
 /// events in a path report.
 class ChannelGrouping {
@@ -447,28 +316,30 @@ class ChannelGrouping {
   /// There is a limit of 100 rules that can be set per channel grouping.
   core.List<Rule>? rules;
 
-  ChannelGrouping();
+  ChannelGrouping({
+    this.fallbackName,
+    this.name,
+    this.rules,
+  });
 
-  ChannelGrouping.fromJson(core.Map _json) {
-    if (_json.containsKey('fallbackName')) {
-      fallbackName = _json['fallbackName'] as core.String;
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-    if (_json.containsKey('rules')) {
-      rules = (_json['rules'] as core.List)
-          .map<Rule>((value) =>
-              Rule.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ChannelGrouping.fromJson(core.Map _json)
+      : this(
+          fallbackName: _json.containsKey('fallbackName')
+              ? _json['fallbackName'] as core.String
+              : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+          rules: _json.containsKey('rules')
+              ? (_json['rules'] as core.List)
+                  .map((value) => Rule.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (fallbackName != null) 'fallbackName': fallbackName!,
         if (name != null) 'name': name!,
-        if (rules != null)
-          'rules': rules!.map((value) => value.toJson()).toList(),
+        if (rules != null) 'rules': rules!,
       };
 }
 
@@ -480,211 +351,22 @@ class DisjunctiveMatchStatement {
   /// statement.
   core.List<EventFilter>? eventFilters;
 
-  DisjunctiveMatchStatement();
+  DisjunctiveMatchStatement({
+    this.eventFilters,
+  });
 
-  DisjunctiveMatchStatement.fromJson(core.Map _json) {
-    if (_json.containsKey('eventFilters')) {
-      eventFilters = (_json['eventFilters'] as core.List)
-          .map<EventFilter>((value) => EventFilter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (eventFilters != null)
-          'eventFilters': eventFilters!.map((value) => value.toJson()).toList(),
-      };
-}
-
-/// Request to fetch stored line items.
-class DownloadLineItemsRequest {
-  /// File specification (column names, types, order) in which the line items
-  /// will be returned.
-  ///
-  /// Default to EWF.
-  /// Possible string values are:
-  /// - "EWF"
-  core.String? fileSpec;
-
-  /// Ids of the specified filter type used to filter line items to fetch.
-  ///
-  /// If omitted, all the line items will be returned.
-  core.List<core.String>? filterIds;
-
-  /// Filter type used to filter line items to fetch.
-  /// Possible string values are:
-  /// - "ADVERTISER_ID"
-  /// - "INSERTION_ORDER_ID"
-  /// - "LINE_ITEM_ID"
-  core.String? filterType;
-
-  /// Format in which the line items will be returned.
-  ///
-  /// Default to CSV.
-  /// Possible string values are:
-  /// - "CSV"
-  core.String? format;
-
-  DownloadLineItemsRequest();
-
-  DownloadLineItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('fileSpec')) {
-      fileSpec = _json['fileSpec'] as core.String;
-    }
-    if (_json.containsKey('filterIds')) {
-      filterIds = (_json['filterIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('filterType')) {
-      filterType = _json['filterType'] as core.String;
-    }
-    if (_json.containsKey('format')) {
-      format = _json['format'] as core.String;
-    }
-  }
+  DisjunctiveMatchStatement.fromJson(core.Map _json)
+      : this(
+          eventFilters: _json.containsKey('eventFilters')
+              ? (_json['eventFilters'] as core.List)
+                  .map((value) => EventFilter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (fileSpec != null) 'fileSpec': fileSpec!,
-        if (filterIds != null) 'filterIds': filterIds!,
-        if (filterType != null) 'filterType': filterType!,
-        if (format != null) 'format': format!,
-      };
-}
-
-/// Download line items response.
-class DownloadLineItemsResponse {
-  /// Retrieved line items in CSV format.
-  ///
-  /// For more information about file formats, see Entity Write File Format.
-  core.String? lineItems;
-
-  DownloadLineItemsResponse();
-
-  DownloadLineItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('lineItems')) {
-      lineItems = _json['lineItems'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (lineItems != null) 'lineItems': lineItems!,
-      };
-}
-
-/// Request to fetch stored inventory sources, campaigns, insertion orders, line
-/// items, YouTube ad groups and ads.
-class DownloadRequest {
-  /// File types that will be returned.
-  ///
-  /// If INVENTORY_SOURCE is requested, no other file types may be requested.
-  /// Acceptable values are: - "AD" - "AD_GROUP" - "CAMPAIGN" -
-  /// "INSERTION_ORDER" - "INVENTORY_SOURCE" - "LINE_ITEM"
-  core.List<core.String>? fileTypes;
-
-  /// The IDs of the specified filter type.
-  ///
-  /// This is used to filter entities to fetch. At least one ID must be
-  /// specified.
-  core.List<core.String>? filterIds;
-
-  /// Filter type used to filter entities to fetch.
-  ///
-  /// PARTNER_ID and INVENTORY_SOURCE_ID may only be used when downloading
-  /// inventory sources.
-  /// Possible string values are:
-  /// - "ADVERTISER_ID"
-  /// - "INSERTION_ORDER_ID"
-  /// - "LINE_ITEM_ID"
-  /// - "CAMPAIGN_ID"
-  /// - "INVENTORY_SOURCE_ID"
-  /// - "PARTNER_ID"
-  core.String? filterType;
-
-  /// SDF Version (column names, types, order) in which the entities will be
-  /// returned.
-  ///
-  /// Default to 5.
-  core.String? version;
-
-  DownloadRequest();
-
-  DownloadRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('fileTypes')) {
-      fileTypes = (_json['fileTypes'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('filterIds')) {
-      filterIds = (_json['filterIds'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('filterType')) {
-      filterType = _json['filterType'] as core.String;
-    }
-    if (_json.containsKey('version')) {
-      version = _json['version'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (fileTypes != null) 'fileTypes': fileTypes!,
-        if (filterIds != null) 'filterIds': filterIds!,
-        if (filterType != null) 'filterType': filterType!,
-        if (version != null) 'version': version!,
-      };
-}
-
-/// Download response.
-class DownloadResponse {
-  /// Retrieved ad groups in SDF format.
-  core.String? adGroups;
-
-  /// Retrieved ads in SDF format.
-  core.String? ads;
-
-  /// Retrieved campaigns in SDF format.
-  core.String? campaigns;
-
-  /// Retrieved insertion orders in SDF format.
-  core.String? insertionOrders;
-  core.String? inventorySources;
-
-  /// Retrieved line items in SDF format.
-  core.String? lineItems;
-
-  DownloadResponse();
-
-  DownloadResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('adGroups')) {
-      adGroups = _json['adGroups'] as core.String;
-    }
-    if (_json.containsKey('ads')) {
-      ads = _json['ads'] as core.String;
-    }
-    if (_json.containsKey('campaigns')) {
-      campaigns = _json['campaigns'] as core.String;
-    }
-    if (_json.containsKey('insertionOrders')) {
-      insertionOrders = _json['insertionOrders'] as core.String;
-    }
-    if (_json.containsKey('inventorySources')) {
-      inventorySources = _json['inventorySources'] as core.String;
-    }
-    if (_json.containsKey('lineItems')) {
-      lineItems = _json['lineItems'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (adGroups != null) 'adGroups': adGroups!,
-        if (ads != null) 'ads': ads!,
-        if (campaigns != null) 'campaigns': campaigns!,
-        if (insertionOrders != null) 'insertionOrders': insertionOrders!,
-        if (inventorySources != null) 'inventorySources': inventorySources!,
-        if (lineItems != null) 'lineItems': lineItems!,
+        if (eventFilters != null) 'eventFilters': eventFilters!,
       };
 }
 
@@ -694,18 +376,20 @@ class EventFilter {
   /// Filter on a dimension.
   PathQueryOptionsFilter? dimensionFilter;
 
-  EventFilter();
+  EventFilter({
+    this.dimensionFilter,
+  });
 
-  EventFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('dimensionFilter')) {
-      dimensionFilter = PathQueryOptionsFilter.fromJson(
-          _json['dimensionFilter'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  EventFilter.fromJson(core.Map _json)
+      : this(
+          dimensionFilter: _json.containsKey('dimensionFilter')
+              ? PathQueryOptionsFilter.fromJson(_json['dimensionFilter']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (dimensionFilter != null)
-          'dimensionFilter': dimensionFilter!.toJson(),
+        if (dimensionFilter != null) 'dimensionFilter': dimensionFilter!,
       };
 }
 
@@ -975,21 +659,52 @@ class FilterPair {
   /// - "FILTER_CHANNEL_GROUPING"
   /// - "FILTER_OM_SDK_AVAILABLE"
   /// - "FILTER_DATA_SOURCE"
+  /// - "FILTER_CM360_PLACEMENT_ID"
+  /// - "FILTER_TRUEVIEW_CLICK_TYPE_NAME"
+  /// - "FILTER_TRUEVIEW_AD_TYPE_NAME"
+  /// - "FILTER_VIDEO_CONTENT_DURATION"
+  /// - "FILTER_MATCHED_GENRE_TARGET"
+  /// - "FILTER_VIDEO_CONTENT_LIVE_STREAM"
+  /// - "FILTER_BUDGET_SEGMENT_TYPE"
+  /// - "FILTER_BUDGET_SEGMENT_BUDGET"
+  /// - "FILTER_BUDGET_SEGMENT_START_DATE"
+  /// - "FILTER_BUDGET_SEGMENT_END_DATE"
+  /// - "FILTER_BUDGET_SEGMENT_PACING_PERCENTAGE"
+  /// - "FILTER_LINE_ITEM_BUDGET"
+  /// - "FILTER_LINE_ITEM_START_DATE"
+  /// - "FILTER_LINE_ITEM_END_DATE"
+  /// - "FILTER_INSERTION_ORDER_GOAL_TYPE"
+  /// - "FILTER_LINE_ITEM_PACING_PERCENTAGE"
+  /// - "FILTER_INSERTION_ORDER_GOAL_VALUE"
+  /// - "FILTER_OMID_CAPABLE"
+  /// - "FILTER_VENDOR_MEASUREMENT_MODE"
+  /// - "FILTER_IMPRESSION_LOSS_REJECTION_REASON"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_START"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_FIRST_QUARTILE"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_MID_POINT"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_THIRD_QUARTILE"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_COMPLETE"
+  /// - "FILTER_VERIFICATION_VIDEO_RESIZED"
+  /// - "FILTER_VERIFICATION_AUDIBILITY_START"
+  /// - "FILTER_VERIFICATION_AUDIBILITY_COMPLETE"
+  /// - "FILTER_MEDIA_TYPE"
+  /// - "FILTER_AUDIO_FEED_TYPE_NAME"
   core.String? type;
 
   /// Filter value.
   core.String? value;
 
-  FilterPair();
+  FilterPair({
+    this.type,
+    this.value,
+  });
 
-  FilterPair.fromJson(core.Map _json) {
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-    if (_json.containsKey('value')) {
-      value = _json['value'] as core.String;
-    }
-  }
+  FilterPair.fromJson(core.Map _json)
+      : this(
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+          value:
+              _json.containsKey('value') ? _json['value'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (type != null) 'type': type!,
@@ -1010,28 +725,30 @@ class ListQueriesResponse {
   /// Retrieved queries.
   core.List<Query>? queries;
 
-  ListQueriesResponse();
+  ListQueriesResponse({
+    this.kind,
+    this.nextPageToken,
+    this.queries,
+  });
 
-  ListQueriesResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('queries')) {
-      queries = (_json['queries'] as core.List)
-          .map<Query>((value) =>
-              Query.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListQueriesResponse.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          queries: _json.containsKey('queries')
+              ? (_json['queries'] as core.List)
+                  .map((value) => Query.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (queries != null)
-          'queries': queries!.map((value) => value.toJson()).toList(),
+        if (queries != null) 'queries': queries!,
       };
 }
 
@@ -1048,28 +765,30 @@ class ListReportsResponse {
   /// Retrieved reports.
   core.List<Report>? reports;
 
-  ListReportsResponse();
+  ListReportsResponse({
+    this.kind,
+    this.nextPageToken,
+    this.reports,
+  });
 
-  ListReportsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('nextPageToken')) {
-      nextPageToken = _json['nextPageToken'] as core.String;
-    }
-    if (_json.containsKey('reports')) {
-      reports = (_json['reports'] as core.List)
-          .map<Report>((value) =>
-              Report.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  ListReportsResponse.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          nextPageToken: _json.containsKey('nextPageToken')
+              ? _json['nextPageToken'] as core.String
+              : null,
+          reports: _json.containsKey('reports')
+              ? (_json['reports'] as core.List)
+                  .map((value) => Report.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
         if (nextPageToken != null) 'nextPageToken': nextPageToken!,
-        if (reports != null)
-          'reports': reports!.map((value) => value.toJson()).toList(),
+        if (reports != null) 'reports': reports!,
       };
 }
 
@@ -1083,24 +802,27 @@ class Options {
   /// Options that contain Path Filters and Custom Channel Groupings.
   PathQueryOptions? pathQueryOptions;
 
-  Options();
+  Options({
+    this.includeOnlyTargetedUserLists,
+    this.pathQueryOptions,
+  });
 
-  Options.fromJson(core.Map _json) {
-    if (_json.containsKey('includeOnlyTargetedUserLists')) {
-      includeOnlyTargetedUserLists =
-          _json['includeOnlyTargetedUserLists'] as core.bool;
-    }
-    if (_json.containsKey('pathQueryOptions')) {
-      pathQueryOptions = PathQueryOptions.fromJson(
-          _json['pathQueryOptions'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Options.fromJson(core.Map _json)
+      : this(
+          includeOnlyTargetedUserLists:
+              _json.containsKey('includeOnlyTargetedUserLists')
+                  ? _json['includeOnlyTargetedUserLists'] as core.bool
+                  : null,
+          pathQueryOptions: _json.containsKey('pathQueryOptions')
+              ? PathQueryOptions.fromJson(_json['pathQueryOptions']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (includeOnlyTargetedUserLists != null)
           'includeOnlyTargetedUserLists': includeOnlyTargetedUserLists!,
-        if (pathQueryOptions != null)
-          'pathQueryOptions': pathQueryOptions!.toJson(),
+        if (pathQueryOptions != null) 'pathQueryOptions': pathQueryOptions!,
       };
 }
 
@@ -1161,44 +883,49 @@ class Parameters {
   /// - "TYPE_PATH_ATTRIBUTION"
   core.String? type;
 
-  Parameters();
+  Parameters({
+    this.filters,
+    this.groupBys,
+    this.includeInviteData,
+    this.metrics,
+    this.options,
+    this.type,
+  });
 
-  Parameters.fromJson(core.Map _json) {
-    if (_json.containsKey('filters')) {
-      filters = (_json['filters'] as core.List)
-          .map<FilterPair>((value) =>
-              FilterPair.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('groupBys')) {
-      groupBys = (_json['groupBys'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('includeInviteData')) {
-      includeInviteData = _json['includeInviteData'] as core.bool;
-    }
-    if (_json.containsKey('metrics')) {
-      metrics = (_json['metrics'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('options')) {
-      options = Options.fromJson(
-          _json['options'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('type')) {
-      type = _json['type'] as core.String;
-    }
-  }
+  Parameters.fromJson(core.Map _json)
+      : this(
+          filters: _json.containsKey('filters')
+              ? (_json['filters'] as core.List)
+                  .map((value) => FilterPair.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          groupBys: _json.containsKey('groupBys')
+              ? (_json['groupBys'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          includeInviteData: _json.containsKey('includeInviteData')
+              ? _json['includeInviteData'] as core.bool
+              : null,
+          metrics: _json.containsKey('metrics')
+              ? (_json['metrics'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          options: _json.containsKey('options')
+              ? Options.fromJson(
+                  _json['options'] as core.Map<core.String, core.dynamic>)
+              : null,
+          type: _json.containsKey('type') ? _json['type'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (filters != null)
-          'filters': filters!.map((value) => value.toJson()).toList(),
+        if (filters != null) 'filters': filters!,
         if (groupBys != null) 'groupBys': groupBys!,
         if (includeInviteData != null) 'includeInviteData': includeInviteData!,
         if (metrics != null) 'metrics': metrics!,
-        if (options != null) 'options': options!.toJson(),
+        if (options != null) 'options': options!,
         if (type != null) 'type': type!,
       };
 }
@@ -1221,23 +948,26 @@ class PathFilter {
   /// - "LAST"
   core.String? pathMatchPosition;
 
-  PathFilter();
+  PathFilter({
+    this.eventFilters,
+    this.pathMatchPosition,
+  });
 
-  PathFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('eventFilters')) {
-      eventFilters = (_json['eventFilters'] as core.List)
-          .map<EventFilter>((value) => EventFilter.fromJson(
-              value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-    if (_json.containsKey('pathMatchPosition')) {
-      pathMatchPosition = _json['pathMatchPosition'] as core.String;
-    }
-  }
+  PathFilter.fromJson(core.Map _json)
+      : this(
+          eventFilters: _json.containsKey('eventFilters')
+              ? (_json['eventFilters'] as core.List)
+                  .map((value) => EventFilter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+          pathMatchPosition: _json.containsKey('pathMatchPosition')
+              ? _json['pathMatchPosition'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (eventFilters != null)
-          'eventFilters': eventFilters!.map((value) => value.toJson()).toList(),
+        if (eventFilters != null) 'eventFilters': eventFilters!,
         if (pathMatchPosition != null) 'pathMatchPosition': pathMatchPosition!,
       };
 }
@@ -1252,26 +982,28 @@ class PathQueryOptions {
   /// There is a limit of 100 path filters that can be set per report.
   core.List<PathFilter>? pathFilters;
 
-  PathQueryOptions();
+  PathQueryOptions({
+    this.channelGrouping,
+    this.pathFilters,
+  });
 
-  PathQueryOptions.fromJson(core.Map _json) {
-    if (_json.containsKey('channelGrouping')) {
-      channelGrouping = ChannelGrouping.fromJson(
-          _json['channelGrouping'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('pathFilters')) {
-      pathFilters = (_json['pathFilters'] as core.List)
-          .map<PathFilter>((value) =>
-              PathFilter.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
+  PathQueryOptions.fromJson(core.Map _json)
+      : this(
+          channelGrouping: _json.containsKey('channelGrouping')
+              ? ChannelGrouping.fromJson(_json['channelGrouping']
+                  as core.Map<core.String, core.dynamic>)
+              : null,
+          pathFilters: _json.containsKey('pathFilters')
+              ? (_json['pathFilters'] as core.List)
+                  .map((value) => PathFilter.fromJson(
+                      value as core.Map<core.String, core.dynamic>))
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (channelGrouping != null)
-          'channelGrouping': channelGrouping!.toJson(),
-        if (pathFilters != null)
-          'pathFilters': pathFilters!.map((value) => value.toJson()).toList(),
+        if (channelGrouping != null) 'channelGrouping': channelGrouping!,
+        if (pathFilters != null) 'pathFilters': pathFilters!,
       };
 }
 
@@ -1541,6 +1273,36 @@ class PathQueryOptionsFilter {
   /// - "FILTER_CHANNEL_GROUPING"
   /// - "FILTER_OM_SDK_AVAILABLE"
   /// - "FILTER_DATA_SOURCE"
+  /// - "FILTER_CM360_PLACEMENT_ID"
+  /// - "FILTER_TRUEVIEW_CLICK_TYPE_NAME"
+  /// - "FILTER_TRUEVIEW_AD_TYPE_NAME"
+  /// - "FILTER_VIDEO_CONTENT_DURATION"
+  /// - "FILTER_MATCHED_GENRE_TARGET"
+  /// - "FILTER_VIDEO_CONTENT_LIVE_STREAM"
+  /// - "FILTER_BUDGET_SEGMENT_TYPE"
+  /// - "FILTER_BUDGET_SEGMENT_BUDGET"
+  /// - "FILTER_BUDGET_SEGMENT_START_DATE"
+  /// - "FILTER_BUDGET_SEGMENT_END_DATE"
+  /// - "FILTER_BUDGET_SEGMENT_PACING_PERCENTAGE"
+  /// - "FILTER_LINE_ITEM_BUDGET"
+  /// - "FILTER_LINE_ITEM_START_DATE"
+  /// - "FILTER_LINE_ITEM_END_DATE"
+  /// - "FILTER_INSERTION_ORDER_GOAL_TYPE"
+  /// - "FILTER_LINE_ITEM_PACING_PERCENTAGE"
+  /// - "FILTER_INSERTION_ORDER_GOAL_VALUE"
+  /// - "FILTER_OMID_CAPABLE"
+  /// - "FILTER_VENDOR_MEASUREMENT_MODE"
+  /// - "FILTER_IMPRESSION_LOSS_REJECTION_REASON"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_START"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_FIRST_QUARTILE"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_MID_POINT"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_THIRD_QUARTILE"
+  /// - "FILTER_VERIFICATION_VIDEO_PLAYER_SIZE_COMPLETE"
+  /// - "FILTER_VERIFICATION_VIDEO_RESIZED"
+  /// - "FILTER_VERIFICATION_AUDIBILITY_START"
+  /// - "FILTER_VERIFICATION_AUDIBILITY_COMPLETE"
+  /// - "FILTER_MEDIA_TYPE"
+  /// - "FILTER_AUDIO_FEED_TYPE_NAME"
   core.String? filter;
 
   /// Indicates how the filter should be matched to the value.
@@ -1555,21 +1317,25 @@ class PathQueryOptionsFilter {
   /// Value to filter on.
   core.List<core.String>? values;
 
-  PathQueryOptionsFilter();
+  PathQueryOptionsFilter({
+    this.filter,
+    this.match,
+    this.values,
+  });
 
-  PathQueryOptionsFilter.fromJson(core.Map _json) {
-    if (_json.containsKey('filter')) {
-      filter = _json['filter'] as core.String;
-    }
-    if (_json.containsKey('match')) {
-      match = _json['match'] as core.String;
-    }
-    if (_json.containsKey('values')) {
-      values = (_json['values'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-  }
+  PathQueryOptionsFilter.fromJson(core.Map _json)
+      : this(
+          filter: _json.containsKey('filter')
+              ? _json['filter'] as core.String
+              : null,
+          match:
+              _json.containsKey('match') ? _json['match'] as core.String : null,
+          values: _json.containsKey('values')
+              ? (_json['values'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (filter != null) 'filter': filter!,
@@ -1614,48 +1380,56 @@ class Query {
   /// Defaults to America/New_York.
   core.String? timezoneCode;
 
-  Query();
+  Query({
+    this.kind,
+    this.metadata,
+    this.params,
+    this.queryId,
+    this.reportDataEndTimeMs,
+    this.reportDataStartTimeMs,
+    this.schedule,
+    this.timezoneCode,
+  });
 
-  Query.fromJson(core.Map _json) {
-    if (_json.containsKey('kind')) {
-      kind = _json['kind'] as core.String;
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = QueryMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('params')) {
-      params = Parameters.fromJson(
-          _json['params'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('queryId')) {
-      queryId = _json['queryId'] as core.String;
-    }
-    if (_json.containsKey('reportDataEndTimeMs')) {
-      reportDataEndTimeMs = _json['reportDataEndTimeMs'] as core.String;
-    }
-    if (_json.containsKey('reportDataStartTimeMs')) {
-      reportDataStartTimeMs = _json['reportDataStartTimeMs'] as core.String;
-    }
-    if (_json.containsKey('schedule')) {
-      schedule = QuerySchedule.fromJson(
-          _json['schedule'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('timezoneCode')) {
-      timezoneCode = _json['timezoneCode'] as core.String;
-    }
-  }
+  Query.fromJson(core.Map _json)
+      : this(
+          kind: _json.containsKey('kind') ? _json['kind'] as core.String : null,
+          metadata: _json.containsKey('metadata')
+              ? QueryMetadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          params: _json.containsKey('params')
+              ? Parameters.fromJson(
+                  _json['params'] as core.Map<core.String, core.dynamic>)
+              : null,
+          queryId: _json.containsKey('queryId')
+              ? _json['queryId'] as core.String
+              : null,
+          reportDataEndTimeMs: _json.containsKey('reportDataEndTimeMs')
+              ? _json['reportDataEndTimeMs'] as core.String
+              : null,
+          reportDataStartTimeMs: _json.containsKey('reportDataStartTimeMs')
+              ? _json['reportDataStartTimeMs'] as core.String
+              : null,
+          schedule: _json.containsKey('schedule')
+              ? QuerySchedule.fromJson(
+                  _json['schedule'] as core.Map<core.String, core.dynamic>)
+              : null,
+          timezoneCode: _json.containsKey('timezoneCode')
+              ? _json['timezoneCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (kind != null) 'kind': kind!,
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (params != null) 'params': params!.toJson(),
+        if (metadata != null) 'metadata': metadata!,
+        if (params != null) 'params': params!,
         if (queryId != null) 'queryId': queryId!,
         if (reportDataEndTimeMs != null)
           'reportDataEndTimeMs': reportDataEndTimeMs!,
         if (reportDataStartTimeMs != null)
           'reportDataStartTimeMs': reportDataStartTimeMs!,
-        if (schedule != null) 'schedule': schedule!.toJson(),
+        if (schedule != null) 'schedule': schedule!,
         if (timezoneCode != null) 'timezoneCode': timezoneCode!,
       };
 }
@@ -1733,47 +1507,59 @@ class QueryMetadata {
   /// It is used to name the reports generated from this query.
   core.String? title;
 
-  QueryMetadata();
+  QueryMetadata({
+    this.dataRange,
+    this.format,
+    this.googleCloudStoragePathForLatestReport,
+    this.googleDrivePathForLatestReport,
+    this.latestReportRunTimeMs,
+    this.locale,
+    this.reportCount,
+    this.running,
+    this.sendNotification,
+    this.shareEmailAddress,
+    this.title,
+  });
 
-  QueryMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('dataRange')) {
-      dataRange = _json['dataRange'] as core.String;
-    }
-    if (_json.containsKey('format')) {
-      format = _json['format'] as core.String;
-    }
-    if (_json.containsKey('googleCloudStoragePathForLatestReport')) {
-      googleCloudStoragePathForLatestReport =
-          _json['googleCloudStoragePathForLatestReport'] as core.String;
-    }
-    if (_json.containsKey('googleDrivePathForLatestReport')) {
-      googleDrivePathForLatestReport =
-          _json['googleDrivePathForLatestReport'] as core.String;
-    }
-    if (_json.containsKey('latestReportRunTimeMs')) {
-      latestReportRunTimeMs = _json['latestReportRunTimeMs'] as core.String;
-    }
-    if (_json.containsKey('locale')) {
-      locale = _json['locale'] as core.String;
-    }
-    if (_json.containsKey('reportCount')) {
-      reportCount = _json['reportCount'] as core.int;
-    }
-    if (_json.containsKey('running')) {
-      running = _json['running'] as core.bool;
-    }
-    if (_json.containsKey('sendNotification')) {
-      sendNotification = _json['sendNotification'] as core.bool;
-    }
-    if (_json.containsKey('shareEmailAddress')) {
-      shareEmailAddress = (_json['shareEmailAddress'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('title')) {
-      title = _json['title'] as core.String;
-    }
-  }
+  QueryMetadata.fromJson(core.Map _json)
+      : this(
+          dataRange: _json.containsKey('dataRange')
+              ? _json['dataRange'] as core.String
+              : null,
+          format: _json.containsKey('format')
+              ? _json['format'] as core.String
+              : null,
+          googleCloudStoragePathForLatestReport: _json
+                  .containsKey('googleCloudStoragePathForLatestReport')
+              ? _json['googleCloudStoragePathForLatestReport'] as core.String
+              : null,
+          googleDrivePathForLatestReport:
+              _json.containsKey('googleDrivePathForLatestReport')
+                  ? _json['googleDrivePathForLatestReport'] as core.String
+                  : null,
+          latestReportRunTimeMs: _json.containsKey('latestReportRunTimeMs')
+              ? _json['latestReportRunTimeMs'] as core.String
+              : null,
+          locale: _json.containsKey('locale')
+              ? _json['locale'] as core.String
+              : null,
+          reportCount: _json.containsKey('reportCount')
+              ? _json['reportCount'] as core.int
+              : null,
+          running: _json.containsKey('running')
+              ? _json['running'] as core.bool
+              : null,
+          sendNotification: _json.containsKey('sendNotification')
+              ? _json['sendNotification'] as core.bool
+              : null,
+          shareEmailAddress: _json.containsKey('shareEmailAddress')
+              ? (_json['shareEmailAddress'] as core.List)
+                  .map((value) => value as core.String)
+                  .toList()
+              : null,
+          title:
+              _json.containsKey('title') ? _json['title'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataRange != null) 'dataRange': dataRange!,
@@ -1807,6 +1593,7 @@ class QuerySchedule {
   /// - "SEMI_MONTHLY"
   /// - "MONTHLY"
   /// - "QUARTERLY"
+  /// - "YEARLY"
   core.String? frequency;
 
   /// Time of day at which a new report will be generated, represented as
@@ -1825,25 +1612,32 @@ class QuerySchedule {
   /// Not applicable to `ONE_TIME` frequency.
   core.String? startTimeMs;
 
-  QuerySchedule();
+  QuerySchedule({
+    this.endTimeMs,
+    this.frequency,
+    this.nextRunMinuteOfDay,
+    this.nextRunTimezoneCode,
+    this.startTimeMs,
+  });
 
-  QuerySchedule.fromJson(core.Map _json) {
-    if (_json.containsKey('endTimeMs')) {
-      endTimeMs = _json['endTimeMs'] as core.String;
-    }
-    if (_json.containsKey('frequency')) {
-      frequency = _json['frequency'] as core.String;
-    }
-    if (_json.containsKey('nextRunMinuteOfDay')) {
-      nextRunMinuteOfDay = _json['nextRunMinuteOfDay'] as core.int;
-    }
-    if (_json.containsKey('nextRunTimezoneCode')) {
-      nextRunTimezoneCode = _json['nextRunTimezoneCode'] as core.String;
-    }
-    if (_json.containsKey('startTimeMs')) {
-      startTimeMs = _json['startTimeMs'] as core.String;
-    }
-  }
+  QuerySchedule.fromJson(core.Map _json)
+      : this(
+          endTimeMs: _json.containsKey('endTimeMs')
+              ? _json['endTimeMs'] as core.String
+              : null,
+          frequency: _json.containsKey('frequency')
+              ? _json['frequency'] as core.String
+              : null,
+          nextRunMinuteOfDay: _json.containsKey('nextRunMinuteOfDay')
+              ? _json['nextRunMinuteOfDay'] as core.int
+              : null,
+          nextRunTimezoneCode: _json.containsKey('nextRunTimezoneCode')
+              ? _json['nextRunTimezoneCode'] as core.String
+              : null,
+          startTimeMs: _json.containsKey('startTimeMs')
+              ? _json['startTimeMs'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (endTimeMs != null) 'endTimeMs': endTimeMs!,
@@ -1867,27 +1661,32 @@ class Report {
   /// Report parameters.
   Parameters? params;
 
-  Report();
+  Report({
+    this.key,
+    this.metadata,
+    this.params,
+  });
 
-  Report.fromJson(core.Map _json) {
-    if (_json.containsKey('key')) {
-      key = ReportKey.fromJson(
-          _json['key'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('metadata')) {
-      metadata = ReportMetadata.fromJson(
-          _json['metadata'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('params')) {
-      params = Parameters.fromJson(
-          _json['params'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  Report.fromJson(core.Map _json)
+      : this(
+          key: _json.containsKey('key')
+              ? ReportKey.fromJson(
+                  _json['key'] as core.Map<core.String, core.dynamic>)
+              : null,
+          metadata: _json.containsKey('metadata')
+              ? ReportMetadata.fromJson(
+                  _json['metadata'] as core.Map<core.String, core.dynamic>)
+              : null,
+          params: _json.containsKey('params')
+              ? Parameters.fromJson(
+                  _json['params'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (key != null) 'key': key!.toJson(),
-        if (metadata != null) 'metadata': metadata!.toJson(),
-        if (params != null) 'params': params!.toJson(),
+        if (key != null) 'key': key!,
+        if (metadata != null) 'metadata': metadata!,
+        if (params != null) 'params': params!,
       };
 }
 
@@ -1915,13 +1714,16 @@ class ReportFailure {
   /// - "REPORTING_INVALID_QUERY_MISSING_PARTNER_AND_ADVERTISER_FILTERS"
   core.String? errorCode;
 
-  ReportFailure();
+  ReportFailure({
+    this.errorCode,
+  });
 
-  ReportFailure.fromJson(core.Map _json) {
-    if (_json.containsKey('errorCode')) {
-      errorCode = _json['errorCode'] as core.String;
-    }
-  }
+  ReportFailure.fromJson(core.Map _json)
+      : this(
+          errorCode: _json.containsKey('errorCode')
+              ? _json['errorCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (errorCode != null) 'errorCode': errorCode!,
@@ -1936,16 +1738,20 @@ class ReportKey {
   /// Report ID.
   core.String? reportId;
 
-  ReportKey();
+  ReportKey({
+    this.queryId,
+    this.reportId,
+  });
 
-  ReportKey.fromJson(core.Map _json) {
-    if (_json.containsKey('queryId')) {
-      queryId = _json['queryId'] as core.String;
-    }
-    if (_json.containsKey('reportId')) {
-      reportId = _json['reportId'] as core.String;
-    }
-  }
+  ReportKey.fromJson(core.Map _json)
+      : this(
+          queryId: _json.containsKey('queryId')
+              ? _json['queryId'] as core.String
+              : null,
+          reportId: _json.containsKey('reportId')
+              ? _json['reportId'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (queryId != null) 'queryId': queryId!,
@@ -1968,23 +1774,29 @@ class ReportMetadata {
   /// Report status.
   ReportStatus? status;
 
-  ReportMetadata();
+  ReportMetadata({
+    this.googleCloudStoragePath,
+    this.reportDataEndTimeMs,
+    this.reportDataStartTimeMs,
+    this.status,
+  });
 
-  ReportMetadata.fromJson(core.Map _json) {
-    if (_json.containsKey('googleCloudStoragePath')) {
-      googleCloudStoragePath = _json['googleCloudStoragePath'] as core.String;
-    }
-    if (_json.containsKey('reportDataEndTimeMs')) {
-      reportDataEndTimeMs = _json['reportDataEndTimeMs'] as core.String;
-    }
-    if (_json.containsKey('reportDataStartTimeMs')) {
-      reportDataStartTimeMs = _json['reportDataStartTimeMs'] as core.String;
-    }
-    if (_json.containsKey('status')) {
-      status = ReportStatus.fromJson(
-          _json['status'] as core.Map<core.String, core.dynamic>);
-    }
-  }
+  ReportMetadata.fromJson(core.Map _json)
+      : this(
+          googleCloudStoragePath: _json.containsKey('googleCloudStoragePath')
+              ? _json['googleCloudStoragePath'] as core.String
+              : null,
+          reportDataEndTimeMs: _json.containsKey('reportDataEndTimeMs')
+              ? _json['reportDataEndTimeMs'] as core.String
+              : null,
+          reportDataStartTimeMs: _json.containsKey('reportDataStartTimeMs')
+              ? _json['reportDataStartTimeMs'] as core.String
+              : null,
+          status: _json.containsKey('status')
+              ? ReportStatus.fromJson(
+                  _json['status'] as core.Map<core.String, core.dynamic>)
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (googleCloudStoragePath != null)
@@ -1993,7 +1805,7 @@ class ReportMetadata {
           'reportDataEndTimeMs': reportDataEndTimeMs!,
         if (reportDataStartTimeMs != null)
           'reportDataStartTimeMs': reportDataStartTimeMs!,
-        if (status != null) 'status': status!.toJson(),
+        if (status != null) 'status': status!,
       };
 }
 
@@ -2019,84 +1831,34 @@ class ReportStatus {
   /// - "FAILED"
   core.String? state;
 
-  ReportStatus();
+  ReportStatus({
+    this.failure,
+    this.finishTimeMs,
+    this.format,
+    this.state,
+  });
 
-  ReportStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('failure')) {
-      failure = ReportFailure.fromJson(
-          _json['failure'] as core.Map<core.String, core.dynamic>);
-    }
-    if (_json.containsKey('finishTimeMs')) {
-      finishTimeMs = _json['finishTimeMs'] as core.String;
-    }
-    if (_json.containsKey('format')) {
-      format = _json['format'] as core.String;
-    }
-    if (_json.containsKey('state')) {
-      state = _json['state'] as core.String;
-    }
-  }
+  ReportStatus.fromJson(core.Map _json)
+      : this(
+          failure: _json.containsKey('failure')
+              ? ReportFailure.fromJson(
+                  _json['failure'] as core.Map<core.String, core.dynamic>)
+              : null,
+          finishTimeMs: _json.containsKey('finishTimeMs')
+              ? _json['finishTimeMs'] as core.String
+              : null,
+          format: _json.containsKey('format')
+              ? _json['format'] as core.String
+              : null,
+          state:
+              _json.containsKey('state') ? _json['state'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
-        if (failure != null) 'failure': failure!.toJson(),
+        if (failure != null) 'failure': failure!,
         if (finishTimeMs != null) 'finishTimeMs': finishTimeMs!,
         if (format != null) 'format': format!,
         if (state != null) 'state': state!,
-      };
-}
-
-/// Represents the upload status of a row in the request.
-class RowStatus {
-  /// Whether the stored entity is changed as a result of upload.
-  core.bool? changed;
-
-  /// Entity Id.
-  core.String? entityId;
-
-  /// Entity name.
-  core.String? entityName;
-
-  /// Reasons why the entity can't be uploaded.
-  core.List<core.String>? errors;
-
-  /// Whether the entity is persisted.
-  core.bool? persisted;
-
-  /// Row number.
-  core.int? rowNumber;
-
-  RowStatus();
-
-  RowStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('changed')) {
-      changed = _json['changed'] as core.bool;
-    }
-    if (_json.containsKey('entityId')) {
-      entityId = _json['entityId'] as core.String;
-    }
-    if (_json.containsKey('entityName')) {
-      entityName = _json['entityName'] as core.String;
-    }
-    if (_json.containsKey('errors')) {
-      errors = (_json['errors'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('persisted')) {
-      persisted = _json['persisted'] as core.bool;
-    }
-    if (_json.containsKey('rowNumber')) {
-      rowNumber = _json['rowNumber'] as core.int;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (changed != null) 'changed': changed!,
-        if (entityId != null) 'entityId': entityId!,
-        if (entityName != null) 'entityName': entityName!,
-        if (errors != null) 'errors': errors!,
-        if (persisted != null) 'persisted': persisted!,
-        if (rowNumber != null) 'rowNumber': rowNumber!,
       };
 }
 
@@ -2110,27 +1872,26 @@ class Rule {
   /// Rule name.
   core.String? name;
 
-  Rule();
+  Rule({
+    this.disjunctiveMatchStatements,
+    this.name,
+  });
 
-  Rule.fromJson(core.Map _json) {
-    if (_json.containsKey('disjunctiveMatchStatements')) {
-      disjunctiveMatchStatements =
-          (_json['disjunctiveMatchStatements'] as core.List)
-              .map<DisjunctiveMatchStatement>((value) =>
-                  DisjunctiveMatchStatement.fromJson(
-                      value as core.Map<core.String, core.dynamic>))
-              .toList();
-    }
-    if (_json.containsKey('name')) {
-      name = _json['name'] as core.String;
-    }
-  }
+  Rule.fromJson(core.Map _json)
+      : this(
+          disjunctiveMatchStatements:
+              _json.containsKey('disjunctiveMatchStatements')
+                  ? (_json['disjunctiveMatchStatements'] as core.List)
+                      .map((value) => DisjunctiveMatchStatement.fromJson(
+                          value as core.Map<core.String, core.dynamic>))
+                      .toList()
+                  : null,
+          name: _json.containsKey('name') ? _json['name'] as core.String : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (disjunctiveMatchStatements != null)
-          'disjunctiveMatchStatements': disjunctiveMatchStatements!
-              .map((value) => value.toJson())
-              .toList(),
+          'disjunctiveMatchStatements': disjunctiveMatchStatements!,
         if (name != null) 'name': name!,
       };
 }
@@ -2178,22 +1939,28 @@ class RunQueryRequest {
   /// Defaults to America/New_York.
   core.String? timezoneCode;
 
-  RunQueryRequest();
+  RunQueryRequest({
+    this.dataRange,
+    this.reportDataEndTimeMs,
+    this.reportDataStartTimeMs,
+    this.timezoneCode,
+  });
 
-  RunQueryRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dataRange')) {
-      dataRange = _json['dataRange'] as core.String;
-    }
-    if (_json.containsKey('reportDataEndTimeMs')) {
-      reportDataEndTimeMs = _json['reportDataEndTimeMs'] as core.String;
-    }
-    if (_json.containsKey('reportDataStartTimeMs')) {
-      reportDataStartTimeMs = _json['reportDataStartTimeMs'] as core.String;
-    }
-    if (_json.containsKey('timezoneCode')) {
-      timezoneCode = _json['timezoneCode'] as core.String;
-    }
-  }
+  RunQueryRequest.fromJson(core.Map _json)
+      : this(
+          dataRange: _json.containsKey('dataRange')
+              ? _json['dataRange'] as core.String
+              : null,
+          reportDataEndTimeMs: _json.containsKey('reportDataEndTimeMs')
+              ? _json['reportDataEndTimeMs'] as core.String
+              : null,
+          reportDataStartTimeMs: _json.containsKey('reportDataStartTimeMs')
+              ? _json['reportDataStartTimeMs'] as core.String
+              : null,
+          timezoneCode: _json.containsKey('timezoneCode')
+              ? _json['timezoneCode'] as core.String
+              : null,
+        );
 
   core.Map<core.String, core.dynamic> toJson() => {
         if (dataRange != null) 'dataRange': dataRange!,
@@ -2202,94 +1969,5 @@ class RunQueryRequest {
         if (reportDataStartTimeMs != null)
           'reportDataStartTimeMs': reportDataStartTimeMs!,
         if (timezoneCode != null) 'timezoneCode': timezoneCode!,
-      };
-}
-
-/// Request to upload line items.
-class UploadLineItemsRequest {
-  /// Set to true to get upload status without actually persisting the line
-  /// items.
-  core.bool? dryRun;
-
-  /// Format the line items are in.
-  ///
-  /// Default to CSV.
-  /// Possible string values are:
-  /// - "CSV"
-  core.String? format;
-
-  /// Line items in CSV to upload.
-  ///
-  /// Refer to Entity Write File Format for more information on file format.
-  core.String? lineItems;
-
-  UploadLineItemsRequest();
-
-  UploadLineItemsRequest.fromJson(core.Map _json) {
-    if (_json.containsKey('dryRun')) {
-      dryRun = _json['dryRun'] as core.bool;
-    }
-    if (_json.containsKey('format')) {
-      format = _json['format'] as core.String;
-    }
-    if (_json.containsKey('lineItems')) {
-      lineItems = _json['lineItems'] as core.String;
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (dryRun != null) 'dryRun': dryRun!,
-        if (format != null) 'format': format!,
-        if (lineItems != null) 'lineItems': lineItems!,
-      };
-}
-
-/// Upload line items response.
-class UploadLineItemsResponse {
-  /// Status of upload.
-  UploadStatus? uploadStatus;
-
-  UploadLineItemsResponse();
-
-  UploadLineItemsResponse.fromJson(core.Map _json) {
-    if (_json.containsKey('uploadStatus')) {
-      uploadStatus = UploadStatus.fromJson(
-          _json['uploadStatus'] as core.Map<core.String, core.dynamic>);
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (uploadStatus != null) 'uploadStatus': uploadStatus!.toJson(),
-      };
-}
-
-/// Represents the status of upload.
-class UploadStatus {
-  /// Reasons why upload can't be completed.
-  core.List<core.String>? errors;
-
-  /// Per-row upload status.
-  core.List<RowStatus>? rowStatus;
-
-  UploadStatus();
-
-  UploadStatus.fromJson(core.Map _json) {
-    if (_json.containsKey('errors')) {
-      errors = (_json['errors'] as core.List)
-          .map<core.String>((value) => value as core.String)
-          .toList();
-    }
-    if (_json.containsKey('rowStatus')) {
-      rowStatus = (_json['rowStatus'] as core.List)
-          .map<RowStatus>((value) =>
-              RowStatus.fromJson(value as core.Map<core.String, core.dynamic>))
-          .toList();
-    }
-  }
-
-  core.Map<core.String, core.dynamic> toJson() => {
-        if (errors != null) 'errors': errors!,
-        if (rowStatus != null)
-          'rowStatus': rowStatus!.map((value) => value.toJson()).toList(),
       };
 }
