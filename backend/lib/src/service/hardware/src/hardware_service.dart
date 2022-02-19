@@ -73,15 +73,11 @@ class HardwareService implements RpcService {
   }
 
   void screenConfigure(bool enabled) {
-    _frontendService.send(new ScreenTurnCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..enabled = enabled));
+    _frontendService.send(new ScreenTurnCommand((b) => b.enabled = enabled));
   }
 
   void testEcho(String text) async {
-    final result = await _frontendService.send(new EchoCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..text = text));
+    final result = await _frontendService.send(new EchoCommand((b) => b.text = text));
     _log.info("Message: $result");
   }
 
@@ -143,9 +139,7 @@ class HardwareService implements RpcService {
 
   Future<RpcResult> _executeStorageNextCommand(StorageNextCommand command) async {
     await _storage.next();
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeGetMediaItemCommand(GetMediaItemCommand command) async {
@@ -166,25 +160,19 @@ class HardwareService implements RpcService {
   }
 
   Future<RpcResult> _pushButton(ButtonType type) async {
-    return _frontendService.send(new PushButtonCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..button = type));
+    return _frontendService.send(new PushButtonCommand((b) => b.button = type));
   }
 
   Future<RpcResult> _executeLEDControlCommand(LEDControlCommand command) async {
     if (command.led == LEDType.power) {
       _gpioService.powerLED = command.value;
     }
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeScreenLockCommand(ScreenLockCommand command) async {
     _screenService.isScreenOffLock = command.isLock;
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeScreenTurnCommand(ScreenTurnCommand command) async {
@@ -193,9 +181,7 @@ class HardwareService implements RpcService {
     } else {
       _screenService.screenOff();
     }
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
@@ -207,16 +193,12 @@ class HardwareService implements RpcService {
       await Future.wait<dynamic>(_initFutures);
       _initFutures.clear();
     }
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   Future<RpcResult> _executePushButtonCommand(PushButtonCommand command) async {
     //Emulate
     _pushButton(command.button);
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 }

@@ -12,8 +12,10 @@ abstract class ScreenTurnCommand implements RpcCommand, Built<ScreenTurnCommand,
   @override
   int get id;
 
-  static Serializer<ScreenTurnCommand> get serializer =>
-      _$screenTurnCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(ScreenTurnCommandBuilder b) => b.id = RpcCommand.generateId();
+
+  static Serializer<ScreenTurnCommand> get serializer => _$screenTurnCommandSerializer;
 
   factory ScreenTurnCommand([void updates(ScreenTurnCommandBuilder b)?]) = _$ScreenTurnCommand;
   ScreenTurnCommand._();
@@ -27,9 +29,9 @@ abstract class ScreenLockCommand implements RpcCommand, Built<ScreenLockCommand,
   @override
   int get id;
 
-  static Serializer<ScreenLockCommand> get serializer =>
-      _$screenLockCommandSerializer;
-
+  static Serializer<ScreenLockCommand> get serializer => _$screenLockCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(ScreenLockCommandBuilder b) => b.id = RpcCommand.generateId();
   factory ScreenLockCommand([void updates(ScreenLockCommandBuilder b)?]) = _$ScreenLockCommand;
   ScreenLockCommand._();
 }

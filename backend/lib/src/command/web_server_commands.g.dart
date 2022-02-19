@@ -121,7 +121,9 @@ class WebServerControlCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  WebServerControlCommandBuilder();
+  WebServerControlCommandBuilder() {
+    WebServerControlCommand._setDefaults(this);
+  }
 
   WebServerControlCommandBuilder get _$this {
     final $v = _$v;

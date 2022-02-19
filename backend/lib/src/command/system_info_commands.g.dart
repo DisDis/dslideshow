@@ -155,7 +155,9 @@ class GetSystemInfoCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  GetSystemInfoCommandBuilder();
+  GetSystemInfoCommandBuilder() {
+    GetSystemInfoCommand._setDefaults(this);
+  }
 
   GetSystemInfoCommandBuilder get _$this {
     final $v = _$v;

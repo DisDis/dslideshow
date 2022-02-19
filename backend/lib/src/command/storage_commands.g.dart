@@ -233,7 +233,9 @@ class GetMediaItemCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  GetMediaItemCommandBuilder();
+  GetMediaItemCommandBuilder() {
+    GetMediaItemCommand._setDefaults(this);
+  }
 
   GetMediaItemCommandBuilder get _$this {
     final $v = _$v;
@@ -422,7 +424,9 @@ class StorageNextCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  StorageNextCommandBuilder();
+  StorageNextCommandBuilder() {
+    StorageNextCommand._setDefaults(this);
+  }
 
   StorageNextCommandBuilder get _$this {
     final $v = _$v;

@@ -14,7 +14,8 @@ abstract class WebServerControlCommand
   int get id;
 
   static Serializer<WebServerControlCommand> get serializer => _$webServerControlCommandSerializer;
-
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(WebServerControlCommandBuilder b) => b.id = RpcCommand.generateId();
   factory WebServerControlCommand([void updates(WebServerControlCommandBuilder b)?]) = _$WebServerControlCommand;
   WebServerControlCommand._();
 }

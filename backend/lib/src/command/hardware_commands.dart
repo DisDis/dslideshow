@@ -5,26 +5,22 @@ import 'package:built_collection/built_collection.dart';
 
 part 'hardware_commands.g.dart';
 
-abstract class AreYouReadyCommand
-    implements
-        RpcCommand,
-        Built<AreYouReadyCommand, AreYouReadyCommandBuilder> {
+abstract class AreYouReadyCommand implements RpcCommand, Built<AreYouReadyCommand, AreYouReadyCommandBuilder> {
   static const String TYPE = 'are_you_ready?';
   @override
   String get type => TYPE;
   @override
   int get id;
 
-  static Serializer<AreYouReadyCommand> get serializer =>
-      _$areYouReadyCommandSerializer;
+  static Serializer<AreYouReadyCommand> get serializer => _$areYouReadyCommandSerializer;
 
-  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)?]) =
-      _$AreYouReadyCommand;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(AreYouReadyCommandBuilder b) => b.id = RpcCommand.generateId();
+  factory AreYouReadyCommand([void updates(AreYouReadyCommandBuilder b)?]) = _$AreYouReadyCommand;
   AreYouReadyCommand._();
 }
 
-abstract class PushButtonCommand
-    implements RpcCommand, Built<PushButtonCommand, PushButtonCommandBuilder> {
+abstract class PushButtonCommand implements RpcCommand, Built<PushButtonCommand, PushButtonCommandBuilder> {
   static const String TYPE = 'push_button';
   @override
   String get type => TYPE;
@@ -32,16 +28,14 @@ abstract class PushButtonCommand
   @override
   int get id;
 
-  static Serializer<PushButtonCommand> get serializer =>
-      _$pushButtonCommandSerializer;
-
-  factory PushButtonCommand([void updates(PushButtonCommandBuilder b)?]) =
-      _$PushButtonCommand;
+  static Serializer<PushButtonCommand> get serializer => _$pushButtonCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(PushButtonCommandBuilder b) => b.id = RpcCommand.generateId();
+  factory PushButtonCommand([void updates(PushButtonCommandBuilder b)?]) = _$PushButtonCommand;
   PushButtonCommand._();
 }
 
-abstract class LEDControlCommand
-    implements RpcCommand, Built<LEDControlCommand, LEDControlCommandBuilder> {
+abstract class LEDControlCommand implements RpcCommand, Built<LEDControlCommand, LEDControlCommandBuilder> {
   static const String TYPE = 'led_control';
   @override
   String get type => TYPE;
@@ -50,11 +44,10 @@ abstract class LEDControlCommand
   @override
   int get id;
 
-  static Serializer<LEDControlCommand> get serializer =>
-      _$lEDControlCommandSerializer;
-
-  factory LEDControlCommand([void updates(LEDControlCommandBuilder b)?]) =
-      _$LEDControlCommand;
+  static Serializer<LEDControlCommand> get serializer => _$lEDControlCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(LEDControlCommandBuilder b) => b.id = RpcCommand.generateId();
+  factory LEDControlCommand([void updates(LEDControlCommandBuilder b)?]) = _$LEDControlCommand;
   LEDControlCommand._();
 }
 

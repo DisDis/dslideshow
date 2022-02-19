@@ -13,6 +13,9 @@ abstract class OTAReadyCommand implements RpcCommand, Built<OTAReadyCommand, OTA
   int get id;
   bool get ready;
 
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(OTAReadyCommandBuilder b) => b.id = RpcCommand.generateId();
+
   static Serializer<OTAReadyCommand> get serializer => _$oTAReadyCommandSerializer;
 
   factory OTAReadyCommand([void updates(OTAReadyCommandBuilder b)?]) = _$OTAReadyCommand;
@@ -27,6 +30,9 @@ abstract class OTAGetInfoCommand implements RpcCommand, Built<OTAGetInfoCommand,
   int get id;
 
   OTAInfo? get info;
+
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(OTAGetInfoCommandBuilder b) => b.id = RpcCommand.generateId();
 
   static Serializer<OTAGetInfoCommand> get serializer => _$oTAGetInfoCommandSerializer;
 
@@ -55,6 +61,8 @@ abstract class OTAOutputCommand implements RpcCommand, Built<OTAOutputCommand, O
 
   String get output;
 
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(OTAOutputCommandBuilder b) => b.id = RpcCommand.generateId();
   static Serializer<OTAOutputCommand> get serializer => _$oTAOutputCommandSerializer;
 
   factory OTAOutputCommand([void updates(OTAOutputCommandBuilder b)?]) = _$OTAOutputCommand;

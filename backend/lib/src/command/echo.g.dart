@@ -163,7 +163,9 @@ class EchoCommandBuilder implements Builder<EchoCommand, EchoCommandBuilder> {
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  EchoCommandBuilder();
+  EchoCommandBuilder() {
+    EchoCommand._setDefaults(this);
+  }
 
   EchoCommandBuilder get _$this {
     final $v = _$v;

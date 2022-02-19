@@ -401,7 +401,9 @@ class OTAReadyCommandBuilder
   bool? get ready => _$this._ready;
   set ready(bool? ready) => _$this._ready = ready;
 
-  OTAReadyCommandBuilder();
+  OTAReadyCommandBuilder() {
+    OTAReadyCommand._setDefaults(this);
+  }
 
   OTAReadyCommandBuilder get _$this {
     final $v = _$v;
@@ -491,7 +493,9 @@ class OTAGetInfoCommandBuilder
   OTAInfoBuilder get info => _$this._info ??= new OTAInfoBuilder();
   set info(OTAInfoBuilder? info) => _$this._info = info;
 
-  OTAGetInfoCommandBuilder();
+  OTAGetInfoCommandBuilder() {
+    OTAGetInfoCommand._setDefaults(this);
+  }
 
   OTAGetInfoCommandBuilder get _$this {
     final $v = _$v;
@@ -705,7 +709,9 @@ class OTAOutputCommandBuilder
   String? get output => _$this._output;
   set output(String? output) => _$this._output = output;
 
-  OTAOutputCommandBuilder();
+  OTAOutputCommandBuilder() {
+    OTAOutputCommand._setDefaults(this);
+  }
 
   OTAOutputCommandBuilder get _$this {
     final $v = _$v;

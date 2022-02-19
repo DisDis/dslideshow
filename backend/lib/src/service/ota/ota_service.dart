@@ -141,17 +141,12 @@ class OTAService implements RpcService {
   }
 
   Future<RpcResult> _executeOTAGetInfoCommand(OTAGetInfoCommand command) async {
-    return new OTAGetInfoCommandResult((b) {
-      b.id = command.id;
-      b.info = _info.toBuilder();
-    });
+    return new OTAGetInfoCommandResult((b) => b.id = command.id);
   }
 
   void _updateInfo(OTAInfo newValue) {
     _info = newValue;
-    _frontendService.send(new OTAGetInfoCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..info = _info.toBuilder()));
+    _frontendService.send(new OTAGetInfoCommand((b) => b.info = _info.toBuilder()));
   }
 
   Future<Response> _postOTAUploadPackage(Request request) async {
@@ -252,9 +247,7 @@ class OTAService implements RpcService {
 """;
 
   Response _getOTAStop(Request request) {
-    _frontendService.send(new OTAReadyCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..ready = false));
+    _frontendService.send(new OTAReadyCommand((b) => b.ready = false));
     return Response.ok('Return to normal mode');
   }
 
@@ -262,9 +255,7 @@ class OTAService implements RpcService {
     if (_autostop != null && _autostop!.isActive) {
       _autostop!.cancel();
     }
-    _frontendService.send(new OTAReadyCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..ready = true));
+    _frontendService.send(new OTAReadyCommand((b) => b.ready = true));
     return Response.ok(_uploadForm, headers: {'content-type': 'text/html; charset=utf-8'});
   }
 
@@ -278,9 +269,7 @@ class OTAService implements RpcService {
       ..add(firmwareData.toBytes())
       ..close();
 
-    _frontendService.send(new OTAOutputCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..output = '\n\rSave firmware to "$fullFilename"\n\r'));
+    _frontendService.send(new OTAOutputCommand((b) => b.output = '\n\rSave firmware to "$fullFilename"\n\r'));
     _updateInfo(_info.rebuild((b) => b
       ..uploadingPercent = 100
       ..status = OTAStatus.instaling));
@@ -288,19 +277,13 @@ class OTAService implements RpcService {
     var process = await io.Process.start('sudo', ['dpkg', '-i', '$fullFilename'],
         environment: {'LC_ALL': 'C', 'TERM': 'xterm-256color', 'COLUMNS': '120'});
     process.stdout.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(new OTAOutputCommand((b) => b
-        ..id = RpcCommand.generateId()
-        ..output = str));
+      _frontendService.send(new OTAOutputCommand((b) => b.output = str));
     });
     process.stderr.transform(utf8.decoder).forEach((str) {
-      _frontendService.send(new OTAOutputCommand((b) => b
-        ..id = RpcCommand.generateId()
-        ..output = str));
+      _frontendService.send(new OTAOutputCommand((b) => b.output = str));
     });
     var exitCode = await process.exitCode;
-    _frontendService.send(new OTAOutputCommand((b) => b
-      ..id = RpcCommand.generateId()
-      ..output = '\n\rExit code: $exitCode'));
+    _frontendService.send(new OTAOutputCommand((b) => b.output = '\n\rExit code: $exitCode'));
     _updateInfo(_info.rebuild((b) => b
       ..uploadingPercent = 100
       ..exitCode = exitCode

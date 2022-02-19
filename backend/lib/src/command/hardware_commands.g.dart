@@ -282,7 +282,9 @@ class AreYouReadyCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  AreYouReadyCommandBuilder();
+  AreYouReadyCommandBuilder() {
+    AreYouReadyCommand._setDefaults(this);
+  }
 
   AreYouReadyCommandBuilder get _$this {
     final $v = _$v;
@@ -373,7 +375,9 @@ class PushButtonCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  PushButtonCommandBuilder();
+  PushButtonCommandBuilder() {
+    PushButtonCommand._setDefaults(this);
+  }
 
   PushButtonCommandBuilder get _$this {
     final $v = _$v;
@@ -477,7 +481,9 @@ class LEDControlCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  LEDControlCommandBuilder();
+  LEDControlCommandBuilder() {
+    LEDControlCommand._setDefaults(this);
+  }
 
   LEDControlCommandBuilder get _$this {
     final $v = _$v;

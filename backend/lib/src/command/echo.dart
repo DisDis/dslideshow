@@ -12,8 +12,9 @@ abstract class EchoCommand implements RpcCommand, Built<EchoCommand, EchoCommand
   @override
   int get id;
 
-  static Serializer<EchoCommand> get serializer =>
-      _$echoCommandSerializer;
+  static Serializer<EchoCommand> get serializer => _$echoCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(EchoCommandBuilder b) => b.id = RpcCommand.generateId();
 
   factory EchoCommand([void updates(EchoCommandBuilder b)]) = _$EchoCommand;
   EchoCommand._();
@@ -24,8 +25,7 @@ abstract class EchoCommandResult implements RpcResult, Built<EchoCommandResult, 
   @override
   int get id;
 
-  static Serializer<EchoCommandResult> get serializer =>
-      _$echoCommandResultSerializer;
+  static Serializer<EchoCommandResult> get serializer => _$echoCommandResultSerializer;
 
   factory EchoCommandResult([void updates(EchoCommandResultBuilder b)]) = _$EchoCommandResult;
   EchoCommandResult._();

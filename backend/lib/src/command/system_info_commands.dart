@@ -13,23 +13,24 @@ abstract class GetSystemInfoCommand implements RpcCommand, Built<GetSystemInfoCo
   @override
   int get id;
 
-  static Serializer<GetSystemInfoCommand> get serializer =>
-      _$getSystemInfoCommandSerializer;
-
+  static Serializer<GetSystemInfoCommand> get serializer => _$getSystemInfoCommandSerializer;
+  @BuiltValueHook(initializeBuilder: true)
+  static void _setDefaults(GetSystemInfoCommandBuilder b) => b.id = RpcCommand.generateId();
   factory GetSystemInfoCommand([void updates(GetSystemInfoCommandBuilder b)?]) = _$GetSystemInfoCommand;
   GetSystemInfoCommand._();
 }
 
-abstract class GetSystemInfoCommandResult implements RpcResult, Built<GetSystemInfoCommandResult, GetSystemInfoCommandResultBuilder> {
+abstract class GetSystemInfoCommandResult
+    implements RpcResult, Built<GetSystemInfoCommandResult, GetSystemInfoCommandResultBuilder> {
   SystemInfo get systemInfo;
 
   @override
   int get id;
 
-  static Serializer<GetSystemInfoCommandResult> get serializer =>
-      _$getSystemInfoCommandResultSerializer;
+  static Serializer<GetSystemInfoCommandResult> get serializer => _$getSystemInfoCommandResultSerializer;
 
-  factory GetSystemInfoCommandResult([void updates(GetSystemInfoCommandResultBuilder b)?]) = _$GetSystemInfoCommandResult;
+  factory GetSystemInfoCommandResult([void updates(GetSystemInfoCommandResultBuilder b)?]) =
+      _$GetSystemInfoCommandResult;
 
   GetSystemInfoCommandResult._();
 }

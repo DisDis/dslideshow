@@ -4,7 +4,7 @@ import 'package:dslideshow_backend/src/web_server/web_service.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
-class WebServer implements RpcService{
+class WebServer implements RpcService {
   static final Logger _log = new Logger('WebServer');
   final WebServerConfig _config;
   final RemoteService _remoteBackendService;
@@ -17,9 +17,10 @@ class WebServer implements RpcService{
     Stopwatch work = new Stopwatch()
       ..reset()
       ..start();
-    return _executeCommand(command).whenComplete((){
+    return _executeCommand(command).whenComplete(() {
       work.stop();
-      _log.info("Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
+      _log.info(
+          "Command: [${command.hashCode}]${command.id}:${command.type} duration: ${work.elapsed.inMilliseconds.toString()}ms");
     });
   }
 
@@ -30,14 +31,12 @@ class WebServer implements RpcService{
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
       default:
-        return new Future.value(_generateErrorResult(
-            new Exception("Unknown command: ${command.type}"), command));
+        return new Future.value(_generateErrorResult(new Exception("Unknown command: ${command.type}"), command));
     }
   }
 
   RpcErrorResult _generateErrorResult(Object e, RpcCommand command) {
-    return new ErrorResult((b) =>
-    b
+    return new ErrorResult((b) => b
       ..id = command.id
       ..error = '$e');
   }
@@ -52,10 +51,8 @@ class WebServer implements RpcService{
     });
   }
 
-  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async{
+  Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
     _webService.enabled = command.enable;
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 }

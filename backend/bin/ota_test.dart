@@ -47,9 +47,7 @@ class FakeRemoteService implements RemoteService {
   @override
   FutureOr<RpcResult> send(RpcCommand command) async {
     _log.info(command.toString());
-    return new EmptyResult((b) {
-      b.id = command.id;
-    });
+    return new EmptyResult.respond(command);
   }
 
   @override

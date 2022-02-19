@@ -164,7 +164,9 @@ class ScreenTurnCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  ScreenTurnCommandBuilder();
+  ScreenTurnCommandBuilder() {
+    ScreenTurnCommand._setDefaults(this);
+  }
 
   ScreenTurnCommandBuilder get _$this {
     final $v = _$v;
@@ -258,7 +260,9 @@ class ScreenLockCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  ScreenLockCommandBuilder();
+  ScreenLockCommandBuilder() {
+    ScreenLockCommand._setDefaults(this);
+  }
 
   ScreenLockCommandBuilder get _$this {
     final $v = _$v;

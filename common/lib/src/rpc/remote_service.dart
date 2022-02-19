@@ -12,8 +12,7 @@ class RemoteService {
   late RemoteServiceTransport _transport;
   final Serializers _serializers;
 
-  RemoteService(this._service, this._serializers,
-      [RemoteServiceTransport? transport]) {
+  RemoteService(this._service, this._serializers, [RemoteServiceTransport? transport]) {
     _transport = transport ?? new DirectSpawnTransport();
   }
 
@@ -24,15 +23,8 @@ class RemoteService {
   }
 
   FutureOr<RpcResult> send(RpcCommand cmd) async {
-    if (cmd.id == null && cmd is Built) {
-      cmd = (cmd as Built).rebuild((b) {
-        (b as dynamic).id = RpcCommand.generateId();
-        return b;
-      }) as RpcCommand;
-    }
     var jsonO = await transparentSend(json.encode(_serializers.serialize(cmd)));
-    RpcResult result =
-        _serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
+    RpcResult result = _serializers.deserialize(json.decode(jsonO) as Object) as RpcResult;
     if (result is RpcErrorResult) {
       throw new RpcErrorResultException(result);
     }
