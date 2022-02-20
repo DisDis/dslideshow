@@ -1,39 +1,72 @@
-import 'package:dslideshow_backend/config.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'gphoto_storage_config.g.dart';
 
-class GPhotoStorageConfig  extends BaseConfig {
-  int? _imageWidth;
-  int get imageWidth => _imageWidth ??= readInt("imageWidth", 2560);
-  int? _imageHeight;
-  int get imageHeight => _imageHeight ??= readInt("imageHeight", 1600);
+@JsonSerializable()
+class GPhotoStorageConfig {
+  @JsonKey(defaultValue: 2560)
+  int imageWidth;
 
-  Duration? _syncPeriod;
-  Duration get syncPeriod => _syncPeriod ??= new Duration(seconds: readInt("syncPeriodSec", 60*60));//1 hour
+  @JsonKey(defaultValue: 1600)
+  int imageHeight;
 
-  List<String>? _albumNames;
-  List<String> get albumNames => _albumNames ??= readValue<List<String>>("albumNames", <String>["SlideShow"]);
+  @JsonKey(fromJson: _parseDuration, toJson: _durationToJson)
+  Duration syncPeriod; //1 hour
 
-  GPhotoClientIdConfig? _clientId;
-  GPhotoClientIdConfig get clientId => _clientId??=new GPhotoClientIdConfig(readRaw("clientId") as Map<String, dynamic>?);
+  @JsonKey(defaultValue: <String>["SlideShow"])
+  List<String> albumNames;
 
+  @JsonKey(defaultValue: 'clientId')
+  GPhotoClientIdConfig clientId;
 
-  String? _refreshToken;
+  @JsonKey(defaultValue: '')
+
   /// A refresh token, which can be used to refresh the access credentials.
   ///
   /// This field may be null.
-  String get refreshToken => _refreshToken ??= readValue<String>("refreshToken");
+  String refreshToken;
 
-  GPhotoStorageConfig(Map<String, dynamic> config) :super(config);
+  static const Duration _DEFAULT_SYNC_PERIOD = const Duration(seconds: 60 * 60);
+
+  static Duration _parseDuration(dynamic value) {
+    if (value == null) {
+      return _DEFAULT_SYNC_PERIOD;
+    } else if (value is int) {
+      return new Duration(seconds: value);
+    }
+    return _DEFAULT_SYNC_PERIOD;
+  }
+
+  static int _durationToJson(Duration value) {
+    return value.inSeconds;
+  }
+
+  GPhotoStorageConfig(
+      {required this.albumNames,
+      required this.clientId,
+      required this.imageHeight,
+      required this.imageWidth,
+      required this.refreshToken,
+      required this.syncPeriod});
+
+  factory GPhotoStorageConfig.fromJson(Map<String, dynamic> json) => _$GPhotoStorageConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GPhotoStorageConfigToJson(this);
 }
 
-class GPhotoClientIdConfig  extends BaseConfig {
+@JsonSerializable()
+class GPhotoClientIdConfig {
+  @JsonKey(defaultValue: 'identifier')
 
-  String? _identifier;
   /// The identifier used to identify this application to the server.
-  String get identifier => _identifier ??= readValue<String>("identifier");
+  String identifier;
 
-  String? _secret;
+  @JsonKey(defaultValue: 'secret')
+
   /// The client secret used to identify this application to the server.
-  String get secret => _secret ??= readValue<String>("secret");
+  String secret;
+  GPhotoClientIdConfig({required this.identifier, required this.secret});
 
-  GPhotoClientIdConfig(Map<String, dynamic>? config) :super(config);
+  factory GPhotoClientIdConfig.fromJson(Map<String, dynamic> json) => _$GPhotoClientIdConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GPhotoClientIdConfigToJson(this);
 }

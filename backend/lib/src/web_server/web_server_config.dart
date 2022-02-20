@@ -1,11 +1,13 @@
-import 'package:dslideshow_backend/config.dart';
+import 'package:json_annotation/json_annotation.dart';
+part 'web_server_config.g.dart';
 
-class WebServerConfig  extends BaseConfig {
-  int? _pinPauseButton;
-  int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 17);
+@JsonSerializable()
+class WebServerConfig {
+  @JsonKey(defaultValue: 8080)
+  int port;
 
-  String? _systemDiskDev;
-  String get systemDiskDev => (_systemDiskDev ??= readValue("systemDiskDev", '/dev/root'))!;
+  WebServerConfig({required this.port});
+  factory WebServerConfig.fromJson(Map<String, dynamic> json) => _$WebServerConfigFromJson(json);
 
-  WebServerConfig(Map<String, dynamic>? config) :super(config);
+  Map<String, dynamic> toJson() => _$WebServerConfigToJson(this);
 }

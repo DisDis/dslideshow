@@ -1,4 +1,3 @@
-// import 'dart:io' as io;
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
@@ -394,7 +393,7 @@ class OTAService implements RpcService {
       return Response.forbidden('Code error');
     }
     try {
-      AppConfig.json(configData);
+      AppConfig.fromJson((json.decode(configData)) as Map<String, dynamic>);
       io.File(config.fullConfigFilename)
         ..openWrite()
         ..writeAsStringSync(configData);

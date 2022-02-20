@@ -39,7 +39,7 @@ void main(List<dynamic> args) async {
     getInjectorModule();
     injector.registerLazySingleton<Storage>(() {
       final _config = injector.get<AppConfig>();
-      return new DiskStorage(_config.storageSection![DiskStorage.name] as Map<String, dynamic>?);
+      return new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>?);
       //return new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage);
     });
     injector.registerLazySingleton<GPIOService>(() {

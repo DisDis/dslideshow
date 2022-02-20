@@ -48,7 +48,7 @@ void main() async {
 
     final store = Store<GlobalState>(appReducer, initialState: GlobalState.initial(), middleware: []);
 
-    injector.registerSingleton<AppConfig>(AppConfig(localPath.path));
+    injector.registerSingleton<AppConfig>(AppConfig.fromFile(localPath.path));
     injector.registerSingleton<AppStorage>(AppStorage(localPath.path));
     injector.registerLazySingleton<FrontendService>(() {
       final _config = injector.get<AppConfig>();

@@ -1,48 +1,56 @@
-import 'package:dslideshow_backend/config.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-class HardwareConfig extends BaseConfig {
-  int? _smoothingGPIOMs;
-  int get smoothingGPIOMs =>
-      _smoothingGPIOMs ??= readInt("smoothingGPIOMs", 100);
+part 'hardware_service_config.g.dart';
 
-  int? _pinPauseButton;
-  int get pinPauseButton => _pinPauseButton ??= readInt("pinPauseButton", 17);
+@JsonSerializable()
+class HardwareConfig {
+  @JsonKey(defaultValue: 100)
+  int smoothingGPIOMs;
+  @JsonKey(defaultValue: 17)
+  int pinPauseButton;
+  @JsonKey(defaultValue: 27)
+  int pinMenuButton;
 
-  int? _pinMenuButton;
-  int get pinMenuButton => _pinMenuButton ??= readInt("pinMenuButton", 27);
+  @JsonKey(defaultValue: 23)
+  int pinBackButton;
+  @JsonKey(defaultValue: 22)
+  int pinScreenToggleButton;
 
-  int? _pinBackButton;
-  int get pinBackButton => _pinBackButton ??= readInt("pinBackButton", 23);
+  @JsonKey(defaultValue: 15)
+  int pinPIRSensor;
 
-  int? _pinScreenToggleButton;
-  int get pinScreenToggleButton =>
-      _pinScreenToggleButton ??= readInt("pinScreenToggleButton", 22);
+  @JsonKey(defaultValue: 14)
+  int pinPowerLED;
 
-  int? _pinPIRSensor;
-  int get pinPIRSensor => _pinPIRSensor ??= readInt("pinPIRSensor", 15);
+  @JsonKey(defaultValue: '/dev/root')
+  String systemDiskDev;
 
-  int? _pinPowerLED;
-  int get pinPowerLED => _pinPowerLED ??= readInt("pinPowerLED", 14);
+  @JsonKey(defaultValue: 'ifconfig')
+  String systemIfConfigScript;
 
-  String? _systemDiskDev;
-  String get systemDiskDev =>
-      (_systemDiskDev ??= readValue("systemDiskDev", '/dev/root'))!;
+  @JsonKey(defaultValue: './scripts/screenOff.sh')
+  String screenPowerOffScript;
 
-  String? _systemIfConfigScript;
-  String get systemIfConfigScript => (_systemIfConfigScript ??=
-      readValue("systemIfConfigScript", 'ifconfig'))!;
+  @JsonKey(defaultValue: './scripts/screenOn.sh')
+  String screenPowerOnScript;
 
-  String? _screenPowerOffScript;
-  String get screenPowerOffScript => (_screenPowerOffScript ??=
-      readValue("screenPowerOffScript", './screenOff.sh'))!;
+  @JsonKey(defaultValue: 120)
+  int screenPowerOnTimerSec;
+  HardwareConfig(
+      {required this.screenPowerOnTimerSec,
+      required this.screenPowerOnScript,
+      required this.screenPowerOffScript,
+      required this.pinBackButton,
+      required this.pinPIRSensor,
+      required this.pinMenuButton,
+      required this.pinPauseButton,
+      required this.pinPowerLED,
+      required this.pinScreenToggleButton,
+      required this.smoothingGPIOMs,
+      required this.systemDiskDev,
+      required this.systemIfConfigScript});
 
-  String? _screenPowerOnScript;
-  String get screenPowerOnScript => (_screenPowerOnScript ??=
-      readValue("screenPowerOnScript", './screenOn.sh'))!;
+  factory HardwareConfig.fromJson(Map<String, dynamic> json) => _$HardwareConfigFromJson(json);
 
-  int? _screenPowerOnTimerSec;
-  int get screenPowerOnTimerSec =>
-      _screenPowerOnTimerSec ??= readInt("screenPowerOnTimerSec", 120);
-
-  HardwareConfig(Map<String, dynamic>? config) : super(config);
+  Map<String, dynamic> toJson() => _$HardwareConfigToJson(this);
 }

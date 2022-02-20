@@ -35,7 +35,7 @@ class DiskStorage extends Storage {
 
   final Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-  DiskStorage(Map<String, dynamic>? config) : this._config = new DiskStorageConfig(config) {}
+  DiskStorage(Map<String, dynamic>? config) : this._config = new DiskStorageConfig.fromJson(config!) {}
 
   MediaItem? _current;
   MediaItem? _next;
@@ -67,13 +67,13 @@ class DiskStorage extends Storage {
     return _cache.removeAt(_rnd.nextInt(_cache.length));
   }
 
-  static final _nullMediaItem = new DiskMediaItem(null,null);
+  static final _nullMediaItem = new DiskMediaItem(null, null);
 
   @override
   Future<MediaItem?> next() async {
     _current = _next;
     final nextUri = await _getRandomItem();
-    _next = nextUri==null? _nullMediaItem : new DiskMediaItem(nextUri.path, nextUri);
+    _next = nextUri == null ? _nullMediaItem : new DiskMediaItem(nextUri.path, nextUri);
     return _next;
   }
 
@@ -89,29 +89,29 @@ class DiskStorage extends Storage {
 
   @override
   Future init() async {
-    try{
+    try {
       _watchSubscription = _folder.watch().listen(_onFolderUpdated);
-    } catch(e, st){
-      _log.fine('init', e,st);
+    } catch (e, st) {
+      _log.fine('init', e, st);
     }
     await next();
     await next();
   }
 
   Future release() async {
-    if (_watchSubscription!=null){
+    if (_watchSubscription != null) {
       _watchSubscription!.cancel();
     }
   }
 
   Timer? _timerFolderUpdate;
   void _onFolderUpdated(FileSystemEvent event) {
-    if (_timerFolderUpdate != null){
+    if (_timerFolderUpdate != null) {
       _log.info('Storage folder changed, wait...');
       return;
     }
     _log.info('Storage folder changed, run timer');
-    _timerFolderUpdate = new Timer(Duration(minutes: 1),(){
+    _timerFolderUpdate = new Timer(Duration(minutes: 1), () {
       _log.info('File cache flushed');
       _timerFolderUpdate = null;
       _cache = <Uri>[];

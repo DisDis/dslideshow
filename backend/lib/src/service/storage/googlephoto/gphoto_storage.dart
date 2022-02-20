@@ -11,11 +11,11 @@ import 'package:path/path.dart' as path;
 
 import 'gphoto_storage_config.dart';
 
-class GPhotoMediaItem extends MediaItem{
-  GPhotoMediaItem(String id, Uri uri):super(id, uri);
+class GPhotoMediaItem extends MediaItem {
+  GPhotoMediaItem(String id, Uri uri) : super(id, uri);
 }
 
-class GPhotoStorage extends DiskStorage{
+class GPhotoStorage extends DiskStorage {
   static const String GPhotoStorage_lastSync = "GPhotoStorage_lastSync";
   static const String GPhotoStorage_accessTokenData = "GPhotoStorage_accessTokenData";
   static const String GPhotoStorage_accessTokenExpiry = "GPhotoStorage_accessTokenExpiry";
@@ -40,15 +40,19 @@ class GPhotoStorage extends DiskStorage{
 
   final AppStorage _appStorage;
 
-  GPhotoStorage(Map<String, dynamic> config, AppStorage this._appStorage): this._config = new GPhotoStorageConfig(config) , super(config){
-    final accessTokenData = _appStorage.getValue<String>(GPhotoStorage_accessTokenData,'');
-    final accessTokenExpiryStr = _appStorage.getValue<String>(GPhotoStorage_accessTokenExpiry,'');
-    final accessTokenExpiry = accessTokenExpiryStr == ''?new DateTime.now().toUtc(): DateTime.parse('$accessTokenExpiryStr');
-    final lastSyncStr = _appStorage.getValue<String>(GPhotoStorage_lastSync,'');
-    if (lastSyncStr.isNotEmpty){
+  GPhotoStorage(Map<String, dynamic> config, AppStorage this._appStorage)
+      : this._config = new GPhotoStorageConfig.fromJson(config),
+        super(config) {
+    final accessTokenData = _appStorage.getValue<String>(GPhotoStorage_accessTokenData, '');
+    final accessTokenExpiryStr = _appStorage.getValue<String>(GPhotoStorage_accessTokenExpiry, '');
+    final accessTokenExpiry =
+        accessTokenExpiryStr == '' ? new DateTime.now().toUtc() : DateTime.parse('$accessTokenExpiryStr');
+    final lastSyncStr = _appStorage.getValue<String>(GPhotoStorage_lastSync, '');
+    if (lastSyncStr.isNotEmpty) {
       lastSync = DateTime.parse(lastSyncStr);
     }
-    _googlePhotoService = new GooglePhotoService(_config.clientId.identifier,_config.clientId.secret,_config.refreshToken,accessTokenData, accessTokenExpiry);
+    _googlePhotoService = new GooglePhotoService(
+        _config.clientId.identifier, _config.clientId.secret, _config.refreshToken, accessTokenData, accessTokenExpiry);
     _googlePhotoService!.onUpdateCredentials.listen((event) {
       _appStorage.setValue(GPhotoStorage_accessTokenData, event.accessToken.data);
       _appStorage.setValue(GPhotoStorage_accessTokenExpiry, event.accessToken.expiry.toIso8601String());
@@ -58,8 +62,8 @@ class GPhotoStorage extends DiskStorage{
   @override
   final StorageType type = StorageType.remote;
 
-  String _getFileName(GooglePhotoItem item){
-    final ext = item.mimeType!.substring(item.mimeType!.indexOf('/')+1);
+  String _getFileName(GooglePhotoItem item) {
+    final ext = item.mimeType!.substring(item.mimeType!.indexOf('/') + 1);
     return '${item.id}_${_config.imageWidth}x${_config.imageHeight}.${ext}';
   }
 
@@ -95,11 +99,9 @@ class GPhotoStorage extends DiskStorage{
         var googleItem = itemMap[fileName]!;
         _log.info('  downloading "${googleItem.id}": type=${googleItem.mimeType}');
         HttpClient client = new HttpClient();
-        await client.getUrl(Uri.parse(googleItem.url))
-            .then((HttpClientRequest request) {
+        await client.getUrl(Uri.parse(googleItem.url)).then((HttpClientRequest request) {
           return request.close();
-        })
-            .then((HttpClientResponse response) {
+        }).then((HttpClientResponse response) {
           response.pipe(new File(path.join(folder.path, fileName)).openWrite());
         });
         count++;
@@ -114,21 +116,20 @@ class GPhotoStorage extends DiskStorage{
     return;
   }
 
-
   @override
-  Future init() async{
+  Future init() async {
     _log.info('init');
     sync();
     await super.init();
     _log.info('Start periodic sync timer d:${_config.syncPeriod}');
-    _syncTimer = new Timer.periodic(_config.syncPeriod, (_){
+    _syncTimer = new Timer.periodic(_config.syncPeriod, (_) {
       sync();
     });
   }
 
   @override
-  Future release() async{
-    if (_syncTimer != null){
+  Future release() async {
+    if (_syncTimer != null) {
       _syncTimer!.cancel();
       _syncTimer = null;
     }

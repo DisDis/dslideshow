@@ -1,22 +1,50 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-//import 'package:crazy_pigs_backend/result_service/src/result_service_config.dart';
-//import 'package:crazy_pigs_backend/universe_service/src/universe_config.dart';
-//import 'package:crazy_pigs_backend/world_service/src/avatar_config.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'config.g.dart';
+
+@JsonSerializable()
 class AppConfig {
   static const String CONFIG_FILE = "config.json";
   static final Logger _log = new Logger('AppConfig');
-  late final String fullConfigFilename;
-  Map<String, dynamic>? _config;
-  AppConfig([String? rootPath]) {
-    fullConfigFilename = rootPath != null ? path.join(rootPath, CONFIG_FILE) : CONFIG_FILE;
+  @JsonKey(fromJson: _parseLog)
+  LogConfig log;
+  @JsonKey(fromJson: _parseHardware)
+  HardwareConfig hardware;
+  @JsonKey(fromJson: _parseSlideshow)
+  SlideShowConfig slideshow;
+  @JsonKey(fromJson: _parseWelcome)
+  WelcomeConfig welcome;
+  @JsonKey(fromJson: _parseWebServer)
+  WebServerConfig webServer;
+  @JsonKey(fromJson: _parseMQTT)
+  MqttConfig mqtt;
+
+  AppConfig(
+      {required this.hardware,
+      required this.log,
+      required this.slideshow,
+      required this.welcome,
+      required this.webServer,
+      required this.mqtt,
+      required this.storageSection});
+
+  @JsonKey(ignore: true)
+  String fullConfigFilename = '';
+
+  @JsonKey(fromJson: _parseStorageSection)
+  Map<String, dynamic> storageSection;
+
+  factory AppConfig.fromJson(Map<String, dynamic> json) => _$AppConfigFromJson(json);
+  factory AppConfig.fromFile([String? rootPath]) {
+    String fullConfigFilename = rootPath != null ? path.join(rootPath, CONFIG_FILE) : CONFIG_FILE;
     var config = new File(fullConfigFilename);
     String configStr;
     if (!config.existsSync()) {
@@ -26,91 +54,132 @@ class AppConfig {
     } else {
       configStr = config.readAsStringSync();
     }
-    _config = json.decode(configStr) as Map<String, dynamic>?;
+    var _config = json.decode(configStr) as Map<String, dynamic>?;
     _log.info("Config loaded");
-  }
-  AppConfig.json(String data) {
-    fullConfigFilename = '';
-    _config = json.decode(data) as Map<String, dynamic>?;
-    _log.info("Config loaded");
+    return AppConfig.fromJson(_config!)..fullConfigFilename = fullConfigFilename;
   }
 
-  _LogConfig? _logConfig;
-  _LogConfig get log => _logConfig ??= new _LogConfig(_config!["log"] as Map<String, dynamic>?);
+  void toFile([String? filenameOutput]) {
+    final fileName = filenameOutput ?? fullConfigFilename;
+    File(fileName)
+      ..openWrite()
+      ..writeAsStringSync(json.encode(this.toJson()));
+  }
 
-  HardwareConfig? _hardware;
-  HardwareConfig get hardware => _hardware ??= new HardwareConfig(_config!["hardware"] as Map<String, dynamic>?);
+  Map<String, dynamic> toJson() => _$AppConfigToJson(this);
 
-  SlideShowConfig? _slideShowConfig;
-  SlideShowConfig get slideshow =>
-      _slideShowConfig ??= new SlideShowConfig(_config!["slideshow"] as Map<String, dynamic>?);
+  static HardwareConfig _parseHardware(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new HardwareConfig.fromJson(dataV);
+  }
 
-  WebServerConfig? _webServerConfig;
-  WebServerConfig get webServer => _webServerConfig ??= new WebServerConfig(_config!["web"] as Map<String, dynamic>?);
+  static LogConfig _parseLog(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new LogConfig.fromJson(dataV);
+  }
 
-  MqttConfig? _mqtt;
-  MqttConfig get mqtt => _mqtt ??= new MqttConfig(_config!["mqtt"] as Map<String, dynamic>?);
+  static SlideShowConfig _parseSlideshow(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new SlideShowConfig.fromJson(dataV);
+  }
 
-  WelcomeConfig? _welcome;
-  WelcomeConfig get welcome => _welcome ??= new WelcomeConfig(_config!["welcome"] as Map<String, dynamic>?);
+  static WelcomeConfig _parseWelcome(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new WelcomeConfig.fromJson(dataV);
+  }
 
-  Map<String, dynamic>? _storageSection;
-  Map<String, dynamic>? get storageSection => _storageSection ??=
-      (_config!["storage"] == null ? <String, dynamic>{} : _config!["storage"] as Map<String, dynamic>?);
+  static WebServerConfig _parseWebServer(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new WebServerConfig.fromJson(dataV);
+  }
+
+  static MqttConfig _parseMQTT(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return new MqttConfig.fromJson(dataV);
+  }
+
+  static Map<String, dynamic> _parseStorageSection(dynamic data) {
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return dataV;
+  }
 }
 
-class SlideShowConfig extends BaseConfig {
-  int? _displayTime;
+@JsonSerializable()
+class SlideShowConfig {
+  @JsonKey(defaultValue: 5000)
+  int displayTimeMs;
 
-  /// How long the image is shown
-  int get displayTimeMs => _displayTime ??= readInt("displayTimeMs", 5000);
-
-  int? _fadeTime;
-
-  int get fadeTimeMs => _fadeTime ??= readInt("fadeTimeMs", 2000);
-
-  int? _transitionTimeMs;
+  @JsonKey(defaultValue: 2000)
+  int fadeTimeMs;
 
   /// How long do images change
-  int get transitionTimeMs => _transitionTimeMs ??= readInt("transitionTimeMs", 1000);
-
-  Iterable<String>? _allowedEffects;
+  @JsonKey(defaultValue: 1000)
+  int transitionTimeMs;
 
   /// Allowed effects
-  Iterable<String> get allowedEffects => _allowedEffects ??= List<String>.from(
-      readValue<List<dynamic>>("allowedEffects", <dynamic>[]).map<String>((dynamic i) => i.toString()));
+  @JsonKey(fromJson: _parseAllowedEffects)
+  Iterable<String> allowedEffects;
 
-  bool? _isBlurredBackground;
+  static List<String> _parseAllowedEffects(dynamic value) {
+    final valueI = value is List<dynamic> ? value : <dynamic>[];
+    return List<String>.from(valueI.map<String>((dynamic i) => i.toString()));
+  }
 
   ///create a blurred background
-  bool get isBlurredBackground => (_isBlurredBackground ??= readValue("isBlurredBackground", true))!;
+  @JsonKey(defaultValue: true)
+  bool isBlurredBackground;
 
-  int? _backgroundBlurSigma;
-  int get backgroundBlurSigma => _backgroundBlurSigma ??= readInt("backgroundBlurSigma", 20);
-  double? _backgroundOpacity;
-  double get backgroundOpacity => _backgroundOpacity ??= readDouble("backgroundOpacity", 0.9);
+  @JsonKey(defaultValue: 20)
+  int backgroundBlurSigma;
+  @JsonKey(defaultValue: 0.9)
+  double backgroundOpacity;
+  static const int DEFAULT_BACKGROUND_COLOR = 0xFFFFFFFF;
+  @JsonKey(defaultValue: SlideShowConfig.DEFAULT_BACKGROUND_COLOR, fromJson: _parseColor, toJson: _colorToJson)
+  int backgroundColor;
+  static int _parseColor(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+    if (value is String) {
+      return int.tryParse(value, radix: 16) ?? SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
+    }
+    return SlideShowConfig.DEFAULT_BACKGROUND_COLOR;
+  }
 
-  int? _backgroundColorR;
-  int get backgroundColorR => _backgroundColorR ??= readInt("backgroundColorR", 255);
-  int? _backgroundColorG;
-  int get backgroundColorG => _backgroundColorG ??= readInt("backgroundColorG", 255);
-  int? _backgroundColorB;
-  int get backgroundColorB => _backgroundColorB ??= readInt("backgroundColorB", 255);
+  static String _colorToJson(int color) {
+    return color.toRadixString(16);
+  }
 
-  SlideShowConfig(Map<String, dynamic>? config) : super(config);
+  SlideShowConfig(
+      {required this.allowedEffects,
+      required this.backgroundBlurSigma,
+      required this.backgroundColor,
+      required this.backgroundOpacity,
+      required this.displayTimeMs,
+      required this.fadeTimeMs,
+      required this.isBlurredBackground,
+      required this.transitionTimeMs});
+
+  factory SlideShowConfig.fromJson(Map<String, dynamic> json) => _$SlideShowConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SlideShowConfigToJson(this);
 }
 
-class WelcomeConfig extends BaseConfig {
-  String? _text;
-  String get text => _text ??= readValue("text", "Welcome").toString();
+@JsonSerializable()
+class WelcomeConfig {
+  @JsonKey(defaultValue: "Welcome")
+  String text;
 
-  double? _size;
-  double get size => _size ??= readDouble("size", 100);
+  @JsonKey(defaultValue: 100)
+  double size;
 
-  int? _delayMs;
-  int get delayMs => _delayMs ??= readInt("delayMs", 2000);
+  @JsonKey(defaultValue: 2000)
+  int delayMs;
 
-  WelcomeConfig(Map<String, dynamic>? config) : super(config);
+  WelcomeConfig({required this.delayMs, required this.size, required this.text});
+  factory WelcomeConfig.fromJson(Map<String, dynamic> json) => _$WelcomeConfigFromJson(json);
+
+  Map<String, dynamic> toJson() => _$WelcomeConfigToJson(this);
 }
 
 class AppStorage {
@@ -197,79 +266,31 @@ class AppStorage {
   }
 }
 
-abstract class BaseConfig {
-  static final Logger _log = new Logger('BaseConfig');
-  final Map<String, dynamic> _config;
-  BaseConfig(Map<String, dynamic>? config) : _config = config ?? <String, dynamic>{};
+@JsonSerializable()
+class LogConfig {
+  @JsonKey(name: "web", fromJson: _parseLogLevel, toJson: _logLevelToJson)
+  Level levelWeb;
+  @JsonKey(name: "main", fromJson: _parseLogLevel, toJson: _logLevelToJson)
+  Level levelMain;
+  @JsonKey(name: "ota", fromJson: _parseLogLevel, toJson: _logLevelToJson)
+  Level levelOTA;
+  @JsonKey(name: "hw_frame", fromJson: _parseLogLevel, toJson: _logLevelToJson)
+  Level levelHwFrame;
 
-  T readValue<T>(String field, [T? defaultValue]) {
-    dynamic tmp = _config[field];
-    T? value = null;
-    if (tmp is T) {
-      value = tmp;
-    } else {
-      _log.fine('Field "$field" expects "$T", actual "${tmp == null ? 'null' : tmp.runtimeType}"');
-    }
+  static String _logLevelToJson(Level value) {
+    return value.toString();
+  }
+
+  static Level _parseLogLevel(dynamic value) {
     if (value == null) {
-      if (defaultValue == null) {
-        throw new Exception('Field "$field" not set.');
-      }
-      _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
-      return defaultValue;
+      return Level.ALL;
     }
-    return value;
+    return Level.LEVELS.firstWhere((item) => item.toString() == value, orElse: () => Level.INFO);
   }
 
-  dynamic readRaw(String field) => _config[field];
-  Level readLogLevel(String field, [Level defaultValue = Level.ALL]) =>
-      _parseLog(readRaw(field) as String?, defaultValue);
+  LogConfig({required this.levelHwFrame, required this.levelMain, required this.levelOTA, required this.levelWeb});
 
-  Level _parseLog(String? value, Level defaultValue) {
-    return Level.LEVELS.firstWhere((item) => item.toString() == value, orElse: () => defaultValue);
-  }
+  factory LogConfig.fromJson(Map<String, dynamic> json) => _$LogConfigFromJson(json);
 
-  int readInt(String field, int defaultValue) {
-    dynamic value = readRaw(field);
-    if (value == null) {
-      _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
-      return defaultValue;
-    }
-    if (value is int) {
-      return value;
-    }
-    final valueO = int.tryParse(value as String);
-    if (valueO == null) {
-      _log.fine('Could not parse value "$value" (field "$field") into a number.');
-      return defaultValue;
-    } else {
-      return valueO;
-    }
-  }
-
-  double readDouble(String field, double defaultValue) {
-    dynamic value = readRaw(field);
-    if (value == null) {
-      _log.fine('Field "$field" not set. Set default value: "$defaultValue"');
-      return defaultValue;
-    }
-    if (value is double) {
-      return value;
-    }
-    final valueO = double.tryParse(value as String);
-    if (valueO == null) {
-      _log.fine('Could not parse value "$value" (field "$field") into a number.');
-      return defaultValue;
-    } else {
-      return valueO;
-    }
-  }
-}
-
-class _LogConfig extends BaseConfig {
-  Level get levelWeb => readLogLevel("web");
-  Level get levelMain => readLogLevel("main");
-  Level get levelOTA => readLogLevel("ota");
-  Level get levelHwFrame => readLogLevel("hw_frame");
-
-  _LogConfig(Map<String, dynamic>? config) : super(config);
+  Map<String, dynamic> toJson() => _$LogConfigToJson(this);
 }

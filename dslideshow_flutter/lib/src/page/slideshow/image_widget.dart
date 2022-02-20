@@ -45,7 +45,9 @@ class ImageWidget extends StatelessWidget implements ItemWidget {
     paintBlur.color = Color.fromRGBO(0, 0, 0, _config.backgroundOpacity);
 
     Canvas canvas = Canvas(recorder);
-    canvas.drawColor(Color.fromRGBO(_config.backgroundColorR, _config.backgroundColorG, _config.backgroundColorB, 1.0),
+    canvas.drawColor(
+        Color(_config.backgroundColor),
+        //Color.fromRGBO(_config.backgroundColorR, _config.backgroundColorG, _config.backgroundColorB, 1.0),
         BlendMode.color);
     final outputSize = MediaQuery.of(context).size;
 
