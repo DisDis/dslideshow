@@ -5,7 +5,7 @@ import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/mediaitem.dart';
-import 'package:dslideshow_backend/src/service/storage/storage_type.dart';
+import 'package:dslideshow_backend/src/service/storage/storage_type.dart' as st;
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
 
@@ -40,9 +40,7 @@ class GPhotoStorage extends DiskStorage {
 
   final AppStorage _appStorage;
 
-  GPhotoStorage(Map<String, dynamic> config, AppStorage this._appStorage)
-      : this._config = new GPhotoStorageConfig.fromJson(config),
-        super(config) {
+  GPhotoStorage(this._config, this._appStorage) : super(_config) {
     final accessTokenData = _appStorage.getValue<String>(GPhotoStorage_accessTokenData, '');
     final accessTokenExpiryStr = _appStorage.getValue<String>(GPhotoStorage_accessTokenExpiry, '');
     final accessTokenExpiry =
@@ -60,7 +58,7 @@ class GPhotoStorage extends DiskStorage {
   }
 
   @override
-  final StorageType type = StorageType.remote;
+  final st.StorageType type = st.StorageType.remote;
 
   String _getFileName(GooglePhotoItem item) {
     final ext = item.mimeType!.substring(item.mimeType!.indexOf('/') + 1);

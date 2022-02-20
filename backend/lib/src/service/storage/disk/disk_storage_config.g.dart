@@ -7,11 +7,7 @@ part of 'disk_storage_config.dart';
 // **************************************************************************
 
 DiskStorageConfig _$DiskStorageConfigFromJson(Map<String, dynamic> json) =>
-    DiskStorageConfig(
-      test1: json['test1'] as String? ?? 'test',
-    );
+    DiskStorageConfig();
 
 Map<String, dynamic> _$DiskStorageConfigToJson(DiskStorageConfig instance) =>
-    <String, dynamic>{
-      'test1': instance.test1,
-    };
+    <String, dynamic>{};

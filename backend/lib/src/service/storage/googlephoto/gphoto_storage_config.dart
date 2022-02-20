@@ -1,8 +1,10 @@
+import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'gphoto_storage_config.g.dart';
 
 @JsonSerializable()
-class GPhotoStorageConfig {
+class GPhotoStorageConfig implements AbstractStorageConfig, DiskStorageConfig {
   @JsonKey(defaultValue: 2560)
   int imageWidth;
 
@@ -15,17 +17,24 @@ class GPhotoStorageConfig {
   @JsonKey(defaultValue: <String>["SlideShow"])
   List<String> albumNames;
 
-  @JsonKey(defaultValue: 'clientId')
+  @JsonKey(fromJson: _parseClientId)
   GPhotoClientIdConfig clientId;
-
-  @JsonKey(defaultValue: '')
 
   /// A refresh token, which can be used to refresh the access credentials.
   ///
   /// This field may be null.
+  @JsonKey(defaultValue: '')
   String refreshToken;
 
   static const Duration _DEFAULT_SYNC_PERIOD = const Duration(seconds: 60 * 60);
+
+  static GPhotoClientIdConfig _parseClientId(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return GPhotoClientIdConfig.fromJson(value);
+    } else {
+      return GPhotoClientIdConfig.fromJson(<String, dynamic>{});
+    }
+  }
 
   static Duration _parseDuration(dynamic value) {
     if (value == null) {
@@ -51,18 +60,18 @@ class GPhotoStorageConfig {
   factory GPhotoStorageConfig.fromJson(Map<String, dynamic> json) => _$GPhotoStorageConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$GPhotoStorageConfigToJson(this);
+
+  final StorageType name = StorageType.GPhotoStorage;
 }
 
 @JsonSerializable()
 class GPhotoClientIdConfig {
-  @JsonKey(defaultValue: 'identifier')
-
   /// The identifier used to identify this application to the server.
+  @JsonKey(defaultValue: 'identifier')
   String identifier;
 
-  @JsonKey(defaultValue: 'secret')
-
   /// The client secret used to identify this application to the server.
+  @JsonKey(defaultValue: 'secret')
   String secret;
   GPhotoClientIdConfig({required this.identifier, required this.secret});
 

@@ -12,10 +12,7 @@ GPhotoStorageConfig _$GPhotoStorageConfigFromJson(Map<String, dynamic> json) =>
               ?.map((e) => e as String)
               .toList() ??
           ['SlideShow'],
-      clientId: json['clientId'] == null
-          ? 'clientId'
-          : GPhotoClientIdConfig.fromJson(
-              json['clientId'] as Map<String, dynamic>),
+      clientId: GPhotoStorageConfig._parseClientId(json['clientId']),
       imageHeight: json['imageHeight'] as int? ?? 1600,
       imageWidth: json['imageWidth'] as int? ?? 2560,
       refreshToken: json['refreshToken'] as String? ?? '',

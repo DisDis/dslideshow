@@ -35,7 +35,7 @@ class DiskStorage extends Storage {
 
   final Random _rnd = new Random(new DateTime.now().millisecondsSinceEpoch);
 
-  DiskStorage(Map<String, dynamic>? config) : this._config = new DiskStorageConfig.fromJson(config!) {}
+  DiskStorage(this._config);
 
   MediaItem? _current;
   MediaItem? _next;

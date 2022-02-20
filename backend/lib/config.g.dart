@@ -11,9 +11,9 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       log: AppConfig._parseLog(json['log']),
       slideshow: AppConfig._parseSlideshow(json['slideshow']),
       welcome: AppConfig._parseWelcome(json['welcome']),
-      webServer: AppConfig._parseWebServer(json['webServer']),
+      webServer: AppConfig._parseWebServer(json['web']),
       mqtt: AppConfig._parseMQTT(json['mqtt']),
-      storageSection: AppConfig._parseStorageSection(json['storageSection']),
+      storages: AppConfig._parseStorages(json['storages']),
     );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -21,9 +21,9 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'hardware': instance.hardware,
       'slideshow': instance.slideshow,
       'welcome': instance.welcome,
-      'webServer': instance.webServer,
+      'web': instance.webServer,
       'mqtt': instance.mqtt,
-      'storageSection': instance.storageSection,
+      'storages': instance.storages,
     };
 
 SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
@@ -80,3 +80,21 @@ Map<String, dynamic> _$LogConfigToJson(LogConfig instance) => <String, dynamic>{
       'ota': LogConfig._logLevelToJson(instance.levelOTA),
       'hw_frame': LogConfig._logLevelToJson(instance.levelHwFrame),
     };
+
+StoragesConfig _$StoragesConfigFromJson(Map<String, dynamic> json) =>
+    StoragesConfig(
+      selected: $enumDecodeNullable(_$StorageTypeEnumMap, json['selected']) ??
+          StorageType.DiskStorage,
+      storages: StoragesConfig._parseStorages(json['storages']),
+    );
+
+Map<String, dynamic> _$StoragesConfigToJson(StoragesConfig instance) =>
+    <String, dynamic>{
+      'selected': _$StorageTypeEnumMap[instance.selected],
+      'storages': StoragesConfig._storagesToJson(instance.storages),
+    };
+
+const _$StorageTypeEnumMap = {
+  StorageType.DiskStorage: 'DiskStorage',
+  StorageType.GPhotoStorage: 'GPhotoStorage',
+};

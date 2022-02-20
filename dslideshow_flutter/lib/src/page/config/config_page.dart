@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_flutter/src/page/common/common_header.dart';
 import 'package:dslideshow_flutter/src/redux/actions/change_storage_status_action.dart';
 import 'package:dslideshow_flutter/src/redux/state/global_state.dart';
@@ -21,6 +22,7 @@ class _ConfigPageState extends State<ConfigPage> {
   static final Logger _log = Logger('_ConfigPageState');
   static final String _urlData = "http://localhost:8181/test";
   static final Random rnd = new Random();
+  final AppConfig _appConfig = injector.get<AppConfig>();
   final FrontendService _frontendService = injector.get<FrontendService>();
 
   @override
@@ -66,6 +68,12 @@ class _ConfigPageState extends State<ConfigPage> {
               Navigator.pushReplacementNamed(context, '/ota');
             },
             child: Text('OTA'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _appConfig.toFile();
+            },
+            child: Text('Save config'),
           ),
         ],
       ),

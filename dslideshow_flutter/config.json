@@ -1,15 +1,61 @@
 {
-"server":{
-        "port":8080,
-        "addr":"0.0.0.0"
-      },
- "slideshow":{
-
- },
- "hardware":{
-    "systemDiskDev":"/dev/sda3"
- },
- "storage":{
-
- }
+  "log": {
+    "web": "INFO",
+    "main": "INFO",
+    "ota": "INFO",
+    "hw_frame": "INFO"
+  },
+  "hardware": {
+    "smoothingGPIOMs": 100,
+    "pinPauseButton": 17,
+    "pinMenuButton": 27,
+    "pinBackButton": 23,
+    "pinScreenToggleButton": 22,
+    "pinPIRSensor": 15,
+    "pinPowerLED": 14,
+    "systemDiskDev": "/dev/sda3",
+    "systemIfConfigScript": "ifconfig",
+    "screenPowerOffScript": "./scripts/screenOff.sh",
+    "screenPowerOnScript": "./scripts/screenOn.sh",
+    "screenPowerOnTimerSec": 120
+  },
+  "slideshow": {
+    "displayTimeMs": 5000,
+    "fadeTimeMs": 2000,
+    "transitionTimeMs": 1000,
+    "allowedEffects": [
+      "Fade"
+    ],
+    "isBlurredBackground": true,
+    "backgroundBlurSigma": 20,
+    "backgroundOpacity": 0.9,
+    "backgroundColor": "ffffffff"
+  },
+  "welcome": {
+    "text": "Welcome",
+    "size": 100.0,
+    "delayMs": 2000
+  },
+  "web": {
+    "port": 8080
+  },
+  "mqtt": {
+    "port": 1883,
+    "enabled": false,
+    "keepAlivePeriod": 600,
+    "deviceId": "dslideshow",
+    "user": "user",
+    "pass": "pass",
+    "server": "smarthome.local",
+    "clientId": "dslideshow",
+    "deviceName": "PhotoFrame1",
+    "discovery_prefix": "home/",
+    "configuration_topic": "config",
+    "command_topic": "set",
+    "state_topic": "state"
+  },
+  "storages": {
+    "selected": "DiskStorage",
+    "storages": {}
+  }
 }

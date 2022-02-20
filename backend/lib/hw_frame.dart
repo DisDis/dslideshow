@@ -7,6 +7,7 @@ import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage.dart';
+import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
 import 'package:get_it/get_it.dart';
@@ -39,8 +40,15 @@ void main(List<dynamic> args) async {
     getInjectorModule();
     injector.registerLazySingleton<Storage>(() {
       final _config = injector.get<AppConfig>();
-      return new DiskStorage(_config.storageSection[DiskStorage.name] as Map<String, dynamic>?);
-      //return new GPhotoStorage(_config.storageSection[GPhotoStorage.name] as Map<String, dynamic>, appStorage);
+      switch (_config.storages.selected) {
+        case StorageType.GPhotoStorage:
+          final appStorage = injector.get<AppStorage>();
+          return new GPhotoStorage(_config.storages.getOrCreateEmpty(StorageType.GPhotoStorage), appStorage);
+
+        case StorageType.DiskStorage:
+        default:
+          return new DiskStorage(_config.storages.getOrCreateEmpty(StorageType.DiskStorage));
+      }
     });
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
