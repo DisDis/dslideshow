@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_config.dart';
 import 'package:dslideshow_backend/src/service/storage/disk/disk_storage_config.dart';
 import 'package:dslideshow_backend/src/service/storage/googlephoto/gphoto_storage_config.dart';
+import 'package:dslideshow_backend/src/service/wifi/wifi_config.dart';
 import 'package:dslideshow_backend/src/web_server/web_server_config.dart';
 import 'package:logging/logging.dart';
 import 'package:path/path.dart' as path;
@@ -30,6 +31,8 @@ class AppConfig {
   MqttConfig mqtt;
   @JsonKey(fromJson: _parseStorages)
   StoragesConfig storages;
+  @JsonKey(fromJson: _parseWifi)
+  WiFiConfig wifi;
 
   AppConfig(
       {required this.hardware,
@@ -38,7 +41,8 @@ class AppConfig {
       required this.welcome,
       required this.webServer,
       required this.mqtt,
-      required this.storages});
+      required this.storages,
+      required this.wifi});
 
   @JsonKey(ignore: true)
   String fullConfigFilename = '';
@@ -121,6 +125,12 @@ class AppConfig {
     _log.info("- parsing 'storage'");
     final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
     return StoragesConfig.fromJson(dataV);
+  }
+
+  static WiFiConfig _parseWifi(dynamic data) {
+    _log.info("- parsing 'wifi'");
+    final dataV = data is Map<String, dynamic> ? data : <String, dynamic>{};
+    return WiFiConfig.fromJson(dataV);
   }
 }
 

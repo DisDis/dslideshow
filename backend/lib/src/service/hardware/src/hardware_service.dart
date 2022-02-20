@@ -7,6 +7,7 @@ import 'package:dslideshow_backend/src/service/hardware/src/screen_service.dart'
 import 'package:dslideshow_backend/src/service/mqtt/mqtt_service.dart';
 import 'package:dslideshow_backend/src/service/storage/storage.dart';
 import 'package:dslideshow_backend/src/service/system_info/system_info_service.dart';
+import 'package:dslideshow_backend/src/service/wifi/wifi_service.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:logging/logging.dart';
 
@@ -23,9 +24,10 @@ class HardwareService implements RpcService {
   final GPIOService _gpioService;
   final ScreenService _screenService;
   final MqttService _mqttService;
+  final WiFiService _wifiService;
 
   HardwareService(AppConfig config, this._frontendService, this._storage, this._gpioService, this._screenService,
-      this._systemInfoService, this._webServer, this._mqttService) {
+      this._systemInfoService, this._webServer, this._mqttService, this._wifiService) {
     _init();
   }
 

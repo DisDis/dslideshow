@@ -14,6 +14,7 @@ AppConfig _$AppConfigFromJson(Map<String, dynamic> json) => AppConfig(
       webServer: AppConfig._parseWebServer(json['web']),
       mqtt: AppConfig._parseMQTT(json['mqtt']),
       storages: AppConfig._parseStorages(json['storages']),
+      wifi: AppConfig._parseWifi(json['wifi']),
     );
 
 Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
@@ -24,6 +25,7 @@ Map<String, dynamic> _$AppConfigToJson(AppConfig instance) => <String, dynamic>{
       'web': instance.webServer,
       'mqtt': instance.mqtt,
       'storages': instance.storages,
+      'wifi': instance.wifi,
     };
 
 SlideShowConfig _$SlideShowConfigFromJson(Map<String, dynamic> json) =>
