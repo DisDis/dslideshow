@@ -23,6 +23,9 @@ sudo systemctl enable dslideshow
 # Update the system fonts.
 sudo fc-cache
 
+# Create links
+sudo ln -s /opt/dslideshow/icudtl.dat /usr/lib/icudtl.dat
+
 # https://www.raspberryconnect.com/projects/65-raspberrypi-hotspot-accesspoints/157-raspberry-pi-auto-wifi-hotspot-switch-internet
 #sudo systemctl unmask hostapd
 #sudo systemctl disable hostapd

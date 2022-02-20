@@ -27,14 +27,9 @@ cp -r ../dslideshow_flutter/build/flutter_assets $DEST/
 # remove templates
 rm $DEST/version.template
 
-# Scripts
-cp ../scripts/dslideshow.sh $DEST/
-cp -r ../scripts $DEST/
-
 cd ./$DIR
 md5deep -r opt > DEBIAN/md5sums
 cd ..
-
 
 dpkg-deb -Zxz --build --root-owner-group ./$DIR
 

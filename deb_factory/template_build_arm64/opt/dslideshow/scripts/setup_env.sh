@@ -10,6 +10,8 @@ sudo rfkill unblock wlan
 sudo apt install hostapd dnsmasq
 # Fonts
 sudo apt install ttf-mscorefonts-installer fontconfig
+# DRM
+sudo apt install libgl1-mesa-dev libgles2-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev libsystemd-dev libinput-dev libudev-dev  libxkbcommon-dev
 # Utils
 sudo apt install mc 
 
