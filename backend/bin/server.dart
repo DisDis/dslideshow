@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:dslideshow_backend/config.dart';
 import 'package:dslideshow_backend/serializers.dart';
 import 'package:dslideshow_backend/src/command/web_server_commands.dart';
+import 'package:dslideshow_backend/src/command/wifi_commands.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
@@ -31,6 +32,11 @@ void main(List<String> args) async {
     getInjectorModule();
 
     _log.info(json.encode(serializers.serialize(new WSAuthCommand((b) => b.code = "123"))));
+    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiScanCommand()))));
+    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiGetStoredCommand()))));
+    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
+      ..SSID = 'test'
+      ..psk = 'pass')))));
 
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
