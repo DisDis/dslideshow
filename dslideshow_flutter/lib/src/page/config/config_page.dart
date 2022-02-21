@@ -24,12 +24,19 @@ class _ConfigPageState extends State<ConfigPage> {
   static final Random rnd = new Random();
   final AppConfig _appConfig = injector.get<AppConfig>();
   final FrontendService _frontendService = injector.get<FrontendService>();
+  static const INIT_CODE = r'_$_$_';
+  bool _enabled = false;
+  String _accessCode = INIT_CODE;
 
   @override
   void initState() {
     super.initState();
     _log.info('initState');
-    _frontendService.startWebServer();
+    _frontendService.startWebServer().then((value) {
+      _accessCode = value;
+      _enabled = true;
+      setState(() {});
+    });
   }
 
   @override

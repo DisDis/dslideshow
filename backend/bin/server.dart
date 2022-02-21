@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/serializers.dart';
+import 'package:dslideshow_backend/src/command/web_server_commands.dart';
 import 'package:dslideshow_backend/src/service/googlephoto/googlephoto.dart';
 import 'package:dslideshow_backend/src/service/hardware/hardware.dart';
 import 'package:dslideshow_backend/src/service/hardware/src/gpio_service.dart';
@@ -26,6 +29,9 @@ void main(List<String> args) async {
   _log.info("Run");
   try {
     getInjectorModule();
+
+    _log.info(json.encode(serializers.serialize(new WSAuthCommand((b) => b.code = "123"))));
+
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
       return new GPIOServiceImpl(_config.hardware);

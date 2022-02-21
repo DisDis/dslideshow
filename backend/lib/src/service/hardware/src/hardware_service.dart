@@ -222,7 +222,7 @@ class HardwareService implements RpcService {
   }
 
   Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {
-    _wifiService.addNetwork(command.info.SSID, command.info.psk);
+    _wifiService.addNetwork(command.SSID, command.psk);
     return EmptyResult.respond(command);
   }
 

@@ -29,6 +29,7 @@ part 'serializers.g.dart';
   ButtonType,
   ScreenLockCommand,
   WebServerControlCommand,
+  WebServerControlCommandResult,
   AreYouReadyCommand,
   OTAReadyCommand,
   OTAGetInfoCommand,
@@ -41,6 +42,16 @@ part 'serializers.g.dart';
   WiFiScanCommand,
   WiFiNetworkInfo,
   WiFiScanResult,
-  WiFiGetStoredResult
+  WiFiGetStoredResult,
+  WSHelloCommand,
+  WSAuthCommand,
+  WSAuthReqCommand,
+  WSConfigContentCommand,
+  WSConfigDownloadCommand,
+  WSConfigUploadCommand,
+  WSSendRpcCommand,
+  WSRpcResult,
+  WSRestartApplicationCommand,
+  WSResultOk
 ])
 Serializers serializers = _$serializers;

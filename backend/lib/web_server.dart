@@ -18,20 +18,18 @@ void main(List<dynamic> args) async {
   _log.info("Run");
   try {
     IsolateRunner remoteBackEndService = args[0] as IsolateRunner;
-    final RemoteService _remoteBackendService =
-        new RemoteService(remoteBackEndService, serializers);
+    final RemoteService _remoteBackendService = new RemoteService(remoteBackEndService, serializers);
 
     // Use this static instance
     final injector = GetIt.instance;
     getInjectorModule();
     injector.registerLazySingleton<WebService>(() {
       final _config = injector.get<AppConfig>();
-      return new WebService(_config.webServer);
+      return new WebService(_config, _config.webServer, _remoteBackendService);
     });
     injector.registerLazySingleton<WebServer>(() {
       final _config = injector.get<AppConfig>();
-      return new WebServer(
-          _config.webServer, _remoteBackendService, injector.get<WebService>());
+      return new WebServer(_config.webServer, _remoteBackendService, injector.get<WebService>());
     });
     final config = injector.get<AppConfig>();
     Logger.root.level = config.log.levelWeb;

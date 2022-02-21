@@ -203,7 +203,9 @@ class SystemInfoService {
     var result = <SensorInfo>[];
     //  vcgencmd measure_temp
     try {
-      var resultCommand = await io.Process.run('vcgencmd', ['measure_temp']);
+      //'vcgencmd', ['measure_temp'],
+      var resultCommand = await io.Process.run(_config.sensorsScript, [], environment: {'LC_ALL': 'C'});
+//temp=61.3'C
       if (resultCommand.exitCode == 0) {
         final b = new SensorInfoBuilder();
         //temp=49.0'C

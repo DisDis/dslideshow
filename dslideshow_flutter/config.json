@@ -37,7 +37,8 @@
     "delayMs": 2000
   },
   "web": {
-    "port": 8080
+    "port": 8080,
+    "enabled": true
   },
   "mqtt": {
     "port": 1883,

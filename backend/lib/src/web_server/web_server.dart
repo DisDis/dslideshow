@@ -10,7 +10,7 @@ class WebServer implements RpcService {
   final RemoteService _remoteBackendService;
   final WebService _webService;
 
-  WebServer(this._config, this._remoteBackendService, this._webService);
+  WebServer(this._config, this._remoteBackendService, this._webService) {}
 
   @override
   Future<RpcResult> executeCommand(RpcCommand command) {
@@ -53,6 +53,6 @@ class WebServer implements RpcService {
 
   Future<RpcResult> _executeWebServerControlCommand(WebServerControlCommand command) async {
     _webService.enabled = command.enable;
-    return new EmptyResult.respond(command);
+    return new WebServerControlCommandResult.respond(command, _webService.code, command.enable);
   }
 }

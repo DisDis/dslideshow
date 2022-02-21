@@ -157,8 +157,10 @@ class FrontendService implements RpcService {
     return _backendService.send(new WebServerControlCommand((b) => b.enable = false));
   }
 
-  Future startWebServer() async {
-    return _backendService.send(new WebServerControlCommand((b) => b.enable = true));
+  Future<String> startWebServer() async {
+    var codeMsg = await _backendService.send(new WebServerControlCommand((b) => b.enable = true))
+        as WebServerControlCommandResult;
+    return codeMsg.code;
   }
 
   Future<RpcResult> _executeOTAReadyCommand(OTAReadyCommand command) async {

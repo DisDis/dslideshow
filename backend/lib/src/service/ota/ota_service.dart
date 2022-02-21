@@ -64,7 +64,7 @@ class OTAService implements RpcService {
     _router.post('/ota_upload', _postOTAUploadPackage);
 
     enabled = true;
-    _autostop = new Timer(const Duration(seconds: 30), () {
+    _autostop = new Timer(const Duration(seconds: 60 * 5), () {
       enabled = false;
     });
     _info = _info.rebuild((p0) => p0.code = code);
