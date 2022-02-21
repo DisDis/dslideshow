@@ -116,6 +116,14 @@ class HardwareService implements RpcService {
         return _executeStorageNextCommand(command as StorageNextCommand);
       case PushButtonCommand.TYPE:
         return _executePushButtonCommand(command as PushButtonCommand);
+      case WiFiScanCommand.TYPE:
+        return _executeWiFiScanCommand(command as WiFiScanCommand);
+      case WiFiAddCommand.TYPE:
+        return _executeWiFiAddCommand(command as WiFiAddCommand);
+      case WiFiRemoveCommand.TYPE:
+        return _executeWiFiRemoveCommand(command as WiFiRemoveCommand);
+      case WiFiGetStoredCommand.TYPE:
+        return _executeWiFiGetStoredCommand(command as WiFiGetStoredCommand);
       case EchoCommand.TYPE:
         return new Future.value(_executeEchoCommand(command as EchoCommand));
       default:
@@ -202,5 +210,33 @@ class HardwareService implements RpcService {
     //Emulate
     _pushButton(command.button);
     return new EmptyResult.respond(command);
+  }
+
+  Future<WiFiScanResult> _executeWiFiScanCommand(WiFiScanCommand command) async {
+    var result = await _wifiService.scan();
+    return new WiFiScanResult((b) {
+      b
+        ..id = command.id
+        ..networks.addAll(result);
+    });
+  }
+
+  Future<RpcResult> _executeWiFiAddCommand(WiFiAddCommand command) async {
+    _wifiService.addNetwork(command.info.SSID, command.info.psk);
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executeWiFiRemoveCommand(WiFiRemoveCommand command) async {
+    _wifiService.removeNetwork(command.wifiId);
+    return EmptyResult.respond(command);
+  }
+
+  Future<RpcResult> _executeWiFiGetStoredCommand(WiFiGetStoredCommand command) async {
+    var result = await _wifiService.getStored();
+    return new WiFiGetStoredResult((b) {
+      b
+        ..id = command.id
+        ..networks.addAll(result);
+    });
   }
 }

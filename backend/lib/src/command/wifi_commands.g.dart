@@ -199,8 +199,6 @@ class _$WiFiStoredNetworkInfoSerializer
       serializers.serialize(object.id, specifiedType: const FullType(int)),
       'SSID',
       serializers.serialize(object.SSID, specifiedType: const FullType(String)),
-      'psk',
-      serializers.serialize(object.psk, specifiedType: const FullType(String)),
     ];
 
     return result;
@@ -224,10 +222,6 @@ class _$WiFiStoredNetworkInfoSerializer
           break;
         case 'SSID':
           result.SSID = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
-          break;
-        case 'psk':
-          result.psk = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
       }
@@ -297,9 +291,10 @@ class _$WiFiAddCommandSerializer
     final result = <Object?>[
       'id',
       serializers.serialize(object.id, specifiedType: const FullType(int)),
-      'info',
-      serializers.serialize(object.info,
-          specifiedType: const FullType(WiFiStoredNetworkInfo)),
+      'SSID',
+      serializers.serialize(object.SSID, specifiedType: const FullType(String)),
+      'psk',
+      serializers.serialize(object.psk, specifiedType: const FullType(String)),
     ];
 
     return result;
@@ -321,10 +316,13 @@ class _$WiFiAddCommandSerializer
           result.id = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
           break;
-        case 'info':
-          result.info.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(WiFiStoredNetworkInfo))!
-              as WiFiStoredNetworkInfo);
+        case 'SSID':
+          result.SSID = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'psk':
+          result.psk = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -753,20 +751,16 @@ class _$WiFiStoredNetworkInfo extends WiFiStoredNetworkInfo {
   final int id;
   @override
   final String SSID;
-  @override
-  final String psk;
 
   factory _$WiFiStoredNetworkInfo(
           [void Function(WiFiStoredNetworkInfoBuilder)? updates]) =>
       (new WiFiStoredNetworkInfoBuilder()..update(updates)).build();
 
-  _$WiFiStoredNetworkInfo._(
-      {required this.id, required this.SSID, required this.psk})
+  _$WiFiStoredNetworkInfo._({required this.id, required this.SSID})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'WiFiStoredNetworkInfo', 'id');
     BuiltValueNullFieldError.checkNotNull(
         SSID, 'WiFiStoredNetworkInfo', 'SSID');
-    BuiltValueNullFieldError.checkNotNull(psk, 'WiFiStoredNetworkInfo', 'psk');
   }
 
   @override
@@ -783,21 +777,19 @@ class _$WiFiStoredNetworkInfo extends WiFiStoredNetworkInfo {
     if (identical(other, this)) return true;
     return other is WiFiStoredNetworkInfo &&
         id == other.id &&
-        SSID == other.SSID &&
-        psk == other.psk;
+        SSID == other.SSID;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, id.hashCode), SSID.hashCode), psk.hashCode));
+    return $jf($jc($jc(0, id.hashCode), SSID.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('WiFiStoredNetworkInfo')
           ..add('id', id)
-          ..add('SSID', SSID)
-          ..add('psk', psk))
+          ..add('SSID', SSID))
         .toString();
   }
 }
@@ -814,10 +806,6 @@ class WiFiStoredNetworkInfoBuilder
   String? get SSID => _$this._SSID;
   set SSID(String? SSID) => _$this._SSID = SSID;
 
-  String? _psk;
-  String? get psk => _$this._psk;
-  set psk(String? psk) => _$this._psk = psk;
-
   WiFiStoredNetworkInfoBuilder();
 
   WiFiStoredNetworkInfoBuilder get _$this {
@@ -825,7 +813,6 @@ class WiFiStoredNetworkInfoBuilder
     if ($v != null) {
       _id = $v.id;
       _SSID = $v.SSID;
-      _psk = $v.psk;
       _$v = null;
     }
     return this;
@@ -849,9 +836,7 @@ class WiFiStoredNetworkInfoBuilder
             id: BuiltValueNullFieldError.checkNotNull(
                 id, 'WiFiStoredNetworkInfo', 'id'),
             SSID: BuiltValueNullFieldError.checkNotNull(
-                SSID, 'WiFiStoredNetworkInfo', 'SSID'),
-            psk: BuiltValueNullFieldError.checkNotNull(
-                psk, 'WiFiStoredNetworkInfo', 'psk'));
+                SSID, 'WiFiStoredNetworkInfo', 'SSID'));
     replace(_$result);
     return _$result;
   }
@@ -957,14 +942,18 @@ class _$WiFiAddCommand extends WiFiAddCommand {
   @override
   final int id;
   @override
-  final WiFiStoredNetworkInfo info;
+  final String SSID;
+  @override
+  final String psk;
 
   factory _$WiFiAddCommand([void Function(WiFiAddCommandBuilder)? updates]) =>
       (new WiFiAddCommandBuilder()..update(updates)).build();
 
-  _$WiFiAddCommand._({required this.id, required this.info}) : super._() {
+  _$WiFiAddCommand._({required this.id, required this.SSID, required this.psk})
+      : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'WiFiAddCommand', 'id');
-    BuiltValueNullFieldError.checkNotNull(info, 'WiFiAddCommand', 'info');
+    BuiltValueNullFieldError.checkNotNull(SSID, 'WiFiAddCommand', 'SSID');
+    BuiltValueNullFieldError.checkNotNull(psk, 'WiFiAddCommand', 'psk');
   }
 
   @override
@@ -978,19 +967,23 @@ class _$WiFiAddCommand extends WiFiAddCommand {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WiFiAddCommand && id == other.id && info == other.info;
+    return other is WiFiAddCommand &&
+        id == other.id &&
+        SSID == other.SSID &&
+        psk == other.psk;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, id.hashCode), info.hashCode));
+    return $jf($jc($jc($jc(0, id.hashCode), SSID.hashCode), psk.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('WiFiAddCommand')
           ..add('id', id)
-          ..add('info', info))
+          ..add('SSID', SSID)
+          ..add('psk', psk))
         .toString();
   }
 }
@@ -1003,10 +996,13 @@ class WiFiAddCommandBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
-  WiFiStoredNetworkInfoBuilder? _info;
-  WiFiStoredNetworkInfoBuilder get info =>
-      _$this._info ??= new WiFiStoredNetworkInfoBuilder();
-  set info(WiFiStoredNetworkInfoBuilder? info) => _$this._info = info;
+  String? _SSID;
+  String? get SSID => _$this._SSID;
+  set SSID(String? SSID) => _$this._SSID = SSID;
+
+  String? _psk;
+  String? get psk => _$this._psk;
+  set psk(String? psk) => _$this._psk = psk;
 
   WiFiAddCommandBuilder() {
     WiFiAddCommand._setDefaults(this);
@@ -1016,7 +1012,8 @@ class WiFiAddCommandBuilder
     final $v = _$v;
     if ($v != null) {
       _id = $v.id;
-      _info = $v.info.toBuilder();
+      _SSID = $v.SSID;
+      _psk = $v.psk;
       _$v = null;
     }
     return this;
@@ -1035,24 +1032,14 @@ class WiFiAddCommandBuilder
 
   @override
   _$WiFiAddCommand build() {
-    _$WiFiAddCommand _$result;
-    try {
-      _$result = _$v ??
-          new _$WiFiAddCommand._(
-              id: BuiltValueNullFieldError.checkNotNull(
-                  id, 'WiFiAddCommand', 'id'),
-              info: info.build());
-    } catch (_) {
-      late String _$failedField;
-      try {
-        _$failedField = 'info';
-        info.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'WiFiAddCommand', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ??
+        new _$WiFiAddCommand._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, 'WiFiAddCommand', 'id'),
+            SSID: BuiltValueNullFieldError.checkNotNull(
+                SSID, 'WiFiAddCommand', 'SSID'),
+            psk: BuiltValueNullFieldError.checkNotNull(
+                psk, 'WiFiAddCommand', 'psk'));
     replace(_$result);
     return _$result;
   }

@@ -13,3 +13,4 @@ export 'package:dslideshow_backend/src/service/system_info/sensor_info.dart';
 export 'package:dslideshow_backend/src/service/system_info/system_info.dart';
 export 'package:dslideshow_backend/src/service/system_info/update_info.dart';
 export 'package:dslideshow_backend/src/command/ota_commands.dart';
+export 'package:dslideshow_backend/src/command/wifi_commands.dart';

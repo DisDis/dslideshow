@@ -38,13 +38,28 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(SystemInfo.serializer)
       ..add(UpdateInfo.serializer)
       ..add(WebServerControlCommand.serializer)
+      ..add(WiFiAddCommand.serializer)
+      ..add(WiFiGetStoredCommand.serializer)
+      ..add(WiFiGetStoredResult.serializer)
+      ..add(WiFiNetworkInfo.serializer)
+      ..add(WiFiRemoveCommand.serializer)
+      ..add(WiFiScanCommand.serializer)
+      ..add(WiFiScanResult.serializer)
+      ..add(WiFiStoredNetworkInfo.serializer)
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(NetworkInterfaceInfo)]),
           () => new ListBuilder<NetworkInterfaceInfo>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(SensorInfo)]),
-          () => new ListBuilder<SensorInfo>()))
+          () => new ListBuilder<SensorInfo>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(WiFiNetworkInfo)]),
+          () => new ListBuilder<WiFiNetworkInfo>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(WiFiStoredNetworkInfo)]),
+          () => new ListBuilder<WiFiStoredNetworkInfo>()))
     .build();
 
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,deprecated_member_use_from_same_package,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

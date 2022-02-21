@@ -56,7 +56,6 @@ abstract class WiFiNetworkInfo implements Built<WiFiNetworkInfo, WiFiNetworkInfo
 abstract class WiFiStoredNetworkInfo implements Built<WiFiStoredNetworkInfo, WiFiStoredNetworkInfoBuilder> {
   int get id;
   String get SSID;
-  String get psk;
 
   static Serializer<WiFiStoredNetworkInfo> get serializer => _$wiFiStoredNetworkInfoSerializer;
 
@@ -85,7 +84,8 @@ abstract class WiFiAddCommand implements RpcCommand, Built<WiFiAddCommand, WiFiA
   String get type => TYPE;
   @override
   int get id;
-  WiFiStoredNetworkInfo get info;
+  String get SSID;
+  String get psk;
 
   static Serializer<WiFiAddCommand> get serializer => _$wiFiAddCommandSerializer;
   @BuiltValueHook(initializeBuilder: true)

@@ -34,6 +34,13 @@ part 'serializers.g.dart';
   OTAGetInfoCommand,
   OTAGetInfoCommandResult,
   OTAOutputCommand,
-  OTAStatus
+  OTAStatus,
+  WiFiAddCommand,
+  WiFiGetStoredCommand,
+  WiFiRemoveCommand,
+  WiFiScanCommand,
+  WiFiNetworkInfo,
+  WiFiScanResult,
+  WiFiGetStoredResult
 ])
 Serializers serializers = _$serializers;
