@@ -56,6 +56,7 @@ abstract class WiFiNetworkInfo implements Built<WiFiNetworkInfo, WiFiNetworkInfo
 abstract class WiFiStoredNetworkInfo implements Built<WiFiStoredNetworkInfo, WiFiStoredNetworkInfoBuilder> {
   int get id;
   String get SSID;
+  bool get disabled;
 
   static Serializer<WiFiStoredNetworkInfo> get serializer => _$wiFiStoredNetworkInfoSerializer;
 

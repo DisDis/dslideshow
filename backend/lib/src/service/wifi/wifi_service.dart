@@ -14,7 +14,7 @@ class WiFiService {
     try {
       var result = await io.Process.run(_config.scanWiFiScript, [_config.devId], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
-        return _parseScanOutput(result.stdout.toString().split('\n\n'));
+        return parseScanOutput(result.stdout.toString());
       }
     } catch (e, s) {
       _log.severe('scan', e, s);
@@ -122,7 +122,8 @@ wpa_cli disable_network <id>
     }
   }
 
-  List<WiFiNetworkInfo> _parseScanOutput(List<String> output) {
+  List<WiFiNetworkInfo> parseScanOutput(String outputStr) {
+    List<String> output = outputStr.split('\n');
     if (output.isEmpty) {
       return <WiFiNetworkInfo>[];
     }
@@ -137,19 +138,19 @@ wpa_cli disable_network <id>
 
     output.forEach((element) {
       try {
-        //_findHardware.firstMatch(str)?.group(1) ?? 'Unknown';
-        if (element.startsWith(KEY_SSID)) {
+        int tmpI;
+        if ((tmpI = element.indexOf(KEY_SSID)) != -1) {
           if (current.SSID != EMPTY_SSID) {
             result.add(current.build());
             current = WiFiNetworkInfoBuilder()..SSID = EMPTY_SSID;
           }
-          current.SSID = element.substring(KEY_SSID.length);
-        } else if (element.startsWith(KEY_SIGNAL)) {
-          current.signal = element.substring(KEY_SIGNAL.length);
-        } else if (element.startsWith(KEY_CAPABILITY)) {
-          current.capability = element.substring(KEY_CAPABILITY.length);
-        } else if (element.startsWith(KEY_FREQ)) {
-          current.freq = int.tryParse(element.substring(KEY_FREQ.length)) ?? -1;
+          current.SSID = element.substring(tmpI + KEY_SSID.length);
+        } else if ((tmpI = element.indexOf(KEY_SIGNAL)) != -1) {
+          current.signal = element.substring(tmpI + KEY_SIGNAL.length);
+        } else if ((tmpI = element.indexOf(KEY_CAPABILITY)) != -1) {
+          current.capability = element.substring(tmpI + KEY_CAPABILITY.length);
+        } else if ((tmpI = element.indexOf(KEY_FREQ)) != -1) {
+          current.freq = int.tryParse(element.substring(tmpI + KEY_FREQ.length)) ?? -1;
         }
       } catch (e, st) {
         _log.severe('_parseScanOutput', e, st);
@@ -166,7 +167,7 @@ wpa_cli disable_network <id>
     try {
       var result = await io.Process.run('wpa_cli', ['list_networks'], environment: {'LC_ALL': 'C'});
       if (result.exitCode == 0) {
-        return _parseStoredOutput(result.stdout.toString().split('\n\n'));
+        return parseStoredOutput(result.stdout.toString());
       } else {
         throw Exception('wpa_cli list_networks -> exit code: ${result.exitCode}');
       }
@@ -176,7 +177,8 @@ wpa_cli disable_network <id>
     }
   }
 
-  List<WiFiStoredNetworkInfo> _parseStoredOutput(List<String> output) {
+  List<WiFiStoredNetworkInfo> parseStoredOutput(String outputStr) {
+    List<String> output = outputStr.split('\n');
     if (output.isEmpty) {
       return <WiFiStoredNetworkInfo>[];
     }
@@ -195,10 +197,11 @@ network id / ssid / bssid / flags
           return;
         }
         var args = element.split('\t');
-        if (args.length > 2) {
+        if (args.length > 3) {
           result.add(WiFiStoredNetworkInfo((b) => b
             ..id = int.tryParse(args[0]) ?? -1
-            ..SSID = args[1]));
+            ..SSID = args[1]
+            ..disabled = args[3].contains('DISABLED')));
         }
       } catch (e, st) {
         _log.severe('_parseStoredOutput', e, st);

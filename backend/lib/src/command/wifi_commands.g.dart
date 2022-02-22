@@ -199,6 +199,9 @@ class _$WiFiStoredNetworkInfoSerializer
       serializers.serialize(object.id, specifiedType: const FullType(int)),
       'SSID',
       serializers.serialize(object.SSID, specifiedType: const FullType(String)),
+      'disabled',
+      serializers.serialize(object.disabled,
+          specifiedType: const FullType(bool)),
     ];
 
     return result;
@@ -223,6 +226,10 @@ class _$WiFiStoredNetworkInfoSerializer
         case 'SSID':
           result.SSID = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
+          break;
+        case 'disabled':
+          result.disabled = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
@@ -751,16 +758,21 @@ class _$WiFiStoredNetworkInfo extends WiFiStoredNetworkInfo {
   final int id;
   @override
   final String SSID;
+  @override
+  final bool disabled;
 
   factory _$WiFiStoredNetworkInfo(
           [void Function(WiFiStoredNetworkInfoBuilder)? updates]) =>
       (new WiFiStoredNetworkInfoBuilder()..update(updates)).build();
 
-  _$WiFiStoredNetworkInfo._({required this.id, required this.SSID})
+  _$WiFiStoredNetworkInfo._(
+      {required this.id, required this.SSID, required this.disabled})
       : super._() {
     BuiltValueNullFieldError.checkNotNull(id, 'WiFiStoredNetworkInfo', 'id');
     BuiltValueNullFieldError.checkNotNull(
         SSID, 'WiFiStoredNetworkInfo', 'SSID');
+    BuiltValueNullFieldError.checkNotNull(
+        disabled, 'WiFiStoredNetworkInfo', 'disabled');
   }
 
   @override
@@ -777,19 +789,21 @@ class _$WiFiStoredNetworkInfo extends WiFiStoredNetworkInfo {
     if (identical(other, this)) return true;
     return other is WiFiStoredNetworkInfo &&
         id == other.id &&
-        SSID == other.SSID;
+        SSID == other.SSID &&
+        disabled == other.disabled;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, id.hashCode), SSID.hashCode));
+    return $jf($jc($jc($jc(0, id.hashCode), SSID.hashCode), disabled.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('WiFiStoredNetworkInfo')
           ..add('id', id)
-          ..add('SSID', SSID))
+          ..add('SSID', SSID)
+          ..add('disabled', disabled))
         .toString();
   }
 }
@@ -806,6 +820,10 @@ class WiFiStoredNetworkInfoBuilder
   String? get SSID => _$this._SSID;
   set SSID(String? SSID) => _$this._SSID = SSID;
 
+  bool? _disabled;
+  bool? get disabled => _$this._disabled;
+  set disabled(bool? disabled) => _$this._disabled = disabled;
+
   WiFiStoredNetworkInfoBuilder();
 
   WiFiStoredNetworkInfoBuilder get _$this {
@@ -813,6 +831,7 @@ class WiFiStoredNetworkInfoBuilder
     if ($v != null) {
       _id = $v.id;
       _SSID = $v.SSID;
+      _disabled = $v.disabled;
       _$v = null;
     }
     return this;
@@ -836,7 +855,9 @@ class WiFiStoredNetworkInfoBuilder
             id: BuiltValueNullFieldError.checkNotNull(
                 id, 'WiFiStoredNetworkInfo', 'id'),
             SSID: BuiltValueNullFieldError.checkNotNull(
-                SSID, 'WiFiStoredNetworkInfo', 'SSID'));
+                SSID, 'WiFiStoredNetworkInfo', 'SSID'),
+            disabled: BuiltValueNullFieldError.checkNotNull(
+                disabled, 'WiFiStoredNetworkInfo', 'disabled'));
     replace(_$result);
     return _$result;
   }
