@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' as math;
 import 'dart:io' as io;
+import 'package:path/path.dart' as path;
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
@@ -16,6 +17,7 @@ import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:shelf_router/shelf_router.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:shelf_virtual_directory/shelf_virtual_directory.dart';
 
 class WebService {
   static final Logger _log = new Logger('WebService');
@@ -68,6 +70,15 @@ class WebService {
     updateCode();
     _router.get('/info', _getInfo);
     _router.get("/ws", _webSocketHandler);
+
+    final fsPath = path.join(io.Directory.current.path, 'web'); // path to server
+    final virtualDir = ShelfVirtualDirectory(
+      fsPath,
+      defaultFile: 'index.html',
+      default404File: '404.html',
+    );
+    _router.mount('/', virtualDir.router);
+
     enabled = _config.alwaysEnabled;
     if (_config.alwaysEnabled) {
       _log.warning('Web server always on');

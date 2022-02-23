@@ -13,6 +13,8 @@ cp -r ./template_build_$PROFILE_ARC ./$DIR
 cd ../dslideshow_flutter
 dart ../autover/bin/main.dart -c autover.yaml -v build --apply true
 ./build_aot.sh
+cd ../config_app
+./build_web.sh
 cd ../deb_factory
 
 cp $SOURCE_BIN/engine-binaries/icudtl.dat $DEST/
@@ -23,6 +25,7 @@ cp $SOURCE_BIN/engine-binaries/dart-sdk.version $DEST/
 cp $SOURCE_BIN/proxy_gpiod/libproxy_gpiod.so $DEST/
 cp $SOURCE_BIN/flutter-pi/flutter-pi $DEST/
 cp -r ../dslideshow_flutter/build/flutter_assets $DEST/
+cp -r ../config_app/build/web $DEST/
 
 # remove templates
 rm $DEST/version.template

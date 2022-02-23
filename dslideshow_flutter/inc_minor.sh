@@ -1,1 +1,1 @@
-dart ../autover/bin/main.dart -c pubspec.yaml -v minor
+dart ../autover/bin/main.dart -c autover.yaml -v minor
