@@ -73,5 +73,5 @@ pubspec.lock
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 /backend/config.json
 
-./third_party/googleapis/test/
-./third_party/discoveryapis_commons/test/
+/third_party/googleapis/test
+/third_party/discoveryapis_commons/test

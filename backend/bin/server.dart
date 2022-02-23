@@ -31,13 +31,6 @@ void main(List<String> args) async {
   try {
     getInjectorModule();
 
-    _log.info(json.encode(serializers.serialize(new WSAuthCommand((b) => b.code = "123"))));
-    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiScanCommand()))));
-    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiGetStoredCommand()))));
-    _log.info(json.encode(serializers.serialize(new WSSendRpcCommand((b) => b.command = WiFiAddCommand((b) => b
-      ..SSID = 'test'
-      ..psk = 'pass')))));
-
     injector.registerLazySingleton<GPIOService>(() {
       final _config = injector.get<AppConfig>();
       return new GPIOServiceImpl(_config.hardware);

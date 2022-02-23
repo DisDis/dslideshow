@@ -32,7 +32,7 @@ class WebService {
   bool get enabled => _enabled;
 
   void set enabled(bool newvalue) {
-    if (_config.enabled) {
+    if (_config.alwaysEnabled) {
       newvalue = true;
     }
     if (newvalue == _enabled) {
@@ -46,15 +46,17 @@ class WebService {
     }
   }
 
-  static String _generateCode() {
+  String _generateCode() {
     var sb = new StringBuffer();
     var count = 8;
     while (count > 0) {
       sb.write(_rnd.nextInt(10));
       count--;
     }
-    //TODO: remove stub
-    return "123"; //sb.toString();
+    if (_config.permanentCode != null) {
+      return _config.permanentCode.toString();
+    }
+    return sb.toString();
   }
 
   void updateCode() {
@@ -66,7 +68,13 @@ class WebService {
     updateCode();
     _router.get('/info', _getInfo);
     _router.get("/ws", _webSocketHandler);
-    enabled = _config.enabled;
+    enabled = _config.alwaysEnabled;
+    if (_config.alwaysEnabled) {
+      _log.warning('Web server always on');
+    }
+    if (_config.permanentCode != null) {
+      _log.severe('Permanent code enabled = "$_code"');
+    }
   }
 
   io.HttpServer? _server;

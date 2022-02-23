@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dslideshow_backend/command.dart';
 import 'package:dslideshow_backend/config.dart';
+import 'package:dslideshow_backend/src/service/fake/fake_remote_service.dart';
 import 'package:dslideshow_backend/src/service/ota/ota_service.dart';
 import 'package:dslideshow_common/rpc.dart';
 import 'package:get_it/get_it.dart';
@@ -38,20 +39,5 @@ void main(List<String> args) async {
   } catch (e, s) {
     _log.fine('Fatal error: $e, $s');
     exit(1);
-  }
-}
-
-class FakeRemoteService implements RemoteService {
-  static final Logger _log = new Logger('FakeRemoteService');
-
-  @override
-  FutureOr<RpcResult> send(RpcCommand command) async {
-    _log.info(command.toString());
-    return new EmptyResult.respond(command);
-  }
-
-  @override
-  FutureOr<String> transparentSend(String cmdStr) async {
-    return '';
   }
 }

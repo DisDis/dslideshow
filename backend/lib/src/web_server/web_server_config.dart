@@ -6,9 +6,11 @@ class WebServerConfig {
   @JsonKey(defaultValue: 8080)
   int port;
   @JsonKey(defaultValue: false)
-  bool enabled;
+  bool alwaysEnabled;
 
-  WebServerConfig({required this.port, required this.enabled});
+  String? permanentCode;
+
+  WebServerConfig({required this.port, required this.alwaysEnabled});
   factory WebServerConfig.fromJson(Map<String, dynamic> json) => _$WebServerConfigFromJson(json);
 
   Map<String, dynamic> toJson() => _$WebServerConfigToJson(this);
